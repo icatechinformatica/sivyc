@@ -1,0 +1,102 @@
+/*------------------------------------
+  Default Styles
+------------------------------------*/
+/* line 4, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+html {
+  font-size: 14px;
+}
+
+/* line 8, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+body {
+  font-weight: 400;
+  font-size: 1rem;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: #555;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: "liga", "kern";
+  text-rendering: optimizelegibility;
+  background-color: #fff;
+}
+
+/* line 23, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+a {
+  color: #621132;
+  outline: none;
+}
+
+/* line 27, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+a:focus,
+a:hover {
+  color: #4c0d27;
+}
+
+/* line 32, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+.nav-link {
+  color: #555;
+}
+
+/* line 35, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+.nav-link:focus,
+.nav-link:hover {
+  color: #555;
+}
+
+/* line 40, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+figure {
+  margin-bottom: 0;
+}
+
+/*------------------------------------
+  Headings
+------------------------------------*/
+/* line 47, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+.h1, .h2, .h3, .h4, .h5, .h6, .h7,
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.4;
+}
+
+/* line 52, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+.h7 {
+  font-size: .75rem;
+}
+
+/*------------------------------------
+  Displays
+------------------------------------*/
+/* line 59, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+.display-5 {
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+/*------------------------------------
+  Highlight Color
+------------------------------------*/
+/* line 68, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+::-moz-selection {
+  color: #fff;
+  background-color: #621132;
+}
+
+/* line 72, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+::selection {
+  color: #fff;
+  background-color: #621132;
+}
+
+/* line 77, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+.g-bg-primary ::-moz-selection {
+  color: #621132;
+  background-color: #fff;
+}
+
+/* line 81, /Applications/MAMP/htdocs/assets/include/scss/core/_style.scss */
+.g-bg-primary ::selection {
+  color: #621132;
+  background-color: #fff;
+}
+
+/*# sourceMappingURL=../../css/unify-core.map */
