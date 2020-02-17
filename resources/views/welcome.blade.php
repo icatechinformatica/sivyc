@@ -3,32 +3,25 @@
 @section('title', 'Indice Principal | Sivyc Icatech')
 <!--tituto de la pestaña -->
 @section('content')
-<div class="container g-pt-25">
-    <div class="masonry-grid row g-mb-0 row-eq-height s">
-            <div class="masonry-grid-item col-sm-6 col-md-6 col-lg-12">
-                <div class="g-brd-around g-brd-gray-light-v4 g-pa-30 g-mb-10 g-pt-20 g-bg-secondary">
-                    <p>
-                        <strong> Curso: </strong>
-                    </p>
-                    <p>
-                        <strong>Especialidad:</strong>
-                    </p>
-                    <p>
-                            <strong>Objetivo: </strong>
-                     </p>
-                     <p>
-                            <strong>Perfil: </strong>
-                     </p>
-                    <p>
-                        <strong>Duración: </strong> Horas
-                    </p>
-
-
-                    <p>
-                        <strong>Clasificacion: </strong>
-                    </p>
-                </div>
-            </div>
+<section class="container g-pt-150 g-pb-50">
+    <div class="row">
+        <hr class="g-brd-gray-light-v4">
     </div>
-</div>
+    <div class="row">
+        <div class="col-lg-12 g-mb-10">
+            <form class="g-brd-around g-brd-gray-light-v4 g-pa-30 g-mb-30 g-bg-secondary">
+                <div class="form-group">
+                    <div class="input-group g-brd-gray-light-v2">
+                        <input type="text" class="form-control form-control-md rounded-0">
+                        <div class="input-group-append">
+                            <button class="btn btn-md u-btn-primary rounded-0">
+                                BUSQUEDAS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 @stop

@@ -78,6 +78,7 @@
             <script src="{{asset("js/components/hs.popup.js") }}"></script>
             <script src="{{asset("js/components/hs.carousel.js") }}"></script>
             <script src="{{asset("js/components/hs.go-to.js") }}"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
             <script>
                 $(document).on('ready', function () {
                     $.HSCore.components.HSHeader.init($('#js-header'));
