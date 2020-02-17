@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/instructor', 'InstructorController@index');
+//formulario para nuevo instructor
+Route::get('/instructor/crear','InstructorController@create');
+//guarda el nuevo instructor
+Route::post('/instructor-save', 'InstructorController@store')->name('upload');
+
