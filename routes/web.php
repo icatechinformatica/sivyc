@@ -24,3 +24,6 @@ Route::get('/add-cursos', function () {
 Route::get('/add-contrato', function () {
     return view('layouts.pages.frmcontrato');
 });
+Route::get('/cursos', function () {
+    return view('layouts.pages.table');
+});
