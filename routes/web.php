@@ -12,5 +12,12 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages/delegacionadmin');
+       
 });
+Route::get('/add-convenio', function () {
+    return view('pages/frmconvenio');
+});
+
+
+
