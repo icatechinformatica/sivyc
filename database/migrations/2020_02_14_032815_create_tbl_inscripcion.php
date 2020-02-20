@@ -32,6 +32,14 @@ class CreateTblInscripcion extends Migration
             $table->string('munidad', 50);
             $table->decimal('costo', 6, 2);
             $table->timestamps();
+
+            $table->foreign('matricula')
+                ->references('no_control')->on('tbl_alumnos')
+                ->onDelete('set null')->onUpdate('cascade');
+
+            $table->foreign('id_curso')
+                ->references('id')->on('tbl_cursos')
+                ->onDelete('set null')->onUpdate('cascade');
         });
     }
 

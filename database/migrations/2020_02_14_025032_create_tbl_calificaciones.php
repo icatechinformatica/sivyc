@@ -38,6 +38,14 @@ class CreateTblCalificaciones extends Migration
             $table->string('hini2', 30)->nullable(); // nulos
             $table->string('hfin2', 30)->nullable(); // nulos
             $table->timestamps();
+
+            $table->foreign('matricula')
+                ->references('no_control')->on('tbl_alumnos')
+                ->onDelete('set null')->onUpdate('cascade');
+
+            $table->foreign('idcurso')
+                ->references('id')->on('tbl_cursos')
+                ->onDelete('set null')->onUpdate('cascade');
         });
     }
 

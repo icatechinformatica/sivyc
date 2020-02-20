@@ -29,6 +29,10 @@ class CreateTblFolios extends Migration
             $table->string('ffin', 15);
             $table->string('focan', 15); // null;
             $table->timestamps();
+
+            $table->foreign('id_curso')
+                  ->references('id')->on('tbl_cursos')
+                  ->onDelete('set null')->onUpdate('cascade');
         });
     }
 

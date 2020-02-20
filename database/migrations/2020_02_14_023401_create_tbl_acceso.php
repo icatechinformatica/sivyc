@@ -15,6 +15,14 @@ class CreateTblAcceso extends Migration
     {
         Schema::create('tbl_acceso', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('nombrecompleto');
+            $table->integer('idcategoria');
+            $table->integer('numeroenlace');
+            $table->string('usuario');
+            $table->string('contrasena');
+            $table->string('correo')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

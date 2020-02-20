@@ -31,3 +31,6 @@ Route::get('/add-convenio', function () {
 
 
 
+Route::get('/usuarios', function(){
+    return view('layouts.pages.frmcursos');
+})->name('usuarios');
