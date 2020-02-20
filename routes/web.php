@@ -4,11 +4,11 @@
 use App\Http\Controllers\InstructorController;
 use Illuminate\Support\Facades\Route;
 //Crea instructor
-Route::get('/instructor/crear', 'InstructorController@crear_instructor');
+Route::get('/instructor/crear', 'InstructorController@crear_instructor')->name('instructor-crear');
 Route::post('/instructor/guardar', 'InstructorController@guardar_instructor');
 
 //Crea pago
-Route::get('/pago/crear', 'PagoController@crear_pago');
+Route::get('/pago/crear', 'PagoController@crear_pago')->name('pago-crear');
 Route::get('/pago/guardar', 'PagoController@guardar_pago');
 Route::get('/pago/modificar', 'PagoController@modificar_pago');
 Route::post('/pago/fill', 'PagoController@index');
