@@ -14,3 +14,13 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+/**
+ * TODO: Rutas Daniel
+ */
+Route::get('/add-cursos', function () {
+    return view('layouts.pages.frmcursos');
+});
+Route::get('/add-contrato', function () {
+    return view('layouts.pages.frmcontrato');
+});

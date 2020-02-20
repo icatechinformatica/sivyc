@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblEspecialidades extends Migration
+class CreateMunicipiosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateTblEspecialidades extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_especialidades', function (Blueprint $table) {
+        Schema::create('tbl_municipios', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('carea'); // se vincula a area
-            $table->string('cespe', 15);
-            $table->string('especialidad', 100);
+            $table->string('muni', 150);
+            $table->string('ze', 15);
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateTblEspecialidades extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_especialidades');
+        Schema::dropIfExists('tbl_municipios');
     }
 }

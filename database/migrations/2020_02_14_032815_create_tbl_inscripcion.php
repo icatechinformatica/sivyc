@@ -15,6 +15,22 @@ class CreateTblInscripcion extends Migration
     {
         Schema::create('tbl_inscripcion', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('unidad', 50);
+            $table->string('matricula', 30); // relacionar con tabla alumno
+            $table->string('nombre', 80);
+            $table->bigInteger('id_curso'); // relacionado con curso
+            $table->string('curso', 200);
+            $table->string('instructor', 80);
+            $table->date('inicio');
+            $table->date('termino');
+            $table->string('hinicio', 15);
+            $table->string('hfin', 15);
+            $table->string('tinscripcion', 50);
+            $table->string('abrinscri', 15);
+            $table->string('hini2', 15);
+            $table->string('hfin2', 15);
+            $table->string('munidad', 50);
+            $table->decimal('costo', 6, 2);
             $table->timestamps();
         });
     }

@@ -15,6 +15,13 @@ class CreateTblAfolios extends Migration
     {
         Schema::create('tbl_afolios', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('unidad', 50);
+            $table->string('finicial', 15);
+            $table->string('ffinal', 15);
+            $table->integer('total');
+            $table->string('mod', 10);
+            $table->date('facta'); // relacionado con tabla folios
+            $table->integer('idfolios'); // relacion con la tabla folios
             $table->timestamps();
         });
     }
