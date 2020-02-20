@@ -23,6 +23,10 @@ class CreateTblAfolios extends Migration
             $table->date('facta'); // relacionado con tabla folios
             $table->integer('idfolios'); // relacion con la tabla folios
             $table->timestamps();
+
+            $table->foreign('idfolios')
+                ->references('id')->on('tbl_folios')
+                ->onDelete('set null')->onUpdate('cascade');
         });
     }
 

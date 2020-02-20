@@ -79,6 +79,7 @@
             <script src="{{asset("js/components/hs.carousel.js") }}"></script>
             <script src="{{asset("js/components/hs.go-to.js") }}"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
+            <script src="{{ asset("js/components/filter-table.js") }}"></script>
             <script>
                 $(document).on('ready', function () {
                     $.HSCore.components.HSHeader.init($('#js-header'));
@@ -98,7 +99,9 @@
 
 							    $.HSCore.components.HSPopup.init('.js-fancybox');
 							    $.HSCore.components.HSCarousel.init('.js-carousel');
-							    $.HSCore.components.HSGoTo.init('.js-go-to');
+                                $.HSCore.components.HSGoTo.init('.js-go-to');
+
+                    $('#table-one').filterTable('#myInput');
                 });
             </script>
     </body>

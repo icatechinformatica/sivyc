@@ -27,3 +27,6 @@ Route::get('/add-contrato', function () {
 Route::get('/cursos', function () {
     return view('layouts.pages.table');
 });
+Route::get('/usuarios', function(){
+    return view('layouts.pages.frmcursos');
+})->name('usuarios');
