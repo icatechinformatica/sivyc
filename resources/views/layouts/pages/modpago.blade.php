@@ -1,26 +1,17 @@
 <!-- Creado por Orlando Chávez -->
 @extends('theme.sivyc.layout')
-@section('title', 'Registro de Pago | SIVyC Icatech')
+@section('title', 'Modificacion de Pago | SIVyC Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
-            <div style="text-align: right;width:60%">
-                <label><h1>Registro de Pago</h1></label>
+            <div style="text-align: right;width:65%">
+                <label><h1>Modificacion de Pago</h1></label>
             </div>
-            <br>
-            <br>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="inputnumero_contrato">Numero de Contrato</label>
-                        <input type="text" name="numero_contrato" id="numero_contrato" class="form-control" aria-required="true">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <br>
-                        <button type="button" id="search_" class="btn btn-info btn-lg">Buscar</button>
-                    </div>
-                </div>
+            <hr style="border-color:dimgray">
+            <div style="text-align: right;width:100%">
+                <button type="button" id="mod_" class="btn btn-warning btn-lg">Modificar Campos</button>
+            </div>
         <form action="{{ url('/pago/guardar') }}" method="post" id="registerpago" enctype="multipart/form-data">
             @csrf
-            <hr style="border-color:dimgray">
             <div class="form-row">
                 <div class="form-gorup col-md-3">
                     <label for="inputnumero_control">Numero de Control de Instructor</label>
@@ -40,6 +31,10 @@
                 <div class="form-gorup col-md-4">
                     <label for="inputunidad_cap">Unidad de Capacitacion</label>
                     <input type="text" name="unidad_cap" id="unidad_cap" disabled class="form-control" aria-required="true">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputnumero_contrato">Numero de Contrato</label>
+                    <input type="text" name="numero_contrato" id="numero_contrato" disabled class="form-control" aria-required="true">
                 </div>
             </div>
             <br>
@@ -65,40 +60,40 @@
             <div class="form-row">
                 <div class="form-gorup col-md-3">
                     <label for="inputnumero_pago">Numero de Pago</label>
-                    <input type="text" name="numero_pago" id="numero_pago" class="form-control" aria-required="true">
+                    <input type="text" name="numero_pago" id="numero_pago" disabled class="form-control" aria-required="true">
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputfecha_pago">Fecha de Pago</label>
-                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" aria-required="true">
+                    <input type="date" name="fecha_pago" id="fecha_pago" disabled class="form-control" aria-required="true">
                 </div>
             </div>
             <br>
             <div class="form-row">
                 <div class="form-gorup col-md-6">
                     <label for="inputconcepto">Descripcion de concepto</label>
-                    <textarea cols="6" rows="5" name="concepto" id="concepto" class="form-control" aria-required="true"></textarea>
+                    <textarea cols="6" rows="5" name="concepto" id="concepto" disabled class="form-control" aria-required="true"></textarea>
                 </div>
             </div>
             <br>
             <div class="form-row">
                 <div class="form-gorup col-md-4">
                     <label for="inputnombre_solicita">Nombre de Solicitante</label>
-                    <input type="text" name="nombre_solicita" id="nombre_solicita" class="form-control" aria-required="true">
+                    <input type="text" name="nombre_solicita" id="nombre_solicita" disabled class="form-control" aria-required="true">
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputnombre_autoriza">Nombre de Autorizante</label>
-                    <input type="text" name="nombre_autoriza" id="nombre_autoriza" class="form-control" aria-required="true">
+                    <input type="text" name="nombre_autoriza" id="nombre_autoriza" disabled class="form-control" aria-required="true">
                 </div>
             </div>
             <br>
             <div class="form-row">
                 <div class="form-gorup col-md-6">
                     <label for="inputreacd02">Documento REACD-02</label>
-                    <input type="file" accept="application/pdf" name="reacd02" id="reacd02" class="form-control" aria-required="true">
+                    <input type="file" accept="application/pdf" name="reacd02" id="reacd02" disabled class="form-control" aria-required="true">
                 </div>
                 <div class="form-gorup col-md-2">
                     <label for="inputestatus_pago">Estatus de Pago</label>
-                    <select class="form-control" id="estatus_pago" disabled>
+                    <select class="form-control" id="estatus_pago">
                         <option>Pendiente</option>
                         <option>Pagado</option>
                         <option>Cancelado</option>
@@ -107,7 +102,7 @@
             </div>
             <br>
             <div  style="text-align: right;width:100%">
-                <button type="submit" class="btn btn-primary" >Agregar</button>
+                <button type="submit" class="btn btn-primary" >Guardar Cambios</button>
             </div>
         </form>
     </section>

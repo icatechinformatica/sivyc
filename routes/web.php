@@ -10,6 +10,8 @@ Route::post('/instructor/guardar', 'InstructorController@guardar_instructor');
 //Crea pago
 Route::get('/pago/crear', 'PagoController@crear_pago');
 Route::get('/pago/guardar', 'PagoController@guardar_pago');
+Route::get('/pago/modificar', 'PagoController@modificar_pago');
+Route::post('/pago/fill', 'PagoController@index');
 /*
 |--------------------------------------------------------------------------
 | Web Routes
