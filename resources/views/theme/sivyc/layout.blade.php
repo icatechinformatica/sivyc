@@ -79,6 +79,8 @@
             <script src="{{asset("js/components/hs.carousel.js") }}"></script>
             <script src="{{asset("js/components/hs.go-to.js") }}"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
+            <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+            <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
             <script>
                 $(document).on('ready', function () {
                     $.HSCore.components.HSHeader.init($('#js-header'));
@@ -98,7 +100,7 @@
 
 							    $.HSCore.components.HSPopup.init('.js-fancybox');
 							    $.HSCore.components.HSCarousel.init('.js-carousel');
-							    $.HSCore.components.HSGoTo.init('.js-go-to');
+                  $.HSCore.components.HSGoTo.init('.js-go-to');
                 });
             </script>
     </body>

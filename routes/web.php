@@ -12,12 +12,10 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages/delegacionadmin');
+
 });
 
-/**
- * TODO: Rutas Daniel
- */
 Route::get('/add-cursos', function () {
     return view('layouts.pages.frmcursos');
 });
@@ -27,3 +25,9 @@ Route::get('/add-contrato', function () {
 Route::get('/cursos', function () {
     return view('layouts.pages.table');
 });
+Route::get('/add-convenio', function () {
+    return view('pages/frmconvenio');
+});
+
+
+
