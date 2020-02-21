@@ -18,7 +18,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                           <a class="dropdown-item" href="{{route('frm-cursos')}}">Cursos</a>
-                          <a class="dropdown-item" href="#">Convenios</a>
+                        <a class="dropdown-item" href="{{route('frm-convenio')}}">Convenios</a>
                         </div>
                     </li>
                     <li class="nav-item g-mx-5--lg dropdown">
