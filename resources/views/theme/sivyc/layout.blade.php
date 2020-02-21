@@ -9,7 +9,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}">
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
