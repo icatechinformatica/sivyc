@@ -4,22 +4,26 @@
  <!--empieza aquí-->
  <div class="container g-pt-50">
    <form method="POST">
+       <div style="text-align: right;width:72%">
+           <label for="tituloSupre1"><h1>Suficiencia Presupuestal Fase 1</h1></label>
+        </div>
+        <hr style="border-color:dimgray">
       <div class="form-row">
         <!-- Unidad -->
         <div class="form-group col-md-6">
-          
+
           <label for="unidad" class="control-label">Unidad de Capacitacion </label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="unidad" name="unidad"  placeholder="unidad">
-          
+
         </div>
-        <!--Unidad Fin--> 
+        <!--Unidad Fin-->
         <!-- Memorandum No. ICATECH -->
         <div class="form-group col-md-6">
           <label for="mamorandum" class="control-label">Memorandum No. </label>
           <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="ICATECH/0000/000/2020">
         </div>
         <!-- Memorandum No. ICATECH FIN-->
-        
+
       </div>
       <div class="form-group">
         <label for="fecha" class="control-label">Fecha</label>
@@ -29,15 +33,15 @@
         <div class="form-group col-md-6"> <!-- Destinatario -->
           <label for="destino" class="control-label">Destinatario</label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
-        </div>    
-  
+        </div>
+
         <div class="form-group col-md-6"> <!-- Puesto-->
           <label for="puesto" class="control-label">Puesto</label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="puesto" name="puesto" placeholder="Puesto">
         </div>
 
       </div>
-      
+
       <div class="field_wrapper">
         <div class="form-row">
           <!--Folios-->
@@ -54,14 +58,14 @@
         <div class="form-group col-md-6"> <!--  -->
           <label for="remitente" class="control-label">Remitente</label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
-        </div> 
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group col-md-6"> <!-- copia 1 -->
           <label for="remitente" class="control-label">Copia Para</label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre, Puesto">
         </div>
-        
+
         <div class="form-group col-md-6"> <!--  -->
           <label for="remitente" class="control-label">Copia Para</label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre, Puesto">
@@ -72,7 +76,7 @@
           <label for="remitente" class="control-label">Valida</label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre, Puesto">
         </div>
-        
+
         <div class="form-group col-md-6"> <!--Elabora-->
           <label for="remitente" class="control-label">Elabora</label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre, Puesto">
@@ -83,12 +87,12 @@
           <label for="remitente" class="control-label">Elabora</label>
           <input type="file" id="myFile" name="myFile" class="form-control" accept="application/pdf">
         </div>
-      </div> 
+      </div>
       <div class="mt-3">
         <button type="submit" class="btn btn-primary">Enviar</button>
       </div>
       <br>
-    </form>    
+    </form>
  </div>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -103,7 +107,7 @@
          //Once add button is clicked
          $(addButton).click(function(){
            //Check maximum number of input fields
-           if(x < maxField){ 
+           if(x < maxField){
                x++; //Increment field counter
                $(wrapper).append(fieldHTML); //Add field html
            }
@@ -126,7 +130,7 @@
        tecla = String.fromCharCode(key).toLowerCase();
        letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
        especiales = [8, 37, 39, 46];
-   
+
        tecla_especial = false
        for(var i in especiales) {
            if(key == especiales[i]) {
@@ -134,11 +138,11 @@
                break;
            }
        }
-   
+
        if(letras.indexOf(tecla) == -1 && !tecla_especial)
            return false;
    }
-   
+
    function limpia() {
        var val = document.getElementById("miInput").value;
        var tam = val.length;
@@ -148,7 +152,6 @@
        }
    }
  </script>
-      
+
 @stop
-  
-  
+

@@ -5,6 +5,10 @@
 @section('content')
     <div class="container g-pt-50">
         <form method="POST">
+            <div style="text-align: right;width:65%">
+                <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
+            </div>
+             <hr style="border-color:dimgray">
             <div class="form-row">
             <!-- Unidad -->
             <div class="form-group col-md-6">
