@@ -23,18 +23,18 @@ Route::post('/pago/fill', 'PagoController@index');
 |
 */
 
-Route::get('/', function () {
+Route::get('/supre/paso1', function () {
     return view('pages/delegacionadmin');
 
-});
+})->name('supre-fase1');
 
 Route::get('/add-cursos', function () {
     return view('layouts.pages.frmcursos');
-});
+})->name('frm-cursos');
 Route::get('/add-contrato', function () {
     return view('layouts.pages.frmcontrato');
-});
-Route::get('/cursos', function () {
+})->name('contrato');
+Route::get('/', function () {
     return view('layouts.pages.table');
 });
 Route::get('/add-convenio', function () {
