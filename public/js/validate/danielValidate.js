@@ -1,6 +1,10 @@
 $(function(){
     // metodos
     $('#table-one').filterTable('#myInput');
+    $( "#fechanacaspirante" ).datepicker({
+        changeMonth: true,
+        changeYear: true
+    });
 
     $.validator.addMethod("CURP", function (value, element) {
         if (value !== '') {
@@ -11,14 +15,16 @@ $(function(){
         }
     }, "Ingrese una CURP valida");
 
+    $.validator.addMethod("phoneMX", function(phone_number, element) {
+        phone_number = phone_number.replace(/\s+/g, "");
+        return this.optional(element) || phone_number.length > 9 &&
+        phone_number.match(/^(\+?1-?)?(\([2-9]\d{2}\)|[2-9]\d{2})?[2-9]\d{2}?\d{4}$/);
+    }, "Por favor especifique un número valido de teléfono");
+
     $('#formsid').validate({
         rules: {
             nocontrol:{
                 required: true
-            },
-            fecha:{
-                required: true,
-                date: true
             },
             nosolicitud: {
                 required: true,
@@ -37,15 +43,22 @@ $(function(){
             curpaspirante: {
                 required: true,
                 CURP: true
+            },
+            generoaspirante: {
+                required: true
+            },
+            fechanacaspirante: {
+                required: true,
+                date: true
+            },
+            telefonoaspirante: {
+                required: true,
+                phoneMX: true
             }
         },
         messages: {
             nocontrol: {
                 required: 'Por favor ingresa el número de control'
-            },
-            fecha: {
-                required: 'Por favor ingresa la fecha',
-                date: 'Formato de fecha no valido'
             },
             nosolicitud: {
                 required: 'Por favor ingresa el número de solicitud',
@@ -63,6 +76,16 @@ $(function(){
             },
             curpaspirante: {
                 required: 'Por favor Ingresé la curp',
+            },
+            generoaspirante: {
+                required: 'Por favor Elegir el genero'
+            },
+            telefonoaspirante: {
+                required: 'Por favor, ingrese telefóno',
+            },
+            fechanacaspirante: {
+                required: 'Por favor, seleccione fecha',
+                date: 'Formato de fecha no valido'
             }
         }
     });

@@ -11,18 +11,12 @@
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
-            <!-- Unidad -->
-            <div class="form-group col-md-4">
-                <label for="nocontrol" class="control-label">Número de Control</label>
-                <input type="text" class="form-control" id="nocontrol" name="nocontrol" placeholder="N° de Control">
-            </div>
-            <!--Unidad Fin-->
-            <!-- nombre curso -->
-            <div class="form-group col-md-4">
-                <label for="fecha" class="control-label">Fecha</label>
-                <input type="date" class="form-control" id="fecha" name="fecha">
-            </div>
-            <!-- nombre curso FIN-->
+                <!-- Unidad -->
+                <div class="form-group col-md-4">
+                    <label for="nocontrol" class="control-label">Número de Control</label>
+                    <input type="text" class="form-control" id="nocontrol" name="nocontrol" placeholder="N° de Control">
+                </div>
+                <!--Unidad Fin-->
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -61,22 +55,23 @@
                 <!-- genero-->
                 <div class="form-group col-md-3">
                 <label for="generoaspirante" class="control-label">Genero</label>
-                <select class="form-control" id="generoaspirante">
-                    <option>Mujer</option>
-                    <option>Hombre</option>
+                <select class="form-control" id="generoaspirante" name="generoaspirante">
+                    <option value="">--SELECCIONAR--</option>
+                    <option value="1">Mujer</option>
+                    <option value="2">Hombre</option>
                 </select>
                 </div>
                 <!-- genero END-->
                 <!-- edad -->
                 <div class="form-group col-md-3">
-                <label for="edadaspirante" class="control-label">Edad</label>
-                <input type="text" class="form-control" id="edadaspirante" name="edadaspirante">
+                    <label for="fechanacaspirante" class="control-label">Fecha de Nacimiento</label>
+                    <input type="text" class="form-control" id="fechanacaspirante" name="fechanacaspirante">
                 </div>
                 <!-- edad END -->
                 <!-- telefono-->
                 <div class="form-group col-md-3">
-                <label for="telefonoaspirante" class="control-label">Teléfono</label>
-                <input type="text" class="form-control" id="telefonoaspirante" name="telefonoaspirante">
+                    <label for="telefonoaspirante" class="control-label">Teléfono</label>
+                    <input type="text" class="form-control" id="telefonoaspirante" name="telefonoaspirante">
                 </div>
                 <!-- telefono END-->
             </div>
