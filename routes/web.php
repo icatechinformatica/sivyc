@@ -45,3 +45,5 @@ Route::get('/add-convenio', function () {
 Route::get('/usuarios', function(){
     return view('layouts.pages.frmcursos');
 })->name('usuarios');
+Route::get('/inscripcion/paso1', 'webController\AlumnoController@create')->name('inscripcion-paso1');
+Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid')->name('inscripcion-paso2');
