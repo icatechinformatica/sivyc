@@ -4,7 +4,7 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
-        <form method="POST">
+        <form method="POST" id="formsid">
             @csrf
             <div style="text-align: center;">
                 <label for="tituloformulariocurso"><h1>Solicitud de Inscripción (SID)</h1></label>
@@ -121,11 +121,11 @@
             <div class="form-row">
                 <!-- estado civil -->
                 <div class="form-group col-md-6">
-                <label for="estadocivil" class="control-label">Estado Civil</label>
-                <select class="form-control" id="estadocivil">
-                    <option>opcion1</option>
-                    <option>opcion2</option>
-                </select>
+                    <label for="estadocivil" class="control-label">Estado Civil</label>
+                    <select class="form-control" id="estadocivil">
+                        <option>opcion1</option>
+                        <option>opcion2</option>
+                    </select>
                 </div>
                 <!-- estado civil END -->
                 <div class="form-group col-md-6">
@@ -134,6 +134,95 @@
                 </div>
             </div>
             <hr>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="especialidadquedeseainscribirse" class="control-label">Especialidad a la que desea inscribirse</label>
+                    <select class="form-control" id="especialidadquedeseainscribirse">
+                        <option>opcion1</option>
+                        <option>opcion2</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="curso" class="control-label">Curso</label>
+                    <input type="text" class="form-control" id="curso" name="curso">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="horario" class="control-label">Horario</label>
+                    <input type="text" class="form-control" id="horario" name="horario">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="ultimogradodeestudios" class="control-label">último grado de estudios</label>
+                    <input type="text" class="form-control" id="ultimogradodeestudios" name="ultimogradodeestudios">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="empresadondetrabaja" class="control-label">Empresa donde trabaja</label>
+                    <input type="text" class="form-control" id="empresadondetrabaja" name="empresadondetrabaja">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="antiguedad" class="control-label">Antigüedad</label>
+                    <input type="text" class="form-control" id="antiguedad" name="antiguedad">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="direccion" class="control-label">Dirección</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="direccion" class="control-label">Medio por el que se enteró del sistema</label>
+                    <br>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="hombre" class="form-check-input">
+                        <label for="hombre" class="form-check-label">Presan</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="mujer" class="form-check-input">
+                        <label for="mujer" class="form-check-label">Televisión</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="alien" class="form-check-input">
+                        <label for="alien" class="form-check-label">Folletos, Carteles, Volantes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="alien" class="form-check-input">
+                        <label for="alien" class="form-check-label">Radio</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="alien" class="form-check-input">
+                        <label for="alien" class="form-check-label">Internet</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="direccion" class="control-label">Motivos de elección del sistema de capacitación</label>
+                    <br>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="hombre" class="form-check-input">
+                        <label for="hombre" class="form-check-label">Para emplearse o autoemplearse</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="mujer" class="form-check-input">
+                        <label for="mujer" class="form-check-label">Para ahorrar gastos al ingreso familiar</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="alien" class="form-check-input">
+                        <label for="alien" class="form-check-label">Por estar en espera de incorporarse a otra institución educativa</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="alien" class="form-check-input">
+                        <label for="alien" class="form-check-label">Por disposición de tiempo libre</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" name="sexo" id="alien" class="form-check-input">
+                        <label for="alien" class="form-check-label">Para mejorar la situación en el trabajo</label>
+                    </div>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary">Enviar</button>
         </form>
         <br>

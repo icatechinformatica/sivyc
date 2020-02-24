@@ -84,6 +84,7 @@
             <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
             <script src="{{ asset("js/components/filter-table.js") }}"></script>
             <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
+            <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
             <script>
                 $(function(){
                     $.HSCore.components.HSHeader.init($('#js-header'));
@@ -101,7 +102,6 @@
                     $.HSCore.components.HSPopup.init('.js-fancybox');
                     $.HSCore.components.HSCarousel.init('.js-carousel');
                     $.HSCore.components.HSGoTo.init('.js-go-to');
-                    $('#table-one').filterTable('#myInput');
                 });
             </script>
     </body>
