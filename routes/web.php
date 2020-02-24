@@ -4,13 +4,15 @@
 use App\Http\Controllers\InstructorController;
 use Illuminate\Support\Facades\Route;
 //Crea instructor
+Route::get('/instructor', 'InstructorController@index')->name('instructor-inicio');
 Route::get('/instructor/crear', 'InstructorController@crear_instructor')->name('instructor-crear');
-Route::post('/instructor/guardar', 'InstructorController@guardar_instructor');
+Route::post('/instructor/guardar', 'InstructorController@guardar_instructor')->name('instructor-guardar');
+Route::get('/instructor/ver', 'InstructorController@ver_instructor')->name('instructor-ver');
 
 //Crea pago
 Route::get('/pago/crear', 'PagoController@crear_pago')->name('pago-crear');
-Route::get('/pago/guardar', 'PagoController@guardar_pago');
-Route::get('/pago/modificar', 'PagoController@modificar_pago');
+Route::get('/pago/guardar', 'PagoController@guardar_pago')->name('pago-guardar');
+Route::get('/pago/modificar', 'PagoController@modificar_pago')->name('pago-modificar');
 Route::post('/pago/fill', 'PagoController@index');
 /*
 |--------------------------------------------------------------------------
@@ -24,11 +26,11 @@ Route::post('/pago/fill', 'PagoController@index');
 */
 
 Route::get('/supre/paso1', function () {
-    return view('pages/delegacionadmin');
+    return view('layouts.pages.delegacionadmin');
 
 })->name('supre-fase1');
 
-Route::get('/add-cursos', function () {
+Route::get('/curso/crear', function () {
     return view('layouts.pages.frmcursos');
 })->name('frm-cursos');
 Route::get('/add-contrato', function () {
@@ -38,11 +40,8 @@ Route::get('/', function () {
     return view('layouts.pages.table');
 });
 Route::get('/add-convenio', function () {
-    return view('pages/frmconvenio');
-});
-
-
-
+    return view('layouts.pages.frmconvenio');
+})->name('frm-convenio');
 Route::get('/usuarios', function(){
     return view('layouts.pages.frmcursos');
 })->name('usuarios');

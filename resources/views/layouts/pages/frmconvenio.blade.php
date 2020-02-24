@@ -5,13 +5,17 @@
 
  <div class="container g-pt-50">
     <form method="POST">
+        <div style="text-align: right;width:63%">
+            <label for="tituloagregar_convenio"><h1>Agregar Convenio</h1></label>
+         </div>
+         <hr style="border-color:dimgray">
       <div class="form-row">
         <!-- Organismo -->
         <div class="form-group col-md-6">
            <label for="organismo" class="control-label">Organismo </label>
           <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="organismo" name="organismo" placeholder="organismo">
         </div>
-        <!--Organismo Fin--> 
+        <!--Organismo Fin-->
         <!-- Direccion -->
         <div class="form-group col-md-6">
           <label for="direccion" class="control-label">Direccion</label>
@@ -26,7 +30,7 @@
           <label for="telefono" class="control-label">Telefono </label>
           <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono" name="telefono" placeholder="telefono">
         </div>
-        <!--Telefono Fin--> 
+        <!--Telefono Fin-->
         <!-- Tipo de sector -->
         <div class="form-group col-md-6">
             <label for="sector">Tipo de Sector</label>
@@ -48,7 +52,7 @@
                 </span>
             </div>
         </div>
-        <!--Fecha inicial END--> 
+        <!--Fecha inicial END-->
         <!-- Fecha conclusion -->
         <div class="form-group col-md-6">
             <label for="sector">Tipo de Sector</label>
@@ -60,9 +64,9 @@
         <!-- Fecha conclusion END-->
       </div>
 
-      <div class="form-group col-md-6" "md-form">
-        <input placeholder="Selected date" type="text" id="date-picker-example" class="form-control datepicker">
+      <div class="form-group col-md-6">
         <label for="date-picker-example">Firma de Convenio</label>
+        <input placeholder="Selected date" type="text" id="date-picker-example" class="form-control datepicker">
       </div>
 
       <div class="form-row">
@@ -79,17 +83,17 @@
             </select>
         </div>
 
-        
-      </div> 
+
+      </div>
       <br>
     </form>
  </div>
-        
+
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script type="text/javascript">
     $( function() {
         $( ".datepicker" ).datepicker();
     } );
  </script>
-      
+
 @stop

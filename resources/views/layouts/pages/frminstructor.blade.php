@@ -43,10 +43,13 @@
                     <div class="form-gorup col-md-4">
                         <label for="inputestado_civil">Estado Civil</label>
                             <select class="form-control" id="estado_civil">
+                                <option>Sin Especificar</option>
                                 <option>Soltero/a</option>
                                 <option>Casado/a</option>
                                 <option>Divorciado/a</option>
                                 <option>Viudo/a</option>
+                                <option>Concubinato</option>
+                                <option>Union Libre</option>
                             </select>
                     </div>
                 </div>
@@ -99,26 +102,45 @@
                 <label><h2>Datos Academicos</h2></label>
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label for="inputgrado_estudio">Ultimo Grado de Estudio</label>
-                        <input name="grado_estudio" id="grado_estudio" type="text" class="form-control" aria-required="true">
+                        <label for="inputgrado_estudio">Nivel de estudio que cubre el estudio</label>
+                        <!--<input name="grado_estudio" id="grado_estudio" type="text" class="form-control" aria-required="true">-->
+                        <select class="form-control" id="grado_estudio">
+                            <option>Diploma</option>
+                            <option>Certificado</option>
+                            <option>Primaria</option>
+                            <option>Secundaria</option>
+                            <option>Bachillerato</option>
+                            <option>Carrera Tecnica</option>
+                            <option>Acta de Evaluacion Profesional</option>
+                            <option>Profesional</option>
+                            <option>Especialidad</option>
+                            <option>Maestria</option>
+                            <option>Doctorado</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-5">
                         <label for="inputperfil_profesional">Perfil Profesional</label>
                         <input name="perfil_profesional" id="perfil_profesional" type="text" class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="inputarea_carrera">Area de la Carrera</label>
+                        <label for="inputarea_carrera">Area del Estudio</label>
                         <input name="area_carrera" id="area_carrera" type="text" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-5">
-                        <label for="inputlicenciatura">Licenciatura</label>
-                        <input name="licenciatura" id="licenciatura" type="text" class="form-control" aria-required="true">
+                        <label for="inputnombre_carrera">Nombre del Estudio</label>
+                        <input name="nombre_carrera" id="nombre_carrera" type="text" class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputestatus">Estatus</label>
-                        <input name="estatus" id="estatus" type="text" class="form-control" aria-required="true">
+                        <select class="form-control" name="estatus" id="estatus">
+                            <option value="Sin Especificar">Sin Especificar</option>
+                            <option value="Trunco">Trunco</option>
+                            <option>Pasante</option>
+                            <option>Titulo</option>
+                            <option>Cedula</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
@@ -144,13 +166,54 @@
                         <label for="inputfolio_documento">Folio del Documento</label>
                         <input name="folio_documento" id="folio_documento" type="text" class="form-control" aria-required="true">
                     </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputclave_especialidad">Clave de la Especialidad</label>
+                        <input type="text" name="clave_especialidad" id="clave_especialidad" class="form-control">
+                    </div>
+                </div>
+                <hr style="border-color:dimgray">
+                <div class="form-row">
+                    <label for="inputexp_laboral"><h4>Experiencia Laboral</h4></label>
+                    <textarea cols="6" rows="6" id="exp_laboral" name="exp_laboral" class="form-control"></textarea>
+                </div>
+                <br>
+                <!-- *** START Text areas *** -->
+                    <div class="form-row">
+                        <label for="inputexp_docente"><h4>Experiencia Docente</h4></label>
+                        <textarea cols="6" rows="6" id="exp_docente" name="exp_docente" class="form-control"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <label for="inputcursos_recibidos"><h4>Cursos Recibidos</h4></label>
+                        <textarea cols="6" rows="6" id="cursos_recibidos" name="cursos_recibidos" class="form-control"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <label for="inputcursos_conocer"><h4>Cursos CONOCER</h4></label>
+                        <textarea cols="6" rows="6" id="cursos_conocer" name="cursos_conocer" class="form-control"></textarea>
+                    </div>
+                    <br>
+                    <div class="form-row">
+                        <label for="inputcursos_impartidos"><h4>Cursos Impartidos</h4></label>
+                        <textarea cols="6" rows="6" id="cursos_impartidos" name="cursos_impartidos" class="form-control"></textarea>
+                    </div>
+                <!-- *** END Text areas *** -->
+                <br>
+                <div class="form-row">
                     <div class="form-group col-md-2">
-                        <label for="inputcapacitado_icatech">Capacitado por el ICATECH</label>
+                        <label for="inputcapacitado_icatech"><h6>Capacitado por el ICATECH</h6></label>
                         <select class="form-control" id="capacitado_icatech">
                             <option>No</option>
                             <option>Si</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-row">
+                    <label for="inputcursos_recicatech"><h4>Cursos Recibidos por el ICATECH</h4></label>
+                    <textarea cols="6" rows="6" id="cursos_recicatech" name="cursos_recicatech" class="form-control"></textarea>
+                </div>
+                <br>
+                <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputcv">Curriculum Vitae</label>
                         <input name="cv" id="cv" type="file" accept="application/pdf" class="form-control" aria-required="true">
@@ -165,11 +228,14 @@
                     </div>
                     <div class="form-group col-md-5">
                         <label for="inputhonorario">Tipo de Honorario</label>
-                        <input id="honorario" name="honorario" type="text" class="form-control" aria-required="true">
+                        <select class="form-control" id="tipo_honorario">
+                            <option>Interno</option>
+                            <option>De Honorarios</option>
+                            </select>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputregistro_agente">Registo Agente Capacitador Externo STPS</label>
-                        <input id="registro_agente" name="registro_agente" type="file" accept="application/pdf" class="form-control" aria-required="true">
+                        <input id="registro_agente" name="registro_agente" type="text" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
@@ -179,16 +245,30 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputmemo_validacion">Memorandum de Validacion</label>
-                        <input id="memo_validacion" name="memo_validacion" type="file" accept="application/pdf" class="form-control" aria-required="true">
+                        <input id="memo_validacion" name="memo_validacion" type="text" class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputmemo_mod">Modificacion de Memorandum</label>
-                        <input id="memo_mod" name="memo_mod" type="file" accept="application/pdf" class="form-control" aria-required="true">
+                        <input id="memo_mod" name="memo_mod" type="text" class="form-control" aria-required="true">
                     </div>
                 </div>
-                <div class="form_row">
+                <div class="form-row">
                     <label for="inputobservacion">Observaciones</label>
                     <textarea cols="6" rows="6" id="observacion" name="observacion" class="form-control"></textarea>
+                </div>
+                <hr style="border-color:dimgray">
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                        <label for="inputcurso_validado">Validado Unicamente para Impartir</label>
+                        <select class="form-control" id="capacitado_icatech">
+                            <option>Opcion 1</option>
+                            <option>Opcion 2</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <br>
+                        <button type="button" class="btn btn-success btn-lg" >Agregar</button>
+                    </div>
                 </div>
                 <br>
                 <div style="text-align: right;width:100%">
