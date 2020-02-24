@@ -5,8 +5,17 @@
     <section class="container g-py-40 g-pt-40 g-pb-0">
         <form>
             @csrf
-                <div>
-                    <label><h2>Datos Personales</h2></label>
+                <div class="text-center">
+                    <h1>Ver Instructor<h1>
+                </div>
+                <br>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label><h2>Datos Personales</h2></label>
+                    </div>
+                    <div class="fomr-group col-md-9" style="text-align: right;width:100%">
+                        <button type="button" id="mod_instructor" class="btn btn-warning btn-lg">Modificar Campos</button>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
@@ -100,12 +109,70 @@
                 </div>
                 <hr style="border-color:dimgray">
                 <label><h2>Datos Academicos</h2></label>
-                <div class="form-row">
-                    <label for="inputexp_laboral"><h4>Experiencia Laboral</h4></label>
-                    <textarea cols="6" rows="6" id="exp_laboral" name="exp_laboral" disabled class="form-control"></textarea>
-                </div>
                 <br>
+                <label><h4>Perfil Profesional</h4></label>
+                <table class="table table-bordered" id="table-perfprof">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Handle</th>
+                            <th width="85px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>
+                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>@fat</td>
+                            <td>
+                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>@twitter</td>
+                            <td>
+                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-lg-12 margin-tb">
+                        <div class="pull-left">
+                            <caption>Lista de Perfiles Profesionales</caption>
+                        </div>
+                        <div class="pull-right">
+                            <a class="btn btn-info" href="{{route('instructor-perfil')}}">Agregar Perfil Profesional</a>
+                        </div>
+                    </div>
+                </div>
                 <!-- *** START Text areas *** -->
+                    <div class="form-row">
+                        <label for="inputexp_laboral"><h4>Experiencia Laboral</h4></label>
+                        <textarea cols="6" rows="6" id="exp_laboral" name="exp_laboral" disabled class="form-control"></textarea>
+                    </div>
+                    <br>
                     <div class="form-row">
                         <label for="inputexp_docente"><h4>Experiencia Docente</h4></label>
                         <textarea cols="6" rows="6" id="exp_docente" name="exp_docente" disabled class="form-control"></textarea>
@@ -180,17 +247,78 @@
                         <input id="memo_mod" name="memo_mod" type="text" class="form-control" disabled aria-required="true">
                     </div>
                 </div>
+                <br>
+                <label><h4>Cursos Validados para Impartir</h4></label>
+                <table class="table table-bordered" id="table-curval">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Handle</th>
+                            <th width="85px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>
+                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>@fat</td>
+                            <td>
+                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>@twitter</td>
+                            <td>
+                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-lg-12 margin-tb">
+                        <div class="pull-left">
+                            <caption>Lista de Cursos Validados para Impartir</caption>
+                        </div>
+                        <div class="pull-right">
+                            <a class="btn btn-info" href="{{route('instructor-curso')}}">Agregar Curso Validado para Impartir</a>
+                        </div>
+                    </div>
+                </div>
+                <br>
                 <div class="form-row">
                     <label for="inputobservacion">Observaciones</label>
                     <textarea cols="6" rows="6" id="observacion" name="observacion" disabled class="form-control"></textarea>
                 </div>
                 <br>
-                <div class="form-row" style="text-align: right;width:100%">
-                    <div class="form-gorup col-md-9">
-                        <a class="btn btn-primary">Agregar Perfil Profesional</a>
-                    </div>
-                    <div class="form-gorup col-md-3">
-                        <a class="btn btn-info">Agregar Curso Validado para Impartir</a>
+                <div class="row">
+                    <div class="col-lg-12 margin-tb">
+                        <div class="pull-left">
+                            <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                        </div>
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-primary" >Guardar Cambios</button>
+                        </div>
                     </div>
                 </div>
                 <br>
