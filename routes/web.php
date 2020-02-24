@@ -8,6 +8,8 @@ Route::get('/instructor', 'InstructorController@index')->name('instructor-inicio
 Route::get('/instructor/crear', 'InstructorController@crear_instructor')->name('instructor-crear');
 Route::post('/instructor/guardar', 'InstructorController@guardar_instructor')->name('instructor-guardar');
 Route::get('/instructor/ver', 'InstructorController@ver_instructor')->name('instructor-ver');
+Route::get('/instructor/add/perfil-profesional', 'InstructorController@add_perfil')->name('instructor-perfil');
+Route::get('/instructor/add/curso-impartir','InstructorController@add_cursoimpartir')->name('instructor-curso');
 
 //Crea pago
 Route::get('/pago/crear', 'PagoController@crear_pago')->name('pago-crear');

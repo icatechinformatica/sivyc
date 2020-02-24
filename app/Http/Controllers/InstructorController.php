@@ -101,30 +101,16 @@ class InstructorController extends Controller
      */
     public function ver_instructor()
     {
-        return view('layouts.pages.addcurinstructor');
+        return view('layouts.pages.verinstructor');
+    }
+    public function add_perfil()
+    {
+        return view('layouts.pages.frmperfilprof');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\instructor  $instructor
-     * @return \Illuminate\Http\Response
-     */
-    public function edit()
+    public function add_cursoimpartir()
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\instructor  $instructor
-     * @return \Illuminate\Http\Response
-     */
-    public function update()
-    {
-        //
+        return view('layouts.pages.frmcursoimpartir');
     }
 
     /**
