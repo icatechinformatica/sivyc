@@ -20,6 +20,7 @@ class InstructorController extends Controller
 
     public function index()
     {
+        return view('layouts.pages.initinstructor');
     }
 
     /**
@@ -98,9 +99,9 @@ class InstructorController extends Controller
      * @param  \App\instructor  $instructor
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function ver_instructor()
     {
-       // return view('show',compact('instructor'));
+        return view('layouts.pages.addcurinstructor');
     }
 
     /**

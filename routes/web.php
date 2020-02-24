@@ -4,8 +4,10 @@
 use App\Http\Controllers\InstructorController;
 use Illuminate\Support\Facades\Route;
 //Crea instructor
+Route::get('/instructor', 'InstructorController@index')->name('instructor-inicio');
 Route::get('/instructor/crear', 'InstructorController@crear_instructor')->name('instructor-crear');
 Route::post('/instructor/guardar', 'InstructorController@guardar_instructor')->name('instructor-guardar');
+Route::get('/instructor/ver', 'InstructorController@ver_instructor')->name('instructor-ver');
 
 //Crea pago
 Route::get('/pago/crear', 'PagoController@crear_pago')->name('pago-crear');
