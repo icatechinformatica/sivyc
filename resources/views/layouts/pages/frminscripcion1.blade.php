@@ -11,26 +11,6 @@
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
-            <!-- Unidad -->
-            <div class="form-group col-md-4">
-                <label for="nocontrol" class="control-label">Número de Control</label>
-                <input type="text" class="form-control" id="nocontrol" name="nocontrol" placeholder="N° de Control">
-            </div>
-            <!--Unidad Fin-->
-            <!-- nombre curso -->
-            <div class="form-group col-md-4">
-                <label for="fecha" class="control-label">Fecha</label>
-                <input type="date" class="form-control" id="fecha" name="fecha">
-            </div>
-            <!-- nombre curso FIN-->
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="nosolicitud  " class="control-label">Número de Solicitud</label>
-                    <input type="text" class="form-control" id="nosolicitud" name="nosolicitud">
-                </div>
-            </div>
-            <div class="form-row">
             <!--nombre aspirante-->
             <div class="form-group col-md-4">
                 <label for="nombreaspirante " class="control-label">Nombre del Aspirante</label>
@@ -61,22 +41,23 @@
                 <!-- genero-->
                 <div class="form-group col-md-3">
                 <label for="generoaspirante" class="control-label">Genero</label>
-                <select class="form-control" id="generoaspirante">
-                    <option>Mujer</option>
-                    <option>Hombre</option>
+                <select class="form-control" id="generoaspirante" name="generoaspirante">
+                    <option value="">--SELECCIONAR--</option>
+                    <option value="1">Mujer</option>
+                    <option value="2">Hombre</option>
                 </select>
                 </div>
                 <!-- genero END-->
                 <!-- edad -->
                 <div class="form-group col-md-3">
-                <label for="edadaspirante" class="control-label">Edad</label>
-                <input type="text" class="form-control" id="edadaspirante" name="edadaspirante">
+                    <label for="fechanacaspirante" class="control-label">Fecha de Nacimiento</label>
+                    <input type="text" class="form-control" id="fechanacaspirante" name="fechanacaspirante">
                 </div>
                 <!-- edad END -->
                 <!-- telefono-->
                 <div class="form-group col-md-3">
-                <label for="telefonoaspirante" class="control-label">Teléfono</label>
-                <input type="text" class="form-control" id="telefonoaspirante" name="telefonoaspirante">
+                    <label for="telefonoaspirante" class="control-label">Teléfono</label>
+                    <input type="text" class="form-control" id="telefonoaspirante" name="telefonoaspirante">
                 </div>
                 <!-- telefono END-->
             </div>
@@ -102,18 +83,20 @@
                 <!--estado-->
                 <div class="form-group col-md-3">
                     <label for="estadoaspirante" class="control-label">Estado</label>
-                    <select class="form-control" id="estadoaspirante">
-                        <option>estado1</option>
-                        <option>estado2</option>
+                    <select class="form-control" id="estadoaspirante" name="estadoaspirante">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="1">estado1</option>
+                        <option value="2">estado2</option>
                     </select>
                 </div>
                 <!--estado END-->
                 <!--municipio-->
                 <div class="form-group col-md-3">
                     <label for="municipioaspirante" class="control-label">Municipio</label>
-                    <select class="form-control" id="municipioaspirante">
-                        <option>estado1</option>
-                        <option>estado2</option>
+                    <select class="form-control" id="municipioaspirante" name="municipioaspirante">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="1">estado1</option>
+                        <option value="2">estado2</option>
                     </select>
                 </div>
                 <!--municipio END-->
@@ -122,9 +105,10 @@
                 <!-- estado civil -->
                 <div class="form-group col-md-6">
                     <label for="estadocivil" class="control-label">Estado Civil</label>
-                    <select class="form-control" id="estadocivil">
-                        <option>opcion1</option>
-                        <option>opcion2</option>
+                    <select class="form-control" id="estadocivil" name="estadocivil">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="1">opcion1</option>
+                        <option value="2">opcion2</option>
                     </select>
                 </div>
                 <!-- estado civil END -->
@@ -137,13 +121,14 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="especialidadquedeseainscribirse" class="control-label">Especialidad a la que desea inscribirse</label>
-                    <select class="form-control" id="especialidadquedeseainscribirse">
-                        <option>opcion1</option>
-                        <option>opcion2</option>
+                    <select class="form-control" id="especialidadquedeseainscribirse" name="especialidadquedeseainscribirse">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="1">opcion1</option>
+                        <option value="2">opcion2</option>
                     </select>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="curso" class="control-label">Curso</label>
+                    <label for="cursoaspirante" class="control-label">Curso</label>
                     <input type="text" class="form-control" id="curso" name="curso">
                 </div>
             </div>

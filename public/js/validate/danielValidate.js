@@ -1,6 +1,10 @@
 $(function(){
     // metodos
     $('#table-one').filterTable('#myInput');
+    $( "#fechanacaspirante" ).datepicker({
+        changeMonth: true,
+        changeYear: true
+    });
 
     $.validator.addMethod("CURP", function (value, element) {
         if (value !== '') {
@@ -11,19 +15,14 @@ $(function(){
         }
     }, "Ingrese una CURP valida");
 
+    $.validator.addMethod("phoneMX", function(phone_number, element) {
+        phone_number = phone_number.replace(/\s+/g, "");
+        return this.optional(element) || phone_number.length > 9 &&
+        phone_number.match(/^(\+?1-?)?(\([2-9]\d{2}\)|[2-9]\d{2})?[2-9]\d{2}?\d{4}$/);
+    }, "Por favor especifique un número valido de teléfono");
+
     $('#formsid').validate({
         rules: {
-            nocontrol:{
-                required: true
-            },
-            fecha:{
-                required: true,
-                date: true
-            },
-            nosolicitud: {
-                required: true,
-                digits: true
-            },
             nombreaspirante: {
                 required: true,
                 minlength: 3
@@ -37,20 +36,42 @@ $(function(){
             curpaspirante: {
                 required: true,
                 CURP: true
+            },
+            generoaspirante: {
+                required: true
+            },
+            fechanacaspirante: {
+                required: true,
+                date: true
+            },
+            telefonoaspirante: {
+                required: true,
+                phoneMX: true
+            },
+            domicilioaspirante: {
+                required: true
+            },
+            coloniaaspirante: {
+                required: true
+            },
+            codigopostalaspirante: {
+                required: true,
+                number: true
+            },
+            estadoaspirante: {
+                required: true
+            },
+            municipioaspirante: {
+                required: true
+            },
+            estadocivil: {
+                required: true
+            },
+            especialidadquedeseainscribirse: {
+                required: true
             }
         },
         messages: {
-            nocontrol: {
-                required: 'Por favor ingresa el número de control'
-            },
-            fecha: {
-                required: 'Por favor ingresa la fecha',
-                date: 'Formato de fecha no valido'
-            },
-            nosolicitud: {
-                required: 'Por favor ingresa el número de solicitud',
-                digits: 'Sólo se acceptan números'
-            },
             nombreaspirante: {
                 required: 'Por favor ingrese su nombre',
                 minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
@@ -63,6 +84,38 @@ $(function(){
             },
             curpaspirante: {
                 required: 'Por favor Ingresé la curp',
+            },
+            generoaspirante: {
+                required: 'Por favor Elegir el genero'
+            },
+            telefonoaspirante: {
+                required: 'Por favor, ingrese telefóno',
+            },
+            fechanacaspirante: {
+                required: 'Por favor, seleccione fecha',
+                date: 'Formato de fecha no valido'
+            },
+            domicilioaspirante: {
+                required: 'Por favor, ingrese su domicilio'
+            },
+            coloniaaspirante: {
+                required: 'Por favor, ingrese la colonia'
+            },
+            codigopostalaspirante: {
+                required: 'Por favor, ingrese el código postal',
+                number: 'Acepta sólo números'
+            },
+            estadoaspirante: {
+                required: 'Por favor, seleccione un estado'
+            },
+            municipioaspirante: {
+                required: 'Por favor, seleccione el municipio'
+            },
+            estadocivil: {
+                required: 'Por favor, seleccione su estado civil'
+            },
+            especialidadquedeseainscribirse: {
+                required: 'Por favor, seleccione la especialidad'
             }
         }
     });

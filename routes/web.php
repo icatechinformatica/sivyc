@@ -54,3 +54,9 @@ Route::get('/usuarios', function(){
 })->name('usuarios');
 Route::get('/inscripcion/paso1', 'webController\AlumnoController@create')->name('inscripcion-paso1');
 Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid')->name('inscripcion-paso2');
+
+/**
+ * Metodo post o put exclusivamente
+ * elaborado por DMC
+ */
+Route::post("addsupre","webController\supreController@store")->name('addsupre');
