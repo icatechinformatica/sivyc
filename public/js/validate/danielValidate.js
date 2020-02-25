@@ -23,13 +23,6 @@ $(function(){
 
     $('#formsid').validate({
         rules: {
-            nocontrol:{
-                required: true
-            },
-            nosolicitud: {
-                required: true,
-                digits: true
-            },
             nombreaspirante: {
                 required: true,
                 minlength: 3
@@ -54,16 +47,31 @@ $(function(){
             telefonoaspirante: {
                 required: true,
                 phoneMX: true
+            },
+            domicilioaspirante: {
+                required: true
+            },
+            coloniaaspirante: {
+                required: true
+            },
+            codigopostalaspirante: {
+                required: true,
+                number: true
+            },
+            estadoaspirante: {
+                required: true
+            },
+            municipioaspirante: {
+                required: true
+            },
+            estadocivil: {
+                required: true
+            },
+            especialidadquedeseainscribirse: {
+                required: true
             }
         },
         messages: {
-            nocontrol: {
-                required: 'Por favor ingresa el número de control'
-            },
-            nosolicitud: {
-                required: 'Por favor ingresa el número de solicitud',
-                digits: 'Sólo se acceptan números'
-            },
             nombreaspirante: {
                 required: 'Por favor ingrese su nombre',
                 minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
@@ -86,6 +94,28 @@ $(function(){
             fechanacaspirante: {
                 required: 'Por favor, seleccione fecha',
                 date: 'Formato de fecha no valido'
+            },
+            domicilioaspirante: {
+                required: 'Por favor, ingrese su domicilio'
+            },
+            coloniaaspirante: {
+                required: 'Por favor, ingrese la colonia'
+            },
+            codigopostalaspirante: {
+                required: 'Por favor, ingrese el código postal',
+                number: 'Acepta sólo números'
+            },
+            estadoaspirante: {
+                required: 'Por favor, seleccione un estado'
+            },
+            municipioaspirante: {
+                required: 'Por favor, seleccione el municipio'
+            },
+            estadocivil: {
+                required: 'Por favor, seleccione su estado civil'
+            },
+            especialidadquedeseainscribirse: {
+                required: 'Por favor, seleccione la especialidad'
             }
         }
     });

@@ -1,9 +1,20 @@
 @extends("theme.sivyc.layout")
 <!--llamar la plantilla -->
 @section('content')
+<style>
+    a.add_button, a.remove_button {
+        position: absolute;
+        left: 20px;
+        top: 30px;
+        z-index: 999;
+        height: 34px;
+        width: 34px;
+      }
+</style>
  <!--empieza aquí-->
  <div class="container g-pt-50">
-   <form method="POST">
+   <form action="{{ route('addsupre') }}" method="POST">
+       @csrf
        <div style="text-align: right;width:72%">
            <label for="tituloSupre1"><h1>Suficiencia Presupuestal Fase 1</h1></label>
         </div>
@@ -43,15 +54,23 @@
       </div>
 
       <div class="field_wrapper">
-        <div class="form-row">
-          <!--Folios-->
-          <div class="form-group col-md-4"> <!-- Valida -->
-            <label for="remitente" class="control-label">Folios</label>
-            <input type="text" class="form-control" name="folios[]">
-            <a href="javascript:void(0);" class="add_button" title="agregar campo"><img src="/img/agregar.png"></a>
-          </div>
-          <!--Folios END-->
-        </div>
+        <table class="table table-bordered" id="dynamicTable">
+            <tr>
+                <th>Folio</th>
+                <th>Clave Curso</th>
+                <th>Importe total</th>
+                <th>Iva</th>
+                <th>Acción</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="addmore[0][folio]" placeholder="folio" class="form-control" /></td>
+                <td><input type="text" name="addmore[0][clavecurso]" placeholder="clave curso" class="form-control" /></td>
+                <td><input type="text" name="addmore[0][importe]" placeholder="importe total" class="form-control" /></td>
+                <td><input type="text" name="addmore[0][iva]" placeholder="Iva" class="form-control" /></td>
+                <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
+            </tr>
+        </table>
+
       </div>
 
       <div class="form-row">
@@ -97,28 +116,7 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script type="text/javascript">
-     $(document).ready(function(){
-       var maxField = 50;
-       var addButton = $('.add_button'); //Add button selector
-       var wrapper = $('.field_wrapper'); //Input field wrapper
-       var fieldHTML = '<div class="form-row"><div class="form-group col-md-4"><label for="remitente" class="control-label">Folio</label><input type="text" name="folios[]"  class="form-control" value=""/><a href="javascript:void(0);" class="remove_button"><img src="/img/quitar.png"/></a></div></div>'; //New input field html
-       var x = 1; //Initial field counter is 1
 
-         //Once add button is clicked
-         $(addButton).click(function(){
-           //Check maximum number of input fields
-           if(x < maxField){
-               x++; //Increment field counter
-               $(wrapper).append(fieldHTML); //Add field html
-           }
-         });
-       //Once remove button is clicked
-         $(wrapper).on('click', '.remove_button', function(e){
-           e.preventDefault();
-           $(this).parent('div').remove(); //Remove field html
-           x--; //Decrement field counter
-       });
-     });
      // Add the following code if you want the name of the file appear on select
      $(".custom-file-input").on("change", function() {
        var fileName = $(this).val().split("\\").pop();
