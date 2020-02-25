@@ -19,10 +19,10 @@ class PagoController extends Controller
     }
 
     public function index(Request $request) {
-        $instructor = new instructor();
-        $input = $request->numero_contrato;
-        $newsAll = $instructor::where('id', $input)->first();
-        return response()->json($newsAll, 200);
+        return view('layouts.pages.initvalsupre');
+    }
+    public function validacion(){
+        return view('layouts.pages.valsupre');
     }
 
     public function modificar_pago()

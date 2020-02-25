@@ -38,21 +38,22 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputsexo">Sexo</label>
-                        <select class="form-control" id="sexo">
-                            <option>Hombre</option>
-                            <option>Mujer</option>
+                        <select class="form-control" name="sexo" id="sexo">
+                            <option value="sin especificar">Sin Especificar</option>
+                            <option value="Hombre">Hombre</option>
+                            <option value="Mujer">Mujer</option>
                         </select>
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputestado_civil">Estado Civil</label>
-                        <select class="form-control" id="estado_civil">
-                            <option>Sin Especificar</option>
-                            <option>Soltero/a</option>
-                            <option>Casado/a</option>
-                            <option>Divorciado/a</option>
-                            <option>Viudo/a</option>
-                            <option>Concubinato</option>
-                            <option>Union Libre</option>
+                        <select class="form-control" name="estado_civil" id="estado_civil">
+                            <option value="sin especificar">Sin Especificar</option>
+                            <option value="Soltero/a">Soltero/a</option>
+                            <option value="Casado/a">Casado/a</option>
+                            <option value="Divorciado/a">Divorciado/a</option>
+                            <option value="Viudo/a">Viudo/a</option>
+                            <option value="Concubinato">Concubinato</option>
+                            <option value="Union Libre">Union Libre</option>
                         </select>
                 </div>
             </div>
@@ -155,13 +156,14 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputnumero_control">Numero de Control</label>
-                    <input id="numero_control" name="numero_control" type="text" class="form-control" aria-required="true">
+                    <input id="numero_control" name="numero_control" type="text" disabled class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-5">
                     <label for="inputhonorario">Tipo de Honorario</label>
-                    <select class="form-control" id="tipo_honorario">
-                        <option>Interno</option>
-                        <option>De Honorarios</option>
+                    <select class="form-control" id="tipo_honorario" name="tipo_honorario">
+                        <option value="sin especificar">Sin Especificar</option>
+                        <option value="Interno">Interno</option>
+                        <option value="De Honorarios">De Honorarios</option>
                         </select>
                 </div>
                 <div class="form-group col-md-4">

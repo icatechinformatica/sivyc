@@ -3,7 +3,7 @@
 @section('title', 'Instructor | Sivyc Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
-        <form>
+        <form id="registerinstructor">
             @csrf
                 <div class="text-center">
                     <h1>Ver Instructor<h1>

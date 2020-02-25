@@ -3,23 +3,23 @@
 @section('title', 'Registro de Pago | SIVyC Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
-            <div style="text-align: right;width:60%">
-                <label><h1>Registro de Pago</h1></label>
-            </div>
-            <br>
-            <br>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="inputnumero_contrato">Numero de Contrato</label>
-                        <input type="text" name="numero_contrato" id="numero_contrato" class="form-control" aria-required="true">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <br>
-                        <button type="button" id="search_" class="btn btn-info btn-lg">Buscar</button>
-                    </div>
-                </div>
+        <div style="text-align: right;width:60%">
+            <label><h1>Registro de Pago</h1></label>
+        </div>
+        <br>
+        <br>
         <form action="{{ url('/pago/guardar') }}" method="post" id="registerpago" enctype="multipart/form-data">
             @csrf
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputnumero_contrato">Numero de Contrato</label>
+                    <input type="text" name="numero_contrato" id="numero_contrato" class="form-control" aria-required="true">
+                </div>
+                <div class="form-group col-md-3">
+                    <br>
+                    <button type="button" id="search_" class="btn btn-info btn-lg">Buscar</button>
+                </div>
+            </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
                 <div class="form-gorup col-md-3">

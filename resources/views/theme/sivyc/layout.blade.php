@@ -85,6 +85,9 @@
             <script src="{{ asset("js/components/filter-table.js") }}"></script>
             <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
             <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
+            <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+            <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script>
+            <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.js"></script>
             <script>
                 $(function(){
                     $.HSCore.components.HSHeader.init($('#js-header'));
