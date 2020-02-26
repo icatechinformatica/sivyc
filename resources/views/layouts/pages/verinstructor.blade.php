@@ -32,13 +32,17 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <label for="inputcurp">CURP</label>
                         <input name='curp' id='curp' type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <label for="inputrfc">RFC</label>
                         <input name='rfc' id='rfc' type="text" disabled class="form-control" disabled aria-required="true">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputfolio_ine">Folio de INE</label>
+                        <input name='folio_ine' id='folio_ine' type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">

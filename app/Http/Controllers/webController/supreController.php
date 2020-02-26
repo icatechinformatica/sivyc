@@ -12,9 +12,12 @@ class supreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index() {
+        return view('layouts.pages.initvalsupre');
+    }
+
+    public function validacion(){
+        return view('layouts.pages.valsupre');
     }
 
     /**

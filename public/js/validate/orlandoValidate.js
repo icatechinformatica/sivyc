@@ -47,6 +47,9 @@ $(function(){
                 required: true,
                 RFC: true
             },
+            folio_ine:{
+                required: true,
+            },
             sexo:{
                 required: true,
                 valueNotEquals: "default"
@@ -123,6 +126,9 @@ $(function(){
             rfc: {
                 required: 'Por favor Ingresé RFC',
                 RFC: "Por favor ingrese RFC valida"
+            },
+            folio_ine: {
+                required: 'Por favor Ingresé el folio de INE',
             },
             sexo:{
                 required: 'Por favor ingrese el sexo',

@@ -18,13 +18,6 @@ class PagoController extends Controller
         return view('layouts.pages.frmpago');
     }
 
-    public function index(Request $request) {
-        return view('layouts.pages.initvalsupre');
-    }
-    public function validacion(){
-        return view('layouts.pages.valsupre');
-    }
-
     public function modificar_pago()
     {
         return view('layouts.pages.modpago');

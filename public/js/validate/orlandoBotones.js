@@ -45,6 +45,7 @@ $(function(){
                 $('#apellido_materno').prop("disabled", false)
                 $('#curp').prop("disabled",false)
                 $('#rfc').prop("disabled",false)
+                $('#folio_ine').prop("disabled",false)
                 $('#sexo').prop("disabled",false)
                 $('#estado_civil').prop("disabled",false)
                 $('#fecha_nacimiento').prop("disabled",false)
@@ -73,5 +74,38 @@ $(function(){
             }
         });
     });
-
+    //boton valsupre rechazar
+    $("#valsupre_rechazar").click(function(e){
+        e.preventDefault();
+        $.ajax({
+            success: function(){
+                $('#divrechazar').prop("class", "form-row")
+                $('#divconf_rechazar').prop("class", "form-row")
+                $('#div1').prop("class", "form-row")
+                $('#div2').prop("class", "form-row")
+                $('#div3').prop("class", "form-row")
+                $('#div4').prop("class", "form-row")
+                $('#div5').prop("class", "form-row")
+                $('#div6').prop("class", "form-row")
+                $('#div7').prop("class", "form-row")
+                $('#confval').prop("class", "form-row")
+            }
+        });
+    });
+    //boton valsupre confirmar
+    $("#valsupre_validar").click(function(e){
+        e.preventDefault();
+        $.ajax({
+            success: function(){
+                $('#div1').prop("class", "form-row")
+                $('#div2').prop("class", "form-row")
+                $('#div3').prop("class", "form-row")
+                $('#div4').prop("class", "form-row")
+                $('#div5').prop("class", "form-row")
+                $('#div6').prop("class", "form-row")
+                $('#div7').prop("class", "form-row")
+                $('#confval').prop("class", "form-row")
+            }
+        });
+    });
 });

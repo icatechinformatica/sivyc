@@ -17,10 +17,9 @@ Route::get('/pago/guardar', 'PagoController@guardar_pago')->name('pago-guardar')
 Route::get('/pago/modificar', 'PagoController@modificar_pago')->name('pago-modificar');
 Route::post('/pago/fill', 'PagoController@index');
 
-//Validacion de suficiencia Presupuestal
-/*Ruta Prueba fase validacion*/Route::get('/supre/validacion/inicio', 'PagoController@index')->name('supre-inicio');
-/*Ruta Prueba fase validacion*/Route::get('/supre/validacion', 'PagoController@validacion')->name('supre-validacion');
-//Route::get('/supre/validacion', 'supreController@validacion')->name('supre-validacion');
+//Validacion de Suficiencia Presupuestal
+Route::get('/supre/validacion/inicio', 'webController\supreController@index')->name('supre-inicio');
+Route::get('/supre/validacion', 'webController\supreController@validacion')->name('supre-validacion');
 /*
 |--------------------------------------------------------------------------
 | Web Routes
