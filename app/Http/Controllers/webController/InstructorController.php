@@ -76,6 +76,7 @@ class InstructorController extends Controller
             $saveInstructor->cursos_recibidos = trim($request->cursos_recibidos);
             $saveInstructor->cursos_conocer = trim($request->cursos_conocer);
             $saveInstructor->cursos_impartidos = trim($request->cursos_impartidos);
+            $saveInstructor->capacitados_icatech = trim($request->capacitado_icatech);
             $saveInstructor->curso_recibido_icatech =trim($request->cursos_recicatech);
             $saveInstructor->archivo_cv = trim($urlcv);
 
