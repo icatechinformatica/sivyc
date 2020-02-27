@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');
 Route::get('/instructor/crear', 'webController\InstructorController@crear_instructor')->name('instructor-crear');
 Route::post('/instructor/guardar', 'webController\InstructorController@guardar_instructor')->name('instructor-guardar');
-Route::get('/instructor/ver', 'webController\InstructorController@ver_instructor')->name('instructor-ver');
+Route::get('/instructor/ver/{id}', 'webController\InstructorController@ver_instructor')->name('instructor-ver');
 Route::get('/instructor/add/perfil-profesional', 'webController\InstructorController@add_perfil')->name('instructor-perfil');
 Route::get('/instructor/add/curso-impartir','webController\InstructorController@add_cursoimpartir')->name('instructor-curso');
 

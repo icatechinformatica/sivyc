@@ -34,7 +34,7 @@ class CreateInstructoresTable extends Migration
             $table->string('municipio', 80);
             $table->string('asentamiento', 80);
             $table->string('domicilio', 200);
-            $table->integer('telefono');
+            $table->bigInteger('telefono');
             $table->string('correo', 100);
             $table->string('unidad_capacitacion_solicita_validacion_instructor', 100);
             $table->string('memoramdum_validacion', 80);

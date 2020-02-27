@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Redirect,Response;
-
+use App\Models\InstructorPerfil;
 class InstructorController extends Controller
 {
     /**
@@ -102,9 +102,14 @@ class InstructorController extends Controller
      * @param  \App\instructor  $instructor
      * @return \Illuminate\Http\Response
      */
-    public function ver_instructor()
+    public function ver_instructor($id)
     {
-        return view('layouts.pages.verinstructor');
+        $instructor_perfil = new InstructorPerfil();
+        $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
+        $data = [
+            'perfil' => $perfil,
+        ];
+        return view('layouts.pages.verinstructor')->with($data);
     }
     public function add_perfil()
     {

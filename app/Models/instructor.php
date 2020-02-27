@@ -24,6 +24,14 @@ class instructor extends Model
         return Str::slug($value, '-');
     }
 
+    /**
+     * obtener los perfiles del instructor
+     */
+    public function perfil()
+    {
+        return $this->hasMany(InstructorPerfil::class);
+    }
+
 
 }
 
