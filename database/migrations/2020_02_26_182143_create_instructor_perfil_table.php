@@ -26,14 +26,14 @@ class CreateInstructorPerfilTable extends Migration
             $table->string('entidad_institucion', 50);
             $table->date('fecha_expedicion_documento');
             $table->string('folio_documento', 50);
-            $table->string('numero_control', 30);
+            $table->integer('numero_control');
             $table->timestamps();
 
             /**
              * llave foranea
              */
             $table->foreign('numero_control')
-                  ->references('numero_control')->on('instructores')
+                  ->references('id')->on('instructores')
                   ->onDelete('set null')->onUpdate('cascade');
         });
     }

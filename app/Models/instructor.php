@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class instructor extends Model
 {
-    protected $table = 'instructor';
+    protected $table = 'instructores';
 
-    /*protected $fillable = ['id','nombre','apellido_paterno','apellido_materno','curp','rfc','sexo','estado_civil','fecha_nacimiento','lugar_nacimiento','lugar_residencia',
-    'domicilio','telefono','correo','clabe','banco','grado_estudio','perfil_profesional','area_carrera','licenciatura','estatus','institucion_pais','institucion_entidad',
-    'institucion_nombre','fecha_documento','folio_documento','capacitado_icatech','cv','numero_control','honorario','registro_agente','uncap_validacion','memo_validacion','memo_mod','observacion','numero_cuenta',];*/
-
-    protected $fillable = ['id','nombre','apellido_paterno','apellido_materno','curp','rfc','cv'];
+    protected $fillable = ['id','numero_control','nombre','tipo_honorario','folio_documento','experiencia_laboral',
+    'experiencia_docente','cursos_recibidos','capacitados_icatech','curso_recibido_icatech','cursos_impartidos',
+    'registro_agente_capacitador','rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio',
+    'asentamiento','domicilio','telefono','correo','unidad_capacitacion_solicita_validacion_instructor',
+    'memorandum_validacion','fecha_validacion','observaciones','cursos_conocer','modificacion_memo','banco',
+    'no_cuenta','interbancaria','folio_ine','archivo_cv'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

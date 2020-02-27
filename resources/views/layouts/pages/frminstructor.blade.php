@@ -62,17 +62,21 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
                     <input name='fecha_nacimiento' id='fecha_nacimiento' type="date" class="form-control" aria-required="true">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="inputlugar_nacimiento">Lugar de Nacimiento</label>
-                    <input name='lugar_nacimiento' id='lugar_nacimiento' type="text" class="form-control" aria-required="true">
+                <div class="form-group col-md-3">
+                    <label for="inputentidad">Entidad</label>
+                    <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="inputlugar_residencia">Lugar de Residencia</label>
-                    <input name='lugar_residencia' id='lugar_residencia' type="text" class="form-control" aria-required="true">
+                <div class="form-group col-md-3">
+                    <label for="inputmunicipio">Municipio</label>
+                    <input name='municipio' id='municipio' type="text" class="form-control" aria-required="true">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputasentamiento">Asentamiento</label>
+                    <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true">
                 </div>
             </div>
             <div class="form-row">
@@ -139,8 +143,8 @@
                 <div class="form-group col-md-2">
                     <label for="inputcapacitado_icatech"><h6>Capacitado por el ICATECH</h6></label>
                     <select class="form-control" id="capacitado_icatech">
-                        <option>No</option>
-                        <option>Si</option>
+                        <option value="no">No</option>
+                        <option value="si">Si</option>
                     </select>
                 </div>
             </div>
@@ -176,15 +180,19 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputuncap_validacion">Unidad de Capacitacion que Solicita Validacion</label>
                     <input id="uncap_validacion" name="uncap_validacion" type="text" class="form-control " aria-required="true">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputmemo_validacion">Memorandum de Validacion</label>
                     <input id="memo_validacion" name="memo_validacion" type="text" class="form-control" aria-required="true">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
+                    <label for="inputfecha_validacion">Fecha de Validación</label>
+                    <input id="fecha_validacion" name="fecha_validacion" type="date" class="form-control" aria-required="true">
+                </div>
+                <div class="form-group col-md-3">
                     <label for="inputmemo_mod">Modificacion de Memorandum</label>
                     <input id="memo_mod" name="memo_mod" type="text" class="form-control" aria-required="true">
                 </div>

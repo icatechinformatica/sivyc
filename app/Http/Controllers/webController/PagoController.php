@@ -1,6 +1,6 @@
 <?php
 /* Creador: Orlando Chavez */
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\webController;
 
 use App\Models\pago;
 use App\Models\instructor;
@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Redirect,Response;
+use App\Http\Controllers\Controller;
 
 class PagoController extends Controller
 {

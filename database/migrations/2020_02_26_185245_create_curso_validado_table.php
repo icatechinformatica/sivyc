@@ -17,14 +17,14 @@ class CreateCursoValidadoTable extends Migration
             $table->bigIncrements('id');
             $table->string('clave_curso', 255)->unique();
             $table->integer('id_curso');
-            $table->string('numero_control', 30);
+            $table->integer('numero_control');
             $table->timestamps();
 
             /**
              * llave foranea
              */
             $table->foreign('numero_control')
-                  ->references('numero_control')->on('instructores')
+                  ->references('id')->on('instructores')
                   ->onDelete('set null')->onUpdate('cascade');
 
             $table->foreign('id_curso')

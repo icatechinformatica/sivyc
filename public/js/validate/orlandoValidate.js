@@ -62,10 +62,13 @@ $(function(){
                 required: true,
                 date: true
             },
-            lugar_nacimiento:{
+            entidad:{
                 required: true
             },
-            lugar_residencia:{
+            municipio:{
+                required: true
+            },
+            asentamiento:{
                 required: true
             },
             domicilio:{
@@ -106,7 +109,11 @@ $(function(){
             },
             memo_validacion:{
                 required: true
-            }
+            },
+            fecha_validacion:{
+                required: true,
+                date: true
+            },
         },
         messages: {
             nombre: {
@@ -142,11 +149,14 @@ $(function(){
                 required: 'Por favor ingrese la fecha de nacimiento',
                 date: 'Formato de fecha no valido'
             },
-            lugar_nacimiento: {
-                required: 'Por favor ingrese el lugar de nacimiento',
+            entidad: {
+                required: 'Por favor ingrese la entidad',
             },
-            lugar_residencia: {
-                required: 'Por favor ingrese el lugar de residencia actual',
+            municipio: {
+                required: 'Por favor ingrese el municipio',
+            },
+            asentamiento: {
+                required: 'Por favor ingrese el asentamiento',
             },
             domicilio: {
                 required: 'Por favor ingrese el domicilio'
@@ -186,7 +196,11 @@ $(function(){
             },
             memo_validacion: {
                 required: 'Por favor ingrese el memorandum de validacion'
-            }
+            },
+            fecha_validacion: {
+                required: "Por Favor ingrese la fecha de validacion",
+                date: "Por favor ingrese la fecha correcta"
+            },
         }
     });
 
