@@ -21,7 +21,7 @@ class CreateInstructoresTable extends Migration
             $table->text('experiencia_laboral');
             $table->text('experiencia_docente');
             $table->string('cursos_recibidos', 255);
-            $table->boolean('capacitados_icatech')->nullable();
+            $table->string('capacitados_icatech')->nullable();
             $table->string('curso_recibido_icatech', 255);
             $table->string('cursos_impartidos', 255);
             $table->string('registro_agente_capacitador_externo', 150);
