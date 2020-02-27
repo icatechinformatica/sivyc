@@ -14,8 +14,8 @@ class CreateConveniosTable extends Migration
     public function up()
     {
         Schema::create('convenios', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('no_convenio', 30)->unique();
-            $table->primary('no_convenio');
             $table->string('organismo', 255);
             $table->char('tipo_sector', 5);
             $table->string('lugar_expedicion', 150);

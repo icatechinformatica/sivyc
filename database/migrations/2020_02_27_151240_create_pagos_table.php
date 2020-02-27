@@ -25,7 +25,7 @@ class CreatePagosTable extends Migration
             $table->string('puesto_ccp3', 150);
             $table->string('elaboro', 150);
             $table->integer('id_status');
-            $table->string('id_numerocontrato', 30);
+            $table->integer('id_contrato');
             $table->timestamps();
 
             /**
@@ -35,8 +35,8 @@ class CreatePagosTable extends Migration
                   ->references('id')->on('status')
                   ->onDelete('set null')->onUpdate('cascade');
 
-            $table->foreign('id_numerocontrato')
-                  ->references('id_numerocontrato')->on('contratos')
+            $table->foreign('id_contrato')
+                  ->references('id_contrato')->on('contratos')
                   ->onDelete('set null')->onUpdate('cascade');
         });
     }
