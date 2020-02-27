@@ -53,6 +53,7 @@ Route::get('/usuarios', function(){
 })->name('usuarios');
 Route::get('/inscripcion/paso1', 'webController\AlumnoController@create')->name('inscripcion-paso1');
 Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid')->name('inscripcion-paso2');
+Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@index')->name('presupuestaria');
 
 /**
  * Metodo post o put exclusivamente
