@@ -43,9 +43,9 @@ class CreateTblCalificaciones extends Migration
                 ->references('no_control')->on('tbl_alumnos')
                 ->onDelete('set null')->onUpdate('cascade');
 
-            $table->foreign('idcurso')
+            /*$table->foreign('idcurso')
                 ->references('id')->on('tbl_cursos')
-                ->onDelete('set null')->onUpdate('cascade');
+                ->onDelete('set null')->onUpdate('cascade');*/
         });
     }
 
