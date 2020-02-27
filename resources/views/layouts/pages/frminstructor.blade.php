@@ -142,9 +142,9 @@
             <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="inputcapacitado_icatech"><h6>Capacitado por el ICATECH</h6></label>
-                    <select class="form-control" id="capacitado_icatech">
-                        <option value="no">No</option>
-                        <option value="si">Si</option>
+                    <select id="cap_icatech" name="cap_icatech" class="form-control">
+                        <option value="No">No</option>
+                        <option value="Si">Si</option>
                     </select>
                 </div>
             </div>

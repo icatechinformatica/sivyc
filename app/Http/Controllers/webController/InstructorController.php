@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Redirect,Response;
 use App\Models\InstructorPerfil;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 class InstructorController extends Controller
 {
     /**
@@ -21,7 +24,10 @@ class InstructorController extends Controller
 
     public function index()
     {
-        return view('layouts.pages.initinstructor');
+        $instructor = new instructor();
+        $new_all = $instructor::where('id', '!=', '0')->latest()->get();
+        $data = $this->paginate($new_all);
+        return view('layouts.pages.initinstructor', compact('data'));
     }
 
     /**
@@ -48,7 +54,7 @@ class InstructorController extends Controller
             $saveInstructor = new instructor();
             $file = $request->file('cv'); # obtenemos el archivo
             $urlcv = $this->pdf_upload($file);
-            $nco = '65D'; #No. Control prueba
+            $nco = '300E'; #No. Control prueba
             $nombre_completo = $request->nombre. ' ' . $request->apellido_paterno. ' ' . $request->apellido_materno;
 
             # Proceso de Guardado
@@ -76,7 +82,7 @@ class InstructorController extends Controller
             $saveInstructor->cursos_recibidos = trim($request->cursos_recibidos);
             $saveInstructor->cursos_conocer = trim($request->cursos_conocer);
             $saveInstructor->cursos_impartidos = trim($request->cursos_impartidos);
-            $saveInstructor->capacitados_icatech = trim($request->capacitado_icatech);
+            $saveInstructor->capacitados_icatech = trim($request->cap_icatech);
             $saveInstructor->curso_recibido_icatech =trim($request->cursos_recicatech);
             $saveInstructor->archivo_cv = trim($urlcv);
 
@@ -88,7 +94,7 @@ class InstructorController extends Controller
             $saveInstructor->memoramdum_validacion = trim($request->memo_validacion);
             $saveInstructor->modificacion_memo = trim($request->memo_mod);
             $saveInstructor->fecha_validacion = trim($request->fecha_validacion);
-            $saveInstructor->observaciones = trim($request->obervacion);
+            $saveInstructor->observaciones = trim($request->observacion);
             $saveInstructor->save();
 
             $paso = 'paso!';
@@ -140,6 +146,13 @@ class InstructorController extends Controller
                     $pdf->storeAs('/uploadFiles/', $pdfFile); // guardamos el archivo en la carpeta storage
                     $pdfUrl = Storage::url('/uploadFiles/'.$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
                     return $pdfUrl;
+    }
+
+    public function paginate($items, $perPage = 5, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 }
 
