@@ -1,6 +1,8 @@
 // Creado por Orlando Chavez
 $(function(){
-    $('#table-one').filterTable('#myInput');
+  /* $('#table-instructor').filterTable('#myInstructor');
+   $(document).ready(function() {*/
+    $('#table-instructor').DataTable();
 
     $.validator.addMethod("CURP", function (value, element) {
         if (value !== '') {

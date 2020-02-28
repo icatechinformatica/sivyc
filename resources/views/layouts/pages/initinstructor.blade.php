@@ -26,14 +26,14 @@
                 <div class="pull-left">
                     <h2>Registro de Instructrores</h2>
                 </div>
+                <br>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="{{route('instructor-crear')}}"> Nuevo</a>
+                    <a class="btn btn-success btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
                 </div>
             </div>
         </div>
-        <input type="text" class="form-control" id="myInstructor" onkeyup="myFunction()" placeholder="Busqueda.">
-        <br>
-        <table class="table table-bordered" id="table-instructor">
+        <hr style="border-color:dimgray">
+        <table  id="table-instructor" class="table table-bordered">
             <caption>Catalogo de Instructrores</caption>
             <thead>
                 <tr>
@@ -59,8 +59,13 @@
                         </td>
                     </tr>
                 @endforeach
-                {{ $data->links() }}
             </tbody>
+            <tfoot>
+                <tr>
+                </tr>
+            </tfoot>
         </table>
+        <br>
     </div>
+    <br>
 @endsection
