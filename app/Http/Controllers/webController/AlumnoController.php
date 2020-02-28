@@ -4,6 +4,7 @@ namespace App\Http\Controllers\webController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Alumno;
 
 class AlumnoController extends Controller
 {
@@ -15,6 +16,13 @@ class AlumnoController extends Controller
     public function index()
     {
         //
+        $alumnos = new Alumno();
+        $retrieveAlumnos = $alumnos->SELECT('alumnos_registro.no_control', 'alumnos_registro.fecha', 'alumnos_registro.numero_solicitud',
+                                    'alumnos_registro.curp', 'alumnos_pre.nombre', 'alumnos_pre.correo', 'alumnos_pre.telefono')
+                                   ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                                   ->GET();
+        $contador = $retrieveAlumnos->count();
+        return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
 
     /**

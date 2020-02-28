@@ -67,7 +67,7 @@
                 <td>
                     <a class="btn btn-info" href="">Mostrar</a>
                     <a class="btn btn-primary" href="">Editar</a>
-                    {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                    {!! Form::open(['method' => 'POST','route' => array('usuarios', $id ?? '', $id2 ?? ''),'style'=>'display:inline']) !!}
                     {!! Form::submit('Borar', ['class' => 'btn btn-danger']) !!}
                     {!! Form::close() !!}
                 </td>

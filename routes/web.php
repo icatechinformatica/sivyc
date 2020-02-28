@@ -60,3 +60,5 @@ Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid'
  * elaborado por DMC
  */
 Route::post("addsupre","webController\supreController@store")->name('addsupre');
+Route::get('/alumnos', 'webController\AlumnoController@index')->name('alumnos');
+Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('');
