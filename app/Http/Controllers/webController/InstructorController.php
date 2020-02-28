@@ -25,8 +25,8 @@ class InstructorController extends Controller
     public function index()
     {
         $instructor = new instructor();
-        $new_all = $instructor::where('id', '!=', '0')->latest()->get();
-        $data = $this->paginate($new_all);
+        $data = $instructor::where('id', '!=', '0')->latest()->get();
+       // $data = $this->paginate($new_all);
         return view('layouts.pages.initinstructor', compact('data'));
     }
 
@@ -54,7 +54,7 @@ class InstructorController extends Controller
             $saveInstructor = new instructor();
             $file = $request->file('cv'); # obtenemos el archivo
             $urlcv = $this->pdf_upload($file);
-            $nco = '300E'; #No. Control prueba
+            $nco = '300E    '; #No. Control prueba
             $nombre_completo = $request->nombre. ' ' . $request->apellido_paterno. ' ' . $request->apellido_materno;
 
             # Proceso de Guardado
@@ -148,11 +148,13 @@ class InstructorController extends Controller
                     return $pdfUrl;
     }
 
-    public function paginate($items, $perPage = 5, $page = null, $options = [])
-    {
-        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-        $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
-    }
+    public function paginate($items, $perPage = 5, $page = null)
+{
+    $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+    $items = $items instanceof Collection ? $items : Collection::make($items);
+    return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
+        'path' => Paginator::resolveCurrentPath()
+    ]);
+}
 }
 
