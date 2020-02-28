@@ -110,16 +110,41 @@ class InstructorController extends Controller
      */
     public function ver_instructor($id)
     {
+        $instructor = new instructor();
         $instructor_perfil = new InstructorPerfil();
+        // consulta para mostrar los datos de determinado
+        $getinstructor = $instructor->findOrFail($id);
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
-        $data = [
-            'perfil' => $perfil,
-        ];
-        return view('layouts.pages.verinstructor')->with($data);
+
+        return view('layouts.pages.verinstructor', compact('perfil','getinstructor'));
     }
-    public function add_perfil()
+    public function add_perfil($id)
     {
-        return view('layouts.pages.frmperfilprof');
+        $idInstructor = $id;
+        return view('layouts.pages.frmperfilprof', compact('idInstructor'));
+    }
+
+    public function perfilinstructor_save(Request $request)
+    {
+        $perfilInstructor = new InstructorPerfil();
+        #proceso de guardado
+        $perfilInstructor->area_carrera = trim($request->area_carrera); //
+        $perfilInstructor->especialidad = trim($request->especialidad); //
+        $perfilInstructor->clave_especialidad = trim($request->clave_especialidad); //
+        $perfilInstructor->nivel_estudios_cubre_especialidad = trim($request->grado_estudio); //
+        $perfilInstructor->perfil_profesional = trim($request->perfil_profesional); //
+        $perfilInstructor->carrera = trim($request->nombre_carrera); //
+        $perfilInstructor->estatus = trim($request->estatus); //
+        $perfilInstructor->pais_institucion = trim($request->institucion_pais); //
+        $perfilInstructor->entidad_institucion = trim($request->institucion_entidad); //
+        $perfilInstructor->fecha_expedicion_documento = trim($request->fecha_documento); //
+        $perfilInstructor->folio_documento = trim($request->folio_documento); //
+        $perfilInstructor->numero_control = trim($request->idInstructor); //
+        $perfilInstructor->save(); // guardar registro
+
+        return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
+                        ->with('success','Perfil profesional agregado');
+
     }
 
     public function add_cursoimpartir()
