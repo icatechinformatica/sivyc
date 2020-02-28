@@ -2,8 +2,18 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Registro de Perfil Profesional | Sivyc Icatech')
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <strong>Whoops!</strong> hay algunos problemas con los campos.<br><br>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <section class="container g-py-40 g-pt-40 g-pb-0">
-        <form action="{{ url('/instructor/guardar') }}" method="post" id="registerinstructor" enctype="multipart/form-data">
+        <form action="{{ route('perfilinstructor-guardar') }}" method="post" id="registerinstructor">
             @csrf
                 <div class="text-center">
                     <h1>Añadir Perfil Profesional</h1>
@@ -11,20 +21,19 @@
                 <label><h2>Añadir Perfil Profesional</h2></label>
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label for="inputgrado_estudio">Nivel de estudio que cubre el estudio</label>
-                        <!--<input name="grado_estudio" id="grado_estudio" type="text" class="form-control" aria-required="true">-->
-                        <select class="form-control" id="grado_estudio">
-                            <option>Diploma</option>
-                            <option>Certificado</option>
-                            <option>Primaria</option>
-                            <option>Secundaria</option>
-                            <option>Bachillerato</option>
-                            <option>Carrera Tecnica</option>
-                            <option>Acta de Evaluacion Profesional</option>
-                            <option>Profesional</option>
-                            <option>Especialidad</option>
-                            <option>Maestria</option>
-                            <option>Doctorado</option>
+                        <label for="inputgrado_estudio">Nivel de estudio que cubre</label>
+                        <select class="form-control" id="grado_estudio" name="grado_estudio"
+                            <option value="diploma">Diploma</option>
+                            <option value="certificado">Certificado</option>
+                            <option value="primaria">Primaria</option>
+                            <option value="secundaria">Secundaria</option>
+                            <option value="bachillerato">Bachillerato</option>
+                            <option value="carrera_tecnica">Carrera Tecnica</option>
+                            <option value="acta_evaluacion_profesional">Acta de Evaluacion Profesional</option>
+                            <option value="profesional">Profesional</option>
+                            <option value="especialidad">Especialidad</option>
+                            <option value="maestria">Maestria</option>
+                            <option value="doctorado">Doctorado</option>
                         </select>
                     </div>
                     <div class="form-group col-md-5">
@@ -37,33 +46,34 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
+                        <label for="especialidad">Especialidad</label>
+                        <input name="especialidad" id="especialidad" type="text" class="form-control" aria-required="true">
+                    </div>
+
+                    <div class="form-group col-md-4">
                         <label for="inputnombre_carrera">Nombre del Estudio</label>
                         <input name="nombre_carrera" id="nombre_carrera" type="text" class="form-control" aria-required="true">
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <label for="inputestatus">Estatus</label>
                         <select class="form-control" name="estatus" id="estatus">
                             <option value="Sin Especificar">Sin Especificar</option>
                             <option value="Trunco">Trunco</option>
-                            <option>Pasante</option>
-                            <option>Titulo</option>
-                            <option>Cedula</option>
+                            <option value="pasante">Pasante</option>
+                            <option value="titulo">Titulo</option>
+                            <option value="cedula">Cedula</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label for="inputinstitucion_pais">Pais de la Institucion Educativa</label>
                         <input name="institucion_pais" id="institucion_pais" type="text" class="form-control" aria-required="true">
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label for="inputinstitucion_entidad">Entidad de la Institucion Educativa</label>
                         <input name="institucion_entidad" id="institucion_entidad" type="text" class="form-control" aria-required="true">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputinstitucion_nombre">Nombre de la Institucion Educativa</label>
-                        <input name="institucion_nombre" id="institucion_nombre" type="text" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
@@ -90,6 +100,7 @@
                     </div>
                 </div>
                 <br>
+                <input type="hidden" name="idInstructor" id="idInstructor" value="{{ $idInstructor }}">
         </form>
     </section>
 @stop
