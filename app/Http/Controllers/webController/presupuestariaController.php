@@ -17,7 +17,8 @@ class presupuestariaController extends Controller
     public function index()
     {
         //
-        return view('layouts.pdfpages.presupuestaria');
+        //return view('layouts.pdfpages.presupuestaria');
+        return view('layouts.pdfpages.contratohonorarios');
     }
 
     /**
@@ -86,7 +87,8 @@ class presupuestariaController extends Controller
         //
     }
     public function export_pdf() {
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria');
+        //$pdf = PDF::loadView('layouts.pdfpages.presupuestaria');
+        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios');
         //$doomPdf->loadHtml('hello world');
 
         // (Optional) configuramos el tamaño y orientación de la hoja

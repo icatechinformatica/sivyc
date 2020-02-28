@@ -43,13 +43,13 @@
       text-align: left;
     }
   </style>
-<body>
+ <body>
+    <header>
+        <h1>Cabecera de mi documento</h1>
+        <h2>DesarrolloWeb.com</h2>
+    </header>
     <div class= "container g-pt-50">
-  <header>
-    <h1>Cabecera de mi documento</h1>
-    <h2>DesarrolloWeb.com</h2>
-  </header>
-  <footer>
+ <footer>
     <table>
       <tr>
         <td>
@@ -74,7 +74,7 @@
     <br>Jefe de Depto. de Programacion y Presupuesto.
     <br>Presente.
 
-    <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida <b>00000</b> Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b> La que sea </b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
+    <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b> La que sea </b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
 
     <table class="table table-bordered" id="table-one">
         
@@ -134,13 +134,15 @@
     <br><p class="text-left"><p>Atentamente.</p></p>
     <br><br><b>Nombre del Director</b>
     <br><b>Director(a) de la Unidad de Capacitacion (la que sea).</b>
-    <br><br><br><br><h6><small><b>C.c.p. C.P. Nombre del director de planeacion.-Director de Planeacion.-Mismo Fin</b></small></h6>
+    <br><br><br><br><br><h6><small><b>C.c.p. C.P. Nombre del director de planeacion.-Director de Planeacion.-Mismo Fin</b></small></h6>
     <h6><small><b>C.P.Jorge Luis Barragan Lopez.- Jefe del Depto. de Recursos Financieros.-Mismo Fin</b></small></h6>
-    <h6><small>Archivo/Minutario</small></h6>
+    <h6><small><b>Archivo/Minutario<b></small></h6>
+    <br><br><small><b>Valido: Nombre Completo.- Director de la Unidad<b></small></h6>
+    <br><small><b>Valido: Nombre Completo.- Delegado Administrativo de la Unidad<b></small></h6>
 
   </div>
-</div>
-</body>
+    </div>
+ </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
