@@ -9,10 +9,12 @@ Route::get('/instructor/crear', 'webController\InstructorController@crear_instru
 Route::post('/instructor/guardar', 'webController\InstructorController@guardar_instructor')->name('instructor-guardar');
 Route::get('/instructor/ver/{id}', 'webController\InstructorController@ver_instructor')->name('instructor-ver');
 Route::get('/instructor/add/perfil-profesional/{id}', 'webController\InstructorController@add_perfil')->name('instructor-perfil');
-Route::get('/instructor/add/curso-impartir','webController\InstructorController@add_cursoimpartir')->name('instructor-curso');
+Route::get('/instructor/add/curso-impartir/{id}','webController\InstructorController@add_cursoimpartir')->name('instructor-curso');
 Route::post('/perfilinstructor/guardar', 'webController\InstructorController@perfilinstructor_save')->name('perfilinstructor-guardar');
+Route::post('/instructor/curso-impartir/guardar', 'webController\InstructorController@cursoimpartir_save')->name('cursoimpartir-guardar');
 
 //Crea pago
+Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio');
 Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
 Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
 Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');

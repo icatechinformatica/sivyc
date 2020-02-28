@@ -1,8 +1,9 @@
 // Creado por Orlando Chavez
 $(function(){
-  /* $('#table-instructor').filterTable('#myInstructor');
-   $(document).ready(function() {*/
-    $('#table-instructor').DataTable();
+    // ---- tablas de consultas ----
+        $('#table-perfprof').DataTable();
+        $('#table-instructor').DataTable();
+    // ---- END tablas de consultas
 
     $.validator.addMethod("CURP", function (value, element) {
         if (value !== '') {

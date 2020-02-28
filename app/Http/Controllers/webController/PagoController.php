@@ -14,6 +14,13 @@ use App\Http\Controllers\Controller;
 
 class PagoController extends Controller
 {
+    public function index()
+    {
+        $pago = new pago();
+        $data = $pago::where('id', '!=', '0')->latest()->get();
+        return view('layouts.pages.vstapago', compact('data'));
+    }
+
     public function crear_pago()
     {
         return view('layouts.pages.frmpago');

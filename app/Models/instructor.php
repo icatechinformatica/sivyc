@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class instructor extends Model
 {
@@ -30,6 +31,11 @@ class instructor extends Model
     public function perfil()
     {
         return $this->hasMany(InstructorPerfil::class);
+    }
+
+    function curso_Validado()
+    {
+        return $this->hasMany(cursoValidado::class);
     }
 
 

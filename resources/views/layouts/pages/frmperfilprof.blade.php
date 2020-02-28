@@ -22,7 +22,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputgrado_estudio">Nivel de estudio que cubre</label>
-                        <select class="form-control" id="grado_estudio" name="grado_estudio"
+                        <select class="form-control" id="grado_estudio" name="grado_estudio">
                             <option value="diploma">Diploma</option>
                             <option value="certificado">Certificado</option>
                             <option value="primaria">Primaria</option>

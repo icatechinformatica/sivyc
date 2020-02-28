@@ -133,8 +133,11 @@
                         </tbody>
                     </table>
                 @else
-                    <h1>No hay Registros</h1>
+                <div class="alert alert-warning">
+                    <strong>Info!</strong> No hay Registros
+                  </div>
                 @endif
+                <br>
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-left">
@@ -145,6 +148,7 @@
                         </div>
                     </div>
                 </div>
+                <br>
                 <!-- *** START Text areas *** -->
                     <div class="form-row">
                         <label for="inputexp_laboral"><h4>Experiencia Laboral</h4></label>
@@ -226,59 +230,42 @@
                 </div>
                 <br>
                 <label><h4>Cursos Validados para Impartir</h4></label>
-                <table class="table table-bordered" id="table-curval">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
-                            <th width="85px">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>
-                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                                {!! Form::close() !!}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                            <td>
-                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                                {!! Form::close() !!}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                            <td>
-                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                                {!! Form::close() !!}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                @if (count($cursvali) > 0)
+                    <label><h4>Cursos Validados para Impartir</h4></label>
+                    <table class="table table-bordered" id="table-perfprof">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID de Curso</th>
+                                <th scope="col">Nombre</th>
+                                <th width="85px">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($cursvali as $item1)
+                                <tr>
+                                    <th scope="row">{{$item1->id_c}}</th>
+                                    <td>{{$item1->nombre}}</td>
+                                    <td>
+                                        {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                        {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                        {!! Form::close() !!}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                <div class="alert alert-warning">
+                    <strong>Info!</strong> No hay Registros
+                  </div>
+                @endif
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-left">
                             <caption>Lista de Cursos Validados para Impartir</caption>
                         </div>
                         <div class="pull-right">
-                            <a class="btn btn-info" href="{{route('instructor-curso')}}">Agregar Curso Validado para Impartir</a>
+                            <a class="btn btn-info" href="{{route('instructor-curso', ['id' => $getinstructor->id])}}">Agregar Curso Validado para Impartir</a>
                         </div>
                     </div>
                 </div>

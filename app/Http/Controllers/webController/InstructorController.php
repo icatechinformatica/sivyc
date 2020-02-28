@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\webController;
 
 use App\Models\instructor;
+use App\Models\cursoValidado;
+use App\Models\curso;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -54,7 +56,7 @@ class InstructorController extends Controller
             $saveInstructor = new instructor();
             $file = $request->file('cv'); # obtenemos el archivo
             $urlcv = $this->pdf_upload($file);
-            $nco = '300E    '; #No. Control prueba
+            $nco = '404Prueba'; #No. Control prueba
             $nombre_completo = $request->nombre. ' ' . $request->apellido_paterno. ' ' . $request->apellido_materno;
 
             # Proceso de Guardado
@@ -112,11 +114,18 @@ class InstructorController extends Controller
     {
         $instructor = new instructor();
         $instructor_perfil = new InstructorPerfil();
+        $curso_validado = new cursoValidado();
+        $det_curso = new Curso();
         // consulta para mostrar los datos de determinado
         $getinstructor = $instructor->findOrFail($id);
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
+        $cursvali = $curso_validado->SELECT('curso_validado.clave_curso AS clavecurso', 'cursos.nombre_curso AS nombre', 'cursos.id AS id_c')
+                    ->WHERE('curso_validado.numero_control', '=', $id)
+                    ->LEFTJOIN('cursos', 'cursos.id', '=', 'curso_validado.id_curso')
+                    ->GET();
+        //$curso = $det_curso->WHERE('id','=', $cursvali->id_curso)->GET;
 
-        return view('layouts.pages.verinstructor', compact('perfil','getinstructor'));
+        return view('layouts.pages.verinstructor', compact('perfil','getinstructor','cursvali'));
     }
     public function add_perfil($id)
     {
@@ -147,9 +156,20 @@ class InstructorController extends Controller
 
     }
 
-    public function add_cursoimpartir()
+    public function add_cursoimpartir($id)
     {
-        return view('layouts.pages.frmcursoimpartir');
+        $curso = new Curso();
+        $idInstructor = $id;
+        $data_curso = $curso::where('id', '!=', '0')->latest()->get();
+        return view('layouts.pages.frmcursoimpartir', compact('data_curso','idInstructor'));
+    }
+
+    public function cursoimpartir_save(Request $request)
+    {
+        $curso_validado = new cursoValidado();
+
+        #Proceso de Guardado
+        #$curso_validado->clave_curso = trim($request->)
     }
 
     /**
