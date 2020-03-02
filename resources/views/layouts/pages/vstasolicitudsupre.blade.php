@@ -1,7 +1,7 @@
 <!--Creado por Orlando Chavez-->
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Instructor | SIVyC Icatech')
+@section('title', 'SUPRE | SIVyC Icatech')
 <!--seccion-->
 @section('content')
     <style>
@@ -25,38 +25,33 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Registro de Instructrores</h2>
+                    <h2>Solicitudes para Suficiencia Presupuestal</h2>
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
+                    <a class="btn btn-success btn-lg" href="{{route('solicitud_crear')}}"> Nuevo</a>
                 </div>
             </div>
         </div>
         <hr style="border-color:dimgray">
         <table  id="table-instructor" class="table table-bordered">
-            <caption>Catalogo de Instructrores</caption>
+            <caption>Catalogo de Solcitudes</caption>
             <thead>
                 <tr>
-                    <th scope="col">Clave Instructor</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">telefono</th>
-                    <th scope="col">Correo</th>
-                    <th width="160px">Acciones</th>
+                    <th scope="col">No. de Memorandum</th>
+                    <th scope="col">Unidad de Capacitación</th>
+                    <th scope="col">Fecha</th>
+                    <th width="160px">Estatus</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->numero_control}}</th>
-                        <td>{{$itemData->nombre}}</td>
-                        <td>{{$itemData->telefono}}</td>
-                        <td>{{$itemData->correo}}</td>
+                    <th scope="row">{{$itemData->no_memo}}</th>
+                        <td>{{$itemData->unidad_capacitacion}}</td>
+                        <td>{{$itemData->fecha}}</td>
                         <td>
                             <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
-                            {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                            {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                            {!! Form::close() !!}
                         </td>
                     </tr>
                 @endforeach

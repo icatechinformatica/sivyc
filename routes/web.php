@@ -20,8 +20,13 @@ Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('
 Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');
 Route::post('/pago/fill', 'webController\PagoController@index');
 
+//Solicitud de Suficiencia Presupuestal
+Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')->name('supre-inicio');
+Route::get('/supre/solicitud/crear', 'webController\supreController@solicitud_formulario')->name('solicitud_crear');
+Route::post("/supre/solicitud/guardar","webController\supreController@solicitud_guardar")->name('addsupre');
+
 //Validacion de Suficiencia Presupuestal
-Route::get('/supre/validacion/inicio', 'webController\supreController@index')->name('supre-inicio');
+Route::get('/supre/validacion/inicio', 'webController\supreController@validacion_supre_inicio')->name('vasupre-inicio');
 Route::get('/supre/validacion', 'webController\supreController@validacion')->name('supre-validacion');
 /*
 |--------------------------------------------------------------------------
@@ -33,11 +38,6 @@ Route::get('/supre/validacion', 'webController\supreController@validacion')->nam
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/supre/paso1', function () {
-    return view('layouts.pages.delegacionadmin');
-
-})->name('supre-fase1');
 
 Route::get('/curso/crear', function () {
     return view('layouts.pages.frmcursos');
@@ -63,6 +63,5 @@ Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaContr
  * Metodo post o put exclusivamente
  * elaborado por DMC
  */
-Route::post("addsupre","webController\supreController@store")->name('addsupre');
 Route::get('/alumnos', 'webController\AlumnoController@index')->name('alumnos');
 Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos-save');

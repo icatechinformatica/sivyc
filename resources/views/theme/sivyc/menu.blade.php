@@ -5,9 +5,8 @@
 			<a class="navbar-brand g-color-morado g-font-weight-600 g-font-size-16 d-sm-block d-md-block d-lg-block d-xl-none g-text-underline--hover" ></a>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav g-font-size-15 g-font-weight-100 ml-auto">
-
-					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{ route('alumnos') }}">Alumnos</a></li>
-					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('supre-fase1')}}">Suficencia Presupuestal</a></li>
+                    <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{ route('alumnos') }}">Cursos Validados</a></li>
+					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('supre-inicio')}}">Suficencia Presupuestal</a></li>
 					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('contrato')}}">Contrato</a></li>
 					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('pago-inicio')}}">Pagos</a></li>
 					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" >Agenda Vinculador</a></li>
@@ -18,6 +17,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                           <a class="dropdown-item" href="{{route('frm-cursos')}}">Cursos</a>
                           <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
+                          <a class="dropdown-item" href="{{ route('alumnos') }}">Alumnos</a>
                         <a class="dropdown-item" href="{{route('frm-convenio')}}">Convenios</a>
                         </div>
                     </li>

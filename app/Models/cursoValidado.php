@@ -27,4 +27,8 @@ class cursoValidado extends Model
     {
         return $this->belongsTo(curso::class);
     }
+    public function Folio()
+    {
+        return $this->hasMany(tablaFolio::class);
+    }
 }

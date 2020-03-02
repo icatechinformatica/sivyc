@@ -263,4 +263,26 @@ $(function(){
         }
     });
 
+    //Valida parte de delegacionadmin
+    $('#registersupre').validate({
+        rules: {
+            memorandum:{
+                required: true
+            },
+            fecha:{
+                required: true,
+                date: true
+            },
+        },
+        messages: {
+            memorandum:{
+                required: "Por favor ingrese el Memorandum"
+            },
+            fecha:{
+                required: "Por favor ingrese la fecha",
+                date: "Por favor ingrese la fecha correcta"
+            },
+        }
+    });
+
 });
