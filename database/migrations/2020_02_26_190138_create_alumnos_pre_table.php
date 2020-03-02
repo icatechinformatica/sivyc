@@ -17,7 +17,7 @@ class CreateAlumnosPreTable extends Migration
             $table->bigIncrements('id');
             $table->string('nombre', 255);
             $table->string('correo', 50)->unique();
-            $table->integer('telefono');
+            $table->bigInteger('telefono');
             $table->string('curso', 255);
             $table->string('horario', 100);
             $table->string('especialidad_que_desea_inscribirse', 100);
