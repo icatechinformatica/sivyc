@@ -27,7 +27,7 @@ class CreateInstructoresTable extends Migration
             $table->string('registro_agente_capacitador_externo', 150);
             $table->string('rfc', 50);
             $table->string('curp', 50);
-            $table->char('sexo', 6);
+            $table->char('sexo', 10);
             $table->string('estado_civil', 100);
             $table->date('fecha_nacimiento');
             $table->string('entidad', 80);
