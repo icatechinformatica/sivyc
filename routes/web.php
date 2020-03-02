@@ -64,5 +64,13 @@ Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaContr
  * elaborado por DMC
  */
 Route::post("addsupre","webController\supreController@store")->name('addsupre');
-Route::get('/alumnos', 'webController\AlumnoController@index')->name('alumnos');
+Route::get('/alumnos', 'webController\AlumnoController@index')->name('alumnos')->middleware('auth');
 Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos-save');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

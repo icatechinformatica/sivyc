@@ -1,11 +1,14 @@
-@extends('layouts.app')
+@extends("theme.sivycAuth.app")
+
+@section('title', 'Sivyc | Inicio de Sesión')
 
 @section('content')
+<br>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header">{{ __('Inicio de Sesión') }}</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
