@@ -14,10 +14,11 @@ class CreateAlumnosRegistroTable extends Migration
     public function up()
     {
         Schema::create('alumnos_registro', function (Blueprint $table) {
-            $table->bigIncrements('no_control');
+            $table->bigIncrements('id');
+            $table->string('no_control', 255);
             $table->date('fecha');
             $table->string('numero_solicitud', 30);
-            $table->char('sexo', 5);
+            $table->char('sexo', 10);
             $table->string('curp', 30);
             $table->date('fecha_nacimiento');
             $table->string('domicilio', 100);
@@ -30,7 +31,7 @@ class CreateAlumnosRegistroTable extends Migration
             $table->string('ultimo_grado_estudios', 100);
             $table->string('empresa_trabaja', 150);
             $table->string('antiguedad', 150);
-            $table->string('direccion', 255);
+            $table->string('direccion_empresa', 255);
             $table->boolean('cerrs')->nullable();
             $table->string('etnia', 100);
             $table->boolean('indigena')->nullable();

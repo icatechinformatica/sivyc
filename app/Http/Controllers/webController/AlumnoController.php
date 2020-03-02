@@ -5,6 +5,8 @@ namespace App\Http\Controllers\webController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Alumno;
+use App\Models\Alumnopre;
+use Illuminate\Support\Facades\Input;
 
 class AlumnoController extends Controller
 {
@@ -44,7 +46,45 @@ class AlumnoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // vamos a guardar los registros
+        $validateData = $request->validate([
+            'nombre' => 'required',
+            'telefono' => 'required',
+            'curso' => 'required',
+            'horario' => 'required',
+            'especialidad_que_desea_inscribirse' => 'required',
+            'modo_entero_del_sistema' => 'required',
+            'motivos_eleccion_sistema_capacitacion' => 'required',
+            'correo' => 'required'
+        ]);
+
+        $alumno = new Alumno([
+            'no_control' => '231ABC',
+            'domicilio' => $request->input('domicilio'),
+            'numero_solicitud' => '123',
+            'fecha' => $request->input('fecha_nacimiento'),
+            'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+            'curp' => $request->input('curp'),
+            'colonia' => $request->input('colonia'),
+            'codigo_postal' => $request->input('codigo_postal'),
+            'municipio' => $request->input('municipio'),
+            'estado' => $request->input('estado'),
+            'estado_civil' => $request->input('estado_civil'),
+            'discapacidad_presente' => $request->input('discapacidad_presente'),
+            'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios'),
+            'empresa_trabaja' => $request->input('empresa_trabaja'),
+            'antiguedad' => $request->input('antiguedad') ,
+            'direccion_empresa' => $request->input('direccion_empresa'),
+            'sexo' => $request->input('generoaspirante'),
+            'discapacidad_presente' => ''
+        ]);
+
+        //dd($alumno);
+
+        $AlumnosPre = Alumnopre::create($validateData);
+        $AlumnosPre->alumnos()->save($alumno);
+
+        return redirect('/alumnos')->with('success', 'Registro Guardado con éxito!');
     }
 
     /**
