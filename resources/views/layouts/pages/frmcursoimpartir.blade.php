@@ -26,7 +26,9 @@
                                 <td>{{$itemData->clasificacion}}</td>
                                 <td>{{$itemData->especialidad}}</td>
                                 <td>
-                                    <button type="submit" class="btn btn-success">Añadir</button>
+                                    {{ Form::open(['route' => ['cursoimpartir-guardar', $itemData->id, $idInstructor],'style'=>'display:inline']) }}
+                                    {{ Form::submit('Agregar', ['class' => 'btn btn-success']) }}
+                                    {{ Form::close() }}
                                 </td>
                             </tr>
                         @endforeach

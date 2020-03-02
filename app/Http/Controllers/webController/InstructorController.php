@@ -99,9 +99,8 @@ class InstructorController extends Controller
             $saveInstructor->observaciones = trim($request->observacion);
             $saveInstructor->save();
 
-            $paso = 'paso!';
-            $path = $request;
-            dd($paso);
+            return redirect()->route('instructor/inicio')
+                        ->with('success','Perfil profesional agregado');
     }
     }
     /**
@@ -167,6 +166,14 @@ class InstructorController extends Controller
     public function cursoimpartir_save(Request $request)
     {
         $curso_validado = new cursoValidado();
+
+        $curso_validado->id_curso = $request->id;
+        $curso_validado->numero_control = $request->idInstructor;
+        $curso_validado->clave_curso = "null";
+        $curso_validado->save();
+
+        return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
+                        ->with('success','Perfil profesional agregado');
 
         #Proceso de Guardado
         #$curso_validado->clave_curso = trim($request->)
