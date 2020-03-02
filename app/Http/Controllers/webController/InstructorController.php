@@ -24,6 +24,7 @@ class InstructorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+     #----- instructor/inicio -----#
     public function index()
     {
         $instructor = new instructor();
@@ -38,11 +39,13 @@ class InstructorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    #----- instructor/crear -----#
     public function crear_instructor()
     {
         return view('layouts.pages.frminstructor');
     }
 
+    #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -101,7 +104,7 @@ class InstructorController extends Controller
 
             return redirect()->route('instructor/inicio')
                         ->with('success','Perfil profesional agregado');
-    }
+        }
     }
     /**
      * Display the specified resource.
@@ -185,10 +188,6 @@ class InstructorController extends Controller
      * @param  \App\instructor  $instructor
      * @return \Illuminate\Http\Response
      */
-    public function destroy()
-    {
-        //
-    }
 
     protected function pdf_upload($pdf)
     {
@@ -201,12 +200,12 @@ class InstructorController extends Controller
     }
 
     public function paginate($items, $perPage = 5, $page = null)
-{
-    $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-    $items = $items instanceof Collection ? $items : Collection::make($items);
-    return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
-        'path' => Paginator::resolveCurrentPath()
-    ]);
-}
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
+            'path' => Paginator::resolveCurrentPath()
+        ]);
+    }
 }
 

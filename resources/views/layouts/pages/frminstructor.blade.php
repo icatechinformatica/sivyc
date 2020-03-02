@@ -44,8 +44,8 @@
                     <label for="inputsexo">Sexo</label>
                         <select class="form-control" name="sexo" id="sexo">
                             <option value="sin especificar">Sin Especificar</option>
-                            <option value="Hombre">Hombre</option>
-                            <option value="Mujer">Mujer</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
                         </select>
                 </div>
                 <div class="form-gorup col-md-4">
