@@ -14,6 +14,14 @@ use App\Http\Controllers\Controller;
 
 class PagoController extends Controller
 {
+    public function fill(Request $request)
+    {
+        $instructor = new instructor();
+        $input = $request->numero_contrato;
+        $newsAll = $instructor::where('id', $input)->first();
+        return response()->json($newsAll, 200);
+    }
+
     public function index()
     {
         $pago = new pago();

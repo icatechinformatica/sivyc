@@ -18,11 +18,12 @@ Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-ini
 Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
 Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
 Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');
-Route::post('/pago/fill', 'webController\PagoController@index');
+Route::post('/pago/fill', 'webController\PagoController@fill');
 
 //Validar Cursos
 Route::get('/validar-curso/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cv_inicio');
-Route::get('/validar-curso/crear', 'webController\CursoValidadoController@cv-formulario')->name('cv_crear');
+Route::get('/validar-curso/crear', 'webController\CursoValidadoController@cv_crear')->name('cv_crear');
+Route::post('/validar-curso/fill1', 'webController\CursoValidadoController@fill1');
 Route::post("/validar-curso/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
 
 //Solicitud de Suficiencia Presupuestal

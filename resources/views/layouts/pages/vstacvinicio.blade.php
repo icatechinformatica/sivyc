@@ -41,6 +41,8 @@
                     <th scope="col">Clave de Curso</th>
                     <th scope="col">Nombre de Curso</th>
                     <th scope="col">Nombre de Instructor</th>
+                    <th scope="col">Fecha de Inicio</th>
+                    <th scope="col">Fecha de Termino</th>
                     <th width="160px">Estatus</th>
                 </tr>
             </thead>
@@ -50,6 +52,8 @@
                     <th scope="row">{{$itemData->clave_curso}}</th>
                         <td>{{$itemData->nombrecur}}</td>
                         <td>{{$itemData->nombreins}}</td>
+                        <td>{{$itemData->fecha_inicio}}</td>
+                        <td>{{$itemData->fecha_termino}}</td>
                         <td>
                             <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                         </td>
