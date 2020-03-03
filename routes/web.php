@@ -47,9 +47,9 @@ Route::get('/supre/validacion', 'webController\supreController@validacion')->nam
 Route::get('/curso/crear', function () {
     return view('layouts.pages.frmcursos');
 })->name('frm-cursos');
-Route::get('/add-contrato', function () {
+Route::get('/contratos/add-contrato', function () {
     return view('layouts.pages.frmcontrato');
-})->name('contrato');
+})->name('contratos.create');
 Route::get('/', function () {
     return view('layouts.pages.table');
 });
@@ -59,7 +59,7 @@ Route::get('/add-convenio', function () {
 Route::get('/usuarios', function(){
     return view('layouts.pages.frmcursos');
 })->name('usuarios');
-Route::get('/inscripcion/paso1', 'webController\AlumnoController@create')->name('inscripcion-paso1');
+
 Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid')->name('inscripcion-paso2');
 Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@index')->name('presupuestaria');
 Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@index')->name('contratohonorarios');
@@ -68,5 +68,19 @@ Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaContr
  * Metodo post o put exclusivamente
  * elaborado por DMC
  */
-Route::get('/alumnos', 'webController\AlumnoController@index')->name('alumnos');
-Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos-save');
+Route::post("addsupre","webController\supreController@store")->name('addsupre');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+/**
+ * Middleware con permisos
+ */
+Route::middleware(['auth'])->group(function () {
+    Route::get('/alumnos/indice', 'webController\AlumnoController@index')
+           ->name('alumnos.index')->middleware('can:alumnos.index');
+    Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
+    Route::get('/inscripcion/paso1', 'webController\AlumnoController@create')
+           ->name('alumnos.inscripcion-paso1')->middleware('can:alumnos.inscripcion-paso1');
+});

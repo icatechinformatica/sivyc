@@ -17,6 +17,8 @@ class CreateInstructoresTable extends Migration
             $table->bigIncrements('id');
             $table->string('numero_control', 30)->unique();
             $table->string('nombre', 250);
+            $table->string('apellidoPaterno', 250);
+            $table->string('apellidoMaterno', 250);
             $table->string('tipo_honorario', 25);
             $table->text('experiencia_laboral')->nullable();
             $table->text('experiencia_docente')->nullable();

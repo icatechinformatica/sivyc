@@ -76,7 +76,8 @@ class AlumnoController extends Controller
             'antiguedad' => $request->input('antiguedad') ,
             'direccion_empresa' => $request->input('direccion_empresa'),
             'sexo' => $request->input('generoaspirante'),
-            'discapacidad_presente' => ''
+            'discapacidad_presente' => '',
+            'etnia' => ''
         ]);
 
         //dd($alumno);
@@ -84,7 +85,7 @@ class AlumnoController extends Controller
         $AlumnosPre = Alumnopre::create($validateData);
         $AlumnosPre->alumnos()->save($alumno);
 
-        return redirect('/alumnos')->with('success', 'Registro Guardado con éxito!');
+        return redirect('/alumnos')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
     }
 
     /**

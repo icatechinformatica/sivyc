@@ -121,8 +121,12 @@
                     <label for="estado_civil" class="control-label">Estado Civil</label>
                     <select class="form-control" id="estado_civil" name="estado_civil">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="1">opcion1</option>
-                        <option value="2">opcion2</option>
+                        <option value="Soltero (a)">Soltero (a)</option>
+                        <option value="Casado (a)">Casado (a)</option>
+                        <option value="Union libre">Unión Libre</option>
+                        <option value="Divorciado (a)">Divorciado (a)</option>
+                        <option value="Viudo (a)">Viudo (a)</option>
+                        <option value="No especifica">No especifica</option>
                     </select>
                 </div>
                 <!-- estado civil END -->
