@@ -6,7 +6,7 @@ $(function(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
+    //Boton de busqueda en frmpago
     $("#search_").click(function(e){
         e.preventDefault();
         $.ajax({
@@ -20,6 +20,20 @@ $(function(){
             },
         });
     });
+
+    //Boton de Busqueda en frmcursosvalidados
+    $("#search_cv").click(function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'/validar-curso/fill1',
+            data: { numero_control: $('#numero_control').val()},
+            success: function(data){
+                $('#nombreins').val(data.nombre)
+            },
+        });
+    });
+
     // Boton modificar en pagosmod
     $("#mod_").click(function(e){
         e.preventDefault();

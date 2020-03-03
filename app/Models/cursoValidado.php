@@ -11,7 +11,7 @@ class cursoValidado extends Model
     protected $table = 'curso_validado';
 
     protected $fillable = [
-        'id', 'id_instructor', 'id_curso', 'numero_control','dias','horario'
+        'id', 'id_instructor', 'id_curso', 'clave_curso','fecha_inicio','fecha_termino'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

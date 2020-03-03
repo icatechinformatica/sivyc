@@ -11,10 +11,9 @@ class curso extends Model
     protected $table = 'cursos';
 
     protected $fillable = [
-        'id','cct','unidad','nombre','curp','rfc','clave','grupo','mvalida','mod','turno','area','espe','curso',
-        'inicio','termino','dia','dia2','pini','pfin','dura','hini','hfin','horas','ciclo','plantel','depen',
-        'muni','sector','programa','nota','hini2','hfin2','munidad','efisico','cespecifico','mpaqueteria','mexoneracion',
-        'hombre','mujer','tipo','fcespe','cgeneral','fcgen','opcion','motivo','cp','ze'
+            'id','especialidad','nombre_curso','modalidad','horas','clasificacion','costo','duracion',
+            'objetivo','perfil','solicitud_autorizacion','fecha_validacion','memo_validacion',
+            'memo_actualizacion','fecha_actualizacion','unidad_amovil','descripcion','no_convenio'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

@@ -153,7 +153,7 @@ class InstructorController extends Controller
         $perfilInstructor->numero_control = trim($request->idInstructor); //
         $perfilInstructor->save(); // guardar registro
 
-        return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
+        return redirect()->route('instructor-inicio', ['id' => $request->idInstructor])
                         ->with('success','Perfil profesional agregado');
 
     }
