@@ -6,7 +6,7 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav g-font-size-15 g-font-weight-100 ml-auto">
 
-					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{ route('alumnos') }}">Inicio de Sesión</a></li>
+					<li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{ route('alumnos.index') }}">Inicio de Sesión</a></li>
 
 				</ul>
 			</div>

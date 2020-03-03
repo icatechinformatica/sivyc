@@ -16,6 +16,8 @@ class CreateDirectorioTable extends Migration
         Schema::create('directorio', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre', 255);
+            $table->string('apellidoPaterno', 255);
+            $table->string('apellidoMaterno', 255);
             $table->string('puesto', 150);
             $table->string('correo', 255)->unique();
             $table->string('telefono', 150);

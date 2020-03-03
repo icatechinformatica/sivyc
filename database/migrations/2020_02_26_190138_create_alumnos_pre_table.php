@@ -16,6 +16,8 @@ class CreateAlumnosPreTable extends Migration
         Schema::create('alumnos_pre', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre', 255);
+            $table->string('apellidoPaterno', 255);
+            $table->string('apellidoMaterno', 255);
             $table->string('correo', 50)->unique()->nullable();
             $table->bigInteger('telefono');
             $table->string('curso', 255);
