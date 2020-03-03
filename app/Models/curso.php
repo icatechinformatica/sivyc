@@ -22,7 +22,7 @@ class curso extends Model
     /**
      * obtener el instructor que pertenece al perfil
      */
-    public function curso_val()
+    public function curso_validado()
     {
         return $this->hasMany(cursoValidado::class);
     }
