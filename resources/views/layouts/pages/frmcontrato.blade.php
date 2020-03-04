@@ -12,8 +12,8 @@
             <div class="form-row">
             <!-- Unidad -->
             <div class="form-group col-md-6">
-                <label for="numerocontrato" class="control-label">Número de Contrato</label>
-                <input type="text" class="form-control" id="numerocontrato" name="numerocontrato" placeholder="Número de Contrato">
+                <label for="numero_contrato" class="control-label">Número de Contrato</label>
+                <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato">
             </div>
             <!--Unidad Fin-->
             <!-- nombre curso -->
@@ -38,14 +38,14 @@
             <div class="form-row">
             <!-- Destinatario -->
             <div class="form-group col-md-6">
-                <label for="lugarexpedicion" class="control-label">Lugar de Expedición</label>
-                <input type="text" class="form-control" id="lugarexpedicion" name="lugarexpedicion" placeholder="Lugar de Expedición">
+                <label for="lugar_expedicion" class="control-label">Lugar de Expedición</label>
+                <input type="text" class="form-control" id="lugar_expedicion" name="lugar_expedicion" placeholder="Lugar de Expedición">
             </div>
             <!-- Destinatario END -->
             <!-- Puesto-->
             <div class="form-group col-md-6">
-                <label for="fechafirma" class="control-label">Fecha de Firma</label>
-                <input type="date" class="form-control" id="fechafirma" name="fechafirma">
+                <label for="fecha_firma" class="control-label">Fecha de Firma</label>
+                <input type="date" class="form-control" id="fecha_firma" name="fecha_firma">
             </div>
             <!-- Puesto END-->
 
@@ -73,22 +73,22 @@
                 <!-- Director de Unidad de Capacitación END -->
                 <!-- Nombre de testigo representante-->
                 <div class="form-group col-md-6">
-                <label for="nombredetestigorepresentante" class="control-label">Nombre de Testigo Representante</label>
-                <input type="text" class="form-control" id="nombredetestigorepresentante" name="nombredetestigorepresentante">
+                <label for="testigo_icatech" class="control-label">Nombre de Testigo Representante</label>
+                <input type="text" class="form-control" id="testigo_icatech" name="testigo_icatech">
                 </div>
                 <!-- Nombre de testigo representante END-->
             </div>
             <div class="form-row">
                 <!-- nombre Testigo Instructor -->
                 <div class="form-group col-md-4">
-                    <label for="nombretestigoinstructor" class="control-label">Nombre de Testigo Instructor</label>
-                    <input type="text" class="form-control" id="nombretestigoinstructor" name="nombretestigoinstructor">
+                    <label for="testigo_instructor" class="control-label">Nombre de Testigo Instructor</label>
+                    <input type="text" class="form-control" id="testigo_instructor" name="testigo_instructor">
                 </div>
                 <!-- nombre Testigo Instructor END -->
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">
-                    <label for="nombretestigoinstructor" class="control-label">Observaciones del Instructor</label>
+                    <label for="observaciones" class="control-label">Observaciones del Instructor</label>
                     <textarea class="form-control"></textarea>
                 </div>
             </div>

@@ -51,9 +51,7 @@ Route::post('/pago/fill', 'webController\PagoController@fill');
 Route::get('/curso/crear', function () {
     return view('layouts.pages.frmcursos');
 })->name('frm-cursos');
-Route::get('/contratos/add-contrato', function () {
-    return view('layouts.pages.frmcontrato');
-})->name('contratos.create');
+Route::get('/contratos/add-contrato', 'webController\ContratoController@create')->name('contratos.create');
 Route::get('/', function () {
     return view('layouts.pages.table');
 });
