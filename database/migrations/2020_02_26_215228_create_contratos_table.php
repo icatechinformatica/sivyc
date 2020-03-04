@@ -23,14 +23,14 @@ class CreateContratosTable extends Migration
             $table->string('testigo_icatech', 250);
             $table->string('testigo_instructor', 250);
             $table->string('municipio', 250)->nullable();
-            $table->integer('id_supre');
+            $table->integer('id_folios');
             $table->timestamps();
 
             /**
              * llave foranea
              */
-            $table->foreign('id_supre')
-                  ->references('id_supre')->on('tabla_supre')
+            $table->foreign('id_folios')
+                  ->references('id_folios')->on('folios')
                   ->onDelete('set null')->onUpdate('cascade');
         });
     }
