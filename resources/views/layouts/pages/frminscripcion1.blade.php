@@ -14,7 +14,7 @@
                 </ul>
             </div><br />
         @endif
-        <form method="POST" id="formsid" action="{{ route('alumnos-save') }}">
+        <form method="POST" id="formsid" action="{{ route('alumnos.save') }}">
         @csrf
             <div style="text-align: center;">
                 <label for="tituloformulariocurso"><h1>Solicitud de Inscripción (SID)</h1></label>
