@@ -3,6 +3,8 @@
 
 use App\Http\Controllers\webController\InstructorController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
 //Crea instructor
 Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');
 Route::get('/instructor/crear', 'webController\InstructorController@crear_instructor')->name('instructor-crear');
@@ -12,13 +14,6 @@ Route::get('/instructor/add/perfil-profesional/{id}', 'webController\InstructorC
 Route::get('/instructor/add/curso-impartir/{id}','webController\InstructorController@add_cursoimpartir')->name('instructor-curso');
 Route::post('/perfilinstructor/guardar', 'webController\InstructorController@perfilinstructor_save')->name('perfilinstructor-guardar');
 Route::post('/instructor/curso-impartir/guardar/{id}{idInstructor}', 'webController\InstructorController@cursoimpartir_save')->name('cursoimpartir-guardar');
-
-//Crea pago
-Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio');
-Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
-Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
-Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');
-Route::post('/pago/fill', 'webController\PagoController@fill');
 
 //Validar Cursos
 Route::get('/validar-curso/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cv_inicio');
@@ -30,10 +25,18 @@ Route::post("/validar-curso/guardar","webController\CursoValidadoController@cv-g
 Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')->name('supre-inicio');
 Route::get('/supre/solicitud/crear', 'webController\supreController@solicitud_formulario')->name('solicitud_crear');
 Route::post("/supre/solicitud/guardar","webController\supreController@solicitud_guardar")->name('addsupre');
+Route::get('/supre/solicitud/modificar/{id_supre}', 'webController\supreController@solicitud_modificar')->name('modificar_supre');
 
 //Validacion de Suficiencia Presupuestal
 Route::get('/supre/validacion/inicio', 'webController\supreController@validacion_supre_inicio')->name('vasupre-inicio');
 Route::get('/supre/validacion', 'webController\supreController@validacion')->name('supre-validacion');
+
+//Crea pago
+Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio');
+Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
+Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
+Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');
+Route::post('/pago/fill', 'webController\PagoController@fill');
 /*
 |--------------------------------------------------------------------------
 | Web Routes

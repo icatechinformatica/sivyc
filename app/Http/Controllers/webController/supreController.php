@@ -58,6 +58,7 @@ class supreController extends Controller
         $supre->puesto_ccp1 = $request->puesto_ccp1;
         $supre->nombre_ccp2 = $request->nombre_ccp2;
         $supre->nombre_ccp2 = $request->puesto_ccp2;
+        $supre->status = 'En proceso';
         $supre->save();
 
         $id = $supre->SELECT('id_supre')->WHERE('no_memo', '=', $request->memorandum)->GET();
@@ -80,6 +81,15 @@ class supreController extends Controller
 
         return redirect()->route('/supre/solicitud/inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+    }
+
+    public function solicitud_modificar($id_supre)
+    {
+        $supre = new supre();
+        $folio = new folio();
+        $getsupre = $supre::WHERE('id_supre', '=', $id_supre)->FIRST();
+        $getfolios = $folio::WHERE('id_supre','=', $id_supre)->GET();
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios'));
     }
 
     public function validacion_supre_inicio(){

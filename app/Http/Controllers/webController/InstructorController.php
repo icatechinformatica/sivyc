@@ -29,7 +29,6 @@ class InstructorController extends Controller
     {
         $instructor = new instructor();
         $data = $instructor::where('id', '!=', '0')->latest()->get();
-       // $data = $this->paginate($new_all);
         return view('layouts.pages.initinstructor', compact('data'));
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\webController;
 use App\Models\instructor;
 use App\ProductoStock;
 use App\Models\cursoValidado;
+use App\Models\curso;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +37,9 @@ class CursoValidadoController extends Controller
     }
 
     public function cv_crear() {
-        return view('layouts.pages.frmcursovalidado');
+        $curso = new curso();
+        $data = $curso::where('id', '!=', '0')->latest()->get();
+        return view('layouts.pages.frmcursovalidado',compact('data'));
     }
 
     public function solicitud_guardar(Request $request) {

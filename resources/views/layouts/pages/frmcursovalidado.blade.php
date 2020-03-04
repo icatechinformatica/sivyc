@@ -24,6 +24,7 @@
                 <div class="form-group col-md-5">
                     <label for="inputcurp">Nombre de Instructor</label>
                     <input name='nombreins' id='nombreins' disabled type="text" class="form-control" aria-required="true">
+                    <input name='id_ins' id='id_ins' hidden type="text"> <!--guarda id-->
                 </div>
             </div>
             <div class="form-row">
@@ -40,6 +41,40 @@
                     <input name='fecha_termino' id='fecha_termino' type="date" class="form-control" aria-required="true">
                 </div>
             </div>
+            <hr style="border-color:dimgray">
+            <label><h2>Eleccion de Curso a Validar</h2></label>
+            <table  id="table-instructor" class="table table-bordered">
+                <caption>Catalogo de Cursos</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">especialidad</th>
+                        <th scope="col">duración</th>
+                        <th scope="col">modalidad</th>
+                        <th width="160px">Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($data as $itemData)
+                        <tr>
+                        <th scope="row">{{$itemData->nombre_curso}}</th>
+                            <td>{{$itemData->especialidad}}</td>
+                            <td>{{$itemData->duracion}}</td>
+                            <td>{{$itemData->modalidad}}</td>
+                            <td>
+                                <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                {!! Form::close() !!}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                    </tr>
+                </tfoot>
+            </table>
             <hr style="border-color:dimgray">
             <div class="row">
                 <div class="col-lg-12 margin-tb">

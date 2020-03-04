@@ -30,6 +30,7 @@ class CreateTablaSupreTable extends Migration
             $table->string('puesto_valida', 120);
             $table->string('nombre_elabora', 120);
             $table->string('puesto_elabora', 120);
+            $table->string('status', 25);
             $table->timestamps();
         });
     }

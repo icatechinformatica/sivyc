@@ -41,7 +41,8 @@
                     <th scope="col">No. de Memorandum</th>
                     <th scope="col">Unidad de Capacitación</th>
                     <th scope="col">Fecha</th>
-                    <th width="160px">Estatus</th>
+                    <th scope="col">Estatus</th>
+                    <th width="160px">Accion</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,8 +51,9 @@
                     <th scope="row">{{$itemData->no_memo}}</th>
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->fecha}}</td>
+                        <td>{{$itemData->status}}</td>
                         <td>
-                            <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                            <a class="btn btn-info" href="{{route('modificar_supre', ['id_supre' => $itemData->id_supre])}}">Mostrar</a>
                         </td>
                     </tr>
                 @endforeach

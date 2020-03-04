@@ -30,6 +30,7 @@ $(function(){
             data: { numero_control: $('#numero_control').val()},
             success: function(data){
                 $('#nombreins').val(data.nombre)
+                $('#id_ins').val(data.id)
             },
         });
     });
