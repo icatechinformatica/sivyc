@@ -16,7 +16,7 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('inscripcion-paso1')}}"> Nuevo</a>
+                    <a class="btn btn-success btn-lg" href="{{route('alumnos.inscripcion-paso1')}}"> Nuevo</a>
                 </div>
             </div>
         </div>
