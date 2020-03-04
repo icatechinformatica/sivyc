@@ -85,11 +85,15 @@ class supreController extends Controller
 
     public function solicitud_modificar($id_supre)
     {
+        $cf = 0;
         $supre = new supre();
         $folio = new folio();
         $getsupre = $supre::WHERE('id_supre', '=', $id_supre)->FIRST();
         $getfolios = $folio::WHERE('id_supre','=', $id_supre)->GET();
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios'));
+        foreach($getfolios as $cont){
+            $cf = $cf++;
+        }
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','cf'));
     }
 
     public function validacion_supre_inicio(){

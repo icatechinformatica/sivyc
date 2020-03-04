@@ -89,6 +89,19 @@ $(function(){
             }
         });
     });
+
+    m = $('#cf').val();
+    //Botones en tabla modsupre
+    $("#addmodsupre").click(function(){
+        ++m;
+
+        $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /></td><td><input type="text" name="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
+    });
+
+    $(document).on('click', '.remove-trmodsupre', function(){
+         $(this).parents('tr').remove();
+    });
+
     //boton valsupre rechazar
     $("#valsupre_rechazar").click(function(e){
         e.preventDefault();

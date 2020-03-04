@@ -16,7 +16,7 @@
    <form action="{{ route('addsupre') }}" id="registersupre" method="POST">
        @csrf
        <div style="text-align: right;width:82%">
-           <label for="tituloSupre1"><h2>Formulario para la Solicitud de Suficiencia Presupuestal</h2></label>
+           <label for="tituloSupre1"><h2>Modificación de Solicitud para Suficiencia Presupuestal</h2></label>
         </div>
         <hr style="border-color:dimgray">
         <div class="form-row">
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="field_wrapper">
-            <table class="table table-bordered" id="dynamicTable">
+            <table class="table table-bordered" id="dynamicTablemodsupre">
                 <tr>
                     <th>Folio</th>
                     <th>Numero Presupuesto</th>
@@ -60,7 +60,7 @@
                     <td><input type="text" name="addmore[0][clavecurso]" disabled placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" name="addmore[0][importe]" disabled value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" /></td>
                     <td><input type="text" name="addmore[0][iva]" disabled value="{{ $data->iva }}" placeholder="Iva" class="form-control" /></td>
-                    <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
+                    <td><button type="button" name="addmodsupre" id="addmodsupre" class="btn btn-success">Agregar</button></td>
                 </tr>
                 @endforeach
             </table>
@@ -135,6 +135,7 @@
             </div>
         </div>
         <br>
+    <input value="{{$cf}}" id='cf' name="cf" type="hidden">
     </form>
  </div>
 

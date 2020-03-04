@@ -39,7 +39,7 @@
                     </tfoot>
                 </table>
                 <br>
-                <div class="form-row" style="text-align: right;width:0%"">
+                <div class="form-row" style="text-align: right;width:0%">
                     <div class="form-group col-md-1">
                         <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                     </div>
