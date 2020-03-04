@@ -27,4 +27,9 @@ class supre extends Model
     public function folios(){
         return $this->hasMany(folio::class);
     }
+
+    public function contratos()
+    {
+        return $this->hasMany(contratos::class, 'id_supre');
+    }
 }
