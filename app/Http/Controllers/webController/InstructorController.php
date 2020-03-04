@@ -63,7 +63,9 @@ class InstructorController extends Controller
 
             # Proceso de Guardado
             #----- Personal -----
-            $saveInstructor->nombre = trim($nombre_completo);
+            $saveInstructor->nombre = trim($request->nombre);
+            $saveInstructor->apellidoPaterno = trim($request->apellido_paterno);
+            $saveInstructor->apellidoMaterno = trim($request->apellido_materno);
             $saveInstructor->curp = trim($request->curp);
             $saveInstructor->rfc = trim($request->rfc);
             $saveInstructor->folio_ine = trim($request->folio_ine);

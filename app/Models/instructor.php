@@ -9,7 +9,7 @@ class instructor extends Model
 {
     protected $table = 'instructores';
 
-    protected $fillable = ['id','numero_control','nombre','tipo_honorario','folio_documento','experiencia_laboral',
+    protected $fillable = ['id','numero_control','nombre','apellidoPaterno','apellidoMaterno','tipo_honorario','folio_documento','experiencia_laboral',
     'experiencia_docente','cursos_recibidos','capacitados_icatech','curso_recibido_icatech','cursos_impartidos',
     'registro_agente_capacitador','rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio',
     'asentamiento','domicilio','telefono','correo','unidad_capacitacion_solicita_validacion_instructor',
