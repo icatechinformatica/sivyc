@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 //Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes();
 
 /**
  * Middleware con permisos de los usuarios de autenticacion
