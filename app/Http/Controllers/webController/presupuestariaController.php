@@ -17,9 +17,9 @@ class presupuestariaController extends Controller
     public function index()
     {
         //
-        //return view('layouts.pdfpages.presupuestaria');
+        return view('layouts.pdfpages.presupuestaria');
         //return view('layouts.pdfpages.contratohonorarios');
-        return view('layouts.pdfpages.solicitudsuficiencia');
+        //return view('layouts.pdfpages.solicitudsuficiencia');
     }
 
     /**
@@ -88,8 +88,8 @@ class presupuestariaController extends Controller
         //
     }
     public function export_pdf() {
-        //$pdf = PDF::loadView('layouts.pdfpages.presupuestaria');
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia');
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria');
+        //$pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia');
         //$pdf = PDF::loadView('layouts.pdfpages.contratohonorarios');
         //$doomPdf->loadHtml('hello world');
 
