@@ -23,9 +23,10 @@ Route::post("/validar-curso/guardar","webController\CursoValidadoController@cv-g
 
 //Solicitud de Suficiencia Presupuestal
 Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')->name('supre-inicio');
-Route::get('/supre/solicitud/crear', 'webController\supreController@solicitud_formulario')->name('solicitud_crear');
-Route::post("/supre/solicitud/guardar","webController\supreController@solicitud_guardar")->name('addsupre');
-Route::get('/supre/solicitud/modificar/{id_supre}', 'webController\supreController@solicitud_modificar')->name('modificar_supre');
+Route::get('/supre/solicitud/crear', 'webController\supreController@frm_formulario')->name('frm-supre');
+Route::post('/supre/solicitud/guardar',"webController\supreController@store")->name('solicitud-guardar');
+Route::get('/supre/solicitud/modificar/{id}', 'webController\supreController@solicitud_modificar')->name('modificar_supre');
+Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
 //Validacion de Suficiencia Presupuestal
 Route::get('/supre/validacion/inicio', 'webController\supreController@validacion_supre_inicio')->name('vasupre-inicio');
@@ -70,11 +71,11 @@ Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaContr
  * Metodo post o put exclusivamente
  * elaborado por DMC
  */
-Route::post("addsupre","webController\supreController@store")->name('addsupre');
+// Route::post("addsupre","webController\supreController@store")->name('addsupre');
 
-Auth::routes();
+//Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
 
 /**
  * Middleware con permisos

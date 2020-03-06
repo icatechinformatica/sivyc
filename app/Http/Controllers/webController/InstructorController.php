@@ -103,7 +103,7 @@ class InstructorController extends Controller
             $saveInstructor->observaciones = trim($request->observacion);
             $saveInstructor->save();
 
-            return redirect()->route('instructor/inicio')
+            return redirect()->route('instructor-inicio')
                         ->with('success','Perfil profesional agregado');
         }
     }

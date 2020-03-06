@@ -63,7 +63,6 @@ class CreateTblCursos extends Migration
             $table->integer('cp');
             $table->string('ze', 15);
             $table->timestamps();
-        });
     }
 
     /**

@@ -13,34 +13,39 @@
 </style>
  <!--empieza aquí-->
  <div class="container g-pt-50">
-   <form action="{{ route('addsupre') }}" id="registersupre" method="POST">
+   <form action="{{ route('supre-mod-save') }}" id="registersupre" method="POST">
        @csrf
        <div style="text-align: right;width:82%">
            <label for="tituloSupre1"><h2>Modificación de Solicitud para Suficiencia Presupuestal</h2></label>
         </div>
+        <br><br>
+        <div style="text-align: right;width:100%">
+            <button type="button" id="mod_supre" class="btn btn-warning btn-lg">Modificar Campos</button>
+        </div>
+        <br>
         <hr style="border-color:dimgray">
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitacion </label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->unidad_capacitacion }}" onkeypress="return soloLetras(event)" id="unidad" name="unidad">
+                <input type="text" class="form-control" disabled value="{{ $getsupre->unidad_capacitacion }}" onkeypress="return soloLetras(event)" id="unidad_capacitacion" name="unidad_capacitacion" aria-required="true">
             </div>
             <div class="form-group col-md-5">
                 <label for="mamorandum" class="control-label">Memorandum No. </label>
-                <input type="text" class="form-control" disabled id="memorandum" name="memorandum" value="{{ $getsupre->no_memo }}" placeholder="ICATECH/0000/000/2020">
+                <input type="text" class="form-control" disabled id="no_memo" name="no_memo" aria-required="true" value="{{ $getsupre->no_memo }}" placeholder="ICATECH/0000/000/2020">
             </div>
             <div class="form-group col-md-2">
                 <label for="fecha" class="control-label">Fecha</label>
-                <input class="form-control" name="fecha" disabled type="date" value="{{ $getsupre->fecha }}" value="2020-01-01" id="fecha">
+                <input class="form-control" name="fecha" disabled type="date" aria-required="true" value="{{ $getsupre->fecha }}" id="fecha">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6"> <!-- Destinatario -->
                 <label for="destino" class="control-label">Destinatario</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->nombre_para }}" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_para }}" onkeypress="return soloLetras(event)" id="nombre_para" name="nombre_para" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!-- Puesto-->
                 <label for="puesto" class="control-label">Puesto</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->puesto_para }}" onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_para }}" onkeypress="return soloLetras(event)" id="puesto_para" name="puesto_para" placeholder="Puesto">
             </div>
         </div>
         <div class="field_wrapper">
@@ -53,46 +58,52 @@
                     <th>Iva</th>
                     <th>Acción</th>
                 </tr>
-                @foreach ( $getfolios as $data )
+                @foreach ( $getfolios as $key=>$data )
                 <tr>
-                    <td><input type="text" name="addmore[0][folio]" disabled value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][numeropresupuesto]" disabled value="{{ $data->numero_presupuesto }}" placeholder="numero presupuesto" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][clavecurso]" disabled placeholder="clave curso" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][importe]" disabled value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][iva]" disabled value="{{ $data->iva }}" placeholder="Iva" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][folio]" name="addmore[{{$key}}][folio]" value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="{{ $data->numero_presupuesto }}" placeholder="numero presupuesto" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" placeholder="clave curso" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" /></td>
+                    <input hidden id="addmore[{{$key}}][id_cursos]" name="addmore[{{$key}}][id_cursos]" value="{{$data->id_cursos}}">
+                    @if ($key == 0)
                     <td><button type="button" name="addmodsupre" id="addmodsupre" class="btn btn-success">Agregar</button></td>
+                    @else
+                    <td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td>
+                    @endif
                 </tr>
                 @endforeach
+                <input hidden id='wa' value={{$key}}>
             </table>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6"> <!--  -->
                 <label for="remitente" class="control-label">Remitente</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->nombre_remitente }}" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_remitente }}" onkeypress="return soloLetras(event)" id="nombre_remitente" name="nombre_remitente" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!--  -->
                 <label for="remitente" class="control-label">Puesto</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->puesto_remitente }}" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_remitente }}" onkeypress="return soloLetras(event)" id="puesto_remitente" name="puesto_remitente" placeholder="Puesto">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Valida</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->nombre_valida }}" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_valida }}" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->puesto_valida }}" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_valida }}" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Elabora</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->nombre_elabora }}" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_elabora }}" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" disabled value="{{ $getsupre->puesto_elabora }}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_elabora }}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -103,11 +114,11 @@
             <div class="form-row">
                 <div class="form-group col-md-4"> <!-- copia 1 -->
                     <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" disabled value="{{ $getsupre->nombre_ccp1 }}" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_ccp1 }}" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
                 </div>
                 <div class="form-group col-md-4"> <!--  -->
                     <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled value="{{ $getsupre->puesto_ccp1 }}" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp2" placeholder="Puesto">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_ccp1 }}" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
                 </div>
             </div>
             <br>
@@ -115,27 +126,27 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" disabled value="{{ $getsupre->nombre_ccp2 }}" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_ccp2 }}" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
                 </div>
                 <div class="form-group col-md-4"> <!--  -->
                     <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled value="{{ $getsupre->puesto_ccp2 }}" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_ccp2 }}" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
                 </div>
             </div>
         <!--END CCP-->
         <br>
         <div class="row">
+            <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                 </div>
                 <div class="pull-right">
-                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                    <button type="submit" disabled id="btn_guardar_supre" class="btn btn-primary" >Guardar</button>
                 </div>
             </div>
         </div>
         <br>
-    <input value="{{$cf}}" id='cf' name="cf" type="hidden">
     </form>
  </div>
 
@@ -165,7 +176,6 @@
        if(letras.indexOf(tecla) == -1 && !tecla_especial)
            return false;
    }
-
    function limpia() {
        var val = document.getElementById("miInput").value;
        var tam = val.length;

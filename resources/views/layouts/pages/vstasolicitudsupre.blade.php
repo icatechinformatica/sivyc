@@ -29,7 +29,7 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('solicitud_crear')}}"> Nuevo</a>
+                    <a class="btn btn-success btn-lg" href="{{route('frm-supre')}}"> Nuevo</a>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                         <td>{{$itemData->fecha}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
-                            <a class="btn btn-info" href="{{route('modificar_supre', ['id_supre' => $itemData->id_supre])}}">Mostrar</a>
+                            <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Mostrar</a>
                         </td>
                     </tr>
                 @endforeach

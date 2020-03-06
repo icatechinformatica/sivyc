@@ -11,8 +11,11 @@ class folio extends Model
     protected $table = 'folios';
 
     protected $fillable = [
-        'id_folios','numero_presupuesto','folio_validacion','iva','importe_hora','importe_total','id_supre'
+        'id_folios','numero_presupuesto','folio_validacion','iva','importe_hora','importe_total',
+        'id_supre','id_cursos'
     ];
+
+    protected $primaryKey = 'id_folios';
 
     protected $hidden = ['created_at', 'updated_at'];
 
@@ -22,5 +25,9 @@ class folio extends Model
     public function supre()
     {
         return $this->belongsTo(supre::class);
+    }
+    public function curso()
+    {
+        return $this->belongsTo(tbl_curso::class);
     }
 }
