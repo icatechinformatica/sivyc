@@ -39,10 +39,6 @@
 
         <link rel="stylesheet" href="{{asset("css/custom.css") }}">
 
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
-
-
     </head>
 
     <body>
@@ -50,7 +46,7 @@
         @include("theme.sivycAuth.header")
         <!--HEADER DE LA PAGINA FIN-->
         <!--MENU-->
-        @include("theme.sivycAuth.menu")
+        @include("theme.sivyc.menu")
         <!--MENU-->
 
         <!-- PAGINA -->
