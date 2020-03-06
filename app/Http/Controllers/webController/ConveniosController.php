@@ -4,6 +4,7 @@ namespace App\Http\Controllers\webController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Convenio;
 
 class ConveniosController extends Controller
 {
@@ -36,7 +37,20 @@ class ConveniosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // convenios guardarlo en el metodo store
+        $conveniosData = $request->validate([
+            'nombre' => 'required',
+            'telefono' => 'required',
+            'curso' => 'required',
+            'horario' => 'required',
+            'especialidad_que_desea_inscribirse' => 'required',
+            'modo_entero_del_sistema' => 'required',
+            'motivos_eleccion_sistema_capacitacion' => 'required',
+            'correo' => 'required'
+        ]);
+
+        $convenios = Convenio::create($conveniosData);
+        return redirect('/convenios/indice')->with('success', 'Convenio creado exitosamente!');
     }
 
     /**

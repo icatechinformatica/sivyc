@@ -86,4 +86,8 @@ Route::middleware(['auth'])->group(function () {
     // Validacion de Suficiencia Presupuestal
     Route::get('/supre/validacion/inicio', 'webController\supreController@validacion_supre_inicio')->name('vasupre-inicio');
     Route::get('/supre/validacion', 'webController\supreController@validacion')->name('supre-validacion');
+    /**
+     * agregado en 06 de marzo del 2020
+     */
+    Route::post('/convenios/guardar', 'webController\ConveniosController@store')->name('convenios.store');
 });

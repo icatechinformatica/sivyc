@@ -4,7 +4,16 @@
  <!--empieza aquí-->
 
  <div class="container g-pt-50">
-    <form method="POST"  enctype="multipart/form-data" autocomplete="off">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div><br />
+    @endif
+    <form method="POST" action="{{ route('convenios.store') }}" id="conveniosFrm" enctype="multipart/form-data" autocomplete="off">
         @csrf
         <div style="text-align: center">
             <label for="tituloagregar_convenio"><h1>Agregar Convenio</h1></label>
@@ -35,9 +44,10 @@
             <!-- Tipo de sector -->
             <div class="form-group col-md-6">
                 <label for="sector">Tipo de Sector</label>
-                <select class="form-control" id="sector">
-                <option>Publico</option>
-                <option>Privado</option>
+                <select class="form-control" id="sector" name="sector">
+                    <option value="">----</option>
+                    <option value="publico">Publico</option>
+                    <option value="privado">Privado</option>
                 </select>
             </div>
             <!-- Fin Sector-->
@@ -46,41 +56,71 @@
         <div class="form-row">
             <!-- fecha inicial -->
             <div class="form-group col-md-6">
-                <label for="fecha_firma" class="control-label">Telefono </label>
-                <input type='text' id="from" name="fecha_firma" class="form-control datepicker" />
+                <label for="fecha_firma" class="control-label">Fecha de Firma </label>
+                <input type='text' id="fecha_firma" name="fecha_firma" class="form-control datepicker" />
             </div>
             <!--Fecha inicial END-->
             <!-- Fecha conclusion -->
             <div class="form-group col-md-6">
-                <label for="fecha_firma" class="control-label">Telefono </label>
-                <input type='text' id="from" name="fecha_firma" class="form-control datepicker" />
+                <label for="fecha_termino" class="control-label">Fecha de Termino </label>
+                <input type='text' id="fecha_termino" name="fecha_termino" class="form-control datepicker" />
             </div>
             <!-- Fecha conclusion END-->
         </div>
 
-        <div class="form-group col-md-6">
-            <label for="date-picker-example">Firma de Convenio</label>
-            <input placeholder="Selected date" type="text" id="to" class="form-control datepicker">
+        <div class="form-row">
+            <!--poblacion-->
+            <div class="form-group col-md-6">
+                <label for="poblacion" class="control-label">Población </label>
+                <input type='text' id="from" name="poblacion" class="form-control" />
+            </div>
+            <!--poblacion END-->
+            <!--municipio-->
+            <div class="form-group col-md-6">
+                <label for="municipio" class="control-label">Municipio</label>
+                <input type='text' id="from" name="municipio" class="form-control" />
+            </div>
+            <!--municipio END-->
+        </div>
+
+        <div class="form-row">
+            <!--nombre_titular-->
+            <div class="form-group col-md-6">
+                <label for="nombre_titular" class="control-label">Nombre del Titular </label>
+                <input type='text' id="from" name="nombre_titular" class="form-control" />
+            </div>
+            <!--nombre_titular END-->
+            <!--nombre_enlace-->
+            <div class="form-group col-md-6">
+                <label for="nombre_enlace" class="control-label">Nombre Enlace </label>
+                <input type='text' id="from" name="nombre_enlace" class="form-control" />
+            </div>
+            <!--nombre_enlace END-->
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-6">
-            <label for="remitente" class="control-label">Adjunto Convenio</label>
-            <input type="file" id="myFile" name="myFile" class="form-control" accept="application/pdf">
+                <label for="remitente" class="control-label">Adjunto Convenio</label>
+                <input type="file" id="myFile" name="myFile" class="form-control" accept="application/pdf">
             </div>
 
             <div class="form-group col-md-6">
+                <label for="direccion" class="control-label">Dirección</label>
+                <textarea name="direccion" class="form-control" id="direccion"></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label for="sector">Estatus</label>
                 <select class="form-control" id="sector">
-                <option>Activo</option>
-                <option>Terminado</option>
+                    <option>Activo</option>
+                    <option>Terminado</option>
                 </select>
             </div>
-
-
         </div>
-      <br>
+        <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
+    <br>
  </div>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
