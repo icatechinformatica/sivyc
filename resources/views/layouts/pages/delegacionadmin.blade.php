@@ -13,7 +13,7 @@
 </style>
  <!--empieza aquí-->
  <div class="container g-pt-50">
-   <form action="{{ route('addsupre') }}" id="registersupre" method="POST">
+   <form method="POST" action="{{ route('solicitud-guardar') }}" id="registersupre">
        @csrf
        <div style="text-align: right;width:82%">
            <label for="tituloSupre1"><h2>Formulario para la Solicitud de Suficiencia Presupuestal</h2></label>
@@ -105,7 +105,7 @@
                 </div>
                 <div class="form-group col-md-4"> <!--  -->
                     <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp2" placeholder="Puesto">
+                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
                 </div>
             </div>
             <br>

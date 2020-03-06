@@ -28,7 +28,7 @@ class CreateFoliosTable extends Migration
              * llave foranea
              */
             $table->foreign('id_supre')
-                  ->references('id_supre')->on('tabla_supre')
+                  ->references('id')->on('tabla_supre')
                   ->onDelete('set null')->onUpdate('cascade');
 
             $table->foreign('id_cursos')

@@ -14,7 +14,7 @@ class CreateTablaSupreTable extends Migration
     public function up()
     {
         Schema::create('tabla_supre', function (Blueprint $table) {
-            $table->bigIncrements('id_supre');
+            $table->bigIncrements('id');
             $table->string('unidad_capacitacion', 80);
             $table->string('no_memo', 80);
             $table->date('fecha');
