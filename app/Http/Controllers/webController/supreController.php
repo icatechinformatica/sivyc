@@ -153,7 +153,9 @@ class supreController extends Controller
         return view('layouts.pages.initvalsupre');
     }
 
-    public function validacion(){
-        return view('layouts.pages.valsupre');
+    public function validacion($id){
+        $supre = new supre();
+        $data =  $supre::WHERE('id', '=', $id)->FIRST();
+        return view('layouts.pages.valsupre',compact('data'));
     }
 }

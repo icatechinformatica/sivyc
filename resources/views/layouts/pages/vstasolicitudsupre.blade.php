@@ -42,7 +42,7 @@
                     <th scope="col">Unidad de Capacitación</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Estatus</th>
-                    <th width="160px">Accion</th>
+                    <th width="180px">Accion</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,7 +53,9 @@
                         <td>{{$itemData->fecha}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
-                            <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Mostrar</a>
+                            <a class="btn btn-danger" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">PDF</a>
+                            <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                            <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
                         </td>
                     </tr>
                 @endforeach

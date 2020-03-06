@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
     // documentos pdf Desarrollado por Adrian
     Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@index')->name('presupuestaria');
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@index')->name('contratohonorarios');
-    Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaController@index')->name('solicitudsuficiencia');
+    Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     /**
      * contratos Desarrollando por Daniel
      */
@@ -85,5 +85,5 @@ Route::middleware(['auth'])->group(function () {
 
     // Validacion de Suficiencia Presupuestal
     Route::get('/supre/validacion/inicio', 'webController\supreController@validacion_supre_inicio')->name('vasupre-inicio');
-    Route::get('/supre/validacion', 'webController\supreController@validacion')->name('supre-validacion');
+    Route::get('/supre/validacion/{id}', 'webController\supreController@validacion')->name('supre-validacion');
 });

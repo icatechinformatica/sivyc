@@ -1,6 +1,10 @@
 <html>
 <head>
-  
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
     body{
       font-family: sans-serif;
@@ -43,8 +47,9 @@
       text-align: left;
     }
   </style>
+</head>
  <body>
-   
+
     <div class= "container g-pt-50">
  <footer>
     <table>
@@ -63,79 +68,45 @@
     </table>
   </footer>
   <div id="content">
-    <div align=right> <b>Unidad de Capacitacion.</b> </div>
-    <div align=right> <b>Memorandum No. ICATECH/000/000/2020.</b></div>
-    <div align=right> <b>Unidad, Chiapas 00 de Mes del 2020.</b></div>
-    
-    <br><br><b>Ing. Luis Alfonso Cruz Velasco.</b>
-    <br>Jefe de Depto. de Programacion y Presupuesto.
+  <div align=right> <b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}</b> </div>
+    <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
+    <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
+
+    <br><br><b>{{$data_supre->nombre_para}}.</b>
+    <br>{{$data_supre->puesto_para}}
     <br>Presente.
 
-    <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b> La que sea </b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
+    <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
+    <br><br><div align=center> <b>Números de Folio</b></div>
 
-    <table class="table table-bordered" id="table-one">
-        
+    <table class="table table-bordered">
+
         <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-            <th width="280px">Action</th>
-          </tr>
         </thead>
         <tbody>
+            @foreach ($data_folio as $key=>$value )
+                @if ($key == 0 || $key == 3 || $key == 6 || $key == 9 || $key == 12 || $key == 15)
+                <tr><td>{{$value->folio_validacion}}</td>
+                @else
+                <td>{{$value->folio_validacion}}</td>
+                @endif
+                @if ($key == 2 || $key == 5 || $key == 8 || $key == 11 || $key == 14)
+                </tr>
+                @endif
+            @endforeach
           <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>
-                <a class="btn btn-info" href="">Mostrar</a>
-                <a class="btn btn-primary" href="">Editar</a>
-                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                {!! Form::submit('Borar', ['class' => 'btn btn-danger']) !!}
-                {!! Form::close() !!}
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            <td>
-                <a class="btn btn-info" href="">Mostrar</a>
-                <a class="btn btn-primary" href="">Editar</a>
-                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                {!! Form::submit('Borar', ['class' => 'btn btn-danger']) !!}
-                {!! Form::close() !!}
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-            <td>
-                <a class="btn btn-info" href="">Mostrar</a>
-                <a class="btn btn-primary" href="">Editar</a>
-                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                {!! Form::submit('Borar', ['class' => 'btn btn-danger']) !!}
-                {!! Form::close() !!}
-            </td>
-          </tr>
         </tbody>
     </table>
-    
+
     <br><p class="text-left"><p>Sin mas por el momento, aprovecho la ocacion para enviarle un cordial saludo.</p></p>
     <br><p class="text-left"><p>Atentamente.</p></p>
-    <br><br><b>Nombre del Director</b>
-    <br><b>Director(a) de la Unidad de Capacitacion (la que sea).</b>
-    <br><br><br><br><br><h6><small><b>C.c.p. C.P. Nombre del director de planeacion.-Director de Planeacion.-Mismo Fin</b></small></h6>
-    <h6><small><b>C.P.Jorge Luis Barragan Lopez.- Jefe del Depto. de Recursos Financieros.-Mismo Fin</b></small></h6>
+    <br><br><b>{{$data_supre->nombre_remitente}}</b>
+    <br><b>{{$data_supre->puesto_remitente}} de la Unidad de Capacitacion {{$data_supre->unidad_capacitacion}}.</b>
+    <br><br><br><br><br><h6><small><b>C.c.p. C.P. {{$data_supre->nombre_ccp1}}.-{{$data_supre->puesto_ccp1}}.-Mismo Fin</b></small></h6>
+    <h6><small><b>C.P.{{$data_supre->nombre_ccp2}}.- {{$data_supre->puesto_ccp2}}.-Mismo Fin</b></small></h6>
     <h6><small><b>Archivo/Minutario<b></small></h6>
-    <br><br><small><b>Valido: Nombre Completo.- Director de la Unidad<b></small></h6>
-    <br><small><b>Valido: Nombre Completo.- Delegado Administrativo de la Unidad<b></small></h6>
+    <br><br><small><b>Valido: {{$data_supre->nombre_valida}}.- {{$data_supre->puesto_valida}}<b></small></h6>
+    <br><small><b>Elaboró: {{$data_supre->nombre_elabora}}.- {{$data_supre->puesto_elabora}}<b></small></h6>
 
   </div>
     </div>

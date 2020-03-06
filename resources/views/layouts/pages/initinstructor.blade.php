@@ -54,7 +54,7 @@
                         <td>{{$itemData->correo}}</td>
                         <td>
                             <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
-                            {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
+                            {!! Form::open(['method' => 'DELETE','style'=>'display:inline']) !!}
                             {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
                             {!! Form::close() !!}
                         </td>
