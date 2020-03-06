@@ -1,12 +1,12 @@
 <html>
 <head>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  
   <style>
     body{
       font-family: sans-serif;
     }
     @page {
-      margin: 160px 50px;
+      margin: 100px 50px;
     }
     header { position: fixed;
       left: 0px;
@@ -44,10 +44,7 @@
     }
   </style>
  <body>
-    <header>
-        <h1>Cabecera de mi documento</h1>
-        <h2>DesarrolloWeb.com</h2>
-    </header>
+   
     <div class= "container g-pt-50">
  <footer>
     <table>
