@@ -16,15 +16,18 @@ class CreateContratosTable extends Migration
         Schema::create('contratos', function (Blueprint $table) {
             $table->bigIncrements('id_contrato');
             $table->string('numero_contrato', 30)->unique();
-            $table->string('folio_ine', 80);
-            $table->string('cantidad_letras', 250);
-            $table->string('lugar_expedicion', 250);
-            $table->date('fecha_firma');
-            $table->string('testigo_icatech', 250);
-            $table->string('testigo_instructor', 250);
+            $table->string('cantidad_letras1', 250);
+            $table->string('cantidad_letras2', 250);
+            $table->string('numero_circular', 250);
+            $table->string('nombre_director', 250);
+            $table->string('unidad_capacitacion', 250);
             $table->string('municipio', 250)->nullable();
+            $table->string('testigo1', 250);
+            $table->string('puesto_testigo1', 250);
+            $table->string('testigo2', 250);
+            $table->string('puesto_testigo2', 250);
+            $table->date('fecha_firma');
             $table->integer('id_folios');
-            $table->string('status');
             $table->timestamps();
 
             /**

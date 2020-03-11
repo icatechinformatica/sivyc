@@ -5,7 +5,7 @@ namespace App\Http\Controllers\WebController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\contratos;
-use App\Models\instructor;
+use App\Models\InstructorPerfil;
 use App\Models\supre;
 use App\Models\folio;
 
@@ -35,15 +35,22 @@ class ContratoController extends Controller
     public function create($id)
     {
         $folio = new folio();
-        $data = $folio::SELECT('folios.iva','tbl_cursos.clave')
+        $perfil = new InstructorPerfil();
+        $data = $folio::SELECT('folios.iva','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                               'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
-                        ->LEFTJOIN('tbl_cursos','id', '=', 'folios.id_cursos')
+                        ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+                        ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
+
+        $perfil_prof = $perfil::WHERE('numero_control', '=', $data->id)->GET();
+
+        $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         /**
          * TODO: se tiene que obtener el id del contrato que se va a generar y hacer una consulta
          */
         // vista
-        return view('layouts.pages.frmcontrato', compact('data'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof'));
     }
 
     /**
@@ -77,12 +84,9 @@ class ContratoController extends Controller
 
     public function contrato_pdf($id,$idins)
     {
-        $instructor = new instructor();
-        $datainstructor = $instructor::SELECT('instructores.folio_ine','instructores.rfc','instructores.curp','instructores.nombre',
-                                             'instructores.apellidoPaterno','instructores.apellidoMaterno','instructor_perfil.especialidad')
-                                        ->WHERE('id', '=', $idins)
-                                        ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.numero_control')
-                                        ->FIRST();
+        $contrato = new contratos();
+        $data = $contrato::SELECT('contratos.id_contrato','contratos.numero_contrato','');
+
     }
 
     /**
