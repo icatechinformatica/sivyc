@@ -23,7 +23,7 @@
             <!-- Organismo -->
             <div class="form-group col-md-6">
                 <label for="institucion" class="control-label">Institución</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="institucion" name="institucion" placeholder="Institución">
+                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="institucion" name="institucion" placeholder="Institución" value="{{$convenios->institucion}}">
             </div>
             <!--Organismo Fin-->
             <!-- Direccion -->
