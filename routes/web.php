@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaController@index')->name('procesodepago');
 //Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();
 
@@ -47,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
     // alumnos
     Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid')->name('inscripcion-paso2');
     // documentos pdf Desarrollado por Adrian
-    Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@index')->name('presupuestaria');
+    Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@export_pdf')->name('presupuestaria');
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@index')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     /**
@@ -64,7 +64,7 @@ Route::middleware(['auth'])->group(function () {
      */
 
     // Crea pago
-    Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio');
+    Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio')->middleware('can:alumnos.inscripcion-paso1');
     Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
     Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
     Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');

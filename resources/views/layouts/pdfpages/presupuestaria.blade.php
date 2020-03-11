@@ -10,7 +10,7 @@
       font-family: sans-serif;
     }
     @page {
-      margin: 100px 50px;
+      margin: 90px 50px;
     }
     header { position: fixed;
       left: 0px;
@@ -50,7 +50,7 @@
 </head>
  <body>
 
-    <div class= "container g-pt-50">
+    <div class= "container g-pt-30">
  <footer>
     <table>
       <tr>

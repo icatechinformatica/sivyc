@@ -18,7 +18,8 @@ class presupuestariaController extends Controller
     public function index()
     {
         //
-        return view('layouts.pdfpages.presupuestaria');
+        return view('layouts.pdfpages.procesodepago');
+        //return view('layouts.pdfpages.presupuestaria');
         //return view('layouts.pdfpages.contratohonorarios');
         //return view('layouts.pdfpages.solicitudsuficiencia');
     }
