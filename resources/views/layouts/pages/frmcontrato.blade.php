@@ -53,26 +53,29 @@
                 <!-- Perfil END-->
             </div>
             <div class="form-row">
-                <!-- Director de Unidad de Capacitación -->
-                <div class="form-group col-md-6">
-                <label for="directordeunidaddecapacitacion" class="control-label">Director de Unidad de Capacitación</label>
-                <input type="text" class="form-control" id="directordeunidaddecapacitacion" name="directordeunidaddecapacitacion" placeholder="Director de Unidad de Capacitación">
+                <div class="form-group col-md-4">
+                    <label for="directordeunidaddecapacitacion" class="control-label">Nombre del Director de Unidad de Capacitación</label>
+                    <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación">
                 </div>
-                <!-- Director de Unidad de Capacitación END -->
-                <!-- Nombre de testigo representante-->
-                <div class="form-group col-md-6">
-                <label for="testigo_icatech" class="control-label">Nombre de Testigo Representante</label>
-                <input type="text" class="form-control" id="testigo_icatech" name="testigo_icatech">
+                <div class="form-group col-md-4">
+                    <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
+                    <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion">
                 </div>
-                <!-- Nombre de testigo representante END-->
+                <div class="form-group col-md-4">
+                    <label for="testigo_icatech" class="control-label">No. de Circular desginando Director</label>
+                    <input type="text" class="form-control" id="no_circulardir" name="no_circulardir">
+                </div>
+
             </div>
             <div class="form-row">
-                <!-- nombre Testigo Instructor -->
                 <div class="form-group col-md-4">
                     <label for="testigo_instructor" class="control-label">Nombre de Testigo Instructor</label>
                     <input type="text" class="form-control" id="testigo_instructor" name="testigo_instructor">
                 </div>
-                <!-- nombre Testigo Instructor END -->
+                <div class="form-group col-md-6">
+                    <label for="testigo_icatech" class="control-label">Nombre de Testigo Representante</label>
+                    <input type="text" class="form-control" id="testigo_icatech" name="testigo_icatech">
+                </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">

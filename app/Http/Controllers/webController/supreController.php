@@ -10,7 +10,7 @@ use App\ProductoStock;
 use App\Models\cursoValidado;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use PDF;
 use function PHPSTORM_META\type;
 
 class supreController extends Controller
@@ -185,8 +185,20 @@ class supreController extends Controller
                     ->with('success','Suficiencia Presupuestal Validado');
     }
 
-    public function valsupre_pdf($id){
-        $supre = new supre;
+    public function supre_pdf($id){
+        $supre = new supre();
+        $folio = new folio();
+        $data_supre = $supre::WHERE('id', '=', $id)->FIRST();
+        $data_folio = $folio::WHERE('id_supre', '=', $id)->GET();
+        $date = strtotime($data_supre->fecha);
+        $D = date('d', $date);
+        $M = date('m',$date);
+        $Y = date("Y",$date);
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
+
+        // (Optional) configuramos el tamaño y orientación de la hoja
+        return $pdf->stream('medium.pdf');
+
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
@@ -200,7 +212,19 @@ class supreController extends Controller
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
     }
 
-    public function supre_pdf(){
-        return view('layouts.pages.vstapdfsupre');
+    public function valsupre_pdf($id){
+        $supre = new supre;
+        $curso = new tbl_curso;
+        $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
+                        'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
+                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas',)
+                    ->WHERE('id_supre', '=', $id )
+                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                    ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                    ->GET();
+        $data2 = supre::WHERE('id', '=', $id)->FIRST();
+        return view('layouts.pdfpages.valsupre', compact('data','data2'));
     }
+
 }

@@ -46,6 +46,7 @@
                         <th scope="col" class="text-right">IVA 16%</th>
                         <th scope="col" class="text-center">PARTIDA/CONCEPTO</th>
                         <th scope="col" class="text-right">IMPORTE</th>
+                        <th scope="col" class="text-right">FUENTE DE FINANCIAMIENTO FEDERAL</th>
                         <th scope="col" class="text-center">OBSERVACIONES</th>
                     </tr>
                 </thead>
@@ -64,6 +65,7 @@
                             <th scope="col" class="text-center">{{$item->iva}}</th>
                             <th scope="col" class="text-center">12101 Honorarios</th>
                             <th scope="col" class="text-center">{{$item->importe_total}}</th>
+                            <th scope="col" class="text-center">X</th>
                             <th scope="col" class="text-center"></th>
 
                         </tr>

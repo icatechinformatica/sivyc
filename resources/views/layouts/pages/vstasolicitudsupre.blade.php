@@ -54,7 +54,7 @@
                         <td>{{$itemData->status}}</td>
                         <td>
                             @if ($itemData->status == 'Validado' || $itemData->status == 'En Proceso')
-                                <a class="btn btn-warning" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">Solicitud PDF</a>
+                                <a class="btn btn-warning" href="{{route('supre-pdf', ['id' => $itemData->id])}}" target="_blank">Solicitud PDF</a>
                                 @if ($itemData->status == 'Validado')
                                     <a class="btn btn-danger" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">Validacion PDF</a>
                                 @endif

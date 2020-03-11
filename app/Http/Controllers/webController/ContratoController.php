@@ -5,6 +5,7 @@ namespace App\Http\Controllers\WebController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\contratos;
+use App\Models\instructor;
 use App\Models\supre;
 use App\Models\folio;
 
@@ -74,9 +75,14 @@ class ContratoController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function contrato_pdf($id,$idins)
     {
-        //
+        $instructor = new instructor();
+        $datainstructor = $instructor::SELECT('instructores.folio_ine','instructores.rfc','instructores.curp','instructores.nombre',
+                                             'instructores.apellidoPaterno','instructores.apellidoMaterno','instructor_perfil.especialidad')
+                                        ->WHERE('id', '=', $idins)
+                                        ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.numero_control')
+                                        ->FIRST();
     }
 
     /**

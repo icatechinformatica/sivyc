@@ -54,9 +54,6 @@
                 <td>
                     <a class="btn btn-info" href="">Mostrar</a>
                     <a class="btn btn-primary" href="">Editar</a>
-                    {!! Form::open(['method' => 'DELETE','route' => ['contratos.create'],'style'=>'display:inline']) !!}
-                    {!! Form::submit('Borar', ['class' => 'btn btn-danger']) !!}
-                    {!! Form::close() !!}
                 </td>
               </tr>
               <tr>
@@ -65,11 +62,6 @@
                 <td>Thornton</td>
                 <td>@fat</td>
                 <td>
-                    <a class="btn btn-info" href="">Mostrar</a>
-                    <a class="btn btn-primary" href="">Editar</a>
-                    {!! Form::open(['method' => 'POST','route' => array('contratos.create', $id ?? '', $id2 ?? ''),'style'=>'display:inline']) !!}
-                    {!! Form::submit('Borar', ['class' => 'btn btn-danger']) !!}
-                    {!! Form::close() !!}
                 </td>
               </tr>
               <tr>
@@ -80,9 +72,6 @@
                 <td>
                     <a class="btn btn-info" href="">Mostrar</a>
                     <a class="btn btn-primary" href="">Editar</a>
-                    {!! Form::open(['method' => 'DELETE','route' => ['contratos.create'],'style'=>'display:inline']) !!}
-                    {!! Form::submit('Borar', ['class' => 'btn btn-danger']) !!}
-                    {!! Form::close() !!}
                 </td>
               </tr>
             </tbody>
