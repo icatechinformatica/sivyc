@@ -194,21 +194,29 @@ class supreController extends Controller
         $D = date('d', $date);
         $M = date('m',$date);
         $Y = date("Y",$date);
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
 
-        // (Optional) configuramos el tamaño y orientación de la hoja
-        return $pdf->stream('medium.pdf');
 
+        //pdf 2
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
                         'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas',)
                     ->WHERE('id_supre', '=', $id )
-                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id_supre')
+                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
+        $view2 = view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));;
+
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
+       // $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
+
+        // (Optional) configuramos el tamaño y orientación de la hoja
+        echo $pdf->stream('medium.pdf');
+        echo $pdf->stream('medium.pdf');
+
+
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
     }
 
