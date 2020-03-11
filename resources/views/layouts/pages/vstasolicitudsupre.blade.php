@@ -53,9 +53,18 @@
                         <td>{{$itemData->fecha}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
-                            <a class="btn btn-danger" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">PDF</a>
-                            <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
-                            <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
+                            @if ($itemData->status == 'Validado' || $itemData->status == 'En Proceso')
+                                <a class="btn btn-warning" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">Solicitud PDF</a>
+                                @if ($itemData->status == 'Validado')
+                                    <a class="btn btn-danger" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">Validacion PDF</a>
+                                @endif
+                                @if ($itemData->status == 'En Proceso')
+                                <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
+                            @endif
+                            @endif
+                            @if ($itemData->status == 'En Proceso' || $itemData->status == 'Rechazado')
+                                <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

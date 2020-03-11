@@ -3,7 +3,7 @@
 @section('title', 'Registro de Curso Validado para Impartir| Sivyc Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
-        <form>
+        <form method="POST" action="{{ route('supre-rechazo') }}" id="rechazosupre">
             @csrf
                 <div class="text-center">
                     <h1>Validacion de Suficiencia Presupuestal</h1>
@@ -51,6 +51,7 @@
                 <div id="divconf_rechazar" class="form-row d-none d-print-none">
                     <div class="form-group col-md-3">
                         <button type="submit" class="btn btn-danger" >Confirmar Rechazo</button>
+                        <input hidden id="id" name="id" value="{{$data->id}}">
                     </div>
                 </div>
                 <br>
@@ -63,7 +64,7 @@
                 </div>
                 <br>
         </form>
-        <form>
+        <form method="POST" action="{{ route('supre-validado') }}" id="validadosupre">
             @csrf
                 <hr style="border-color:dimgray">
                 <div id="div1" class="form-row d-none d-print-none">
@@ -96,7 +97,7 @@
                         <input name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa1" id="ccpa1" class="form-control" placeholder="Area">
+                        <input name="ccpa1" id="ccpa1" class="form-control" placeholder="Puesto">
                     </div>
                 </div>
                 <div id="div5" class="form-row d-none d-print-none">
@@ -104,7 +105,7 @@
                         <input name="ccp2" id="ccp2" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa2" id="ccpa2" class="form-control" placeholder="Area">
+                        <input name="ccpa2" id="ccpa2" class="form-control" placeholder="Puesto">
                     </div>
                 </div>
                 <div id="div6" class="form-row d-none d-print-none">
@@ -112,7 +113,7 @@
                         <input name="ccp3" id="ccp3" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa3" id="ccpa3" class="form-control" placeholder="Area">
+                        <input name="ccpa3" id="ccpa3" class="form-control" placeholder="Puesto">
                     </div>
                 </div>
                 <div id="div7" class="form-row d-none d-print-none">
@@ -120,7 +121,7 @@
                         <input name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" class="form-control" placeholder="Area">
+                        <input name="ccpa4" id="ccpa4" class="form-control" placeholder="puesto">
                     </div>
                 </div>
             <!--END CCP-->
@@ -128,6 +129,7 @@
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-right">
                             <button type="submit" class="btn btn-success" >Confirmar Validación</button>
+                            <input hidden id="id" name="id" value="{{$data->id}}">
                         </div>
                     </div>
                 </div>

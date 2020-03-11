@@ -19,21 +19,9 @@
             <!-- nombre curso -->
             <div class="form-group col-md-6">
                 <label for="clavecurso" class="control-label">Clave del Curso</label>
-                <input type="text" class="form-control" id="clavecurso" name="clavecurso">
+                <input type="text" disabled value={{$data->clave}} class="form-control" id="clavecurso" name="clavecurso">
             </div>
             <!-- nombre curso FIN-->
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="numerocontrolinstructor" class="control-label">Número de control de Instructor</label>
-                    <input type="text" class="form-control" id="numerocontrolinstructor" name="numerocontrolinstructor">
-                </div>
-                <!--clasificacion-->
-                <div class="form-group col-md-6">
-                    <label for="iva" class="control-label">IVA</label>
-                    <input type="text" class="form-control" id="iva" name="iva">
-                </div>
-                <!--clasificacion END-->
             </div>
             <div class="form-row">
             <!-- Destinatario -->
@@ -89,10 +77,21 @@
             <div class="form-row">
                 <div class="form-group col-md-8">
                     <label for="observaciones" class="control-label">Observaciones del Instructor</label>
-                    <textarea class="form-control"></textarea>
+                    <textarea cols="3" rows="4" class="form-control"></textarea>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <br>
+            <input id="id_folio" name="id_folio" hidden value='{{$data->id_folios}}'>
+            <div class="row">
+                <div class="col-lg-12 margin-tb">
+                    <div class="pull-left">
+                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                    </div>
+                </div>
+            </div>
         </form>
         <br>
     </div>

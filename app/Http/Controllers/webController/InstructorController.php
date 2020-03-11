@@ -122,13 +122,13 @@ class InstructorController extends Controller
         // consulta para mostrar los datos de determinado
         $getinstructor = $instructor->findOrFail($id);
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
-        $cursvali = $curso_validado->SELECT('curso_validado.clave_curso AS clavecurso', 'cursos.nombre_curso AS nombre', 'cursos.id AS id_c')
-                    ->WHERE('curso_validado.numero_control', '=', $id)
-                    ->LEFTJOIN('cursos', 'cursos.id', '=', 'curso_validado.id_curso')
-                    ->GET();
+       // $cursvali = $curso_validado->SELECT('curso_validado.clave_curso AS clavecurso', 'cursos.nombre_curso AS nombre', 'cursos.id AS id_c')
+                  //  ->WHERE('curso_validado.numero_control', '=', $id)
+                    //->LEFTJOIN('cursos', 'cursos.id', '=', 'curso_validado.id_curso')
+                    //->GET();
         //$curso = $det_curso->WHERE('id','=', $cursvali->id_curso)->GET;
 
-        return view('layouts.pages.verinstructor', compact('perfil','getinstructor','cursvali'));
+        return view('layouts.pages.verinstructor', compact('perfil','getinstructor'));
     }
     public function add_perfil($id)
     {

@@ -10,15 +10,6 @@ use App\ProductoStock;
 use App\Models\cursoValidado;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Redirect,Response;
-use App\Models\InstructorPerfil;
-use App\Models\tablaFolio;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 use function PHPSTORM_META\type;
 
@@ -81,6 +72,7 @@ class supreController extends Controller
             $folio->importe_total = $value['importe'];
             $folio->id_supre = $id->id;
             $folio->id_cursos = $hora->id;
+            $folio->status = 'En Proceso';
             $folio->save();
         }
 
@@ -157,5 +149,58 @@ class supreController extends Controller
         $supre = new supre();
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
         return view('layouts.pages.valsupre',compact('data'));
+    }
+
+    public function supre_rechazo(Request $request){
+        $supre = supre::find($request->id);
+        $supre->observacion = $request->comentario_rechazo;
+        $supre->status = 'Rechazado';
+        //dd($supre);
+        $supre->save();
+            return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Rechazado');
+    }
+
+    public function supre_validado(Request $request){
+        $supre = supre::find($request->id);
+        $supre->status = 'Validado';
+        $supre->folio_validacion = $request->folio_validacion;
+        $supre->fecha_validacion = $request->fecha_validacion;
+        $supre->nombre_firmante = $request->nombre_firmante;
+        $supre->puesto_firmante = $request->puesto_firmante;
+        $supre->val_ccp1 = $request->ccp1;
+        $supre->val_ccpp1 = $request->ccpa1;
+        $supre->val_ccp2 = $request->ccp2;
+        $supre->val_ccpp2 = $request->ccpa2;
+        $supre->val_ccp3 = $request->ccp3;
+        $supre->val_ccpp3 = $request->ccpa3;
+        $supre->val_ccp4 = $request->ccp4;
+        $supre->val_ccpp4 = $request->ccpa4;
+        $supre->save();
+
+        folio::where('id_supre', '=', $request->id)
+        ->update(['status' => 'Validado']);
+
+            return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Validado');
+    }
+
+    public function valsupre_pdf($id){
+        $supre = new supre;
+        $curso = new tbl_curso;
+        $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
+                        'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
+                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas',)
+                    ->WHERE('id_supre', '=', $id )
+                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id_supre')
+                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                    ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                    ->GET();
+        $data2 = supre::WHERE('id', '=', $id)->FIRST();
+        return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
+    }
+
+    public function supre_pdf(){
+        return view('layouts.pages.vstapdfsupre');
     }
 }

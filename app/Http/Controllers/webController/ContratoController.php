@@ -5,6 +5,8 @@ namespace App\Http\Controllers\WebController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\contratos;
+use App\Models\supre;
+use App\Models\folio;
 
 class ContratoController extends Controller
 {
@@ -15,7 +17,13 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        //
+        $supre = new supre();
+        $data = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
+                               'folios.folio_validacion')
+                        ->where('folios.status', '!=', 'En Proceso')
+                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
+                        ->get();
+        return view('layouts.pages.vstacontratoini', compact('data'));
     }
 
     /**
@@ -23,13 +31,18 @@ class ContratoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
+        $folio = new folio();
+        $data = $folio::SELECT('folios.iva','tbl_cursos.clave')
+                        ->WHERE('id_folios', '=', $id)
+                        ->LEFTJOIN('tbl_cursos','id', '=', 'folios.id_cursos')
+                        ->FIRST();
         /**
          * TODO: se tiene que obtener el id del contrato que se va a generar y hacer una consulta
          */
         // vista
-        return view('layouts.pages.frmcontrato');
+        return view('layouts.pages.frmcontrato', compact('data'));
     }
 
     /**
@@ -56,35 +69,11 @@ class ContratoController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    public function solicitud_pago($id){
+        return view('layouts.pages.vstasolicitudpago');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         //

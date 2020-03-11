@@ -31,6 +31,19 @@ class CreateTablaSupreTable extends Migration
             $table->string('nombre_elabora', 120);
             $table->string('puesto_elabora', 120);
             $table->string('status', 25);
+            $table->string('observacion');
+            $table->string('folio_validacion');
+            $table->string('fecha_validacion');
+            $table->string('nombre_firmante');
+            $table->string('puesto_firmante');
+            $table->string('val_ccp1');
+            $table->string('val_ccpp1');
+            $table->string('val_ccp2');
+            $table->string('val_ccpp2');
+            $table->string('val_ccp3');
+            $table->string('val_ccpp3');
+            $table->string('val_ccp4');
+            $table->string('val_ccpp4');
             $table->timestamps();
         });
     }

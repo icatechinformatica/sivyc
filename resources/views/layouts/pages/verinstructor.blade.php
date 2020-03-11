@@ -230,35 +230,11 @@
                 </div>
                 <br>
                 <label><h4>Cursos Validados para Impartir</h4></label>
-                @if (count($cursvali) > 0)
-                    <label><h4>Cursos Validados para Impartir</h4></label>
-                    <table class="table table-bordered" id="table-perfprof">
-                        <thead>
-                            <tr>
-                                <th scope="col">ID de Curso</th>
-                                <th scope="col">Nombre</th>
-                                <th width="85px">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($cursvali as $item1)
-                                <tr>
-                                    <th scope="row">{{$item1->id_c}}</th>
-                                    <td>{{$item1->nombre}}</td>
-                                    <td>
-                                        {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                                        {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                                        {!! Form::close() !!}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @else
+
                 <div class="alert alert-warning">
                     <strong>Info!</strong> No hay Registros
                   </div>
-                @endif
+
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-left">

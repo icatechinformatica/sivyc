@@ -26,37 +26,32 @@
                 <div class="pull-left">
                     <h2>Registro de Pagos</h2>
                 </div>
-                <br>
-                <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
-                </div>
             </div>
         </div>
+        <div class="pull-left">
+        </div>
         <hr style="border-color:dimgray">
+        <br>
+        <h2>Solicitudes de Pago</h2>
         <table  id="table-instructor" class="table table-bordered">
-            <caption>Lista de Pagos</caption>
+            <caption>Lista de Contratos en Espera</caption>
             <thead>
                 <tr>
-                    <th scope="col">No. Memorandum</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Cantidad</th>
+                    <th scope="col">No. Contrato</th>
+                    <th scope="col">Lugar de Expedicion</th>
+                    <th scope="col">Fecha de Firma</th>
+                    <th scope="col">Municipio</th>
                     <th width="160px">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data as $itemData)
+                @foreach ($dataCont as $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->no_memo}}</th>
-                        <td>{{$itemData->fecha}}</td>
-                        <td>Nombre a pagar</td>
-                        <td>Cantidad a pagar</td>
-                        <td>
-                            <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
-                            {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                            {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                            {!! Form::close() !!}
-                        </td>
+                        <th scope="row">{{$itemData->numero_contrato}}</th>
+                        <td>{{$itemData->lugar_expedicion}}</td>
+                        <td>{{$itemData->fecha_firma}}</td>
+                        <td>{{$itemData->municipio}}</td>
+                        <td><a class="btn btn-success" href="">Validar</a></td>
                     </tr>
                 @endforeach
             </tbody>

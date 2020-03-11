@@ -24,6 +24,7 @@ class CreateContratosTable extends Migration
             $table->string('testigo_instructor', 250);
             $table->string('municipio', 250)->nullable();
             $table->integer('id_folios');
+            $table->string('status');
             $table->timestamps();
 
             /**

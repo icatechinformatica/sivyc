@@ -19,6 +19,17 @@ use Illuminate\Support\Facades\Auth;
 //Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();
 
+//Ruta Contrato sin Middleware
+Route::get('/Contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
+Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
+
+// Ruta Validacion sin middleware
+Route::post('/supre/validacion/Rechazado', 'webController\supreController@supre_rechazo')->name('supre-rechazo');
+Route::post('/supre/validacion/Validado', 'webController\supreController@supre_validado')->name('supre-validado');
+Route::get('/supre/validacion/pdf', 'webController\supreController@valsupre_pdf')->name('valsupre_pdf');
+Route::get('/supre/pdf','webController\supreController@supre_pdf')->name('supre-pdf');
+
+
 /**
  * Middleware con permisos de los usuarios de autenticacion
  */
@@ -43,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
     /**
      * contratos Desarrollando por Daniel
      */
-    Route::get('/contratos/crear', 'webController\ContratoController@create')->name('contratos.create');
+    Route::get('/contratos/crear/{id}', 'webController\ContratoController@create')->name('contratos.create');
     Route::get('/', function () {
         return view('layouts.pages.table');
     });

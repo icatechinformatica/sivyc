@@ -10,7 +10,7 @@ class contratos extends Model
     protected $table = 'contratos';
 
     protected $fillable = ['id_contrato', 'numero_contrato', 'folio_ine', 'cantidad_letras', 'lugar_expedicion', 'fecha_firma',
-                            'testigo_icatech', 'testigo_instructor', 'municipio', 'id_supre'];
+                            'testigo_icatech', 'testigo_instructor', 'municipio', 'id_supre','status'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

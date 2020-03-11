@@ -22,6 +22,7 @@ class CreateFoliosTable extends Migration
             $table->decimal('importe_total', 10, 2);
             $table->integer('id_supre');
             $table->integer('id_cursos');
+            $table->string('status');
             $table->timestamps();
 
             /**
