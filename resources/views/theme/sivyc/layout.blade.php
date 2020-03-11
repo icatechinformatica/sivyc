@@ -39,6 +39,10 @@
 
         <link rel="stylesheet" href="{{asset("css/custom.css") }}">
 
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+
+
     </head>
 
     <body>
@@ -89,6 +93,9 @@
             <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.js"></script>
             <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.js"></script>
             <script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
+
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
             <script>
                 $(function(){
                     $.HSCore.components.HSHeader.init($('#js-header'));

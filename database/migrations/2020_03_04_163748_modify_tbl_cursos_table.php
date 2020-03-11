@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCursoValidadoTable extends Migration
+class ModifyTblCursosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,20 @@ class CreateCursoValidadoTable extends Migration
      */
     public function up()
     {
-        Schema::create('curso_validado', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('clave_curso', 255)->unique();
+        Schema::table('tbl_cursos', function (Blueprint $table) {
+            //
             $table->integer('id_curso');
-            $table->string('numero_control', 30);
-            $table->timestamps();
+            $table->integer('id_instructor');
 
             /**
-             * llave foranea
+             * Llave foraneas
              */
-            $table->foreign('numero_control')
-                  ->references('numero_control')->on('instructores')
-                  ->onDelete('set null')->onUpdate('cascade');
-
             $table->foreign('id_curso')
                   ->references('id')->on('cursos')
+                  ->onDelete('set null')->onUpdate('cascade');
+
+            $table->foreign('id_instructor')
+                  ->references('id')->on('instructores')
                   ->onDelete('set null')->onUpdate('cascade');
         });
     }
@@ -40,6 +38,8 @@ class CreateCursoValidadoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('curso_validado');
+        Schema::table('tbl_cursos', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -14,7 +14,7 @@ class CreateTablaSupreTable extends Migration
     public function up()
     {
         Schema::create('tabla_supre', function (Blueprint $table) {
-            $table->bigIncrements('id_supre');
+            $table->bigIncrements('id');
             $table->string('unidad_capacitacion', 80);
             $table->string('no_memo', 80);
             $table->date('fecha');
@@ -26,6 +26,11 @@ class CreateTablaSupreTable extends Migration
             $table->string('puesto_ccp1', 120);
             $table->string('nombre_ccp2', 120);
             $table->string('puesto_ccp2', 120);
+            $table->string('nombre_valida', 120);
+            $table->string('puesto_valida', 120);
+            $table->string('nombre_elabora', 120);
+            $table->string('puesto_elabora', 120);
+            $table->string('status', 25);
             $table->timestamps();
         });
     }

@@ -21,13 +21,18 @@ class CreateFoliosTable extends Migration
             $table->decimal('importe_hora', 10, 2);
             $table->decimal('importe_total', 10, 2);
             $table->integer('id_supre');
+            $table->integer('id_cursos');
             $table->timestamps();
 
             /**
              * llave foranea
              */
             $table->foreign('id_supre')
-                  ->references('id_supre')->on('tabla_supre')
+                  ->references('id')->on('tabla_supre')
+                  ->onDelete('set null')->onUpdate('cascade');
+
+            $table->foreign('id_cursos')
+                  ->references('id')->on('tbl_cursos')
                   ->onDelete('set null')->onUpdate('cascade');
         });
     }

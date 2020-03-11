@@ -1,6 +1,9 @@
 // Creado por Orlando Chavez
 $(function(){
-    $('#table-one').filterTable('#myInput');
+    // ---- tablas de consultas ----
+        $('#table-perfprof').DataTable();
+        $('#table-instructor').DataTable();
+    // ---- END tablas de consultas
 
     $.validator.addMethod("CURP", function (value, element) {
         if (value !== '') {
@@ -62,10 +65,13 @@ $(function(){
                 required: true,
                 date: true
             },
-            lugar_nacimiento:{
+            entidad:{
                 required: true
             },
-            lugar_residencia:{
+            municipio:{
+                required: true
+            },
+            asentamiento:{
                 required: true
             },
             domicilio:{
@@ -106,7 +112,11 @@ $(function(){
             },
             memo_validacion:{
                 required: true
-            }
+            },
+            fecha_validacion:{
+                required: true,
+                date: true
+            },
         },
         messages: {
             nombre: {
@@ -142,11 +152,14 @@ $(function(){
                 required: 'Por favor ingrese la fecha de nacimiento',
                 date: 'Formato de fecha no valido'
             },
-            lugar_nacimiento: {
-                required: 'Por favor ingrese el lugar de nacimiento',
+            entidad: {
+                required: 'Por favor ingrese la entidad',
             },
-            lugar_residencia: {
-                required: 'Por favor ingrese el lugar de residencia actual',
+            municipio: {
+                required: 'Por favor ingrese el municipio',
+            },
+            asentamiento: {
+                required: 'Por favor ingrese el asentamiento',
             },
             domicilio: {
                 required: 'Por favor ingrese el domicilio'
@@ -186,7 +199,11 @@ $(function(){
             },
             memo_validacion: {
                 required: 'Por favor ingrese el memorandum de validacion'
-            }
+            },
+            fecha_validacion: {
+                required: "Por Favor ingrese la fecha de validacion",
+                date: "Por favor ingrese la fecha correcta"
+            },
         }
     });
 
@@ -243,6 +260,28 @@ $(function(){
                 required: 'Por favor ingrese el documento REACD02',
                 extension: 'Por fabvr ingrese el archivo con extension PDF'
             }
+        }
+    });
+
+    //Valida parte de delegacionadmin
+    $('#registersupre').validate({
+        rules: {
+            memorandum:{
+                required: true
+            },
+            fecha:{
+                required: true,
+                date: true
+            },
+        },
+        messages: {
+            memorandum:{
+                required: "Por favor ingrese el Memorandum"
+            },
+            fecha:{
+                required: "Por favor ingrese la fecha",
+                date: "Por favor ingrese la fecha correcta"
+            },
         }
     });
 

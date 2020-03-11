@@ -15,25 +15,25 @@ class CreateInstructorPerfilTable extends Migration
     {
         Schema::create('instructor_perfil', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('especialidad', 100);
-            $table->string('clave_especialidad', 80);
-            $table->string('validado_unicamente_impartir', 200);
+            $table->string('especialidad', 100); //
+            $table->string('clave_especialidad', 80); //
+            $table->string('nivel_estudios_cubre_especialidad', 200); //
             $table->string('perfil_profesional', 100);
             $table->string('area_carrera', 100);
-            $table->string('carrera', 100);
+            $table->string('carrera', 100); //
             $table->string('estatus', 50);
             $table->string('pais_institucion', 50);
             $table->string('entidad_institucion', 50);
             $table->date('fecha_expedicion_documento');
             $table->string('folio_documento', 50);
-            $table->string('numero_control', 30);
+            $table->integer('numero_control');
             $table->timestamps();
 
             /**
              * llave foranea
              */
             $table->foreign('numero_control')
-                  ->references('numero_control')->on('instructores')
+                  ->references('id')->on('instructores')
                   ->onDelete('set null')->onUpdate('cascade');
         });
     }
