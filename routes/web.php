@@ -47,7 +47,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
         return view('layouts.pages.table');
     });
-    Route::get('/convenios/crear', 'webController\ConveniosController@create')->name('convenio.create');
 
     /***
      * Desarrollado por Orlando
@@ -89,5 +88,9 @@ Route::middleware(['auth'])->group(function () {
     /**
      * agregado en 06 de marzo del 2020
      */
+    Route::get('/convenios/indice', 'webController\ConveniosController@index')->name('convenios.index');
+    Route::get('/convenios/crear', 'webController\ConveniosController@create')->name('convenio.create');
     Route::post('/convenios/guardar', 'webController\ConveniosController@store')->name('convenios.store');
+    Route::get('/convenios/show/{id}', 'UserProfileController@show')->name('convenios.show');
+    Route::get('/convenios/edit/{id}', 'webController\ConveniosController@edit')->name('convenios.edit');
 });
