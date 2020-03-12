@@ -4,7 +4,8 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
-        <form method="POST">
+        <form action="{{ route('contrato-save') }}" method="post" id="registercontrato">
+            @csrf
             <div style="text-align: right;width:65%">
                 <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
             </div>

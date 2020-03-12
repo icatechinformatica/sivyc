@@ -24,4 +24,9 @@ class InstructorPerfil extends Model
         return $this->belongsTo(instructor::class);
     }
 
+    public function contrato()
+    {
+        return $this->belongsTo(contratos::class);
+    }
+
 }

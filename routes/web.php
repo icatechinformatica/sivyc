@@ -22,11 +22,13 @@ Auth::routes();
 //Ruta Contrato sin Middleware
 Route::get('/Contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
+Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
+Route::get('/contrato/{id}', 'webController\ContratoController@contrato_pdf')->name('contrato-pdf');
 
 // Ruta Validacion sin middleware
 Route::post('/supre/validacion/Rechazado', 'webController\supreController@supre_rechazo')->name('supre-rechazo');
 Route::post('/supre/validacion/Validado', 'webController\supreController@supre_validado')->name('supre-validado');
-Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre_pdf')->name('valsupre_pdf');
+Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre_pdf')->name('valsupre-pdf');
 Route::get('/supre/pdf/{id}', 'webController\supreController@supre_pdf')->name('supre-pdf');
 
 /**

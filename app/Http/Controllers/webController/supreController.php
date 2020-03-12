@@ -213,8 +213,7 @@ class supreController extends Controller
        // $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
 
         // (Optional) configuramos el tamaño y orientación de la hoja
-        echo $pdf->stream('medium.pdf');
-        echo $pdf->stream('medium.pdf');
+        return $pdf->stream('medium.pdf');
 
 
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));

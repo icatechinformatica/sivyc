@@ -1,6 +1,6 @@
 <html>
 <head>
- 
+
   <style>
     body{
       font-family: sans-serif;
@@ -47,14 +47,14 @@
 
     <div class= "container g-pt-20">
       <div id="content">
-       <div align=right> <b>Contrato No._____ No.___ Contrato________/2020.</b> </div>
-    <br><div align="justify">CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR EL (LA) ___________ _____________nombre_representante_______________________, EN SU CARÁCTER DE DIRECTOR (A) DE LA UNIDAD DE CAPACITACIÓN_____Director_unidad__________________________ Y POR LA OTRA (EL) (LA) C.__________________nombre_instructor_________________________________, EN SU CARÁCTER DE ______caracter_instructor_______________; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “EL ICATECH” Y “EL PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</div>
+      <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}/2020.</b> </div>
+    <br><div align="justify">CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR EL (LA) {{$data_contrato->nombre_director}}, EN SU CARÁCTER DE DIRECTOR (A) DE LA UNIDAD DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA (EL) (LA) C. {{$nomins}}, EN SU CARÁCTER DE ______caracter_instructor_______________; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “EL ICATECH” Y “EL PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</div>
     <br><div align="center"> DECLARACIONES</div>
     <br>
           <div align="justify"><dl>I.Declara “EL ICATECH” que:
             <dl>I.1</dl><dd> Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propios, conforme a lo dispuesto  en el artículo 1 del Decreto número 182, publicado en el Periódico Oficial número 032, de fecha 26 de Julio del año 2000 y del Decreto número 183 por el que se reforman, derogan y adicionan diversas disposiciones del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, publicado en el Periódico Oficial número 094, de fecha 21 de mayo del año 2008.</dd>
             <br><dd>I.2 La Mtra. Fabiola Lizbeth Astudillo Reyes, es Directora General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, personalidad que se acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas en forma alguna.</dd>
-            <dd>I.3 Con fundamento en el artículo 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, la Mtra. Fabiola Lizbeth Astudillo Reyes, en su carácter de Directora General, tiene como atribución delegable la de celebrar y suscribir convenios, acuerdos, contratos y demás actos de carácter administrativo de conformidad con las actividades de “EL ICATECH”. En ese sentido, tuvo a bien designar mediante circular número _______circular_no________________, y conforme a lo dispuesto por el artículo 29 fracción I, III Y XI del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, al C.___Director_unidad_____________ _________________________, Director (a) de la Unidad de Capacitación_______unidad_capacitacion__________________, para suscribir el presente acuerdo de voluntades.</dd>
+            <dd>I.3 Con fundamento en el artículo 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, la Mtra. Fabiola Lizbeth Astudillo Reyes, en su carácter de Directora General, tiene como atribución delegable la de celebrar y suscribir convenios, acuerdos, contratos y demás actos de carácter administrativo de conformidad con las actividades de “EL ICATECH”. En ese sentido, tuvo a bien designar mediante circular número , y conforme a lo dispuesto por el artículo 29 fracción I, III Y XI del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, al C.___Director_unidad_____________ _________________________, Director (a) de la Unidad de Capacitación_______unidad_capacitacion__________________, para suscribir el presente acuerdo de voluntades.</dd>
             <dd>I.4 El Mtro. Walter Domínguez Camacho, suscribe como testigo el presente instrumento en su carácter de Director Administrativo, personalidad que se acredita con nombramiento expedido a su favor por la Mtra. Fabiola Lizbeth Astudillo Reyes, Directora General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, por lo que se encuentra plenamente facultado en términos de lo dispuesto en el artículo 21 fracción III del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas; mismas que no le han sido limitadas o revocadas en forma alguna.</dd>
             <dd>I.5 Tiene como objetivo impartir e impulsar la capacitación para el trabajo en la entidad, procurando la mejor calidad y vinculación de este servicio con el aparato productivo y las necesidades de desarrollo regional, estatal y nacional; promover la impartición de cursos de capacitación a obreros en mano de obra calificada, que corresponden a las necesidades de los mercados laborales del estado; apoyar las acciones de capacitación para el trabajo de los sectores productivos del estado, así como la capacitación tanto para el trabajo de personas sin empleo o discapacitadas, como no egresados de primarias, secundarias o preparatorias y aumentar con los programas de capacitación el nivel de productividad de los trabajadores.</dd>
             <dd>I.6 De acuerdo a las necesidades de “EL ICATECH”, se requiere contar con los servicios de una persona física con conocimientos en ____area_conocimiento____________________, por lo que se ha determinado llevar a cabo la Contratación por Honorarios en la modalidad de horas curso de "EL PRESTADOR DE SERVICIOS". </dd>
@@ -83,7 +83,7 @@
               <li> Asistir con toda puntualidad a sus cursos y aprovechar íntegramente el tiempo necesario para el mejor desarrollo de los mismos. </ li>
               <li> Generar un reporte final del curso impartido o de cualquier incidente o problema que surgió en el desarrollo del mismo.</ li>
               <li> Cumplir con los procedimientos del control escolar de alumnos que implemente “EL ICATECH”. </ li>
-              <li> Respetar las normas de conducta que establece “EL ICATECH”. </ li> 
+              <li> Respetar las normas de conducta que establece “EL ICATECH”. </ li>
             </ Ol>
           </div>
           <div align="justify"><dd>CUARTA.- SECRETO PROFESIONAL. “EL PRESTADOR DE SERVICIOS” conviene no divulgar por medio de publicaciones, informes, conferencias o en cualquier otra forma, los datos y resultados obtenidos de los trabajos de este contrato, sin la autorización expresa de “EL ICATECH”, pues dichos datos y resultados son considerados confidenciales. Esta obligación subsistirá, aún después de haber terminado la vigencia de este contrato</dd>
@@ -105,7 +105,7 @@
               <li>Por negarse a informar a “EL ICATECH” sobre los resultados de la prestación del servicio encomendado. </li>
               <li>Por impedir el desempeño normal de las labores durante la prestación de los servicios. </li>
               <li>Si se comprueba que la protesta a que se refiere la Declaración II.2 de “EL PRESTADOR DE SERVICIOS” se realizó con falsedad. </li>
-              <li>Por no otorgar los cursos en el tiempo establecido (horas del curso). </li>  
+              <li>Por no otorgar los cursos en el tiempo establecido (horas del curso). </li>
             </ol>
           <div align="justify"><dd>Asimismo, en caso de tener evidencias de que el curso no fue impartido, se procederá a dar por rescindido el contrato, y se actuará conforme a lo dispuesto por la Ley de Responsabilidad Administrativa para el Estado de Chiapas.  </dd>
             <dd>“EL PRESTADOR DE SERVICIOS” podrá dar por rescindido de forma anticipada el presente contrato, previo aviso que realice por escrito con un mínimo de 10 días hábiles a “EL ICATECH”. </dd>
@@ -127,12 +127,12 @@
             <dd>DÉCIMA SEXTA.- JURISDICCIÓN. Para la interpretación y cumplimiento del presente contrato, así como para todo aquello que no esté expresamente estipulado en el mismo, las partes se someterán a la jurisdicción y competencia de los tribunales del fuero común de la ciudad de Tuxtla Gutiérrez, Chiapas, renunciando al fuero que pudiera corresponderles por razón de su domicilio presente o futuro.  </dd>
             <dd>Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de ______________________, Chiapas; el día ______ de _________ del año 2020, en original y dos tantos. </dd>
             </div>
-          
+
           <br>
           <html lang="es-ES">
             <head>
               <meta charset="utf-8">
-              
+
               <style>
                 table, td {
                   border:0px solid black;
@@ -146,7 +146,7 @@
                 }
               </style>
             </head>
- 
+
 
           <br><body>
             <table>
@@ -202,7 +202,7 @@
               <td>></td>
             </tr>
           </table>
-          
+
      </div>
     </div>
  </body>
