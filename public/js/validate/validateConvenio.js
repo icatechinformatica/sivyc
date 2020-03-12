@@ -29,9 +29,6 @@ $(function(){
             },
             fecha_termino: {
                 required: true
-            },
-            archivo_convenio: {
-                extension: "pdf"
             }
         },
         messages: {
@@ -53,9 +50,6 @@ $(function(){
             },
             fecha_termino: {
                 required: 'La fecha de termino es requerida.'
-            },
-            archivo_convenio: {
-                extension: 'Sólo archivos .pdf son permitidos'
             }
         }
     });
