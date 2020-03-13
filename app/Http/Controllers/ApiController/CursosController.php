@@ -132,7 +132,7 @@ class CursosController extends Controller
      */
     public function edit($id)
     {
-        //
+        // nueva edicion en el controlador del api
     }
 
     /**
