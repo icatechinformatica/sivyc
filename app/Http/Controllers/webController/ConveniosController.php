@@ -47,6 +47,7 @@ class ConveniosController extends Controller
         // convenios guardarlo en el metodo store
 
         $validador = Validator::make($request->all(), [
+            'no_convenio' => 'required',
             'institucion' => 'required',
             'tipo' => 'required',
             'telefono' => 'required',
@@ -69,6 +70,7 @@ class ConveniosController extends Controller
         }
 
         $convenios = new Convenio;
+        $convenios['no_convenio'] = $request->input('no_convenio');
         $convenios['institucion'] = $request->input('institucion');
         $convenios['tipo_sector'] = $request->input('tipo');
         $convenios['telefono'] = $request->input('telefono');
@@ -80,7 +82,6 @@ class ConveniosController extends Controller
         $convenios['nombre_enlace'] = $request->input('nombre_enlace');
         $convenios['status'] = $request->input('status');
         $convenios['direccion'] = $request->input('direccion');
-        $convenios['no_convenio'] = '235ABC';
 
         $convenios->save();
 

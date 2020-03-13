@@ -30,7 +30,7 @@
                             @can('home.index')
                             <a class="dropdown-item" href="{{ route('alumnos.index') }}">Alumnos</a>
                             @endcan
-                            <a class="dropdown-item" href="{{route('convenio.create')}}">Convenios</a>
+                            <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                             </div>
                         </li>
                         <li class="nav-item g-mx-5--lg dropdown">

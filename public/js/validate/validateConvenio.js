@@ -11,6 +11,9 @@ $(function(){
 
     $('#conveniosFrm').validate({
         rules: {
+            no_convenio: {
+                required: true
+            },
             institucion: {
                 required: true
             },
@@ -32,6 +35,9 @@ $(function(){
             }
         },
         messages: {
+            no_convenio: {
+                required: 'El Número de convenio es requerido.'
+            },
             institucion: {
                 required: 'El campo institución es requerido.'
             },

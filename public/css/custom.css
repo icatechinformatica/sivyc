@@ -1,3 +1,6 @@
 /* Add here all your css styles (customizations) */
 
 /*# sourceMappingURL=../../css/custom.map */
+input[type=text], select, textarea {
+    text-transform: uppercase;
+}

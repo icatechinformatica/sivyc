@@ -1,5 +1,7 @@
 @extends("theme.sivyc.layout")
 <!--llamar la plantilla -->
+@section('title', 'Formulario de Convenio | Sivyc Icatech')
+
 @section('content')
  <!--empieza aquí-->
 
@@ -20,10 +22,16 @@
          </div>
          <hr style="border-color:dimgray">
         <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="no_convenio" class="control-label">N° Contrato</label>
+                <input type="text" class="form-control" id="no_convenio" name="no_convenio" placeholder="N° Convenio">
+            </div>
+        </div>
+        <div class="form-row">
             <!-- Organismo -->
             <div class="form-group col-md-6">
                 <label for="institucion" class="control-label">Institución</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="institucion" name="institucion" placeholder="Institución">
+                <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución">
             </div>
             <!--Organismo Fin-->
             <!-- Direccion -->
@@ -101,7 +109,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="remitente" class="control-label">Adjunto Convenio</label>
-                <input type="file" id="archivo_convenio" name="archivo_convenio" class="form-control" accept="application/pdf">
+                <input type="file" id="archivo_convenio" name="archivo_convenio" class="form-control">
             </div>
 
             <div class="form-group col-md-6">
