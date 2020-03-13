@@ -44,9 +44,9 @@ class CursosController extends Controller
         //
         try {
             //code 
-            $validador = Validator::make($request->all(), [
+            // $validador = Validator::make($request->all(), [
 
-            ]);
+            // ]);
 
                 # enviar o generar codigo que si funciona
                 $Curso= new Curso();
@@ -97,7 +97,7 @@ class CursosController extends Controller
                 $Curso->ze = $request->ze;
                 $Curso->save();
 
-                return response()->json(['success' => 'Curso se cargo exitosamente'], 200);
+                return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501); 
         }
