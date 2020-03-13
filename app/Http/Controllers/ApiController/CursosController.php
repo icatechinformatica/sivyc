@@ -18,16 +18,6 @@ class CursosController extends Controller
     {
         //
         $Curso= new Curso();
-
-        $response = [
-
-            'success' => true,
-
-            'data'    => 'Hola',
-
-            'message' => 'Nuevo Mensaje',
-
-        ];
         $cursos = $Curso->all();
 
         return response()->json($cursos, 200);
