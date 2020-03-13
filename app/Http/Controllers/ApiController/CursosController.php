@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\api\Curso;
 
 class CursosController extends Controller
 {
@@ -17,9 +18,7 @@ class CursosController extends Controller
         //
         $Curso= new Curso();
         $cursos = $Curso->all();
-
-
-        return response()->json($response, 200);
+        return response()->json($cursos, 200);
     }
 
     /**
