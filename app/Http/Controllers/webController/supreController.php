@@ -24,7 +24,14 @@ class supreController extends Controller
     public function solicitud_supre_inicio() {
         $supre = new supre();
         $data = $supre::where('id', '!=', '0')->latest()->get();
-        return view('layouts.pages.vstasolicitudsupre', compact('data'));
+
+        $data2 = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
+                               'folios.folio_validacion')
+                        ->where('folios.status', '!=', 'En Proceso')
+                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
+                        ->get();
+
+        return view('layouts.pages.vstasolicitudsupre', compact('data','data2'));
     }
 
     public function frm_formulario() {
@@ -95,46 +102,46 @@ class supreController extends Controller
         $supre = new supre();
         $curso_validado = new tbl_curso();
 
+        supre::where('id', '=', $request->id_supre)
+        ->update(['status' => 'En Proceso',
+                  'unidad_capacitacion' => $request->unidad,
+                  'no_memo' => $request->memorandum,
+                  'fecha' => $request->fecha,
+                  'nombre_para' => $request->destino,
+                  'puesto_para' => $request->destino_puesto,
+                  'nombre_remitente' => $request->remitente,
+                  'puesto_remitente' => $request->remitente_puesto,
+                  'nombre_valida' => $request->nombre_valida,
+                  'puesto_valida' => $request->puesto_valida,
+                  'nombre_elabora' => $request->nombre_elabora,
+                  'puesto_elabora' => $request->puesto_elabora,
+                  'nombre_ccp1' => $request->nombre_ccp1,
+                  'puesto_ccp1' => $request->puesto_ccp1,
+                  'nombre_ccp2' => $request->nombre_ccp2,
+                  'puesto_ccp2' => $request->puesto_ccp2]);
 
-        $validData = $request->validate([
-            'unidad_capacitacion' => 'required',
-            'no_memo' => 'required',
-            'fecha' => 'required',
-            'nombre_para' => 'required',
-            'puesto_para' => 'required',
-            'nombre_remitente' => 'required',
-            'puesto_remitente' => 'required',
-            'nombre_valida' => 'required',
-            'puesto_valida' => 'required',
-            'nombre_elabora' => 'required',
-            'puesto_elabora' => 'required',
-            'nombre_ccp1' => 'required',
-            'puesto_ccp1' => 'required',
-            'nombre_ccp2' => 'required',
-            'puesto_ccp2' => 'required',
-        ]);
 
+            folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
+            $id = $supre->SELECT('id')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
 
+        //Guarda Folios
         foreach ($request->addmore as $key => $value){
-            $foliomod = new folio();
-            $curso = new tbl_curso();
-            dd($value);
-            $clave = $curso::SELECT('clave')->WHERE('id', '=', $value['id_cursos']);
-            folio::DELETE('id_cursos','=',$value['id_cursos']);
-            $foliomod->folio_validacion = $value['folio'];
-            $foliomod->numero_presupuesto = $value['numeropresupuesto'];
-            $foliomod->iva = $value['iva'];
-            $clave = $clave->clave;
+            $folio = new folio();
+            $folio->folio_validacion = $value['folio'];
+            $folio->numero_presupuesto = $value['numeropresupuesto'];
+            $folio->iva = $value['iva'];
+            $clave = $value['clavecurso'];
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
             $importe_hora = $importe / $hora->horas;
-            $foliomod->importe_hora = $importe_hora;
-            $foliomod->importe_total = $value['importe'];
-            $foliomod->id_supre = $request->id_supre;
-            $foliomod->id_cursos = $hora->id;
-            $foliomod->save();
+            $folio->importe_hora = $importe_hora;
+            $folio->importe_total = $value['importe'];
+            $folio->id_supre = $id->id;
+            $folio->id_cursos = $hora->id;
+            $folio->status = 'En Proceso';
+            $folio->save();
         }
 
         return redirect()->route('supre-inicio')

@@ -4,6 +4,9 @@ namespace App\Http\Controllers\WebController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use App\Models\contratos;
 use App\Models\InstructorPerfil;
 use App\Models\supre;
@@ -20,9 +23,10 @@ class ContratoController extends Controller
     {
         $supre = new supre();
         $data = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
-                               'folios.folio_validacion')
+                               'folios.folio_validacion','contratos.docs')
                         ->where('folios.status', '!=', 'En Proceso')
                         ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
+                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
                         ->get();
         return view('layouts.pages.vstacontratoini', compact('data'));
     }
@@ -86,7 +90,23 @@ class ContratoController extends Controller
     }
 
     public function solicitud_pago($id){
-        return view('layouts.pages.vstasolicitudpago');
+        $X = new contratos();
+        $folio = new folio();
+        $dataf = $folio::where('id_folios', '=', $id)->first();
+        $datac = $X::where('id_folios', '=', $id)->first();
+        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf'));
+    }
+
+    public function save_doc(Request $request){
+
+        $file = $request->file('doc_pdf'); # obtenemos el archivo
+        $urldocs = $this->pdf_upload($file);
+
+        contratos::where('id_contrato', '=', $request->id_contrato)
+        ->update(['docs' => $urldocs]);
+
+        folio::where('id_folios', '=', $request->id_folio)
+        ->update(['status' => 'Verificando_Pago']);
     }
 
 
@@ -121,5 +141,15 @@ class ContratoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    protected function pdf_upload($pdf)
+    {
+                    $tamanio = $pdf->getClientSize(); #obtener el tamaño del archivo del cliente
+                    $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
+                    $pdfFile = trim( Str::slug($pdf->getClientOriginalName(), '-')) . "." . $extensionPdf; // nombre de la imagen al momento de subirla
+                    $pdf->storeAs('/uploadFiles/', $pdfFile); // guardamos el archivo en la carpeta storage
+                    $pdfUrl = Storage::url('/uploadFiles/'.$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+                    return $pdfUrl;
     }
 }

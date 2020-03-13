@@ -3,6 +3,7 @@ $(function(){
     // ---- tablas de consultas ----
         $('#table-perfprof').DataTable();
         $('#table-instructor').DataTable();
+        $('#table-folios').DataTable();
     // ---- END tablas de consultas
 
     $.validator.addMethod("CURP", function (value, element) {
