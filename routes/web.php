@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid')->name('inscripcion-paso2');
     // documentos pdf Desarrollado por Adrian
     Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@export_pdf')->name('presupuestaria');
-    Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@index')->name('contratohonorarios');
+    Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@export_pdf')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     /**
      * contratos Desarrollando por Daniel

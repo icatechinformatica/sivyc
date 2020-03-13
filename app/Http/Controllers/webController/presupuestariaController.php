@@ -18,10 +18,11 @@ class presupuestariaController extends Controller
     public function index()
     {
         //
-        return view('layouts.pdfpages.procesodepago');
+        //return view('layouts.pdfpages.procesodepago');
         //return view('layouts.pdfpages.presupuestaria');
         //return view('layouts.pdfpages.contratohonorarios');
         //return view('layouts.pdfpages.solicitudsuficiencia');
+        return view('layouts.pdfpages.valsupre');
     }
 
     /**
@@ -89,18 +90,20 @@ class presupuestariaController extends Controller
     {
         //
     }
-    public function export_pdf($id) {
-        $supre = new supre();
-        $folio = new folio();
+    public function export_pdf() {
+        //$supre = new supre();
+        /*olio = new folio();
         $data_supre = $supre::WHERE('id', '=', $id)->FIRST();
         $data_folio = $folio::WHERE('id_supre', '=', $id)->GET();
         $date = strtotime($data_supre->fecha);
         $D = date('d', $date);
         $M = date('m',$date);
-        $Y = date("Y",$date);
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
+        $Y = date("Y",$date);*/
+        //$pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
         //$pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia',compact());
-        //$pdf = PDF::loadView('layouts.pdfpages.contratohonorarios');
+        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios');
+        //return view('layouts.pdfpages.valsupre');
+        //$pdf = PDF::loadView('layouts.pdfpages.valsupre');        
         //$doomPdf->loadHtml('hello world');
 
         // (Optional) configuramos el tamaño y orientación de la hoja
