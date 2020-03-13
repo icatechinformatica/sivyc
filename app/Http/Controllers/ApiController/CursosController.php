@@ -15,15 +15,8 @@ class CursosController extends Controller
     public function index()
     {
         //
-        $response = [
-
-            'success' => true,
-
-            'data'    => 'Hola',
-
-            'message' => 'Nuevo Mensaje',
-
-        ];
+        $Curso= new Curso();
+        $cursos = $Curso->all();
 
 
         return response()->json($response, 200);
