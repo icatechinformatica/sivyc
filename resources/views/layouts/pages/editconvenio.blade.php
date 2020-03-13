@@ -20,16 +20,24 @@
          </div>
          <hr style="border-color:dimgray">
         <div class="form-row">
+            <!--numero de control-->
+            <div class="form-group col-md-6">
+                <label for="no_convenio" class="control-label">Institución</label>
+                <input type="text" class="form-control" id="no_convenio" name="no_convenio" placeholder="N° de Convenio" value="{{$convenios->no_convenio}}">
+            </div>
+            <!--numero de control END-->
+        </div>
+        <div class="form-row">
             <!-- Organismo -->
             <div class="form-group col-md-6">
                 <label for="institucion" class="control-label">Institución</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="institucion" name="institucion" placeholder="Institución" value="{{$convenios->institucion}}">
+                <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución" value="{{$convenios->institucion}}">
             </div>
             <!--Organismo Fin-->
             <!-- Direccion -->
             <div class="form-group col-md-6">
                 <label for="tipo" class="control-label">Tipo</label>
-                <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Tipo">
+                <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Tipo" value="{{$convenios->tipo_sector}}">
             </div>
             <!-- Direccion FIN-->
         </div>
