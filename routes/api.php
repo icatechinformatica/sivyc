@@ -17,8 +17,7 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::middleware('auth:api')->group(function () {
-
+Route::middleware('cors')->group(function () {
+    Route::resource('cursos', 'ApiController\CursosController');
+    Route::resource('Instructores', 'ApiController\InstructoresController');
 });
-
-Route::resource('cursos', 'ApiController\CursosController');
