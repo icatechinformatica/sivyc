@@ -42,9 +42,9 @@ class CursosController extends Controller
         //
         try {
             //code
-            $validador = Validator::make($request->all(), [
+            /*$validador = Validator::make($request->all(), [
 
-            ]);
+            ]);*/
 
                 # enviar o generar codigo que si funciona
                 $Curso= new Curso();
