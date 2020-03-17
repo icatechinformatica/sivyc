@@ -115,4 +115,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/convenios/guardar', 'webController\ConveniosController@store')->name('convenios.store');
     Route::get('/convenios/show/{id}', 'UserProfileController@show')->name('convenios.show');
     Route::get('/convenios/edit/{id}', 'webController\ConveniosController@edit')->name('convenios.edit');
+    /**
+     * agregando financiero rutas -- DMC
+     */
+    Route::get('financiero/indice', 'webController\FinancieroController@index')
+           ->name('financiero.index');
 });
