@@ -20,4 +20,5 @@ use Illuminate\Http\Request;
 Route::middleware('cors')->group(function () {
     Route::resource('cursos', 'ApiController\CursosController');
     Route::resource('Instructores', 'ApiController\InstructoresController');
+    Route::get('Instructoreshow/{nombre}/{apaterno}/{apmaterno}', 'ApiController\InstructoresController@show');
 });
