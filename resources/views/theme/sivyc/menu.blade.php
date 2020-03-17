@@ -11,7 +11,9 @@
                         </li>
                     @else
                         <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{ route('cv_inicio') }}">Cursos Validados</a></li>
-                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('solicitud-opcion')}}">Suficencia Presupuestal</a></li>
+                        @can('supre.index')
+                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('supre-inicio')}}">Suficencia Presupuestal</a></li>
+                        @endcan
 
                         <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('contrato-inicio')}}">Contrato</a></li>
                         <!--helper-->
@@ -27,7 +29,7 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{{route('frm-cursos')}}">Cursos</a>
                             <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
-                            @can('home.index')
+                            @can('alumnos.index')
                             <a class="dropdown-item" href="{{ route('alumnos.index') }}">Alumnos</a>
                             @endcan
                             <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>

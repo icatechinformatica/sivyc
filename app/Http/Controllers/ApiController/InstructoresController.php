@@ -15,7 +15,9 @@ class InstructoresController extends Controller
      */
     public function index()
     {
-        //
+        $Instructor= new Instructor();
+        $instructores = $Instructor->all();
+        return response()->json($instructores, 200);
     }
 
     /**

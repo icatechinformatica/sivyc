@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
            ->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
     Route::get('/alumnos/paso1', 'webController\AlumnoController@create')
-           ->name('alumnos.inscripcion-paso1')->middleware('can:alumnos.inscripcion-paso1');
+           ->name('alumnos.inscripcion-paso1')->middleware('can:alumnos.create');
     Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
@@ -88,10 +88,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/instructor/curso-impartir/guardar/{id}{idInstructor}', 'webController\InstructorController@cursoimpartir_save')->name('cursoimpartir-guardar');
 
     // Solicitud de Suficiencia Presupuestal
-    Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')->name('supre-inicio');
-    Route::get('/supre/solicitud/crear', 'webController\supreController@frm_formulario')->name('frm-supre');
-    Route::post('/supre/solicitud/guardar',"webController\supreController@store")->name('solicitud-guardar');
-    Route::get('/supre/solicitud/modificar/{id}', 'webController\supreController@solicitud_modificar')->name('modificar_supre');
+    Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')
+           ->name('supre-inicio')->middleware('can:supre.index');
+    Route::get('/supre/solicitud/crear', 'webController\supreController@frm_formulario')
+           ->name('frm-supre')->middleware('can:supre.create');
+    Route::post('/supre/solicitud/guardar',"webController\supreController@store")
+           ->name('solicitud-guardar');
+    Route::get('/supre/solicitud/modificar/{id}', 'webController\supreController@solicitud_modificar')
+         ->name('modificar_supre')->middleware('can:supre.update');
     Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
     // Validar Cursos
