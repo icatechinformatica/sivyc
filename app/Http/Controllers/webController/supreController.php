@@ -21,17 +21,28 @@ class supreController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function solicitud_supre_inicio() {
+    Public function opcion(){
+        return view('layouts.pages.vstasolicitudopc');
+    }
+
+     public function solicitud_supre_inicio() {
         $supre = new supre();
         $data = $supre::where('id', '!=', '0')->latest()->get();
 
+
+
+        return view('layouts.pages.vstasolicitudsupre', compact('data'));
+    }
+
+    public function solicitud_folios(){
+        $supre = new supre();
         $data2 = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
-                               'folios.folio_validacion')
-                        ->where('folios.status', '!=', 'En Proceso')
+        'folios.folio_validacion')
+                        ->where('folios.status', '!=', 'x')
                         ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->get();
 
-        return view('layouts.pages.vstasolicitudsupre', compact('data','data2'));
+        return view('layouts.pages.vstasolicitudfolio', compact('data2'));
     }
 
     public function frm_formulario() {
@@ -203,7 +214,12 @@ class supreController extends Controller
         $Y = date("Y",$date);
 
 
-        //pdf 2
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
+        return  $pdf->stream('medium.pdf');
+    }
+
+    public function tablasupre_pdf($id){
+        $supre = new supre;
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
@@ -214,14 +230,23 @@ class supreController extends Controller
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
-        $view2 = view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));;
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
-       // $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
+        $date = strtotime($data2->fecha);
+        $D = date('d', $date);
+        $M = date('m',$date);
+        $Y = date("Y",$date);
 
-        // (Optional) configuramos el tamaño y orientación de la hoja
+        $datev = strtotime($data2->fecha_validacion);
+        $Dv = date('d', $datev);
+        $Mv = date('m',$datev);
+        $Yv = date("Y",$datev);
+
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv'));
+        $pdf->setPaper('A4', 'Landscape');
+
+
+
         return $pdf->stream('medium.pdf');
-
 
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
     }
@@ -238,6 +263,24 @@ class supreController extends Controller
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
+
+        $date = strtotime($data2->fecha);
+        $D = date('d', $date);
+        $M = date('m',$date);
+        $Y = date("Y",$date);
+
+        $datev = strtotime($data2->fecha_validacion);
+        $Dv = date('d', $datev);
+        $Mv = date('m',$datev);
+        $Yv = date("Y",$datev);
+
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv'));
+        $pdf->setPaper('A4', 'Landscape');
+
+
+
+        return $pdf->stream('medium.pdf');
+
         return view('layouts.pdfpages.valsupre', compact('data','data2'));
     }
 

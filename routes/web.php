@@ -19,6 +19,11 @@ Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaCon
 //Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();
 
+//Ruta supre sin Middleware
+Route::get('/supre/solicitud/opc', 'webController\supreController@opcion')->name('solicitud-opcion');
+Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_folios')->name('solicitud-folio');
+Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
+
 //Ruta Contrato sin Middleware
 Route::get('/Contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');

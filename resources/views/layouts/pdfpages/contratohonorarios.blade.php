@@ -183,9 +183,6 @@
               <td colspan="2"><div align="center">DEPARTAMENTO DE VINCULACION</td></div>
             </tr>
           </table>
-<<<<<<< HEAD
-
-=======
           <div align=center>
             <br>
             <br/>
@@ -197,7 +194,6 @@
         <div align=justify> <small>Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas cursos, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. (nombre del director), Director (a) de la Unidad de Capacitación (nombre unidad), en el Municipio de (municipio), a (00) de (mes) del año 2020.</small>
         </div>
 
->>>>>>> adrian
      </div>
     </div>
  </body>
