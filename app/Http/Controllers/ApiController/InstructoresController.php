@@ -47,9 +47,9 @@ class InstructoresController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($prueba,$prueba2)
     {
-        //
+        return Instructor::where([['apellido_paterno','=',$prueba],['apellido_materno','=',$prueba2]])->get();
     }
 
     /**
