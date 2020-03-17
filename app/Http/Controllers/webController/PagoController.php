@@ -5,6 +5,7 @@ namespace App\Http\Controllers\webController;
 use App\Models\pago;
 use App\Models\instructor;
 use App\Models\contratos;
+use App\Models\folio;
 use Illuminate\Http\Request;
 use Redirect,Response;
 use App\Http\Controllers\Controller;
@@ -24,7 +25,7 @@ class PagoController extends Controller
         $contrato = new contratos();
         $pago = new pago();
 
-        $dataCont = $contrato::WHERE('status', '=', 'En Proceso')->LATEST()->GET();
+        $dataCont = folio::WHERE('status', '=', 'En_Proceso')->LATEST()->GET();
 
         $dataPago = $pago::where('id', '!=', '0')->latest()->get();
 
