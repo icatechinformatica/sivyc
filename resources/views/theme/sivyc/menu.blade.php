@@ -11,7 +11,7 @@
                         </li>
                     @else
                         <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{ route('cv_inicio') }}">Cursos Validados</a></li>
-                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('supre-inicio')}}">Suficencia Presupuestal</a></li>
+                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('solicitud-opcion')}}">Suficencia Presupuestal</a></li>
 
                         <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('contrato-inicio')}}">Contrato</a></li>
                         <!--helper-->

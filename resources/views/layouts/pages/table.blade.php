@@ -34,7 +34,7 @@
         </div>
         <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Busqueda por cursos.">
         <br>
-        <table class="table table-bordered" id="table-one">
+        <table width="70%" class="table table-bordered" id="table-one">
             <caption>Lista de Cursos</caption>
             <thead>
               <tr>
