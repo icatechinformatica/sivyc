@@ -69,7 +69,7 @@ class supreController extends Controller
         $supre->puesto_ccp1 = $request->puesto_ccp1;
         $supre->nombre_ccp2 = $request->nombre_ccp2;
         $supre->puesto_ccp2 = $request->puesto_ccp2;
-        $supre->status = 'En Proceso';
+        $supre->status = 'En_Proceso';
         $supre->save();
 
        $id = $supre->SELECT('id')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
@@ -90,7 +90,7 @@ class supreController extends Controller
             $folio->importe_total = $value['importe'];
             $folio->id_supre = $id->id;
             $folio->id_cursos = $hora->id;
-            $folio->status = 'En Proceso';
+            $folio->status = 'En_Proceso';
             $folio->save();
         }
 
@@ -104,7 +104,11 @@ class supreController extends Controller
         $folio = new folio();
 
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
-        $getfolios = $folio::WHERE('id_supre','=', $getsupre->id)->GET();
+        $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.numero_presupuesto',
+                                    'folios.importe_total','folios.iva','tbl_cursos.clave')
+                            ->WHERE('id_supre','=', $getsupre->id)
+                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                            ->GET();
         return view('layouts.pages.modsupre',compact('getsupre','getfolios'));
     }
 
@@ -114,14 +118,14 @@ class supreController extends Controller
         $curso_validado = new tbl_curso();
 
         supre::where('id', '=', $request->id_supre)
-        ->update(['status' => 'En Proceso',
-                  'unidad_capacitacion' => $request->unidad,
-                  'no_memo' => $request->memorandum,
+        ->update(['status' => 'En_Proceso',
+                  'unidad_capacitacion' => $request->unidad_capacitacion,
+                  'no_memo' => $request->no_memo,
                   'fecha' => $request->fecha,
-                  'nombre_para' => $request->destino,
-                  'puesto_para' => $request->destino_puesto,
-                  'nombre_remitente' => $request->remitente,
-                  'puesto_remitente' => $request->remitente_puesto,
+                  'nombre_para' => $request->nombre_para,
+                  'puesto_para' => $request->puesto_para,
+                  'nombre_remitente' => $request->nombre_remitente,
+                  'puesto_remitente' => $request->puesto_remitente,
                   'nombre_valida' => $request->nombre_valida,
                   'puesto_valida' => $request->puesto_valida,
                   'nombre_elabora' => $request->nombre_elabora,
@@ -131,10 +135,11 @@ class supreController extends Controller
                   'nombre_ccp2' => $request->nombre_ccp2,
                   'puesto_ccp2' => $request->puesto_ccp2]);
 
-
-            folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
-            $id = $supre->SELECT('id')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
-
+            if($request->id_supre != NULL)
+            {
+                folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
+            }
+            $id = $supre::SELECT('id')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
         //Guarda Folios
         foreach ($request->addmore as $key => $value){
             $folio = new folio();
@@ -151,7 +156,7 @@ class supreController extends Controller
             $folio->importe_total = $value['importe'];
             $folio->id_supre = $id->id;
             $folio->id_cursos = $hora->id;
-            $folio->status = 'En Proceso';
+            $folio->status = 'En_Proceso';
             $folio->save();
         }
 

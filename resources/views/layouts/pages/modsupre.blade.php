@@ -22,6 +22,12 @@
         <div style="text-align: right;width:100%">
             <button type="button" id="mod_supre" class="btn btn-warning btn-lg">Modificar Campos</button>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputobservacion" class="control-label"><b>Observaciones de Rechazo</b></label>
+                <textarea cols="4" rows="4" type="text" class="form-control" disabled aria-required="true" onkeypress="return soloLetras(event)" id="observacion" name="observacion">{{ $getsupre->observacion}}</textarea>
+            </div>
+        </div>
         <br>
         <hr style="border-color:dimgray">
         <div class="form-row">
@@ -62,7 +68,7 @@
                 <tr>
                     <td><input type="text" id="addmore[{{$key}}][folio]" name="addmore[{{$key}}][folio]" value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="{{ $data->numero_presupuesto }}" placeholder="numero presupuesto" class="form-control" /></td>
-                    <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" placeholder="clave curso" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" value="{{ $data->clave}}" placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" /></td>
                     <input hidden id="addmore[{{$key}}][id_cursos]" name="addmore[{{$key}}][id_cursos]" value="{{$data->id_cursos}}">

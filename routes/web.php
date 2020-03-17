@@ -95,7 +95,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supre/solicitud/guardar',"webController\supreController@store")
            ->name('solicitud-guardar');
     Route::get('/supre/solicitud/modificar/{id}', 'webController\supreController@solicitud_modificar')
-         ->name('modificar_supre')->middleware('can:supre.update');
+         ->name('modificar_supre')->middleware('can:supre.edit');
     Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
     // Validar Cursos

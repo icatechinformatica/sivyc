@@ -51,19 +51,26 @@
                     <th scope="row">{{$itemData->no_memo}}</th>
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->fecha}}</td>
-                        <td>{{$itemData->status}}</td>
                         <td>
-                            @if ($itemData->status == 'Validado' || $itemData->status == 'En Proceso')
+                            @if ($itemData->status == 'En_Proceso')
+                                En Proceso
+                            @else
+                                {{$itemData->status}}
+                            @endif
+                        </td>
+                        <td>
+                            @if ($itemData->status == 'Validado' || $itemData->status == 'En_Proceso')
                                 <a class="btn btn-warning" href="{{route('supre-pdf', ['id' => $itemData->id])}}" target="_blank">Solicitud PDF</a>
+                                <a class="btn btn-warning" href="{{route('tablasupre-pdf', ['id' => $itemData->id])}}" target="_blank">Anexo PDF</a>
                                 <input hidden value={{$itemData->id}} id='pdfp'>
                                 @if ($itemData->status == 'Validado')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validacion PDF</a>
                                 @endif
-                                @if ($itemData->status == 'En Proceso')
+                                @if ($itemData->status == 'En_Proceso')
                                 <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
                             @endif
                             @endif
-                            @if ($itemData->status == 'En Proceso' || $itemData->status == 'Rechazado')
+                            @if ($itemData->status == 'En_Proceso' || $itemData->status == 'Rechazado')
                                 <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
                             @endif
                         </td>

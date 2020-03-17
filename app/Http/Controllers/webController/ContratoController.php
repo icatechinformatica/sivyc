@@ -116,7 +116,7 @@ class ContratoController extends Controller
         $contrato = new contratos();
 
         $data_contrato = contratos::WHERE('id_folios', '=', $id)->FIRST();
-        $data = $contrato::SELECT('folios.id_folios','tbl_cursos.id','instructores.nombre','instructores.apellidoPaterno',
+        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
                                   'instructores.domicilio','instructor_perfil.especialidad')
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
@@ -126,7 +126,12 @@ class ContratoController extends Controller
                           ->FIRST();
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
 
-        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins'));
+        $date = strtotime($data_contrato->fecha_firma);
+        $D = date('d', $date);
+        $M = date('m',$date);
+        $Y = date("Y",$date);
+
+        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins','D','M','Y'));
 
          return $pdf->stream('medium.pdf');
 

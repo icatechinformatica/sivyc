@@ -69,12 +69,12 @@
                             @endif
                             @if ($itemData->status == 'Verificando_Pago')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
-                                    <a class="btn btn-info" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">Contrato PDF</a>
+                                    <a class="btn btn-info" href="{{route('contrato-pdf', ['id' => $itemData->id_folios])}}" target="_blank">Contrato PDF</a>
                                     <a class="btn btn-danger" href="{{$itemData->docs}}" target="_blank">Sol. Pago PDF</a>
                             @endif
                             @if ($itemData->status == 'Pago en Proceso')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
-                                    <a class="btn btn-info" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">Contrato PDF</a>
+                                    <a class="btn btn-info" href="{{route('contrato-pdf', ['id' => $itemData->id_folios])}}" target="_blank">Contrato PDF</a>
                             @endif
                         </td>
                     </tr>
