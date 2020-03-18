@@ -11,16 +11,30 @@
         box-sizing: border-box;
         }
 
-        #myInput {
+        #wrappertop {
+        margin-top: 0%
         background-image: url('img/search.png');
         background-position: 5px 10px;
         background-repeat: no-repeat;
         background-size: 32px;
         width: 100%;
+        line-height: 60%;
         font-size: 16px;
         padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
+        border: 1px solid transparent;
+        margin-bottom: 0px;
+        }
+        #wrapperbot {
+        background-image: url('img/search.png');
+        background-position: 5px 10px;
+        background-repeat: no-repeat;
+        background-size: 32px;
+        width: 100%;
+        line-height: 70%;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid transparent;
+        margin-bottom: 0px;
         }
 
     div.a {
@@ -42,7 +56,7 @@
 
 </head>
     <body>
-        <div id="wrapper">
+        <div id="wrappertop">
             <div align=center> <FONT SIZE=0><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS<br/>
                 <FONT SIZE=0>DIRECCION DE PLANEACION</FONT><br/>
                 <FONT SIZE=0>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO</FONT><br/>
@@ -67,6 +81,7 @@
                     el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
                 </div>
             <br><br>
+        </div>
             <div class="form-row">
                 <table width="700" class="table table-bordered" id="table-one">
                     <thead>
@@ -109,10 +124,10 @@
                     </tbody>
                 </table>
             </div>
-
+        <div id="wrapperbot">
             <div align=center>
-                <br/><small>{{$data2->nombre_firmante}}</small>
-                <br>________________________________________
+                <small>{{$data2->nombre_firmante}}</small>
+                <br>________________________________________<br/>
                 <br><small>{{$data2->puesto_firmante}}</small></b>
             </div>
             <br><br><br><p><FONT SIZE=1><b>C.c.p.</b>{{$data2->val_ccp1}}.-{{$data2->val_ccpp1}}.-Para su conocimiento<br/>

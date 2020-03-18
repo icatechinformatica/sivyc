@@ -31,7 +31,6 @@
                         <td scope="col"><small>IVA 16%</small></td>
                         <td scope="col" ><small>PARTIDA/ CONCEPTO</small></td>
                         <td scope="col"><small>IMPORTE</small></td>
-                        <td scope="col"><small>Fuente de financiamiento federal</small></td>
                         <td scope="col" ><small>OBSERVACION</small></td>
                     </tr>
                 </thead>

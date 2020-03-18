@@ -11,16 +11,8 @@
         <form action="{{ url('/pago/guardar') }}" method="post" id="registerpago" enctype="multipart/form-data">
             @csrf
             <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="inputnumero_contrato">Numero de Contrato</label>
-                    <input type="text" name="numero_contrato" id="numero_contrato" class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-3">
-                    <br>
-                    <button type="button" id="search_" class="btn btn-info btn-lg">Buscar</button>
-                </div>
+                <h2> Confirmación de Datos </h2>
             </div>
-            <hr style="border-color:dimgray">
             <div class="form-row">
                 <div class="form-gorup col-md-3">
                     <label for="inputnumero_control">Numero de Control de Instructor</label>
@@ -61,7 +53,10 @@
                     <input type="text" name="iva" id="iva" disabled class="form-control" aria-required="true">
                 </div>
             </div>
-            <br>
+            <hr style="border-color:dimgray">
+            <div class="form-row">
+                <!-- PONER TITULO-->
+            </div>
             <div class="form-row">
                 <div class="form-gorup col-md-3">
                     <label for="inputnumero_pago">Numero de Pago</label>
