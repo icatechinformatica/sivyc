@@ -46,7 +46,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data as $itemData)
+                @foreach ($data as $key=>$itemData)
                     <tr>
                         <th scope="row">{{$itemData->no_memo}}</th>
                         <td>{{$itemData->unidad_capacitacion}}</td>
@@ -60,7 +60,7 @@
                             @endif
                             @if ($itemData->status == 'Contratado')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
-                                    <a class="btn btn-info" href="{{route('contrato-pdf', ['id' => $itemData->id_folios])}}" target="_blank">Contrato PDF</a>
+                                    <a class="btn btn-info" href="{{route('contrato-pdf', ['id' => $itemData->id_contrato])}}" target="_blank">Contrato PDF</a>
                                     <a class="btn btn-success" href="{{route('solicitud-pago', ['id' => $itemData->id_folios])}}">Solicitar Pago</a>
                             @endif
                             @if ($itemData->status == 'Pago_Rechazado')

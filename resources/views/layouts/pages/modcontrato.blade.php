@@ -68,7 +68,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="fecha_firma" class="control-label">Fecha de Firma</label>
-                    <input type="date" class="form-control" disabled id="fecha_firma" name="fecha_firma" {{$datacon->fecha_firma}}>
+                    <input type="date" class="form-control" disabled id="fecha_firma" name="fecha_firma" value={{$datacon->fecha_firma}}>
                 </div>
             </div>
             <div class="form-row">
@@ -112,6 +112,7 @@
             <!-- END TESTIGOS-->
             <br>
             <input id="id_folio" name="id_folio" hidden value='{{$data->id_folios}}'>
+            <input id="id_contrato" name="id_contrato" hidden value='{{$datacon->id_contrato}}'>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">

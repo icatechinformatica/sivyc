@@ -1,5 +1,5 @@
 <?php
-
+//Creado por Orlando Chavez
 namespace App\Http\Controllers\WebController;
 
 use App\Http\Controllers\Controller;
@@ -110,6 +110,29 @@ class ContratoController extends Controller
         return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon'));
     }
 
+    public function save_mod(Request $request){
+        contratos::where('id_contrato', '=', $request->id_contrato)
+        ->update(['numero_contrato' => $request->numero_contrato,
+                  'instructor_perfilid' => $request->perfil_instructor,
+                  'cantidad_letras1' => $request->cantidad_letras1,
+                  'cantidad_letras2' => $request->cantidad_letras2,
+                  'municipio' => $request->lugar_expedicion,
+                  'fecha_firma' => $request->fecha_firma,
+                  'nombre_director' => $request->nombre_director,
+                  'unidad_capacitacion' => $request->unidad_capacitacion,
+                  'numero_circular' => $request->no_circulardir,
+                  'testigo1' => $request->testigo1,
+                  'puesto_testigo1' => $request->puesto_testigo1,
+                  'testigo2' => $request->testigo2,
+                  'puesto_testigo2' => $request->puesto_testigo2]);
+
+        supre::where('id', '=', $request->id_supre)
+        ->update(['status' => 'En_Proceso']);
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Contrato Modificado');
+    }
+
     public function solicitud_pago($id){
         $X = new contratos();
         $folio = new folio();
@@ -121,13 +144,18 @@ class ContratoController extends Controller
     public function save_doc(Request $request){
 
         $file = $request->file('doc_pdf'); # obtenemos el archivo
-        $urldocs = $this->pdf_upload($file);
-
-        contratos::where('id_contrato', '=', $request->id_contrato)
-        ->update(['docs' => $urldocs]);
+        $urldocs = $this->pdf_upload($file, $request->id_contrato); #invocamos el método
+        // guardamos en la base de datos
+        $contrato = contratos::find($request->id_contrato);
+        $contrato->docs = trim($urldocs);
+        $contrato->save();
 
         folio::where('id_folios', '=', $request->id_folio)
         ->update(['status' => 'Verificando_Pago']);
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Solicitud de Pago Agregado');
+
     }
 
 
@@ -136,7 +164,7 @@ class ContratoController extends Controller
 
         $contrato = new contratos();
 
-        $data_contrato = contratos::WHERE('id_folios', '=', $id)->FIRST();
+        $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
                                   'instructores.domicilio','instructor_perfil.especialidad')
@@ -169,13 +197,14 @@ class ContratoController extends Controller
         //
     }
 
-    protected function pdf_upload($pdf)
+    protected function pdf_upload($pdf, $id)
     {
-                    $tamanio = $pdf->getClientSize(); #obtener el tamaño del archivo del cliente
-                    $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
-                    $pdfFile = trim( Str::slug($pdf->getClientOriginalName(), '-')) . "." . $extensionPdf; // nombre de la imagen al momento de subirla
-                    $pdf->storeAs('/uploadFiles/', $pdfFile); // guardamos el archivo en la carpeta storage
-                    $pdfUrl = Storage::url('/uploadFiles/'.$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
-                    return $pdfUrl;
+        $tamanio = $pdf->getClientSize(); #obtener el tamaño del archivo del cliente
+        $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
+        # nuevo nombre del archivo
+        $pdfFile = trim("docs"."_".date('YmdHis')."_".$id.".".$extensionPdf);
+        $pdf->storeAs('/uploadFiles/instructor/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $pdfUrl;
     }
 }
