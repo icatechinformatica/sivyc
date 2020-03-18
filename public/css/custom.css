@@ -4,3 +4,8 @@
 input[type=text], select, textarea {
     text-transform: uppercase;
 }
+
+.hide {
+    display: none;
+}
+

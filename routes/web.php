@@ -81,6 +81,8 @@ Route::middleware(['auth'])->group(function () {
     // cambiando status
     Route::get('/pago/verificandopago/{idfolio}', 'webController\PagoController@verificar_pago')->name('pago.verificando');
     Route::get('/pago/verificar_pago/{id}', 'webController\PagoController@show')->name('pago.verificarpago');
+    Route::post('/pago/validar_pago', 'webController\PagoController@guardar_pago')->name('pago.validar');
+    Route::get('/pago/validacion/{idfolio}', 'webController\PagoController@pago_validar')->name('pago.validacion');
 
     // Crea instructor
     Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');
