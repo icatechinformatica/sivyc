@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pago/fill', 'webController\PagoController@fill');
     // cambiando status
     Route::get('/pago/verificandopago/{idfolio}', 'webController\PagoController@verificar_pago')->name('pago.verificando');
+    Route::get('/pago/verificar_pago/{id}', 'webController\PagoController@show')->name('pago.verificarpago');
 
     // Crea instructor
     Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');

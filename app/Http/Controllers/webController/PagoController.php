@@ -52,4 +52,25 @@ class PagoController extends Controller
         $folio->save();
         return redirect()->route('pago-inicio');
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+        $contrato = new contratos();
+
+        $contratos = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.cantidad_letras2',
+        'contratos.numero_circular', 'contratos.nombre_director', 'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.testigo1', 'contratos.puesto_testigo1',
+        'contratos.testigo2', 'contratos.puesto_testigo2', 'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios')
+        ->WHERE('contratos.id_contrato', '=', $id)
+        ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+        ->GET();
+
+        return view('layouts.pages.vstvalidarpago', compact('contratos'));
+    }
 }
