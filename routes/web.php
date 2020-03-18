@@ -99,10 +99,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
     // Validar Cursos
-    Route::get('/validar-curso/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cv_inicio');
-    Route::get('/validar-curso/crear', 'webController\CursoValidadoController@cv_crear')->name('cv_crear');
-    Route::post('/validar-curso/fill1', 'webController\CursoValidadoController@fill1');
-    Route::post("/validar-curso/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
+    Route::get('/cursos/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos.index');
+    // Route::get('/cursos/crear', 'webController\CursoValidadoController@cv_crear')->name('cv_crear');
+    Route::post('/cursos/fill1', 'webController\CursoValidadoController@fill1');
+    Route::post("/cursos/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
 
     // Validacion de Suficiencia Presupuestal
     Route::get('/supre/validacion/inicio', 'webController\supreController@validacion_supre_inicio')->name('vasupre-inicio');
