@@ -53,13 +53,13 @@
                         <td>{{$itemData->status}}</td>
                         <td>
                             @switch($itemData->status)
-                                @case('verificando_pago')
-                                <a class="btn btn-primary" href="{{route('pago.verificando')}}">Verificar</a>
+                                @case('Verificando_Pago')
+                                <a class="btn btn-primary" href="{{route('pago.verificando', ['idfolio' => $itemData->id_folios])}}">Verificar</a>
                                     @break
-                                @case('pago_verificado')
+                                @case('Pago_Verificado')
                                 <a class="btn btn-success" href="{{route('alumnos.inscripcion-paso1')}}">Verificar Pago</a>
                                     @break
-                                @case('finalizado')
+                                @case('Finalizado')
                                 <a class="btn btn-danger" href="{{route('alumnos.inscripcion-paso1')}}">Finalizar</a>
                                     @break
                             @endswitch

@@ -26,10 +26,8 @@ class PagoController extends Controller
 
         $contratos_folios = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.cantidad_letras2',
         'contratos.numero_circular', 'contratos.nombre_director', 'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.testigo1', 'contratos.puesto_testigo1',
-        'contratos.testigo2', 'contratos.puesto_testigo2', 'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status')
-        ->WHERE('folios.status', '=', 'verificando_pago')
-        ->ORWHERE('folios.status', '=', 'pago_verificado')
-        ->ORWHERE('folios.status', '=', 'finalizado')
+        'contratos.testigo2', 'contratos.puesto_testigo2', 'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios')
+        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->GET();
 
@@ -50,7 +48,7 @@ class PagoController extends Controller
     public function verificar_pago($idfolios)
     {
         $folio = folio::findOrfail($idfolios);
-        $folio->status = 'pago_verificado';
+        $folio->status = 'Pago_Verificado';
         $folio->save();
         return redirect()->route('pago-inicio');
     }
