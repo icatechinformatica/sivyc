@@ -72,11 +72,13 @@ Route::middleware(['auth'])->group(function () {
      */
 
     // Crea pago
-    Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio')->middleware('can:alumnos.inscripcion-paso1');
+    Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio');
     Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
     Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
     Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');
     Route::post('/pago/fill', 'webController\PagoController@fill');
+    // cambiando status
+    Route::get('/pago/verificandopago/{idfolio}', 'webController\PagoController@verificar_pago')->name('pago.verificando');
 
     // Crea instructor
     Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');

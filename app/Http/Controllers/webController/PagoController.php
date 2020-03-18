@@ -23,14 +23,18 @@ class PagoController extends Controller
     public function index()
     {
         $contrato = new contratos();
-        $pago = new pago();
 
-        $dataCont = folio::WHERE('status', '=', 'En_Proceso')->LATEST()->GET();
+        $contratos_folios = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.cantidad_letras2',
+        'contratos.numero_circular', 'contratos.nombre_director', 'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.testigo1', 'contratos.puesto_testigo1',
+        'contratos.testigo2', 'contratos.puesto_testigo2', 'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status')
+        ->WHERE('folios.status', '=', 'verificando_pago')
+        ->ORWHERE('folios.status', '=', 'pago_verificado')
+        ->ORWHERE('folios.status', '=', 'finalizado')
+        ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+        ->GET();
 
-        $dataPago = $pago::where('id', '!=', '0')->latest()->get();
 
-
-        return view('layouts.pages.vstapago', compact('dataPago', 'dataCont'));
+        return view('layouts.pages.vstapago', compact('contratos_folios'));
     }
 
     public function crear_pago()
@@ -41,5 +45,13 @@ class PagoController extends Controller
     public function modificar_pago()
     {
         return view('layouts.pages.modpago');
+    }
+
+    public function verificar_pago($idfolios)
+    {
+        $folio = folio::findOrfail($idfolios);
+        $folio->status = 'pago_verificado';
+        $folio->save();
+        return redirect()->route('pago-inicio');
     }
 }

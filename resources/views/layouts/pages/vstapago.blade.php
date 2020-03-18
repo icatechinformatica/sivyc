@@ -37,21 +37,33 @@
             <caption>Lista de Contratos en Espera</caption>
             <thead>
                 <tr>
-                    <th scope="col">No. Contrato</th>
-                    <th scope="col">Lugar de Expedicion</th>
-                    <th scope="col">Fecha de Firma</th>
-                    <th scope="col">Municipio</th>
+                    <th scope="col">N°. Contrato</th>
+                    <th scope="col">N°. de Circular</th>
+                    <th scope="col">Unidad de Capacitación</th>
+                    <th scope="col">Estado</th>
                     <th width="160px">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($dataCont as $itemData)
+                @foreach ($contratos_folios as $itemData)
                     <tr>
-                        <th scope="row">{{$itemData->numero_contrato}}</th>
-                        <td>{{$itemData->lugar_expedicion}}</td>
-                        <td>{{$itemData->fecha_firma}}</td>
-                        <td>{{$itemData->municipio}}</td>
-                        <td><a class="btn btn-success" href="">Validar</a></td>
+                        <td>{{$itemData->numero_contrato}}</td>
+                        <td>{{$itemData->numero_circular}}</td>
+                        <td>{{$itemData->unidad_capacitacion}}</td>
+                        <td>{{$itemData->status}}</td>
+                        <td>
+                            @switch($itemData->status)
+                                @case('verificando_pago')
+                                <a class="btn btn-primary" href="{{route('pago.verificando')}}">Verificar</a>
+                                    @break
+                                @case('pago_verificado')
+                                <a class="btn btn-success" href="{{route('alumnos.inscripcion-paso1')}}">Verificar Pago</a>
+                                    @break
+                                @case('finalizado')
+                                <a class="btn btn-danger" href="{{route('alumnos.inscripcion-paso1')}}">Finalizar</a>
+                                    @break
+                            @endswitch
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
