@@ -94,6 +94,8 @@ class CursosController extends Controller
                 $Curso->motivo = $request->motivo;
                 $Curso->cp = $request->cp;
                 $Curso->ze = $request->ze;
+                $Curso->id_curso = $request->id_curso;
+                $Curso->id_instructor = $request->id_instructor;
                 $Curso->save();
 
                 return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);

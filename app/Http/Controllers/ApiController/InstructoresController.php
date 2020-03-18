@@ -15,8 +15,8 @@ class InstructoresController extends Controller
      */
     public function index()
     {
-        $Instructor= new Instructor();
-        $instructores = $Instructor->all();
+        $instructor= new Instructor();
+        $instructores = $instructor->all();
         return response()->json($instructores, 200);
     }
 
@@ -47,9 +47,9 @@ class InstructoresController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($prueba,$prueba2)
+    public function show($nombre,$apaterno,$amaterno)
     {
-        return Instructor::where([['apellido_paterno','=',$prueba],['apellido_materno','=',$prueba2]])->get();
+        return Instructor::where([['nombre','=',$nombre],['apellido_paterno','=',$apaterno],['apellido_materno','=',$amaterno]])->get();
     }
 
     /**
