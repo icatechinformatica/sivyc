@@ -69,7 +69,7 @@ class PagoController extends Controller
         'contratos.testigo2', 'contratos.puesto_testigo2', 'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios')
         ->WHERE('contratos.id_contrato', '=', $id)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
-        ->GET();
+        ->FIRST();
 
         return view('layouts.pages.vstvalidarpago', compact('contratos'));
     }
