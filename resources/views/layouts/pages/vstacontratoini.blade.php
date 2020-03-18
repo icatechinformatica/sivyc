@@ -63,9 +63,9 @@
                                     <a class="btn btn-info" href="{{route('contrato-pdf', ['id' => $itemData->id_folios])}}" target="_blank">Contrato PDF</a>
                                     <a class="btn btn-success" href="{{route('solicitud-pago', ['id' => $itemData->id_folios])}}">Solicitar Pago</a>
                             @endif
-                            @if ($itemData->status == 'Pago Rechazado')
+                            @if ($itemData->status == 'Pago_Rechazado')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
-                                    <a class="btn btn-info" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" >Modificar</a>
+                                    <a class="btn btn-info" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}" >Modificar</a>
                             @endif
                             @if ($itemData->status == 'Verificando_Pago')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
