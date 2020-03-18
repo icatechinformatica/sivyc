@@ -4,7 +4,7 @@ namespace App\Http\Controllers\webController;
 
 use App\Models\instructor;
 use App\ProductoStock;
-use App\Models\cursoValidado;
+use App\Models\tbl_curso;
 use App\Models\curso;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,12 +26,12 @@ class CursoValidadoController extends Controller
      */
 
     public function cv_inicio() {
-        $cd = new cursoValidado();
-        $data = $cd::SELECT('curso_validado.id','curso_validado.clave_curso','cursos.nombre_curso AS nombrecur',
-                            'instructores.nombre AS nombreins','curso_validado.fecha_inicio','curso_validado.fecha_termino')
-                    ->WHERE('curso_validado.clave_curso', '!=', '0')
-                    ->LEFTJOIN('cursos','cursos.id','=','curso_validado.id_curso')
-                    ->LEFTJOIN('instructores','instructores.id','=','curso_validado.id_instructor')
+        $cd = new tbl_curso();
+        $data = $cd::SELECT('tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
+                            'instructores.nombre AS nombreins','tbl_cursos.pini')
+                    ->WHERE('tbl_cursos.clave', '!=', '0')
+                    ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
+                    ->LEFTJOIN('instructores','instructores.id','=','tbl_cursos.id_instructor')
                     ->GET();
         return view('layouts.pages.vstacvinicio', compact('data'));
     }
