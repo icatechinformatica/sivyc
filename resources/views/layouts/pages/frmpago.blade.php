@@ -86,21 +86,6 @@
                 </div>
             </div>
             <br>
-            <div class="form-row">
-                <div class="form-gorup col-md-6">
-                    <label for="inputreacd02">Documento REACD-02</label>
-                    <input type="file" accept="application/pdf" name="reacd02" id="reacd02" class="form-control" aria-required="true">
-                </div>
-                <div class="form-gorup col-md-2">
-                    <label for="inputestatus_pago">Estatus de Pago</label>
-                    <select class="form-control" id="estatus_pago" disabled>
-                        <option>Pendiente</option>
-                        <option>Pagado</option>
-                        <option>Cancelado</option>
-                    </select>
-                </div>
-            </div>
-            <br>
             <div  style="text-align: right;width:100%">
                 <button type="submit" class="btn btn-primary" >Agregar</button>
             </div>

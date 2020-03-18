@@ -182,8 +182,19 @@ class ContratoController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins','D','M','Y'));
 
-         return $pdf->stream('medium.pdf');
+        return $pdf->stream('medium.pdf');
+    }
 
+    public function solicitudpago_pdf($id){
+
+        $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio',
+                              'tbl_curos.termino','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id','instructores.nombre',
+                              'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.memorandum_validacion')
+                        ->WHERE('id_folios', '=', $id)->FIRST();
+
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago');
+
+        return $pdf->stream('medium.pdf');
     }
 
     /**
