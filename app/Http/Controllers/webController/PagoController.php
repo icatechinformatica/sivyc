@@ -73,4 +73,24 @@ class PagoController extends Controller
 
         return view('layouts.pages.vstvalidarpago', compact('contratos'));
     }
+
+    public function guardar_pago(Request $request)
+    {
+        $contrato_especifico = contratos::findOrfail($request->idContrato);
+        $contrato_especifico->observacion = $request->observaciones;
+        $contrato_especifico->save();
+        // se tiene que cambiar el estatus del folio
+        $folios = folio::findOrfail($request->idfolios);
+        $folio->status = 'Pago_Rechazado';
+        $folio->save();
+        return redirect()->route('pago-inicio');
+    }
+
+    public function pago_validar($idfolio)
+    {
+        $folio = folio::findOrfail($idfolio);
+        $folio->status = 'Pago_Verificado';
+        $folio->save();
+        return redirect()->route('pago-inicio');
+    }
 }
