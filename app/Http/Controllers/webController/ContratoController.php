@@ -23,8 +23,8 @@ class ContratoController extends Controller
     {
         $supre = new supre();
         $data = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
-                               'folios.folio_validacion','contratos.docs')
-                        ->where('folios.status', '!=', 'En Proceso')
+                               'folios.folio_validacion','contratos.docs','contratos.id_contrato')
+                        ->where('folios.status', '!=', 'En_Proceso')
                         ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
                         ->get();
@@ -87,6 +87,27 @@ class ContratoController extends Controller
 
         return redirect()->route('contrato-inicio')
                     ->with('success','Suficiencia Presupuestal Validado');
+    }
+
+    public function modificar($id)
+    {
+        $folio = new folio();
+        $perfil = new InstructorPerfil();
+
+        $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
+        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                               'instructores.apellidoMaterno','instructores.id')
+                        ->WHERE('id_folios', '=', $datacon->id_folios)
+                        ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+                        ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                        ->FIRST();
+        $perfil_sel = $perfil::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
+
+        $perfil_prof = $perfil::WHERE('numero_control', '=', $data->id)
+                               ->WHERE('id', '!=', $datacon->instructor_perfilid)->GET();
+
+        $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon'));
     }
 
     public function solicitud_pago($id){
