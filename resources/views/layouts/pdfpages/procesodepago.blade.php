@@ -6,13 +6,13 @@
                     <b>Unidad de Capacitación {{$data->unidad_capacitacion}}.</b>
                 </div>
                 <div align=right>
-                    <b>Memorandum No. ICATECH/000/000/2020.</b>
+                    <b>Memorandum No. {{$data->no_memo}}.</b>
                 </div>
                 <div align=right>
                     <b>{{$data->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b>
                 </div>
-                <br><br><b>Ing. Jorge Luis Barragán López.</b>
-                <br>Jefe de Depto. de Recursos Financieros.
+                <br><br><b>{{$data->nombre_para}}.</b>
+                <br>{{$data->puesto_para}}.
                 <br>Presente.
                 <br><p class="text-justify">en virtud de haber cumplido con los requisitos de apertura de curso y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente al curso que a continuación se detalla:</p>
                 <div align=center>
@@ -89,11 +89,11 @@
                         <td colspan="2"><div align="center">Director Administrativo</td></div>
                     </tr>
                 </table>
-                <br><br><br><p><FONT SIZE=1><b><C.c.p.</C></b>Mtra. Fabiola Lizbeth Astudillo Reyes.-Directora General del ICATECH.-Para su conocimiento<br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>Mtro. Walter Domínguez Camacho.-Director Administrativo.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>Nombre del Delegado Administrativo.-Delegado Administrativo.-mismo fin</FONT><br/>
+                <br><br><br><p><FONT SIZE=1><b><C.c.p.</C></b>{{$data->nombre_ccp1}}.-{{$data->puesto_ccp1}}.-Para su conocimiento<br/>
+                <FONT SIZE=1><b><C.c.p.</C></b>{{$data->nombre_ccp2}}.-{{$data->puesto_ccp2}}.-mismo fin</FONT><br/>
+                <FONT SIZE=1><b><C.c.p.</C></b>{{$data->nombre_ccp3}}.-{{$data->puesto_ccp3}}.-mismo fin</FONT><br/>
                 <FONT SIZE=1><b><C.c.p.</C></b>Archivo/ Minutario</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>Elaboró: (nombre de quien Elabora)</FONT></p>
+                <FONT SIZE=1><b><C.c.p.</C></b>Elaboró: {{$data->elaboro}}</FONT></p>
             </div>
         </div>
     </body>

@@ -35,9 +35,20 @@ class PagoController extends Controller
         return view('layouts.pages.vstapago', compact('contratos_folios'));
     }
 
-    public function crear_pago()
+    public function crear_pago($id)
     {
-        return view('layouts.pages.frmpago');
+        $data = contratos::SELECT('instructores.numero_control','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                                  'tbl_cursos.curso','tbl_cursos.clave','contratos.unidad_capacitacion','folios.id_folios','folios.importe_total','folios.iva','pagos.id AS id_pago')
+                                    ->WHERE('contratos.id_contrato', '=', $id)
+                                    ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', 'folios.id_cursos')
+                                    ->LEFTJOIN('instructores', 'instructores.id', 'tbl_cursos.id_instructor')
+                                    ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+                                    ->FIRST();
+
+        $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+
+        return view('layouts.pages.frmpago', compact('data', 'nomins'));
     }
 
     public function modificar_pago()
@@ -76,13 +87,15 @@ class PagoController extends Controller
 
     public function guardar_pago(Request $request)
     {
-        $contrato_especifico = contratos::findOrfail($request->idContrato);
-        $contrato_especifico->observacion = $request->observaciones;
-        $contrato_especifico->save();
-        // se tiene que cambiar el estatus del folio
-        $folios = folio::findOrfail($request->idfolios);
-        $folio->status = 'Pago_Rechazado';
-        $folio->save();
+        pago::where('id', '=', $request->id_pago)
+        ->update(['no_pago' => $request->numero_pago,
+                  'fecha' => $request->fecha_pago,
+                  'descripcion' => $request->concepto]);
+
+        folio::WHERE('id_folios', '=', $request->id_folio)
+        ->update(['status' => 'Finalizado']);
+
+
         return redirect()->route('pago-inicio');
     }
 

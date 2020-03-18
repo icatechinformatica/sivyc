@@ -74,12 +74,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Crea pago
     Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio');
-    Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
-    Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
+    Route::get('/pago/crear/{id}', 'webController\PagoController@crear_pago')->name('pago-crear');
+    Route::post('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
     Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');
     Route::post('/pago/fill', 'webController\PagoController@fill');
     // cambiando status
-    Route::get('/pago/verificandopago/{idfolio}', 'webController\PagoController@verificar_pago')->name('pago.verificando');
     Route::get('/pago/verificar_pago/{id}', 'webController\PagoController@show')->name('pago.verificarpago');
     Route::post('/pago/validar_pago', 'webController\PagoController@guardar_pago')->name('pago.validar');
     Route::get('/pago/validacion/{idfolio}', 'webController\PagoController@pago_validar')->name('pago.validacion');

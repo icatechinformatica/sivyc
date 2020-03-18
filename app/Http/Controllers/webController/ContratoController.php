@@ -11,6 +11,7 @@ use App\Models\contratos;
 use App\Models\InstructorPerfil;
 use App\Models\supre;
 use App\Models\folio;
+use App\Models\pago;
 use PDF;
 class ContratoController extends Controller
 {
@@ -142,6 +143,21 @@ class ContratoController extends Controller
     }
 
     public function save_doc(Request $request){
+        $pago = new pago();
+
+        $pago->no_memo = $request->no_memo;
+        $pago->elaboro = $request->elaboro;
+        $pago->nombre_para = $request->nombre_para;
+        $pago->puesto_para = $request->puesto_para;
+        $pago->nombre_ccp1 = $request->nombre_ccp1;
+        $pago->puesto_ccp1 = $request->puesto_ccp1;
+        $pago->nombre_ccp2 = $request->nombre_ccp2;
+        $pago->puesto_ccp2 = $request->puesto_ccp2;
+        $pago->nombre_ccp3 = $request->nombre_ccp3;
+        $pago->puesto_ccp3 = $request->puesto_ccp3;
+        $pago->id_contrato = $request->id_contrato;
+        $pago->save();
+
 
         $file = $request->file('doc_pdf'); # obtenemos el archivo
         $urldocs = $this->pdf_upload($file, $request->id_contrato); #invocamos el método
@@ -192,11 +208,14 @@ class ContratoController extends Controller
                               'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.memoramdum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.nombre_director','contratos.created_at')
+                              'contratos.nombre_director','pagos.created_at','pagos.no_memo','pagos.nombre_ccp1','pagos.puesto_ccp1',
+                              'pagos.nombre_ccp2','pagos.puesto_ccp2','pagos.nombre_ccp3','pagos.puesto_ccp3','pagos.elaboro','pagos.nombre_para',
+                              'pagos.puesto_para')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+                        ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                         ->FIRST();
 
         $date = strtotime($data->created_at);
