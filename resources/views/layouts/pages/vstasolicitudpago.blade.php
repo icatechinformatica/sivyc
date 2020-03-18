@@ -21,6 +21,22 @@
                 </div>
             </div>
             <hr style="border-color:dimgray">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputno_memo">Numero de Memorandum</label>
+                    <input id="no_memo" name="no_memo" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputnombre_para">Nombre del Destinatario</label>
+                    <input id="nombre_para" name="nombre_para" type="text" class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_para">Puesto del Destinatario</label>
+                    <input id="puesto_para" name="puesto_para" type="text" class="form-control">
+                </div>
+            </div>
             <div class="form-row" style="text-align: center;">
                 <div class="form-gorup col-md-4">
                 </div>

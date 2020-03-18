@@ -188,11 +188,23 @@ class ContratoController extends Controller
     public function solicitudpago_pdf($id){
 
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio',
-                              'tbl_curos.termino','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id','instructores.nombre',
-                              'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.memorandum_validacion')
-                        ->WHERE('id_folios', '=', $id)->FIRST();
+                              'tbl_cursos.termino','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
+                              'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.memoramdum_validacion',
+                              'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
+                              'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
+                              'contratos.nombre_director','contratos.created_at')
+                        ->WHERE('folios.id_folios', '=', $id)
+                        ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                        ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+                        ->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago');
+        $date = strtotime($data->created_at);
+        $D = date('d', $date);
+        $M = date('m',$date);
+        $Y = date("Y",$date);
+
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y'));
 
         return $pdf->stream('medium.pdf');
     }

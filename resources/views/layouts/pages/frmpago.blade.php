@@ -13,6 +13,7 @@
             <div class="form-row">
                 <h2> Confirmación de Datos </h2>
             </div>
+            <br>
             <div class="form-row">
                 <div class="form-gorup col-md-3">
                     <label for="inputnumero_control">Numero de Control de Instructor</label>
@@ -55,8 +56,9 @@
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
-                <!-- PONER TITULO-->
+                <h2>Ingreso de Datos</h2>
             </div>
+            <br>
             <div class="form-row">
                 <div class="form-gorup col-md-3">
                     <label for="inputnumero_pago">Numero de Pago</label>
@@ -75,19 +77,15 @@
                 </div>
             </div>
             <br>
-            <div class="form-row">
-                <div class="form-gorup col-md-4">
-                    <label for="inputnombre_solicita">Nombre de Solicitante</label>
-                    <input type="text" name="nombre_solicita" id="nombre_solicita" class="form-control" aria-required="true">
+            <div class="row">
+                <div class="col-lg-12 margin-tb">
+                    <div class="pull-left">
+                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                    </div>
                 </div>
-                <div class="form-gorup col-md-4">
-                    <label for="inputnombre_autoriza">Nombre de Autorizante</label>
-                    <input type="text" name="nombre_autoriza" id="nombre_autoriza" class="form-control" aria-required="true">
-                </div>
-            </div>
-            <br>
-            <div  style="text-align: right;width:100%">
-                <button type="submit" class="btn btn-primary" >Agregar</button>
             </div>
         </form>
     </section>

@@ -3,13 +3,13 @@
         <div class= "container g-pt-20">
             <div id="content">
                 <div align=right>
-                    <b>Unidad de Capacitacion.</b>
+                    <b>Unidad de Capacitación {{$data->unidad_capacitacion}}.</b>
                 </div>
                 <div align=right>
                     <b>Memorandum No. ICATECH/000/000/2020.</b>
                 </div>
                 <div align=right>
-                    <b>Tuxtla Gutierrez, Chiapas 00 de Mes del 2020.</b>
+                    <b>{{$data->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b>
                 </div>
                 <br><br><b>Ing. Jorge Luis Barragán López.</b>
                 <br>Jefe de Depto. de Recursos Financieros.
@@ -21,16 +21,16 @@
                 <table class="table table-responsive table-bordered">
                     <tbody>
                         <tr>
-                            <td>Nombre del Curso:</td>
-                            <td>Clave del Curso:</td>
+                            <td>Nombre del Curso: {{$data->curso}}</td>
+                            <td>Clave del Curso: {{$data->clave}}</td>
                         </tr>
                         <tr>
-                            <td>Especialidad:</td>
-                            <td>Modalidad:</td>
+                            <td>Especialidad: {{$data->espe}}</td>
+                            <td>Modalidad: {{$data->mod}}</td>
                         </tr>
                         <tr>
-                            <td>Fecha de Inicio y Término:</td>
-                            <td>Horario:</td>
+                            <td>Fecha de Inicio y Término: {{$data->inicio}} AL {{$data->termino}}</td>
+                            <td>Horario: {{$data->hini}} A {{$data->hfin}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -40,15 +40,15 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td colspan="2">Nombre del Instructor:</td>
+                            <td colspan="2">Nombre del Instructor: {{$data->nombre}} {{$data->apellidoPaterno}} {{$data->apellidoMaterno}}</td>
                         </tr>
                         <tr>
                             <td>Registro STPS:</td>
-                            <td>Memorándum de Validación:</td>
+                            <td>Memorándum de Validación: {{$data->memoramdum_validacion}}</td>
                         </tr>
                         <tr>
-                            <td>RFC:</td>
-                            <td>Importe:</td>
+                            <td>RFC: {{$data->rfc}}</td>
+                            <td>Importe: {{$data->importe_total}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -58,13 +58,13 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td>Banco:</td>
+                            <td>Banco: {{$data->banco}}</td>
                         </tr>
                         <tr>
-                            <td>Número de Cuenta:</td>
+                            <td>Número de Cuenta: {{$data->no_cuenta}}</td>
                         </tr>
                         <tr>
-                            <td>Clabe Interbancaria:</td>
+                            <td>Clabe Interbancaria: {{$data->interbancaria}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -81,11 +81,11 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">Nombre del Director de Unidad</td></div>
+                        <td colspan="2"><div align="center">{{$data->nombre_director}}</td></div>
                         <td colspan="2"><div align="center">Mtro. Walter Dompinguez Camacho</td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">Director de la Unidad de Capacitación</td></div>
+                        <td colspan="2"><div align="center">Director de la Unidad de Capacitación {{$data->unidad_capacitacion}}</td></div>
                         <td colspan="2"><div align="center">Director Administrativo</td></div>
                     </tr>
                 </table>
