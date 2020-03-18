@@ -57,7 +57,7 @@
                                 <a class="btn btn-primary" href="{{route('pago.verificando', ['idfolio' => $itemData->id_folios])}}">Verificar</a>
                                     @break
                                 @case('Pago_Verificado')
-                                <a class="btn btn-success" href="{{route('alumnos.inscripcion-paso1')}}">Verificar Pago</a>
+                                <a class="btn btn-success" href="{{route('pago.verificarpago', ['id' => $itemData->id_contrato])}}">Verificar Pago</a>
                                     @break
                                 @case('Finalizado')
                                 <a class="btn btn-danger" href="{{route('alumnos.inscripcion-paso1')}}">Finalizar</a>
