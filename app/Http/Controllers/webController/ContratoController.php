@@ -245,8 +245,8 @@ class ContratoController extends Controller
         $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $pdfFile = trim("docs"."_".date('YmdHis')."_".$id.".".$extensionPdf);
-        $pdf->storeAs('/uploadFiles/instructor/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
-        $pdfUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $pdf->storeAs('/uploadFiles/contrato/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/contrato/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
     }
 }
