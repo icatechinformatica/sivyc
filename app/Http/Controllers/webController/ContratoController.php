@@ -198,7 +198,7 @@ class ContratoController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins','D','M','Y'));
 
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('medium.pdf');
     }
 
     public function solicitudpago_pdf($id){
@@ -225,7 +225,7 @@ class ContratoController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y'));
 
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('medium.pdf');
     }
 
     /**

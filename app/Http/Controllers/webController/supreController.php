@@ -220,7 +220,7 @@ class supreController extends Controller
 
 
         $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
-        return  $pdf->stream('medium.pdf');
+        return  $pdf->download('medium.pdf');
     }
 
     public function tablasupre_pdf($id){
@@ -251,7 +251,7 @@ class supreController extends Controller
 
 
 
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('medium.pdf');
 
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
     }
@@ -284,7 +284,7 @@ class supreController extends Controller
 
 
 
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('medium.pdf');
 
         return view('layouts.pdfpages.valsupre', compact('data','data2'));
     }
