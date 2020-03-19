@@ -160,7 +160,7 @@ class ContratoController extends Controller
 
 
         $file = $request->file('doc_pdf'); # obtenemos el archivo
-        $urldocs = $this->pdf_upload($file, $request->id_contrato); #invocamos el método
+        $urldocs = $this->pago_upload($file, $request->id_contrato); #invocamos el método
         // guardamos en la base de datos
         $contrato = contratos::find($request->id_contrato);
         $contrato->docs = trim($urldocs);
@@ -239,7 +239,7 @@ class ContratoController extends Controller
         //
     }
 
-    protected function pdf_upload($pdf, $id)
+    protected function pago_upload($pdf, $id)
     {
         $tamanio = $pdf->getClientSize(); #obtener el tamaño del archivo del cliente
         $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
