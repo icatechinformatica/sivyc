@@ -29,7 +29,9 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('frm-supre')}}"> Nuevo</a>
+                    @can('supre.create')
+                        <a class="btn btn-success btn-lg" href="{{route('frm-supre')}}"> Nuevo</a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -67,11 +69,15 @@
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validacion PDF</a>
                                 @endif
                                 @if ($itemData->status == 'En_Proceso')
-                                <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
+                                @can('supre.validacion')
+                                    <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
+                                @endcan
                             @endif
                             @endif
                             @if ($itemData->status == 'En_Proceso' || $itemData->status == 'Rechazado')
-                                <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                                @can('supre.edit')
+                                    <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                                @endcan()
                             @endif
                         </td>
                     </tr>

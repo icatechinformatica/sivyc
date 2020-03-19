@@ -56,16 +56,22 @@
                         <td>
                             @if ($itemData->status == 'Validado')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
-                                    <a class="btn btn-success" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">Crear Contrato</a>
+                                    @can('contratos.create')
+                                        <a class="btn btn-success" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">Crear Contrato</a>
+                                    @endcan
                             @endif
                             @if ($itemData->status == 'Contratado')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
                                     <a class="btn btn-info" href="{{route('contrato-pdf', ['id' => $itemData->id_contrato])}}" target="_blank">Contrato PDF</a>
-                                    <a class="btn btn-success" href="{{route('solicitud-pago', ['id' => $itemData->id_folios])}}">Solicitar Pago</a>
+                                    @can('solicitud_pago.create')
+                                        <a class="btn btn-success" href="{{route('solicitud-pago', ['id' => $itemData->id_folios])}}">Solicitar Pago</a>
+                                    @endcan
                             @endif
                             @if ($itemData->status == 'Pago_Rechazado')
                                     <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
-                                    <a class="btn btn-info" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}" >Modificar</a>
+                                    @can(contratos.edit)
+                                        <a class="btn btn-info" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}" >Modificar</a>
+                                    @endcan()
                             @endif
                             @if ($itemData->status == 'Verificando_Pago')
                             <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación PDF</a>
