@@ -106,4 +106,23 @@ class PagoController extends Controller
         $folio->save();
         return redirect()->route('pago-inicio');
     }
+
+    public function mostrar_pago($id)
+    {
+        $data = contratos::SELECT('instructores.numero_control','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                                  'tbl_cursos.curso','tbl_cursos.clave','contratos.unidad_capacitacion','folios.id_folios','folios.importe_total','folios.iva',
+                                  'pagos.id AS id_pago','pagos.no_memo','pagos.fecha','pagos.nombre_ccp1','pagos.puesto_ccp1','pagos.nombre_ccp2',
+                                  'pagos.puesto_ccp3','pagos.nombre_ccp3','pagos.puesto_ccp3','pagos.elaboro','pagos.id_contrato','pagos.nombre_para',
+                                  'pagos.puesto_para','pagos.no_pago','pagos.descripcion')
+                           ->WHERE('contratos.id_contrato', '=', $id)
+                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', 'folios.id_cursos')
+                           ->LEFTJOIN('instructores', 'instructores.id', 'tbl_cursos.id_instructor')
+                           ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+                           ->FIRST();
+
+        $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+
+        return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
+    }
 }

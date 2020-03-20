@@ -55,16 +55,18 @@
                             @switch($itemData->status)
                                 @case('Verificando_Pago')
                                     @can('verificar_pago.create')
+                                        <a class="btn btn-danger" href="{{$itemData->docs}}" target="_blank">Docs. para Pago</a><br/>
                                         <a class="btn btn-primary" href="{{route('pago.verificarpago', ['id' => $itemData->id_contrato])}}">Verificar</a>
                                     @endcan
                                     @break
                                 @case('Pago_Verificado')
                                     @can('pagos.create')
+                                        <a class="btn btn-danger" href="{{$itemData->docs}}" target="_blank">Docs. para Pago</a><br/>
                                         <a class="btn btn-success" href="{{route('pago-crear', ['id' => $itemData->id_contrato])}}">Confirmar Pago</a>
                                     @endcan
                                     @break
                                 @case('Finalizado')
-                                <a class="btn btn-danger" href="{{route('alumnos.inscripcion-paso1')}}">Finalizar</a>
+                                    <a class="btn btn-success" href="{{route('mostrar-pago', ['id' => $itemData->id_contrato])}}" target="_blank">Solicitud</a>
                                     @break
                             @endswitch
                         </td>

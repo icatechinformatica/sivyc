@@ -33,6 +33,9 @@ Route::post('/contrato/save-doc','webController\ContratoController@save_doc')->n
 Route::get('/contrato/modificar/{id}', 'webController\ContratoController@modificar')->name('contrato-mod');
 Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoController@solicitudpago_pdf')->name('solpa-pdf');
 
+//Ruta Pago sin Middleware
+Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
+
 // Ruta Validacion sin middleware
 Route::post('/supre/validacion/Rechazado', 'webController\supreController@supre_rechazo')->name('supre-rechazo');
 Route::post('/supre/validacion/Validado', 'webController\supreController@supre_validado')->name('supre-validado');
