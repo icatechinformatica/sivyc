@@ -78,10 +78,10 @@
                     </button>
                     </div>
                     <div class="modal-body">
-                        ¿ Estás seguro de velidar el pago?
+                        ¿ Estás seguro de validar el pago?
                     </div>
                     <div class="modal-footer">
-                        <form action="" id="validarForm" method="post">
+                        <form action="" id="validarForm" method="get">
                             @csrf
                             <input type="hidden" name="id">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
