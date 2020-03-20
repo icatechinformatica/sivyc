@@ -21,6 +21,12 @@
         }
     </style>
     <div class="container g-pt-50">
+        @if ($message =  Session::get('info'))
+            <div class="alert alert-info alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ $message }}</strong>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">

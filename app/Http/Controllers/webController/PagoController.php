@@ -104,7 +104,7 @@ class PagoController extends Controller
         $folio = folio::findOrfail($idfolio);
         $folio->status = 'Pago_Verificado';
         $folio->save();
-        return redirect()->route('pago-inicio');
+        return redirect()->route('pago-inicio')->with('info', 'El pago ha sido verificado exitosamente.');
     }
 
     public function mostrar_pago($id)
