@@ -40,7 +40,7 @@
                 <button type="button" id="rechazarPago" name="rechazarPago" class="btn btn-danger">Rechazar</a>
             </div>
             <div class="form-group col-md-1">
-                <a class="btn btn-success" id="verificar_pago" name="verificar_pago"  href="{{route('pago.validacion', ['idfolio' => $contratos->id_folios])}}">Verificar</a>
+                <a class="btn btn-success" id="verificar_pago" name="verificar_pago" data-toggle="modal" data-target="#validarModel" data-id="{{ $contratos->id_folios }}">Verificar</a>
             </div>
         </div>
         <form method="POST" action="{{ route('pago.validar') }}">
@@ -67,6 +67,31 @@
                 </div>
             </div>
         </div>
+        <!--Modal-->
+            <div class="modal fade" id="validarModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Validad Solicitud</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿ Estás seguro de velidar el pago?
+                    </div>
+                    <div class="modal-footer">
+                        <form action="" id="validarForm" method="post">
+                            @csrf
+                            <input type="hidden" name="id">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Validar</button>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+        <!--Modal End-->
         <br>
 
     </section>

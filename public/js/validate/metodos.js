@@ -6,4 +6,14 @@ $(function(){
         $('#btn_rechazar').prop("class", "form-row");
         //$('#observaciones').rules('add',  { required: true });
     });
+
+    /**
+     * documento de modal
+    */
+   $('#validarModel').on('show.bs.modal', function(event){
+       var button = $(event.relatedTarget);
+       var id = button.data('id');
+
+       $('#userForm').attr("action", "{{ url('/pago/validacion') }}" + "/" + id);
+   });
 });
