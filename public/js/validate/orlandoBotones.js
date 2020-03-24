@@ -184,4 +184,28 @@ $(function(){
         });
     });
 
+      $( "#nombre_director" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+          // Fetch data
+          $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+               search: request.term
+            },
+            success: function( data ) {
+               response( data );
+            }
+          });
+        },
+        select: function (event, ui) {
+           // Set selection
+           $('#nombre_director').val(ui.item.label); // display the selected text
+           $('#numero_enlace').val(ui.item.value); // save selected id to input
+           return false;
+        }
+      });
+
 });
