@@ -9,6 +9,10 @@ $(function(){
         return value.match('')
     });
 
+    $.validator.addMethod('filesize', function (value, element, param) {
+        return this.optional(element) || (element.files[0].size <= param)
+      });
+
     $('#conveniosFrm').validate({
         rules: {
             no_convenio: {
@@ -32,6 +36,11 @@ $(function(){
             },
             fecha_termino: {
                 required: true
+            },
+            archivo_convenio: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000
             }
         },
         messages: {
@@ -56,6 +65,11 @@ $(function(){
             },
             fecha_termino: {
                 required: 'La fecha de termino es requerida.'
+            },
+            archivo_convenio: {
+                required: "Agregar un documento",
+                accept: "No es una extensión valida, son aceptado pdf.",
+                filesize: "El tamaño del archivo debe de ser menor a 2 Mb."
             }
         }
     });
