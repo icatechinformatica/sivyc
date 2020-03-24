@@ -43,12 +43,12 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="inputcantidad_letras1" class="control-label">Monto Total de los Honorarios (En Letra)</label>
-                    <input type="text" class="form-control" id="cantidad_letras1" name="cantidad_letras1">
+                    <label for="inputcantidad_numero" class="control-label">Monto Total de los Honorarios (En Numero)</label>
+                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputcantidad_letras2" class="control-label">Monto Total de los Honorarios Asimilables a Salarios (En Letra)</label>
-                    <input type="text" class="form-control" id="cantidad_letras2" name="cantidad_letras2">
+                    <label for="inputcantidad_letras" class="control-label">Monto Total de los Honorarios (En Letra)</label>
+                    <input type="text" class="form-control" id="cantidad_letras" name="cantidad_letras">
                 </div>
             </div>
             <div class="form-row">
@@ -62,10 +62,16 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="directordeunidaddecapacitacion" class="control-label">Nombre del Director de Unidad de Capacitación</label>
+                <div class="form-group col-md-5">
+                    <label for="inputnombre_director" class="control-label">Nombre del Director/Encargado de Unidad de Capacitación</label>
                     <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación">
                 </div>
+                <div class="form-group col-md-2">
+                    <label for="inputnumero_enlace" class="control-label">Numero de Enlace</label>
+                    <input disabled type="text" class="form-control" id="numero_enlace" name="numero_enlace">
+                </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
                     <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion">

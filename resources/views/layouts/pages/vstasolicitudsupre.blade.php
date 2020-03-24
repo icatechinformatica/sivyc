@@ -61,23 +61,24 @@
                             @endif
                         </td>
                         <td>
-                            @if ($itemData->status == 'Validado' || $itemData->status == 'En_Proceso')
-                                <a class="btn btn-warning" href="{{route('supre-pdf', ['id' => $itemData->id])}}" target="_blank">Solicitud PDF</a>
-                                <a class="btn btn-warning" href="{{route('tablasupre-pdf', ['id' => $itemData->id])}}" target="_blank">Anexo PDF</a>
-                                <input hidden value={{$itemData->id}} id='pdfp'>
-                                @if ($itemData->status == 'Validado')
-                                    <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validacion PDF</a>
-                                @endif
-                                @if ($itemData->status == 'En_Proceso')
+                            @if ( $itemData->status == 'En_Proceso')
+                            <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
                                 @can('supre.validacion')
                                     <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
                                 @endcan
-                            @endif
-                            @endif
-                            @if ($itemData->status == 'En_Proceso' || $itemData->status == 'Rechazado')
                                 @can('supre.edit')
                                     <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
-                                @endcan()
+                                @endcan
+                                <input hidden value={{$itemData->id}} id='pdfp'>
+                            @endif
+                            @if ($itemData->status == 'Validado')
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                            @endif
+                            @if ($itemData->status == 'Rechazado')
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                @can('supre.edit')
+                                    <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                                @endcan
                             @endif
                         </td>
                     </tr>
@@ -89,6 +90,31 @@
             </tfoot>
         </table>
         <br>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="supreModal" role="dialog">
+        <div class="modal-dialog">
+      <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Archivos PDF Generables</h4>
+                </div>
+            <div class="modal-body" style="text-align:center">
+                <div style="text-align:center" class="form-group">
+                    <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
+                </div>
+                <div style="text-align:center" class="form-group">
+                    <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo Solicitud de Suficiencia Presupuestal</a><br>
+                </div>
+                <div style="text-align:center" class="form-group">
+                    <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
     <br>
 @endsection

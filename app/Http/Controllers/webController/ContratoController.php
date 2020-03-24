@@ -12,6 +12,7 @@ use App\Models\InstructorPerfil;
 use App\Models\supre;
 use App\Models\folio;
 use App\Models\pago;
+use App\Models\directorio;
 use PDF;
 class ContratoController extends Controller
 {
@@ -172,6 +173,25 @@ class ContratoController extends Controller
         return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Pago Agregado');
 
+    }
+
+    public function get_directorio(Request $request){
+
+        $search = $request->search;
+
+        if($search == ''){
+            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno')->limit(5)->get();
+        }else{
+            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno')->where('nombre', 'like', '%' .$search . '%')->limit(5)->get();
+        }
+
+        $response = array();
+        foreach($directorio as $dir){
+            $response[] = array("value"=>$dir->id,"label"=>$dir->nombre . " " .$dir->apellidoPaterno . " " . $dir->apellidoMaterno);
+        }
+
+        echo json_encode($response);
+        exit;
     }
 
 

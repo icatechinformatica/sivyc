@@ -32,6 +32,7 @@ Route::get('/contrato/{id}', 'webController\ContratoController@contrato_pdf')->n
 Route::post('/contrato/save-doc','webController\ContratoController@save_doc')->name('save-doc');
 Route::get('/contrato/modificar/{id}', 'webController\ContratoController@modificar')->name('contrato-mod');
 Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoController@solicitudpago_pdf')->name('solpa-pdf');
+Route::get('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
 
 //Ruta Pago sin Middleware
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
