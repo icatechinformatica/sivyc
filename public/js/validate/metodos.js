@@ -13,7 +13,6 @@ $(function(){
    $('#validarModel').on('show.bs.modal', function(event){
        var button = $(event.relatedTarget);
        var id = button.data('id');
-    console.log(id);
        $('#validarForm').attr("action", "/pago/validacion" + "/" + id);
    });
 
@@ -76,5 +75,11 @@ $(function(){
             $('#valsupre_pdf').attr("class", "btn btn-danger");
             $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['0']);
         }
+    });
+   /**
+    * modificacion de los input a uppercase
+    */
+   $("input[type=text], textarea, select").keyup(function () {
+        $(this).val($(this).val().toUpperCase());
     });
 });
