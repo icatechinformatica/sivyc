@@ -65,20 +65,11 @@
                 <div class="form-group col-md-5">
                     <label for="inputnombre_director" class="control-label">Nombre del Director/Encargado de Unidad de Capacitación</label>
                     <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación">
+                    <input type="text" class="form-control" id="id_director" name="id_director" hidden>
                 </div>
-                <div class="form-group col-md-2">
-                    <label for="inputnumero_enlace" class="control-label">Numero de Enlace</label>
-                    <input disabled type="text" class="form-control" id="numero_enlace" name="numero_enlace">
-                </div>
-            </div>
-            <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
                     <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="testigo_icatech" class="control-label">No. de Circular Desginando Director</label>
-                    <input type="text" class="form-control" id="no_circulardir" name="no_circulardir">
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -86,22 +77,35 @@
             <br>
             <div class="form-row">
                 <div class="form-group col-md-5">
-                    <label for="inputtestigo1" class="control-label">Nombre de Primer Testigo</label>
+                    <label for="inputtestigo1" class="control-label">Nombre de Testigo de Departamento Académico</label>
                     <input type="text" class="form-control" id="testigo1" name="testigo1">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputpuesto_testigo1" class="control-label">Puesto de Primer Testigo</label>
-                    <input type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1">
+                    <label for="inputpuesto_testigo1" class="control-label">Puesto de Testigo</label>
+                    <input readonly type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1">
+                    <input type="text" name="id_testigo1" id="id_testigo1" hidden>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
-                    <label for="inputtestigo2" class="control-label">Nombre de Segundo Testigo</label>
-                    <input type="text" class="form-control" id="testigo2" name="testigo2">
+                    <label for="inputtestigo2" class="control-label">Nombre de Testigo del Departamento de Vinculación</label>
+                    <input type="text" class="form-control" id="testigo2" name="testigo2" h>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputpuesto_testigo2" class="control-label">Puesto de Segundo Testigo</label>
-                    <input type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2">
+                    <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
+                    <input readonly type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2">
+                    <input type="text" name="id_testigo2" id="id_testigo2" hidden>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-5">
+                    <label for="inputtestigo2" class="control-label">Nombre de Testigo de la Delegación Administrativa</label>
+                    <input type="text" class="form-control" id="testigo3" name="testigo3">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
+                    <input readonly type="text" class="form-control" id="puesto_testigo3" name="puesto_testigo3">
+                    <input type="text" name="id_testigo3" id="id_testigo3" hidden>
                 </div>
             </div>
             <br>

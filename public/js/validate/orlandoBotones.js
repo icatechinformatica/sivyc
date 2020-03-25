@@ -184,28 +184,106 @@ $(function(){
         });
     });
 
-      $( "#nombre_director" ).autocomplete({
+    //autocomplete
+    $( "#nombre_director" ).autocomplete({
+    source: function( request, response ) {
+        console.log(request);
+        // Fetch data
+        $.ajax({
+        url:"/directorio/getdirectorio",
+        type: 'get',
+        dataType: "json",
+        data: {
+            search: request.term
+        },
+        success: function( data ) {
+            response( data );
+        }
+        });
+    },
+    select: function (event, ui) {
+        // Set selection
+        $('#nombre_director').val(ui.item.label); // display the selected text
+        $('#id_director').val(ui.item.value); // save selected id to input
+        return false;
+    }
+    });
+
+    $( "#testigo1" ).autocomplete({
         source: function( request, response ) {
             console.log(request);
-          // Fetch data
-          $.ajax({
+            // Fetch data
+            $.ajax({
             url:"/directorio/getdirectorio",
             type: 'get',
             dataType: "json",
             data: {
-               search: request.term
+                search: request.term
             },
             success: function( data ) {
-               response( data );
+                response( data );
             }
-          });
+            });
         },
         select: function (event, ui) {
-           // Set selection
-           $('#nombre_director').val(ui.item.label); // display the selected text
-           $('#numero_enlace').val(ui.item.value); // save selected id to input
-           return false;
+            // Set selection
+            $('#testigo1').val(ui.item.label); // display the selected text
+            $('#puesto_testigo1').val(ui.item.charge);
+            $('#id_testigo1').val(ui.item.value); // save selected id to input
+            return false;
         }
-      });
+    });
+
+    $( "#testigo2" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#testigo2').val(ui.item.label); // display the selected text
+            $('#puesto_testigo2').val(ui.item.charge);
+            $('#id_testigo2').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#testigo3" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#testigo3').val(ui.item.label); // display the selected text
+            $('#puesto_testigo3').val(ui.item.charge);
+            $('#id_testigo3').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+
 
 });

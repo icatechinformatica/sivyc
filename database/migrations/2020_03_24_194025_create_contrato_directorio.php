@@ -15,6 +15,7 @@ class CreateContratoDirectorio extends Migration
     {
         Schema::create('contrato_directorio', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('parte_contrato');
             $table->timestamps();
         });
     }

@@ -69,19 +69,17 @@ class ContratoController extends Controller
     {
         $contrato = new contratos();
         $contrato->numero_contrato = $request->numero_contrato;
-        $contrato->cantidad_letras1 = $request->cantidad_letras1;
-        $contrato->cantidad_letras2 = $request->cantidad_letras2;
-        $contrato->numero_circular = $request->no_circulardir;
-        $contrato->nombre_director = $request->nombre_director;
-        $contrato->unidad_capacitacion = $request->unidad_capacitacion;
-        $contrato->municipio = $request->lugar_expedicion;
-        $contrato->testigo1 = $request->testigo1;
-        $contrato->puesto_testigo1 = $request->puesto_testigo1;
-        $contrato->testigo2 = $request->testigo2;
-        $contrato->puesto_testigo2 = $request->puesto_testigo2;
-        $contrato->fecha_firma = $request->fecha_firma;
-        $contrato->id_folios = $request->id_folio;
         $contrato->instructor_perfilid = $request->perfil_instructor;
+        $contrato->cantidad_letras1 = $request->cantidad_letras;
+        $contrato->cantidad_numero = $request->cantidad_numero;
+        $contrato->municipio = $request->lugar_expedicion;
+        $contrato->fecha_firma = $request->fecha_firma;
+        $contrato->contrato_iddirector = $request->id_director;
+        $contrato->unidad_capacitacion = $request->unidad_capacitacion;
+        $contrato->contrato_idtestigo1 = $request->id_testigo1;
+        $contrato->contrato_idtestigo2 = $request->id_testigo2;
+        $contrato->contrato_idtestigo3 = $request->id_testigo3;
+        $contrato->id_folios = $request->id_folio;
         $contrato->save();
 
         folio::where('id_folios', '=', $request->id_folio)
@@ -180,14 +178,14 @@ class ContratoController extends Controller
         $search = $request->search;
 
         if($search == ''){
-            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno')->limit(5)->get();
+            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->limit(5)->get();
         }else{
-            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno')->where('nombre', 'like', '%' .$search . '%')->limit(5)->get();
+            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->where('nombre', 'like', '%' .$search . '%')->limit(5)->get();
         }
 
         $response = array();
         foreach($directorio as $dir){
-            $response[] = array("value"=>$dir->id,"label"=>$dir->nombre . " " .$dir->apellidoPaterno . " " . $dir->apellidoMaterno);
+            $response[] = array("value"=>$dir->id,"label"=>$dir->nombre . " " .$dir->apellidoPaterno . " " . $dir->apellidoMaterno, "charge"=>$dir->puesto);
         }
 
         echo json_encode($response);
@@ -203,7 +201,7 @@ class ContratoController extends Controller
         $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
-                                  'instructores.domicilio','instructor_perfil.especialidad')
+                                  'instructores.domicilio','instructor_perfil.especialidad',)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')

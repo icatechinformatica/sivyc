@@ -17,7 +17,8 @@
         "laravel/ui": "^1.2",
         "laravelcollective/html": "^6.0",
         "revolution/laravel-google-sheets": "^5.0",
-        "spatie/laravel-cors": "^1.6"
+        "spatie/laravel-cors": "^1.6",
+        "doctrine/dbal": "v2.4.2"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
