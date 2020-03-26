@@ -34,8 +34,7 @@ $(function(){
         }
         else if(id['4'] == 'Pago_Rechazado' || id['4'] == 'Validado')
         {
-            $('#sol_pdf').attr("class", "btn btn-danger");
-            $('#sol_pdf').attr("href", "/contrato/solicitud-pago/pdf/" + id['0']);
+            $('#sol_pdf').attr("class", "btn btn-danger disabled");
             $('#contrato_pdf').attr("class", "btn btn-danger disabled");
             $('#docs_pdf').attr("class", "btn btn-danger disabled");
             $('#valsupre_pdf').attr("class", "btn btn-danger");
@@ -43,8 +42,7 @@ $(function(){
         }
         else if(id['4'] == 'Contratado')
         {
-            $('#sol_pdf').attr("class", "btn btn-danger");
-            $('#sol_pdf').attr("href", "/contrato/solicitud-pago/pdf/" + id['0']);
+            $('#sol_pdf').attr("class", "btn btn-danger disabled");
             $('#contrato_pdf').attr("class", "btn btn-danger");
             $('#contrato_pdf').attr("href", "/contrato/" + id['1']);
             $('#docs_pdf').attr("class", "btn btn-danger disabled");

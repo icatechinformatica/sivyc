@@ -14,7 +14,7 @@ class instructor extends Model
     'registro_agente_capacitador','rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio',
     'asentamiento','domicilio','telefono','correo','unidad_capacitacion_solicita_validacion_instructor',
     'memoramdum_validacion','fecha_validacion','observaciones','cursos_conocer','modificacion_memo','banco',
-    'no_cuenta','interbancaria','folio_ine','archivo_cv'];
+    'no_cuenta','interbancaria','folio_ine','archivo_cv','id_especialidad'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

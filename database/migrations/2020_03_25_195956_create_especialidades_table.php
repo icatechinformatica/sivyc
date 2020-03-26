@@ -17,7 +17,7 @@ class CreateEspecialidadesTable extends Migration
             $table->bigIncrements('id');
             $table->string('clave', 150);
             $table->string('nombre', 250);
-            $table->bigInteger('horas_totales');
+            $table->string('especialidad_ocupacional');
             $table->timestamps();
         });
     }

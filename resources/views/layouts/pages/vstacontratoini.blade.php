@@ -71,6 +71,9 @@
                             @endif
                             @if ($itemData->status == 'Contratado')
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                @can('contratos.edit')
+                                    <a class="btn btn-info" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}" >Modificar</a>
+                                @endcan
                                 @can('solicitud_pago.create')
                                     <a class="btn btn-success" href="{{route('solicitud-pago', ['id' => $itemData->id_folios])}}">Solicitar Pago</a>
                                 @endcan
@@ -78,7 +81,7 @@
                             @if ($itemData->status == 'Pago_Rechazado')
                                 <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación</a>
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
-                                @can(contratos.edit)
+                                @can('contratos.edit')
                                     <a class="btn btn-info" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}" >Modificar</a>
                                 @endcan
                             @endif

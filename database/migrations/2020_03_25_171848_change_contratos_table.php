@@ -21,11 +21,11 @@ class ChangeContratosTable extends Migration
             $table->dropColumn('puesto_testigo2');
             $table->dropColumn('cantidad_letras2');
             $table->dropColumn('numero_circular');
-            $table->integer('contrato_idtestigo1')->after('fecha_firma');
-            $table->integer('contrato_idtestigo2');
-            $table->integer('contrato_idtestigo3');
+            $table->dropForeign('contratos_instructor_perfilid_foreign');
+            $table->foreign('instructor_perfilid')
+                  ->references('id')->on('esoecialidades')
+                  ->onDelete('set null')->onUpdate('cascade');
             $table->decimal('cantidad_numero')->after('cantidad_letras1');
-            $table->integer('contrato_iddirector');
 
         });
     }

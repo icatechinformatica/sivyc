@@ -32,11 +32,11 @@
                     <input type="text" disabled class="form-control" value="{{$nombrecompleto}}" id="nombre_instructor" name="nombre_instructor">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="clavecurso" class="control-label">Area de Conocimiento del Instructor</label>
+                    <label for="clavecurso" class="control-label">Especialidad de Conocimiento del Instructor</label>
                     <select class="form-control" name="perfil_instructor" id="perfil_instructor">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ( $perfil_prof as $value )
-                            <option value={{$value->id}}>{{$value->especialidad}}</option>
+                            <option value={{$value->id}}>{{$value->nombre}}</option>
                         @endforeach
                     </select>
                 </div>

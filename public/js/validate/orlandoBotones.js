@@ -168,17 +168,16 @@ $(function(){
             success: function(){
                 $('#numero_contrato').prop("disabled", false)
                 $('#perfil_instructor').prop("disabled", false)
-                $('#cantidad_letras1').prop("disabled", false)
-                $('#cantidad_letras2').prop("disabled", false)
+                $('#cantidad_numero').prop("disabled", false)
+                $('#cantidad_letras').prop("disabled", false)
                 $('#lugar_expedicion').prop("disabled", false)
                 $('#fecha_firma').prop("disabled", false)
                 $('#nombre_director').prop("disabled", false)
                 $('#unidad_capacitacion').prop("disabled", false)
                 $('#no_circulardir').prop("disabled", false)
                 $('#testigo1').prop("disabled", false)
-                $('#puesto_testigo1').prop("disabled", false)
                 $('#testigo2').prop("disabled", false)
-                $('#puesto_testigo2').prop("disabled", false)
+                $('#testigo3').prop("disabled", false)
                 $('#save-contrato').prop("disabled", false)
             }
         });
