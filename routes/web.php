@@ -73,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::get('/contratos/crear/{id}', 'webController\ContratoController@create')->name('contratos.create');
     Route::get('/', function () {
-        return view('layouts.pages.table');
+        return view('layouts.pages.home');
     });
 
     /***

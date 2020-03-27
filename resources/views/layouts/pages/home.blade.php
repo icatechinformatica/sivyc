@@ -1,9 +1,12 @@
-@extends('layouts.app')
+<!-- Creado por Daniel Méndez-->
+@extends('theme.sivyc.layout')
+
+@section('title', 'Inicio | Sivyc Icatech')
 
 @section('content')
-<div class="container">
+<div class="container g-pt-50">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">Dashboard</div>
 
@@ -19,5 +22,6 @@
             </div>
         </div>
     </div>
+    <br>
 </div>
 @endsection
