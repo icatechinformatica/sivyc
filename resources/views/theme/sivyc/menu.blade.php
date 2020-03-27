@@ -1,71 +1,102 @@
-<div class="g-brd-around  g-brd-1 g-brd-gray-light-v4-top g-brd-gray-light-v4-bottom g-bg-color-menu g-pt-4 g-pb-4" role="alert">
-	<div class="container">
-		<nav class="navbar navbar-expand-lg navbar-light g-pa-0 g-right-0 g-bg-color-menu g-pt-4 g-pb-4">
-			<a class="navbar-brand g-color-morado g-font-weight-600 g-font-size-16 d-none d-sm-none d-md-none d-lg-none d-xl-block g-text-underline--hover" >SIVyC</a>
-			<a class="navbar-brand g-color-morado g-font-weight-600 g-font-size-16 d-sm-block d-md-block d-lg-block d-xl-none g-text-underline--hover" ></a>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav g-font-size-15 g-font-weight-100 ml-auto">
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Inicio de Sesión') }}</a>
-                        </li>
-                    @else
-                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{ route('cursos.index') }}">Cursos Validados</a></li>
-                        @can('supre.index')
-                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('supre-inicio')}}">Suficencia Presupuestal</a></li>
-                        @endcan
-                        @can('contratos.index')
-                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('contrato-inicio')}}">Contrato</a></li>
-                        @endcan
-                        <!--helper-->
-                        @can('pagos.inicio')
-                            <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('pago-inicio')}}">Pagos</a></li>
-                        @endcan
-                        <!--end helper-->
-                        <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" >Agenda Vinculador</a></li>
-                        <li class="nav-item g-mx-5--lg dropdown">
-                            <a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9 dropdown" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Catálogos
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{{route('frm-cursos')}}">Cursos</a>
-                            <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
-                            @can('alumnos.index')
-                            <a class="dropdown-item" href="{{ route('alumnos.index') }}">Alumnos</a>
-                            @endcan
-                            <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
-                            </div>
-                        </li>
-                        <li class="nav-item g-mx-5--lg dropdown">
-                            <a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9 dropdown" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Reportes
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="#">Reporte 1</a>
-                            <a class="dropdown-item" href="#">Reporte 2</a>
-                            <a class="dropdown-item" href="#">SReporte 3</a>
-                            </div>
-                        </li>
-                        <li class="nav-item g-mx-5--lg dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ Auth::user()->name }}
-                            </a>
 
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
-                                    {{ __('Cerrar Sesión') }}
-                                </a>
+<!--Navbar -->
+<nav class="mb-1 navbar navbar-expand-lg navbar-dark pink darken-4">
+    <a class="navbar-brand" href="#"><h4><b>Sivyc</b></h4></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
+        aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+        @guest
+            <ul class="navbar-nav ml-auto nav-flex-icons">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('Inicio de Sesión') }}</a>
+                </li>
+            </ul>
+        @else
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link g-mx-5--lg" href="{{ route('cursos.index') }}">
+                        Cursos Validados
+                    </a>
+                </li>
+                @can('supre.index')
+                <li class="nav-item g-mx-5--lg">
+                    <a class="nav-link g-color-white--hover" href="{{route('supre-inicio')}}">
+                        Suficencia Presupuestal
+                    </a>
+                </li>
+                @endcan
+                @can('contratos.index')
+                <li class="nav-item g-mx-5--lg">
+                    <a class="nav-link g-color-white--hover" href="{{route('contrato-inicio')}}">
+                        Contrato
+                    </a>
+                </li>
+                @endcan
+                <!--helper-->
+                @can('pagos.inicio')
+                    <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover g-bg-morado--hover g-rounded-3 g-color-black-opacity-0_9" href="{{route('pago-inicio')}}">Pagos</a></li>
+                @endcan
+                <!--end helper-->
+                <li class="nav-item g-mx-5--lg">
+                    <a class="nav-link g-color-white--hover" >
+                        Agenda Vinculador
+                    </a>
+                </li>
+                <li class="nav-item g-mx-5--lg dropdown">
+                    <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Catálogos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{route('frm-cursos')}}">Cursos</a>
+                        <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
+                        @can('alumnos.index')
+                        <a class="dropdown-item" href="{{ route('alumnos.index') }}">Alumnos</a>
+                        @endcan
+                        <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
+                    </div>
+                </li>
+                <li class="nav-item g-mx-5--lg dropdown">
+                    <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Reportes
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Reporte 1</a>
+                        <a class="dropdown-item" href="#">Reporte 2</a>
+                        <a class="dropdown-item" href="#">SReporte 3</a>
+                    </div>
+                </li>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    @endguest
-                </ul>
-			</div>
-		</nav>
-	</div>
-</div>
+            </ul>
+            <ul class="navbar-nav ml-auto nav-flex-icons">
+                <li class="nav-item g-mx-5--lg">
+                    <a class="nav-link">
+                        Notificaciones <span class="badge badge-pill badge-primary ml-2">1</span>
+                    </a>
+                </li>
+                <li class="nav-item avatar dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg-right dropdown-secondary" aria-labelledby="navbarDropdownMenuLink-55">
+                        <a class="dropdown-item" href="#">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">
+                                {{ __('Cerrar Sesión') }}
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+
+            </ul>
+        @endguest
+    </div>
+</nav>
+<!--/.Navbar -->
