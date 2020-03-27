@@ -31,6 +31,12 @@
         }
     </style>
     <div class="container g-pt-50">
+        @if ($message =  Session::get('info'))
+            <div class="alert alert-info alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ $message }}</strong>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -69,6 +75,16 @@
                                     <a class="btn btn-success" href="{{route('contratos.create', ['id' => $itemData->id_folios])}}">Crear Contrato</a>
                                 @endcan
                             @endif
+                            @if ($itemData->status == 'Validando_Contrato')
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                <a class="btn btn-success" href="{{route('contrato-validar', ['id' => $itemData->id_contrato])}}">Validar Contrato</a>
+                            @endif
+                            @if ($itemData->status == 'Contrato_Rechazado')
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                @can('contratos.edit')
+                                    <a class="btn btn-info" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}" >Modificar</a>
+                                @endcan
+                            @endif
                             @if ($itemData->status == 'Contratado')
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
                                 @can('contratos.edit')
@@ -101,10 +117,6 @@
                     </tr>
                 @endforeach
             </tbody>
-            <tfoot>
-                <tr>
-                </tr>
-            </tfoot>
         </table>
         <br>
     </div>

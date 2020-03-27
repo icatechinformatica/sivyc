@@ -18,11 +18,6 @@ use App\Models\especialidad;
 use PDF;
 class ContratoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $supre = new supre();
@@ -54,19 +49,10 @@ class ContratoController extends Controller
         $perfil_prof = $perfil::WHERE('id', '=', $data->id_especialidad)->GET();
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        /**
-         * TODO: se tiene que obtener el id del contrato que se va a generar y hacer una consulta
-         */
-        // vista
+
         return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function contrato_save(Request $request)
     {
         $contrato = new contratos();
@@ -90,7 +76,7 @@ class ContratoController extends Controller
         $directorio->save();
 
         folio::where('id_folios', '=', $request->id_folio)
-        ->update(['status' => 'Contratado']);
+        ->update(['status' => 'Validando_Contrato']);
 
         return redirect()->route('contrato-inicio')
                     ->with('success','Suficiencia Presupuestal Validado');
@@ -124,26 +110,73 @@ class ContratoController extends Controller
     }
 
     public function save_mod(Request $request){
-        contratos::where('id_contrato', '=', $request->id_contrato)
-        ->update(['numero_contrato' => $request->numero_contrato,
-                  'instructor_perfilid' => $request->perfil_instructor,
-                  'cantidad_letras1' => $request->cantidad_letras1,
-                  'cantidad_letras2' => $request->cantidad_letras2,
-                  'municipio' => $request->lugar_expedicion,
-                  'fecha_firma' => $request->fecha_firma,
-                  'nombre_director' => $request->nombre_director,
-                  'unidad_capacitacion' => $request->unidad_capacitacion,
-                  'numero_circular' => $request->no_circulardir,
-                  'testigo1' => $request->testigo1,
-                  'puesto_testigo1' => $request->puesto_testigo1,
-                  'testigo2' => $request->testigo2,
-                  'puesto_testigo2' => $request->puesto_testigo2]);
+        $contrato = contratos::find($request->id_contrato);
+        $contrato->numero_contrato = $request->numero_contrato;
+        $contrato->instructor_perfilid = $request->perfil_instructor;
+        $contrato->cantidad_numero = $request->cantidad_numero;
+        $contrato->cantidad_letras1 = $request->cantidad_letras;
+        $contrato->municipio = $request->lugar_expedicion;
+        $contrato->fecha_firma = $request->fecha_firma;
+        $contrato->unidad_capacitacion = $request->unidad_capacitacion;
+        $contrato->save();
 
-        supre::where('id', '=', $request->id_supre)
-        ->update(['status' => 'En_Proceso']);
+        $folio = folio::find($request->id_folio);
+        $folio->status = 'Validando_Contrato';
+        $folio->save();
+
+
+        $directorio = contrato_directorio::find($request->id_directorio);
+        $directorio->contrato_iddirector = $request->id_director;
+        $directorio->contrato_idtestigo1 = $request->id_testigo1;
+        $directorio->contrato_idtestigo2 = $request->id_testigo2;
+        $directorio->contrato_idtestigo3 = $request->id_testigo3;
+        $directorio->save();
+
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Contrato Modificado');
+    }
+
+    public function validar_contrato($id){
+        $data = contratos::SELECT('contratos.id_contrato','contratos.numero_contrato','contratos.cantidad_letras1','contratos.fecha_firma',
+                                 'contratos.municipio','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
+                                 'contratos.cantidad_numero','folios.iva','folios.id_cursos','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                                 'instructores.apellidoMaterno','instructores.id','especialidades.nombre AS especialidad')
+                            ->WHERE('id_contrato', '=', $id)
+                            ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                            ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'contratos.instructor_perfilid')
+                            ->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
+        return view('layouts.pages.vstvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3'));
+    }
+
+    public function rechazar_contrato(Request $request){
+        $contrato = contratos::find($request->idContrato);
+        $contrato->observacion = $request->observaciones;
+        $contrato->save();
+
+        $folio = folio::find($request->idfolios);
+        $folio->status = 'Contrato_Rechazado';
+        $folio->save();
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Contrato Rechazado Exitosamente');
+    }
+
+    public function valcontrato($id){
+        $folio = folio::find($id);
+        $folio->status = "Contratado";
+        $folio->save();
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Contrato Validado Exitosamente');
     }
 
     public function solicitud_pago($id){

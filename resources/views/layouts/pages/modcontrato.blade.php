@@ -4,7 +4,7 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
-        <form action="{{ route('contrato-save') }}" method="post" id="registercontrato">
+        <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato">
             @csrf
             <div style="text-align: right;width:65%">
                 <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
@@ -19,13 +19,13 @@
                     <textarea cols="4" rows="4" type="text" class="form-control" disabled aria-required="true" id="observacion" name="observacion">{{$datacon->observacion}}</textarea>
                 </div>
             </div>
-             <hr style="border-color:dimgray">
-             <div class="form-row">
-                 <div class="form-group col-md-6">
-                    <label for="numero_contrato" class="control-label">Número de Contrato</label>
-                    <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato" value="{{$datacon->numero_contrato}}" disabled>
-                 </div>
-             </div>
+            <hr style="border-color:dimgray">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                <label for="numero_contrato" class="control-label">Número de Contrato</label>
+                <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato" value="{{$datacon->numero_contrato}}" disabled>
+                </div>
+            </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputnombre_curso" class="control-label">Nombre del Curso</label>
@@ -121,6 +121,7 @@
             <br>
             <input id="id_folio" name="id_folio" hidden value='{{$data->id_folios}}'>
             <input id="id_directorio" name="id_directorio" hidden value='{{$data_directorio->id}}'>
+            <input id="id_contrato" name="id_contrato" hidden value='{{$datacon->id_contrato}}'>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">

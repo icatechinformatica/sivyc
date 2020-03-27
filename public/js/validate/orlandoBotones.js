@@ -183,6 +183,24 @@ $(function(){
         });
     });
 
+    //boton Contrato rechazar
+    $("#rechazarContrato").click(function(e){
+        e.preventDefault();
+        $.ajax({
+            success: function(){
+                $('#rechazar_contrato').prop("class", "form-row")
+                $('#btn_rechazar').prop("class", "form-row");
+            }
+        });
+    });
+
+    //Boton Contrato Validar
+    $('#validarContratoModel').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#validarForm').attr("action", "/contrato/valcontrato/" + id);
+    });
+
     //autocomplete
     $( "#nombre_director" ).autocomplete({
     source: function( request, response ) {

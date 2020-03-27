@@ -49,6 +49,15 @@ $(function(){
             $('#valsupre_pdf').attr("class", "btn btn-danger");
             $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['3']);
         }
+        else if(id['4'] == 'Validando_Contrato')
+        {
+            $('#sol_pdf').attr("class", "btn btn-danger disabled");
+            $('#contrato_pdf').attr("class", "btn btn-danger");
+            $('#contrato_pdf').attr("href", "/contrato/" + id['1']);
+            $('#docs_pdf').attr("class", "btn btn-danger disabled");
+            $('#valsupre_pdf').attr("class", "btn btn-danger");
+            $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['3']);
+        }
     });
 
     //Modal en Supre
