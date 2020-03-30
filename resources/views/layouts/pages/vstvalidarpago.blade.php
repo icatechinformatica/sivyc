@@ -45,17 +45,17 @@
         </div>
         <form method="POST" action="{{ route('pago.validar') }}">
             @csrf
-            <div id="rechazar_pago" class="form-row d-none d-print-none">
+            <div id="rechazar_contrato" class="form-row d-none d-print-none">
                 <div class="form-group col-md-6">
                     <label for="observaciones">Describa el motivo de rechazo</label>
                     <textarea name="observaciones" id="observaciones" cols="6" rows="6" class="form-control"></textarea>
                 </div>
             </div>
             <div id="btn_rechazar" class="form-row d-none d-print-none">
-                <div class="form-group col-md-3">
+                <div class= "form-group col-md-3">
                     <button type="submit" class="btn btn-danger" >Confirmar Rechazo</button>
-                    <input hidden id="idContrato" name="idContrato" value="{{$contratos->id_contrato}}">
-                    <input hidden id="idfolios" name="idfolios" value="{{$contratos->id_folios}}">
+                    <input hidden id="idContrato" name="idContrato" value="{{$data->id_contrato}}">
+                    <input hidden id="idfolios" name="idfolios" value="{{$data->id_folios}}">
                 </div>
             </div>
         </form>

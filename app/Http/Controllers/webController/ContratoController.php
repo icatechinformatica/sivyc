@@ -12,14 +12,12 @@ use App\Models\InstructorPerfil;
 use App\Models\supre;
 use App\Models\folio;
 use App\Models\pago;
+use App\Models\directorio;
+use App\Models\contrato_directorio;
+use App\Models\especialidad;
 use PDF;
 class ContratoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $supre = new supre();
@@ -40,51 +38,45 @@ class ContratoController extends Controller
     public function create($id)
     {
         $folio = new folio();
-        $perfil = new InstructorPerfil();
+        $perfil = new especialidad();
         $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                               'instructores.apellidoMaterno','instructores.id')
+                               'instructores.apellidoMaterno','instructores.id','instructores.id_especialidad')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
 
-        $perfil_prof = $perfil::WHERE('numero_control', '=', $data->id)->GET();
+        $perfil_prof = $perfil::WHERE('id', '=', $data->id_especialidad)->GET();
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        /**
-         * TODO: se tiene que obtener el id del contrato que se va a generar y hacer una consulta
-         */
-        // vista
+
         return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function contrato_save(Request $request)
     {
         $contrato = new contratos();
         $contrato->numero_contrato = $request->numero_contrato;
-        $contrato->cantidad_letras1 = $request->cantidad_letras1;
-        $contrato->cantidad_letras2 = $request->cantidad_letras2;
-        $contrato->numero_circular = $request->no_circulardir;
-        $contrato->nombre_director = $request->nombre_director;
-        $contrato->unidad_capacitacion = $request->unidad_capacitacion;
-        $contrato->municipio = $request->lugar_expedicion;
-        $contrato->testigo1 = $request->testigo1;
-        $contrato->puesto_testigo1 = $request->puesto_testigo1;
-        $contrato->testigo2 = $request->testigo2;
-        $contrato->puesto_testigo2 = $request->puesto_testigo2;
-        $contrato->fecha_firma = $request->fecha_firma;
-        $contrato->id_folios = $request->id_folio;
         $contrato->instructor_perfilid = $request->perfil_instructor;
+        $contrato->cantidad_letras1 = $request->cantidad_letras;
+        $contrato->cantidad_numero = $request->cantidad_numero;
+        $contrato->municipio = $request->lugar_expedicion;
+        $contrato->fecha_firma = $request->fecha_firma;
+        $contrato->unidad_capacitacion = $request->unidad_capacitacion;
+        $contrato->id_folios = $request->id_folio;
         $contrato->save();
 
+        $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
+        $directorio = new contrato_directorio();
+        $directorio->contrato_iddirector = $request->id_director;
+        $directorio->contrato_idtestigo1 = $request->id_testigo1;
+        $directorio->contrato_idtestigo2 = $request->id_testigo2;
+        $directorio->contrato_idtestigo3 = $request->id_testigo3;
+        $directorio->id_contrato = $id_contrato->id_contrato;
+        $directorio->save();
+
         folio::where('id_folios', '=', $request->id_folio)
-        ->update(['status' => 'Contratado']);
+        ->update(['status' => 'Validando_Contrato']);
 
         return redirect()->route('contrato-inicio')
                     ->with('success','Suficiencia Presupuestal Validado');
@@ -93,7 +85,7 @@ class ContratoController extends Controller
     public function modificar($id)
     {
         $folio = new folio();
-        $perfil = new InstructorPerfil();
+        $especialidad = new especialidad();
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
         $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
@@ -102,36 +94,89 @@ class ContratoController extends Controller
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
-        $perfil_sel = $perfil::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
+        $perfil_sel = $especialidad::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
 
-        $perfil_prof = $perfil::WHERE('numero_control', '=', $data->id)
+        $perfil_prof = $especialidad::WHERE('id', '=', $data->id)
                                ->WHERE('id', '!=', $datacon->instructor_perfilid)->GET();
 
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon'));
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio'));
     }
 
     public function save_mod(Request $request){
-        contratos::where('id_contrato', '=', $request->id_contrato)
-        ->update(['numero_contrato' => $request->numero_contrato,
-                  'instructor_perfilid' => $request->perfil_instructor,
-                  'cantidad_letras1' => $request->cantidad_letras1,
-                  'cantidad_letras2' => $request->cantidad_letras2,
-                  'municipio' => $request->lugar_expedicion,
-                  'fecha_firma' => $request->fecha_firma,
-                  'nombre_director' => $request->nombre_director,
-                  'unidad_capacitacion' => $request->unidad_capacitacion,
-                  'numero_circular' => $request->no_circulardir,
-                  'testigo1' => $request->testigo1,
-                  'puesto_testigo1' => $request->puesto_testigo1,
-                  'testigo2' => $request->testigo2,
-                  'puesto_testigo2' => $request->puesto_testigo2]);
+        $contrato = contratos::find($request->id_contrato);
+        $contrato->numero_contrato = $request->numero_contrato;
+        $contrato->instructor_perfilid = $request->perfil_instructor;
+        $contrato->cantidad_numero = $request->cantidad_numero;
+        $contrato->cantidad_letras1 = $request->cantidad_letras;
+        $contrato->municipio = $request->lugar_expedicion;
+        $contrato->fecha_firma = $request->fecha_firma;
+        $contrato->unidad_capacitacion = $request->unidad_capacitacion;
+        $contrato->save();
 
-        supre::where('id', '=', $request->id_supre)
-        ->update(['status' => 'En_Proceso']);
+        $folio = folio::find($request->id_folio);
+        $folio->status = 'Validando_Contrato';
+        $folio->save();
+
+
+        $directorio = contrato_directorio::find($request->id_directorio);
+        $directorio->contrato_iddirector = $request->id_director;
+        $directorio->contrato_idtestigo1 = $request->id_testigo1;
+        $directorio->contrato_idtestigo2 = $request->id_testigo2;
+        $directorio->contrato_idtestigo3 = $request->id_testigo3;
+        $directorio->save();
+
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Contrato Modificado');
+    }
+
+    public function validar_contrato($id){
+        $data = contratos::SELECT('contratos.id_contrato','contratos.numero_contrato','contratos.cantidad_letras1','contratos.fecha_firma',
+                                 'contratos.municipio','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
+                                 'contratos.cantidad_numero','folios.iva','folios.id_cursos','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                                 'instructores.apellidoMaterno','instructores.id','especialidades.nombre AS especialidad')
+                            ->WHERE('id_contrato', '=', $id)
+                            ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                            ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'contratos.instructor_perfilid')
+                            ->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
+        return view('layouts.pages.vstvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3'));
+    }
+
+    public function rechazar_contrato(Request $request){
+        $contrato = contratos::find($request->idContrato);
+        $contrato->observacion = $request->observaciones;
+        $contrato->save();
+
+        $folio = folio::find($request->idfolios);
+        $folio->status = 'Contrato_Rechazado';
+        $folio->save();
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Contrato Rechazado Exitosamente');
+    }
+
+    public function valcontrato($id){
+        $folio = folio::find($id);
+        $folio->status = "Contratado";
+        $folio->save();
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Contrato Validado Exitosamente');
     }
 
     public function solicitud_pago($id){
@@ -174,6 +219,25 @@ class ContratoController extends Controller
 
     }
 
+    public function get_directorio(Request $request){
+
+        $search = $request->search;
+
+        if($search == ''){
+            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->limit(5)->get();
+        }else{
+            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->where('nombre', 'like', '%' .$search . '%')->limit(5)->get();
+        }
+
+        $response = array();
+        foreach($directorio as $dir){
+            $response[] = array("value"=>$dir->id,"label"=>$dir->nombre . " " .$dir->apellidoPaterno . " " . $dir->apellidoMaterno, "charge"=>$dir->puesto);
+        }
+
+        echo json_encode($response);
+        exit;
+    }
+
 
     public function contrato_pdf($id)
     {
@@ -181,24 +245,34 @@ class ContratoController extends Controller
         $contrato = new contratos();
 
         $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
-                                  'instructores.domicilio','instructor_perfil.especialidad')
+                                  'instructores.domicilio','instructor_perfil.especialidad','especialidades.nombre AS nomes')
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                           ->LEFTJOIN('instructor_perfil', 'instructor_perfil.id', '=', 'contratos.instructor_perfilid')
+                          ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'contratos.instructor_perfilid')
                           ->FIRST();
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
 
         $date = strtotime($data_contrato->fecha_firma);
         $D = date('d', $date);
-        $M = date('m',$date);
-        $Y = date("Y",$date);
+        $M = $this->toMonth(date('m', $date));
+        $Y = date("Y", $date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('data_contrato','data','nomins','D','M','Y'));
+        $monto = explode(".",strval($data_contrato->cantidad_numero));
 
-        return $pdf->download('medium.pdf');
+        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto'));
+
+        return $pdf->stream('medium.pdf');
     }
 
     public function solicitudpago_pdf($id){
@@ -248,5 +322,49 @@ class ContratoController extends Controller
         $pdf->storeAs('/uploadContrato/contrato/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
         $pdfUrl = Storage::url('/uploadContrato/contrato/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
+    }
+
+    protected function toMonth($m)
+    {
+        switch ($m) {
+            case 1:
+                return "Enero";
+            break;
+            case 2:
+                return "Febrero";
+            break;
+            case 3:
+                return "Marzo";
+            break;
+            case 4:
+                return "Abril";
+            break;
+            case 5:
+                return "Mayo";
+            break;
+            case 6:
+                return "Junio";
+            break;
+            case 7:
+                return "Julio";
+            break;
+            case 8:
+                return "Agosto";
+            break;
+            case 9:
+                return "Septiembre";
+            break;
+            case 10:
+                return "Octubre";
+            break;
+            case 11:
+                return "Noviembre";
+            break;
+            case 12:
+                return "Diciembre";
+            break;
+
+
+        }
     }
 }

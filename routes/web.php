@@ -28,10 +28,15 @@ Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pd
 Route::get('/Contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
+Route::post('/contrato/save-mod','webController\ContratoController@save_mod')->name('contrato-savemod');
+Route::post('/contrato/rechazar-contrato','webController\ContratoController@rechazar_contrato')->name('contrato-rechazar');
+Route::get('/contrato/validar/{id}', 'webController\ContratoController@validar_contrato')->name('contrato-validar');
 Route::get('/contrato/{id}', 'webController\ContratoController@contrato_pdf')->name('contrato-pdf');
 Route::post('/contrato/save-doc','webController\ContratoController@save_doc')->name('save-doc');
+Route::get('/contrato/valcontrato/{id}', 'webController\ContratoController@valcontrato')->name('valcontrato');
 Route::get('/contrato/modificar/{id}', 'webController\ContratoController@modificar')->name('contrato-mod');
 Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoController@solicitudpago_pdf')->name('solpa-pdf');
+Route::get('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
 
 //Ruta Pago sin Middleware
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
@@ -68,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::get('/contratos/crear/{id}', 'webController\ContratoController@create')->name('contratos.create');
     Route::get('/', function () {
-        return view('layouts.pages.table');
+        return view('layouts.pages.home');
     });
 
     /***

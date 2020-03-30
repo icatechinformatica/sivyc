@@ -32,23 +32,23 @@
                     <input type="text" disabled class="form-control" value="{{$nombrecompleto}}" id="nombre_instructor" name="nombre_instructor">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="clavecurso" class="control-label">Area de Conocimiento del Instructor</label>
+                    <label for="clavecurso" class="control-label">Especialidad de Conocimiento del Instructor</label>
                     <select class="form-control" name="perfil_instructor" id="perfil_instructor">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ( $perfil_prof as $value )
-                            <option value={{$value->id}}>{{$value->especialidad}}</option>
+                            <option value={{$value->id}}>{{$value->nombre}}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="inputcantidad_letras1" class="control-label">Monto Total de los Honorarios (En Letra)</label>
-                    <input type="text" class="form-control" id="cantidad_letras1" name="cantidad_letras1">
+                    <label for="inputcantidad_numero" class="control-label">Monto Total de los Honorarios (En Numero)</label>
+                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputcantidad_letras2" class="control-label">Monto Total de los Honorarios Asimilables a Salarios (En Letra)</label>
-                    <input type="text" class="form-control" id="cantidad_letras2" name="cantidad_letras2">
+                    <label for="inputcantidad_letras" class="control-label">Monto Total de los Honorarios (En Letra)</label>
+                    <input type="text" class="form-control" id="cantidad_letras" name="cantidad_letras">
                 </div>
             </div>
             <div class="form-row">
@@ -62,17 +62,14 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="directordeunidaddecapacitacion" class="control-label">Nombre del Director de Unidad de Capacitación</label>
+                <div class="form-group col-md-5">
+                    <label for="inputnombre_director" class="control-label">Nombre del Director/Encargado de Unidad de Capacitación</label>
                     <input type="text" class="form-control" id="nombre_director" name="nombre_director" placeholder="Director de Unidad de Capacitación">
+                    <input type="text" class="form-control" id="id_director" name="id_director" hidden>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
                     <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="testigo_icatech" class="control-label">No. de Circular Desginando Director</label>
-                    <input type="text" class="form-control" id="no_circulardir" name="no_circulardir">
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -80,22 +77,35 @@
             <br>
             <div class="form-row">
                 <div class="form-group col-md-5">
-                    <label for="inputtestigo1" class="control-label">Nombre de Primer Testigo</label>
+                    <label for="inputtestigo1" class="control-label">Nombre de Testigo de Departamento Académico</label>
                     <input type="text" class="form-control" id="testigo1" name="testigo1">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputpuesto_testigo1" class="control-label">Puesto de Primer Testigo</label>
-                    <input type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1">
+                    <label for="inputpuesto_testigo1" class="control-label">Puesto de Testigo</label>
+                    <input readonly type="text" class="form-control" id="puesto_testigo1" name="puesto_testigo1">
+                    <input type="text" name="id_testigo1" id="id_testigo1" hidden>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-5">
-                    <label for="inputtestigo2" class="control-label">Nombre de Segundo Testigo</label>
-                    <input type="text" class="form-control" id="testigo2" name="testigo2">
+                    <label for="inputtestigo2" class="control-label">Nombre de Testigo del Departamento de Vinculación</label>
+                    <input type="text" class="form-control" id="testigo2" name="testigo2" h>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputpuesto_testigo2" class="control-label">Puesto de Segundo Testigo</label>
-                    <input type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2">
+                    <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
+                    <input readonly type="text" class="form-control" id="puesto_testigo2" name="puesto_testigo2">
+                    <input type="text" name="id_testigo2" id="id_testigo2" hidden>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-5">
+                    <label for="inputtestigo2" class="control-label">Nombre de Testigo de la Delegación Administrativa</label>
+                    <input type="text" class="form-control" id="testigo3" name="testigo3">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_testigo2" class="control-label">Puesto del Testigo</label>
+                    <input readonly type="text" class="form-control" id="puesto_testigo3" name="puesto_testigo3">
+                    <input type="text" name="id_testigo3" id="id_testigo3" hidden>
                 </div>
             </div>
             <br>
