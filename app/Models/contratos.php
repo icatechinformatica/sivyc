@@ -8,14 +8,20 @@ class contratos extends Model
 {
     //
     protected $table = 'contratos';
+    protected $primaryKey = 'id_contrato';
 
-    protected $fillable = ['id_contrato', 'numero_contrato', 'folio_ine', 'cantidad_letras', 'lugar_expedicion', 'fecha_firma',
-                            'testigo_icatech', 'testigo_instructor', 'municipio', 'id_supre','status'];
+    protected $fillable = ['id_contrato','numero_contrato','cantidad_letras1','fecha_firma','municipio',
+    'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero'
+    ];
 
     protected $hidden = ['created_at', 'updated_at'];
 
     public function supre()
     {
         return $this->belongsTo(supre::class, 'id_supre');
+    }
+    public function perfil_instructor()
+    {
+        return $this->belongsTo(InstructorPerfil::class, 'id_folios');
     }
 }

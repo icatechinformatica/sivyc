@@ -46,7 +46,7 @@
         @include("theme.sivycAuth.header")
         <!--HEADER DE LA PAGINA FIN-->
         <!--MENU-->
-        @include("theme.sivyc.menu")
+        @include("theme.sivycAuth.menu")
         <!--MENU-->
 
         <!-- PAGINA -->

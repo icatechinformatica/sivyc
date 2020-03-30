@@ -29,7 +29,9 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('frm-supre')}}"> Nuevo</a>
+                    @can('supre.create')
+                        <a class="btn btn-success btn-lg" href="{{route('frm-supre')}}"> Nuevo</a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -51,19 +53,32 @@
                     <th scope="row">{{$itemData->no_memo}}</th>
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->fecha}}</td>
-                        <td>{{$itemData->status}}</td>
                         <td>
-                            @if ($itemData->status == 'Validado' || $itemData->status == 'En Proceso')
-                                <a class="btn btn-warning" href="{{route('supre-pdf', ['id' => $itemData->id])}}" target="_blank">Solicitud PDF</a>
-                                @if ($itemData->status == 'Validado')
-                                    <a class="btn btn-danger" href="{{route('solicitudsuficiencia', ['id' => $itemData->id])}}" target="_blank">Validacion PDF</a>
-                                @endif
-                                @if ($itemData->status == 'En Proceso')
-                                <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
+                            @if ($itemData->status == 'En_Proceso')
+                                En Proceso
+                            @else
+                                {{$itemData->status}}
                             @endif
+                        </td>
+                        <td>
+                            @if ( $itemData->status == 'En_Proceso')
+                            <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                @can('supre.validacion')
+                                    <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
+                                @endcan
+                                @can('supre.edit')
+                                    <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                                @endcan
+                                <input hidden value={{$itemData->id}} id='pdfp'>
                             @endif
-                            @if ($itemData->status == 'En Proceso' || $itemData->status == 'Rechazado')
-                                <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                            @if ($itemData->status == 'Validado')
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                            @endif
+                            @if ($itemData->status == 'Rechazado')
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                @can('supre.edit')
+                                    <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
+                                @endcan
                             @endif
                         </td>
                     </tr>
@@ -75,6 +90,31 @@
             </tfoot>
         </table>
         <br>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="supreModal" role="dialog">
+        <div class="modal-dialog">
+      <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Archivos PDF Generables</h4>
+                </div>
+            <div class="modal-body" style="text-align:center">
+                <div style="text-align:center" class="form-group">
+                    <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
+                </div>
+                <div style="text-align:center" class="form-group">
+                    <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo Solicitud de Suficiencia Presupuestal</a><br>
+                </div>
+                <div style="text-align:center" class="form-group">
+                    <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
     <br>
 @endsection

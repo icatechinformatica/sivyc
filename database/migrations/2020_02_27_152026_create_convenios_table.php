@@ -26,7 +26,7 @@ class CreateConveniosTable extends Migration
             $table->string('nombre_titular', 255);
             $table->string('nombre_enlace', 255);
             $table->text('direccion');
-            $table->bigInteger('telefono', 255);
+            $table->bigInteger('telefono');
             $table->boolean('status')->nullable();
             $table->timestamps();
         });

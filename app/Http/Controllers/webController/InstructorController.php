@@ -52,13 +52,14 @@ class InstructorController extends Controller
         ]);
         if ($validator->fails()) {
             # code...
-            $error =  $validator->errors()->first();
-            dd($error);
+            return redirect('/instructor/crear')
+                        ->withErrors($validador)
+                        ->withInput();
+
         } else {
             $saveInstructor = new instructor();
-            $file = $request->file('cv'); # obtenemos el archivo
-            $urlcv = $this->pdf_upload($file);
-            $nco = '404Prueba'; #No. Control prueba
+
+            $nco = '406Prueba'; #No. Control prueba
             $nombre_completo = $request->nombre. ' ' . $request->apellido_paterno. ' ' . $request->apellido_materno;
 
             # Proceso de Guardado
@@ -90,7 +91,6 @@ class InstructorController extends Controller
             $saveInstructor->cursos_impartidos = trim($request->cursos_impartidos);
             $saveInstructor->capacitados_icatech = trim($request->cap_icatech);
             $saveInstructor->curso_recibido_icatech =trim($request->cursos_recicatech);
-            $saveInstructor->archivo_cv = trim($urlcv);
 
             #----- Institucional -----
             $saveInstructor->numero_control = $nco;
@@ -102,6 +102,25 @@ class InstructorController extends Controller
             $saveInstructor->fecha_validacion = trim($request->fecha_validacion);
             $saveInstructor->observaciones = trim($request->observacion);
             $saveInstructor->save();
+
+            /**
+             * Obtener el id del último registro insertado
+             */
+            $instructorId = $saveInstructor->id;
+
+            /**
+             * checar si hay un documento para poder llamar el método
+             */
+            if ($request->hasFile('cv')) {
+                # se llama el método
+                $file = $request->file('cv'); # obtenemos el archivo
+                $urlcv = $this->pdf_upload($file, $instructorId); #invocamos el método
+            }
+
+            // guardamos en la base de datos
+            $instructor = instructor::find($instructorId);
+            $instructor->archivo_cv = trim($urlcv);
+            $instructor->save();
 
             return redirect()->route('instructor-inicio')
                         ->with('success','Perfil profesional agregado');
@@ -190,14 +209,15 @@ class InstructorController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    protected function pdf_upload($pdf)
+    protected function pdf_upload($pdf, $id)
     {
-                    $tamanio = $pdf->getClientSize(); #obtener el tamaño del archivo del cliente
-                    $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
-                    $pdfFile = trim( Str::slug($pdf->getClientOriginalName(), '-')) . "." . $extensionPdf; // nombre de la imagen al momento de subirla
-                    $pdf->storeAs('/uploadFiles/', $pdfFile); // guardamos el archivo en la carpeta storage
-                    $pdfUrl = Storage::url('/uploadFiles/'.$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
-                    return $pdfUrl;
+        $tamanio = $pdf->getClientSize(); #obtener el tamaño del archivo del cliente
+        $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
+        # nuevo nombre del archivo
+        $pdfFile = trim("cv"."_".date('YmdHis')."_".$id.".".$extensionPdf);
+        $pdf->storeAs('/uploadFiles/instructor/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $pdfUrl;
     }
 
     public function paginate($items, $perPage = 5, $page = null)

@@ -1,5 +1,7 @@
 @extends("theme.sivyc.layout")
 <!--llamar la plantilla -->
+@section('title', 'Formulario de Convenio | Sivyc Icatech')
+
 @section('content')
  <!--empieza aquí-->
 
@@ -20,10 +22,16 @@
          </div>
          <hr style="border-color:dimgray">
         <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="no_convenio" class="control-label">N° Contrato</label>
+                <input type="text" class="form-control" id="no_convenio" name="no_convenio" placeholder="N° Convenio">
+            </div>
+        </div>
+        <div class="form-row">
             <!-- Organismo -->
             <div class="form-group col-md-6">
                 <label for="institucion" class="control-label">Institución</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="institucion" name="institucion" placeholder="Institución">
+                <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución">
             </div>
             <!--Organismo Fin-->
             <!-- Direccion -->
@@ -57,13 +65,13 @@
             <!-- fecha inicial -->
             <div class="form-group col-md-6">
                 <label for="fecha_firma" class="control-label">Fecha de Firma </label>
-                <input type='text' id="fecha_firma" name="fecha_firma" class="form-control datepicker" />
+                <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly" name="fecha_firma" class="form-control datepicker" />
             </div>
             <!--Fecha inicial END-->
             <!-- Fecha conclusion -->
             <div class="form-group col-md-6">
                 <label for="fecha_termino" class="control-label">Fecha de Termino </label>
-                <input type='text' id="fecha_termino" name="fecha_termino" class="form-control datepicker" />
+                <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly" name="fecha_termino" class="form-control datepicker" />
             </div>
             <!-- Fecha conclusion END-->
         </div>
@@ -87,13 +95,13 @@
             <!--nombre_titular-->
             <div class="form-group col-md-6">
                 <label for="nombre_titular" class="control-label">Nombre del Titular </label>
-                <input type='text' id="from" name="nombre_titular" class="form-control" />
+                <input type='text' id="nombre_titular" name="nombre_titular" class="form-control" />
             </div>
             <!--nombre_titular END-->
             <!--nombre_enlace-->
             <div class="form-group col-md-6">
                 <label for="nombre_enlace" class="control-label">Nombre Enlace </label>
-                <input type='text' id="from" name="nombre_enlace" class="form-control" />
+                <input type='text' id="nombre_enlace" name="nombre_enlace" class="form-control" />
             </div>
             <!--nombre_enlace END-->
         </div>
@@ -101,7 +109,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="remitente" class="control-label">Adjunto Convenio</label>
-                <input type="file" id="archivo_convenio" name="archivo_convenio" class="form-control" accept="application/pdf">
+                <input type="file" id="archivo_convenio" name="archivo_convenio" accept="application/pdf" class="form-control">
             </div>
 
             <div class="form-group col-md-6">

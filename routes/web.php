@@ -19,14 +19,32 @@ Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaCon
 //Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();
 
+//Ruta supre sin Middleware
+Route::get('/supre/solicitud/opc', 'webController\supreController@opcion')->name('solicitud-opcion');
+Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_folios')->name('solicitud-folio');
+Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
+
 //Ruta Contrato sin Middleware
 Route::get('/Contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
+Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
+Route::post('/contrato/save-mod','webController\ContratoController@save_mod')->name('contrato-savemod');
+Route::post('/contrato/rechazar-contrato','webController\ContratoController@rechazar_contrato')->name('contrato-rechazar');
+Route::get('/contrato/validar/{id}', 'webController\ContratoController@validar_contrato')->name('contrato-validar');
+Route::get('/contrato/{id}', 'webController\ContratoController@contrato_pdf')->name('contrato-pdf');
+Route::post('/contrato/save-doc','webController\ContratoController@save_doc')->name('save-doc');
+Route::get('/contrato/valcontrato/{id}', 'webController\ContratoController@valcontrato')->name('valcontrato');
+Route::get('/contrato/modificar/{id}', 'webController\ContratoController@modificar')->name('contrato-mod');
+Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoController@solicitudpago_pdf')->name('solpa-pdf');
+Route::get('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
+
+//Ruta Pago sin Middleware
+Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
 
 // Ruta Validacion sin middleware
 Route::post('/supre/validacion/Rechazado', 'webController\supreController@supre_rechazo')->name('supre-rechazo');
 Route::post('/supre/validacion/Validado', 'webController\supreController@supre_validado')->name('supre-validado');
-Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre_pdf')->name('valsupre_pdf');
+Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre_pdf')->name('valsupre-pdf');
 Route::get('/supre/pdf/{id}', 'webController\supreController@supre_pdf')->name('supre-pdf');
 
 /**
@@ -40,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
            ->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
     Route::get('/alumnos/paso1', 'webController\AlumnoController@create')
-           ->name('alumnos.inscripcion-paso1')->middleware('can:alumnos.inscripcion-paso1');
+           ->name('alumnos.inscripcion-paso1')->middleware('can:alumnos.create');
     Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
@@ -55,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::get('/contratos/crear/{id}', 'webController\ContratoController@create')->name('contratos.create');
     Route::get('/', function () {
-        return view('layouts.pages.table');
+        return view('layouts.pages.home');
     });
 
     /***
@@ -63,11 +81,15 @@ Route::middleware(['auth'])->group(function () {
      */
 
     // Crea pago
-    Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio')->middleware('can:alumnos.inscripcion-paso1');
-    Route::get('/pago/crear', 'webController\PagoController@crear_pago')->name('pago-crear');
-    Route::get('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
+    Route::get('/pago/inicio', 'webController\PagoController@index')->name('pago-inicio');
+    Route::get('/pago/crear/{id}', 'webController\PagoController@crear_pago')->name('pago-crear');
+    Route::post('/pago/guardar', 'webController\PagoController@guardar_pago')->name('pago-guardar');
     Route::get('/pago/modificar', 'webController\PagoController@modificar_pago')->name('pago-modificar');
     Route::post('/pago/fill', 'webController\PagoController@fill');
+    // cambiando status
+    Route::get('/pago/verificar_pago/{id}', 'webController\PagoController@show')->name('pago.verificarpago');
+    Route::post('/pago/validar_pago', 'webController\PagoController@guardar_pago')->name('pago.validar');
+    Route::get('/pago/validacion/{idfolio}', 'webController\PagoController@pago_validar')->name('pago.validacion');
 
     // Crea instructor
     Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');
@@ -80,17 +102,21 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/instructor/curso-impartir/guardar/{id}{idInstructor}', 'webController\InstructorController@cursoimpartir_save')->name('cursoimpartir-guardar');
 
     // Solicitud de Suficiencia Presupuestal
-    Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')->name('supre-inicio');
-    Route::get('/supre/solicitud/crear', 'webController\supreController@frm_formulario')->name('frm-supre');
-    Route::post('/supre/solicitud/guardar',"webController\supreController@store")->name('solicitud-guardar');
-    Route::get('/supre/solicitud/modificar/{id}', 'webController\supreController@solicitud_modificar')->name('modificar_supre');
+    Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')
+           ->name('supre-inicio')->middleware('can:supre.index');
+    Route::get('/supre/solicitud/crear', 'webController\supreController@frm_formulario')
+           ->name('frm-supre')->middleware('can:supre.create');
+    Route::post('/supre/solicitud/guardar',"webController\supreController@store")
+           ->name('solicitud-guardar');
+    Route::get('/supre/solicitud/modificar/{id}', 'webController\supreController@solicitud_modificar')
+         ->name('modificar_supre')->middleware('can:supre.edit');
     Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
     // Validar Cursos
-    Route::get('/validar-curso/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cv_inicio');
-    Route::get('/validar-curso/crear', 'webController\CursoValidadoController@cv_crear')->name('cv_crear');
-    Route::post('/validar-curso/fill1', 'webController\CursoValidadoController@fill1');
-    Route::post("/validar-curso/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
+    Route::get('/cursos/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos.index');
+    // Route::get('/cursos/crear', 'webController\CursoValidadoController@cv_crear')->name('cv_crear');
+    Route::post('/cursos/fill1', 'webController\CursoValidadoController@fill1');
+    Route::post("/cursos/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
 
     // Validacion de Suficiencia Presupuestal
     Route::get('/supre/validacion/inicio', 'webController\supreController@validacion_supre_inicio')->name('vasupre-inicio');
@@ -103,4 +129,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/convenios/guardar', 'webController\ConveniosController@store')->name('convenios.store');
     Route::get('/convenios/show/{id}', 'UserProfileController@show')->name('convenios.show');
     Route::get('/convenios/edit/{id}', 'webController\ConveniosController@edit')->name('convenios.edit');
+    /**
+     * agregando financiero rutas -- DMC
+     */
+    Route::get('financiero/indice', 'webController\FinancieroController@index')
+           ->name('financiero.index');
 });

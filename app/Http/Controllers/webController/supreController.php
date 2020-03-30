@@ -21,10 +21,28 @@ class supreController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function solicitud_supre_inicio() {
+    Public function opcion(){
+        return view('layouts.pages.vstasolicitudopc');
+    }
+
+     public function solicitud_supre_inicio() {
         $supre = new supre();
         $data = $supre::where('id', '!=', '0')->latest()->get();
+
+
+
         return view('layouts.pages.vstasolicitudsupre', compact('data'));
+    }
+
+    public function solicitud_folios(){
+        $supre = new supre();
+        $data2 = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
+        'folios.folio_validacion')
+                        ->where('folios.status', '!=', 'x')
+                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
+                        ->get();
+
+        return view('layouts.pages.vstasolicitudfolio', compact('data2'));
     }
 
     public function frm_formulario() {
@@ -51,7 +69,7 @@ class supreController extends Controller
         $supre->puesto_ccp1 = $request->puesto_ccp1;
         $supre->nombre_ccp2 = $request->nombre_ccp2;
         $supre->puesto_ccp2 = $request->puesto_ccp2;
-        $supre->status = 'En Proceso';
+        $supre->status = 'En_Proceso';
         $supre->save();
 
        $id = $supre->SELECT('id')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
@@ -72,7 +90,7 @@ class supreController extends Controller
             $folio->importe_total = $value['importe'];
             $folio->id_supre = $id->id;
             $folio->id_cursos = $hora->id;
-            $folio->status = 'En Proceso';
+            $folio->status = 'En_Proceso';
             $folio->save();
         }
 
@@ -86,7 +104,11 @@ class supreController extends Controller
         $folio = new folio();
 
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
-        $getfolios = $folio::WHERE('id_supre','=', $getsupre->id)->GET();
+        $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.numero_presupuesto',
+                                    'folios.importe_total','folios.iva','tbl_cursos.clave')
+                            ->WHERE('id_supre','=', $getsupre->id)
+                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                            ->GET();
         return view('layouts.pages.modsupre',compact('getsupre','getfolios'));
     }
 
@@ -95,46 +117,47 @@ class supreController extends Controller
         $supre = new supre();
         $curso_validado = new tbl_curso();
 
+        supre::where('id', '=', $request->id_supre)
+        ->update(['status' => 'En_Proceso',
+                  'unidad_capacitacion' => $request->unidad_capacitacion,
+                  'no_memo' => $request->no_memo,
+                  'fecha' => $request->fecha,
+                  'nombre_para' => $request->nombre_para,
+                  'puesto_para' => $request->puesto_para,
+                  'nombre_remitente' => $request->nombre_remitente,
+                  'puesto_remitente' => $request->puesto_remitente,
+                  'nombre_valida' => $request->nombre_valida,
+                  'puesto_valida' => $request->puesto_valida,
+                  'nombre_elabora' => $request->nombre_elabora,
+                  'puesto_elabora' => $request->puesto_elabora,
+                  'nombre_ccp1' => $request->nombre_ccp1,
+                  'puesto_ccp1' => $request->puesto_ccp1,
+                  'nombre_ccp2' => $request->nombre_ccp2,
+                  'puesto_ccp2' => $request->puesto_ccp2]);
 
-        $validData = $request->validate([
-            'unidad_capacitacion' => 'required',
-            'no_memo' => 'required',
-            'fecha' => 'required',
-            'nombre_para' => 'required',
-            'puesto_para' => 'required',
-            'nombre_remitente' => 'required',
-            'puesto_remitente' => 'required',
-            'nombre_valida' => 'required',
-            'puesto_valida' => 'required',
-            'nombre_elabora' => 'required',
-            'puesto_elabora' => 'required',
-            'nombre_ccp1' => 'required',
-            'puesto_ccp1' => 'required',
-            'nombre_ccp2' => 'required',
-            'puesto_ccp2' => 'required',
-        ]);
-
-
+            if($request->id_supre != NULL)
+            {
+                folio::WHERE('id_supre', '=', $request->id_supre)->DELETE();
+            }
+            $id = $supre::SELECT('id')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
+        //Guarda Folios
         foreach ($request->addmore as $key => $value){
-            $foliomod = new folio();
-            $curso = new tbl_curso();
-            dd($value);
-            $clave = $curso::SELECT('clave')->WHERE('id', '=', $value['id_cursos']);
-            folio::DELETE('id_cursos','=',$value['id_cursos']);
-            $foliomod->folio_validacion = $value['folio'];
-            $foliomod->numero_presupuesto = $value['numeropresupuesto'];
-            $foliomod->iva = $value['iva'];
-            $clave = $clave->clave;
+            $folio = new folio();
+            $folio->folio_validacion = $value['folio'];
+            $folio->numero_presupuesto = $value['numeropresupuesto'];
+            $folio->iva = $value['iva'];
+            $clave = $value['clavecurso'];
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
             $importe_hora = $importe / $hora->horas;
-            $foliomod->importe_hora = $importe_hora;
-            $foliomod->importe_total = $value['importe'];
-            $foliomod->id_supre = $request->id_supre;
-            $foliomod->id_cursos = $hora->id;
-            $foliomod->save();
+            $folio->importe_hora = $importe_hora;
+            $folio->importe_total = $value['importe'];
+            $folio->id_supre = $id->id;
+            $folio->id_cursos = $hora->id;
+            $folio->status = 'En_Proceso';
+            $folio->save();
         }
 
         return redirect()->route('supre-inicio')
@@ -194,21 +217,42 @@ class supreController extends Controller
         $D = date('d', $date);
         $M = date('m',$date);
         $Y = date("Y",$date);
+
+
         $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
+        return  $pdf->download('medium.pdf');
+    }
 
-        // (Optional) configuramos el tamaño y orientación de la hoja
-        return $pdf->stream('medium.pdf');
-
+    public function tablasupre_pdf($id){
+        $supre = new supre;
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas',)
+                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
                     ->WHERE('id_supre', '=', $id )
-                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id_supre')
+                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
+
+        $date = strtotime($data2->fecha);
+        $D = date('d', $date);
+        $M = date('m',$date);
+        $Y = date("Y",$date);
+
+        $datev = strtotime($data2->fecha_validacion);
+        $Dv = date('d', $datev);
+        $Mv = date('m',$datev);
+        $Yv = date("Y",$datev);
+
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv'));
+        $pdf->setPaper('A4', 'Landscape');
+
+
+
+        return $pdf->download('medium.pdf');
+
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
     }
 
@@ -217,13 +261,31 @@ class supreController extends Controller
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas',)
+                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
                     ->WHERE('id_supre', '=', $id )
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
+
+        $date = strtotime($data2->fecha);
+        $D = date('d', $date);
+        $M = date('m',$date);
+        $Y = date("Y",$date);
+
+        $datev = strtotime($data2->fecha_validacion);
+        $Dv = date('d', $datev);
+        $Mv = date('m',$datev);
+        $Yv = date("Y",$datev);
+
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv'));
+        $pdf->setPaper('A4', 'Landscape');
+
+
+
+        return $pdf->download('medium.pdf');
+
         return view('layouts.pdfpages.valsupre', compact('data','data2'));
     }
 
