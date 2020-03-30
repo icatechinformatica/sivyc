@@ -23,9 +23,9 @@ class ChangeContratosTable extends Migration
             $table->dropColumn('numero_circular');
             $table->dropForeign('contratos_instructor_perfilid_foreign');
             $table->foreign('instructor_perfilid')
-                  ->references('id')->on('esoecialidades')
+                  ->references('id')->on('especialidades')
                   ->onDelete('set null')->onUpdate('cascade');
-            $table->decimal('cantidad_numero')->after('cantidad_letras1');
+            $table->decimal('cantidad_numero', 10, 2)->after('cantidad_letras1');
 
         });
     }
