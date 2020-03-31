@@ -9,3 +9,9 @@ input[type=text], select, textarea {
     display: none;
 }
 
+.card-deck {
+    display: flex;
+}
+.card-deck .card img {
+    width: 50%;
+}
