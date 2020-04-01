@@ -22,7 +22,7 @@
         </div>
         <hr style="border-color:dimgray">
         @if ($contador > 0)
-            <table  id="table-instructor" class="table table-bordered">
+            <table  id="table-instructor" class="table table-bordered Datatables">
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>

@@ -131,14 +131,14 @@ class InstructorController extends Controller
      */
     public function institucional($id)
     {
-        return view('layouts.pages.frminstructor.institucional');
+        return view('layouts.pages.frminstructor_institucional');
     }
     /**
      * @param Request
      */
     public function institucional_save(Request $request)
     {
-        $instructor_institucional = InstructorPerfil::WHERE('numero_control', '=', $request->idInstructor)->firstOrFail();
+        $instructor_institucional = new InstructorPerfil();
 
         $instructor_institucional->tipo_honorario = trim($request->tipo_honorario); //
         $instructor_institucional->registro_agente_capacitador_externo = trim($request->registro_agente); //
@@ -146,10 +146,11 @@ class InstructorController extends Controller
         $instructor_institucional->memorandum_validacion = trim($request->memo_validacion); //
         $instructor_institucional->fecha_validacion = trim($request->fecha_validacion);
         $instructor_institucional->modificacion_memo = trim($request->memo_mod);
+        $instructor_institucional->numero_control = trim($request->idInstructor);
         $instructor_institucional->save(); // guardar registro
 
         return redirect()->route('instructor-inicio')
-            ->with('success','Perfil profesional agregado');
+            ->with('success','Agregado datos institucionales');
     }
     /**
      * Display the specified resource.

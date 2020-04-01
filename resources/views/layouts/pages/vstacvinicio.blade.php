@@ -31,7 +31,7 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
-        <table  id="table-instructor" class="table table-bordered">
+        <table  id="table-instructor" class="table table-bordered Datatables">
             <caption>Catalogo de Cursos Validados</caption>
             <thead>
                 <tr>

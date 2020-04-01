@@ -30,7 +30,7 @@
                 <br>
             </div>
         </div>
-        <table  id="table-folios" class="table table-bordered">
+        <table  id="table-folios" class="table table-bordered Datatables">
             <caption>Catalogo de Suficiencias Presupuestales Validadas</caption>
             <thead>
                 <tr>

@@ -10,10 +10,6 @@
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputnumero_control">Numero de Control</label>
-                    <input id="numero_control" name="numero_control" type="text" disabled class="form-control" aria-required="true">
-                </div>
                 <div class="form-group col-md-5">
                     <label for="inputhonorario">Tipo de Honorario</label>
                     <select class="form-control" id="tipo_honorario" name="tipo_honorario">
