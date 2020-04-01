@@ -93,14 +93,14 @@ class InstructorController extends Controller
             $saveInstructor->curso_recibido_icatech =trim($request->cursos_recicatech);
 
             #----- Institucional -----
-            $saveInstructor->numero_control = $nco;
-            $saveInstructor->tipo_honorario = trim($request->tipo_honorario);
-            $saveInstructor->registro_agente_capacitador_externo = trim($request->registro_agente);
-            $saveInstructor->unidad_capacitacion_solicita_validacion_instructor = trim($request->uncap_validacion);
-            $saveInstructor->memoramdum_validacion = trim($request->memo_validacion);
-            $saveInstructor->modificacion_memo = trim($request->memo_mod);
-            $saveInstructor->fecha_validacion = trim($request->fecha_validacion);
-            $saveInstructor->observaciones = trim($request->observacion);
+            // $saveInstructor->numero_control = $nco;
+            // $saveInstructor->tipo_honorario = trim($request->tipo_honorario);
+            // $saveInstructor->registro_agente_capacitador_externo = trim($request->registro_agente);
+            // $saveInstructor->unidad_capacitacion_solicita_validacion_instructor = trim($request->uncap_validacion);
+            // $saveInstructor->memoramdum_validacion = trim($request->memo_validacion);
+            // $saveInstructor->modificacion_memo = trim($request->memo_mod);
+            // $saveInstructor->fecha_validacion = trim($request->fecha_validacion);
+            // $saveInstructor->observaciones = trim($request->observacion);
             $saveInstructor->save();
 
             /**
@@ -125,6 +125,31 @@ class InstructorController extends Controller
             return redirect()->route('instructor-inicio')
                         ->with('success','Perfil profesional agregado');
         }
+    }
+    /**
+     * modificaciones
+     */
+    public function institucional($id)
+    {
+        return view('layouts.pages.frminstructor.institucional');
+    }
+    /**
+     * @param Request
+     */
+    public function institucional_save(Request $request)
+    {
+        $instructor_institucional = InstructorPerfil::WHERE('numero_control', '=', $request->idInstructor)->firstOrFail();
+
+        $instructor_institucional->tipo_honorario = trim($request->tipo_honorario); //
+        $instructor_institucional->registro_agente_capacitador_externo = trim($request->registro_agente); //
+        $instructor_institucional->unidad_capacitacion_solicita_validacion = trim($request->uncap_validacion); //
+        $instructor_institucional->memorandum_validacion = trim($request->memo_validacion); //
+        $instructor_institucional->fecha_validacion = trim($request->fecha_validacion);
+        $instructor_institucional->modificacion_memo = trim($request->memo_mod);
+        $instructor_institucional->save(); // guardar registro
+
+        return redirect()->route('instructor-inicio')
+            ->with('success','Perfil profesional agregado');
     }
     /**
      * Display the specified resource.
