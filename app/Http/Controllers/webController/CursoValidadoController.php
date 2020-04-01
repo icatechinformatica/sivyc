@@ -28,7 +28,8 @@ class CursoValidadoController extends Controller
     public function cv_inicio() {
         $cd = new tbl_curso();
         $data = $cd::SELECT('tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
-                            'instructores.nombre AS nombreins','tbl_cursos.pini')
+                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                            'tbl_cursos.inicio','tbl_cursos.termino')
                     ->WHERE('tbl_cursos.clave', '!=', '0')
                     ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
                     ->LEFTJOIN('instructores','instructores.id','=','tbl_cursos.id_instructor')

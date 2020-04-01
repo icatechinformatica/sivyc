@@ -1,7 +1,7 @@
 <!--Creado por Orlando Chavez-->
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'SUPRE | SIVyC Icatech')
+@section('Cursos', 'SUPRE | SIVyC Icatech')
 <!--seccion-->
 @section('content')
     <style>
@@ -25,29 +25,29 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Cursos Validados</h2>
+                    <h2>Catalogo de Cursos</h2>
                 </div>
                 <br>
             </div>
         </div>
         <hr style="border-color:dimgray">
         <table  id="table-instructor" class="table table-bordered">
-            <caption>Catalogo de Cursos Validados</caption>
+            <caption>Catalogo de Cursos</caption>
             <thead>
                 <tr>
-                    <th scope="col">Clave</th>
+                    <th scope="col">Validación</th>
                     <th scope="col">Nombre del Curso</th>
-                    <th scope="col">Instructor</th>
-                    <th scope="col">Fecha Impartir</th>
+                    <th scope="col">Horas</th>
+                    <th scope="col">Costo</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->clave}}</th>
-                        <td>{{$itemData->nombrecur}}</td>
-                        <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
-                        <td>{{$itemData->inicio}} al {{$itemData->termino}}</td>
+                    <th scope="row">{{$itemData->memo_validacion}}</th>
+                        <td>{{$itemData->nombre_curso}}</td>
+                        <td>{{$itemData->horas}}</td>
+                        <td>{{$itemData->costo}}</td>
                     </tr>
                 @endforeach
             </tbody>

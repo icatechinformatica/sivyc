@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
+
 Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaController@index')->name('procesodepago');
 //Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();

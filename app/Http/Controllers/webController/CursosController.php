@@ -6,6 +6,10 @@ namespace App\Http\Controllers\webController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use App\Models\curso;
 
 class CursosController extends Controller
 {
@@ -16,7 +20,8 @@ class CursosController extends Controller
      */
     public function index()
     {
-        //
+        $data = curso::WHERE('id', '!=', '0')->GET();
+        return view('layouts.pages.vstacursosinicio',compact('data'));
     }
 
     /**
