@@ -159,48 +159,6 @@
                     <input name="cv" id="cv" type="file" accept="application/pdf" class="form-control" aria-required="true">
                 </div>
             </div>
-            <hr style="border-color:dimgray">
-            <label><h2>Datos Institucionales</h2></label>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputnumero_control">Numero de Control</label>
-                    <input id="numero_control" name="numero_control" type="text" disabled class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-5">
-                    <label for="inputhonorario">Tipo de Honorario</label>
-                    <select class="form-control" id="tipo_honorario" name="tipo_honorario">
-                        <option value="sin especificar">Sin Especificar</option>
-                        <option value="Interno">Interno</option>
-                        <option value="De Honorarios">De Honorarios</option>
-                        </select>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputregistro_agente">Registo Agente Capacitador Externo STPS</label>
-                    <input id="registro_agente" name="registro_agente" type="text" class="form-control" aria-required="true">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputuncap_validacion">Unidad de Capacitacion que Solicita Validacion</label>
-                    <input id="uncap_validacion" name="uncap_validacion" type="text" class="form-control " aria-required="true">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputmemo_validacion">Memorandum de Validacion</label>
-                    <input id="memo_validacion" name="memo_validacion" type="text" class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputfecha_validacion">Fecha de Validación</label>
-                    <input id="fecha_validacion" name="fecha_validacion" type="date" class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputmemo_mod">Modificacion de Memorandum</label>
-                    <input id="memo_mod" name="memo_mod" type="text" class="form-control" aria-required="true">
-                </div>
-            </div>
-            <div class="form-row">
-                <label for="inputobservacion">Observaciones</label>
-                <textarea cols="6" rows="6" id="observacion" name="observacion" class="form-control"></textarea>
-            </div>
             <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">

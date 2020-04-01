@@ -1,6 +1,5 @@
 /* Add here all your css styles (customizations) */
 
-/*# sourceMappingURL=../../css/custom.map */
 input[type=text], select, textarea {
     text-transform: uppercase;
 }
@@ -13,5 +12,5 @@ input[type=text], select, textarea {
     display: flex;
 }
 .card-deck .card img {
-    width: 50%;
+    vertical-align: middle;
 }
