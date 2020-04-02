@@ -91,30 +91,5 @@
         </table>
         <br>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="supreModal" role="dialog">
-        <div class="modal-dialog">
-      <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Archivos PDF Generables</h4>
-                </div>
-            <div class="modal-body" style="text-align:center">
-                <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
-                </div>
-                <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo Solicitud de Suficiencia Presupuestal</a><br>
-                </div>
-                <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
     <br>
 @endsection
