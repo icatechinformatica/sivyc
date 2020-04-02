@@ -1,9 +1,21 @@
 // Creado por Orlando Chavez
 $(function(){
     // ---- tablas de consultas ----
-        $('#table-perfprof').DataTable();
-        $('#table-instructor').DataTable();
-        $('#table-folios').DataTable();
+        $('#table-perfprof').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            }
+        });
+        $('#table-instructor').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            }
+        });
+        $('#table-folios').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+            }
+        });
     // ---- END tablas de consultas
 
     $.validator.addMethod("CURP", function (value, element) {

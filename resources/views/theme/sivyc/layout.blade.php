@@ -67,28 +67,28 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-            <script src="{{asset("vendor/hs-megamenu/src/hs.megamenu.js") }}"></script>
-            <script src="{{asset("vendor/dzsparallaxer/dzsparallaxer.js") }}"></script>
-            <script src="{{asset("vendor/dzsparallaxer/dzsscroller/scroller.js") }}"></script>
-            <script src="{{asset("vendor/dzsparallaxer/advancedscroller/plugin.js") }}"></script>
+        <script src="{{asset("vendor/hs-megamenu/src/hs.megamenu.js") }}"></script>
+        <script src="{{asset("vendor/dzsparallaxer/dzsparallaxer.js") }}"></script>
+        <script src="{{asset("vendor/dzsparallaxer/dzsscroller/scroller.js") }}"></script>
+        <script src="{{asset("vendor/dzsparallaxer/advancedscroller/plugin.js") }}"></script>
 
-            <script src="{{asset("js/hs.core.js") }}"></script>
+        <script src="{{asset("js/hs.core.js") }}"></script>
 
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
-            <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-            <script src="{{ asset("js/components/filter-table.js") }}"></script>
-            <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
-            <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
-            <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
-            <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.js"></script>
-            <script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
-            <script src="{{ asset("js/validate/validateConvenio.js") }}"></script>
-            <script src="{{ asset("js/validate/metodos.js") }}"></script>
-            <script src="{{ asset("js/mdb.min.js") }}"></script>
-            <script src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
-            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="{{ asset("js/components/filter-table.js") }}"></script>
+        <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
+        <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
+        <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.js"></script>
+        <script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
+        <script src="{{ asset("js/validate/validateConvenio.js") }}"></script>
+        <script src="{{ asset("js/validate/metodos.js") }}"></script>
+        <script src="{{ asset("js/mdb.min.js") }}"></script>
+        <script src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
-            <script type="text/javascript" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     </body>
 

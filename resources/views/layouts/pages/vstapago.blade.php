@@ -39,7 +39,7 @@
         <hr style="border-color:dimgray">
         <br>
         <h2>Solicitudes de Pago</h2>
-        <table  id="table-instructor" class="table table-bordered">
+        <table  id="table-instructor" class="table table-bordered Datatables">
             <caption>Lista de Contratos en Espera</caption>
             <thead>
                 <tr>
