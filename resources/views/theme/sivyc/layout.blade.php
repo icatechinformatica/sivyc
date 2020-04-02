@@ -89,7 +89,9 @@
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-
+        <!--numeros a letras-->
+        <script src="{{ asset("js/validate/conversor.js") }}"></script>
+        <script src="{{ asset("js/validate/numberTostring.js") }}"></script>
     </body>
 
 </html>

@@ -1,5 +1,5 @@
 var numeroLetras = (function(){
-    function unidades(num)
+    function Unidades(num)
     {
         switch (num) {
             case 1:
@@ -27,7 +27,7 @@ var numeroLetras = (function(){
     /***
      * decenas
      */
-    function decenas(num)
+    function Decenas(num)
     {
         let decena = Math.floor(num / 10);
         let unidad = num - (decena * 10);
@@ -176,10 +176,10 @@ var numeroLetras = (function(){
             enteros: Math.floor(num),
             centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
             letrasCentavos: '',
-            letrasMonedaPlural: currency.plural || 'PESOS CHILENOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
-            letrasMonedaSingular: currency.singular || 'PESO CHILENO', //'PESO', 'Dólar', 'Bolivar', 'etc'
-            letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS CHILENOS',
-            letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO CHILENO'
+            letrasMonedaPlural: currency.plural || 'PESOS MEXICANOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
+            letrasMonedaSingular: currency.singular || 'PESO MEXICANO', //'PESO', 'Dólar', 'Bolivar', 'etc'
+            letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS MEXICANOS',
+            letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO MEXICANO'
         };
 
         if (data.centavos > 0) {
