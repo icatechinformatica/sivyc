@@ -15,8 +15,8 @@ class AlterInstructorPerfilTable extends Migration
     {
         Schema::table('instructor_perfil', function (Blueprint $table) {
             $table->dropColumn('perfil_profesional');
-            $table->integer('critero_pago_id')->nullable();
-            $table->foreign('criterio_pago_id')->references('id')->on('criterio_pago');
+            $table->bigInteger('critero_pago_id')->nullable();
+            $table->foreign('critero_pago_id')->references('id')->on('criterio_pago');
 
 
             /**
