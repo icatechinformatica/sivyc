@@ -11,8 +11,8 @@
                 <div align=right>
                     <b>{{$data->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b>
                 </div>
-                <br><br><b>{{$data->nombre_para}}.</b>
-                <br>{{$data->puesto_para}}.
+                <br><br><b>{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}.</b>
+                <br>{{$para->puesto}}.
                 <br>Presente.
                 <br><p class="text-justify">en virtud de haber cumplido con los requisitos de apertura de curso y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente al curso que a continuación se detalla:</p>
                 <div align=center>
@@ -81,7 +81,7 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">{{$data->nombre_director}}</td></div>
+                        <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
                         <td colspan="2"><div align="center">Mtro. Walter Dompinguez Camacho</td></div>
                     </tr>
                     <tr>
@@ -89,11 +89,11 @@
                         <td colspan="2"><div align="center">Director Administrativo</td></div>
                     </tr>
                 </table>
-                <br><br><br><p><FONT SIZE=1><b><C.c.p.</C></b>{{$data->nombre_ccp1}}.-{{$data->puesto_ccp1}}.-Para su conocimiento<br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>{{$data->nombre_ccp2}}.-{{$data->puesto_ccp2}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>{{$data->nombre_ccp3}}.-{{$data->puesto_ccp3}}.-mismo fin</FONT><br/>
+                <br><br><br><p><FONT SIZE=1><b><C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento<br/>
+                <FONT SIZE=1><b><C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-mismo fin</FONT><br/>
+                <FONT SIZE=1><b><C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-mismo fin</FONT><br/>
                 <FONT SIZE=1><b><C.c.p.</C></b>Archivo/ Minutario</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>Elaboró: {{$data->elaboro}}</FONT></p>
+                <FONT SIZE=1><b><C.c.p.</C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}</FONT></p>
             </div>
         </div>
     </body>

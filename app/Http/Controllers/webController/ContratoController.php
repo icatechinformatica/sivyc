@@ -191,17 +191,14 @@ class ContratoController extends Controller
         $pago = new pago();
 
         $pago->no_memo = $request->no_memo;
-        $pago->elaboro = $request->elaboro;
-        $pago->nombre_para = $request->nombre_para;
-        $pago->puesto_para = $request->puesto_para;
-        $pago->nombre_ccp1 = $request->nombre_ccp1;
-        $pago->puesto_ccp1 = $request->puesto_ccp1;
-        $pago->nombre_ccp2 = $request->nombre_ccp2;
-        $pago->puesto_ccp2 = $request->puesto_ccp2;
-        $pago->nombre_ccp3 = $request->nombre_ccp3;
-        $pago->puesto_ccp3 = $request->puesto_ccp3;
         $pago->id_contrato = $request->id_contrato;
         $pago->save();
+        contrato_directorio::where('id_contrato', '=', $request->id_contrato)
+        ->update(['solpa_elaboro' => $request->id_elabora,
+                  'solpa_para' => $request->id_destino,
+                  'solpa_ccp1' => $request->id_ccp1,
+                  'solpa_ccp2' => $request->id_ccp2,
+                  'solpa_ccp3' => $request->id_ccp3]);
 
 
         $file = $request->file('doc_pdf'); # obtenemos el archivo
@@ -279,12 +276,10 @@ class ContratoController extends Controller
 
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio',
                               'tbl_cursos.termino','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
-                              'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.memoramdum_validacion',
+                              'instructores.apellidoPaterno','instructores.apellidoMaterno',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.nombre_director','pagos.created_at','pagos.no_memo','pagos.nombre_ccp1','pagos.puesto_ccp1',
-                              'pagos.nombre_ccp2','pagos.puesto_ccp2','pagos.nombre_ccp3','pagos.puesto_ccp3','pagos.elaboro','pagos.nombre_para',
-                              'pagos.puesto_para')
+                              'contratos.id_contrato','pagos.created_at','pagos.no_memo')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -297,7 +292,15 @@ class ContratoController extends Controller
         $M = date('m',$date);
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y'));
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
+        $elaboro = directorio::WHERE('id', '=', $data_directorio->solpa_elaboro)->FIRST();
+        $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
+        $ccp1 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp1)->FIRST();
+        $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();
+        $ccp3 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp3)->FIRST();
+
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director'));
 
         return $pdf->download('medium.pdf');
     }

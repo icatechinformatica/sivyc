@@ -63,7 +63,7 @@
                         <td>
                             @if ( $itemData->status == 'En_Proceso')
                             <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
-                                @can('supre.validacion')
+                                @can('supre.validar')
                                     <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
                                 @endcan
                                 @can('supre.edit')

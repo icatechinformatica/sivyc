@@ -301,6 +301,278 @@ $(function(){
         }
     });
 
+    $( "#destino" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#destino').val(ui.item.label); // display the selected text
+            $('#destino_puesto').val(ui.item.charge);
+            $('#id_destino').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
 
+    $( "#remitente" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#remitente').val(ui.item.label); // display the selected text
+            $('#remitente_puesto').val(ui.item.charge);
+           $('#id_remitente').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
 
+    $( "#nombre_valida" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#nombre_valida').val(ui.item.label); // display the selected text
+            $('#puesto_valida').val(ui.item.charge);
+           $('#id_valida').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#nombre_elabora" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#nombre_elabora').val(ui.item.label); // display the selected text
+            $('#puesto_elabora').val(ui.item.charge);
+           $('#id_elabora').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#nombre_ccp1" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#nombre_ccp1').val(ui.item.label); // display the selected text
+            $('#puesto_ccp1').val(ui.item.charge);
+           $('#id_ccp1').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#nombre_ccp2" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#nombre_ccp2').val(ui.item.label); // display the selected text
+            $('#puesto_ccp2').val(ui.item.charge);
+           $('#id_ccp2').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#nombre_firmante" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#nombre_firmante').val(ui.item.label); // display the selected text
+            $('#puesto_firmante').val(ui.item.charge);
+           $('#id_firmante').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#ccp1" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#ccp1').val(ui.item.label); // display the selected text
+            $('#ccpa1').val(ui.item.charge);
+           $('#id_ccp1').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#ccp2" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#ccp2').val(ui.item.label); // display the selected text
+            $('#ccpa2').val(ui.item.charge);
+           $('#id_ccp2').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#ccp3" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#ccp3').val(ui.item.label); // display the selected text
+            $('#ccpa3').val(ui.item.charge);
+           $('#id_ccp3').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#ccp4" ).autocomplete({
+        source: function( request, response ) {
+            console.log(request);
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getdirectorio",
+            type: 'get',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#ccp4').val(ui.item.label); // display the selected text
+            $('#ccpa4').val(ui.item.charge);
+           $('#id_ccp4').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
 });

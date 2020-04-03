@@ -72,8 +72,8 @@
     <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
     <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-    <br><br><b>{{$data_supre->nombre_para}}.</b>
-    <br>{{$data_supre->puesto_para}}
+    <br><br><b>{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}.</b>
+    <br>{{$getdestino->puesto}}
     <br>Presente.
 
     <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
@@ -100,13 +100,13 @@
 
     <br><p class="text-left"><p>Sin mas por el momento, aprovecho la ocacion para enviarle un cordial saludo.</p></p>
     <br><p class="text-left"><p>Atentamente.</p></p>
-    <br><br><b>{{$data_supre->nombre_remitente}}</b>
-    <br><b>{{$data_supre->puesto_remitente}} de la Unidad de Capacitacion {{$data_supre->unidad_capacitacion}}.</b>
-    <br><br><br><br><br><h6><small><b>C.c.p. C.P. {{$data_supre->nombre_ccp1}}.-{{$data_supre->puesto_ccp1}}.-Mismo Fin</b></small></h6>
-    <h6><small><b>C.P.{{$data_supre->nombre_ccp2}}.- {{$data_supre->puesto_ccp2}}.-Mismo Fin</b></small></h6>
+    <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
+    <br><b>{{$getremitente->puesto}} de la Unidad de Capacitacion {{$data_supre->unidad_capacitacion}}.</b>
+    <br><br><br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
+    <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
     <h6><small><b>Archivo/Minutario<b></small></h6>
-    <br><br><small><b>Valido: {{$data_supre->nombre_valida}}.- {{$data_supre->puesto_valida}}<b></small></h6>
-    <br><small><b>Elaboró: {{$data_supre->nombre_elabora}}.- {{$data_supre->puesto_elabora}}<b></small></h6>
+    <br><br><small><b>Valido: {{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}.-{{$getvalida->puesto}}<b></small></h6>
+    <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}<b></small></h6>
 
   </div>
     </div>

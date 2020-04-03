@@ -67,8 +67,8 @@
             Fecha: {{$Dv}} de {{$Mv}} del {{$Yv}}</FONT>
             </div>
             <div class="b"> <FONT SIZE=0>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}}</font><br/>
-                <FONT SIZE=0><b>{{$data2->nombre_remitente}}</b></FONT><br/>
-                <FONT SIZE=0><b>{{$data2->puesto_remitente}}</b></FONT><br/>
+                <FONT SIZE=0><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b></FONT><br/>
+                <FONT SIZE=0><b>{{$getremitente->puesto}}</b></FONT><br/>
                 <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                 <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorandúm No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
                     <font size=0>La Secretaria de HAcienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Técnologica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2020, en ese sentido, con Fundamento en el Art. 17 Fracción V, VI y 26
@@ -126,14 +126,14 @@
             </div>
         <div id="wrapperbot">
             <div align=center>
-                <small>{{$data2->nombre_firmante}}</small>
+                <small>{{$getfirmante->nombre}} {{$getfirmante->apellidoPaterno}} {{$getfirmante->apellidoMaterno}}</small>
                 <br>________________________________________<br/>
-                <br><small>{{$data2->puesto_firmante}}</small></b>
+                <br><small>{{$getfirmante->puesto}}</small></b>
             </div>
-            <br><br><br><p><FONT SIZE=1><b>C.c.p.</b>{{$data2->val_ccp1}}.-{{$data2->val_ccpp1}}.-Para su conocimiento<br/>
-                <FONT SIZE=1><b>C.c.p.</b>{{$data2->val_ccp2}}.-{{$data2->val_ccpp2}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b>C.c.p.</b>{{$data2->val_ccp3}}.-{{$data2->val_ccpp3}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b>C.c.p.</b>{{$data2->val_ccp4}}.-{{$data2->val_ccpp4}}.-mismo fin</FONT><br/>
+            <br><br><br><p><FONT SIZE=1><b>C.c.p.</b>{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Para su conocimiento<br/>
+                <FONT SIZE=1><b>C.c.p.</b>{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-mismo fin</FONT><br/>
+                <FONT SIZE=1><b>C.c.p.</b>{{$getccp3->nombre}} {{$getccp3->apellidoPaterno}} {{$getccp3->apellidoMaterno}}.-{{$getccp3->puesto}}.-mismo fin</FONT><br/>
+                <FONT SIZE=1><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br/>
                 <FONT SIZE=1><b>C.c.p.</b>Archivo/ Minutario</FONT><br/>
                 </p>
         </div>

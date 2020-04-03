@@ -26,11 +26,11 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="droparea">Area de Adscripcion</label>
-                        <input name="area" id="area" type="text" disabled value="{{$data->puesto_remitente}}" class="form-control">
+                        <input name="area" id="area" type="text" disabled value="{{$getremitente->puesto}}" class="form-control">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="dropnombre_dir">Nombre del Director de Unidad</label>
-                        <input name="nombre_dir" id="nombre_dir" type="text" disabled value="{{$data->nombre_remitente}}" class="form-control">
+                        <input name="nombre_dir" id="nombre_dir" type="text" disabled value="{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}" class="form-control">
                     </div>
                 </div>
                 <br>
@@ -84,7 +84,8 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_firmante">Puesto de firmante</label>
-                        <input name="puesto_firmante" id="puesto_firmante" type="text" class="form-control">
+                        <input name="puesto_firmante" readonly id="puesto_firmante" type="text" class="form-control">
+                        <input id="id_firmante" name="id_firmante" hidden>
                     </div>
                 </div>
                 <hr style="border-color:dimgray">
@@ -97,7 +98,8 @@
                         <input name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa1" id="ccpa1" class="form-control" placeholder="Puesto">
+                        <input name="ccpa1" readonly id="ccpa1" class="form-control" placeholder="Puesto">
+                        <input id="id_ccp1" name="id_ccp1" hidden>
                     </div>
                 </div>
                 <div id="div5" class="form-row d-none d-print-none">
@@ -105,7 +107,8 @@
                         <input name="ccp2" id="ccp2" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa2" id="ccpa2" class="form-control" placeholder="Puesto">
+                        <input name="ccpa2" id="ccpa2" readonly class="form-control" placeholder="Puesto">
+                        <input id="id_ccp2" name="id_ccp2" hidden>
                     </div>
                 </div>
                 <div id="div6" class="form-row d-none d-print-none">
@@ -113,7 +116,8 @@
                         <input name="ccp3" id="ccp3" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa3" id="ccpa3" class="form-control" placeholder="Puesto">
+                        <input name="ccpa3" id="ccpa3" readonly class="form-control" placeholder="Puesto">
+                        <input id="id_ccp3" name="id_ccp3" hidden>
                     </div>
                 </div>
                 <div id="div7" class="form-row d-none d-print-none">
@@ -121,7 +125,8 @@
                         <input name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" class="form-control" placeholder="puesto">
+                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto">
+                        <input id="id_ccp4" name="id_ccp4" hidden >
                     </div>
                 </div>
             <!--END CCP-->
@@ -130,6 +135,7 @@
                         <div class="pull-right">
                             <button type="submit" class="btn btn-success" >Confirmar Validación</button>
                             <input hidden id="id" name="id" value="{{$data->id}}">
+                            <input hidden id="directorio_id" name="directorio_id" value="{{$directorio->id}}">
                         </div>
                     </div>
                 </div>

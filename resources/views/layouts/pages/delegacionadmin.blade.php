@@ -11,7 +11,6 @@
         width: 34px;
       }
 </style>
- <!--empieza aquí-->
  <div class="container g-pt-50">
    <form method="POST" action="{{ route('solicitud-guardar') }}" id="registersupre">
        @csrf
@@ -35,12 +34,13 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6"> <!-- Destinatario -->
-                <label for="destino" class="control-label">Destinatario</label>
+                <label for="inputdestino" class="control-label">Destinatario</label>
                 <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!-- Puesto-->
-                <label for="puesto" class="control-label">Puesto</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
+                <label for="inputpuesto_destino" class="control-label">Puesto</label>
+                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
+                <input id="id_destino" name="id_destino" type="text" hidden>
             </div>
         </div>
         <div class="field_wrapper">
@@ -65,32 +65,35 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6"> <!--  -->
-                <label for="remitente" class="control-label">Remitente</label>
+                <label for="inputremitente" class="control-label">Remitente</label>
                 <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!--  -->
-                <label for="remitente" class="control-label">Puesto</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
+                <label for="inputremitente" class="control-label">Puesto</label>
+                <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
+                <input id="id_remitente" name="id_remitente" type="text" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="remitente" class="control-label">Nombre de Quien Valida</label>
+                <label for="inputvalida" class="control-label">Nombre de Quien Valida</label>
                 <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
-                <label for="remitente" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                <label for="inputvalida" class="control-label">Puesto de Quien Valida</label>
+                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                <input id="id_valida" name="id_valida" type="text" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="remitente" class="control-label">Nombre de Quien Elabora</label>
+                <label for="inputelabora" class="control-label">Nombre de Quien Elabora</label>
                 <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
-                <label for="remitente" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                <label for="inputelabora" class="control-label">Puesto de Quien Elabora</label>
+                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                <input id="id_elabora" name="id_elabora" type="text" hidden>
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -100,24 +103,26 @@
             <label><h4>Copia 1</h4></label>
             <div class="form-row">
                 <div class="form-group col-md-4"> <!-- copia 1 -->
-                    <label for="remitente" class="control-label">Nombre</label>
+                    <label for="inputccp1" class="control-label">Nombre</label>
                     <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
                 </div>
                 <div class="form-group col-md-4"> <!--  -->
-                    <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
+                    <label for="inputccp1" class="control-label">Puesto</label>
+                    <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
+                    <input id="id_ccp1" name="id_ccp1" type="text" hidden>
                 </div>
             </div>
             <br>
             <label><h4>Copia 2</h4></label>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="remitente" class="control-label">Nombre</label>
+                    <label for="inputccp2" class="control-label">Nombre</label>
                     <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
                 </div>
                 <div class="form-group col-md-4"> <!--  -->
-                    <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
+                    <label for="inputccp2" class="control-label">Puesto</label>
+                    <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
+                    <input id="id_ccp2" name="id_ccp2" type="text" hidden>
                 </div>
             </div>
         <!--END CCP-->

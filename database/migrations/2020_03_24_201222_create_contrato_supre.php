@@ -21,12 +21,12 @@ class CreateContratoSupre extends Migration
             $table->integer('supre_elabora');
             $table->integer('supre_ccp1');
             $table->integer('supre_ccp2');
-            $table->integer('val_firmante');
-            $table->integer('val_ccp1');
-            $table->integer('val_ccp2');
-            $table->integer('val_ccp3');
-            $table->integer('val_ccp4');
-            $table->integer('id_supre');
+            $table->integer('val_firmante')->nullable();
+            $table->integer('val_ccp1')->nullable();
+            $table->integer('val_ccp2')->nullable();
+            $table->integer('val_ccp3')->nullable();
+            $table->integer('val_ccp4')->nullable();
+            $table->integer('id_supre')->nullable();
             $table->timestamps();
 
             $table->foreign('id_supre')->references('id')

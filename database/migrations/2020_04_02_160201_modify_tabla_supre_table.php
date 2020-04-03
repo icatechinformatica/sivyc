@@ -26,8 +26,6 @@ class ModifyTablaSupreTable extends Migration
             $table->dropColumn('nombre_valida');
             $table->dropColumn('puesto_valida');
             $table->dropColumn('nombre_elabora');
-            $table->dropColumn('puesto_valida');
-            $table->dropColumn('nombre_elabora');
             $table->dropColumn('puesto_elabora');
             $table->dropColumn('nombre_firmante');
             $table->dropColumn('puesto_firmante');

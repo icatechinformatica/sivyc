@@ -11,7 +11,6 @@
         width: 34px;
       }
 </style>
- <!--empieza aquí-->
  <div class="container g-pt-50">
    <form action="{{ route('supre-mod-save') }}" id="registersupre" method="POST">
        @csrf
@@ -46,12 +45,13 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6"> <!-- Destinatario -->
-                <label for="destino" class="control-label">Destinatario</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_para }}" onkeypress="return soloLetras(event)" id="nombre_para" name="nombre_para" placeholder="Nombre">
+                <label for="iddestino" class="control-label">Destinatario</label>
+                <input type="text" class="form-control" disabled aria-required="true" value="{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!-- Puesto-->
-                <label for="puesto" class="control-label">Puesto</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_para }}" onkeypress="return soloLetras(event)" id="puesto_para" name="puesto_para" placeholder="Puesto">
+                <label for="idpuesto" class="control-label">Puesto</label>
+                <input type="text" class="form-control" disabled aria-required="true" value="{{$getdestino->puesto}}" onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
+                <input id="id_destino" name="id_destino" type="text" value="{{$getdestino->id}}" hidden>
             </div>
         </div>
         <div class="field_wrapper">
@@ -84,32 +84,35 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6"> <!--  -->
-                <label for="remitente" class="control-label">Remitente</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_remitente }}" onkeypress="return soloLetras(event)" id="nombre_remitente" name="nombre_remitente" placeholder="Nombre">
+                <label for="inputremitente" class="control-label">Remitente</label>
+                <input type="text" class="form-control" disabled aria-required="true" value="{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!--  -->
-                <label for="remitente" class="control-label">Puesto</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_remitente }}" onkeypress="return soloLetras(event)" id="puesto_remitente" name="puesto_remitente" placeholder="Puesto">
+                <label for="inputremitente" class="control-label">Puesto</label>
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getremitente->puesto_remitente }}" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
+                <input id="id_remitente" name="id_remitente" type="text" value="{{$getremitente->id}}" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Valida</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_valida }}" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_valida" name="nombre_valida" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Valida</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_valida }}" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getvalida->puesto }}" onkeypress="return soloLetras(event)" id="puesto_valida" name="puesto_valida" placeholder="Puesto">
+                <input id="id_valida" name="id_valida" type="text" value="{{$getvalida->id}}" hidden>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Nombre de Quien Elabora</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_elabora }}" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_elabora" name="nombre_elabora" placeholder="Nombre">
             </div>
             <div class="form-group col-md-4">
                 <label for="remitente" class="control-label">Puesto de Quien Elabora</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_elabora }}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                <input type="text" class="form-control" disabled aria-required="true" value="{{ $getelabora->puesto }}" onkeypress="return soloLetras(event)" id="puesto_elabora" name="puesto_elabora" placeholder="Puesto">
+                <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden>
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -120,11 +123,12 @@
             <div class="form-row">
                 <div class="form-group col-md-4"> <!-- copia 1 -->
                     <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_ccp1 }}" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
                 </div>
                 <div class="form-group col-md-4"> <!--  -->
                     <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_ccp1 }}" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getccp1->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
+                    <input id="id_ccp1" name="id_ccp1" type="text" value="{{$getccp1->id}}" hidden>
                 </div>
             </div>
             <br>
@@ -132,14 +136,16 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->nombre_ccp2 }}" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
                 </div>
                 <div class="form-group col-md-4"> <!--  -->
                     <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getsupre->puesto_ccp2 }}" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
+                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getccp2->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
+                    <input id="id_ccp2" name="id_ccp2" type="text" value="{{$getccp2->id}}" hidden >
                 </div>
             </div>
         <!--END CCP-->
+        <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}">
         <br>
         <div class="row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
