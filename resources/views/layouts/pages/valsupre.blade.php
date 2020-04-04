@@ -2,7 +2,7 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Registro de Curso Validado para Impartir| Sivyc Icatech')
 @section('content')
-    <section class="container g-py-40 g-pt-40 g-pb-0">
+    <section class="container g-pt-50">
         <form method="POST" action="{{ route('supre-rechazo') }}" id="rechazosupre">
             @csrf
                 <div class="text-center">
@@ -35,10 +35,10 @@
                 </div>
                 <br>
                 <div class="form-row" style="">
-                    <div class="form-group col-md-1">
+                    <div class="form-group col-md-2">
                         <button type="button" id="valsupre_rechazar" name="valsupre_rechazar" class="btn btn-danger">Rechazar</a>
                     </div>
-                    <div class="form-group col-md-1">
+                    <div class="form-group col-md-2">
                         <button type="button" id="valsupre_validar" name="valsupre_validar" class="btn btn-success">Validar</a>
                     </div>
                 </div>
@@ -66,7 +66,6 @@
         </form>
         <form method="POST" action="{{ route('supre-validado') }}" id="validadosupre">
             @csrf
-                <hr style="border-color:dimgray">
                 <div id="div1" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <label for="inputfolio_validacion">Folio de Validación</label>

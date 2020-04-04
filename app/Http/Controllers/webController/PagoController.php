@@ -25,9 +25,9 @@ class PagoController extends Controller
     {
         $contrato = new contratos();
 
-        $contratos_folios = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.cantidad_letras2',
-        'contratos.numero_circular', 'contratos.nombre_director', 'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.testigo1', 'contratos.puesto_testigo1',
-        'contratos.testigo2', 'contratos.puesto_testigo2', 'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre')
+        $contratos_folios = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
+        'contratos.unidad_capacitacion', 'contratos.municipio',
+        'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre')
         ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->GET();

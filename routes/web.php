@@ -28,7 +28,7 @@ Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_fo
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
 
 //Ruta Contrato sin Middleware
-Route::get('/Contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
+Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
 Route::post('/contrato/save-mod','webController\ContratoController@save_mod')->name('contrato-savemod');

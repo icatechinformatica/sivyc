@@ -63,7 +63,7 @@
                         <td>
                             @if ( $itemData->status == 'En_Proceso')
                             <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
-                                @can('supre.validar')
+                                @can('supre.validacion')
                                     <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
                                 @endcan
                                 @can('supre.edit')
@@ -90,6 +90,34 @@
             </tfoot>
         </table>
         <br>
+        <!-- Modal -->
+        <div class="modal fade" id="supreModal" role="dialog">
+            <div class="modal-dialog">
+            <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Archivos PDF Generables</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="text-align:center">
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
+                        </div>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo Solicitud de Suficiencia Presupuestal</a><br>
+                        </div>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <br>
 @endsection

@@ -63,14 +63,14 @@ class supreController extends Controller
         $supre->status = 'En_Proceso';
         $supre->save();
 
-       $id = $supre->SELECT('id')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
+       $id = $supre->id;
        $directorio->supre_dest = $request->id_destino;
        $directorio->supre_rem = $request->id_remitente;
        $directorio->supre_valida = $request->id_valida;
        $directorio->supre_elabora = $request->id_elabora;
        $directorio->supre_ccp1 = $request->id_ccp1;
        $directorio->supre_ccp2 = $request->id_ccp2;
-       $directorio->id_supre = $id->id;
+       $directorio->id_supre = $id;
        $directorio->save();
 
         //Guarda Folios
@@ -84,10 +84,10 @@ class supreController extends Controller
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
-            $importe_hora = $importe / $hora->horas;
+            $importe_hora = $importe / (int)$hora->horas;
             $folio->importe_hora = $importe_hora;
             $folio->importe_total = $value['importe'];
-            $folio->id_supre = $id->id;
+            $folio->id_supre = $id;
             $folio->id_cursos = $hora->id;
             $folio->status = 'En_Proceso';
             $folio->save();

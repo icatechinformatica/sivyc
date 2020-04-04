@@ -1,12 +1,12 @@
 $(function() {
     inputNumero = $("#inputNumero"),
     botonConvertir = $("#botonConvertir"),
-    salida = $("#salida");
+    salida = $("#cantidad_letras");
 
     // escuchar el click
-    $("#inputNumero").keyup(function () {
+    $("#cantidad_numero").keyup(function () {
         // Obtener valor que hay en el input
-        valor = parseFloat($("#inputNumero").val());
+        valor = parseFloat($("#cantidad_numero").val());
         // Simple validación
         if (!valor) return alert("Escribe un valor");
 
