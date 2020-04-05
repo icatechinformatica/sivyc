@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
 
 Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaController@index')->name('procesodepago');
-//Route::get('/home', 'HomeController@index')->name('home');
 Auth::routes();
 
 //Ruta supre sin Middleware
@@ -78,6 +77,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
         return view('layouts.pages.home');
     });
+    Route::get('/home', function() {
+        return view('layouts.pages.home');
+    })->name('home');
 
     /***
      * Desarrollado por Orlando
