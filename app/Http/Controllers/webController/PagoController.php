@@ -6,6 +6,8 @@ use App\Models\pago;
 use App\Models\instructor;
 use App\Models\contratos;
 use App\Models\folio;
+use App\Models\directorio;
+use App\Models\contrato_directorio;
 use Illuminate\Http\Request;
 use Redirect,Response;
 use App\Http\Controllers\Controller;
@@ -76,14 +78,17 @@ class PagoController extends Controller
         //
         $contrato = new contratos();
 
-        $contratos = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.cantidad_letras2',
-        'contratos.numero_circular', 'contratos.nombre_director', 'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.testigo1', 'contratos.puesto_testigo1',
-        'contratos.testigo2', 'contratos.puesto_testigo2', 'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios')
+        $contratos = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_numero',
+        'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
+        'folios.status', 'folios.id_folios')
         ->WHERE('contratos.id_contrato', '=', $id)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->FIRST();
 
-        return view('layouts.pages.vstvalidarpago', compact('contratos'));
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $contratos->id_contrato)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+
+        return view('layouts.pages.vstvalidarpago', compact('contratos','director'));
     }
 
     public function guardar_pago(Request $request)

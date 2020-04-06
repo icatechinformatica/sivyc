@@ -17,21 +17,17 @@
             </div>
             <div class="form-group col-md-2">
                 <label for="dropfecha_memo">Cantidad</label>
-            <input name="cantidad_letras1" id="cantidad_letras1" type="text" disabled value="{{$contratos->cantidad_letras1}}" class="form-control">
+            <input name="cantidad_letras1" id="cantidad_letras1" type="text" disabled value="{{$contratos->cantidad_numero}}" class="form-control">
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-3">
-                <label for="numero_circular">N°. de Circular</label>
-                <input name="numero_circular" id="numero_circular" type="text" disabled value="{{$contratos->numero_circular}}"  class="form-control">
-            </div>
             <div class="form-group col-md-4">
                 <label for="unidad_capacitacion">Unidad de Capacitación</label>
                 <input name="unidad_capacitacion" id="unidad_capacitacion" type="text" disabled value="{{$contratos->unidad_capacitacion}}" class="form-control">
             </div>
             <div class="form-group col-md-4">
                 <label for="nombre_director">Nombre del Director de Unidad</label>
-                <input name="nombre_director" id="nombre_director" type="text" disabled value="{{$contratos->nombre_director}}" class="form-control">
+                <input name="nombre_director" id="nombre_director" type="text" disabled value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}" class="form-control">
             </div>
         </div>
         <br>
@@ -54,8 +50,8 @@
             <div id="btn_rechazar" class="form-row d-none d-print-none">
                 <div class= "form-group col-md-3">
                     <button type="submit" class="btn btn-danger" >Confirmar Rechazo</button>
-                    <input hidden id="idContrato" name="idContrato" value="{{$data->id_contrato}}">
-                    <input hidden id="idfolios" name="idfolios" value="{{$data->id_folios}}">
+                    <input hidden id="idContrato" name="idContrato" value="{{$contratos->id_contrato}}">
+                    <input hidden id="idfolios" name="idfolios" value="{{$contratos->id_folios}}">
                 </div>
             </div>
         </form>
