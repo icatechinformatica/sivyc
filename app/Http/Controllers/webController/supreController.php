@@ -244,6 +244,9 @@ class supreController extends Controller
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
 
+        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
+        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+
         $date = strtotime($data2->fecha);
         $D = date('d', $date);
         $M = date('m',$date);
@@ -254,7 +257,7 @@ class supreController extends Controller
         $Mv = date('m',$datev);
         $Yv = date("Y",$datev);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente'));
         $pdf->setPaper('A4', 'Landscape');
 
 
@@ -269,10 +272,11 @@ class supreController extends Controller
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
+                        'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
                     ->WHERE('id_supre', '=', $id )
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                    ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();

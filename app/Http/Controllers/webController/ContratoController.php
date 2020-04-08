@@ -269,7 +269,7 @@ class ContratoController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto'));
 
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('Contrato Instructor.pdf');
     }
 
     public function solicitudpago_pdf($id){
@@ -302,7 +302,12 @@ class ContratoController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director'));
 
-        return $pdf->download('medium.pdf');
+        return $pdf->download('solicitud de pago.pdf');
+
+    }
+
+    public function docs($docs){
+        return response()->download($docs);
     }
 
     /**

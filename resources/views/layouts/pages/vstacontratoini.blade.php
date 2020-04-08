@@ -77,7 +77,9 @@
                             @endif
                             @if ($itemData->status == 'Validando_Contrato')
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
-                                <a class="btn btn-success" href="{{route('contrato-validar', ['id' => $itemData->id_contrato])}}">Validar Contrato</a>
+                                @can('contrato.validate')
+                                    <a class="btn btn-success" href="{{route('contrato-validar', ['id' => $itemData->id_contrato])}}">Validar Contrato</a>
+                                @endcan
                             @endif
                             @if ($itemData->status == 'Contrato_Rechazado')
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
@@ -137,7 +139,7 @@
                     <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
                 </div>
                 <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="docs_pdf" name="docs_pdf" href="#" target="_blank">Documentos para solicitud de pago</a>
+                    <a class="btn btn-danger" id="docs_pdf" name="docs_pdf" href="#" target="_blank" download>Documentos para solicitud de pago</a>
                 </div>
                 <div style="text-align:center" class="form-group">
                     <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>

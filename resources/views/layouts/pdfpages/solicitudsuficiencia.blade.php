@@ -60,9 +60,9 @@
             <div align=center> <b>SOLICITA
                 <br>
                 <br>
-                <br><small>{{$data2->nombre_remitente}}</small>
+                <br><small>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</small>
                 <br>________________________________________
-                <br><small>{{$data2->puesto_remitente}} {{$data2->unidad_capacitacion}}</small></b>
+                <br><small>{{$getremitente->puesto}} DE {{$data2->unidad_capacitacion}}</small></b>
             </div>
         </div>
     </div>
