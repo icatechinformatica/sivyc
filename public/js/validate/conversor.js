@@ -178,8 +178,8 @@ var numeroLetras = (function(){
             letrasCentavos: '',
             letrasMonedaPlural: currency.plural || 'PESOS MEXICANOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
             letrasMonedaSingular: currency.singular || 'PESO MEXICANO', //'PESO', 'Dólar', 'Bolivar', 'etc'
-            letrasMonedaCentavoPlural: currency.centPlural || 'CHIQUI PESOS MEXICANOS',
-            letrasMonedaCentavoSingular: currency.centSingular || 'CHIQUI PESO MEXICANO'
+            letrasMonedaCentavoPlural: currency.centPlural || 'PESOS MEXICANOS',
+            letrasMonedaCentavoSingular: currency.centSingular || 'PESO MEXICANO'
         };
 
         if (data.centavos > 0) {

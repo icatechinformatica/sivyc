@@ -84,7 +84,14 @@ class supreController extends Controller
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
-            $importe_hora = $importe / (int)$hora->horas;
+            if (strpos($hora->horas, " ")) {
+                # si tiene un espacio en blanco la cadena
+                $str_horas = explode (" ", $hora->horas);
+                $horas = (int) $str_horas[0];
+            } else {
+                $horas = (int) $hora->horas;
+            }
+            $importe_hora = $importe / $horas;
             $folio->importe_hora = $importe_hora;
             $folio->importe_total = $value['importe'];
             $folio->id_supre = $id;
@@ -172,9 +179,9 @@ class supreController extends Controller
 
     public function validacion($id){
         $supre = new supre();
-        $data =  $supre::WHERE('id', '=', $id)->FIRST();
-        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        $data =  $supre::WHERE('id', '=', $id)->GET();
+        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->GET();
+        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->GET();
         return view('layouts.pages.valsupre',compact('data','getremitente','directorio'));
     }
 
