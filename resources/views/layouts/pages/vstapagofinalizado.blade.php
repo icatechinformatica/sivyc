@@ -62,7 +62,7 @@
             </div>
             <div class="form-gorup col-md-4">
                 <label for="inputfecha_pago">Fecha de Pago</label>
-                <input type="date" disabled name="fecha_pago" id="fecha_pago" class="form-control" value="{{$data->fecha}}" aria-required="true">
+                <input type="text" disabled name="fecha_pago" id="fecha_pago" class="form-control" value="{{$data->fecha}}" aria-required="true">
             </div>
         </div>
         <br>
