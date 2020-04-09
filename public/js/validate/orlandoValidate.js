@@ -298,4 +298,68 @@ $(function(){
         }
     });
 
+    $('#rechazosupre').validate({
+        rules: {
+            comentario_rechazo:{
+                required: true
+            }
+        },
+        messages: {
+            numero_contrato: {
+                required: 'Por favor ingrese el motivo de rechazo'
+            }
+        }
+    });
+
+    $('#validadosupre').validate({
+        rules: {
+            folio_validacion:{
+                required: true
+            },
+            fecha_validacion:{
+                required: true,
+                date: true
+            },
+            nombre_firmante:{
+                required: true
+            },
+            ccp1:{
+                required: true
+            },
+            ccp2:{
+                required: true
+            },
+            ccp3:{
+                required: true
+            },
+            ccp4:{
+                required: true
+            }
+        },
+        messages: {
+            folio_validacion: {
+                required: 'Por favor ingrese el folio de validación',
+                date: 'Ingrese la fecha correcta'
+            },
+            fecha_validacion: {
+                required: 'Por favor ingrese la fecha de validación'
+            },
+            nombre_firmante: {
+                required: 'Por favor ingrese el nombre del firmante'
+            },
+            ccp1: {
+                required: 'Por favor ingrese el nombre correctamente'
+            },
+            ccp2: {
+                required: 'Por favor ingrese el nombre correctamente'
+            },
+            ccp3: {
+                required: 'Por favor ingrese el nombre correctamente'
+            },
+            ccp4: {
+                required: 'Por favor ingrese el nombre correctamente'
+            },
+        }
+    });
+
 });
