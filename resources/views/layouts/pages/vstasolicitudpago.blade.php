@@ -3,7 +3,7 @@
 @section('title', 'Formulario de Contrato | Sivyc Icatech')
 @section('content')
     <div class="container g-pt-50">
-        <form action="{{ route('save-doc') }}" method="post" id="registercontrato" enctype="multipart/form-data">
+        <form action="{{ route('save-doc') }}" method="post" id="register_solpa" enctype="multipart/form-data">
             @csrf
             <div style="text-align: right;width:62%">
                 <label for="titulo"><h1>Solicitud de Pago</h1></label>

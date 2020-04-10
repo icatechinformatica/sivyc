@@ -298,6 +298,7 @@ $(function(){
         }
     });
 
+    //Rechazo de supre
     $('#rechazosupre').validate({
         rules: {
             comentario_rechazo:{
@@ -305,12 +306,13 @@ $(function(){
             }
         },
         messages: {
-            numero_contrato: {
+            comentario_rechazo: {
                 required: 'Por favor ingrese el motivo de rechazo'
             }
         }
     });
 
+    //Aceptación de supre
     $('#validadosupre').validate({
         rules: {
             folio_validacion:{
@@ -362,4 +364,130 @@ $(function(){
         }
     });
 
+    //Contrato
+    $('#registercontrato').validate({
+        rules: {
+            numero_contrato:{
+                required: true
+            },
+            perfil_instructor:{
+                required: true,
+                valueNotEquals: "default"
+            },
+            cantidad_numero:{
+                required: true,
+                digits: true
+            },
+            cantidad_letras:{
+                required: true
+            },
+            lugar_expedicion:{
+                required: true
+            },
+            fecha_firma:{
+                required: true,
+                date: true
+            },
+            nombre_director:{
+                required: true
+            },
+            testigo1:{
+                required: true
+            },
+            testigo2:{
+                required: true
+            },
+            testigo3:{
+                required: true
+            },
+        },
+        messages: {
+            numero_contrato: {
+                required: 'Por favor ingrese el numero de contrato'
+            },
+            perfil_instructor: {
+                required: 'Por favor seleccione un perfil profesional',
+                valueNotEquals: 'Por favor seleccione un perfil profesional'
+            },
+            cantidad_numero: {
+                required: 'Por favor ingrese la cantidad exacta',
+                digits: 'Por favor introduzca solo digitos'
+            },
+            cantidad_letras: {
+                required: 'Por favor ingrese la cantidad exacte en letras'
+            },
+            lugar_expedicion: {
+                required: 'Por favor ingrese el lugar de la firma'
+            },
+            fecha_firma: {
+                required: 'Por favor ingrese la fecha de la firma',
+                date: 'Por favor ingrese la fecha exacta'
+            },
+            nombre_director: {
+                required: 'Por favor ingrese el nombre del director'
+            },
+            unidad_capacitacion: {
+                required: 'Por favor ingrese la unidad de capacitación'
+            },
+            testigo1: {
+                required: 'Por favor ingrese el nombre del testigo'
+            },
+            testigo2: {
+                required: 'Por favor ingrese el nombre del testigo'
+            },
+            testigo3: {
+                required: 'Por favor ingrese el nombre del testigo'
+            }
+        }
+    });
+
+    $('#register_solpa').validate({
+        rules: {
+            no_memo:{
+                required: true
+            },
+            nombre_elabora:{
+                required: true
+            },
+            destino:{
+                required: true
+            },
+            doc_pdf:{
+                required: true,
+                extension: "pdf"
+            },
+            ccp1:{
+                required: true
+            },
+            ccp2:{
+                required: true
+            },
+            ccp3:{
+                required: true
+            }
+        },
+        messages: {
+            no_memo: {
+                required: 'Por favor ingrese el numero de memorandum'
+            },
+            nombre_elabora: {
+                required: 'Por favor ingrese el nombre de quien elabora'
+            },
+            destino: {
+                required: 'Por favor ingrese el nombre a quien va destinado'
+            },
+            doc_pdf: {
+                required: 'Por favor ingrese el documento soporte',
+                extension: "Por favor ingrese el documento con extension PDF"
+            },
+            ccp1: {
+                required: 'Por favor ingrese el nombre'
+            },
+            ccp2: {
+                required: 'Por favor ingrese el nombre'
+            },
+            ccp3: {
+                required: 'Por favor ingrese el nombre'
+        }
+    });
 });
