@@ -488,6 +488,7 @@ $(function(){
             },
             ccp3: {
                 required: 'Por favor ingrese el nombre'
+            }
         }
     });
 });
