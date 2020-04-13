@@ -31,15 +31,15 @@
             </div>
         </div>
         <table  id="table-folios" class="table table-bordered Datatables">
-            <caption>Catalogo de Suficiencias Presupuestales Validadas</caption>
+            <caption>Cátalogo de Suficiencias Presupuestales Validadas</caption>
             <thead>
                 <tr>
-                    <th scope="col">No. de Memorandum</th>
+                    <th scope="col">No. de Memoramdum</th>
                     <th scope="col">Unidad de Capacitación</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Estatus</th>
                     <th scope="col">Folio de Validación</th>
-                    <th scope="col">Accion</th>
+                    <th scope="col">Acción</th>
                 </tr>
             </thead>
             <tbody>
