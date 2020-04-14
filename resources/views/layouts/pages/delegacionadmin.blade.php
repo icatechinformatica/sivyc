@@ -20,11 +20,11 @@
         <hr style="border-color:dimgray">
         <div class="form-row">
             <div class="form-group col-md-3">
-                <label for="unidad" class="control-label">Unidad de Capacitacion </label>
+                <label for="unidad" class="control-label">Unidad de Capacitación </label>
                 <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="unidad" name="unidad"  placeholder="unidad">
             </div>
             <div class="form-group col-md-5">
-                <label for="mamorandum" class="control-label">Memorandum No. </label>
+                <label for="mamorandum" class="control-label">Memoramdum No. </label>
                 <input type="text" class="form-control" id="memorandum" name="memorandum" placeholder="ICATECH/0000/000/2020">
             </div>
             <div class="form-group col-md-2">
@@ -55,10 +55,10 @@
                 </tr>
                 <tr>
                     <td><input type="text" name="addmore[0][folio]" placeholder="folio" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][numeropresupuesto]" placeholder="numero presupuesto" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" /></td>
                     <td><input type="text" name="addmore[0][clavecurso]" placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" name="addmore[0][importe]" placeholder="importe total" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][iva]" placeholder="Iva" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][iva]" placeholder="IVA" class="form-control" /></td>
                     <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
                 </tr>
             </table>
