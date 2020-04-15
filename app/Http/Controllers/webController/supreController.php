@@ -181,7 +181,6 @@ class supreController extends Controller
         $supre = new supre();
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        print($directorio->supre_rem);
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
 
         return view('layouts.pages.valsupre',compact('data','getremitente','directorio'));
