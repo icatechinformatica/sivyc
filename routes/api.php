@@ -22,4 +22,5 @@ Route::group(['middleware' => ['cors']], function(){
     Route::resource('Instructores', 'ApiController\InstructoresController');
     Route::get('Instructoreshow/{nombre}/{apaterno}/{apmaterno}', 'ApiController\InstructoresController@show');
     Route::resource('catalogo-cursos', 'ApiController\CatalogoCursoController');
+    Route::resource('areas', 'ApiController\AreaController');
 });
