@@ -104,10 +104,7 @@
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
                             @endif
                             @if ($itemData->status == 'Pago_Verificado')
-                                <a class="btn btn-danger" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">Validación</a>
-                                <a class="btn btn-danger" href="{{$itemData->docs}}" target="_blank">Docs. para Pago</a><br/>
-                                <a class="btn btn-info" href="{{route('contrato-pdf', ['id' => $itemData->id_contrato])}}" target="_blank">Contrato</a>
-                                <a class="btn btn-info" href="{{route('solpa-pdf', ['id' => $itemData->id_folios])}}" target="_blank">Solicitud</a>
+                            <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
                             @endif
                             @if ($itemData->status == 'Finalizado')
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>

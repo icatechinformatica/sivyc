@@ -69,7 +69,7 @@
                 <div id="div1" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <label for="inputfolio_validacion">Folio de Validación</label>
-                        <input name="folio_validacion" id="folio_validacion" class="form-control">
+                        <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputfecha_validacion">Fecha de Validación</label>
@@ -79,7 +79,7 @@
                 <div id="div2" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_firmante">Nombre del Firmante</label>
-                        <input name="nombre_firmante" id="nombre_firmante" class="form-control">
+                        <input  type="text" name="nombre_firmante" id="nombre_firmante" class="form-control">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_firmante">Puesto de firmante</label>
@@ -94,7 +94,7 @@
             <!-- START CCP -->
                 <div id="div4" class="form-row d-none d-print-none" >
                     <div class="form-group col-md-4">
-                        <input name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo">
+                        <input  type="text" name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
                         <input name="ccpa1" readonly id="ccpa1" class="form-control" placeholder="Puesto">
@@ -103,7 +103,7 @@
                 </div>
                 <div id="div5" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
-                        <input name="ccp2" id="ccp2" class="form-control" placeholder="Nombre Completo">
+                        <input  type="text" name="ccp2" id="ccp2" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
                         <input name="ccpa2" id="ccpa2" readonly class="form-control" placeholder="Puesto">
@@ -112,7 +112,7 @@
                 </div>
                 <div id="div6" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
-                        <input name="ccp3" id="ccp3" class="form-control" placeholder="Nombre Completo">
+                        <input  type="text" name="ccp3" id="ccp3" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
                         <input name="ccpa3" id="ccpa3" readonly class="form-control" placeholder="Puesto">
@@ -121,7 +121,7 @@
                 </div>
                 <div id="div7" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
-                        <input name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo">
+                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo">
                     </div>
                     <div class="form-group col-md-4">
                         <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto">

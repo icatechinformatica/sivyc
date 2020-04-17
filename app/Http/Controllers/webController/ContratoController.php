@@ -2,6 +2,8 @@
 //Creado por Orlando Chavez
 namespace App\Http\Controllers\WebController;
 
+use Illuminate\Support\Facades\View;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
