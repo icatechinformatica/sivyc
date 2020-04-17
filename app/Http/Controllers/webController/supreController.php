@@ -84,20 +84,23 @@ class supreController extends Controller
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
-            if (strpos($hora->horas, " ")) {
-                # si tiene un espacio en blanco la cadena
-                $str_horas = explode (" ", $hora->horas);
-                $horas = (int) $str_horas[0];
-            } else {
-                $horas = (int) $hora->horas;
+            if ($hora->horas != NULL)
+            {
+                if (strpos($hora->horas, " ")) {
+                    # si tiene un espacio en blanco la cadena
+                    $str_horas = explode (" ", $hora->horas);
+                    $horas = (int) $str_horas[0];
+                } else {
+                    $horas = (int) $hora->horas;
+                }
+                $importe_hora = $importe / $horas;
+                $folio->importe_hora = $importe_hora;
+                $folio->importe_total = $value['importe'];
+                $folio->id_supre = $id;
+                $folio->id_cursos = $hora->id;
+                $folio->status = 'En_Proceso';
+                $folio->save();
             }
-            $importe_hora = $importe / $horas;
-            $folio->importe_hora = $importe_hora;
-            $folio->importe_total = $value['importe'];
-            $folio->id_supre = $id;
-            $folio->id_cursos = $hora->id;
-            $folio->status = 'En_Proceso';
-            $folio->save();
         }
 
         return redirect()->route('supre-inicio')
