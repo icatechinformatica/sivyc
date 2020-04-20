@@ -57,9 +57,9 @@ class supreController extends Controller
         $directorio = new supre_directorio();
 
         //Guarda Solicitud
-        $supre->unidad_capacitacion = $request->unidad;
-        $supre->no_memo = $request->memorandum;
-        $supre->fecha = $request->fecha;
+        $supre->unidad_capacitacion = strtoupper($request->unidad);
+        $supre->no_memo = strtoupper($request->memorandum);
+        $supre->fecha = strtoupper($request->fecha);
         $supre->status = 'En_Proceso';
         $supre->save();
 
@@ -76,10 +76,10 @@ class supreController extends Controller
         //Guarda Folios
         foreach ($request->addmore as $key => $value){
             $folio = new folio();
-            $folio->folio_validacion = $value['folio'];
-            $folio->numero_presupuesto = $value['numeropresupuesto'];
+            $folio->folio_validacion = strtoupper($value['folio']);
+            $folio->numero_presupuesto = strtoupper($value['numeropresupuesto']);
             $folio->iva = $value['iva'];
-            $clave = $value['clavecurso'];
+            $clave = strtoupper($value['clavecurso']);
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
