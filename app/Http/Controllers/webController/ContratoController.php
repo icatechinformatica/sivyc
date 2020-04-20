@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\WebController;
 
 use Illuminate\Support\Facades\View;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -41,7 +40,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new especialidad();
-        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.id','instructores.id_especialidad')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
