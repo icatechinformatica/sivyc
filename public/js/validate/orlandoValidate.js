@@ -375,8 +375,7 @@ $(function(){
                 valueNotEquals: "default"
             },
             cantidad_numero:{
-                required: true,
-                digits: true
+                required: true
             },
             cantidad_letras:{
                 required: true
@@ -411,7 +410,6 @@ $(function(){
             },
             cantidad_numero: {
                 required: 'Por favor ingrese la cantidad exacta',
-                digits: 'Por favor introduzca solo digitos'
             },
             cantidad_letras: {
                 required: 'Por favor ingrese la cantidad exacte en letras'

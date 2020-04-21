@@ -174,29 +174,29 @@ var numeroLetras = (function(){
         let data = {
             numero: num,
             enteros: Math.floor(num),
-            centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
-            letrasCentavos: '',
+            //centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
+            //letrasCentavos: '',
             letrasMonedaPlural: currency.plural || 'PESOS MEXICANOS', //'PESOS', 'Dólares', 'Bolívares', 'etcs'
             letrasMonedaSingular: currency.singular || 'PESO MEXICANO', //'PESO', 'Dólar', 'Bolivar', 'etc'
             letrasMonedaCentavoPlural: currency.centPlural || 'PESOS MEXICANOS',
             letrasMonedaCentavoSingular: currency.centSingular || 'PESO MEXICANO'
         };
 
-        if (data.centavos > 0) {
+        /*if (data.centavos > 0) {
             data.letrasCentavos = 'CON ' + (function() {
                 if (data.centavos == 1)
                     return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoSingular;
                 else
                     return Millones(data.centavos) + ' ' + data.letrasMonedaCentavoPlural;
             })();
-        };
+        };*/
 
         if (data.enteros == 0)
             return 'CERO ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
         if (data.enteros == 1)
-            return Millones(data.enteros) + ' ' + data.letrasMonedaSingular + ' ' + data.letrasCentavos;
+            return Millones(data.enteros) + ' ' + data.letrasMonedaSingular /*+ ' ' + data.letrasCentavos*/;
         else
-            return Millones(data.enteros) + ' ' + data.letrasMonedaPlural + ' ' + data.letrasCentavos;
+            return Millones(data.enteros) + ' ' + data.letrasMonedaPlural /*+ ' ' + data.letrasCentavos*/;
     };
 
 })();
