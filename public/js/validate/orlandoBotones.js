@@ -208,7 +208,7 @@ $(function(){
         // Fetch data
         $.ajax({
         url:"/directorio/getdirectorio",
-        type: 'get',
+        type: 'post',
         dataType: "json",
         data: {
             search: request.term
@@ -232,7 +232,7 @@ $(function(){
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -257,7 +257,7 @@ $(function(){
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -278,11 +278,10 @@ $(function(){
 
     $( "#testigo3" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
