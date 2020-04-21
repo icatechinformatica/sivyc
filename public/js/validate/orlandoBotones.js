@@ -301,23 +301,47 @@ $(function(){
         }
     });
 
-    $( "#destino" ).autocomplete({
-        source: function( request, response ) {
-            console.log(request);
-            // Fetch data
+    // $( "#destino" ).autocomplete({
+    //     source: function( request, response ) {
+    //         console.log(request);
+    //         // Fetch data
+    //         $.ajax({
+    //         url:"/directorio/getdirectorio",
+    //         type: 'get',
+    //         dataType: "json",
+    //         data: {
+    //             search: request.term
+    //         },
+    //         success: function( data ) {
+    //             response( data );
+    //         }
+    //         });
+    //     },
+    //     select: function (event, ui) {
+    //         // Set selection
+    //         $('#destino').val(ui.item.label); // display the selected text
+    //         $('#destino_puesto').val(ui.item.charge);
+    //         $('#id_destino').val(ui.item.value); // save selected id to input
+    //         return false;
+    //     }
+    // });
+
+    $('#destino').autocomplete({
+        source: function(request, response) {
+            // fetch data
             $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'get',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
+                url: '/directorio/getdirectorio',
+                type: 'post',
+                dataType: "json",
+                data: {
+                    search: request.term
+                },
+                success: function(data) {
+                    response(data);
+                }
             });
         },
-        select: function (event, ui) {
+        select: function(event, ui) {
             // Set selection
             $('#destino').val(ui.item.label); // display the selected text
             $('#destino_puesto').val(ui.item.charge);
@@ -328,11 +352,10 @@ $(function(){
 
     $( "#remitente" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -353,11 +376,10 @@ $(function(){
 
     $( "#nombre_valida" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -378,11 +400,10 @@ $(function(){
 
     $( "#nombre_elabora" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -403,11 +424,10 @@ $(function(){
 
     $( "#nombre_ccp1" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -428,11 +448,10 @@ $(function(){
 
     $( "#nombre_ccp2" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -453,11 +472,10 @@ $(function(){
 
     $( "#nombre_firmante" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -478,11 +496,10 @@ $(function(){
 
     $( "#ccp1" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -503,11 +520,10 @@ $(function(){
 
     $( "#ccp2" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -528,11 +544,10 @@ $(function(){
 
     $( "#ccp3" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term
@@ -553,11 +568,10 @@ $(function(){
 
     $( "#ccp4" ).autocomplete({
         source: function( request, response ) {
-            console.log(request);
             // Fetch data
             $.ajax({
             url:"/directorio/getdirectorio",
-            type: 'get',
+            type: 'post',
             dataType: "json",
             data: {
                 search: request.term

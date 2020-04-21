@@ -221,19 +221,22 @@ class ContratoController extends Controller
 
         $search = $request->search;
 
-        if($search == ''){
-            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->limit(5)->get();
-        }else{
-            $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->where('nombre', 'like', '%' .$search . '%')->limit(5)->get();
-        }
+        if (isset($search)) {
+            # si la variable está inicializada
+            if($search == ''){
+                $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->limit(5)->get();
+            }else{
+                $directorio = directorio::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno','puesto')->where('nombre', 'like', '%' .$search . '%')->limit(5)->get();
+            }
 
-        $response = array();
-        foreach($directorio as $dir){
-            $response[] = array("value"=>$dir->id,"label"=>$dir->nombre . " " .$dir->apellidoPaterno . " " . $dir->apellidoMaterno, "charge"=>$dir->puesto);
-        }
+            $response = array();
+            foreach($directorio as $dir){
+                $response[] = array("value"=>$dir->id,"label"=>$dir->nombre . " " .$dir->apellidoPaterno . " " . $dir->apellidoMaterno, "charge"=>$dir->puesto);
+            }
 
-        echo json_encode($response);
-        exit;
+            echo json_encode($response);
+            exit;
+        }
     }
 
 

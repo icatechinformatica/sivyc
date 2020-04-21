@@ -123,4 +123,13 @@ $(function(){
             }
         }
     });
+
+    // hacemos que los input sean mayusculos
+    $('input[type=text]').val (function () {
+        return this.value.toUpperCase();
+    })
+
+    $('textarea').val(function(){
+        return this.value.toUpperCase();
+    })
 });
