@@ -79,6 +79,7 @@
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
                                 @can('contrato.validate')
                                     <a class="btn btn-success" href="{{route('contrato-validar', ['id' => $itemData->id_contrato])}}">Validar Contrato</a>
+                                    <a class="btn btn-success" href="{{route('contrato-pdf', ['id' => $itemData->id_contrato])}}">Contrato PDF</a>
                                 @endcan
                             @endif
                             @if ($itemData->status == 'Contrato_Rechazado')
