@@ -73,7 +73,16 @@ class CatalogoCursoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // actualizar
+        try {
+            //code...
+            $catalogoCursos = new CatalogoCurso();
+            $catalogoCursos->whereId($id)->update($request);
+            return response()->json(['success' => 'Catalogo de cursos actualizado exitosamente'], 200);
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json(['error' => $e->getMessage()], 501);
+        }
     }
 
     /**

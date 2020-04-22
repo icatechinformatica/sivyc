@@ -73,7 +73,16 @@ class MunicipioController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // actualizar registro de municipios
+        try {
+            //code...
+            $municipio= new Municipio();
+            $municipio->whereId($id)->update($request);
+            return response()->json(['success' => 'Municipio se ha actualizado exitosamente'], 200);
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json(['error' => $e->getMessage()], 501);
+        }
     }
 
     /**

@@ -72,7 +72,16 @@ class InstructoresController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // actualizar el registro del instructor
+        try {
+            //code...
+            $instructor= new Instructor();
+            $instructor->whereId($id)->update($request);
+            return response()->json(['success' => 'Instructor se ha actualizado exitosamente'], 200);
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json(['error' => $e->getMessage()], 501);
+        }
     }
 
     /**

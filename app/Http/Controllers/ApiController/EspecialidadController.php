@@ -74,6 +74,15 @@ class EspecialidadController extends Controller
     public function update(Request $request, $id)
     {
         //
+        try {
+            //code...
+            $especialidad= new Especialidad();
+            $especialidad->whereId($id)->update($request);
+            return response()->json(['success' => 'La especialidad se ha actualizado exitosamente'], 200);
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json(['error' => $e->getMessage()], 501);
+        }
     }
 
     /**
