@@ -25,4 +25,5 @@ Route::group(['middleware' => ['cors']], function(){
     Route::apiResource('areas', 'ApiController\AreaController');
     Route::apiResource('especialidades', 'ApiController\EspecialidadController');
     Route::apiResource('municipios', 'ApiController\MunicipioController');
+    Route::put('cursos/{id}', 'ApiController\CursosController@update');
 });
