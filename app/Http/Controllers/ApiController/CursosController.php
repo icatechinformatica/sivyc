@@ -138,7 +138,7 @@ class CursosController extends Controller
         // actualizando
         try {
             $Cursos= new Curso();
-            $Cursos->whereId($id)->update($request);
+            $Cursos->whereId($id)->update($request->all());
             return response()->json(['success' => 'Curso actualizado exitosamente'], 200);
         } catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
