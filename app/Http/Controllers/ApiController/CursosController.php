@@ -136,7 +136,6 @@ class CursosController extends Controller
     public function update(Request $request, $id)
     {
         // actualizando
-        return response()->json(['success' => $id], 200);
         try {
             $Cursos= new Curso();
             $Cursos->whereId($id)->update($request);
