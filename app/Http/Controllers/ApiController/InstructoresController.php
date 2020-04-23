@@ -76,7 +76,7 @@ class InstructoresController extends Controller
         try {
             //code...
             $instructor= new Instructor();
-            $instructor->whereId($id)->update($request);
+            $instructor->whereId($id)->update($request->all());
             return response()->json(['success' => 'Instructor se ha actualizado exitosamente'], 200);
         } catch (Exception $e) {
             //throw $th;

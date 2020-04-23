@@ -77,7 +77,7 @@ class MunicipioController extends Controller
         try {
             //code...
             $municipio= new Municipio();
-            $municipio->whereId($id)->update($request);
+            $municipio->whereId($id)->update($request->all());
             return response()->json(['success' => 'Municipio se ha actualizado exitosamente'], 200);
         } catch (Exception $e) {
             //throw $th;

@@ -77,7 +77,7 @@ class AreaController extends Controller
         try {
             //code...
             $Area= new Area();
-            $Area->whereId($id)->update($request);
+            $Area->whereId($id)->update($request->all());
             return response()->json(['success' => 'Área actualizada exitosamente'], 200);
         } catch (Exception $e) {
             //throw $th;
