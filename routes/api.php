@@ -18,11 +18,11 @@ use Illuminate\Http\Request;
 // });
 
 Route::group(['middleware' => ['cors']], function(){
-	Route::resource('cursos', 'ApiController\CursosController');
-    Route::resource('Instructores', 'ApiController\InstructoresController');
+	Route::apiResource('cursos', 'ApiController\CursosController');
+    Route::apiResource('Instructores', 'ApiController\InstructoresController');
     Route::get('Instructoreshow/{nombre}/{apaterno}/{apmaterno}', 'ApiController\InstructoresController@show');
-    Route::resource('catalogo-cursos', 'ApiController\CatalogoCursoController');
-    Route::resource('areas', 'ApiController\AreaController');
-    Route::resource('especialidades', 'ApiController\EspecialidadController');
-    Route::resource('municipios', 'ApiController\MunicipioController');
+    Route::apiResource('catalogo-cursos', 'ApiController\CatalogoCursoController');
+    Route::apiResource('areas', 'ApiController\AreaController');
+    Route::apiResource('especialidades', 'ApiController\EspecialidadController');
+    Route::apiResource('municipios', 'ApiController\MunicipioController');
 });
