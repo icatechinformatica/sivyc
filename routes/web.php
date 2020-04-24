@@ -143,3 +143,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('financiero/indice', 'webController\FinancieroController@index')
            ->name('financiero.index');
 });
+
+Route::get('alumnos/sid', function () {
+    return view('layouts.pages.sid');
+});

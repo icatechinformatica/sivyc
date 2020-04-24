@@ -23,7 +23,7 @@
                 @can('supre.index')
                 <li class="nav-item g-mx-5--lg">
                     <a class="nav-link g-color-white--hover" href="{{route('supre-inicio')}}">
-                        Suficencia Presupuestal
+                        Suficiencia Presupuestal
                     </a>
                 </li>
                 @endcan
