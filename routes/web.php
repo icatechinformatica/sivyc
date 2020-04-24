@@ -17,16 +17,17 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
+Route::get('/alumno/registro/pdf', 'webController\AlumnoController@pdf_registro')->name('pdf-alumno');
 
 Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaController@index')->name('procesodepago');
 Auth::routes();
 
-//Ruta supre sin Middleware
+//Ruta supre
 Route::get('/supre/solicitud/opc', 'webController\supreController@opcion')->name('solicitud-opcion');
 Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_folios')->name('solicitud-folio');
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
 
-//Ruta Contrato sin Middleware
+//Ruta Contrato
 Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
@@ -41,10 +42,10 @@ Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoControlle
 Route::post('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
 Route::get('/pagos/documento/{docs}', 'webController\ContratoController@docs')->name('get-docs');
 
-//Ruta Pago sin Middleware
+//Ruta Pago
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
 
-// Ruta Validacion sin middleware
+// Ruta Validacion
 Route::post('/supre/validacion/Rechazado', 'webController\supreController@supre_rechazo')->name('supre-rechazo');
 Route::post('/supre/validacion/Validado', 'webController\supreController@supre_validado')->name('supre-validado');
 Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre_pdf')->name('valsupre-pdf');

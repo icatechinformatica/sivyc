@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Alumno;
 use App\Models\Alumnopre;
 use Illuminate\Support\Facades\Input;
+use PDF;
 
 class AlumnoController extends Controller
 {
@@ -87,57 +88,18 @@ class AlumnoController extends Controller
 
         return redirect('/alumnos')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     /**
      * formulario número 2
      */
     protected function createpaso2sid()
     {
         return view('layouts.pages.frminscripcion2');
+    }
+
+    public function pdf_registro()
+    {
+        $pdf = PDF::loadView('layouts.pdfpages.registroalumno');
+
+        return $pdf->stream('registro.pdf');
     }
 }

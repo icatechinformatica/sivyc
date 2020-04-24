@@ -64,6 +64,7 @@ class supreController extends Controller
         $supre->save();
 
        $id = $supre->id;
+
        $directorio->supre_dest = $request->id_destino;
        $directorio->supre_rem = $request->id_remitente;
        $directorio->supre_valida = $request->id_valida;
@@ -84,7 +85,8 @@ class supreController extends Controller
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
-            if ($hora->horas != NULL)
+            $X = $hora->horas;
+            if ($X != NULL)
             {
                 if (strpos($hora->horas, " ")) {
                     # si tiene un espacio en blanco la cadena
@@ -100,6 +102,11 @@ class supreController extends Controller
                 $folio->id_cursos = $hora->id;
                 $folio->status = 'En_Proceso';
                 $folio->save();
+            }
+            else
+            {
+                supre::WHERE('id', '=', $id)->DELETE();
+                supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
             }
         }
 
@@ -247,7 +254,7 @@ class supreController extends Controller
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.nombre AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
                     ->WHERE('id_supre', '=', $id )
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
