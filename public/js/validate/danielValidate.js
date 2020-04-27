@@ -6,6 +6,11 @@ $(function(){
         changeYear: true
     });
 
+    $( "#fecha_nac" ).datepicker({
+        changeMonth: true,
+        changeYear: true
+    });
+
     $('input[type=text]').val(function () {
         return this.value.toUpperCase();
     })
@@ -120,6 +125,110 @@ $(function(){
             },
             especialidadquedeseainscribirse: {
                 required: 'Por favor, seleccione la especialidad'
+            }
+        }
+    });
+
+    /**
+     * validación nueva del SID
+     */
+    $('#form_sid').validate({
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 3
+            },
+            apaterno: {
+                required: true,
+                minlength: 3
+            },
+            amaterno: {
+                required: true,
+                minlength: 3
+            },
+            genero: {
+                required: true
+            },
+            curp_: {
+                required: true,
+                CURP: true
+            },
+            fecha_nac: {
+                required: true,
+                date: true
+            },
+            telefono_personalizado: {
+                required: true,
+                phoneMX: true
+            },
+            domicilio_: {
+                required: true
+            },
+            colonia_localidad: {
+                required: true
+            },
+            codigo_postal: {
+                required: true,
+                number: true
+            },
+            estado: {
+                required: true
+            },
+            municipio: {
+                required: true
+            },
+            estado_civil: {
+                required: true
+            },
+            discapacidad_presenta: {
+                required: true
+            }
+        },
+        messages: {
+            nombre: {
+                required: 'Por favor ingrese su nombre',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+            },
+            apaterno: {
+                required: 'Por favor ingrese su apellido'
+            },
+            amaterno: {
+                required: 'Por favor ingrese su apellido'
+            },
+            genero: {
+                required: 'Por favor Elegir su genero'
+            },
+            curp_: {
+                required: 'Por favor Ingresé la curp',
+            },
+            fecha_nac: {
+                required: 'Por favor, seleccione fecha',
+                date: 'Formato de fecha no valido'
+            },
+            telefono_personalizado: {
+                required: 'Por favor, ingrese telefóno',
+            },
+            domicilio_: {
+                required: 'Por favor, ingrese su domicilio'
+            },
+            colonia_localidad: {
+                required: 'Por favor, ingrese la colonia'
+            },
+            codigo_postal: {
+                required: 'Por favor, ingrese el código postal',
+                number: 'Acepta sólo números'
+            },
+            estado: {
+                required: 'Por favor, seleccione un estado'
+            },
+            municipio: {
+                required: 'Por favor, seleccione el municipio'
+            },
+            estado_civil: {
+                required: 'Por favor, seleccione su estado civil'
+            },
+            discapacidad_presenta: {
+                required: 'Por favor seleccione una opción'
             }
         }
     });

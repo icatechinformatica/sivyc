@@ -92,6 +92,7 @@
         <!--numeros a letras-->
         <script src="{{ asset("js/validate/conversor.js") }}"></script>
         <script src="{{ asset("js/validate/numberTostring.js") }}"></script>
+        <script src="{{ asset("js/scripts/datepicker-es.js") }}"></script>
     </body>
 
 </html>
