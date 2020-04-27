@@ -22,7 +22,8 @@ class presupuestariaController extends Controller
         //return view('layouts.pdfpages.presupuestaria');
         //return view('layouts.pdfpages.contratohonorarios');
         //return view('layouts.pdfpages.solicitudsuficiencia');
-        return view('layouts.pdfpages.valsupre');
+        //return view('layouts.pdfpages.valsupre');
+        return view('layouts.pdfpages.contrato');
     }
 
     /**
@@ -100,7 +101,7 @@ class presupuestariaController extends Controller
         $M = date('m',$date);
         $Y = date("Y",$date);*/
         //$pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia');
+        $pdf = PDF::loadView('layouts.pdfpages.contrato');
         //$pdf = PDF::loadView('layouts.pdfpages.contratohonorarios');
         //return view('layouts.pdfpages.valsupre');
         //$pdf = PDF::loadView('layouts.pdfpages.valsupre');
