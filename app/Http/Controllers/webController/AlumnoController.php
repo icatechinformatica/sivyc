@@ -62,19 +62,11 @@ class AlumnoController extends Controller
         $validateData = $request->validate([
             'nombre' => 'required',
             'telefono' => 'required',
-            'curso' => 'required',
-            'horario' => 'required',
-            'especialidad_que_desea_inscribirse' => 'required',
-            'modo_entero_del_sistema' => 'required',
-            'motivos_eleccion_sistema_capacitacion' => 'required',
             'correo' => 'required'
         ]);
 
-        $alumno = new Alumno([
-            'no_control' => '231ABC',
+       /* $alumno = new Alumno([
             'domicilio' => $request->input('domicilio'),
-            'numero_solicitud' => '123',
-            'fecha' => $request->input('fecha_nacimiento'),
             'fecha_nacimiento' => $request->input('fecha_nacimiento'),
             'curp' => $request->input('curp'),
             'colonia' => $request->input('colonia'),
@@ -83,16 +75,10 @@ class AlumnoController extends Controller
             'estado' => $request->input('estado'),
             'estado_civil' => $request->input('estado_civil'),
             'discapacidad_presente' => $request->input('discapacidad_presente'),
-            'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios'),
-            'empresa_trabaja' => $request->input('empresa_trabaja'),
-            'antiguedad' => $request->input('antiguedad') ,
-            'direccion_empresa' => $request->input('direccion_empresa'),
             'sexo' => $request->input('generoaspirante'),
-            'discapacidad_presente' => '',
-            'etnia' => ''
         ]);
 
-        //dd($alumno);
+        //dd($alumno);*/
 
         $AlumnosPre = Alumnopre::create($validateData);
         $AlumnosPre->alumnos()->save($alumno);

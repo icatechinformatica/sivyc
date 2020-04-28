@@ -1,6 +1,6 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Alumonos | SIVyC Icatech')
+@section('title', 'Alumnos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
@@ -16,7 +16,7 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('alumnos.inscripcion-paso1')}}"> Nuevo</a>
+                    <a class="btn btn-success btn-lg" href="{{route('alumnos.paso1')}}"> Nuevo</a>
                 </div>
             </div>
         </div>
