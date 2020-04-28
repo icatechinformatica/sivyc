@@ -48,6 +48,16 @@ class AlumnoController extends Controller
      */
     public function store(Request $request)
     {
+        $curp = strtoupper($request->input('curp'));
+        if (Alumnopre::WHERE('curp', '=', $curp)) {
+            # si ya hay una curp no agregamos algo
+            #Mensaje
+            $mensaje = "lo sentimos, la curp asociada a este registro ya se encuentra en la base de datos.";
+            return redirect('/alumnos')->withErrors($mensaje);
+        } else {
+            # empezamos con agregar la información
+
+        }
         // vamos a guardar los registros
         $validateData = $request->validate([
             'nombre' => 'required',
