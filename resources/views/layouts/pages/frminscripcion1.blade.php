@@ -136,6 +136,7 @@
                 </div>
             </div>
             <hr>
+            <!-- Campos para alumnos_registro
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="especialidad_que_desea_inscribirse" class="control-label">Especialidad a la que desea inscribirse</label>
@@ -225,7 +226,7 @@
                         <label for="alien" class="form-check-label">Para mejorar la situación en el trabajo</label>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <button type="submit" class="btn btn-primary">Enviar</button>
         </form>
         <br>
