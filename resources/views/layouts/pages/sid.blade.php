@@ -4,6 +4,15 @@
 <!--contenido-->
 @section('content')
     <div class="container g-pt-50">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div><br />
+        @endif
         <div style="text-align: center;">
             <h3><b>Solicitud de Inscripción (SID - 01)</b></h3>
         </div>
@@ -22,70 +31,72 @@
                 <!--nombre aspirante END-->
                 <!-- apellido paterno -->
                 <div class="form-group col-md-4">
-                    <label for="apaterno" class="control-label">Apellido Paterno</label>
-                    <input type="text" class="form-control" id="apaterno" name="apaterno" autocomplete="off">
+                    <label for="apellidoPaterno" class="control-label">Apellido Paterno</label>
+                    <input type="text" class="form-control" id="apellidoPaterno" name="apellidoPaterno" autocomplete="off">
                 </div>
                 <!-- apellido paterno END -->
                 <!-- apellido materno-->
                 <div class="form-group col-md-4">
-                    <label for="amaterno" class="control-label">Apellido Materno</label>
-                    <input type="text" class="form-control" id="amaterno" name="amaterno" autocomplete="off">
+                    <label for="apellidoMaterno" class="control-label">Apellido Materno</label>
+                    <input type="text" class="form-control" id="apellidoMaterno" name="apellidoMaterno" autocomplete="off">
                 </div>
                 <!-- apellido materno END-->
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="genero" class="control-label">Genero</label>
-                    <select class="form-control" id="genero" name="genero">
+                    <label for="sexo" class="control-label">Genero</label>
+                    <select class="form-control" id="sexo" name="sexo">
                         <option value="">--SELECCIONAR--</option>
                         <option value="Femenino">Mujer</option>
                         <option value="Masculino">Hombre</option>
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="curp_" class="control-label">Curp Aspirante</label>
-                    <input type="text" class="form-control" id="curp_" name="curp_" placeholder="Curp" autocomplete="off">
+                    <label for="curp" class="control-label">Curp Aspirante</label>
+                    <input type="text" class="form-control" id="curp" name="curp" placeholder="Curp" autocomplete="off">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="fecha_nac" class="control-label">Fecha de Nacimiento</label>
-                    <input type="text" class="form-control" id="fecha_nac" name="fecha_nac" autocomplete="off">
+                    <label for="fecha_nacimiento" class="control-label">Fecha de Nacimiento</label>
+                    <input type="text" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" autocomplete="off">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="telefono_personalizado" class="control-label">Teléfono</label>
-                    <input type="text" class="form-control" id="telefono_personalizado" name="telefono_personalizado" autocomplete="off">
+                    <label for="telefono" class="control-label">Teléfono</label>
+                    <input type="text" class="form-control" id="telefono" name="telefono" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
                 <!-- domicilio -->
                 <div class="form-group col-md-6">
-                    <label for="domicilio_" class="control-label">Domicilio</label>
-                    <input type="text" class="form-control" id="domicilio_" name="domicilio_" autocomplete="off">
+                    <label for="domicilio" class="control-label">Domicilio</label>
+                    <input type="text" class="form-control" id="domicilio" name="domicilio" autocomplete="off">
                 </div>
                 <!-- domicilio END -->
                 <div class="form-group col-md-6">
-                    <label for="colonia_localidad" class="control-label">Colonia o Localidad</label>
-                    <input type="text" class="form-control" id="colonia_localidad" name="colonia_localidad" autocomplete="off">
+                    <label for="colonia" class="control-label">Colonia o Localidad</label>
+                    <input type="text" class="form-control" id="colonia" name="colonia" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="codigo_postal" class="control-label">C.P.</label>
-                    <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" autocomplete="off">
+                    <label for="cp" class="control-label">C.P.</label>
+                    <input type="text" class="form-control" id="cp" name="cp" autocomplete="off">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="estado" class="control-label">Estado</label>
                     <select class="form-control" id="estado" name="estado">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="1">estado1</option>
-                        <option value="2">estado2</option>
+                        @foreach ($estados as $itemEstado)
+                            <option value="{{$itemEstado->nombre}}">{{ $itemEstado->nombre }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="municipio" class="control-label">Municipio</label>
                     <select class="form-control" id="municipio" name="municipio">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="1">estado1</option>
-                        <option value="2">estado2</option>
+                        @foreach ($municipios as $itemMunicipio)
+                            <option value="{{$itemMunicipio->muni}}">{{ $itemMunicipio->muni }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -105,8 +116,8 @@
                 </div>
                 <!---->
                 <div class="form-group col-md-6">
-                    <label for="discapacidad_presenta" class="control-label">Discapacidad que presenta</label>
-                    <select class="form-control" id="discapacidad_presenta" name="discapacidad_presenta">
+                    <label for="discapacidad" class="control-label">Discapacidad que presenta</label>
+                    <select class="form-control" id="discapacidad" name="discapacidad">
                         <option value="">--SELECCIONAR--</option>
                         <option value="VISUAL">VISUAL</option>
                         <option value="AUDITIVA">AUDITIVA</option>

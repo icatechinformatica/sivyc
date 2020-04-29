@@ -6,7 +6,7 @@ $(function(){
         changeYear: true
     });
 
-    $( "#fecha_nac" ).datepicker({
+    $( "#fecha_nacimiento" ).datepicker({
         changeMonth: true,
         changeYear: true
     });
@@ -138,36 +138,36 @@ $(function(){
                 required: true,
                 minlength: 3
             },
-            apaterno: {
+            apellidoPaterno: {
                 required: true,
                 minlength: 3
             },
-            amaterno: {
+            apellidoMaterno: {
                 required: true,
                 minlength: 3
             },
-            genero: {
+            sexo: {
                 required: true
             },
-            curp_: {
+            curp: {
                 required: true,
                 CURP: true
             },
-            fecha_nac: {
+            fecha_nacimiento: {
                 required: true,
                 date: true
             },
-            telefono_personalizado: {
+            telefono: {
                 required: true,
                 phoneMX: true
             },
-            domicilio_: {
+            domicilio: {
                 required: true
             },
-            colonia_localidad: {
+            colonia: {
                 required: true
             },
-            codigo_postal: {
+            cp: {
                 required: true,
                 number: true
             },
@@ -180,7 +180,7 @@ $(function(){
             estado_civil: {
                 required: true
             },
-            discapacidad_presenta: {
+            discapacidad: {
                 required: true
             }
         },
@@ -189,32 +189,32 @@ $(function(){
                 required: 'Por favor ingrese su nombre',
                 minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
             },
-            apaterno: {
+            apellidoPaterno: {
                 required: 'Por favor ingrese su apellido'
             },
-            amaterno: {
+            apellidoMaterno: {
                 required: 'Por favor ingrese su apellido'
             },
-            genero: {
+            sexo: {
                 required: 'Por favor Elegir su genero'
             },
-            curp_: {
+            curp: {
                 required: 'Por favor Ingresé la curp',
             },
-            fecha_nac: {
+            fecha_nacimiento: {
                 required: 'Por favor, seleccione fecha',
                 date: 'Formato de fecha no valido'
             },
-            telefono_personalizado: {
+            telefono: {
                 required: 'Por favor, ingrese telefóno',
             },
-            domicilio_: {
+            domicilio: {
                 required: 'Por favor, ingrese su domicilio'
             },
-            colonia_localidad: {
+            colonia: {
                 required: 'Por favor, ingrese la colonia'
             },
-            codigo_postal: {
+            cp: {
                 required: 'Por favor, ingrese el código postal',
                 number: 'Acepta sólo números'
             },
@@ -227,7 +227,7 @@ $(function(){
             estado_civil: {
                 required: 'Por favor, seleccione su estado civil'
             },
-            discapacidad_presenta: {
+            discapacidad: {
                 required: 'Por favor seleccione una opción'
             }
         }

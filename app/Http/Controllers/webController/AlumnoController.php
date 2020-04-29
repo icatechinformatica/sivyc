@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Alumno;
 use App\Models\Alumnopre;
+use App\Models\Municipio;
+use App\Models\Estado;
 use Illuminate\Support\Facades\Input;
 use PDF;
 
@@ -19,12 +21,8 @@ class AlumnoController extends Controller
     public function index()
     {
         //
-        $alumnos = new Alumno();
-        $retrieveAlumnos = $alumnos->SELECT('alumnos_registro.no_control', 'alumnos_registro.fecha', 'alumnos_registro.numero_solicitud',
-                                    'alumnos_pre.curp', 'alumnos_pre.nombre', 'alumnos_pre.apellidoPaterno', 'alumnos_pre.apellidoMaterno',
-                                    'alumnos_pre.correo', 'alumnos_pre.telefono')
-                                   ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
-                                   ->GET();
+        $alumnos = new Alumnopre();
+        $retrieveAlumnos = $alumnos->all();
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
@@ -37,7 +35,11 @@ class AlumnoController extends Controller
     public function create()
     {
         //
-        return view('layouts.pages.frminscripcion1');
+        $municipio = new Municipio();
+        $estado = new Estado();
+        $municipios = $municipio->all();
+        $estados = $estado->all();
+        return view('layouts.pages.sid', compact('municipios', 'estados'));
     }
 
     /**
@@ -49,55 +51,34 @@ class AlumnoController extends Controller
     public function store(Request $request)
     {
         $curp = strtoupper($request->input('curp'));
-        if (Alumnopre::WHERE('curp', '=', $curp)) {
-            # si ya hay una curp no agregamos algo
-            #Mensaje
-            $mensaje = "lo sentimos, la curp asociada a este registro ya se encuentra en la base de datos.";
-            return redirect('/alumnos')->withErrors($mensaje);
+        $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET();
+        if ($alumnoPre->isEmpty()) {
+            # si la consulta no está vacía hacemos la inserción
+            $validateData = $request->validate([
+                'nombre' => 'required',
+                'apellidoPaterno' => 'required',
+                'apellidoMaterno' => 'required',
+                'sexo' => 'required',
+                'curp' => 'required',
+                'fecha_nacimiento' => 'required',
+                'telefono' => 'required',
+                'domicilio' => 'required',
+                'colonia' => 'required',
+                'cp' => 'required',
+                'estado' => 'required',
+                'municipio' => 'required',
+                'estado_civil' => 'required',
+                'discapacidad' => 'required',
+            ]);
+            Alumnopre::create($validateData);
+            // redireccionamos con un mensaje de éxito
+            return redirect('/alumnos')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
         } else {
-            # empezamos con agregar la información
-
+            # por el contrario si no está vacía mandamos un mensaje al usuario
+            #Mensaje
+            $mensaje = "Lo sentimos, la curp ".$curp." asociada a este registro ya se encuentra en la base de datos.";
+            return redirect('/alumnos/sid')->withErrors($mensaje);
         }
-        // vamos a guardar los registros
-        $validateData = $request->validate([
-            'nombre' => 'required',
-            'telefono' => 'required',
-            'curso' => 'required',
-            'horario' => 'required',
-            'especialidad_que_desea_inscribirse' => 'required',
-            'modo_entero_del_sistema' => 'required',
-            'motivos_eleccion_sistema_capacitacion' => 'required',
-            'correo' => 'required'
-        ]);
-
-        $alumno = new Alumno([
-            'no_control' => '231ABC',
-            'domicilio' => $request->input('domicilio'),
-            'numero_solicitud' => '123',
-            'fecha' => $request->input('fecha_nacimiento'),
-            'fecha_nacimiento' => $request->input('fecha_nacimiento'),
-            'curp' => $request->input('curp'),
-            'colonia' => $request->input('colonia'),
-            'codigo_postal' => $request->input('codigo_postal'),
-            'municipio' => $request->input('municipio'),
-            'estado' => $request->input('estado'),
-            'estado_civil' => $request->input('estado_civil'),
-            'discapacidad_presente' => $request->input('discapacidad_presente'),
-            'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios'),
-            'empresa_trabaja' => $request->input('empresa_trabaja'),
-            'antiguedad' => $request->input('antiguedad') ,
-            'direccion_empresa' => $request->input('direccion_empresa'),
-            'sexo' => $request->input('generoaspirante'),
-            'discapacidad_presente' => '',
-            'etnia' => ''
-        ]);
-
-        //dd($alumno);
-
-        $AlumnosPre = Alumnopre::create($validateData);
-        $AlumnosPre->alumnos()->save($alumno);
-
-        return redirect('/alumnos')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
     }
     /**
      * formulario número 2

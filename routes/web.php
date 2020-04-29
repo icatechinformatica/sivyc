@@ -61,7 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')
            ->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
-    Route::get('/alumnos/paso1', 'webController\AlumnoController@create');
+    Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion');
     Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
@@ -142,8 +142,4 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::get('financiero/indice', 'webController\FinancieroController@index')
            ->name('financiero.index');
-});
-
-Route::get('alumnos/sid', function () {
-    return view('layouts.pages.sid');
 });
