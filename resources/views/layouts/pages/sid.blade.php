@@ -106,12 +106,12 @@
                     <label for="estado_civil" class="control-label">Estado Civil</label>
                     <select class="form-control" id="estado_civil" name="estado_civil">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="Soltero (a)">Soltero (a)</option>
-                        <option value="Casado (a)">Casado (a)</option>
-                        <option value="Union libre">Unión Libre</option>
-                        <option value="Divorciado (a)">Divorciado (a)</option>
-                        <option value="Viudo (a)">Viudo (a)</option>
-                        <option value="No especifica">No especifica</option>
+                        <option value="SOLTERO (A)">SOLTERO (A)</option>
+                        <option value="CASADO (A)">CASADO (A)</option>
+                        <option value="UNIÓN LIBRE">UNIÓN LIBRE</option>
+                        <option value="DIVORCIADO (A)">DIVORCIADO (A)</option>
+                        <option value="VIUDO (A)">VIUDO (A)</option>
+                        <option value="NO ESPECIFICA">NO ESPECIFICA</option>
                     </select>
                 </div>
                 <!---->
