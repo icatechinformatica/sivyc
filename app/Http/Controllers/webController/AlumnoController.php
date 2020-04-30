@@ -120,4 +120,11 @@ class AlumnoController extends Controller
 
         return $pdf->stream('registro.pdf');
     }
+
+    protected function show($id)
+    {
+        $AlumnoMatricula = new  Alumnopre;
+        $Alumno = $AlumnoMatricula->findOrfail($id);
+        return view('layouts.pages.sid_general', compact('Alumno'));
+    }
 }

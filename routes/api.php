@@ -31,4 +31,5 @@ Route::group(['middleware' => ['cors']], function(){
     Route::post('updateAreas/{id}', 'ApiController\AreaController@update');
     Route::post('updateEspecialidades/{id}', 'ApiController\EspecialidadController@update');
     Route::post('updateMunicipios/{id}', 'ApiController\MunicipioController@update');
+    Route::apiResource('estados', 'ApiController\EstadoController');
 });
