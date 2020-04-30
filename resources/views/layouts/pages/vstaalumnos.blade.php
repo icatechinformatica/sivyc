@@ -16,7 +16,7 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('alumnos.paso1')}}"> Nuevo</a>
+                    <a class="btn btn-success btn-lg" href="{{route('alumnos.preinscripcion')}}"> Nuevo</a>
                 </div>
             </div>
         </div>
@@ -26,25 +26,20 @@
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>
-                        <th scope="col">N° Control</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">telefono</th>
-                        <th scope="col">Correo</th>
+                        <th scope="col">Curp</th>
                         <th width="160px">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($retrieveAlumnos as $itemData)
                         <tr>
-                        <th scope="row">{{$itemData->no_control}}</th>
-                            <td>{{$itemData->nombre}}</td>
+                            <td scope="row">{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
                             <td>{{$itemData->telefono}}</td>
-                            <td>{{$itemData->correo}}</td>
+                            <td>{{$itemData->curp}}</td>
                             <td>
-                                <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->no_control])}}">Mostrar</a>
-                                {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                                {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                                {!! Form::close() !!}
+                                <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Matricular</a>
                             </td>
                         </tr>
                     @endforeach
