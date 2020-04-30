@@ -3,12 +3,14 @@ $(function(){
     $('#table-one').filterTable('#myInput');
     $( "#fechanacaspirante" ).datepicker({
         changeMonth: true,
-        changeYear: true
+        changeYear: true,
+        format: 'dd-mm-yy'
     });
 
     $( "#fecha_nacimiento" ).datepicker({
         changeMonth: true,
-        changeYear: true
+        changeYear: true,
+        format: 'dd-mm-yy'
     });
 
     $('input[type=text]').val(function () {
@@ -155,7 +157,7 @@ $(function(){
             },
             fecha_nacimiento: {
                 required: true,
-                date: true
+                //date: true
             },
             telefono: {
                 required: true,
@@ -203,7 +205,7 @@ $(function(){
             },
             fecha_nacimiento: {
                 required: 'Por favor, seleccione fecha',
-                date: 'Formato de fecha no valido'
+                //date: 'Formato de fecha no valido'
             },
             telefono: {
                 required: 'Por favor, ingrese telefóno',

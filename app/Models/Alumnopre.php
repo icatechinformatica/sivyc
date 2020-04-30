@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Alumnopre extends Model
 {
@@ -18,4 +19,12 @@ class Alumnopre extends Model
     {
         return $this->hasMany(Alumno::class, 'id_pre');
     }
+
+    /**
+     * mutator en laravel
+     */
+
+     public function setFechaNacAttribute($value) {
+        return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+     }
 }

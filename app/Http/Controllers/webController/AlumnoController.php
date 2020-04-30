@@ -9,6 +9,7 @@ use App\Models\Alumnopre;
 use App\Models\Municipio;
 use App\Models\Estado;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 use PDF;
 
 class AlumnoController extends Controller
@@ -54,7 +55,7 @@ class AlumnoController extends Controller
         $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET();
         if ($alumnoPre->isEmpty()) {
             # si la consulta no está vacía hacemos la inserción
-            $validateData = $request->validate([
+            $validator =  Validator::make($request->all(), [
                 'nombre' => 'required',
                 'apellidoPaterno' => 'required',
                 'apellidoMaterno' => 'required',
@@ -70,9 +71,34 @@ class AlumnoController extends Controller
                 'estado_civil' => 'required',
                 'discapacidad' => 'required',
             ]);
-            Alumnopre::create($validateData);
-            // redireccionamos con un mensaje de éxito
-            return redirect('/alumnos')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
+            if ($validator->fails()) {
+                # devolvemos un error
+                return redirect('/alumnos/sid')
+                        ->withErrors($validator)
+                        ->withInput();
+            } else {
+
+                $AlumnoPreseleccion = new Alumnopre;
+                $AlumnoPreseleccion->nombre = $request->nombre;
+                $AlumnoPreseleccion->apellidoPaterno = $request->apellidoPaterno;
+                $AlumnoPreseleccion->apellidoMaterno = $request->apellidoMaterno;
+                $AlumnoPreseleccion->sexo = $request->sexo;
+                $AlumnoPreseleccion->curp = $request->curp;
+                $AlumnoPreseleccion->fecha_nacimiento = $AlumnoPreseleccion->setFechaNacAttribute($request->fecha_nacimiento);
+                $AlumnoPreseleccion->telefono = $request->telefono;
+                $AlumnoPreseleccion->domicilio = $request->domicilio;
+                $AlumnoPreseleccion->colonia = $request->colonia;
+                $AlumnoPreseleccion->cp = $request->cp;
+                $AlumnoPreseleccion->estado = $request->estado;
+                $AlumnoPreseleccion->municipio = $request->municipio;
+                $AlumnoPreseleccion->estado_civil = $request->estado_civil;
+                $AlumnoPreseleccion->discapacidad = $request->discapacidad;
+
+                $AlumnoPreseleccion->save();
+                // redireccionamos con un mensaje de éxito
+                return redirect('alumnos/indice')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
+            }
+
         } else {
             # por el contrario si no está vacía mandamos un mensaje al usuario
             #Mensaje
