@@ -117,52 +117,53 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-12">
                         <h5><b>DOCUMENTACIÓN ENTREGADA:</b></h5>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                              COPIA DE ACTA DE NACIMIENTO
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                              COPIA DE LA CURP
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                              COPIA DEL COMPROBANTE DE DOMICILIO
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                                FOTOGRAFÍAS
-                            </label>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose file</label>
                         </div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="grado_estudios" class="control-label">&nbsp;</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                              COPIA DE LA CREDENCIAL DE ELECTOR (INE) O IDENTIFICACIÓN OFICIAL
-                            </label>
+                    <div class="form-group col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">COPIA DE LA CURP</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                              (PASAPORTE, LICENCIA DE MANEJO O CARTILLA MILITAR)
-                            </label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">COMPROBANTE DE DOMICILIO</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck1">
-                                COPIA COMPROBANTE DEL ÚLTIMO GRADO DE ESTUDIOS
-                            </label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">FOTOGRAFÍAS</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">COPIA DE LA CREDENCIAL DE ELECTOR</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">(PASAPORTE, LICENCIA DE MANEJO)</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">ÚLTIMO GRADO DE ESTUDIOS</label>
                         </div>
                     </div>
                 </div>
