@@ -56,18 +56,14 @@ class CursosController extends Controller
                 $Curso->curp = $request->curp;
                 $Curso->rfc = $request->rfc;
                 $Curso->clave = $request->clave;
-                $Curso->grupo = $request->grupo;
                 $Curso->mvalida = $request->mvalida;
                 $Curso->mod = $request->mod;
-                $Curso->turno = $request->turno;
                 $Curso->area = $request->area;
                 $Curso->espe = $request->espe;
                 $Curso->curso = $request->curso;
                 $Curso->inicio = $request->inicio;
                 $Curso->termino = $request->termino;
                 $Curso->dia = $request->dia;
-                $Curso->pini = $request->pini;
-                $Curso->pfin = $request->pfin;
                 $Curso->dura = $request->dura;
                 $Curso->hini = $request->hini;
                 $Curso->hfin = $request->hfin;
@@ -96,6 +92,13 @@ class CursosController extends Controller
                 $Curso->ze = $request->ze;
                 $Curso->id_curso = $request->id_curso;
                 $Curso->id_instructor = $request->id_instructor;
+                $Curso->modinstructor = $request->modinstructor;
+                $Curso->nmunidad = $request->nmunidad;
+                $Curso->nmacademico = $request->nmacademico;
+                $Curso->observaciones = $request->observaciones;
+                $Curso->status = $request->status;
+                $Curso->realizo = $request->realizo;
+                $Curso->valido = $request->valido;
                 $Curso->save();
 
                 return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);
