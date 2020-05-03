@@ -15,7 +15,7 @@ class ModifyAlterTblCursosTable extends Migration
     {
         Schema::table('tbl_cursos', function (Blueprint $table) {
             //
-            $table->string('tcapacitacion', 255);
+            $table->string('tcapacitacion', 255)->nullable();
         });
     }
 
