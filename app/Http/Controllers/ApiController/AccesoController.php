@@ -35,7 +35,6 @@ class AccesoController extends Controller
             # enviar o generar codigo que si funciona
             $Acceso = new Acceso();
             $Acceso->nombrecompleto = $request->nombrecompleto;
-            $Acceso->id_categoria = $request->id_categoria;
             $Acceso->numeroenlace = $request->numeroenlace;
             $Acceso->contrasena = $request->contrasena;
             $Acceso->usuario = $request->usuario;
