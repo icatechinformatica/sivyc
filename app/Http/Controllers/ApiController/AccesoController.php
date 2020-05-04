@@ -34,7 +34,7 @@ class AccesoController extends Controller
         try {
             # enviar o generar codigo que si funciona
             $Acceso = new Acceso();
-            $Acceso->nombrecompreto = $request->nombrecompreto;
+            $Acceso->nombrecompleto = $request->nombrecompleto;
             $Acceso->id_categoria = $request->id_categoria;
             $Acceso->numeroenlace = $request->numeroenlace;
             $Acceso->contrasena = $request->contrasena;
@@ -44,7 +44,7 @@ class AccesoController extends Controller
             $Acceso->puesto = $request->puesto;
             $Acceso->save();
 
-            return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);
+            return response()->json(['success' => 'El Acceso se cargo exitosamente en la base de datos'], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
         }

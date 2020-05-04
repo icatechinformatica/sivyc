@@ -35,4 +35,5 @@ Route::group(['middleware' => ['cors']], function(){
     Route::apiResource('directorio', 'ApiController\DirectorioController');
     Route::apiResource('acceso', 'ApiController\AccesoController');
     Route::apiResource('unidad', 'ApiController\UnidadController');
+    Route::apiResource('alumnopre', 'ApiController\AlumnoController');
 });
