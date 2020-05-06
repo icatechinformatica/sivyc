@@ -8,6 +8,8 @@ use App\Models\Alumno;
 use App\Models\Alumnopre;
 use App\Models\Municipio;
 use App\Models\Estado;
+use App\Models\especialidad;
+use App\Models\curso;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use PDF;
@@ -124,7 +126,39 @@ class AlumnoController extends Controller
     protected function show($id)
     {
         $AlumnoMatricula = new  Alumnopre;
+        $Especialidad = new especialidad;
+        $especialidades = $Especialidad->all();
         $Alumno = $AlumnoMatricula->findOrfail($id);
-        return view('layouts.pages.sid_general', compact('Alumno'));
+        return view('layouts.pages.sid_general', compact('Alumno', 'especialidades'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    protected function getcursos(Request $request)
+    {
+        if (isset($request->idEsp)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $idEspecialidad = $request->idEsp;
+            $Curso = new curso();
+
+            $Cursos = $Curso->WHERE('id_especialidad', '=', $idEspecialidad)->GET();
+
+            /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
+            $json=json_encode($Cursos);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+        return $json;
     }
 }

@@ -47,8 +47,8 @@
                     <label for="sexo" class="control-label">Genero</label>
                     <select class="form-control" id="sexo" name="sexo">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="Femenino">Mujer</option>
-                        <option value="Masculino">Hombre</option>
+                        <option value="FEMENINO">MUJER</option>
+                        <option value="MASCULINO">HOMBRE</option>
                     </select>
                 </div>
                 <div class="form-group col-md-3">

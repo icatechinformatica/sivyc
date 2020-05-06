@@ -86,18 +86,25 @@
             <div style="text-align: center;">
                 <h4><b>DATOS GENERALES</b></h4>
             </div>
-            <form method="POST" id="form_sid" action="{{ route('alumnos.save') }}">
+            <form method="POST" id="form_sid" action="{{ route('alumnos.update-sid', ['id' => $Alumno->id]) }}">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="especialidad" class="control-label">ESPECIALIDAD A LA QUE DESEA INSCRIBIRSE:</label>
-                        <input type="text" name="especialidad" id="especialidad" class="form-control" autocomplete="off">
+                        <select class="form-control" id="especialidad_sid" name="especialidad" required>
+                            <option value="">--SELECCIONAR--</option>
+                            @foreach ($especialidades as $itemEspecialidad)
+                                <option value="{{$itemEspecialidad->id}}">{{ $itemEspecialidad->nombre }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-8">
+                    <div class="form-group col-md-12">
                         <label for="cursos" class="control-label">CURSO:</label>
-                        <input type="text" name="cursos" id="cursos" class="form-control" autocomplete="off">
+                        <select class="form-control" id="cursos_sid" name="cursos_sid" required>
+                            <option value="">--SELECCIONAR--</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
