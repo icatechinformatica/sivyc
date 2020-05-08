@@ -39,7 +39,6 @@
                 <input type="text" class="form-control" id="amaternoaspirante" name="amaternoaspirante">
             </div>
             <!-- apellido materno END-->
-
             </div>
             <div class="form-row">
                 <!-- curp -->

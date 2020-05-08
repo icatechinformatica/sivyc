@@ -64,9 +64,9 @@
                         </div>
                         <div class="col-md-7">
                             <div class="card-body">
-                                <h5 class="card-title">Catalogos</h5>
+                                <h5 class="card-title">Alumnos</h5>
                                 <p class="card-text">Alice is a freelance web designer and developer based in London. She is specialized in HTML5, CSS3, JavaScript, Bootstrap, etc.</p>
-                                <a href="#" class="btn btn-primary stretched-link">Catalogos</a>
+                                <a href="/alumnos/indice" class="btn btn-primary stretched-link">Alumnos</a>
                             </div>
                         </div>
                     </div>

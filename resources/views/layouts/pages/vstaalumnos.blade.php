@@ -1,6 +1,6 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Alumonos | SIVyC Icatech')
+@section('title', 'Alumnos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
