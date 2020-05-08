@@ -267,7 +267,7 @@ $(function(){
                 *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
             */
 
-            request.done(function( respuesta )
+            request.done(( respuesta ) =>
             {
                 if (respuesta.length < 1) {
                     $("#cursos_sid").empty();
@@ -276,7 +276,7 @@ $(function(){
                     if(!respuesta.hasOwnProperty('error')){
                         $("#cursos_sid").empty();
                         $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, function(k, v) {
+                        $.each(respuesta, (k, v) => {
                             $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
                         });
                         $("#cursos_sid").focus();
@@ -287,10 +287,46 @@ $(function(){
                 }
             });
 
-            request.fail(function( jqXHR, textStatus )
+            request.fail(( jqXHR, textStatus ) =>
             {
                 alert( "Hubo un error: " + textStatus );
             });
         });
-    })
+    });
+    // funcion para el cambio de estado de un selectBox
+    $('#medio_entero').on("change", () => {
+        $("#medio_entero option:selected").each( () => {
+            var medioEntero = $('#medio_entero').val();
+            if (!medioEntero) {
+                $("#medio_entero_especificar").css("display", "none");
+                $('#medio_entero_especificar').rules('remove', 'required');
+            } else {
+                if (medioEntero == 0) {
+                    $("#medio_entero_especificar").css("display", "block");
+                    $('#medio_entero_especificar').rules('add', {required: true});
+                } else {
+                    $("#medio_entero_especificar").css("display", "none");
+                    $('#medio_entero_especificar').rules('remove', 'required');
+                }
+            }
+        });
+    });
+    // funcion para cambio de estado en selectBox
+    $('#motivos_eleccion_sistema_capacitacion').on("change", () => {
+        $('#motivos_eleccion_sistema_capacitacion option:selected').each( () => {
+            var motivoEleccion = $('#motivos_eleccion_sistema_capacitacion').val();
+            if (!motivoEleccion) {
+                $("#sistema_capacitacion_especificar").css("display", "none");
+                $('#sistema_capacitacion_especificar').rules('remove', 'required');
+            } else {
+                if (motivoEleccion == 0) {
+                    $("#sistema_capacitacion_especificar").css("display", "block");
+                    $('#sistema_capacitacion_especificar').rules('add', {required: true});
+                } else {
+                    $("#sistema_capacitacion_especificar").css("display", "none");
+                    $('#sistema_capacitacion_especificar').rules('remove', 'required');
+                }
+            }
+        });
+    });
 });
