@@ -3,18 +3,17 @@
 namespace App\Models;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class instructor extends Model
 {
     protected $table = 'instructores';
 
-    protected $fillable = ['id','numero_control','nombre','apellidoPaterno','apellidoMaterno','tipo_honorario','folio_documento','experiencia_laboral',
-    'experiencia_docente','cursos_recibidos','capacitados_icatech','curso_recibido_icatech','cursos_impartidos',
-    'registro_agente_capacitador','rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio',
-    'asentamiento','domicilio','telefono','correo','unidad_capacitacion_solicita_validacion_instructor',
-    'memoramdum_validacion','fecha_validacion','observaciones','cursos_conocer','modificacion_memo','banco',
-    'no_cuenta','interbancaria','folio_ine','archivo_cv','id_especialidad'];
+    protected $fillable = ['id','numero_control','nombre','apellidoPaterno','apellidoMaterno','tipo_honorario',
+    'rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio','asentamiento','domicilio','telefono',
+    'correo','banco','no_cuenta','interbancaria','folio_ine','archivo_ine','archivo_domicilio','archivo_curp',
+    'archivo_alta','archivo_bancario','archivo_fotografia','archivo_estudios','archivo_otraid','id_especialidad'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
@@ -37,6 +36,10 @@ class instructor extends Model
     {
         return $this->hasMany(cursoValidado::class);
     }
+
+    public function setFechaNacAttribute($value) {
+        return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+     }
 
 
 }

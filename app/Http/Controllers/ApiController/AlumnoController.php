@@ -21,8 +21,7 @@ class AlumnoController extends Controller
         //
         $alumnos = new Alumnopre();
         $retrieveAlumnos = $alumnos->all();
-        $contador = $retrieveAlumnos->count();
-        return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
+        return response()->json($retrieveAlumnos, 200);
     }
 
     /**
@@ -44,59 +43,64 @@ class AlumnoController extends Controller
     public function store(Request $request)
     {
         //
-        $curp = strtoupper($request->input('curp'));
-        $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET();
-        if ($alumnoPre->isEmpty()) {
-            # si la consulta no está vacía hacemos la inserción
-            $validator =  Validator::make($request->all(), [
-                'nombre' => 'required',
-                'apellidoPaterno' => 'required',
-                'apellidoMaterno' => 'required',
-                'sexo' => 'required',
-                'curp' => 'required',
-                'fecha_nacimiento' => 'required',
-                'telefono' => 'required',
-                'domicilio' => 'required',
-                'colonia' => 'required',
-                'cp' => 'required',
-                'estado' => 'required',
-                'municipio' => 'required',
-                'estado_civil' => 'required',
-                'discapacidad' => 'required',
-            ]);
-            if ($validator->fails()) {
-                # devolvemos un error
-                return redirect('/alumnos/sid')
-                        ->withErrors($validator)
-                        ->withInput();
+        try {
+            //implementación del código
+            $curp = strtoupper($request->input('curp'));
+            $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET();
+            if ($alumnoPre->isEmpty()) {
+                # si la consulta no está vacía hacemos la inserción
+                $validator =  Validator::make($request->all(), [
+                    'nombre' => 'required',
+                    'apellidoPaterno' => 'required',
+                    'apellidoMaterno' => 'required',
+                    'sexo' => 'required',
+                    'curp' => 'required',
+                    'fecha_nacimiento' => 'required',
+                    'telefono' => 'required',
+                    'domicilio' => 'required',
+                    'colonia' => 'required',
+                    'cp' => 'required',
+                    'estado' => 'required',
+                    'municipio' => 'required',
+                    'estado_civil' => 'required',
+                    'discapacidad' => 'required',
+                ]);
+                if ($validator->fails()) {
+                    # devolvemos un error
+                    return response()->json(['error' => $validator], 501);
+                } else {
+
+                    $AlumnoPreseleccion = new Alumnopre;
+                    $AlumnoPreseleccion->nombre = $request->nombre;
+                    $AlumnoPreseleccion->apellidoPaterno = $request->apellidoPaterno;
+                    $AlumnoPreseleccion->apellidoMaterno = $request->apellidoMaterno;
+                    $AlumnoPreseleccion->sexo = $request->sexo;
+                    $AlumnoPreseleccion->curp = $request->curp;
+                    $AlumnoPreseleccion->fecha_nacimiento = $AlumnoPreseleccion->setFechaNacAttribute($request->fecha_nacimiento);
+                    $AlumnoPreseleccion->telefono = $request->telefono;
+                    $AlumnoPreseleccion->domicilio = $request->domicilio;
+                    $AlumnoPreseleccion->colonia = $request->colonia;
+                    $AlumnoPreseleccion->cp = $request->cp;
+                    $AlumnoPreseleccion->estado = $request->estado;
+                    $AlumnoPreseleccion->municipio = $request->municipio;
+                    $AlumnoPreseleccion->estado_civil = $request->estado_civil;
+                    $AlumnoPreseleccion->discapacidad = $request->discapacidad;
+
+                    $AlumnoPreseleccion->save();
+                    // redireccionamos con un mensaje de éxito
+                    return response()->json(['success' => 'Nuevo Alumno Agregado Exitosamente'], 200);
+                }
+
             } else {
-
-                $AlumnoPreseleccion = new Alumnopre;
-                $AlumnoPreseleccion->nombre = $request->nombre;
-                $AlumnoPreseleccion->apellidoPaterno = $request->apellidoPaterno;
-                $AlumnoPreseleccion->apellidoMaterno = $request->apellidoMaterno;
-                $AlumnoPreseleccion->sexo = $request->sexo;
-                $AlumnoPreseleccion->curp = $request->curp;
-                $AlumnoPreseleccion->fecha_nacimiento = $AlumnoPreseleccion->setFechaNacAttribute($request->fecha_nacimiento);
-                $AlumnoPreseleccion->telefono = $request->telefono;
-                $AlumnoPreseleccion->domicilio = $request->domicilio;
-                $AlumnoPreseleccion->colonia = $request->colonia;
-                $AlumnoPreseleccion->cp = $request->cp;
-                $AlumnoPreseleccion->estado = $request->estado;
-                $AlumnoPreseleccion->municipio = $request->municipio;
-                $AlumnoPreseleccion->estado_civil = $request->estado_civil;
-                $AlumnoPreseleccion->discapacidad = $request->discapacidad;
-
-                $AlumnoPreseleccion->save();
-                // redireccionamos con un mensaje de éxito
-                return redirect('alumnos/indice')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
+                # por el contrario si no está vacía mandamos un mensaje al usuario
+                #Mensaje
+                $mensaje = "Lo sentimos, la curp ".$curp." asociada a este registro ya se encuentra en la base de datos.";
+                return response()->json(['error' => $mensaje], 501);
             }
 
-        } else {
-            # por el contrario si no está vacía mandamos un mensaje al usuario
-            #Mensaje
-            $mensaje = "Lo sentimos, la curp ".$curp." asociada a este registro ya se encuentra en la base de datos.";
-            return redirect('/alumnos/sid')->withErrors($mensaje);
+        } catch (Exception $th) {
+            //throw $th;
+            return response()->json(['error' => $th->getMessage()], 501);
         }
     }
 

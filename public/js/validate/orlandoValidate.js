@@ -113,7 +113,7 @@ $(function(){
                 required: true,
                 extension: "pdf"
             },
-            tipo_honorario:{
+            honorario:{
                 required: true,
                 valueNotEquals: "default"
             },
@@ -130,6 +130,10 @@ $(function(){
                 required: true,
                 date: true
             },
+            undidad_registra:{
+                required: true,
+                valueNotEquals: "default"
+            }
         },
         messages: {
             nombre: {
@@ -200,7 +204,7 @@ $(function(){
                 required: 'Por favor ingrese el archivo del curriculum',
                 extension: 'Por favor ingrese el archivo en formato DF'
             },
-           tipo_honorario: {
+           honorario: {
                 required: 'Por favor ingrese el tipo de honorario',
                 valueNotEquals: 'Por Favor ingrese el tipo de honorario'
             },
@@ -217,6 +221,10 @@ $(function(){
                 required: "Por Favor ingrese la fecha de validacion",
                 date: "Por favor ingrese la fecha correcta"
             },
+            unidad_registra: {
+                required: 'Por favor ingrese la unidad donde se esta registrando al instructor',
+                valueNotEquals: 'Por Favor ingrese la unidad donde se esta registrando al instructor'
+            }
         }
     });
 

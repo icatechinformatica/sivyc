@@ -243,4 +243,90 @@ $(function(){
     $('textarea').val(function(){
         return this.value.toUpperCase();
     })
+
+    // escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar los cursos de esa especialidad
+    $('#especialidad_sid').on("change", () => {
+
+        $("#especialidad_sid option:selected").each( () => {
+            var IdEsp = $('#especialidad_sid').val();
+            var datos = { idEsp: IdEsp };
+            var url = '/alumnos/sid/cursos';
+
+            var request = $.ajax
+            ({
+                url: url,
+                method: 'POST',
+                data: datos,
+                dataType: 'json'
+            });
+
+            /*
+                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+            */
+
+            request.done(( respuesta ) =>
+            {
+                if (respuesta.length < 1) {
+                    $("#cursos_sid").empty();
+                    $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                } else {
+                    if(!respuesta.hasOwnProperty('error')){
+                        $("#cursos_sid").empty();
+                        $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        $.each(respuesta, (k, v) => {
+                            $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                        });
+                        $("#cursos_sid").focus();
+                    }else{
+
+                        //Puedes mostrar un mensaje de error en algún div del DOM
+                    }
+                }
+            });
+
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                alert( "Hubo un error: " + textStatus );
+            });
+        });
+    });
+    // funcion para el cambio de estado de un selectBox
+    $('#medio_entero').on("change", () => {
+        $("#medio_entero option:selected").each( () => {
+            var medioEntero = $('#medio_entero').val();
+            if (!medioEntero) {
+                $("#medio_entero_especificar").css("display", "none");
+                $('#medio_entero_especificar').rules('remove', 'required');
+            } else {
+                if (medioEntero == 0) {
+                    $("#medio_entero_especificar").css("display", "block");
+                    $('#medio_entero_especificar').rules('add', {required: true});
+                } else {
+                    $("#medio_entero_especificar").css("display", "none");
+                    $('#medio_entero_especificar').rules('remove', 'required');
+                }
+            }
+        });
+    });
+    // funcion para cambio de estado en selectBox
+    $('#motivos_eleccion_sistema_capacitacion').on("change", () => {
+        $('#motivos_eleccion_sistema_capacitacion option:selected').each( () => {
+            var motivoEleccion = $('#motivos_eleccion_sistema_capacitacion').val();
+            if (!motivoEleccion) {
+                $("#sistema_capacitacion_especificar").css("display", "none");
+                $('#sistema_capacitacion_especificar').rules('remove', 'required');
+            } else {
+                if (motivoEleccion == 0) {
+                    $("#sistema_capacitacion_especificar").css("display", "block");
+                    $('#sistema_capacitacion_especificar').rules('add', {required: true});
+                } else {
+                    $("#sistema_capacitacion_especificar").css("display", "none");
+                    $('#sistema_capacitacion_especificar').rules('remove', 'required');
+                }
+            }
+        });
+    });
 });

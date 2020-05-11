@@ -79,12 +79,14 @@
                     <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-10">
-                    <label for="inputdomicilio">Direccion de Domicilio</label>
-                    <input name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true">
+            <!-- Direccion de Domicilio
+                <div class="form-row">
+                    <div class="form-group col-md-10">
+                        <label for="inputdomicilio">Direccion de Domicilio</label>
+                        <input name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true">
+                    </div>
                 </div>
-            </div>
+            -->
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono Personal</label>
@@ -95,6 +97,26 @@
                     <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
                 </div>
             </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputunidad_registra">Unidad que Registra</label>
+                    <select class="form-control" name="unidad_registra" id="unidad_registra">
+                        <option value="sin especificar">Sin Especificar</option>
+                        @foreach ($data as $value )
+                        <option value="{{$value->cct}}">{{$value->unidad}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputhonorarios">Tipo de Honorarios</label>
+                    <select class="form-control" name="honorario" id="honorario">
+                        <option value="sin especificar">Sin Especificar</option>
+                        <option value="Honorarios">Honorarios</option>
+                        <option value="Asalariado Asimilado">Asalariado Asimilado</option>
+                    </select>
+                </div>
+            </div>
+        <!-- resto de form
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputbanco">Nombre del Banco</label>
@@ -108,11 +130,9 @@
                     <label for="inputnumero_cuenta">Numero de Cuenta</label>
                     <input name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true">
                 </div>
-
             </div>
             <hr style="border-color:dimgray">
             <label><h2>Datos Academicos</h2></label>
-            <!-- *** START Text areas *** -->
                 <div class="form-row">
                     <label for="inputexp_laboral"><h4>Experiencia Laboral</h4></label>
                     <textarea cols="6" rows="6" id="exp_laboral" name="exp_laboral" class="form-control"></textarea>
@@ -137,7 +157,7 @@
                     <label for="inputcursos_impartidos"><h4>Cursos Impartidos</h4></label>
                     <textarea cols="6" rows="6" id="cursos_impartidos" name="cursos_impartidos" class="form-control"></textarea>
                 </div>
-            <!-- *** END Text areas *** -->
+
             <br>
             <div class="form-row">
                 <div class="form-group col-md-2">
@@ -159,6 +179,7 @@
                     <input name="cv" id="cv" type="file" accept="application/pdf" class="form-control" aria-required="true">
                 </div>
             </div>
+        -->
             <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">

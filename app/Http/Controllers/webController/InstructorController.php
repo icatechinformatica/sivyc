@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 use App\Models\InstructorPerfil;
+use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 
 class InstructorController extends Controller
 {
@@ -39,27 +41,14 @@ class InstructorController extends Controller
     #----- instructor/crear -----#
     public function crear_instructor()
     {
-        return view('layouts.pages.frminstructor');
+        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        return view('layouts.pages.frminstructor',compact('data'));
     }
 
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'cv' => 'required|mimes:pdf|max:2048'
-        ]);
-        if ($validator->fails()) {
-            # code...
-            return redirect('/instructor/crear')
-                        ->withErrors($validador)
-                        ->withInput();
-
-        } else {
             $saveInstructor = new instructor();
-
-            $nco = '406Prueba'; #No. Control prueba
-            $nombre_completo = $request->nombre. ' ' . $request->apellido_paterno. ' ' . $request->apellido_materno;
-
             # Proceso de Guardado
             #----- Personal -----
             $saveInstructor->nombre = trim($request->nombre);
@@ -70,25 +59,35 @@ class InstructorController extends Controller
             $saveInstructor->folio_ine = trim($request->folio_ine);
             $saveInstructor->sexo = trim($request->sexo);
             $saveInstructor->estado_civil = trim($request->estado_civil);
-            $saveInstructor->fecha_nacimiento = trim($request->fecha_nacimiento);
+            $saveInstructor->fecha_nacimiento = $request->fecha_nacimiento;
             $saveInstructor->entidad = trim($request->entidad);
             $saveInstructor->municipio = trim($request->municipio);
             $saveInstructor->asentamiento = trim($request->asentamiento);
-            $saveInstructor->domicilio = trim($request->domicilio);
             $saveInstructor->telefono = trim($request->telefono);
             $saveInstructor->correo = trim($request->correo);
-            $saveInstructor->banco = trim($request->banco);
-            $saveInstructor->interbancaria = trim($request->clabe);
-            $saveInstructor->no_cuenta = trim($request->numero_cuenta);
+            $saveInstructor->tipo_honorario = trim($request->honorario);
+
+            //Creacion de el numero de control
+            $uni = substr($request->unidad_registra, -2);
+            $now = Carbon::now();
+            $year = substr($now->year, -2);
+            $numero_control = $uni.$year.$request->rfc;
+            $saveInstructor->numero_control = trim($numero_control);
+            $saveInstructor->save();
+
 
             #----- Academico -----
-            $saveInstructor->experiencia_laboral = trim($request->exp_laboral);
+           /* $saveInstructor->experiencia_laboral = trim($request->exp_laboral);
             $saveInstructor->experiencia_docente = trim($request->exp_docente);
             $saveInstructor->cursos_recibidos = trim($request->cursos_recibidos);
             $saveInstructor->cursos_conocer = trim($request->cursos_conocer);
             $saveInstructor->cursos_impartidos = trim($request->cursos_impartidos);
             $saveInstructor->capacitados_icatech = trim($request->cap_icatech);
             $saveInstructor->curso_recibido_icatech =trim($request->cursos_recicatech);
+            $saveInstructor->banco = trim($request->banco);
+            $saveInstructor->interbancaria = trim($request->clabe);
+            $saveInstructor->no_cuenta = trim($request->numero_cuenta);
+            $saveInstructor->domicilio = trim($request->domicilio);*/
 
             #----- Institucional -----
             // $saveInstructor->numero_control = $nco;
@@ -99,17 +98,17 @@ class InstructorController extends Controller
             // $saveInstructor->modificacion_memo = trim($request->memo_mod);
             // $saveInstructor->fecha_validacion = trim($request->fecha_validacion);
             // $saveInstructor->observaciones = trim($request->observacion);
-            $saveInstructor->save();
+
 
             /**
              * Obtener el id del último registro insertado
              */
-            $instructorId = $saveInstructor->id;
+            /*$instructorId = $saveInstructor->id;
 
             /**
              * checar si hay un documento para poder llamar el método
              */
-            if ($request->hasFile('cv')) {
+            /*if ($request->hasFile('cv')) {
                 # se llama el método
                 $file = $request->file('cv'); # obtenemos el archivo
                 $urlcv = $this->pdf_upload($file, $instructorId); #invocamos el método
@@ -119,10 +118,11 @@ class InstructorController extends Controller
             $instructor = instructor::find($instructorId);
             $instructor->archivo_cv = trim($urlcv);
             $instructor->save();
+            */
 
             return redirect()->route('instructor-inicio')
                         ->with('success','Perfil profesional agregado');
-        }
+
     }
     /**
      * modificaciones
