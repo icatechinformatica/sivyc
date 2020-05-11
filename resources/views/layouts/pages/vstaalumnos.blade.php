@@ -39,7 +39,7 @@
                             <td>{{$itemData->telefono}}</td>
                             <td>{{$itemData->curp}}</td>
                             <td>
-                                <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Matricular</a>
+                                <a class="btn btn-info" href="{{route('alumnos.presincripcion-paso2', ['id' => $itemData->id])}}">Matricular</a>
                             </td>
                         </tr>
                     @endforeach

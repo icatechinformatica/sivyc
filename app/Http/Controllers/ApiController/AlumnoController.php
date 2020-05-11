@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\webController;
+namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Alumno;
-use App\Models\Alumnopre;
 use App\Models\Municipio;
 use App\Models\Estado;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Validator;
-use PDF;
+use App\Models\Alumno;
+use App\Models\Alumnopre;
 
 class AlumnoController extends Controller
 {
@@ -36,11 +33,6 @@ class AlumnoController extends Controller
     public function create()
     {
         //
-        $municipio = new Municipio();
-        $estado = new Estado();
-        $municipios = $municipio->all();
-        $estados = $estado->all();
-        return view('layouts.pages.sid', compact('municipios', 'estados'));
     }
 
     /**
@@ -51,6 +43,7 @@ class AlumnoController extends Controller
      */
     public function store(Request $request)
     {
+        //
         $curp = strtoupper($request->input('curp'));
         $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET();
         if ($alumnoPre->isEmpty()) {
@@ -106,25 +99,58 @@ class AlumnoController extends Controller
             return redirect('/alumnos/sid')->withErrors($mensaje);
         }
     }
+
     /**
-     * formulario número 2
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    protected function createpaso2sid()
+    public function show($id)
     {
-        return view('layouts.pages.frminscripcion2');
+        //
     }
 
-    public function pdf_registro()
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
-        $pdf = PDF::loadView('layouts.pdfpages.registroalumno');
-
-        return $pdf->stream('registro.pdf');
+        //
     }
 
-    protected function show($id)
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
     {
-        $AlumnoMatricula = new  Alumnopre;
-        $Alumno = $AlumnoMatricula->findOrfail($id);
-        return view('layouts.pages.sid_general', compact('Alumno'));
+        //
+        try {
+            //code...
+            $Alumno= new Alumnopre();
+            $Alumno->whereId($id)->update($request->all());
+            return response()->json(['success' => 'Alumno actualizado exitosamente'], 200);
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json(['error' => $e->getMessage()], 501);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }

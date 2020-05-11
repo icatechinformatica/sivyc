@@ -61,7 +61,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')
            ->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
-    Route::get('/alumnos/paso1', 'webController\AlumnoController@create')->name('alumnos.preinscripcion');
+    Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion');
+    Route::get('alumnos/sid-paso2/{id}', 'webController\AlumnoController@show')->name('alumnos.presincripcion-paso2');
     Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');

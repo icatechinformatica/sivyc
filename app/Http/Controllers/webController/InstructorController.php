@@ -10,8 +10,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use Redirect,Response;
 use App\Models\InstructorPerfil;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
