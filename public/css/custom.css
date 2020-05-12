@@ -14,3 +14,7 @@ input[type=text], select, textarea {
 .card-deck .card img {
     vertical-align: middle;
 }
+.gallery_product
+{
+    margin-bottom: 30px;
+}
