@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use PDF;
+use Carbon\Carbon;
 
 class AlumnoController extends Controller
 {
@@ -293,6 +294,12 @@ class AlumnoController extends Controller
         }
 
         /**
+         * obtener el año correcto
+         */
+        $date = Carbon::now();
+        $anio = $date->format('Y');
+
+        /**
          * funcion alumnos
          */
         $alumno = new Alumno([
@@ -321,7 +328,8 @@ class AlumnoController extends Controller
             'pasaporte_licencia_manejo' => $url_licencia_manejo,
             'chk_comprobante_ultimo_grado' => $chk_ultimo_grado_estudios,
             'comprobante_ultimo_grado' => $url_grado_estudios,
-            'puesto_empresa' => $request->input('puesto_empresa')
+            'puesto_empresa' => $request->input('puesto_empresa'),
+            'unidad' => Auth::user()->unidades()->first()->unidad
         ]);
 
         $AlumnosPre->alumnos()->save($alumno);
