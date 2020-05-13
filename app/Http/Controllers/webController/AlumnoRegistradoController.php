@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Alumno;
 use App\Models\Alumnopre;
 use Carbon\Carbon;
+use App\Models\Unidad;
 
 class AlumnoRegistradoController extends Controller
 {
@@ -67,9 +68,6 @@ class AlumnoRegistradoController extends Controller
                             ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                             ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
                             ->GET();
-        //$date = Carbon::now();
-        //$anio = $date->format('Y');
-       // dd($anio);
 
         return view('layouts.pages.alumno_registrado', compact('alumnos'));
     }

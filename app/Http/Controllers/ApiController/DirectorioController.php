@@ -40,6 +40,23 @@ class DirectorioController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            //cargando elementos para guardar registros
+            $directorio = new Directorio();
+            $directorio->nombre = $request->nombre;
+            $directorio->apellidoPaterno = $request->apellidoPaterno;
+            $directorio->apellidoMaterno = $request->apellidoMaterno;
+            $directorio->puesto = $request->puesto;
+            $directorio->numero_enlace = $request->numero_enlace;
+            $directorio->categoria = $request->categoria;
+
+            $directorio->save();
+
+            return response()->json(['success' => 'Agregado al directorio exitosamente!'], 200);
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json(['error' => $e->getMessage()], 501);
+        }
     }
 
     /**

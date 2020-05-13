@@ -37,7 +37,8 @@ class Alumno extends Model
         'pasaporte_licencia_manejo',
         'chk_comprobante_ultimo_grado',
         'comprobante_ultimo_grado',
-        'puesto_empresa'
+        'puesto_empresa',
+        'unidad'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
