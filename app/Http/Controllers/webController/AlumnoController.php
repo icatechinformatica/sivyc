@@ -417,7 +417,7 @@ class AlumnoController extends Controller
 
         $AlumnosPre->alumnos()->save($alumno);
 
-        dd("Listo!");
+        return redirect('alumnos/registrados')->with('success', 'Nuevo Alumno Matriculado Exitosamente!');
 
     }
 
