@@ -387,7 +387,7 @@ class AlumnoController extends Controller
          */
         $alumno = new Alumno([
             'no_control' => $no_control,
-            'id_especialidad' => $request->input('especialidad'),
+            'id_especialidad' => $request->input('especialidad_sid'),
             'id_curso' => $request->input('cursos_sid'),
             'horario' => $request->input('horario'),
             'grupo' => $request->input('grupo'),

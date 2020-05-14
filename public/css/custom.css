@@ -18,3 +18,19 @@ input[type=text], select, textarea {
 {
     margin-bottom: 30px;
 }
+
+#medio_entero_especificar {
+    display: none;
+}
+
+#sistema_capacitacion_especificar {
+    display: none;
+}
+
+.medio_especificar {
+    display: none;
+}
+
+.capacitacion_especificar {
+    display: none;
+}

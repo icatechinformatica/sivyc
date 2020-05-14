@@ -91,7 +91,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="especialidad" class="control-label">ESPECIALIDAD A LA QUE DESEA INSCRIBIRSE:</label>
-                        <select class="form-control" id="especialidad_sid" name="especialidad" required>
+                        <select class="form-control" id="especialidad_sid" name="especialidad_sid" required>
                             <option value="">--SELECCIONAR--</option>
                             @foreach ($especialidades as $itemEspecialidad)
                                 <option value="{{$itemEspecialidad->id}}">{{ $itemEspecialidad->nombre }}</option>
@@ -223,8 +223,10 @@
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="medio_entero_especificar" class="control-label">ESPECIFIQUE</label>
-                        <input type="text" class="form-control" name="medio_entero_especificar" id="medio_entero_especificar">
+                        <div class="medio_especificar">
+                            <label for="medio_entero_especificar" class="control-label">ESPECIFIQUE</label>
+                            <input type="text" class="form-control" name="medio_entero_especificar" id="medio_entero_especificar">
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -241,8 +243,10 @@
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="sistema_capacitacion_especificar" class="control-label">ESPECIFIQUE:</label>
-                        <input type="text" class="form-control" name="sistema_capacitacion_especificar" id="sistema_capacitacion_especificar">
+                        <div class="capacitacion_especificar">
+                            <label for="sistema_capacitacion_especificar" class="control-label">ESPECIFIQUE:</label>
+                            <input type="text" class="form-control" name="sistema_capacitacion_especificar" id="sistema_capacitacion_especificar">
+                        </div>
                     </div>
                 </div>
                 <!--botones de enviar y retroceder-->

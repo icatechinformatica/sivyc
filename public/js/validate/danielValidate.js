@@ -33,7 +33,12 @@ $(function(){
     }, "Por favor especifique un número valido de teléfono");
 
     $.validator.addMethod("filesize", (value, element, arg)=> {
-
+        var minsize=1000; // representa a 1kb
+        if((value>minsize)&&(value<=arg)){
+            return true;
+        }else{
+            return false;
+        }
     });
 
     $('#formsid').validate({
@@ -245,24 +250,74 @@ $(function(){
     $('#form_sid_registro').validate({
         rules: {
             acta_nacimiento: {
-                extension: "pdf"
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
             },
             copia_curp: {
-                extension: "pdf"
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
             },
             comprobante_domicilio: {
-                extension: "pdf"
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            fotografias: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            ine: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            licencia_manejo: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            grado_estudios: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            especialidad_sid: {
+                required: true,
+            },
+            cursos_sid: {
+                required: true,
             }
         },
         messages: {
+            especialidad_sid: {
+                required: "Por favor, Seleccione la especialidad"
+            },
             acta_nacimiento: {
-                extension : "Sólo se permiten pdf"
+                extension : "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
             },
             copia_curp: {
-                extension: "Sólo se permiten pdf"
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
             },
             comprobante_domicilio: {
-                extension: "Sólo se permiten pdf"
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            fotografias: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            ine: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            licencia_manejo: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            grado_estudios: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            cursos_sid: {
+                required: "Por favor, Seleccione el curso"
             }
         }
     });
@@ -332,13 +387,16 @@ $(function(){
             if (!medioEntero) {
                 $("#medio_entero_especificar").css("display", "none");
                 $('#medio_entero_especificar').rules('remove', 'required');
+                $('.medio_especificar').css("display", "none");
             } else {
                 if (medioEntero == 0) {
                     $("#medio_entero_especificar").css("display", "block");
                     $('#medio_entero_especificar').rules('add', {required: true});
+                    $('.medio_especificar').css("display", "block");
                 } else {
                     $("#medio_entero_especificar").css("display", "none");
                     $('#medio_entero_especificar').rules('remove', 'required');
+                    $('.medio_especificar').css("display", "none");
                 }
             }
         });
@@ -350,13 +408,16 @@ $(function(){
             if (!motivoEleccion) {
                 $("#sistema_capacitacion_especificar").css("display", "none");
                 $('#sistema_capacitacion_especificar').rules('remove', 'required');
+                $('.capacitacion_especificar').css("display", "none");
             } else {
                 if (motivoEleccion == 0) {
                     $("#sistema_capacitacion_especificar").css("display", "block");
                     $('#sistema_capacitacion_especificar').rules('add', {required: true});
+                    $('.capacitacion_especificar').css("display", "block");
                 } else {
                     $("#sistema_capacitacion_especificar").css("display", "none");
                     $('#sistema_capacitacion_especificar').rules('remove', 'required');
+                    $('.capacitacion_especificar').css("display", "none");
                 }
             }
         });
