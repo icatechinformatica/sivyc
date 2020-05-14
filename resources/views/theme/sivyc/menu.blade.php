@@ -51,9 +51,9 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
-                        @can('alumnos.index')
+                        //@can('alumnos.index')
                         <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
-                        @endcan
+                        //@endcan
                         <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                     </div>
