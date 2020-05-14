@@ -58,8 +58,9 @@ Route::middleware(['auth'])->group(function () {
     /**
      * Desarrollado por Adrian y Daniel
      */
-    Route::get('/alumnos/indice', 'webController\AlumnoController@index')
-           ->name('alumnos.index')->middleware('can:alumnos.index');
+    //Route::get('/alumnos/indice', 'webController\AlumnoController@index')
+        //   ->name('alumnos.index')->middleware('can:alumnos.index');
+    Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
     Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion');
     Route::get('alumnos/sid-paso2/{id}', 'webController\AlumnoController@show')->name('alumnos.presincripcion-paso2');
