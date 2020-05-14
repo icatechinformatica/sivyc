@@ -391,7 +391,7 @@ class AlumnoController extends Controller
             'id_curso' => $request->input('cursos_sid'),
             'horario' => $request->input('horario'),
             'grupo' => $request->input('grupo'),
-            'ultimo_grado_estudios' => $request->input('grado_estudios'),
+            'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios'),
             'empresa_trabaja' => $request->input('empresa'),
             'antiguedad' => $request->input('antiguedad'),
             'direccion_empresa' => $request->input('direccion_empresa'),

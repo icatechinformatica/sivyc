@@ -119,8 +119,8 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-8">
-                        <label for="grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
-                        <input type="text" name="grado_estudios" id="grado_estudios" class="form-control" autocomplete="off">
+                        <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
+                        <input type="text" name="ultimo_grado_estudios" id="ultimo_grado_estudios" class="form-control" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-row">
