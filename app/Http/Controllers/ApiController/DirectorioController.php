@@ -43,6 +43,7 @@ class DirectorioController extends Controller
         try {
             //cargando elementos para guardar registros
             $directorio = new Directorio();
+            $directorio->id = $request->id;
             $directorio->nombre = $request->nombre;
             $directorio->apellidoPaterno = $request->apellidoPaterno;
             $directorio->apellidoMaterno = $request->apellidoMaterno;

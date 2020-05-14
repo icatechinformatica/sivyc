@@ -4,6 +4,9 @@
 <!--contenido-->
 @section('content')
     <div class="container g-pt-50">
+        <div style="text-align: left;">
+            <h4><b>N° de Control: {{$alumnos[0]->no_control}}</b></h4>
+        </div>
         <div class="form-row">
             <!--nombre aspirante-->
             <div class="form-group col-md-6">
@@ -129,9 +132,9 @@
                     </div>
                   @else
                     <div class="card">
-                        <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
+                        <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                         <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                        <h5 class="card-title">ACTA DE NACIMIENTO</h5>
                         <p class="card-text"></p>
                         </div>
                     </div>
@@ -149,9 +152,9 @@
                     </div>
                   @else
                     <div class="card">
-                        <img src="http://fakeimg.pl/200x200/" class="img-thumbnail" alt="...">
+                        <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                         <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                        <h5 class="card-title">CURP</h5>
                         <p class="card-text"></p>
                         </div>
                     </div>
@@ -169,7 +172,7 @@
                         </div>
                     @else
                         <div class="card">
-                            <img src="http://fakeimg.pl/200x200/" class="img-thumbnail" alt="...">
+                            <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                             <div class="card-body">
                             <h5 class="card-title">Card title</h5>
                             <p class="card-text"></p>
@@ -189,7 +192,7 @@
                     </div>
                   @else
                     <div class="card">
-                        <img src="http://fakeimg.pl/200x200/" class="img-thumbnail" alt="...">
+                        <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                         <div class="card-body">
                         <h5 class="card-title">Card title</h5>
                         <p class="card-text"></p>
@@ -208,7 +211,7 @@
                       </div>
                     @else
                       <div class="card">
-                          <img src="http://fakeimg.pl/200x200/" class="img-thumbnail" alt="...">
+                          <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">INE</h5>
                           <p class="card-text"></p>
@@ -227,7 +230,7 @@
                       </div>
                     @else
                       <div class="card">
-                          <img src="http://fakeimg.pl/200x200/" class="img-thumbnail" alt="...">
+                          <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">LICENCIA O PASAPORTE</h5>
                           <p class="card-text"></p>
@@ -246,7 +249,7 @@
                       </div>
                     @else
                       <div class="card">
-                          <img src="http://fakeimg.pl/200x200/" class="img-thumbnail" alt="...">
+                          <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">COMRPOBRANTE ÚLTIMO GRADO</h5>
                           <p class="card-text"></p>

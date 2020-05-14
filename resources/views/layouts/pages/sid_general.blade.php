@@ -86,7 +86,7 @@
             <div style="text-align: center;">
                 <h4><b>DATOS GENERALES</b></h4>
             </div>
-            <form method="POST" id="form_sid" action="{{ route('alumnos.update-sid') }}" enctype="multipart/form-data">
+            <form method="POST" id="form_sid_registro" action="{{ route('alumnos.update-sid') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8">

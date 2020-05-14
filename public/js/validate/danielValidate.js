@@ -32,6 +32,10 @@ $(function(){
         phone_number.match(/^(\+?1-?)?(\([2-9]\d{2}\)|[2-9]\d{2})?[2-9]\d{2}?\d{4}$/);
     }, "Por favor especifique un número valido de teléfono");
 
+    $.validator.addMethod("filesize", (value, element, arg)=> {
+
+    });
+
     $('#formsid').validate({
         rules: {
             nombreaspirante: {
@@ -231,6 +235,34 @@ $(function(){
             },
             discapacidad: {
                 required: 'Por favor seleccione una opción'
+            }
+        }
+    });
+
+    /***
+     * validacion SID registro
+     */
+    $('#form_sid_registro').validate({
+        rules: {
+            acta_nacimiento: {
+                extension: "pdf"
+            },
+            copia_curp: {
+                extension: "pdf"
+            },
+            comprobante_domicilio: {
+                extension: "pdf"
+            }
+        },
+        messages: {
+            acta_nacimiento: {
+                extension : "Sólo se permiten pdf"
+            },
+            copia_curp: {
+                extension: "Sólo se permiten pdf"
+            },
+            comprobante_domicilio: {
+                extension: "Sólo se permiten pdf"
             }
         }
     });
