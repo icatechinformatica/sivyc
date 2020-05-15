@@ -29,7 +29,7 @@
             <div class="form-row">
                 <div class="form-group col-md-5">
                     <label for="inputnombre_curso" class="control-label">Nombre del Curso</label>
-                    <input type="text" disabled class="form-control" value="{{$data->nombre}}" id="nombre_curso" name="nombre_curso">
+                    <input type="text" disabled class="form-control" value="{{$data->curso}}" id="nombre_curso" name="nombre_curso">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="clavecurso" class="control-label">Clave del Curso</label>

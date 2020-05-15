@@ -127,7 +127,9 @@
                         <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
                         <div class="card-body">
                         <h5 class="card-title">Acta de Nacimiento</h5>
-                        <p class="card-text"></p>
+                        <p class="card-text">
+                            <a href="{{$alumnos[0]->acta_nacimiento}}" class="btn btn-default" target="_blank">Descargar</a>
+                        </p>
                         </div>
                     </div>
                   @else
@@ -147,7 +149,9 @@
                         <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
                         <div class="card-body">
                         <h5 class="card-title">CURP</h5>
-                        <p class="card-text"></p>
+                        <p class="card-text">
+                            <a href="{{$alumnos[0]->curp}}" class="btn btn-default" target="_blank">Descargar</a>
+                        </p>
                         </div>
                     </div>
                   @else
@@ -167,14 +171,16 @@
                             <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
                             <div class="card-body">
                             <h5 class="card-title">C. DOMICILIO</h5>
-                            <p class="card-text"></p>
+                            <p class="card-text">
+                                <a href="{{$alumnos[0]->comprobante_domicilio}}" class="btn btn-default" target="_blank">Descargar</a>
+                            </p>
                             </div>
                         </div>
                     @else
                         <div class="card">
                             <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                             <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
+                            <h5 class="card-title">C. DOMICILIO</h5>
                             <p class="card-text"></p>
                             </div>
                         </div>
@@ -187,14 +193,16 @@
                         <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
                         <div class="card-body">
                         <h5 class="card-title">FOTOGRAFÍA</h5>
-                        <p class="card-text"></p>
+                        <p class="card-text">
+                            <a href="{{$alumnos[0]->fotografia}}" class="btn btn-default" target="_blank">Descargar</a>
+                        </p>
                         </div>
                     </div>
                   @else
                     <div class="card">
                         <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
                         <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                        <h5 class="card-title">FOTOGRAFÍA</h5>
                         <p class="card-text"></p>
                         </div>
                     </div>
@@ -206,7 +214,9 @@
                           <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">INE</h5>
-                          <p class="card-text"></p>
+                          <p class="card-text">
+                            <a href="{{$alumnos[0]->ine}}" class="btn btn-default" target="_blank">Descargar</a>
+                          </p>
                           </div>
                       </div>
                     @else
@@ -225,7 +235,9 @@
                           <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">LICENCIA O PASAPORTE</h5>
-                          <p class="card-text"></p>
+                          <p class="card-text">
+                            <a href="{{$alumnos[0]->pasaporte_licencia_manejo}}" class="btn btn-default" target="_blank">Descargar</a>
+                          </p>
                           </div>
                       </div>
                     @else
@@ -244,7 +256,9 @@
                           <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">COMRPOBRANTE ÚLTIMO GRADO</h5>
-                          <p class="card-text"></p>
+                          <p class="card-text">
+                            <a href="{{$alumnos[0]->comprobante_ultimo_grado}}" class="btn btn-default" target="_blank">Descargar</a>
+                          </p>
                           </div>
                       </div>
                     @else

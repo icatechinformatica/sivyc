@@ -35,7 +35,7 @@
             <caption>Catalogo de Cursos Validados</caption>
             <thead>
                 <tr>
-                    <th scope="col">Clave</th>
+                    <th scope="col">Clave de Curso</th>
                     <th scope="col">Nombre del Curso</th>
                     <th scope="col">Instructor</th>
                     <th scope="col">Fecha Impartir</th>
