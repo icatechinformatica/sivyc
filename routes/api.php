@@ -39,4 +39,6 @@ Route::group(['middleware' => ['cors']], function(){
     Route::post('updateUnidades/{id}', 'ApiController\UnidadController@update');
     Route::post('alumno-inscrito/{id}', 'ApiController\AlumnoController@update_alumno');
     Route::apiResource('alumno-inscrito', 'ApiController\AlumnoRegistradoController');
+    Route::apiResource('inscripcion', 'ApiController\InscripcionController');
+    Route::post('inscripcion/{id}', 'ApiController\InscripcionController@update');
 });
