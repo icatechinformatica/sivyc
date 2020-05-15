@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//Ruta Instructor
+Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
+Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');
+Route::post('/instructor/rechazo','webController\InstructorController@rechazo_save')->name('instructor-rechazo');
+Route::post('/instructor/validado','webController\InstructorController@validado_save')->name('instructor-validado');
+Route::post('/instructor/guardar-mod','webController\InstructorController@guardar_mod')->name('instructor-guardarmod');
+Route::post('/instructor/saveins','webController\InstructorController@save_ins')->name('saveins');
 
 Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
 Route::get('/alumno/registro/pdf', 'webController\AlumnoController@pdf_registro')->name('pdf-alumno');

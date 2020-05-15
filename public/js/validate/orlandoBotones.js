@@ -79,13 +79,25 @@ $(function(){
                 $('#cursos_impartidos').prop("disabled",false)
                 $('#capacitado_icatech').prop("disabled",false)
                 $('#cursos_recicatech').prop("disabled",false)
-                $('#cv').prop("disabled",false)
                 $('#tipo_honorario').prop("disabled",false)
                 $('#registro_agente').prop("disabled",false)
                 $('#uncap_validacion').prop("disabled",false)
                 $('#memo_validacion').prop("disabled",false)
                 $('#memo_mod').prop("disabled",false)
                 $('#observacion').prop("disabled",false)
+                $('#unidad_registra').prop("disabled",false)
+                $('#honorario').prop("disabled",false)
+                $('#arch_ine').prop("disabled",false)
+                $('#arch_domicilio').prop("disabled",false)
+                $('#arch_curp').prop("disabled",false)
+                $('#arch_alta').prop("disabled",false)
+                $('#arch_banco').prop("disabled",false)
+                $('#arch_foto').prop("disabled",false)
+                $('#arch_estudio').prop("disabled",false)
+                $('#arch_id').prop("disabled",false)
+                $('#entidad').prop("disabled",false)
+                $('#municipio').prop("disabled",false)
+                $('#asentamiento').prop("disabled",false)
             }
         });
     });
@@ -183,7 +195,7 @@ $(function(){
         });
     });
 
-    //boton Contrato rechazar
+    //boton Contrato Rechazar
     $("#rechazarContrato").click(function(e){
         e.preventDefault();
         $.ajax({
@@ -199,6 +211,31 @@ $(function(){
         var button = $(event.relatedTarget);
         var id = button.data('id');
         $('#validarForm').attr("action", "/contrato/valcontrato/" + id);
+    });
+
+    //Boton Instructor Rechazar
+    $("#instructor_rechazar").click(function(e){
+        e.preventDefault();
+        $.ajax({
+            success: function(){
+                $('#divrechazarins').prop("class", "form-row")
+                $('#divconf_rechazarins').prop("class", "form-row")
+            }
+        });
+    });
+
+    //Boton Instructor Validar
+    $("#instructor_validar").click(function(e){
+        e.preventDefault();
+        $.ajax({
+            success: function(){
+                $('#div1').prop("class", "form-row")
+                $('#div2').prop("class", "form-row")
+                $('#div3').prop("class", "form-row")
+                $('#div4').prop("class", "form-row")
+                $('#confvali').prop("class", "form-row")
+            }
+        });
     });
 
     //autocomplete
@@ -299,31 +336,6 @@ $(function(){
             return false;
         }
     });
-
-    // $( "#destino" ).autocomplete({
-    //     source: function( request, response ) {
-    //         console.log(request);
-    //         // Fetch data
-    //         $.ajax({
-    //         url:"/directorio/getdirectorio",
-    //         type: 'get',
-    //         dataType: "json",
-    //         data: {
-    //             search: request.term
-    //         },
-    //         success: function( data ) {
-    //             response( data );
-    //         }
-    //         });
-    //     },
-    //     select: function (event, ui) {
-    //         // Set selection
-    //         $('#destino').val(ui.item.label); // display the selected text
-    //         $('#destino_puesto').val(ui.item.charge);
-    //         $('#id_destino').val(ui.item.value); // save selected id to input
-    //         return false;
-    //     }
-    // });
 
     $('#destino').autocomplete({
         source: function(request, response) {
@@ -588,4 +600,6 @@ $(function(){
             return false;
         }
     });
+
+
 });
