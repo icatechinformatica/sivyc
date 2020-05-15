@@ -4,7 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Models\api\Inscripcion;
+use App\Models\api\Inscripcion;
 
 class InscripcionController extends Controller
 {
