@@ -35,18 +35,22 @@
             <caption>Catalogo de Cursos</caption>
             <thead>
                 <tr>
-                    <th scope="col">Validación</th>
-                    <th scope="col">Nombre del Curso</th>
-                    <th scope="col">Horas</th>
+                    <th scope="col">Especialidad</th>
+                    <th scope="col">Curso</th>
+                    <th scope="col">Duración</th>
+                    <th scope="col">Modalidad</th>
+                    <th scope="col">Clasificación</th>
                     <th scope="col">Costo</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->memo_validacion}}</th>
+                    <th scope="row">{{$itemData->especialidad}}</th>
                         <td>{{$itemData->nombre_curso}}</td>
-                        <td>{{$itemData->horas}}</td>
+                        <td>{{$itemData->duracion}}</td>
+                        <td>{{$itemData->modalidad}}</td>
+                        <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
                     </tr>
                 @endforeach
