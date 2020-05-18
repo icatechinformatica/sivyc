@@ -1,34 +1,30 @@
 <!-- Creado por Orlando Chávez -->
 @extends('theme.sivyc.layout')
-@section('title', 'Registro de Curso Validado para Impartir| Sivyc Icatech')
+@section('title', 'Registro de Especialidad Validada para Impartir| Sivyc Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
                 <div class="text-center">
-                    <h1>Añadir Curso Validado para Impartir</h1>
+                    <h1>Añadir Especialidad Validada para Impartir</h1>
                 </div>
                 <br>
                 <table  id="table-instructor" class="table table-bordered">
-                    <caption>Catalogo de Instructrores</caption>
+                    <caption>Catalogo de Especialidades</caption>
                     <thead>
                         <tr>
-                            <th scope="col">ID de Curso</th>
+                            <th scope="col">Clave</th>
                             <th scope="col">Nombre</th>
-                            <th scope="col">Clasificacion</th>
-                            <th scope="col">Especialidad</th>
+                            <th scope="col">Campo de Formacion</th>
                             <th width="85px">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data_curso as $itemData)
+                        @foreach ($data_especialidad as $itemData)
                             <tr>
-                            <th scope="row">{{$itemData->id}}</th>
-                                <td>{{$itemData->nombre_curso}}</td>
-                                <td>{{$itemData->clasificacion}}</td>
-                                <td>{{$itemData->especialidad}}</td>
+                            <th scope="row">{{$itemData->clave}}</th>
+                                <td>{{$itemData->nombre}}</td>
+                                <td>{{$itemData->campo_formacion}}</td>
                                 <td>
-                                    {{ Form::open(['route' => ['cursoimpartir-guardar', $itemData->id, $idInstructor],'style'=>'display:inline']) }}
-                                    {{ Form::submit('Agregar', ['class' => 'btn btn-success']) }}
-                                    {{ Form::close() }}
+                                    <a class="btn btn-success" href="{{route('cursoimpartir-form',['id' => $itemData->id, 'idins' => $idins])}}">Agregar</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -45,7 +41,7 @@
                     </div>
                 </div>
                 <br>
-                <input type="hidden" name="idInstructor" id="idInstructor" value="{{ $idInstructor }}">
+                <input type="hidden" name="idInstructor" id="idInstructor" value="{{ $idins }}">
     </section>
 @stop
 

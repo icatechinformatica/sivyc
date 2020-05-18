@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 use App\Models\InstructorPerfil;
 use App\Models\tbl_unidades;
+use App\Models\especialidad;
 use App\Models\estado_civil;
+use App\Models\especialidad_instructor;
+use App\Models\criterio_pago;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -234,13 +237,16 @@ class InstructorController extends Controller
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
-       // $cursvali = $curso_validado->SELECT('curso_validado.clave_curso AS clavecurso', 'cursos.nombre_curso AS nombre', 'cursos.id AS id_c')
-                  //  ->WHERE('curso_validado.numero_control', '=', $id)
-                    //->LEFTJOIN('cursos', 'cursos.id', '=', 'curso_validado.id_curso')
-                    //->GET();
-        //$curso = $det_curso->WHERE('id','=', $cursvali->id_curso)->GET;
 
-        return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil'));
+        $validado = InstructorPerfil::SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
+                        'especialidad_instructores.zona','especialidad_instructores.observacion')
+                        ->WHERE('numero_control', '=', $id)
+                        ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
+                        ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+                        ->LEFTJOIN('criterio_pago','criterio_pago.id','=','especialidad_instructores.pago_id')
+                        ->GET();
+
+        return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado'));
     }
 
     public function save_ins(Request $request)
@@ -345,50 +351,65 @@ class InstructorController extends Controller
 
     public function perfilinstructor_save(Request $request)
     {
-        dd("paso");
         $perfilInstructor = new InstructorPerfil();
         #proceso de guardado
+        $perfilInstructor->grado_profesional = trim($request->grado_prof); //
         $perfilInstructor->area_carrera = trim($request->area_carrera); //
-        $perfilInstructor->especialidad = trim($request->especialidad); //
-        $perfilInstructor->clave_especialidad = trim($request->clave_especialidad); //
-        $perfilInstructor->nivel_estudios_cubre_especialidad = trim($request->grado_estudio); //
-        $perfilInstructor->perfil_profesional = trim($request->perfil_profesional); //
-        $perfilInstructor->carrera = trim($request->nombre_carrera); //
         $perfilInstructor->estatus = trim($request->estatus); //
         $perfilInstructor->pais_institucion = trim($request->institucion_pais); //
         $perfilInstructor->entidad_institucion = trim($request->institucion_entidad); //
+        $perfilInstructor->ciudad_institucion = trim($request->institucion_ciudad);
+        $perfilInstructor->nombre_institucion = trim($request->institucion_nombre);
         $perfilInstructor->fecha_expedicion_documento = trim($request->fecha_documento); //
         $perfilInstructor->folio_documento = trim($request->folio_documento); //
-        $perfilInstructor->numero_control = trim($request->idInstructor); //
+        $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
+        $perfilInstructor->estandar_conocer = trim($request->conocer);
+        $perfilInstructor->registro_stps = trim($request->stps);
+        $perfilInstructor->capacitador_icatech = trim($request->capacitador_icatech);
+        $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
+        $perfilInstructor->cursos_impartidos = trim($request->cursos_impartidos);
+        $perfilInstructor->experiencia_laboral = trim($request->exp_lab);
+        $perfilInstructor->experiencia_docente = trim($request->exp_doc);
+        $perfilInstructor->numero_control = trim($request->idInstructor);
         $perfilInstructor->save(); // guardar registro
 
-        return redirect()->route('instructor-inicio', ['id' => $request->idInstructor])
+        return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Perfil profesional agregado');
 
     }
 
     public function add_cursoimpartir($id)
     {
-        $curso = new Curso();
-        $idInstructor = $id;
-        $data_curso = $curso::where('id', '!=', '0')->latest()->get();
-        return view('layouts.pages.frmcursoimpartir', compact('data_curso','idInstructor'));
+        $idins = $id;
+        $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
+        return view('layouts.pages.frmcursoimpartir', compact('data_especialidad','idins'));
     }
 
-    public function cursoimpartir_save(Request $request)
+    public function cursoimpartir_form($id, $idins)
     {
-        $curso_validado = new cursoValidado();
+        $perfil = instructorPerfil::SELECT('id','grado_profesional')->WHERE('numero_control', '=', $idins)->GET();
+        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
+        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data'));
+    }
 
-        $curso_validado->id_curso = $request->id;
-        $curso_validado->numero_control = $request->idInstructor;
-        $curso_validado->clave_curso = "null";
-        $curso_validado->save();
+    public function espec_val_save(Request $request)
+    {
+        $espec_save = new especialidad_instructor;
+        $espec_save->especialidad_id = $request->idespec;
+        $espec_save->perfilprof_id = $request->valido_perfil;
+        $espec_save->pago_id = $request->criterio_pago;
+        $espec_save->zona = $request->zona;
+        $espec_save->validado_impartir = $request->impartir;
+        $espec_save->unidad_solicita = $request->unidad_validacion;
+        $espec_save->memorandum_validacion = $request->memorandum;
+        $espec_save->fecha_validacion = $request->fecha_validacion;
+        $espec_save->memorandum_modificacion = $request->memorandum_modificacion;
+        $espec_save->observacion = $request->observaciones;
+        $espec_save->save();
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
-                        ->with('success','Perfil profesional agregado');
-
-        #Proceso de Guardado
-        #$curso_validado->clave_curso = trim($request->)
+                        ->with('success','Especialidad Para Impartir Agregada');
     }
 
     /**

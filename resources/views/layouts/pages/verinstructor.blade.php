@@ -194,24 +194,21 @@
                     <table class="table table-bordered" id="table-perfprof">
                         <thead>
                             <tr>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Especialidad</th>
-                                <th scope="col">Clave Especialidad</th>
-                                <th scope="col">Nivel de Estudios</th>
+                                <th scope="col">Grado Profesional</th>
+                                <th scope="col">Area de la Carrera</th>
+                                <th scope="col">Estatus</th>
+                                <th scope="col">Nombre de Institucion</th>
                                 <th width="85px">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($perfil as $item)
                                 <tr>
-                                    <th scope="row">{{$item->carrera}}</th>
-                                    <td>{{ $item->especialidad }}</td>
-                                    <td>{{ $item->clave_especialidad }}</td>
-                                    <td>{{ $item->nivel_estudios_cubre_especialidad }}</td>
+                                    <th scope="row">{{$item->grado_profesional}}</th>
+                                    <td>{{ $item->area_carrera }}</td>
+                                    <td>{{ $item->estatus }}</td>
+                                    <td>{{ $item->nombre_institucion }}</td>
                                     <td>
-                                        {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                                        {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                                        {!! Form::close() !!}
                                     </td>
                                 </tr>
                             @endforeach
@@ -235,8 +232,34 @@
                 </div>
                 <br>
                 <label><h4>Cursos Validados para Impartir</h4></label>
+                @if (count($validado) > 0)
+                <table class="table table-bordered" id="table-perfprof">
+                    <thead>
+                        <tr>
+                            <th scope="col">Especialidad</th>
+                            <th scope="col">Criterio de Pago</th>
+                            <th scope="col">Zona</th>
+                            <th scope="col">Obsevaciones</th>
+                            <th width="85px">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($validado as $item)
+                            <tr>
+                                <th scope="row">{{$item->nombre}}</th>
+                                <td>{{ $item->perfil_profesional }}</td>
+                                <td>{{ $item->zona }}</td>
+                                <td>{{ $item->observaciones }}</td>
+                                <td>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
                 <div class="alert alert-warning">
                     <strong>Info!</strong> No hay Registros
+            @endif
                 </div>
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
