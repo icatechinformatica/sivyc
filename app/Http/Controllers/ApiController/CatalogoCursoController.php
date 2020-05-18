@@ -40,6 +40,34 @@ class CatalogoCursoController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            //code...
+            $catalogo = new CatalogoCurso();
+            $catalogo->especialidad = $request->especialidad;
+            $catalogo->nombre_curso = $request->nombre_curso;
+            $catalogo->modalidad = $request->modalidad;
+            $catalogo->horas = $request->horas;
+            $catalogo->clasificacion = $request->clasificacion;
+            $catalogo->costo = $request->costo;
+            $catalogo->duracion = $request->duracion;
+            $catalogo->objetivo = $request->objetivo;
+            $catalogo->perfil = $request->perfil;
+            $catalogo->solicitud_autorizacion = $request->solicitud_autorizacion;
+            $catalogo->fecha_validacion = $request->fecha_validacion;
+            $catalogo->memo_validacion = $request->memo_validacion;
+            $catalogo->memo_actualizacion = $request->memo_actualizacion;
+            $catalogo->fecha_actualizacion = $request->fecha_actualizacion;
+            $catalogo->unidad_amovil = $request->unidad_amovil;
+            $catalogo->descripcion = $request->descripcion;
+            $catalogo->no_convenio = $request->no_convenio;
+            $catalogo->id_especialidad = $request->id_especialidad;
+            $catalogo->save();
+
+            return response()->json(['success' => 'El Catalogo de Cursos se cargo exitosamente!'], 200);
+        } catch (Exception $th) {
+            //throw $th;
+            return response()->json(['error' => $th->getMessage()], 501);
+        }
     }
 
     /**
