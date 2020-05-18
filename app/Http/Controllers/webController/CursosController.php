@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\curso;
-
+use App\Models\especialidad;
 class CursosController extends Controller
 {
     /**
@@ -20,7 +20,11 @@ class CursosController extends Controller
      */
     public function index()
     {
-        $data = curso::WHERE('id', '!=', '0')->GET();
+        $data = curso::SELECT('cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.horas', 'cursos.clasificacion', 'cursos.costo',
+        'cursos.duracion', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
+        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion', 'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre')
+        ->WHERE('cursos.id', '!=', '0')
+        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')->GET();
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
 
@@ -31,8 +35,10 @@ class CursosController extends Controller
      */
     public function create()
     {
+        $especialidad = new especialidad();
+        $especialidades = $especialidad->all();
         // mostramos el formulario de cursos
-        return view('layouts.pages.frmcursos');
+        return view('layouts.pages.frmcursos', compact('especialidades'));
     }
 
     /**

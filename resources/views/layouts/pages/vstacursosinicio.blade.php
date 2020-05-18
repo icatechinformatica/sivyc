@@ -28,6 +28,9 @@
                     <h2>Catalogo de Cursos</h2>
                 </div>
                 <br>
+                <div class="pull-right">
+                    <a class="btn btn-success btn-lg" href="{{route('frm-cursos')}}"> Nuevo</a>
+                </div>
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -41,17 +44,23 @@
                     <th scope="col">Modalidad</th>
                     <th scope="col">Clasificación</th>
                     <th scope="col">Costo</th>
+                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->especialidad}}</th>
+                    <th scope="row">{{$itemData->nombre}}</th>
                         <td>{{$itemData->nombre_curso}}</td>
                         <td>{{$itemData->duracion}}</td>
                         <td>{{$itemData->modalidad}}</td>
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
+                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

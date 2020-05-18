@@ -20,4 +20,9 @@ class Curso extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    public function calificacion()
+    {
+        return $this->hasMany(Calificacion::class, 'idcurso');
+    }
+
 }

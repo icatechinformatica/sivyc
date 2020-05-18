@@ -11,7 +11,7 @@ class especialidad extends Model
     protected $table = 'especialidades';
 
     protected $fillable = [
-        'id','clave','nombre','campo_formacion'
+        'id','clave','nombre','campo_formacion', 'id_areas'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

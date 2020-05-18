@@ -4,7 +4,8 @@
 <!--seccion-->
 @section('content')
 <div class="container g-pt-50">
-    <form method="POST">
+    <form method="POST" action="{{ route('cursos.gurdar') }}" method="post" id="registercv" enctype="multipart/form-data">
+        @csrf
         <div style="text-align: right;width:65%">
             <label for="tituloformulariocurso"><h1>Formulario de Cursos</h1></label>
          </div>
@@ -13,7 +14,12 @@
           <!-- Unidad -->
           <div class="form-group col-md-6">
             <label for="especialidad" class="control-label">Especialidad</label>
-            <input type="text" class="form-control" id="especialidad" name="especialidad" placeholder="especialidad">
+            <select class="form-control" id="especialidad" name="especialidad">
+                <option value="">--SELECCIONAR--</option>
+            @foreach ($especialidades as $item)
+                <option value="{{$item->id}}">{{$item->nombre}}</option>
+            @endforeach
+            </select>
           </div>
           <!--Unidad Fin-->
           <!-- nombre curso -->
@@ -27,20 +33,19 @@
             <div class="form-group col-md-6">
                 <label for="modalidad  " class="control-label">Modalidad</label>
                 <select class="form-control" id="modalidad">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                  <option value="">--SELECCIONAR--</option>
+                  <option value="CAE">CAE</option>
+                  <option value="EXT">EXT</option>
                 </select>
             </div>
             <!--clasificacion-->
             <div class="form-group col-md-6">
                 <label for="clasificacion  " class="control-label">Clasificación</label>
                 <select class="form-control" id="clasificacion">
-                  <option>A-Basico</option>
-                  <option>B-intermedio</option>
-                  <option>C-avanzado</option>
+                    <option value="">--SELECCIONAR--</option>
+                    <option value="A-BASICO">A-BASICO</option>
+                    <option value="B-INTERMEDIO">B-INTERMEDIO</option>
+                    <option value="C-AVANZADO">C-AVANZADO</option>
                 </select>
             </div>
             <!--clasificacion END-->
@@ -121,7 +126,16 @@
                 <input type="date" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion">
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Enviar</button>
+        <div class="row">
+            <div class="col-lg-12 margin-tb">
+                <div class="pull-left">
+                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                </div>
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                </div>
+            </div>
+        </div>
     </form>
     <br>
 </div>

@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');
     Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos');
     Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos');
+    Route::post('cursos/guardar', 'webController\CursosController@store')->name('cursos.gurdar');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
     // alumnos
