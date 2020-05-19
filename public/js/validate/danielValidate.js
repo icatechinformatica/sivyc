@@ -13,6 +13,12 @@ $(function(){
         format: 'dd-mm-yy'
     });
 
+    $("#fecha_validacion").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        format: 'dd-mm-yy'
+    });
+
     $('input[type=text]').val(function () {
         return this.value.toUpperCase();
     })
@@ -331,6 +337,7 @@ $(function(){
         return this.value.toUpperCase();
     })
 
+
     // escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar los cursos de esa especialidad
     $('#especialidad_sid').on("change", () => {
 
@@ -421,5 +428,21 @@ $(function(){
                 }
             }
         });
+    });
+
+    /**
+     * Modificacion de cursos, validación
+     */
+    $('#frmcursoscatalogo').validate({
+        rules: {
+            especialidad: {
+                required: true
+            }
+        },
+        messages: {
+            especialidad: {
+                required: "Por favor, Seleccione la especialidad"
+            }
+        }
     });
 });

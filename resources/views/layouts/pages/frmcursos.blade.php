@@ -4,7 +4,16 @@
 <!--seccion-->
 @section('content')
 <div class="container g-pt-50">
-    <form method="POST" action="{{ route('cursos.gurdar') }}" method="post" id="registercv" enctype="multipart/form-data">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div><br />
+    @endif
+    <form method="POST" action="{{ url('cursos/guardars') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
         <div style="text-align: right;width:65%">
             <label for="tituloformulariocurso"><h1>Formulario de Cursos</h1></label>
