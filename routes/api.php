@@ -21,7 +21,7 @@ Route::group(['middleware' => ['cors']], function(){
 	Route::apiResource('cursos', 'ApiController\CursosController');
     Route::apiResource('Instructores', 'ApiController\InstructoresController');
     Route::get('Instructoreshow/{nombre}/{apaterno}/{apmaterno}', 'ApiController\InstructoresController@show');
-    Route::apiResource('catalogo-cursos', 'ApiController\CatalogoCursoController');
+    Route::resource('catalogo-cursos', 'ApiController\CatalogoCursoController');
     Route::apiResource('areas', 'ApiController\AreaController');
     Route::apiResource('especialidades', 'ApiController\EspecialidadController');
     Route::apiResource('municipios', 'ApiController\MunicipioController');
@@ -42,5 +42,5 @@ Route::group(['middleware' => ['cors']], function(){
     Route::post('inscripcion/{id}', 'ApiController\InscripcionController@update');
     Route::apiResource('calificacion', 'ApiController\CalificacionController');
     Route::post('calificacion/{id}', 'ApiController\CalificacionController@update');
-    Route::post('updateCatalogoCurso/{id}', 'ApiController\CatalogoCursoController@update');
+    //Route::post('updateCatalogoCurso/{id}', 'ApiController\CatalogoCursoController@update');
 });

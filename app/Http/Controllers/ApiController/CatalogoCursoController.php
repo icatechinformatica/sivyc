@@ -101,7 +101,7 @@ class CatalogoCursoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return response()->json(['success' => 'listo'], 200);
+        //return response()->json(['success' => 'listo'], 200);
         // actualizar
         try {
             //code...
