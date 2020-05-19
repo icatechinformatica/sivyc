@@ -8,20 +8,26 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
+        <div class="text-center">
+            <h1>Ver Instructor<h1>
+        </div>
+        <h2>Vista de Documentos</h2>
+        <div class="form-row">
+                <a class="btn btn-danger" href={{$datains->archivo_ine}} target="_blank">Solicitud de Pago</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_curp}} target="_blank">CURP</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_alta}} target="_blank">Alta de Instructor</a><br>
+        </div>
+        <div class="form-row">
+            <a class="btn btn-danger" href={{$datains->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_fotografia}} target="_blank">Fotografía</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_estudios}} target="_blank">Estudios</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_otraid}} target="_blank">Otra Identificación</a><br>
+        </div>
         <form id="registerinstructor"  method="POST" action="{{ route('saveins') }}" enctype="multipart/form-data">
             @csrf
-                <div class="text-center">
-                    <h1>Ver Instructor<h1>
-                </div>
                 <br>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label><h2>Datos Personales</h2></label>
-                    </div>
-                    <div class="fomr-group col-md-9" style="text-align: right;width:100%">
-                        <button type="button" id="mod_instructor" class="btn btn-warning btn-lg">Modificar Campos</button>
-                    </div>
-                </div>
+                <label><h2>Datos Personales</h2></label>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre">Nombre</label>
