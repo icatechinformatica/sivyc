@@ -27,7 +27,6 @@ Route::group(['middleware' => ['cors']], function(){
     Route::apiResource('municipios', 'ApiController\MunicipioController');
     Route::post('updateCursos/{id}', 'ApiController\CursosController@update');
     Route::post('updateInstructores/{id}', 'ApiController\InstructoresController@update');
-    Route::post('updateCatalogoCurso/{id}', 'ApiController\CatalogoCursoController@update');
     Route::post('updateAreas/{id}', 'ApiController\AreaController@update');
     Route::post('updateEspecialidades/{id}', 'ApiController\EspecialidadController@update');
     Route::post('updateMunicipios/{id}', 'ApiController\MunicipioController@update');
@@ -43,4 +42,7 @@ Route::group(['middleware' => ['cors']], function(){
     Route::post('inscripcion/{id}', 'ApiController\InscripcionController@update');
     Route::apiResource('calificacion', 'ApiController\CalificacionController');
     Route::post('calificacion/{id}', 'ApiController\CalificacionController@update');
+
+    Route::put('updateCatalogoCurso/{id}', 'ApiController\CatalogoCursoController@update');
+
 });
