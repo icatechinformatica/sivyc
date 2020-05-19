@@ -10,9 +10,10 @@ class InstructorPerfil extends Model
     protected $table = 'instructor_perfil';
 
     protected $fillable = [
-        'id', 'especialidad', 'clave_especialidad', 'validado_unicamente_impartir', 'perfil_profesional', 'area_carrera', 'carrera',
-        'estatus', 'pais_institucion', 'entidad_institucion', 'fecha_expedicion_documento', 'folio_documento', 'numero_control', 'tipo_honorario',
-        'registro_agente_capacitador_externo', 'unidad_capacitacion_solicita_validacion', 'memorandum_validacion', 'fecha_validacion', 'modificacion_memo'
+        'id','grado_profesional','area_carrera','estatus','pais_institucion','entidad_institucion',
+        'ciudad_institucion','nombre_institucion','fecha_expedicion_documento','folio_documento','cursos_recibidos',
+        'estandar_conocer','registro_stps','capacitador_icatech','cursos_recibidos','cursos_impartidos','experiencia_laboral',
+        'experiencia_docente','numero_control',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

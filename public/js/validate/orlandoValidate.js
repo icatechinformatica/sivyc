@@ -228,6 +228,132 @@ $(function(){
         }
     });
 
+        //Valida perfil_profesional
+    $('#registerperf_prof').validate({
+        rules: {
+            grado_prof:{
+                required: true,
+            },
+            area_carrera:{
+                required: true,
+            },
+            estatus:{
+                required: true,
+                valueNotEquals: "default"
+            },
+            institucion_pais:{
+                required: true,
+            },
+            institucion_entidad:{
+                required: true,
+            },
+            institucion_ciudad:{
+                required: true,
+            },
+            institucion_nombre:{
+                required: true,
+            },
+            fecha_documento:{
+                required: true,
+                date: true
+            },
+            folio_documento:{
+                required: true,
+            },
+            cursos_recibidos:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
+            conocer:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
+            stps:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
+            capacitador_icatech:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
+            cursos_icatech:{
+                required: true,
+                valueNotEquals: "default"
+            },
+            cursos_impartidos:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
+            exp_lab:{
+                required: true,
+            },
+            exp_doc:{
+                required: true,
+            }
+        },
+        messages: {
+            grado_prof:{
+                required: "Por favor Ingrese el Grado Profesional"
+            },
+            area_carrera:{
+                required: "Por favor Ingrese el Area de la Carrera"
+            },
+            estatus:{
+                required: "Por favor Ingrese el Estatus",
+                valueNotEquals: "Por favor Ingrese el Estatus"
+            },
+            institucion_pais:{
+                required: "Por favor Ingrese el Pais"
+            },
+            institucion_entidad:{
+                required: "Por favor Ingrese la Entidad"
+            },
+            institucion_ciudad:{
+                required: "Por favor Ingrese la Ciudad"
+            },
+            institucion_nombre:{
+                required: "Por favor Ingrese el Nombre de la institucion"
+            },
+            fecha_documento:{
+                required: "Por favor Ingrese la Fecha",
+                date: "Por favor Ingrese la Fecha"
+            },
+            folio_documento:{
+                required: "Por favor Ingrese el Folio"
+            },
+            cursos_recibidos:{
+                required: "Por favor Ingrese una respuesta",
+                valueNotEquals: "Por favor Ingrese una respuesta"
+            },
+            conocer:{
+                required: "Por favor Ingrese una respuesta",
+                valueNotEquals: "Por favor Ingrese una respuesta"
+            },
+            stps:{
+                required: "Por favor Ingrese una respuesta",
+                valueNotEquals: "Por favor Ingrese una respuesta"
+            },
+            capacitador_icatech:{
+                required: "Por favor Ingrese una respuesta",
+                valueNotEquals: "Por favor Ingrese una respuesta"
+            },
+            cursos_icatech:{
+                required: "Por favor Ingrese una respuesta",
+                valueNotEquals: "Por favor Ingrese una respuesta"
+            },
+            cursos_impartidos:{
+                required: "Por favor Ingrese una respuesta",
+                valueNotEquals: "Por favor Ingrese una respuesta"
+            },
+            exp_lab:{
+                required: "Por favor Ingrese Experiencia Laboral"
+            },
+            exp_doc:{
+                required: "Por favor Ingrese Experiencia Docente"
+            }
+        }
+    });
+
     //Valida Pago
     $('#registerpago').validate({
         rules: {

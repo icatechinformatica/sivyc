@@ -15,6 +15,14 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//Ruta Instructor
+Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
+Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');
+Route::post('/instructor/rechazo','webController\InstructorController@rechazo_save')->name('instructor-rechazo');
+Route::post('/instructor/validado','webController\InstructorController@validado_save')->name('instructor-validado');
+Route::post('/instructor/guardar-mod','webController\InstructorController@guardar_mod')->name('instructor-guardarmod');
+Route::post('/instructor/saveins','webController\InstructorController@save_ins')->name('saveins');
+Route::post('/instructor/espec-ins/guardar','webController\InstructorController@espec_val_save')->name('especinstructor-guardar');
 
 Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
 Route::get('/alumno/registro/pdf', 'webController\AlumnoController@pdf_registro')->name('pdf-alumno');
@@ -113,7 +121,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructor/add/perfil-profesional/{id}', 'webController\InstructorController@add_perfil')->name('instructor-perfil');
     Route::get('/instructor/add/curso-impartir/{id}','webController\InstructorController@add_cursoimpartir')->name('instructor-curso');
     Route::post('/perfilinstructor/guardar', 'webController\InstructorController@perfilinstructor_save')->name('perfilinstructor-guardar');
-    Route::post('/instructor/curso-impartir/guardar/{id}{idInstructor}', 'webController\InstructorController@cursoimpartir_save')->name('cursoimpartir-guardar');
+    Route::get('/instructor/curso-impartir/form/{id}{idins}', 'webController\InstructorController@cursoimpartir_form')->name('cursoimpartir-form');
     Route::get('/instructor/crear-institucional/{id}', 'webController\InstructorController@institucional')->name('instructor-institucional-crear');
     Route::post('/instructor/institucional/guardar', 'webController\InstructorController@institucional_save')->name('instructor-institucional-save');
 

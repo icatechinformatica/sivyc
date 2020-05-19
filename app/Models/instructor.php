@@ -12,7 +12,7 @@ class instructor extends Model
 
     protected $fillable = ['id','numero_control','nombre','apellidoPaterno','apellidoMaterno','tipo_honorario',
     'rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio','asentamiento','domicilio','telefono',
-    'correo','banco','no_cuenta','interbancaria','folio_ine','archivo_ine','archivo_domicilio','archivo_curp',
+    'correo','banco','no_cuenta','interbancaria','folio_ine','status','rechazo','clave_unidad','archivo_ine','archivo_domicilio','archivo_curp',
     'archivo_alta','archivo_bancario','archivo_fotografia','archivo_estudios','archivo_otraid','id_especialidad'];
 
     protected $hidden = ['created_at', 'updated_at'];

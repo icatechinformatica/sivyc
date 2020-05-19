@@ -41,7 +41,7 @@
                     <th scope="col">Clave Instructor</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">telefono</th>
-                    <th scope="col">Correo</th>
+                    <th scope="col">Status</th>
                     <th width="160px">Acciones</th>
                 </tr>
             </thead>
@@ -49,14 +49,19 @@
                 @foreach ($data as $itemData)
                     <tr>
                     <th scope="row">{{$itemData->numero_control}}</th>
-                        <td>{{$itemData->nombre}}</td>
+                        <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
                         <td>{{$itemData->telefono}}</td>
-                        <td>{{$itemData->correo}}</td>
+                        <td>{{$itemData->status}}</td>
                         <td>
-                            <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
-                            //{!! Form::open(['method' => 'DELETE','style'=>'display:inline']) !!}
-                            //{!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                            //{!! Form::close() !!}
+                            @if ($itemData->status == 'En Proceso')
+                                <a class="btn btn-info" href="{{route('instructor-validar', ['id' => $itemData->id])}}">Validar</a>
+                            @endif
+                            @if ($itemData->status == 'Rechazado')
+                            <a class="btn btn-info" href="{{route('instructor-editar', ['id' => $itemData->id])}}">Editar</a>
+                            @endif
+                            @if ($itemData->status == 'Aprobado')
+                                <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

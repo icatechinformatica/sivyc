@@ -8,7 +8,7 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
-        <form id="registerinstructor">
+        <form id="registerinstructor"  method="POST" action="{{ route('saveins') }}" enctype="multipart/form-data">
             @csrf
                 <div class="text-center">
                     <h1>Ver Instructor<h1>
@@ -24,109 +24,191 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label for="inputnombre">Nombre Completo</label>
-                        <input name='nombre' id='nombre' value="{{ $getinstructor->nombre }}" type="text" disabled class="form-control" aria-required="true">
+                        <label for="inputnombre">Nombre</label>
+                        <input name='nombre' id='nombre' value="{{ $datains->nombre }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="id" id="id" value="{{ $datains->id }}" hidden>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputapellido_paterno">Apellido Paterno</label>
+                        <input name='apellido_paterno' id='apellido_paterno' value="{{ $datains->apellidoPaterno }}" type="text" class="form-control" aria-required="true" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputapellido_materno">Apellido Materno</label>
+                        <input name='apellido_materno' id='apellido_materno' value="{{ $datains->apellidoMaterno}}" type="text" class="form-control" aria-required="true" disabled>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputcurp">CURP</label>
-                        <input name='curp' id='curp' value="{{ $getinstructor->curp}}" type="text" disabled class="form-control" disabled aria-required="true">
+                        <input name='curp' id='curp' value="{{ $datains->curp}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputrfc">RFC</label>
-                        <input name='rfc' id='rfc' value="{{ $getinstructor->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
+                        <input name='rfc' id='rfc' value="{{ $datains->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputfolio_ine">Folio de INE</label>
-                        <input name='folio_ine' id='folio_ine' value="{{ $getinstructor->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
+                        <input name='folio_ine' id='folio_ine' value="{{ $datains->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputsexo">Sexo</label>
-                            <select disabled class="form-control" id="sexo">
-                                <option value="{{ $getinstructor->sexo }}">{{$getinstructor->sexo}}</option>
-                            </select>
+                        <select class="form-control" name="sexo" id="sexo" disabled>
+                            @if ($datains->sexo == 'MASCULINO')
+                                <option selected value="MASCULINO">Masculino</option>
+                                <option value="FEMENINO">Femenino</option>
+                            @else
+                                <option value="MASCULINO">Masculino</option>
+                                <option selected value="FEMENINO">Femenino</option>
+                            @endif
+                        </select>
                     </div>
                     <div class="form-gorup col-md-4">
                         <label for="inputestado_civil">Estado Civil</label>
-                            <select disabled class="form-control" id="estado_civil" name="estado_civil">
-                                <option value="{{ $getinstructor->estado_civil }}">{{ $getinstructor->estado_civil }}</option>
-                            </select>
+                        <select class="form-control" name="estado_civil" id="estado_civil" disabled>
+                            <option selected value="{{$estado_civil->nombre}}">{{$estado_civil->nombre}}</option>
+                            @foreach ($lista_civil as $item)
+                                <option value="{{$item->nombre}}">{{$item->nombre}}</option>
+                            @endforeach
+                        </select>
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                        <input name='fecha_nacimiento' id='fecha_nacimiento' value="{{ $getinstructor->fecha_nacimiento }}" type="date" disabled class="form-control" aria-required="true">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputlugar_nacimiento">Lugar de Nacimiento</label>
-                        <input name='lugar_nacimiento' id='lugar_nacimiento' value="{{ $getinstructor->asentamiento }}" type="text" disabled class="form-control" aria-required="true">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputlugar_residencia">Lugar de Residencia</label>
-                        <input name='lugar_residencia' id='lugar_residencia' value="{{ $getinstructor->entidad }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name='fecha_nacimiento' id='fecha_nacimiento' value="{{ $datains->fecha_nacimiento }}" type="date" disabled class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-10">
+                    <div class="form-group col-md-3">
+                        <label for="inputentidad">Entidad</label>
+                        <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true" disabled value="{{$datains->entidad}}">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputmunicipio">Municipio</label>
+                        <input name='municipio' id='municipio' type="text" class="form-control" disabled aria-required="true" value="{{$datains->municipio}}">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputasentamiento">Asentamiento</label>
+                        <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true" disabled value="{{$datains->asentamiento}}">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-7">
                         <label for="inputdomicilio">Direccion de Domicilio</label>
-                        <input name="domicilio" id="domicilio" value="{{ $getinstructor->domicilio }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="domicilio" id="domicilio" value="{{ $datains->domicilio }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputtelefono">Numero de Telefono Personal</label>
-                        <input name="telefono" id="telefono" value="{{ $getinstructor->telefono }}" type="tel" disabled class="form-control" aria-required="true">
+                        <input name="telefono" id="telefono" value="{{ $datains->telefono }}" type="tel" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputcorreo">Correo Electronico</label>
-                        <input name="correo" id="correo" value="{{ $getinstructor->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
+                        <input name="correo" id="correo" value="{{ $datains->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputbanco">Nombre del Banco</label>
-                        <input name="banco" id="banco" value="{{ $getinstructor->banco }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="banco" id="banco" value="{{ $datains->banco }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputclabe">Clabe Interbancaria</label>
-                        <input name="clabe" id="clabe" value="{{ $getinstructor->interbancaria }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="clabe" id="clabe" value="{{ $datains->interbancaria }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputnumero_cuenta">Numero de Cuenta</label>
-                        <input name="numero_cuenta" value="{{ $getinstructor->no_cuenta }}" id="numero_cuenta" type="text" disabled class="form-control" aria-required="true">
+                        <input name="numero_cuenta" value="{{ $datains->no_cuenta }}" id="numero_cuenta" type="text" disabled class="form-control" aria-required="true">
                     </div>
-
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_ine">Archivo INE</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled value="{{$datains->archivo_ine}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_domicilio}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_curp">Archivo CURP</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled value="{{$datains->archivo_curp}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_alta">Archivo Alta de Instructor</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled value="{{$datains->archivo_alta}}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_banco">Archivo Datos Bancarios</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled value="{{$datains->archivo_bancario}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_foto">Archivo Fotografia</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled value="{{$datains->archivo_fotografia}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_estudio">Archivo Grado de Estudios</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_estudios}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_id">Archivo Otra Identificación</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled value="{{$datains->archivo_otraid}}">
+                        </div>
+                    </div>
                 </div>
                 <hr style="border-color:dimgray">
                 <label><h2>Datos Academicos</h2></label>
                 <br>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputunidad_registra">Unidad que Registra</label>
+                        <select class="form-control" name="unidad_registra" id="unidad_registra" disabled>
+                            <option value="{{$unidad->cct}}">{{$unidad->unidad}}</option>
+                            @foreach ($lista_unidad as $value )
+                                <option value="{{$value->cct}}">{{$value->unidad}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputnumero_control">Numero de Control</label>
+                        <input id="numero_control" name="numero_control" value="{{ $datains->numero_control }}" type="text" disabled class="form-control" aria-required="true">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputhonorario">Tipo de Honorario</label>
+                        <select class="form-control" name="honorario" id="honorario" disabled>
+                            @if ($datains->tipo_honorario == 'HONORARIOS')
+                                <option selected value="HONORARIOS">Honorarios</option>
+                                <option value="ASALARIADO ASIMILADO">Asalariado Asimilado</option>
+                            @else
+                                <option value="HONORARIOS">Honorarios</option>
+                                <option selected value="ASALARIADO ASIMILADO">Asalariado Asimilado</option>
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <label><h4>Perfiles Profesionales</h4></label>
                 @if (count($perfil) > 0)
-                    <label><h4>Perfil Profesional</h4></label>
                     <table class="table table-bordered" id="table-perfprof">
                         <thead>
                             <tr>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Especialidad</th>
-                                <th scope="col">Clave Especialidad</th>
-                                <th scope="col">Nivel de Estudios</th>
+                                <th scope="col">Grado Profesional</th>
+                                <th scope="col">Area de la Carrera</th>
+                                <th scope="col">Estatus</th>
+                                <th scope="col">Nombre de Institucion</th>
                                 <th width="85px">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($perfil as $item)
                                 <tr>
-                                    <th scope="row">{{$item->carrera}}</th>
-                                    <td>{{ $item->especialidad }}</td>
-                                    <td>{{ $item->clave_especialidad }}</td>
-                                    <td>{{ $item->nivel_estudios_cubre_especialidad }}</td>
+                                    <th scope="row">{{$item->grado_profesional}}</th>
+                                    <td>{{ $item->area_carrera }}</td>
+                                    <td>{{ $item->estatus }}</td>
+                                    <td>{{ $item->nombre_institucion }}</td>
                                     <td>
-                                        {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}
-                                        {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
-                                        {!! Form::close() !!}
                                     </td>
                                 </tr>
                             @endforeach
@@ -144,111 +226,50 @@
                             <caption>Lista de Perfiles Profesionales</caption>
                         </div>
                         <div class="pull-right">
-                            <a class="btn btn-info" href="{{route('instructor-perfil', ['id' => $getinstructor->id])}}">Agregar Perfil Profesional</a>
+                            <a class="btn btn-info" href="{{route('instructor-perfil', ['id' => $datains->id])}}">Agregar Perfil Profesional</a>
                         </div>
                     </div>
                 </div>
                 <br>
-                <!-- *** START Text areas *** -->
-                    <div class="form-row">
-                        <label for="inputexp_laboral"><h4>Experiencia Laboral</h4></label>
-                        <textarea cols="6" rows="6" id="exp_laboral" name="exp_laboral" disabled class="form-control">{{ $getinstructor->experiencia_laboral }}</textarea>
-                    </div>
-                    <br>
-                    <div class="form-row">
-                        <label for="inputexp_docente"><h4>Experiencia Docente</h4></label>
-                        <textarea cols="6" rows="6" id="exp_docente" name="exp_docente" disabled class="form-control">{{ $getinstructor->experiencia_docente }}</textarea>
-                    </div>
-                    <br>
-                    <div class="form-row">
-                        <label for="inputcursos_recibidos"><h4>Cursos Recibidos</h4></label>
-                        <textarea cols="6" rows="6" id="cursos_recibidos" name="cursos_recibidos" disabled class="form-control">{{ $getinstructor->cursos_recibidos }}</textarea>
-                    </div>
-                    <br>
-                    <div class="form-row">
-                        <label for="inputcursos_conocer"><h4>Cursos CONOCER</h4></label>
-                        <textarea cols="6" rows="6" id="cursos_conocer" name="cursos_conocer" disabled class="form-control">{{ $getinstructor->cursos_conocer }}</textarea>
-                    </div>
-                    <br>
-                    <div class="form-row">
-                        <label for="inputcursos_impartidos"><h4>Cursos Impartidos</h4></label>
-                        <textarea cols="6" rows="6" id="cursos_impartidos" name="cursos_impartidos" disabled class="form-control">{{ $getinstructor->cursos_impartidos }}</textarea>
-                    </div>
-                <!-- *** END Text areas *** -->
-                <br>
-                <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <label for="inputcapacitado_icatech"><h6>Capacitado por el ICATECH</h6></label>
-                        <select class="form-control" id="capacitado_icatech" disabled>
-                            <option>No</option>
-                            <option>Si</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label for="inputcursos_recicatech"><h4>Cursos Recibidos por el ICATECH</h4></label>
-                    <textarea cols="6" rows="6" id="cursos_recicatech" name="cursos_recicatech" disabled class="form-control">{{ $getinstructor->curso_recibido_icatech }}</textarea>
-                </div>
-                <br>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="inputcv">Curriculum Vitae</label>
-                        <input name="cv" id="cv" type="file" accept="application/pdf" disabled class="form-control" aria-required="true">
-                    </div>
-                </div>
-                <hr style="border-color:dimgray">
-                <label><h2>Datos Institucionales</h2></label>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="inputnumero_control">Numero de Control</label>
-                        <input id="numero_control" name="numero_control" value="{{ $getinstructor->numero_control }}" type="text" disabled class="form-control" aria-required="true">
-                    </div>
-                    <div class="form-group col-md-5">
-                        <label for="inputhonorario">Tipo de Honorario</label>
-                        <select class="form-control" id="tipo_honorario" disabled>
-                            <option value="{{ $getinstructor->tipo_honorario }}">{{ $getinstructor->tipo_honorario }}</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputregistro_agente">Registo Agente Capacitador Externo STPS</label>
-                        <input id="registro_agente" name="registro_agente" value="{{ $getinstructor->registro_agente_capacitador_externo }}" type="text" disabled class="form-control" aria-required="true">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="inputuncap_validacion">Unidad de Capacitacion que Solicita Validacion</label>
-                        <input id="uncap_validacion" name="uncap_validacion" value="{{ $getinstructor->unidad_capacitacion_solicita_validacion_instructor }}" type="text" disabled class="form-control " aria-required="true">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputmemo_validacion">Memorandum de Validacion</label>
-                        <input id="memo_validacion" name="memo_validacion" value="{{ $getinstructor->memoramdum_validacion }}" type="text" disabled class="form-control" aria-required="true">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputmemo_mod">Modificacion de Memorandum</label>
-                        <input id="memo_mod" name="memo_mod" type="text" value="{{ $getinstructor->modificacion_memo }}" class="form-control" disabled aria-required="true">
-                    </div>
-                </div>
-                <br>
                 <label><h4>Cursos Validados para Impartir</h4></label>
-
+                @if (count($validado) > 0)
+                <table class="table table-bordered" id="table-perfprof">
+                    <thead>
+                        <tr>
+                            <th scope="col">Especialidad</th>
+                            <th scope="col">Criterio de Pago</th>
+                            <th scope="col">Zona</th>
+                            <th scope="col">Obsevaciones</th>
+                            <th width="85px">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($validado as $item)
+                            <tr>
+                                <th scope="row">{{$item->nombre}}</th>
+                                <td>{{ $item->perfil_profesional }}</td>
+                                <td>{{ $item->zona }}</td>
+                                <td>{{ $item->observaciones }}</td>
+                                <td>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
                 <div class="alert alert-warning">
                     <strong>Info!</strong> No hay Registros
-                  </div>
-
+            @endif
+                </div>
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-left">
                             <caption>Lista de Cursos Validados para Impartir</caption>
                         </div>
                         <div class="pull-right">
-                            <a class="btn btn-info" href="{{route('instructor-curso', ['id' => $getinstructor->id])}}">Agregar Curso Validado para Impartir</a>
+                            <a class="btn btn-info" href="{{route('instructor-curso', ['id' => $datains->id])}}">Agregar Curso Validado para Impartir</a>
                         </div>
                     </div>
-                </div>
-                <br>
-                <div class="form-row">
-                    <label for="inputobservacion">Observaciones</label>
-                    <textarea cols="6" rows="6" id="observacion" name="observacion" disabled class="form-control">{{ $getinstructor->observaciones }}</textarea>
                 </div>
                 <br>
                 <div class="row">
