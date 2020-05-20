@@ -52,9 +52,12 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
+            $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
             $saveInstructor = new instructor();
+            $id = $uid->id + 1;
             # Proceso de Guardado
             #----- Personal -----
+            $saveInstructor->id = $id;
             $saveInstructor->nombre = trim($request->nombre);
             $saveInstructor->apellidoPaterno = trim($request->apellido_paterno);
             $saveInstructor->apellidoMaterno = trim($request->apellido_materno);
