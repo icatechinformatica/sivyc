@@ -39,6 +39,23 @@ class InstructoresController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            //instructores
+            $instructor = new Instructor();
+            $instructor->nombre = $request->nombre;
+            $instructor->apellido_paterno = $request->apellido_paterno;
+            $instructor->apellido_materno = $request->apellido_materno;
+            $instructor->curp = $request->curp;
+            $instructor->rfc = $request->rfc;
+            $instructor->cv = $request->cv;
+
+            $instructor->save();
+
+            return response()->json(['success' => 'Se ha generado un instructor exitosamente'], 200);
+
+        } catch (Exception $th) {
+            return response()->json(['error' => $th->getMessage()], 501);
+        }
     }
 
     /**

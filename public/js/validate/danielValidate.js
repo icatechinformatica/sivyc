@@ -333,7 +333,7 @@ $(function(){
         return this.value.toUpperCase();
     })
 
-    $('textarea').val(function(){
+    $('textarea').val(() => {
         return this.value.toUpperCase();
     })
 
@@ -430,6 +430,17 @@ $(function(){
         });
     });
 
+    // función cantidades
+    $("#costo_curso").on("keyup", () => {
+        var valid = /^\d{0,5}(\.\d{0,2})?$/.test(this.value),
+        val = this.value;
+
+        if(!valid){
+            console.log("Invalid input!");
+            this.value = val.substring(0, val.length - 1);
+        }
+    });
+
     /**
      * Modificacion de cursos, validación
      */
@@ -437,11 +448,29 @@ $(function(){
         rules: {
             especialidad: {
                 required: true
+            },
+            nombrecurso: {
+                required: true
+            },
+            modalidad: {
+                required: true
+            },
+            clasificacion: {
+                required: true
             }
         },
         messages: {
             especialidad: {
                 required: "Por favor, Seleccione la especialidad"
+            },
+            nombrecurso: {
+                required: "Por favor, Escriba nombre del curso"
+            },
+            modalidad: {
+                required: "Por favor, Seleccione la modalidad"
+            },
+            clasificacion: {
+                required: "Por favor, Seleccione la clasificación"
             }
         }
     });

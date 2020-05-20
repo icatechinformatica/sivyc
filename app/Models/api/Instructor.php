@@ -11,7 +11,7 @@ class Instructor extends Model
 
     protected $fillable = [
             'id','nombre','apellido_paterno','apellido_materno','curp','rfc',
-            'archivo_cv'
+            'cv'
         ];
 
     protected $hidden = ['created_at', 'updated_at'];

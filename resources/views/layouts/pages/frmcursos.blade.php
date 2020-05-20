@@ -41,7 +41,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="modalidad  " class="control-label">Modalidad</label>
-                <select class="form-control" id="modalidad">
+                <select class="form-control" id="modalidad" name="modalidad">
                   <option value="">--SELECCIONAR--</option>
                   <option value="CAE">CAE</option>
                   <option value="EXT">EXT</option>
@@ -50,7 +50,7 @@
             <!--clasificacion-->
             <div class="form-group col-md-6">
                 <label for="clasificacion  " class="control-label">Clasificación</label>
-                <select class="form-control" id="clasificacion">
+                <select class="form-control" id="clasificacion" name="clasificacion">
                     <option value="">--SELECCIONAR--</option>
                     <option value="A-BASICO">A-BASICO</option>
                     <option value="B-INTERMEDIO">B-INTERMEDIO</option>
@@ -69,7 +69,7 @@
           <!-- Puesto-->
           <div class="form-group col-md-6">
             <label for="costo" class="control-label">Costo</label>
-            <input type="text" class="form-control" id="costo" name="costo" placeholder="costo">
+            <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="costo">
           </div>
           <!-- Puesto END-->
 
@@ -112,10 +112,10 @@
             <!-- Solicitud END -->
         </div>
         <div class="form-row">
-            <!-- fecha_validacion -->
+            <!-- memo_actualizacion -->
             <div class="form-group col-md-6">
-              <label for="fecha_validacion" class="control-label">Fecha Validación</label>
-              <input type="date" class="form-control" id="fecha_validacion" name="fecha_validacion">
+              <label for="memo_actualizacion" class="control-label">Memo Actualización</label>
+              <input type="file" class="form-control" id="memo_actualizacion" name="memo_actualizacion">
             </div>
             <!-- fecha_validacion END -->
             <div class="form-group col-md-6">
@@ -124,10 +124,10 @@
             </div>
         </div>
         <div class="form-row">
-            <!-- memo_actualizacion -->
+            <!-- fecha_validacion -->
             <div class="form-group col-md-6">
-              <label for="memo_actualizacion" class="control-label">Memo Actualización</label>
-              <input type="file" class="form-control" id="memo_actualizacion" name="memo_actualizacion">
+              <label for="fecha_validacion" class="control-label">Fecha Validación</label>
+              <input type="date" class="form-control" id="fecha_validacion" name="fecha_validacion">
             </div>
             <!-- memo_actualizacion END -->
             <div class="form-group col-md-6">
