@@ -233,6 +233,7 @@ $(function(){
                 $('#div2').prop("class", "form-row")
                 $('#div3').prop("class", "form-row")
                 $('#div4').prop("class", "form-row")
+                $('#div5').prop("class", "form-row")
                 $('#confvali').prop("class", "form-row")
             }
         });

@@ -255,8 +255,9 @@
                                 <th scope="row">{{$item->nombre}}</th>
                                 <td>{{ $item->perfil_profesional }}</td>
                                 <td>{{ $item->zona }}</td>
-                                <td>{{ $item->observaciones }}</td>
+                                <td>{{ $item->observacion }}</td>
                                 <td>
+                                    <a class="btn btn-info" href="{{route('instructor-editespectval', ['id' => $item->id, 'idins' => $datains->id])}}">Modificar</a>
                                 </td>
                             </tr>
                         @endforeach

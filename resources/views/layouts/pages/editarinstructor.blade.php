@@ -15,6 +15,60 @@
                 </div>
             </div>
             <hr style="border-color:dimgray">
+            <h2>Vista de Documentos</h2>
+            <div class="form-row">
+                <a class="btn btn-info" href={{$datains->archivo_ine}} target="_blank">Solicitud de Pago</a><br>
+                <a class="btn btn-info" href={{$datains->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
+                <a class="btn btn-info" href={{$datains->archivo_curp}} target="_blank">CURP</a><br>
+                <a class="btn btn-info" href={{$datains->archivo_alta}} target="_blank">Alta de Instructor</a><br>
+            </div>
+            <div class="form-row">
+                <a class="btn btn-info" href={{$datains->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
+                <a class="btn btn-info" href={{$datains->archivo_fotografia}} target="_blank">Fotografía</a><br>
+                <a class="btn btn-info" href={{$datains->archivo_estudios}} target="_blank">Estudios</a><br>
+                <a class="btn btn-info" href={{$datains->archivo_otraid}} target="_blank">Otra Identificación</a><br>
+            </div>
+            <hr style="border-color:dimgray">
+            <div>
+                <label><h2>Cambiar Documentos</h2></label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputarch_ine">Archivo INE</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputarch_curp">Archivo CURP</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputarch_alta">Archivo Alta de Instructor</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputarch_banco">Archivo Datos Bancarios</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputarch_foto">Archivo Fotografia</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputarch_estudio">Archivo Grado de Estudios</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputarch_id">Archivo Otra Identificación</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
+                </div>
+            </div>
+            <hr style="border-color:dimgray">
             <div>
                 <label><h2>Datos Personales</h2></label>
             </div>
@@ -35,90 +89,22 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="inputcurp">CURP</label>
-                    <input name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datains->curp}}">
+                    <label for="inputbanco">Nombre del Banco</label>
+                    <input name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datains->banco}}">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputrfc">RFC</label>
-                    <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datains->rfc}}">
+                    <label for="inputclabe">Clabe Interbancaria</label>
+                    <input name="clabe" id="clabe" type="text" class="form-control" aria-required="true" value="{{$datains->interbancaria}}">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputfolio_ine">Folio de INE</label>
-                    <input name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true" value="{{$datains->folio_ine}}">
+                    <label for="inputnumero_cuenta">Numero de Cuenta</label>
+                    <input name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true" value="{{$datains->no_cuenta}}">
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="inputsexo">Sexo</label>
-                    <select class="form-control" name="sexo" id="sexo">
-                        @if ($datains->sexo == 'MASCULINO')
-                            <option selected value="MASCULINO">Masculino</option>
-                            <option value="FEMENINO">Femenino</option>
-                        @else
-                            <option value="MASCULINO">Masculino</option>
-                            <option selected value="FEMENINO">Femenino</option>
-                        @endif
-                    </select>
-                </div>
-                <div class="form-gorup col-md-4">
-                    <label for="inputestado_civil">Estado Civil</label>
-                    <select class="form-control" name="estado_civil" id="estado_civil">
-                        <option selected value="{{$estado_civil->nombre}}">{{$estado_civil->nombre}}</option>
-                        @foreach ($lista_civil as $item)
-                            <option value="{{$item->nombre}}">{{$item->nombre}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                    <input name='fecha_nacimiento' id='fecha_nacimiento' type="date" class="form-control" aria-required="true" value="{{$datains->fecha_nacimiento}}">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputentidad">Entidad</label>
-                    <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true" value="{{$datains->entidad}}">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputmunicipio">Municipio</label>
-                    <input name='municipio' id='municipio' type="text" class="form-control" aria-required="true" value="{{$datains->municipio}}">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputasentamiento">Asentamiento</label>
-                    <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true" value="{{$datains->asentamiento}}">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="inputtelefono">Numero de Telefono Personal</label>
-                    <input name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" value="{{$datains->telefono}}">
-                </div>
                 <div class="form-group col-md-6">
-                    <label for="inputcorreo">Correo Electronico</label>
-                    <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" value="{{$datains->correo}}">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputunidad_registra">Unidad que Registra</label>
-                    <select class="form-control" name="unidad_registra" id="unidad_registra">
-                        <option value="{{$unidad->cct}}">{{$unidad->unidad}}</option>
-                        @foreach ($lista_unidad as $value )
-                            <option value="{{$value->cct}}">{{$value->unidad}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputhonorarios">Tipo de Honorarios</label>
-                    <select class="form-control" name="honorario" id="honorario">
-                        @if ($datains->tipo_honorario == 'HONORARIOS')
-                            <option selected value="HONORARIOS">Honorarios</option>
-                            <option value="ASALARIADO ASIMILADO">Asalariado Asimilado</option>
-                        @else
-                            <option value="HONORARIOS">Honorarios</option>
-                            <option selected value="ASALARIADO ASIMILADO">Asalariado Asimilado</option>
-                        @endif
-                    </select>
+                    <label for="inputbanco">Dirección de Domicilio</label>
+                    <input name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datains->domicilio}}">
                 </div>
             </div>
             <br>
