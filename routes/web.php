@@ -25,7 +25,7 @@ Route::post('/instructor/validado','webController\InstructorController@validado_
 Route::post('/instructor/guardar-mod','webController\InstructorController@guardar_mod')->name('instructor-guardarmod');
 Route::post('/instructor/saveins','webController\InstructorController@save_ins')->name('saveins');
 Route::post('/instructor/espec-ins/guardar','webController\InstructorController@espec_val_save')->name('especinstructor-guardar');
-Route::post('/instructor/espec-ins/guardar','webController\InstructorController@especval_mod_save')->name('especinstructor-modguardar');
+Route::post('/instructor/espec-ins/modificacion/guardar','webController\InstructorController@especval_mod_save')->name('especinstructor-modguardar');
 
 Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
 Route::get('/alumno/registro/pdf', 'webController\AlumnoController@pdf_registro')->name('pdf-alumno');
