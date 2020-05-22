@@ -78,6 +78,9 @@ class CursosController extends Controller
             $cursos->solicitud_autorizacion = (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false;
             $cursos->memo_actualizacion = $request->memo_actualizacion;
             $cursos->memo_validacion = $request->memo_validacion;
+            $cursos->cambios_especialidad = $request->cambios_especialidad;
+            $cursos->nivel_estudio = $request->nivel_estudio;
+            $cursos->categoria = $request->categoria;
             $cursos->save();
 
             # ==================================
