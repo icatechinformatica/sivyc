@@ -13,7 +13,7 @@
             </ul>
         </div><br />
     @endif
-    <form method="POST" action="{{ url('cursos/guardars') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
+    <form method="POST" action="{{ url('cursos/guardar-catalogo') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
         <div style="text-align: right;width:65%">
             <label for="tituloformulariocurso"><h1>Formulario de Cursos</h1></label>
@@ -22,21 +22,33 @@
         <div class="form-row">
           <!-- Unidad -->
           <div class="form-group col-md-6">
-            <label for="especialidad" class="control-label">Especialidad</label>
-            <select class="form-control" id="especialidad" name="especialidad">
+            <label for="areaCursos" class="control-label">ÁREA</label>
+            <select class="form-control" id="areaCursos" name="areaCursos">
                 <option value="">--SELECCIONAR--</option>
-            @foreach ($especialidades as $item)
-                <option value="{{$item->id}}">{{$item->nombre}}</option>
-            @endforeach
+                @foreach ($areas as $itemareas)
+                    <option value="{{$itemareas->id}}">{{$itemareas->formacion_profesional}}</option>
+                @endforeach
             </select>
           </div>
           <!--Unidad Fin-->
           <!-- nombre curso -->
           <div class="form-group col-md-6">
-            <label for="nombrecurso" class="control-label">Nombre del Curso</label>
-            <input type="text" class="form-control" id="nombrecurso" name="nombrecurso">
+            <label for="especialidadCurso" class="control-label">Especialidad</label>
+            <select class="form-control" id="especialidadCurso" name="especialidadCurso">
+                <option value="">--SELECCIONAR--</option>
+            </select>
           </div>
           <!-- nombre curso FIN-->
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="nombrecurso" class="control-label">Nombre del Curso</label>
+                <input type="text" class="form-control" id="nombrecurso" name="nombrecurso">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="unidad_accion_movil" class="control-label">Unidad Acción Móvil</label>
+                <input type="text" class="form-control" id="unidad_accion_movil" name="unidad_accion_movil">
+            </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -91,36 +103,56 @@
         <div class="form-row">
             <!-- Objetivo -->
             <div class="form-group col-md-6">
-              <label for="objetivo" class="control-label">Objetivo</label>
-              <input type="text" class="form-control" id="objetivo" name="objetivo" placeholder="objetivo">
+              <label for="objetivo" class="control-label">OBJECTIVO</label>
+              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO"></textarea>
             </div>
             <!-- Objetivo END -->
             <!-- Accion Movil-->
             <div class="form-group col-md-6">
-              <label for="unidad_accion_movil" class="control-label">Unidad Acción Móvil</label>
-              <input type="text" class="form-control" id="unidad_accion_movil" name="unidad_accion_movil">
+                <label for="descripcionCurso" class="control-label">DESCRIPCIÓN</label>
+                <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="5" placeholder="DESCRIPCIÓN"></textarea>
             </div>
             <!-- Accion Movil END-->
         </div>
         <hr>
         <div class="form-row">
-            <!-- Solicitud -->
-            <div class="form-group col-md-12">
-              <label for="solicitud_autorizacion" class="control-label">Solicitud de Autorización</label>
-              <input type="file" class="form-control" id="solicitud_autorizacion" name="solicitud_autorizacion">
+            <div class="form-group col-md-4">
+                <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE AUTORIZACIÓN</label>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="solicitud_autorizacion" name="solicitud_autorizacion" value="true">
+                    <label class="form-check-label" for="solicitud_autorizacion">
+                        AUTORIZACIÓN
+                    </label>
+                    </div>
+                </div>
             </div>
-            <!-- Solicitud END -->
-        </div>
-        <div class="form-row">
-            <!-- memo_actualizacion -->
-            <div class="form-group col-md-6">
-              <label for="memo_actualizacion" class="control-label">Memo Actualización</label>
-              <input type="file" class="form-control" id="memo_actualizacion" name="memo_actualizacion">
+            <div class="form-group col-md-4">
+                <label for="memo_actualizacion" class="control-label">MEMO DE ACTUALIZACIÓN</label>
+                <input type="text" class="form-control" id="memo_actualizacion" name="memo_actualizacion">
             </div>
             <!-- fecha_validacion END -->
-            <div class="form-group col-md-6">
-                <label for="memo_validacion" class="control-label">Memo Validación</label>
-                <input type="file" class="form-control" id="memo_validacion" name="memo_validacion">
+            <div class="form-group col-md-4">
+                <label for="memo_validacion" class="control-label">MEMO DE VALIDACIÓN</label>
+                <input type="text" class="form-control" id="memo_validacion" name="memo_validacion">
+            </div>
+        </div>
+        <div class="form-row">
+            <!-- Solicitud -->
+            <div class="form-group col-md-4">
+              <label for="documento_solicitud_autorizacion" class="control-label">Documento Solicitud de Autorización</label>
+              <input type="file" class="form-control" id="documento_solicitud_autorizacion" name="documento_solicitud_autorizacion">
+            </div>
+            <!-- Solicitud END -->
+            <!-- memo_actualizacion -->
+            <div class="form-group col-md-4">
+              <label for="documento_memo_actualizacion" class="control-label">Documento Memo Actualización</label>
+              <input type="file" class="form-control" id="documento_memo_actualizacion" name="documento_memo_actualizacion">
+            </div>
+            <!-- fecha_validacion END -->
+            <div class="form-group col-md-4">
+                <label for="documento_memo_validacion" class="control-label">Documento Memo Validación</label>
+                <input type="file" class="form-control" id="documento_memo_validacion" name="documento_memo_validacion">
             </div>
         </div>
         <div class="form-row">

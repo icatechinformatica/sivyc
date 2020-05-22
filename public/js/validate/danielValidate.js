@@ -19,6 +19,12 @@ $(function(){
         format: 'dd-mm-yy'
     });
 
+    $('#fecha_actualizacion').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        format: 'dd-mm-yy'
+    });
+
     $('input[type=text]').val(function () {
         return this.value.toUpperCase();
     })
@@ -333,7 +339,7 @@ $(function(){
         return this.value.toUpperCase();
     })
 
-    $('textarea').val(() => {
+    $('textarea').val(function () {
         return this.value.toUpperCase();
     })
 
@@ -387,6 +393,54 @@ $(function(){
             });
         });
     });
+
+    /**
+     * cambios select dependientes
+     */
+    $('#areaCursos').on("change", () => {
+        $("#areaCursos option:selected").each( () => {
+            var idArea = $('#areaCursos').val();
+            var url = '/cursos/especialidad-by-area/'+ idArea;
+
+            var request = $.ajax
+            ({
+                url: url,
+                method: 'GET',
+                dataType: 'json'
+            });
+
+            /*
+                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+            */
+
+            request.done(( respuesta ) => {
+                if (respuesta.length < 1) {
+                    $("#especialidadCurso").empty();
+                    $("#especialidadCurso").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                } else {
+                    if(!respuesta.hasOwnProperty('error')){
+                        $("#especialidadCurso").empty();
+                        $("#especialidadCurso").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        $.each(respuesta, (k, v) => {
+                            $('#especialidadCurso').append('<option value="' + v.id + '">' + v.nombre + '</option>');
+                        });
+                        $("#especialidadCurso").focus();
+                    }else{
+
+                        //Puedes mostrar un mensaje de error en algún div del DOM
+                    }
+                }
+            });
+
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                    alert( "Hubo un error: " + textStatus );
+            });
+        });
+    });
     // funcion para el cambio de estado de un selectBox
     $('#medio_entero').on("change", () => {
         $("#medio_entero option:selected").each( () => {
@@ -430,15 +484,19 @@ $(function(){
         });
     });
 
-    // función cantidades
-    $("#costo_curso").on("keyup", () => {
-        var valid = /^\d{0,5}(\.\d{0,2})?$/.test(this.value),
-        val = this.value;
+    $('#costo_curso').keyup(function(event) {
 
-        if(!valid){
-            console.log("Invalid input!");
-            this.value = val.substring(0, val.length - 1);
-        }
+        // skip for arrow keys
+        if(event.which >= 37 && event.which <= 40) return;
+
+        // format number
+        $(this).val(function(index, value) {
+          return value
+          .replace(/(?!\.)\D/g, "")
+          .replace(/(?<=\..*)\./g, "")
+          .replace(/(?<=\.\d\d).*/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, "");
+        });
     });
 
     /**
@@ -457,6 +515,18 @@ $(function(){
             },
             clasificacion: {
                 required: true
+            },
+            documento_solicitud_autorizacion: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            documento_memo_actualizacion: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            documento_memo_validacion: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
             }
         },
         messages: {
@@ -471,6 +541,18 @@ $(function(){
             },
             clasificacion: {
                 required: "Por favor, Seleccione la clasificación"
+            },
+            documento_solicitud_autorizacion: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            documento_memo_actualizacion: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            documento_memo_validacion: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
             }
         }
     });

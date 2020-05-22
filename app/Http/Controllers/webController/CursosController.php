@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\curso;
 use App\Models\especialidad;
+use App\Models\Area;
+
 class CursosController extends Controller
 {
     /**
@@ -37,8 +39,10 @@ class CursosController extends Controller
     {
         $especialidad = new especialidad();
         $especialidades = $especialidad->all();
+        $area = new Area();
+        $areas = $area->all();
         // mostramos el formulario de cursos
-        return view('layouts.pages.frmcursos', compact('especialidades'));
+        return view('layouts.pages.frmcursos', compact('especialidades', 'areas'));
     }
 
     /**
@@ -52,22 +56,11 @@ class CursosController extends Controller
         //
         try {
             //validación de archivos
-            $validator = Validator::make($request->all(), [
-                'solicitud_autorizacion' => 'required|mimes:pdf|max:2048',
-                'memo_validacion' => 'required|mimes:pdf|max:2048',
-                'memo_actualizacion' => 'required|mimes:pdf|max:2048'
-            ]);
-
-            if ($validador->fails()) {
-                return redirect()->route('frm-cursos')
-                            ->withErrors($validador)
-                            ->withInput();
-            }
 
 
-            $cursos = new curso();
-            $cursos->especialidad = $request->especialidad;
-            $cursos->nombre_curso = $request->nombre_curso;
+
+            $cursos = new curso;
+            $cursos->nombre_curso = $request->nombrecurso;
             $cursos->modalidad = $request->modalidad;
             $cursos->horas = $request->horas;
             $cursos->clasificacion = $request->clasificacion;
@@ -75,11 +68,16 @@ class CursosController extends Controller
             $cursos->duracion = $request->duracion;
             $cursos->objetivo = $request->objetivo;
             $cursos->perfil = $request->perfil;
-            $cursos->fecha_validacion = $request->fecha_validacion;
-            $cursos->fecha_actualizacion = $request->fecha_actualizacion;
+            $cursos->fecha_validacion = $cursos->setFechaAttribute($request->fecha_validacion);
+            $cursos->fecha_actualizacion = $cursos->setFechaAttribute($request->fecha_actualizacion);
             $cursos->descripcion = $request->descripcion;
             $cursos->no_convenio = $request->no_convenio;
-            $cursos->id_especialidad = $request->id_especialidad;
+            $cursos->id_especialidad = $request->especialidadCurso;
+            $cursos->unidad_amovil = $request->unidad_accion_movil;
+            $cursos->area = $request->areaCursos;
+            $cursos->solicitud_autorizacion = (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false;
+            $cursos->memo_actualizacion = $request->memo_actualizacion;
+            $cursos->memo_validacion = $request->memo_validacion;
             $cursos->save();
 
             # ==================================
@@ -88,35 +86,35 @@ class CursosController extends Controller
             $cursosId = $cursos->id;
 
             // validamos si hay archivos
-            if ($request->hasFile('solicitud_autorizacion')) {
+            if ($request->hasFile('documento_solicitud_autorizacion')) {
                 # Carga el archivo y obtener la url
-                $solicitud_autorizacion = $request->file('solicitud_autorizacion'); # obtenemos el archivo
-                $url_solicitud_autorizacion = $this->uploaded_file($solicitud_autorizacion, $cursosId, 'solicitud_autorizacion'); #invocamos el método
+                $documento_solicitud_autorizacion = $request->file('documento_solicitud_autorizacion'); # obtenemos el archivo
+                $url_solicitud_autorizacion = $this->uploaded_file($documento_solicitud_autorizacion, $cursosId, 'documento_solicitud_autorizacion'); #invocamos el método
                 // guardamos en la base de datos
                 $cursoUpdate = curso::find($cursosId);
-                $cursoUpdate->solicitud_autorizacion = $url_solicitud_autorizacion;
+                $cursoUpdate->documento_solicitud_autorizacion = $url_solicitud_autorizacion;
                 $cursoUpdate->save();
             }
 
             // validamos el siguiente archivo
-            if ($request->hasFile('memo_validacion')) {
+            if ($request->hasFile('documento_memo_validacion')) {
                 # Carga el archivo y obtener la url
-                $memo_validacion = $request->file('memo_validacion'); # obtenemos el archivo
-                $url_memo_validacion = $this->uploaded_file($memo_validacion, $cursosId, 'memo_validacion'); #invocamos el método
+                $documento_memo_validacion = $request->file('documento_memo_validacion'); # obtenemos el archivo
+                $url_memo_validacion = $this->uploaded_file($documento_memo_validacion, $cursosId, 'documento_memo_validacion'); #invocamos el método
                 // guardamos en la base de datos
                 $cursoUp = curso::find($cursosId);
-                $cursoUp->memo_validacion = $url_memo_validacion;
+                $cursoUp->documento_memo_validacion = $url_memo_validacion;
                 $cursoUp->save();
             }
 
             // validamos el siguiente archivo
-            if ($request->hasFile('memo_actualizacion')) {
+            if ($request->hasFile('documento_memo_actualizacion')) {
                 # Carga el archivo y obtener la url
-                $memo_actualizacion = $request->file('memo_actualizacion'); # obtenemos el archivo
-                $url_memo_actualizacion = $this->uploaded_file($memo_actualizacion, $cursosId, 'memo_actualizacion'); #invocamos el método
+                $documento_memo_actualizacion = $request->file('documento_memo_actualizacion'); # obtenemos el archivo
+                $url_memo_actualizacion = $this->uploaded_file($documento_memo_actualizacion, $cursosId, 'documento_memo_actualizacion'); #invocamos el método
                 // guardamos en la base de datos
                 $cursoU = curso::find($cursosId);
-                $cursoU->memo_actualizacion = $url_memo_actualizacion;
+                $cursoU->documento_memo_actualizacion = $url_memo_actualizacion;
                 $cursoU->save();
             }
 
@@ -148,6 +146,24 @@ class CursosController extends Controller
         //
     }
 
+    protected function get_by_area($idAreas)
+    {
+        if (isset($idAreas)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $idAreas = $idAreas;
+            $Especialidad = new especialidad();
+
+            $Especialidades = $Especialidad->WHERE('id_areas', '=', $idAreas)->GET();
+
+            /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
+            $json=json_encode($Especialidades);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+        return $json;
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -177,8 +193,8 @@ class CursosController extends Controller
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
-        $file->storeAs('/uploadFiles/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
-        $documentUrl = Storage::url('/uploadFiles/alumnos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $file->storeAs('/uploadFiles/cursos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+        $documentUrl = Storage::url('/uploadFiles/cursos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
 }

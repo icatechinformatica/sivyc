@@ -77,7 +77,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');
     Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos');
     Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos');
-    Route::post('cursos/guardar', 'webController\CursosController@store')->name('cursos.gurdar');
+    Route::post('cursos/guardar-catalogo', 'webController\CursosController@store')->name('cursos.guardar-catalogo');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
     // alumnos
@@ -87,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@export_pdf')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
+    Route::get('/cursos/especialidad-by-area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');
     /**
      * contratos Desarrollando por Daniel
      */
