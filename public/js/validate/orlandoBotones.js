@@ -233,9 +233,42 @@ $(function(){
                 $('#div2').prop("class", "form-row")
                 $('#div3').prop("class", "form-row")
                 $('#div4').prop("class", "form-row")
+                $('#div5').prop("class", "form-row")
                 $('#confvali').prop("class", "form-row")
             }
         });
+    });
+
+    //Boton Instructor Editar Fase2
+    $('#mod_instructor_fase2').click(function(e){
+        $('#nombre').prop("disabled", false)
+        $('#apellido_paterno').prop("disabled", false)
+        $('#apellido_materno').prop("disabled", false)
+        $('#curp').prop("disabled", false)
+        $('#rfc').prop("disabled", false)
+        $('#folio_ine').prop("disabled", false)
+        $('#sexo').prop("disabled", false)
+        $('#estado_civil').prop("disabled", false)
+        $('#fecha_nacimiento').prop("disabled", false)
+        $('#entidad').prop("disabled", false)
+        $('#municipio').prop("disabled", false)
+        $('#asentamiento').prop("disabled", false)
+        $('#domicilio').prop("disabled", false)
+        $('#telefono').prop("disabled", false)
+        $('#correo').prop("disabled", false)
+        $('#banco').prop("disabled", false)
+        $('#clabe').prop("disabled", false)
+        $('#numero_cuenta').prop("disabled", false)
+        $('#arch_ine').prop("disabled", false)
+        $('#arch_domicilio').prop("disabled", false)
+        $('#arch_curp').prop("disabled", false)
+        $('#arch_alta').prop("disabled", false)
+        $('#arch_banco').prop("disabled", false)
+        $('#arch_estudio').prop("disabled", false)
+        $('#arch_foto').prop("disabled", false)
+        $('#arch_id').prop("disabled", false)
+        $('#unidad_registra').prop("disabled", false)
+        $('#honorario').prop("disabled", false)
     });
 
     //autocomplete

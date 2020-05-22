@@ -14,27 +14,31 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre">Nombre</label>
-                    <input type="text" class="form-control" disabled value="{{$getinstructor->nombre}}">
+                    <input name='nombre' id='nombre' value="{{ $getinstructor->nombre }}" type="text" disabled class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_paterno">Apellido Paterno</label>
-                    <input type="text" class="form-control" disabled value="{{$getinstructor->apellidoPaterno}}">
+                    <input name='apellido_paterno' id='apellido_paterno' value="{{ $getinstructor->apellidoPaterno }}" type="text" class="form-control" aria-required="true" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_materno">Apellido Materno</label>
-                    <input type="text" class="form-control" disabled value="{{$getinstructor->apellidoMaterno}}">
+                    <input name='apellido_materno' id='apellido_materno' value="{{ $getinstructor->apellidoMaterno}}" type="text" class="form-control" aria-required="true" disabled>
                 </div>
+            </div>
+            <h2>Vista de Documentos</h2>
+            <div class="form-row">
+                <a class="btn btn-info" href={{$getinstructor->archivo_ine}} target="_blank">Solicitud de Pago</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_curp}} target="_blank">CURP</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_alta}} target="_blank">Alta de Instructor</a><br>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputcurp">CURP</label>
-                    <input type="text" class="form-control" disabled value="{{$getinstructor->curp}}">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputcontrol">Numero de Control</label>
-                    <input type="text" class="form-control" disabled value="{{$getinstructor->numero_control}}">
-                </div>
+                <a class="btn btn-info" href={{$getinstructor->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_fotografia}} target="_blank">Fotografía</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_estudios}} target="_blank">Estudios</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_otraid}} target="_blank">Otra Identificación</a><br>
             </div>
+            <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
@@ -68,62 +72,89 @@
         </form>
         <hr style="border-color:dimgray">
         <br>
-        <form method="POST" action="{{ route('instructor-validado') }}" id="validadoinstructor" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('instructor-validado') }}" id="validadoinstructor">
             @csrf
             <div id="div1" class="form-row d-none d-print-none">
                 <div class="form-group col-md-4">
-                    <label for="inputbanco">Nombre del Banco</label>
-                    <input name="banco" id="banco" type="text" class="form-control" aria-required="true">
+                    <label for="inputcurp">CURP</label>
+                    <input name='curp' id='curp' type="text" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputclabe">Clabe Interbancaria</label>
-                    <input name="clabe" id="clabe" type="text" class="form-control" aria-required="true">
+                    <label for="inputrfc">RFC</label>
+                    <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputnumero_cuenta">Numero de Cuenta</label>
-                    <input name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true">
+                    <label for="inputfolio_ine">Folio de INE</label>
+                    <input name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true">
                 </div>
             </div>
             <div id="div2" class="form-row d-none d-print-none">
-                <div class="form-group col-md-6">
-                    <label for="inputbanco">Dirección de Domicilio</label>
-                    <input name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true">
+                <div class="form-group col-md-4">
+                    <label for="inputsexo">Sexo</label>
+                        <select class="form-control" name="sexo" id="sexo">
+                            <option value="sin especificar">Sin Especificar</option>
+                            <option value="MASCULINO">Masculino</option>
+                            <option value="FEMENINO">Femenino</option>
+                        </select>
+                </div>
+                <div class="form-gorup col-md-4">
+                    <label for="inputestado_civil">Estado Civil</label>
+                        <select class="form-control" name="estado_civil" id="estado_civil">
+                            <option value="sin especificar">Sin Especificar</option>
+                            <option value="SOLTERO">Soltero/a</option>
+                            <option value="CASADO">Casado/a</option>
+                            <option value="DDIVORCIADO">Divorciado/a</option>
+                            <option value="VIUDO">Viudo/a</option>
+                            <option value="CONCUBINATO">Concubinato</option>
+                            <option value="UNION LIBRE">Union Libre</option>
+                        </select>
                 </div>
             </div>
             <div id="div3" class="form-row d-none d-print-none">
                 <div class="form-group col-md-3">
-                    <label for="inputarch_ine">Archivo INE</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
+                    <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
+                    <input name='fecha_nacimiento' id='fecha_nacimiento' type="date" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
+                    <label for="inputentidad">Entidad</label>
+                    <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputarch_curp">Archivo CURP</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
+                    <label for="inputmunicipio">Municipio</label>
+                    <input name='municipio' id='municipio' type="text" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputarch_alta">Archivo Alta de Instructor</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF">
+                    <label for="inputasentamiento">Asentamiento</label>
+                    <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true">
                 </div>
             </div>
             <div id="div4" class="form-row d-none d-print-none">
+                <div class="form-group col-md-4">
+                    <label for="inputtelefono">Numero de Telefono Personal</label>
+                    <input name="telefono" id="telefono" type="tel" class="form-control" aria-required="true">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputcorreo">Correo Electronico</label>
+                    <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
+                </div>
+            </div>
+            <div id="div5" class="form-row d-none d-print-none">
                 <div class="form-group col-md-3">
-                    <label for="inputarch_banco">Archivo Datos Bancarios</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
+                    <label for="inputunidad_registra">Unidad que Registra</label>
+                    <select class="form-control" name="unidad_registra" id="unidad_registra">
+                        <option value="sin especificar">Sin Especificar</option>
+                        @foreach ($data as $value )
+                        <option value="{{$value->cct}}">{{$value->unidad}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputarch_foto">Archivo Fotografia</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputarch_estudio">Archivo Grado de Estudios</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputarch_id">Archivo Otra Identificación</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
+                    <label for="inputhonorarios">Tipo de Honorarios</label>
+                    <select class="form-control" name="honorario" id="honorario">
+                        <option value="sin especificar">Sin Especificar</option>
+                        <option value="HONORARIOS">Honorarios</option>
+                        <option value="ASALARIADO ASIMILADO">Asalariado Asimilado</option>
+                    </select>
                 </div>
             </div>
             <div id="confvali" class="row d-none d-print-none">

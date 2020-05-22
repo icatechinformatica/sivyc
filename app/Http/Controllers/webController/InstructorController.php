@@ -45,80 +45,96 @@ class InstructorController extends Controller
     #----- instructor/crear -----#
     public function crear_instructor()
     {
-        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        return view('layouts.pages.frminstructor',compact('data'));
+        return view('layouts.pages.frminstructor');
     }
 
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
-            $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
-            $saveInstructor = new instructor();
-            $id = $uid->id + 1;
-            # Proceso de Guardado
-            #----- Personal -----
-            $saveInstructor->id = $id;
-            $saveInstructor->nombre = trim($request->nombre);
-            $saveInstructor->apellidoPaterno = trim($request->apellido_paterno);
-            $saveInstructor->apellidoMaterno = trim($request->apellido_materno);
-            $saveInstructor->curp = trim($request->curp);
-            $saveInstructor->rfc = trim($request->rfc);
-            $saveInstructor->folio_ine = trim($request->folio_ine);
-            $saveInstructor->sexo = trim($request->sexo);
-            $saveInstructor->estado_civil = trim($request->estado_civil);
-            $saveInstructor->fecha_nacimiento = $request->fecha_nacimiento;
-            $saveInstructor->entidad = trim($request->entidad);
-            $saveInstructor->municipio = trim($request->municipio);
-            $saveInstructor->asentamiento = trim($request->asentamiento);
-            $saveInstructor->telefono = trim($request->telefono);
-            $saveInstructor->correo = trim($request->correo);
-            $saveInstructor->tipo_honorario = trim($request->honorario);
-            $saveInstructor->clave_unidad = trim($request->unidad_registra);
-            $saveInstructor->status = "En Proceso";
+        $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+        $saveInstructor = new instructor();
+        $id = $uid->id + 1;
+        # Proceso de Guardado
+        #----- Personal -----
+        $saveInstructor->id = $id;
+        $saveInstructor->nombre = trim($request->nombre);
+        $saveInstructor->apellidoPaterno = trim($request->apellido_paterno);
+        $saveInstructor->apellidoMaterno = trim($request->apellido_materno);
+        $saveInstructor->banco = $request->banco;
+        $saveInstructor->interbancaria = $request->clabe;
+        $saveInstructor->no_cuenta = $request->numero_cuenta;
+        $saveInstructor->domicilio = $request->domicilio;
+        $saveInstructor->numero_control = "Pendiente";
+        $saveInstructor->status = "En Proceso";
 
-            //Creacion de el numero de control
-            $uni = substr($request->unidad_registra, -2);
-            $now = Carbon::now();
-            $year = substr($now->year, -2);
-            $numero_control = $uni.$year.$request->rfc;
-            $saveInstructor->numero_control = trim($numero_control);
-            $saveInstructor->save();
+        if ($request->file('arch_ine') != null)
+        {
+            $ine = $request->file('arch_ine'); # obtenemos el archivo
+            $urline = $this->pdf_upload($ine, $id, 'ine'); # invocamos el método
+            $saveInstructor->archivo_ine = $urline; # guardamos el path
+        }
 
-            return redirect()->route('instructor-inicio')
-                        ->with('success','Perfil profesional agregado');
-    }
+        if ($request->file('arch_domicilio') != null)
+        {
+            $dom = $request->file('arch_domicilio'); # obtenemos el archivo
+            $urldom = $this->pdf_upload($dom, $id, 'dom'); # invocamos el método
+            $saveInstructor->archivo_domicilio = $urldom; # guardamos el path
+        }
 
-    /**
-     * modificaciones
-     */
-    public function institucional($id)
-    {
-        return view('layouts.pages.frminstructor_institucional');
-    }
-    /**
-     * @param Request
-     */
-    public function institucional_save(Request $request)
-    {
-        $instructor_institucional = new InstructorPerfil();
+        if ($request->file('arch_curp') != null)
+        {
+            $curp = $request->file('arch_curp'); # obtenemos el archivo
+            $urlcurp = $this->pdf_upload($curp, $id, 'curp'); # invocamos el método
+            $saveInstructor->archivo_curp = $urlcurp; # guardamos el path
+        }
 
-        $instructor_institucional->tipo_honorario = trim($request->tipo_honorario); //
-        $instructor_institucional->registro_agente_capacitador_externo = trim($request->registro_agente); //
-        $instructor_institucional->unidad_capacitacion_solicita_validacion = trim($request->uncap_validacion); //
-        $instructor_institucional->memorandum_validacion = trim($request->memo_validacion); //
-        $instructor_institucional->fecha_validacion = trim($request->fecha_validacion);
-        $instructor_institucional->modificacion_memo = trim($request->memo_mod);
-        $instructor_institucional->numero_control = trim($request->idInstructor);
-        $instructor_institucional->save(); // guardar registro
+        if ($request->file('arch_alta') != null)
+        {
+            $alta = $request->file('arch_alta'); # obtenemos el archivo
+            $urlalta = $this->pdf_upload($alta, $id, 'alta'); # invocamos el método
+            $saveInstructor->archivo_alta = $urlalta; # guardamos el path
+        }
+
+        if ($request->file('arch_banco') != null)
+        {
+            $banco = $request->file('arch_banco'); # obtenemos el archivo
+            $urlbanco = $this->pdf_upload($banco, $id, 'banco'); # invocamos el método
+            $saveInstructor->archivo_bancario = $urlbanco; # guardamos el path
+        }
+
+        if ($request->file('arch_foto') != null)
+        {
+            $foto = $request->file('arch_foto'); # obtenemos el archivo
+            $urlfoto = $this->pdf_upload($foto, $id, 'foto'); # invocamos el método
+            $saveInstructor->archivo_fotografia = $urlfoto; # guardamos el path
+        }
+
+        if ($request->file('arch_estudio') != null)
+        {
+            $estudio = $request->file('arch_estudio'); # obtenemos el archivo
+            $urlestudio = $this->pdf_upload($estudio, $id, 'estudios'); # invocamos el método
+            $saveInstructor->archivo_estudios = $urlestudio; # guardamos el path
+        }
+
+        if ($request->file('arch_id') != null)
+        {
+            $otraid = $request->file('arch_id'); # obtenemos el archivo
+            $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
+            $saveInstructor->archivo_otraid = $urlotraid; # guardamos el path
+        }
+
+        $saveInstructor->save();
 
         return redirect()->route('instructor-inicio')
-            ->with('success','Agregado datos institucionales');
+                    ->with('success','Perfil profesional agregado');
     }
 
     public function validar($id)
-    {   $instructor = new instructor();
+    {
+        $instructor = new instructor();
         $getinstructor = $instructor->findOrFail($id);
-        return view('layouts.pages.validarinstructor', compact('getinstructor'));
+        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        return view('layouts.pages.validarinstructor', compact('getinstructor','data'));
     }
 
     public function rechazo_save(Request $request)
@@ -135,44 +151,29 @@ class InstructorController extends Controller
     public function validado_save(Request $request)
     {
         $instructor = instructor::find($request->id);
-        $instructor->banco = $request->banco;
-        $instructor->interbancaria = $request->clabe;
-        $instructor->no_cuenta = $request->numero_cuenta;
-        $instructor->domicilio = $request->domicilio;
+
+        $instructor->curp = trim($request->curp);
+        $instructor->rfc = trim($request->rfc);
+        $instructor->folio_ine = trim($request->folio_ine);
+        $instructor->sexo = trim($request->sexo);
+        $instructor->estado_civil = trim($request->estado_civil);
+        $instructor->fecha_nacimiento = $request->fecha_nacimiento;
+        $instructor->entidad = trim($request->entidad);
+        $instructor->municipio = trim($request->municipio);
+        $instructor->asentamiento = trim($request->asentamiento);
+        $instructor->telefono = trim($request->telefono);
+        $instructor->correo = trim($request->correo);
+        $instructor->tipo_honorario = trim($request->honorario);
+        $instructor->clave_unidad = trim($request->unidad_registra);
         $instructor->status = "Aprobado";
 
-        $ine = $request->file('arch_ine'); # obtenemos el archivo
-        $urline = $this->pdf_upload($ine, $request->id, 'ine'); # invocamos el método
-        $instructor->archivo_ine = $urline; # guardamos el path
-
-        $dom = $request->file('arch_domicilio'); # obtenemos el archivo
-        $urldom = $this->pdf_upload($dom, $request->id, 'dom'); # invocamos el método
-        $instructor->archivo_domicilio = $urldom; # guardamos el path
-
-        $curp = $request->file('arch_curp'); # obtenemos el archivo
-        $urlcurp = $this->pdf_upload($curp, $request->id, 'curp'); # invocamos el método
-        $instructor->archivo_curp = $urlcurp; # guardamos el path
-
-        $alta = $request->file('arch_alta'); # obtenemos el archivo
-        $urlalta = $this->pdf_upload($alta, $request->id, 'alta'); # invocamos el método
-        $instructor->archivo_alta = $urlalta; # guardamos el path
-
-        $banco = $request->file('arch_banco'); # obtenemos el archivo
-        $urlbanco = $this->pdf_upload($banco, $request->id, 'banco'); # invocamos el método
-        $instructor->archivo_bancario = $urlbanco; # guardamos el path
-
-        $foto = $request->file('arch_foto'); # obtenemos el archivo
-        $urlfoto = $this->pdf_upload($foto, $request->id, 'foto'); # invocamos el método
-        $instructor->archivo_fotografia = $urlfoto; # guardamos el path
-
-        $estudio = $request->file('arch_estudio'); # obtenemos el archivo
-        $urlestudio = $this->pdf_upload($estudio, $request->id, 'estudios'); # invocamos el método
-        $instructor->archivo_estudios = $urlestudio; # guardamos el path
-
-        $otraid = $request->file('arch_id'); # obtenemos el archivo
-        $urlotraid = $this->pdf_upload($otraid, $request->id, 'oid'); # invocamos el método
-        $instructor->archivo_otraid = $urlotraid; # guardamos el path
-
+        //Creacion de el numero de control
+        $uni = substr($request->unidad_registra, -2);
+        $now = Carbon::now();
+        $year = substr($now->year, -2);
+        $rfcpart = substr($request->rfc, 10);
+        $numero_control = $uni.$year.$rfcpart;
+        $instructor->numero_control = trim($numero_control);
         $instructor->save();
 
         return redirect()->route('instructor-inicio')
@@ -184,13 +185,7 @@ class InstructorController extends Controller
         $instructor = new instructor();
         $datains = instructor::WHERE('id', '=', $id)->FIRST();
 
-        $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
-        $lista_civil = estado_civil::WHERE('nombre', '!=', $datains->estado_civil)->GET();
-
-        $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
-        $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
-
-        return view('layouts.pages.editarinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad'));
+        return view('layouts.pages.editarinstructor', compact('datains'));
     }
 
     public function guardar_mod(Request $request)
@@ -200,26 +195,68 @@ class InstructorController extends Controller
         $modInstructor->nombre = trim($request->nombre);
         $modInstructor->apellidoPaterno = trim($request->apellido_paterno);
         $modInstructor->apellidoMaterno = trim($request->apellido_materno);
-        $modInstructor->curp = trim($request->curp);
-        $modInstructor->rfc = trim($request->rfc);
-        $modInstructor->folio_ine = trim($request->folio_ine);
-        $modInstructor->sexo = trim($request->sexo);
-        $modInstructor->estado_civil = trim($request->estado_civil);
-        $modInstructor->fecha_nacimiento = $request->fecha_nacimiento;
-        $modInstructor->entidad = trim($request->entidad);
-        $modInstructor->municipio = trim($request->municipio);
-        $modInstructor->asentamiento = trim($request->asentamiento);
-        $modInstructor->telefono = trim($request->telefono);
-        $modInstructor->correo = trim($request->correo);
-        $modInstructor->tipo_honorario = trim($request->honorario);
-        $modInstructor->clave_unidad = trim($request->unidad_registra);
+        $modInstructor->banco = $request->banco;
+        $modInstructor->interbancaria = $request->clabe;
+        $modInstructor->no_cuenta = $request->numero_cuenta;
+        $modInstructor->domicilio = $request->domicilio;
         $modInstructor->status = "En Proceso";
-        $modInstructor->rechazo = "";
 
-        $uni = substr($request->unidad_registra, -2);
-        $nuco = substr($modInstructor->numero_control, -15);
-        $numero_control = $uni.$nuco;
-        $modInstructor->numero_control = trim($numero_control);
+        if ($request->file('arch_ine') != null)
+        {
+            $ine = $request->file('arch_ine'); # obtenemos el archivo
+            $urline = $this->pdf_upload($ine, $request->id, 'ine'); # invocamos el método
+            $modInstructor->archivo_ine = $urline; # guardamos el path
+        }
+
+        if ($request->file('arch_domicilio') != null)
+        {
+            $dom = $request->file('arch_domicilio'); # obtenemos el archivo
+            $urldom = $this->pdf_upload($dom, $request->id, 'dom'); # invocamos el método
+            $modInstructor->archivo_domicilio = $urldom; # guardamos el path
+        }
+
+        if ($request->file('arch_curp') != null)
+        {
+            $curp = $request->file('arch_curp'); # obtenemos el archivo
+            $urlcurp = $this->pdf_upload($curp, $request->id, 'curp'); # invocamos el método
+            $modInstructor->archivo_curp = $urlcurp; # guardamos el path
+        }
+
+        if ($request->file('arch_alta') != null)
+        {
+            $alta = $request->file('arch_alta'); # obtenemos el archivo
+            $urlalta = $this->pdf_upload($alta, $request->id, 'alta'); # invocamos el método
+            $modInstructor->archivo_alta = $urlalta; # guardamos el path
+        }
+
+        if ($request->file('arch_banco') != null)
+        {
+            $banco = $request->file('arch_banco'); # obtenemos el archivo
+            $urlbanco = $this->pdf_upload($banco, $request->id, 'banco'); # invocamos el método
+            $modInstructor->archivo_bancario = $urlbanco; # guardamos el path
+        }
+
+        if ($request->file('arch_foto') != null)
+        {
+            $foto = $request->file('arch_foto'); # obtenemos el archivo
+            $urlfoto = $this->pdf_upload($foto, $request->id, 'foto'); # invocamos el método
+            $modInstructor->archivo_fotografia = $urlfoto; # guardamos el path
+        }
+
+        if ($request->file('arch_estudio') != null)
+        {
+            $estudio = $request->file('arch_estudio'); # obtenemos el archivo
+            $urlestudio = $this->pdf_upload($estudio, $request->id, 'estudios'); # invocamos el método
+            $modInstructor->archivo_estudios = $urlestudio; # guardamos el path
+        }
+
+        if ($request->file('arch_id') != null)
+        {
+            $otraid = $request->file('arch_id'); # obtenemos el archivo
+            $urlotraid = $this->pdf_upload($otraid, $request->id, 'oid'); # invocamos el método
+            $modInstructor->archivo_otraid = $urlotraid; # guardamos el path
+        }
+
         $modInstructor->save();
 
         return redirect()->route('instructor-inicio')
@@ -242,7 +279,7 @@ class InstructorController extends Controller
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
 
         $validado = InstructorPerfil::SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
-                        'especialidad_instructores.zona','especialidad_instructores.observacion')
+                        'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id')
                         ->WHERE('numero_control', '=', $id)
                         ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
@@ -274,7 +311,7 @@ class InstructorController extends Controller
         $modInstructor->clave_unidad = trim($request->unidad_registra);
 
         $uni = substr($request->unidad_registra, -2);
-        $nuco = substr($modInstructor->numero_control, -15);
+        $nuco = substr($modInstructor->numero_control, -12);
         $numero_control = $uni.$nuco;
         $modInstructor->numero_control = trim($numero_control);
 
@@ -345,6 +382,28 @@ class InstructorController extends Controller
                 ->with('success','Instructor Modificado');
     }
 
+    public function edit_especval($id,$idins)
+    {
+        $idesp = $id;
+        $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
+        return view('layouts.pages.modcursoimpartir', compact('data_especialidad','idesp','idins'));
+    }
+
+    public function edit_especval2($id, $idins, $idesp)
+    {
+        $especvalid = especialidad_instructor::WHERE('id', '=', $idesp)->FIRST();
+
+        $sel_espec = InstructorPerfil::WHERE('id', '=', $especvalid->perfilprof_id)->FIRST();
+        $data_espec = InstructorPerfil::where('id', '!=', $especvalid->perfilprof_id)->get();
+
+        $sel_pago = criterio_pago::WHERE('id', '=', $especvalid->pago_id)->FIRST();
+        $data_pago = criterio_pago::WHERE('id', '!=', $especvalid->pago_id)->GET();
+
+        $sel_unidad = tbl_unidades::WHERE('unidad', '=', $especvalid->unidad_solicita)->FIRST();
+        $data_unidad = tbl_unidades::WHERE('unidad', '!=', $especvalid->unidad_solicita)->GET();
+
+        return view('layouts.pages.frmmodespecialidad', compact('especvalid','sel_espec','data_espec','sel_pago','data_pago','sel_unidad','data_unidad', 'idesp','id','idins'));
+    }
 
     public function add_perfil($id)
     {
@@ -396,6 +455,26 @@ class InstructorController extends Controller
         return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data'));
     }
 
+    public function especval_mod_save(Request $request)
+    {
+
+        $espec_mod = especialidad_instructor::find($request->idespec);
+        $espec_mod->especialidad_id = $request->idesp;
+        $espec_mod->perfilprof_id = $request->valido_perfil;
+        $espec_mod->pago_id = $request->criterio_pago;
+        $espec_mod->zona = $request->zona;
+        $espec_mod->validado_impartir = $request->impartir;
+        $espec_mod->unidad_solicita = $request->unidad_validacion;
+        $espec_mod->memorandum_validacion = $request->memorandum;
+        $espec_mod->fecha_validacion = $request->fecha_validacion;
+        $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
+        $espec_mod->observacion = $request->observaciones;
+        $espec_mod->save();
+
+        return redirect()->route('instructor-ver', ['id' => $request->idins])
+                        ->with('success','Especialidad Para Impartir Modificada');
+    }
+
     public function espec_val_save(Request $request)
     {
         $espec_save = new especialidad_instructor;
@@ -414,13 +493,6 @@ class InstructorController extends Controller
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\instructor  $instructor
-     * @return \Illuminate\Http\Response
-     */
 
     protected function pdf_upload($pdf, $id, $nom)
     {
