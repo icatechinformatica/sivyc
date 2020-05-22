@@ -13,21 +13,26 @@
         </div>
         <h2>Vista de Documentos</h2>
         <div class="form-row">
-                <a class="btn btn-danger" href={{$datains->archivo_ine}} target="_blank">Solicitud de Pago</a><br>
-                <a class="btn btn-danger" href={{$datains->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
-                <a class="btn btn-danger" href={{$datains->archivo_curp}} target="_blank">CURP</a><br>
-                <a class="btn btn-danger" href={{$datains->archivo_alta}} target="_blank">Alta de Instructor</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_ine}} download>Solicitud de Pago</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_domicilio}} download>Comprobante de Domicilio</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_curp}} download>CURP</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_alta}} download>Alta de Instructor</a><br>
         </div>
         <div class="form-row">
-            <a class="btn btn-danger" href={{$datains->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
-            <a class="btn btn-danger" href={{$datains->archivo_fotografia}} target="_blank">Fotografía</a><br>
-            <a class="btn btn-danger" href={{$datains->archivo_estudios}} target="_blank">Estudios</a><br>
-            <a class="btn btn-danger" href={{$datains->archivo_otraid}} target="_blank">Otra Identificación</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_bancario}} download>Datos Bancarios</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_fotografia}} download>Fotografía</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_estudios}} download>Estudios</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_otraid}} download>Otra Identificación</a><br>
         </div>
         <form id="registerinstructor"  method="POST" action="{{ route('saveins') }}" enctype="multipart/form-data">
             @csrf
                 <br>
                 <label><h2>Datos Personales</h2></label>
+                <div style="text-align: right;width:100%">
+                    @can('instructor.editar_fase2')
+                        <button type="button" id="mod_instructor_fase2" class="btn btn-warning btn-lg">Modificar Campos</button>
+                    @endcan
+                </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre">Nombre</label>
@@ -232,7 +237,9 @@
                             <caption>Lista de Perfiles Profesionales</caption>
                         </div>
                         <div class="pull-right">
-                            <a class="btn btn-info" href="{{route('instructor-perfil', ['id' => $datains->id])}}">Agregar Perfil Profesional</a>
+                            @can('instructor.editar_fase2')
+                                <a class="btn btn-info" href="{{route('instructor-perfil', ['id' => $datains->id])}}">Agregar Perfil Profesional</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -257,7 +264,9 @@
                                 <td>{{ $item->zona }}</td>
                                 <td>{{ $item->observacion }}</td>
                                 <td>
-                                    <a class="btn btn-info" href="{{route('instructor-editespectval', ['id' => $item->id, 'idins' => $datains->id])}}">Modificar</a>
+                                    @can('instructor.editar_fase2')
+                                        <a class="btn btn-info" href="{{route('instructor-editespectval', ['id' => $item->id, 'idins' => $datains->id])}}">Modificar</a>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
@@ -274,7 +283,9 @@
                             <caption>Lista de Cursos Validados para Impartir</caption>
                         </div>
                         <div class="pull-right">
-                            <a class="btn btn-info" href="{{route('instructor-curso', ['id' => $datains->id])}}">Agregar Curso Validado para Impartir</a>
+                            @can('instructor.editar_fase2')
+                                <a class="btn btn-info" href="{{route('instructor-curso', ['id' => $datains->id])}}">Agregar Curso Validado para Impartir</a>
+                            @endcan
                         </div>
                     </div>
                 </div>

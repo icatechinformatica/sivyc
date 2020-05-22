@@ -29,7 +29,9 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
+                    @can('instructor.create')
+                        <a class="btn btn-success btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -54,13 +56,17 @@
                         <td>{{$itemData->status}}</td>
                         <td>
                             @if ($itemData->status == 'En Proceso')
-                                <a class="btn btn-info" href="{{route('instructor-validar', ['id' => $itemData->id])}}">Validar</a>
+                                @can('instructor.validar')
+                                    <a class="btn btn-info" href="{{route('instructor-validar', ['id' => $itemData->id])}}">Validar</a>
+                                @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
-                            <a class="btn btn-info" href="{{route('instructor-editar', ['id' => $itemData->id])}}">Editar</a>
+                                @can(instructor.editar_fase1)
+                                    <a class="btn btn-info" href="{{route('instructor-editar', ['id' => $itemData->id])}}">Editar</a>
+                                @endcan
                             @endif
                             @if ($itemData->status == 'Aprobado')
-                                <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                                    <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                             @endif
                         </td>
                     </tr>
