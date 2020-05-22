@@ -167,6 +167,20 @@
                 <input type="date" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion">
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="cambios_especialidad" class="control-label">CAMBIOS DE ESPECIALIDAD</label>
+                <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO</label>
+                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="categoria" class="control-label">CATEGORIA</label>
+                <input type="text" name="categoria" id="categoria" class="form-control">
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
