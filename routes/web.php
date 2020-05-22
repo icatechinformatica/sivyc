@@ -20,12 +20,14 @@ Route::get('/instructor/validar/{id}', 'webController\InstructorController@valid
 Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');
 Route::get('/instructor/editar/especialidad-validada/{id}{idins}', 'webController\InstructorController@edit_especval')->name('instructor-editespectval');
 Route::get('/instructor/editar/especialidad-valid/{id}{idins}{idesp}', 'webController\InstructorController@edit_especval2')->name('instructor-editespectval2');
+Route::get('/instructor/mod/perfil-profesional/{id}{idins}', 'webController\InstructorController@mod_perfil')->name('instructor-perfilmod');
 Route::post('/instructor/rechazo','webController\InstructorController@rechazo_save')->name('instructor-rechazo');
 Route::post('/instructor/validado','webController\InstructorController@validado_save')->name('instructor-validado');
 Route::post('/instructor/guardar-mod','webController\InstructorController@guardar_mod')->name('instructor-guardarmod');
 Route::post('/instructor/saveins','webController\InstructorController@save_ins')->name('saveins');
 Route::post('/instructor/espec-ins/guardar','webController\InstructorController@espec_val_save')->name('especinstructor-guardar');
 Route::post('/instructor/espec-ins/modificacion/guardar','webController\InstructorController@especval_mod_save')->name('especinstructor-modguardar');
+Route::post('/instructor/mod/perfilinstructor/guardar', 'webController\InstructorController@modperfilinstructor_save')->name('modperfilinstructor-guardar');
 
 Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
 Route::get('/alumno/registro/pdf', 'webController\AlumnoController@pdf_registro')->name('pdf-alumno');

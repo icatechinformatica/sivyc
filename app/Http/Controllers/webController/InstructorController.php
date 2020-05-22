@@ -14,6 +14,7 @@ use App\Models\InstructorPerfil;
 use App\Models\tbl_unidades;
 use App\Models\especialidad;
 use App\Models\estado_civil;
+use App\Models\status;
 use App\Models\especialidad_instructor;
 use App\Models\criterio_pago;
 use Illuminate\Pagination\Paginator;
@@ -411,6 +412,46 @@ class InstructorController extends Controller
         return view('layouts.pages.frmperfilprof', compact('idins'));
     }
 
+    public function mod_perfil($id, $idins)
+    {
+        $perfil_ins = InstructorPerfil::WHERE('id', '=', $id)->FIRST();
+
+        $sel_status = Status::WHERE('estatus', '=', $perfil_ins->estatus)->FIRST();
+        $data_status = Status::WHERE('estatus', '!=', $perfil_ins->estatus)
+                              ->WHERE('perfil_profesional', '=', 'true')->GET();
+
+        return view('layouts.pages.modperfilprof', compact('idins','perfil_ins','sel_status','data_status','id'));
+    }
+
+    public function modperfilinstructor_save(Request $request)
+    {
+        $perfilInstructor = InstructorPerfil::find($request->id);
+        #proceso de guardado
+        $perfilInstructor->grado_profesional = trim($request->grado_prof); //
+        $perfilInstructor->area_carrera = trim($request->area_carrera); //
+        $perfilInstructor->estatus = trim($request->estatus); //
+        $perfilInstructor->pais_institucion = trim($request->institucion_pais); //
+        $perfilInstructor->entidad_institucion = trim($request->institucion_entidad); //
+        $perfilInstructor->ciudad_institucion = trim($request->institucion_ciudad);
+        $perfilInstructor->nombre_institucion = trim($request->institucion_nombre);
+        $perfilInstructor->fecha_expedicion_documento = trim($request->fecha_documento); //
+        $perfilInstructor->folio_documento = trim($request->folio_documento); //
+        $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
+        $perfilInstructor->estandar_conocer = trim($request->conocer);
+        $perfilInstructor->registro_stps = trim($request->stps);
+        $perfilInstructor->capacitador_icatech = trim($request->capacitador_icatech);
+        $perfilInstructor->recibidos_icatech = trim($request->recibidos_icatech);
+        $perfilInstructor->cursos_impartidos = trim($request->cursos_impartidos);
+        $perfilInstructor->experiencia_laboral = trim($request->exp_lab);
+        $perfilInstructor->experiencia_docente = trim($request->exp_doc);
+        $perfilInstructor->numero_control = trim($request->idInstructor);
+        $perfilInstructor->save(); // guardar registro
+
+        return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
+                        ->with('success','Perfil profesional modificado');
+
+    }
+
     public function perfilinstructor_save(Request $request)
     {
         $perfilInstructor = new InstructorPerfil();
@@ -428,7 +469,7 @@ class InstructorController extends Controller
         $perfilInstructor->estandar_conocer = trim($request->conocer);
         $perfilInstructor->registro_stps = trim($request->stps);
         $perfilInstructor->capacitador_icatech = trim($request->capacitador_icatech);
-        $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
+        $perfilInstructor->recibidos_icatech = trim($request->recibidos_icatech);
         $perfilInstructor->cursos_impartidos = trim($request->cursos_impartidos);
         $perfilInstructor->experiencia_laboral = trim($request->exp_lab);
         $perfilInstructor->experiencia_docente = trim($request->exp_doc);

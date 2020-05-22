@@ -220,6 +220,9 @@
                                     <td>{{ $item->estatus }}</td>
                                     <td>{{ $item->nombre_institucion }}</td>
                                     <td>
+                                        @can('instructor.editar_fase2')
+                                            <a class="btn btn-info" href="{{route('instructor-perfilmod', ['id' => $item->id, 'idins' => $datains->id])}}">Modificar</a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach
