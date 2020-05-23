@@ -97,7 +97,7 @@
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <div id="contextoModalBody"></div>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

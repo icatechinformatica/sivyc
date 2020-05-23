@@ -400,7 +400,7 @@ $(function(){
     $('#areaCursos').on("change", () => {
         $("#areaCursos option:selected").each( () => {
             var idArea = $('#areaCursos').val();
-            var url = '/cursos/especialidad-by-area/'+ idArea;
+            var url = '/cursos/especialidad_by_area/'+ idArea;
 
             var request = $.ajax
             ({
@@ -557,6 +557,26 @@ $(function(){
         }
     });
 
+    /***
+     * modificaciones de funciones de flecha
+    */
+   var getU = (idCurso) => {
+        $.ajax({
+            type: 'GET',
+            url: '/cursos/get_by_id/'+idCurso,
+            data: idCurso, //datos a enviar al servidor
+            dataType: 'json',
+            success: (response) => {
+                var contenidoModal = $("#contextoModalBody");
+                contenidoModal.append(response);
+                console.log(response);
+            },
+            error: () => {
+                console.log("No se ha podido obtener la información")
+            }
+        });
+    }
+
     /**
     *  modificación de modal bootsrap
      */
@@ -565,23 +585,6 @@ $(function(){
         var id = button.data('id');
 
         console.log(id);
+        getU(id);
     });
-
-    /***
-     * modificaciones de funciones de flecha
-    */
-   getU = () => {
-       $.ajax({
-            type: 'GET',
-            url: '',
-            data: '', //datos a enviar al servidor
-            dataType: JSON,
-            success: (response) => {
-
-            },
-            error: () => {
-                console.log("No se ha podido obtener la información")
-            }
-       });
-   }
 });

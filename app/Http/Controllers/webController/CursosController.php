@@ -167,6 +167,20 @@ class CursosController extends Controller
         return $json;
     }
 
+    protected function get_by_id($idCurso)
+    {
+        if (isset($idCurso)) {
+            # code...
+            $cursos = new curso();
+            $curso = $cursos->findOrfail($idCurso);
+
+            $json=json_encode($curso);
+        } else {
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Curso para filtar'));
+        }
+        return $json;
+    }
+
     /**
      * Update the specified resource in storage.
      *

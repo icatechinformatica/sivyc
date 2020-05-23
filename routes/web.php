@@ -92,7 +92,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@export_pdf')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
-    Route::get('/cursos/especialidad-by-area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');
+    Route::get('/cursos/especialidad_by_area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');
+    /**
+     * obtener toda la información del curso por id
+     */
+    Route::get('cursos/get_by_id/{idCurso}', 'webController\CursosController@get_by_id')->name('cursos.get_by_id');
     /**
      * contratos Desarrollando por Daniel
      */
