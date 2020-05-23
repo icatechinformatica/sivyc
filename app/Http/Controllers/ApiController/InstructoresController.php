@@ -17,7 +17,7 @@ class InstructoresController extends Controller
     {
         $instructor= new Instructor();
         $instructores = $instructor->SELECT('instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
-        'instructores.experiencia_docente', 'instructores.cursos_recibidos', 'instructores.capacitados_icatech', 'instructores.curso_recibido_icatech',
+        'instructores.cursos_recibidos', 'instructores.capacitados_icatech', 'instructores.curso_recibido_icatech',
         'instructores.cursos_impartidos', 'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
         'instructores.asentamiento', 'instructores.domicilio', 'instructores.telefono', 'instructores.correo', 'instructores.observaciones', 'instructores.cursos_conocer', 'instructores.banco', 'instructores.no_cuenta',
         'instructores.interbancaria', 'instructores.folio_ine', 'instructores.archivo_cv', 'instructores.created_at', 'instructores.updated_at', 'instructores.id_especialidad', 'instructores.status', 'instructores.rechazo', 'instructores.clave_unidad',
