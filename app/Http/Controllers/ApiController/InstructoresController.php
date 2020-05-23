@@ -17,10 +17,12 @@ class InstructoresController extends Controller
     {
         $instructor= new Instructor();
         $instructores = $instructor->SELECT('instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
-        'instructores.cursos_recibidos', 'instructores.capacitados_icatech', 'instructores.curso_recibido_icatech',
-        'instructores.cursos_impartidos', 'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
-        'instructores.asentamiento', 'instructores.domicilio', 'instructores.telefono', 'instructores.correo', 'instructores.observaciones', 'instructores.cursos_conocer', 'instructores.banco', 'instructores.no_cuenta',
-        'instructores.interbancaria', 'instructores.folio_ine', 'instructores.archivo_cv', 'instructores.created_at', 'instructores.updated_at', 'instructores.id_especialidad', 'instructores.status', 'instructores.rechazo', 'instructores.clave_unidad',
+        'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
+        'instructores.asentamiento', 'instructores.domicilio', 'instructores.telefono', 'instructores.correo', 'instructores.banco', 'instructores.no_cuenta',
+        'instructores.interbancaria', 'instructores.folio_ine','instructores.id_especialidad',
+        'instructores.tipo_honorario', 'instructores.archivo_ine', 'instructores.archivo_domicilio', 'instructores.archivo_curp',
+        'instructores.archivo_alta', 'instructores.archivo_bancario', 'instructores.archivo_fotografia', 'instructores.archivo_estudios',
+        'instructores.archivo_otraid', 'instructores.status', 'instructores.rechazo', 'instructores.clave_unidad',
         'especialidades.nombre AS nombre_especialidad', 'tbl_unidades.unidad AS unidades')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'instructores.id_especialidad')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')->GET();
