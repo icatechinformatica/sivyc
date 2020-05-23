@@ -15,7 +15,7 @@ class Curso extends Model
             'dura','hini','hfin','horas','ciclo','plantel','depen','muni','sector','programa',
             'nota','munidad','efisico','cespecifico','mpaqueteria','mexoneracion','hombre','mujer',
             'tipo','fcespe','cgeneral','fcgen','opcion','motivo','cp','ze','id_curso','id_instructor', 'modinstructor',
-            'nmunidad', 'nmacademico', 'observaciones', 'status', 'realizo', 'valido'
+            'nmunidad', 'nmacademico', 'observaciones', 'status', 'realizo', 'valido', 'arc', 'tcapacitacion'
         ];
 
     protected $hidden = ['created_at', 'updated_at'];

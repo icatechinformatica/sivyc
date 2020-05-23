@@ -556,4 +556,32 @@ $(function(){
             }
         }
     });
+
+    /**
+    *  modificación de modal bootsrap
+     */
+    $('#fullHeightModalRight').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+
+        console.log(id);
+    });
+
+    /***
+     * modificaciones de funciones de flecha
+    */
+   getU = () => {
+       $.ajax({
+            type: 'GET',
+            url: '',
+            data: '', //datos a enviar al servidor
+            dataType: JSON,
+            success: (response) => {
+
+            },
+            error: () => {
+                console.log("No se ha podido obtener la información")
+            }
+       });
+   }
 });

@@ -99,6 +99,8 @@ class CursosController extends Controller
                 $Curso->status = $request->status;
                 $Curso->realizo = $request->realizo;
                 $Curso->valido = $request->valido;
+                $Curso->arc = $request->arc;
+                $Curso->tcapacitacion = $request->tcapacitacion;
                 $Curso->save();
 
                 return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);
