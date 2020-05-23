@@ -23,7 +23,7 @@ class InstructoresController extends Controller
         'instructores.interbancaria', 'instructores.folio_ine', 'instructores.archivo_cv', 'instructores.created_at', 'instructores.updated_at', 'instructores.id_especialidad', 'instructores.status', 'instructores.rechazo', 'instructores.clave_unidad',
         'especialidades.nombre AS nombre_especialidad', 'tbl_unidades.unidad AS unidades')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'instructores.id_especialidad')
-        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.id', '=', 'instructores.clave_unidad')->GET();
+        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')->GET();
         return response()->json($instructores, 200);
     }
 
