@@ -172,7 +172,7 @@ class InstructorController extends Controller
         $uni = substr($request->unidad_registra, -2);
         $now = Carbon::now();
         $year = substr($now->year, -2);
-        $rfcpart = substr($request->rfc, 10);
+        $rfcpart = substr($request->rfc, 0, 10);
         $numero_control = $uni.$year.$rfcpart;
         $instructor->numero_control = trim($numero_control);
         $instructor->save();
