@@ -13,7 +13,7 @@
             </ul>
         </div><br />
     @endif
-    <form method="POST" action="{{ url('cursos/guardar-catalogo') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('cursos-catalogo.update')}}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
         <div style="text-align: right;width:65%">
             <label for="tituloformulariocurso"><h1>Formulario de Cursos</h1></label>
@@ -163,26 +163,26 @@
             <!-- fecha_validacion -->
             <div class="form-group col-md-6">
               <label for="fecha_validacion" class="control-label">Fecha Validación</label>
-              <input type="date" class="form-control" id="fecha_validacion" name="fecha_validacion">
+              <input type="date" class="form-control" id="fecha_validacion" name="fecha_validacion" value="{{ $cursos->fecha_validacion }}">
             </div>
             <!-- memo_actualizacion END -->
             <div class="form-group col-md-6">
                 <label for="fecha_actualizacion" class="control-label">Fecha Actualización</label>
-                <input type="date" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion">
+                <input type="date" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion" value="{{ $cursos->fecha_actualizacion }}">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="cambios_especialidad" class="control-label">CAMBIOS DE ESPECIALIDAD</label>
-                <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control">
+                <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control" value="{{ $cursos->cambios_especialidad }}">
             </div>
             <div class="form-group col-md-4">
                 <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO</label>
-                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control">
+                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" value="{{ $cursos->nivel_estudio }}">
             </div>
             <div class="form-group col-md-4">
                 <label for="categoria" class="control-label">CATEGORIA</label>
-                <input type="text" name="categoria" id="categoria" class="form-control">
+                <input type="text" name="categoria" id="categoria" class="form-control" value="{{ $cursos->categoria }}">
             </div>
         </div>
         <div class="row">

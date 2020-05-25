@@ -93,6 +93,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
     Route::get('/cursos/especialidad_by_area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');
+    Route::put('/cursos/actualiza-catalogo', 'webController\CursosController@update')->name('cursos-catalogo.update');
+    Route::get('/cursos/editar-catalogo/{id}', 'webController\CursosController@show')->name('cursos-catalogo.show');
     /**
      * obtener toda la información del curso por id
      */
