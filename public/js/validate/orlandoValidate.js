@@ -270,7 +270,7 @@ $(function(){
             },
             stps:{
                 required: true,
-                valueNotEquals: "sin especificar"
+                valueNotEquals: "sin especificar "
             },
             capacitador_icatech:{
                 required: true,
