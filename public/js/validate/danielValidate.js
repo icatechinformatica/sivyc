@@ -568,8 +568,53 @@ $(function(){
             dataType: 'json',
             success: (response) => {
                 var contenidoModal = $("#contextoModalBody");
-                contenidoModal.append(response);
-                console.log(response);
+                var myModalLabel = $("#myModalLabel");
+                /***
+                 * modificación de una etiqueta
+                 */
+                myModalLabel.append(
+                    response[0].nombre_curso
+                );
+                contenidoModal.append(
+                    '<ul class="list-group z-depth-0">'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Categoria: </b> '+ response[0].categoria
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Clasificación: </b> '+ response[0].clasificacion
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Perfil: </b> '+ response[0].perfil
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Modalidad: </b> '+ response[0].modalidad
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Unidad Móvil: </b> '+ response[0].unidad_amovil
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Memo de Validación: </b> '+ response[0].memo_validacion
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> NIVEL DE ESTUDIOS: </b> ' + response[0].nivel_estudio
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> COSTO: </b> ' + response[0].costo
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> FECHA ACTUALIZACIÓN: </b> ' + response[0].fecha_actualizacion
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> FECHA VALIDACIÓN: </b> ' + response[0].fecha_validacion
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> PERFIL: </b> ' + response[0].perfil
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> ESPECIALIDAD: </b> ' + response[0].especialidad
+                  +   '</li>'
+                  + '</ul>'
+              );
             },
             error: () => {
                 console.log("No se ha podido obtener la información")
@@ -583,8 +628,14 @@ $(function(){
     $('#fullHeightModalRight').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var id = button.data('id');
-
-        console.log(id);
         getU(id);
+    });
+
+    $('#fullHeightModalRight').on('hidden.bs.modal', function (e) {
+        // delete div content
+        var contenidoModal = $("#contextoModalBody");
+        var myModalLabel = $("#myModalLabel");
+        contenidoModal.empty();
+        myModalLabel.empty();
     });
 });
