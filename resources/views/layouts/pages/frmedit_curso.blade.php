@@ -1,6 +1,6 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Formulario de Cursos | Sivyc Icatech')
+@section('title', 'Editar Cursos | Sivyc Icatech')
 <!--seccion-->
 @section('content')
 <div class="container g-pt-50">
@@ -43,11 +43,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="nombrecurso" class="control-label">Nombre del Curso</label>
-                <input type="text" class="form-control" id="nombrecurso" name="nombrecurso">
+                <input type="text" class="form-control" id="nombrecurso" name="nombrecurso" value="{{$cursos->nombre_curso}}">
             </div>
             <div class="form-group col-md-6">
                 <label for="unidad_accion_movil" class="control-label">Unidad Acción Móvil</label>
-                <input type="text" class="form-control" id="unidad_accion_movil" name="unidad_accion_movil">
+                <input type="text" class="form-control" id="unidad_accion_movil" name="unidad_accion_movil" value="{{ $cursos->unidad_amovil }}">
             </div>
         </div>
         <div class="form-row">
@@ -75,13 +75,13 @@
           <!-- Destinatario -->
           <div class="form-group col-md-6">
             <label for="horas" class="control-label">Horas</label>
-            <input type="number" class="form-control" id="horas" name="horas" placeholder="Horas">
+            <input type="number" class="form-control" id="horas" name="horas" placeholder="Horas" value="{{ $cursos->horas }}">
           </div>
           <!-- Destinatario END -->
           <!-- Puesto-->
           <div class="form-group col-md-6">
             <label for="costo" class="control-label">Costo</label>
-            <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="costo">
+            <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="costo" value="{{ $cursos->costo }}">
           </div>
           <!-- Puesto END-->
 
@@ -90,13 +90,13 @@
             <!-- Duracion -->
             <div class="form-group col-md-6">
               <label for="duracion" class="control-label">Duración</label>
-              <input type="text" class="form-control" id="duracion" name="duracion" placeholder="duracion">
+              <input type="text" class="form-control" id="duracion" name="duracion" placeholder="duracion" value="{{ $cursos->duracion }}">
             </div>
             <!-- Duracion END -->
             <!-- Perfil-->
             <div class="form-group col-md-6">
               <label for="perfil" class="control-label">Perfil</label>
-              <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil">
+              <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil" value="{{ $cursos->perfil }}">
             </div>
             <!-- Perfil END-->
         </div>
@@ -104,13 +104,17 @@
             <!-- Objetivo -->
             <div class="form-group col-md-6">
               <label for="objetivo" class="control-label">OBJECTIVO</label>
-              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO"></textarea>
+              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO">
+                  {{ $cursos->objetivo }}
+              </textarea>
             </div>
             <!-- Objetivo END -->
             <!-- Accion Movil-->
             <div class="form-group col-md-6">
                 <label for="descripcionCurso" class="control-label">DESCRIPCIÓN</label>
-                <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="5" placeholder="DESCRIPCIÓN"></textarea>
+                <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="5" placeholder="DESCRIPCIÓN">
+                    {{ $cursos->objetivo }}
+                </textarea>
             </div>
             <!-- Accion Movil END-->
         </div>
@@ -120,7 +124,7 @@
                 <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE AUTORIZACIÓN</label>
                 <div class="col-sm-10">
                     <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="solicitud_autorizacion" name="solicitud_autorizacion" value="true">
+                    <input class="form-check-input" type="checkbox" id="solicitud_autorizacion" name="solicitud_autorizacion" value="{{ $cursos->solicitud_autorizacion }}">
                     <label class="form-check-label" for="solicitud_autorizacion">
                         AUTORIZACIÓN
                     </label>

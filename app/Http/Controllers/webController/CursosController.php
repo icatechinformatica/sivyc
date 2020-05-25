@@ -78,6 +78,9 @@ class CursosController extends Controller
             $cursos->solicitud_autorizacion = (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false;
             $cursos->memo_actualizacion = $request->memo_actualizacion;
             $cursos->memo_validacion = $request->memo_validacion;
+            $cursos->cambios_especialidad = $request->cambios_especialidad;
+            $cursos->nivel_estudio = $request->nivel_estudio;
+            $cursos->categoria = $request->categoria;
             $cursos->save();
 
             # ==================================
@@ -161,6 +164,28 @@ class CursosController extends Controller
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
         }
 
+        return $json;
+    }
+
+    protected function get_by_id($idCurso)
+    {
+        if (isset($idCurso)) {
+            # code...
+            $cursos = new curso();
+            $curso = $cursos::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+                    'cursos.costo','cursos.duracion',
+                    'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
+                    'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
+                    'especialidades.nombre AS especialidad',
+                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria')
+                    ->WHERE('cursos.id', '=', $idCurso)
+                    ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
+                    ->GET();
+
+            $json= response()->json($curso, 200);
+        } else {
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Curso para filtar'));
+        }
         return $json;
     }
 

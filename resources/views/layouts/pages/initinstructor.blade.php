@@ -61,7 +61,7 @@
                                 @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
-                                @can(instructor.editar_fase1)
+                                @can('instructor.editar_fase1')
                                     <a class="btn btn-info" href="{{route('instructor-editar', ['id' => $itemData->id])}}">Editar</a>
                                 @endcan
                             @endif
