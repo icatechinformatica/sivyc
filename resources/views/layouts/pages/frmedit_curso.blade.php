@@ -133,12 +133,12 @@
             </div>
             <div class="form-group col-md-4">
                 <label for="memo_actualizacion" class="control-label">MEMO DE ACTUALIZACIÓN</label>
-                <input type="text" class="form-control" id="memo_actualizacion" name="memo_actualizacion">
+                <input type="text" class="form-control" id="memo_actualizacion" name="memo_actualizacion" value="{{ $cursos->memo_actualizacion}}">
             </div>
             <!-- fecha_validacion END -->
             <div class="form-group col-md-4">
                 <label for="memo_validacion" class="control-label">MEMO DE VALIDACIÓN</label>
-                <input type="text" class="form-control" id="memo_validacion" name="memo_validacion">
+                <input type="text" class="form-control" id="memo_validacion" name="memo_validacion" value="{{ $cursos->memo_validacion }}">
             </div>
         </div>
         <div class="form-row">
