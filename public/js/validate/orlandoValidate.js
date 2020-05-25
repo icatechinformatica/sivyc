@@ -229,7 +229,7 @@ $(function(){
     });
 
         //Valida perfil_profesional
-    $('#registerperf_prof').validate({
+   /* $('#registerperf_prof').validate({
         rules: {
             grado_prof:{
                 required: true,
@@ -352,7 +352,7 @@ $(function(){
                 required: "Por favor Ingrese Experiencia Docente"
             }
         }
-    });
+    });*/
 
     //Valida Pago
     $('#registerpago').validate({
