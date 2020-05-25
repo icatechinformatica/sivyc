@@ -41,7 +41,7 @@ $(function(){
        }, "Value must not equal arg.");
 
        //Valida Instructor
-    $('#registerinstructor').validate({
+   /* $('#registerinstructor').validate({
         rules: {
             nombre:{
                 required: true,
@@ -226,10 +226,10 @@ $(function(){
                 valueNotEquals: 'Por Favor ingrese la unidad donde se esta registrando al instructor'
             }
         }
-    });
+    });*/
 
         //Valida perfil_profesional
-   /* $('#registerperf_prof').validate({
+    $('#registerperf_prof').validate({
         rules: {
             grado_prof:{
                 required: true,
@@ -270,7 +270,7 @@ $(function(){
             },
             stps:{
                 required: true,
-                valueNotEquals: "sin especificar "
+                valueNotEquals: "sin especificar"
             },
             capacitador_icatech:{
                 required: true,
@@ -352,7 +352,7 @@ $(function(){
                 required: "Por favor Ingrese Experiencia Docente"
             }
         }
-    });*/
+    });
 
     //Valida Pago
     $('#registerpago').validate({
