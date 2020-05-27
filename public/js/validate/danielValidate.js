@@ -182,7 +182,7 @@ $(function(){
             },
             telefono: {
                 required: true,
-                phoneMX: true
+                //phoneMX: true
             },
             domicilio: {
                 required: true
