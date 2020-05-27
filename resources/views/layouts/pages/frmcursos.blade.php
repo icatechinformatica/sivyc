@@ -57,6 +57,7 @@
                   <option value="">--SELECCIONAR--</option>
                   <option value="CAE">CAE</option>
                   <option value="EXT">EXT</option>
+                  <option value="EMP">EMP</option>
                 </select>
             </div>
             <!--clasificacion-->
@@ -64,7 +65,7 @@
                 <label for="clasificacion  " class="control-label">Clasificación</label>
                 <select class="form-control" id="clasificacion" name="clasificacion">
                     <option value="">--SELECCIONAR--</option>
-                    <option value="A-BASICO">A-BASICO</option>
+                    <option value="A-BASICO">A-BÁSICO</option>
                     <option value="B-INTERMEDIO">B-INTERMEDIO</option>
                     <option value="C-AVANZADO">C-AVANZADO</option>
                 </select>
