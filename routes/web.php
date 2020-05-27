@@ -73,10 +73,14 @@ Route::middleware(['auth'])->group(function () {
      */
     //Route::get('/alumnos/indice', 'webController\AlumnoController@index')
         //   ->name('alumnos.index')->middleware('can:alumnos.index');
-    Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index');
+    Route::get('/alumnos/indice', 'webController\AlumnoController@index')
+        ->name('alumnos.index')->middlaware('can:alumnos.index');
+
+    Route::get('alumnos/sid', 'webController\AlumnoController@create')
+        ->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
-    Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion');
-    Route::get('alumnos/sid-paso2/{id}', 'webController\AlumnoController@show')->name('alumnos.presincripcion-paso2');
+    Route::get('alumnos/sid-paso2/{id}', 'webController\AlumnoController@show')
+        ->name('alumnos.presincripcion-paso2')->middleware('can:alumnos.inscripcion-paso2');
     Route::post('alumnos/sid/update', 'webController\AlumnoController@update')->name('alumnos.update-sid');
     // nueva ruta
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');

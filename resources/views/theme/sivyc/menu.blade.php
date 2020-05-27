@@ -52,8 +52,12 @@
                         <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
                         <!--alumnos.index-->
-                        <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
-                        <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
+                        @can('alumnos.index')
+                            <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
+                        @endcan
+                        @can('alumnos.index')
+                            <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
+                        @endcan
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                     </div>
                 </li>

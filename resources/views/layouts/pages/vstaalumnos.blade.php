@@ -15,8 +15,11 @@
                     <h2>Registro de Alumnos</h2>
                 </div>
                 <br>
+
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('alumnos.preinscripcion')}}"> Nuevo</a>
+                    @can('alumnos.inscripcion-paso1')
+                        <a class="btn btn-success btn-lg" href="{{route('alumnos.preinscripcion')}}"> Nuevo</a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -39,7 +42,9 @@
                             <td>{{$itemData->telefono}}</td>
                             <td>{{$itemData->curp}}</td>
                             <td>
-                                <a class="btn btn-info" href="{{route('alumnos.presincripcion-paso2', ['id' => $itemData->id])}}">Matricular</a>
+                                @can('alumnos.inscripcion-paso2')
+                                    <a class="btn btn-info" href="{{route('alumnos.presincripcion-paso2', ['id' => $itemData->id])}}">Matricular</a>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
