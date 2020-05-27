@@ -120,7 +120,7 @@
             <div class="form-group col-md-6">
                 <label for="descripcionCurso" class="control-label">DESCRIPCIÓN</label>
                 <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="5" placeholder="DESCRIPCIÓN">
-                    {{ $cursos[0]->objetivo }}
+                    {{ $cursos[0]->descripcion }}
                 </textarea>
             </div>
             <!-- Accion Movil END-->

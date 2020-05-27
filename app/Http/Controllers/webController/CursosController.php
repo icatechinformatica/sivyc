@@ -60,27 +60,27 @@ class CursosController extends Controller
 
 
             $cursos = new curso;
-            $cursos->nombre_curso = $request->nombrecurso;
-            $cursos->modalidad = $request->modalidad;
-            $cursos->horas = $request->horas;
-            $cursos->clasificacion = $request->clasificacion;
-            $cursos->costo = $request->costo;
-            $cursos->duracion = $request->duracion;
-            $cursos->objetivo = $request->objetivo;
-            $cursos->perfil = $request->perfil;
+            $cursos->nombre_curso = trim($request->nombrecurso);
+            $cursos->modalidad = trim($request->modalidad);
+            $cursos->horas = trim($request->horas);
+            $cursos->clasificacion = trim($request->clasificacion);
+            $cursos->costo = trim($request->costo);
+            $cursos->duracion = trim($request->duracion);
+            $cursos->objetivo = trim($request->objetivo);
+            $cursos->perfil = trim($request->perfil);
             $cursos->fecha_validacion = $cursos->setFechaAttribute($request->fecha_validacion);
             $cursos->fecha_actualizacion = $cursos->setFechaAttribute($request->fecha_actualizacion);
-            $cursos->descripcion = $request->descripcion;
-            $cursos->no_convenio = $request->no_convenio;
+            $cursos->descripcion = trim($request->descripcionCurso);
+            $cursos->no_convenio = trim($request->no_convenio);
             $cursos->id_especialidad = $request->especialidadCurso;
-            $cursos->unidad_amovil = $request->unidad_accion_movil;
+            $cursos->unidad_amovil = trim($request->unidad_accion_movil);
             $cursos->area = $request->areaCursos;
             $cursos->solicitud_autorizacion = (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false;
-            $cursos->memo_actualizacion = $request->memo_actualizacion;
-            $cursos->memo_validacion = $request->memo_validacion;
-            $cursos->cambios_especialidad = $request->cambios_especialidad;
-            $cursos->nivel_estudio = $request->nivel_estudio;
-            $cursos->categoria = $request->categoria;
+            $cursos->memo_actualizacion = trim($request->memo_actualizacion);
+            $cursos->memo_validacion = trim($request->memo_validacion);
+            $cursos->cambios_especialidad = trim($request->cambios_especialidad);
+            $cursos->nivel_estudio = trim($request->nivel_estudio);
+            $cursos->categoria = trim($request->categoria);
             $cursos->save();
 
             # ==================================
@@ -245,7 +245,7 @@ class CursosController extends Controller
                 'perfil' => trim($request->perfil),
                 'fecha_validacion' => $cursos->setFechaAttribute($request->fecha_validacion),
                 'fecha_actualizacion' => $cursos->setFechaAttribute($request->fecha_actualizacion),
-                'descripcion' => trim($request->descripcion),
+                'descripcion' => trim($request->descripcionCurso),
                 'no_convenio' => trim($request->no_convenio),
                 'id_especialidad' => trim($request->especialidadCurso),
                 'unidad_amovil' => trim($request->unidad_accion_movil),
