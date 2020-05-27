@@ -40,4 +40,10 @@ class curso extends Model
         return Carbon::parse($value)->format('Y-m-d');
     }
 
+    // in your model
+    public function getMyDateFormat($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
+
 }

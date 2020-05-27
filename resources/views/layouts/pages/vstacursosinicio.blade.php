@@ -63,9 +63,9 @@
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
                         <td>
-                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
+                            <a href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
                                 <i class="fa fa-wrench" aria-hidden="true"></i>
-                            </button>
+                            </a>
                         </td>
                         <td>
                             <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"

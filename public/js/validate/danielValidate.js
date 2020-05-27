@@ -4,25 +4,25 @@ $(function(){
     $( "#fechanacaspirante" ).datepicker({
         changeMonth: true,
         changeYear: true,
-        format: 'dd-mm-yy'
+        dateFormat: 'dd-mm-yy'
     });
 
     $( "#fecha_nacimiento" ).datepicker({
         changeMonth: true,
         changeYear: true,
-        format: 'dd-mm-yy'
+        dateFormat: 'dd-mm-yy'
     });
 
     $("#fecha_validacion").datepicker({
         changeMonth: true,
         changeYear: true,
-        format: 'dd-mm-yy'
+        dateFormat: 'dd-mm-yy'
     });
 
     $('#fecha_actualizacion').datepicker({
         changeMonth: true,
         changeYear: true,
-        format: 'dd-mm-yy'
+        dateFormat: 'dd-mm-yy'
     });
 
     $('input[type=text]').val(function () {
@@ -612,6 +612,15 @@ $(function(){
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> ESPECIALIDAD: </b> ' + response[0].especialidad
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + '<a href="'+response[0].documento_solicitud_autorizacion+'" target="_blank">DOCUMENTO</a>'
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> MEMO VALIDACIÓN: </b> ' + '<a href="'+response[0].documento_memo_validacion+'" target="_blank">DOCUMENTO</a>'
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> MEMO ACTUALIZACIÓN: </b> ' + '<a href="'+response[0].documento_memo_actualizacion+'" target="_blank">DOCUMENTO</a>'
                   +   '</li>'
                   + '</ul>'
               );

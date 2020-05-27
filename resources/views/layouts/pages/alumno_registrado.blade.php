@@ -1,3 +1,4 @@
+<!--plantilla trabajada por DANIEL MENDEZ CRUZ-->
 @extends('theme.sivyc.layout')
 <!--generado por Daniel Méndez-->
 @section('title', 'Alumnos Matriculados | Sivyc Icatech')
@@ -128,7 +129,7 @@
                         <div class="card-body">
                         <h5 class="card-title">Acta de Nacimiento</h5>
                         <p class="card-text">
-                            <a href="{{$alumnos[0]->acta_nacimiento}}" class="btn btn-default" target="_blank">Descargar</a>
+                            <a href="{{asset( $alumnos[0]->acta_nacimiento )}}" class="btn btn-default" target="_blank">Descargar</a>
                         </p>
                         </div>
                     </div>
@@ -150,7 +151,7 @@
                         <div class="card-body">
                         <h5 class="card-title">CURP</h5>
                         <p class="card-text">
-                            <a href="{{$alumnos[0]->curp}}" class="btn btn-default" target="_blank">Descargar</a>
+                            <a href="{{asset( $alumnos[0]->curp )}}" class="btn btn-default" target="_blank">Descargar</a>
                         </p>
                         </div>
                     </div>
@@ -172,7 +173,7 @@
                             <div class="card-body">
                             <h5 class="card-title">C. DOMICILIO</h5>
                             <p class="card-text">
-                                <a href="{{$alumnos[0]->comprobante_domicilio}}" class="btn btn-default" target="_blank">Descargar</a>
+                                <a href="{{ asset( $alumnos[0]->comprobante_domicilio )}}" class="btn btn-default" target="_blank">Descargar</a>
                             </p>
                             </div>
                         </div>
@@ -194,7 +195,7 @@
                         <div class="card-body">
                         <h5 class="card-title">FOTOGRAFÍA</h5>
                         <p class="card-text">
-                            <a href="{{$alumnos[0]->fotografia}}" class="btn btn-default" target="_blank">Descargar</a>
+                            <a href="{{asset( $alumnos[0]->fotografia )}}" class="btn btn-default" target="_blank">Descargar</a>
                         </p>
                         </div>
                     </div>
@@ -215,7 +216,7 @@
                           <div class="card-body">
                           <h5 class="card-title">INE</h5>
                           <p class="card-text">
-                            <a href="{{$alumnos[0]->ine}}" class="btn btn-default" target="_blank">Descargar</a>
+                            <a href="{{asset( $alumnos[0]->ine )}}" class="btn btn-default" target="_blank">Descargar</a>
                           </p>
                           </div>
                       </div>
@@ -236,7 +237,7 @@
                           <div class="card-body">
                           <h5 class="card-title">LICENCIA O PASAPORTE</h5>
                           <p class="card-text">
-                            <a href="{{$alumnos[0]->pasaporte_licencia_manejo}}" class="btn btn-default" target="_blank">Descargar</a>
+                            <a href="{{ asset($alumnos[0]->pasaporte_licencia_manejo) }}" class="btn btn-default" target="_blank">Descargar</a>
                           </p>
                           </div>
                       </div>
@@ -257,7 +258,7 @@
                           <div class="card-body">
                           <h5 class="card-title">COMRPOBRANTE ÚLTIMO GRADO</h5>
                           <p class="card-text">
-                            <a href="{{$alumnos[0]->comprobante_ultimo_grado}}" class="btn btn-default" target="_blank">Descargar</a>
+                            <a href="{{ asset($alumnos[0]->comprobante_ultimo_grado) }}" class="btn btn-default" target="_blank">Descargar</a>
                           </p>
                           </div>
                       </div>

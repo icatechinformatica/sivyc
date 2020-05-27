@@ -136,6 +136,36 @@ class CursosController extends Controller
     public function show($id)
     {
         //
+        try {
+            //consulta sql
+            $area = new Area();
+            $areas = $area->all();
+
+            $Especialidad = new especialidad();
+            $especialidades = $Especialidad->all();
+
+            $idCurso = base64_decode($id);
+            $curso = new curso();
+            $cursos = $curso::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+                    'cursos.costo','cursos.duracion',
+                    'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
+                    'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
+                    'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
+                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria', 'cursos.documento_memo_validacion',
+                    'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion')
+                    ->WHERE('cursos.id', '=', $idCurso)
+                    ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
+                    ->GET();
+
+            $fechaVal = $curso->getMyDateFormat($cursos[0]->fecha_validacion);
+            $fechaAct = $curso->getMyDateFormat($cursos[0]->fecha_actualizacion);
+
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct'));
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
     }
 
     /**
@@ -177,7 +207,9 @@ class CursosController extends Controller
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad',
-                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria')
+                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria',
+                    'cursos.documento_memo_validacion',
+                    'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion')
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->GET();
@@ -198,7 +230,123 @@ class CursosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // modificacion de un recurso guardado
+        if (isset($id)) {
+            $cursos = new curso();
+            # code...
+            $array = [
+                'nombre_curso' => trim($request->nombrecurso),
+                'modalidad' => trim($request->modalidad),
+                'horas' => trim($request->horas),
+                'clasificacion' => trim($request->clasificacion),
+                'costo' => trim($request->costo),
+                'duracion' => trim($request->duracion),
+                'objetivo' => trim($request->objetivo),
+                'perfil' => trim($request->perfil),
+                'fecha_validacion' => $cursos->setFechaAttribute($request->fecha_validacion),
+                'fecha_actualizacion' => $cursos->setFechaAttribute($request->fecha_actualizacion),
+                'descripcion' => trim($request->descripcion),
+                'no_convenio' => trim($request->no_convenio),
+                'id_especialidad' => trim($request->especialidadCurso),
+                'unidad_amovil' => trim($request->unidad_accion_movil),
+                'area' => $request->areaCursos,
+                'solicitud_autorizacion' => (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false,
+                'memo_actualizacion' => trim($request->memo_actualizacion),
+                'memo_validacion' => trim($request->memo_validacion),
+                'cambios_especialidad' => trim($request->cambios_especialidad),
+                'nivel_estudio' => trim($request->nivel_estudio),
+                'categoria' => trim($request->categoria),
+            ];
+
+            $cursos->WHERE('id', '=', $id)->UPDATE($array);
+            # ==================================
+            # Aquí modificamos el curso con id
+            # ==================================
+
+            // validamos si hay archivos
+            if ($request->hasFile('documento_solicitud_autorizacion')) {
+                // obtenemos el valor de documento_solicitud_autorizacion
+                $cursos = new curso();
+                $curso = $cursos->WHERE('id', '=', $id)->GET();
+                // checamos que no sea nulo
+                if (!is_null($curso[0]->documento_solicitud_autorizacion)) {
+                    # si no está nulo
+                    $docSolicitudAutorizacion = explode("/",$curso[0]->documento_solicitud_autorizacion, 5);
+                    //dd($docSolicitudAutorizacion[4]);
+                    //dd(Storage::exists($docSolicitudAutorizacion[4]));
+                    if (Storage::exists($docSolicitudAutorizacion[4])) {
+                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                        Storage::delete($docSolicitudAutorizacion[4]);
+                    }
+                }
+
+                # Carga el archivo y obtener la url
+                $documento_solicitud_autorizacion = $request->file('documento_solicitud_autorizacion'); # obtenemos el archivo
+                $url_solicitud_autorizacion = $this->uploaded_file($documento_solicitud_autorizacion, $id, 'documento_solicitud_autorizacion_update'); #invocamos el método
+                // guardamos en la base de datos
+                $cursoUpdate = curso::find($id);
+                $cursoUpdate->documento_solicitud_autorizacion = $url_solicitud_autorizacion;
+                $cursoUpdate->update([
+                    'documento_solicitud_autorizacion' => $url_solicitud_autorizacion
+                ]);
+            }
+
+            // validamos el siguiente archivo
+            if ($request->hasFile('documento_memo_validacion')) {
+                # Carga el archivo y obtener la url
+                $cursos = new curso();
+                $curso = $cursos->WHERE('id', '=', $id)->GET();
+
+                if (!is_null($curso[0]->documento_memo_validacion)) {
+                    # si no está nulo
+                    $docMemoValidacion = explode("/",$curso[0]->documento_memo_validacion, 5);
+                    // validación de documento en el servidor
+                    if (Storage::exists($docMemoValidacion[4])) {
+                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                        Storage::delete($docMemoValidacion[4]);
+                    }
+                }
+
+                $documento_memo_validacion = $request->file('documento_memo_validacion'); # obtenemos el archivo
+                $url_memo_validacion = $this->uploaded_file($documento_memo_validacion, $id, 'documento_memo_validacion_update'); #invocamos el método
+                // guardamos en la base de datos
+                $cursoUp = curso::find($id);
+                $cursoUp->documento_memo_validacion = $url_memo_validacion;
+                $cursoUp->update([
+                    'documento_memo_validacion' => $url_memo_validacion
+                ]);
+            }
+
+            // validamos el siguiente archivo
+            if ($request->hasFile('documento_memo_actualizacion')) {
+                # Carga el archivo y obtener la url
+                $cursos = new curso();
+                $curso = $cursos->WHERE('id', '=', $id)->GET();
+                if (!is_null($curso[0]->documento_memo_actualizacion)) {
+                    # si no está nulo
+                    $docMemoActualizacion = explode("/", $curso[0]->documento_memo_actualizacion, 5);
+                    // validación de documento en el servidor
+                    if (Storage::exists($docMemoActualizacion[4])) {
+                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                        Storage::delete($docMemoActualizacion[4]);
+                    }
+                }
+
+                $documento_memo_actualizacion = $request->file('documento_memo_actualizacion'); # obtenemos el archivo
+                $url_memo_actualizacion = $this->uploaded_file($documento_memo_actualizacion, $id, 'documento_memo_actualizacion_update'); #invocamos el método
+                // guardamos en la base de datos
+                $cursoU = curso::find($id);
+                $cursoU->documento_memo_actualizacion = $url_memo_actualizacion;
+                $cursoU->update([
+                    'documento_memo_actualizacion' => $url_memo_actualizacion
+                ]);
+            }
+
+            $nombreCurso = $request->nombrecurso;
+            return redirect()->route('curso-inicio')
+                    ->with('success', sprintf('CURSO %s  ACTUALIZADO EXTIOSAMENTE!', $nombreCurso));
+        }
+
     }
 
     /**
