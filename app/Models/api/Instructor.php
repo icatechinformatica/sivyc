@@ -3,6 +3,7 @@
 namespace App\Models\api;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Instructor extends Model
 {
@@ -22,4 +23,9 @@ class Instructor extends Model
 
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    function curso_Validado()
+    {
+        return $this->hasMany(CursoValidado::class);
+    }
 }

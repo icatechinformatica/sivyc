@@ -14,4 +14,9 @@ class Area extends Model
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    public function curso()
+    {
+        return $this->hasMany(curso::class, 'area');
+    }
 }

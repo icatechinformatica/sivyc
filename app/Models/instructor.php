@@ -38,7 +38,7 @@ class instructor extends Model
     }
 
     public function setFechaNacAttribute($value) {
-        return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+        return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
      }
 
 
