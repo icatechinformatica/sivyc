@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('/alumnos/indice', 'webController\AlumnoController@index')
         //   ->name('alumnos.index')->middleware('can:alumnos.index');
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')
-        ->name('alumnos.index')->middlaware('can:alumnos.index');
+        ->name('alumnos.index')->middleware('can:alumnos.index');
 
     Route::get('alumnos/sid', 'webController\AlumnoController@create')
         ->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
