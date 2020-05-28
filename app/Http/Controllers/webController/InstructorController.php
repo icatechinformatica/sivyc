@@ -269,7 +269,8 @@ class InstructorController extends Controller
         $instructor_perfil = new InstructorPerfil();
         $curso_validado = new cursoValidado();
         $det_curso = new Curso();
-        $datains = instructor::WHERE('id', '=', $id)->FIRST();
+        $datains = instructor::WHERE('id', '=', $id)->GET();
+        dd($datains);
 
         $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
         $lista_civil = estado_civil::WHERE('nombre', '!=', $datains->estado_civil)->GET();
