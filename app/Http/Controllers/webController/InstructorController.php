@@ -287,8 +287,6 @@ class InstructorController extends Controller
                         ->LEFTJOIN('criterio_pago','criterio_pago.id','=','especialidad_instructores.pago_id')
                         ->GET();
 
-        dd($validado);
-
         return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado'));
     }
 
