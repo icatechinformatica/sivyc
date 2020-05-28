@@ -268,7 +268,7 @@
                                 <td>{{ $item->observacion }}</td>
                                 <td>
                                     @can('instructor.editar_fase2')
-                                        {{ $datains->id }}
+                                        <a class="btn btn-info" href="{{ route('instructor-editespectval', ['id' => $item->id,'idins' => $datains->id]) }}">Modificar</a>
                                     @endcan
                                 </td>
                             </tr>

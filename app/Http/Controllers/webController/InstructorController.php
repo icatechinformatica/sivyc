@@ -278,6 +278,7 @@ class InstructorController extends Controller
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
+        dd($perfil);
 
         $validado = InstructorPerfil::SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
                         'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id')
