@@ -278,7 +278,6 @@ class InstructorController extends Controller
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
-        dd($perfil);
 
         $validado = InstructorPerfil::SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
                         'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id')
@@ -287,6 +286,8 @@ class InstructorController extends Controller
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                         ->LEFTJOIN('criterio_pago','criterio_pago.id','=','especialidad_instructores.pago_id')
                         ->GET();
+
+        dd($validado);
 
         return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado'));
     }
