@@ -23,7 +23,7 @@ class CatalogoCursoController extends Controller
         $data = CatalogoCurso::SELECT('cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.horas', 'cursos.clasificacion', 'cursos.costo',
         'cursos.duracion', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
         'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion', 'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre AS especialidad',
-        'area.formacion_profesional AS area')
+        'area.formacion_profesional AS area', 'cursos.id_especialidad', 'cursos.area AS id_area')
         ->WHERE('cursos.id', '!=', '0')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
         ->LEFTJOIN('area', 'area.id', '=', 'cursos.area')
