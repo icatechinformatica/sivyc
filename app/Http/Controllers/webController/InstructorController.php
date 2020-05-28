@@ -270,7 +270,7 @@ class InstructorController extends Controller
         $curso_validado = new cursoValidado();
         $det_curso = new Curso();
         $datains = instructor::WHERE('id', '=', $id)->FIRST();
-        dd($datains);
+        dd($datains[0]->id);
 
         $estado_civil = estado_civil::WHERE('nombre', '=', $datains[0]->estado_civil)->FIRST();
         $lista_civil = estado_civil::WHERE('nombre', '!=', $datains[0]->estado_civil)->GET();
