@@ -285,7 +285,7 @@ class InstructorController extends Controller
                         ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                         ->LEFTJOIN('criterio_pago','criterio_pago.id','=','especialidad_instructores.pago_id')
-                        ->GET();
+                        ->FIRST();
 
         dd(count($validado));
 
