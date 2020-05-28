@@ -13,16 +13,16 @@
         </div>
         <h2>Vista de Documentos</h2>
         <div class="form-row">
-                <a class="btn btn-danger" href={{$datains[0]->archivo_ine}} download>Solicitud de Pago</a><br>
-                <a class="btn btn-danger" href={{$datains[0]->archivo_domicilio}} download>Comprobante de Domicilio</a><br>
-                <a class="btn btn-danger" href={{$datains[0]->archivo_curp}} download>CURP</a><br>
-                <a class="btn btn-danger" href={{$datains[0]->archivo_alta}} download>Alta de Instructor</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_ine}} download>Solicitud de Pago</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_domicilio}} download>Comprobante de Domicilio</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_curp}} download>CURP</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_alta}} download>Alta de Instructor</a><br>
         </div>
         <div class="form-row">
-            <a class="btn btn-danger" href={{$datains[0]->archivo_bancario}} download>Datos Bancarios</a><br>
-            <a class="btn btn-danger" href={{$datains[0]->archivo_fotografia}} download>Fotografía</a><br>
-            <a class="btn btn-danger" href={{$datains[0]->archivo_estudios}} download>Estudios</a><br>
-            <a class="btn btn-danger" href={{$datains[0]->archivo_otraid}} download>Otra Identificación</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_bancario}} download>Datos Bancarios</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_fotografia}} download>Fotografía</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_estudios}} download>Estudios</a><br>
+            <a class="btn btn-danger" href={{$datains->archivo_otraid}} download>Otra Identificación</a><br>
         </div>
         <form id="registerinstructor"  method="POST" action="{{ route('saveins') }}" enctype="multipart/form-data">
             @csrf
@@ -36,37 +36,37 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre">Nombre</label>
-                        <input name='nombre' id='nombre' value="{{$datains[0]->nombre }}" type="text" disabled class="form-control" aria-required="true">
-                        <input name="id" id="id" value="{{$datains[0]->id }}" hidden>
+                        <input name='nombre' id='nombre' value="{{$datains->nombre }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="id" id="id" value="{{$datains->id }}" hidden>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputapellido_paterno">Apellido Paterno</label>
-                        <input name='apellido_paterno' id='apellido_paterno' value="{{$datains[0]->apellidoPaterno }}" type="text" class="form-control" aria-required="true" disabled>
+                        <input name='apellido_paterno' id='apellido_paterno' value="{{$datains->apellidoPaterno }}" type="text" class="form-control" aria-required="true" disabled>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputapellido_materno">Apellido Materno</label>
-                        <input name='apellido_materno' id='apellido_materno' value="{{$datains[0]->apellidoMaterno}}" type="text" class="form-control" aria-required="true" disabled>
+                        <input name='apellido_materno' id='apellido_materno' value="{{$datains->apellidoMaterno}}" type="text" class="form-control" aria-required="true" disabled>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputcurp">CURP</label>
-                        <input name='curp' id='curp' value="{{$datains[0]->curp}}" type="text" disabled class="form-control" disabled aria-required="true">
+                        <input name='curp' id='curp' value="{{$datains->curp}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputrfc">RFC</label>
-                        <input name='rfc' id='rfc' value="{{$datains[0]->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
+                        <input name='rfc' id='rfc' value="{{$datains->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputfolio_ine">Folio de INE</label>
-                        <input name='folio_ine' id='folio_ine' value="{{$datains[0]->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
+                        <input name='folio_ine' id='folio_ine' value="{{$datains->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputsexo">Sexo</label>
                         <select class="form-control" name="sexo" id="sexo" disabled>
-                            @if ($datains[0]->sexo == 'MASCULINO')
+                            @if ($datains->sexo == 'MASCULINO')
                                 <option selected value="MASCULINO">Masculino</option>
                                 <option value="FEMENINO">Femenino</option>
                             @else
@@ -86,86 +86,86 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                        <input name='fecha_nacimiento' id='fecha_nacimiento' value="{{$datains[0]->fecha_nacimiento}}" type="date" disabled class="form-control" aria-required="true">
+                        <input name='fecha_nacimiento' id='fecha_nacimiento' value="{{$datains->fecha_nacimiento}}" type="date" disabled class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="inputentidad">Entidad</label>
-                        <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true" disabled value="{{$datains[0]->entidad}}">
+                        <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true" disabled value="{{$datains->entidad}}">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputmunicipio">Municipio</label>
-                        <input name='municipio' id='municipio' type="text" class="form-control" disabled aria-required="true" value="{{$datains[0]->municipio}}">
+                        <input name='municipio' id='municipio' type="text" class="form-control" disabled aria-required="true" value="{{$datains->municipio}}">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputasentamiento">Asentamiento</label>
-                        <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true" disabled value="{{$datains[0]->asentamiento}}">
+                        <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true" disabled value="{{$datains->asentamiento}}">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-7">
                         <label for="inputdomicilio">Direccion de Domicilio</label>
-                        <input name="domicilio" id="domicilio" value="{{$datains[0]->domicilio }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="domicilio" id="domicilio" value="{{$datains->domicilio }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputtelefono">Numero de Telefono Personal</label>
-                        <input name="telefono" id="telefono" value="{{$datains[0]->telefono }}" type="tel" disabled class="form-control" aria-required="true">
+                        <input name="telefono" id="telefono" value="{{$datains->telefono }}" type="tel" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputcorreo">Correo Electronico</label>
-                        <input name="correo" id="correo" value="{{$datains[0]->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
+                        <input name="correo" id="correo" value="{{$datains->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputbanco">Nombre del Banco</label>
-                        <input name="banco" id="banco" value="{{$datains[0]->banco }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="banco" id="banco" value="{{$datains->banco }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputclabe">Clabe Interbancaria</label>
-                        <input name="clabe" id="clabe" value="{{$datains[0]->interbancaria }}" type="text" disabled class="form-control" aria-required="true">
+                        <input name="clabe" id="clabe" value="{{$datains->interbancaria }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputnumero_cuenta">Numero de Cuenta</label>
-                        <input name="numero_cuenta" value="{{$datains[0]->no_cuenta }}" id="numero_cuenta" type="text" disabled class="form-control" aria-required="true">
+                        <input name="numero_cuenta" value="{{$datains->no_cuenta }}" id="numero_cuenta" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="inputarch_ine">Archivo INE</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_ine}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled value="{{$datains->archivo_ine}}">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_domicilio}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_domicilio}}">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_curp">Archivo CURP</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_curp}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled value="{{$datains->archivo_curp}}">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_alta">Archivo Alta de Instructor</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_alta}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled value="{{$datains->archivo_alta}}">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="inputarch_banco">Archivo Datos Bancarios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_bancario}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled value="{{$datains->archivo_bancario}}">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_foto">Archivo Fotografia</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_fotografia}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled value="{{$datains->archivo_fotografia}}">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_estudio">Archivo Grado de Estudios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_estudios}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_estudios}}">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_id">Archivo Otra Identificación</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled value="{{$datains[0]->archivo_otraid}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled value="{{$datains->archivo_otraid}}">
                         </div>
                     </div>
                 </div>
@@ -184,12 +184,12 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputnumero_control">Numero de Control</label>
-                        <input id="numero_control" name="numero_control" value="{{$datains[0]->numero_control }}" type="text" disabled class="form-control" aria-required="true">
+                        <input id="numero_control" name="numero_control" value="{{$datains->numero_control }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputhonorario">Tipo de Honorario</label>
                         <select class="form-control" name="honorario" id="honorario" disabled>
-                            @if ($datains[0]->tipo_honorario == 'HONORARIOS')
+                            @if ($datains->tipo_honorario == 'HONORARIOS')
                                 <option selected value="HONORARIOS">Honorarios</option>
                                 <option value="ASALARIADO ASIMILADO">Asalariado Asimilado</option>
                             @else
@@ -221,7 +221,7 @@
                                     <td>{{ $item->nombre_institucion }}</td>
                                     <td>
                                         @can('instructor.editar_fase2')
-                                            <a class="btn btn-info" href="{{route('instructor-perfilmod', ['id' => $item->id, 'idins' => $datains[0]->id])}}">Modificar</a>
+                                            <a class="btn btn-info" href="{{route('instructor-perfilmod', ['id' => $item->id, 'idins' => $datains->id])}}">Modificar</a>
                                         @endcan
                                     </td>
                                 </tr>
@@ -241,7 +241,7 @@
                         </div>
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
-                                <a class="btn btn-info" href="{{route('instructor-perfil', ['id' => $datains[0]->id])}}">Agregar Perfil Profesional</a>
+                                <a class="btn btn-info" href="{{route('instructor-perfil', ['id' => $datains->id])}}">Agregar Perfil Profesional</a>
                             @endcan
                         </div>
                     </div>
@@ -268,7 +268,7 @@
                                 <td>{{ $item->observacion }}</td>
                                 <td>
                                     @can('instructor.editar_fase2')
-                                        <a class="btn btn-info" href="{{route('instructor-editespectval', ['id' => $item->id, 'idins' => $datains[0]->id])}}">Modificar</a>
+                                        <a class="btn btn-info" href="{{route('instructor-editespectval', ['id' => $item->id, 'idins' => $datains->id])}}">Modificar</a>
                                     @endcan
                                 </td>
                             </tr>
@@ -287,7 +287,7 @@
                         </div>
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
-                                <a class="btn btn-info" href="{{route('instructor-curso', ['id' => $datains[0]->id])}}">Agregar Curso Validado para Impartir</a>
+                                <a class="btn btn-info" href="{{route('instructor-curso', ['id' => $datains->id])}}">Agregar Curso Validado para Impartir</a>
                             @endcan
                         </div>
                     </div>
