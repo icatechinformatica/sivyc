@@ -270,13 +270,12 @@ class InstructorController extends Controller
         $curso_validado = new cursoValidado();
         $det_curso = new Curso();
         $datains = instructor::WHERE('id', '=', $id)->GET();
-        dd($datains);
 
-        $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
-        $lista_civil = estado_civil::WHERE('nombre', '!=', $datains->estado_civil)->GET();
+        $estado_civil = estado_civil::WHERE('nombre', '=', $datains[0]->estado_civil)->FIRST();
+        $lista_civil = estado_civil::WHERE('nombre', '!=', $datains[0]->estado_civil)->GET();
 
-        $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
-        $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
+        $unidad = tbl_unidades::WHERE('cct', '=', $datains[0]->clave_unidad)->FIRST();
+        $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains[0]->clave_unidad)->GET();
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
 
