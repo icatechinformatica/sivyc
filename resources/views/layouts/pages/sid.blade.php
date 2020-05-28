@@ -14,7 +14,7 @@
             </div><br />
         @endif
         <div style="text-align: center;">
-            <h3><b>Solicitud de Inscripción (SID - 01)</b></h3>
+            <h3><b>Solicitud de Inscripción (SID)</b></h3>
         </div>
         <hr style="border-color:dimgray">
         <div style="text-align: center;">
@@ -60,20 +60,29 @@
                     <input type="text" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" autocomplete="off">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="telefono" class="control-label">Teléfono</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono" autocomplete="off">
+                    <label for="telefonosid" class="control-label">Teléfono</label>
+                    <input type="text" class="form-control" id="telefonosid" name="telefonosid" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
                 <!-- domicilio -->
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="domicilio" class="control-label">Domicilio</label>
                     <input type="text" class="form-control" id="domicilio" name="domicilio" autocomplete="off">
                 </div>
                 <!-- domicilio END -->
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="colonia" class="control-label">Colonia o Localidad</label>
                     <input type="text" class="form-control" id="colonia" name="colonia" autocomplete="off">
+                </div>
+                <!--COLONIA END-->
+                <div class="form-group col-md-4">
+                    <label for="interes_curso" class="control-label">Interés en curso</label>
+                    <select name="interes_curso" id="interes_curso" class="form-control">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="PRESENCIAL">PRESENCIAL</option>
+                        <option value="ONLINE">EN LÍNEA</option>
+                    </select>
                 </div>
             </div>
             <div class="form-row">

@@ -92,7 +92,7 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->sexo = $request->sexo;
                 $AlumnoPreseleccion->curp = $request->curp;
                 $AlumnoPreseleccion->fecha_nacimiento = $AlumnoPreseleccion->setFechaNacAttribute($request->fecha_nacimiento);
-                $AlumnoPreseleccion->telefono = $request->telefono;
+                $AlumnoPreseleccion->telefono = $request->telefonosid;
                 $AlumnoPreseleccion->domicilio = $request->domicilio;
                 $AlumnoPreseleccion->colonia = $request->colonia;
                 $AlumnoPreseleccion->cp = $request->cp;
@@ -100,6 +100,7 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->municipio = $request->municipio;
                 $AlumnoPreseleccion->estado_civil = $request->estado_civil;
                 $AlumnoPreseleccion->discapacidad = $request->discapacidad;
+                $AlumnoPreseleccion->interes_en_curso = $request->interes_curso;
 
                 $AlumnoPreseleccion->save();
                 // redireccionamos con un mensaje de éxito

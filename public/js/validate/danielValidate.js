@@ -38,11 +38,20 @@ $(function(){
         }
     }, "Ingrese una CURP valida");
 
-    $.validator.addMethod("phoneMX", function(phone_number, element) {
-        phone_number = phone_number.replace(/\s+/g, "");
-        return this.optional(element) || phone_number.length > 9 &&
-        phone_number.match(/^(\+?1-?)?(\([2-9]\d{2}\)|[2-9]\d{2})?[2-9]\d{2}?\d{4}$/);
-    }, "Por favor especifique un número valido de teléfono");
+
+
+    $.validator.addMethod(
+        "phoneMEXICO",
+        function(value, element, regexp)
+        {
+            if (regexp.constructor != RegExp)
+                regexp = new RegExp(regexp);
+            else if (regexp.global)
+                regexp.lastIndex = 0;
+            return this.optional(element) || regexp.test(value);
+        },
+        "Especifique un número valido de teléfono"
+    );
 
     $.validator.addMethod("filesize", (value, element, arg)=> {
         var minsize=1000; // representa a 1kb
@@ -78,7 +87,7 @@ $(function(){
             },
             telefonoaspirante: {
                 required: true,
-                phoneMX: true
+                phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
             },
             domicilioaspirante: {
                 required: true
@@ -180,9 +189,9 @@ $(function(){
                 required: true,
                 //date: true
             },
-            telefono: {
+            telefonosid: {
                 required: true,
-                //phoneMX: true
+                phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
             },
             domicilio: {
                 required: true
@@ -228,7 +237,7 @@ $(function(){
                 required: 'Por favor, seleccione fecha',
                 //date: 'Formato de fecha no valido'
             },
-            telefono: {
+            telefonosid: {
                 required: 'Por favor, ingrese telefóno',
             },
             domicilio: {
