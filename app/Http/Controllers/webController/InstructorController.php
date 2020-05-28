@@ -386,6 +386,7 @@ class InstructorController extends Controller
     public function edit_especval($id,$idins)
     {
         $idesp = $id;
+        $idins = $idins;
         $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
         return view('layouts.pages.modcursoimpartir', compact('data_especialidad','idesp','idins'));
     }
