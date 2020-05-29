@@ -17,8 +17,6 @@ class ModifyAndRemoveColumnTblInscripcionTable extends Migration
             // modificar tabla
             $table->dropColumn('hini2');
             $table->dropColumn('hfin2');
-            $table->string('status', 30)->nullable();
-            $table->string('motivo', 30)->nullable();
         });
     }
 
