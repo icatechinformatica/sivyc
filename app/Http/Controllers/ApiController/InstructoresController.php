@@ -23,7 +23,8 @@ class InstructoresController extends Controller
         'instructores.tipo_honorario', 'instructores.archivo_ine', 'instructores.archivo_domicilio', 'instructores.archivo_curp',
         'instructores.archivo_alta', 'instructores.archivo_bancario', 'instructores.archivo_fotografia', 'instructores.archivo_estudios',
         'instructores.archivo_otraid', 'instructores.status', 'instructores.rechazo', 'instructores.clave_unidad',
-        'especialidades.nombre AS nombre_especialidad', 'tbl_unidades.unidad AS unidades')
+        'especialidades.nombre AS nombre_especialidad', 'tbl_unidades.unidad AS unidades', 'instructores.motivo')
+        ->WHERE('instructores.status', '=', 'Validado')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'instructores.id_especialidad')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')->GET();
         return response()->json($instructores, 200);

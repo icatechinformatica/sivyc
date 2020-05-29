@@ -17,7 +17,7 @@ class InscripcionController extends Controller
     {
         //
         $inscripcion = new Inscripcion();
-        $inscripciones = $inscripcion->WHERE('status', '=', 'Validado')->GET();
+        $inscripciones = $inscripcion->all();
         return response()->json($inscripciones, 200);
     }
 
