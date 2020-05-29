@@ -17,7 +17,7 @@ class InscripcionController extends Controller
     {
         //
         $inscripcion = new Inscripcion();
-        $inscripciones = $inscripcion->all();
+        $inscripciones = $inscripcion->WHERE('status', '=', 'Validado')->GET();
         return response()->json($inscripciones, 200);
     }
 
@@ -55,10 +55,10 @@ class InscripcionController extends Controller
             $Inscripcion->hfin = $request->hfin;
             $Inscripcion->tinscripcion = $request->tinscripcion;
             $Inscripcion->abrinscri = $request->abrinscri;
-            $Inscripcion->hini2 = $request->hini2;
-            $Inscripcion->hfin2 = $request->hfin2;
             $Inscripcion->munidad = $request->munidad;
             $Inscripcion->costo = $request->costo;
+            $Inscripcion->motivo = $request->motivo;
+            $Inscripcion->status = $request->status;
             $Inscripcion->save();
 
             return response()->json(['success' => 'Se ha generado una inscripcion exitosamente'], 200);
