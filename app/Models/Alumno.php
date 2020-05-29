@@ -38,7 +38,9 @@ class Alumno extends Model
         'chk_comprobante_ultimo_grado',
         'comprobante_ultimo_grado',
         'puesto_empresa',
-        'unidad'
+        'unidad',
+        'chk_comprobante_calidad_migratoria',
+        'comprobante_calidad_migratoria'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

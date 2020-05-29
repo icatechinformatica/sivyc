@@ -283,11 +283,11 @@ $(function(){
                 filesize: 2000000   //max size 2mb
             },
             fotografias: {
-                extension: "pdf",
+                extension: "pdf|png|jpg|jpeg",
                 filesize: 2000000   //max size 2mb
             },
             ine: {
-                extension: "pdf",
+                extension: "pdf|png|jpg|jpeg",
                 filesize: 2000000   //max size 2mb
             },
             licencia_manejo: {
@@ -303,6 +303,16 @@ $(function(){
             },
             cursos_sid: {
                 required: true,
+            },
+            grupo: {
+                required: true
+            },
+            ultimo_grado_estudios: {
+                required: true
+            },
+            documento_comprobante_migratorio: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
             }
         },
         messages: {
@@ -322,11 +332,11 @@ $(function(){
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             fotografias: {
-                extension: "Sólo se permiten pdf",
+                extension: "formatos permitidos: pdf, png, jpg, jpeg",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             ine: {
-                extension: "Sólo se permiten pdf",
+                extension: "formatos permitidos: pdf, png, jpg, jpeg",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             licencia_manejo: {
@@ -339,6 +349,16 @@ $(function(){
             },
             cursos_sid: {
                 required: "Por favor, Seleccione el curso"
+            },
+            grupo: {
+                required: "Agregar el grupo"
+            },
+            ultimo_grado_estudios: {
+                required: "Agregar último grado de estudios"
+            },
+            documento_comprobante_migratorio: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
             }
         }
     });
@@ -655,5 +675,17 @@ $(function(){
         var myModalLabel = $("#myModalLabel");
         contenidoModal.empty();
         myModalLabel.empty();
+    });
+
+    $("#comprobante_migratorio").change(function() {
+        if(this.checked) {
+            // TO-DO
+            $("#documento_comprobante_migratorio").prop('disabled', false);
+        } else {
+            $("#documento_comprobante_migratorio").prop('disabled', true);
+            $("#documento_comprobante_migratorio").val('');
+            $('#lbl_documento_comprobante_migratorio').html('COMPROBANTE MIGRATORIO');
+            $('#documento_comprobante_migratorio').removeClass("{extension: 'pdf'}")
+        }
     });
 });

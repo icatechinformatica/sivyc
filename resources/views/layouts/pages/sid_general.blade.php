@@ -175,13 +175,23 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-8">
+                    <div class="form-group col-md-12">
                         <h5><b>EXTRANGEROS ANEXAR:</b></h5>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="comprobante_migratorio" name="comprobante_migratorio">
+                            <input class="form-check-input" type="checkbox" value="1" id="comprobante_migratorio" name="comprobante_migratorio">
                             <label class="form-check-label" for="comprobante_migratorio">
                                 COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL
                             </label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="documento_comprobante_migratorio" name="documento_comprobante_migratorio" disabled>
+                            <label class="custom-file-label" id="lbl_documento_comprobante_migratorio" for="documento_comprobante_migratorio">COMPROBANTE MIGRATORIO</label>
                         </div>
                     </div>
                 </div>

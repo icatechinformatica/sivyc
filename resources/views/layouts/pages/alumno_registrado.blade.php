@@ -135,7 +135,7 @@
                     </div>
                   @else
                     <div class="card">
-                        <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
+                        <img src="{{asset("img/>no_image.png")}}" class="img-thumbnail" alt="...">
                         <div class="card-body">
                         <h5 class="card-title">ACTA DE NACIMIENTO</h5>
                         <p class="card-text"></p>
@@ -157,7 +157,7 @@
                     </div>
                   @else
                     <div class="card">
-                        <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
+                        <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
                         <div class="card-body">
                         <h5 class="card-title">CURP</h5>
                         <p class="card-text"></p>
@@ -179,7 +179,7 @@
                         </div>
                     @else
                         <div class="card">
-                            <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
+                            <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
                             <div class="card-body">
                             <h5 class="card-title">C. DOMICILIO</h5>
                             <p class="card-text"></p>
@@ -201,7 +201,7 @@
                     </div>
                   @else
                     <div class="card">
-                        <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
+                        <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
                         <div class="card-body">
                         <h5 class="card-title">FOTOGRAFÍA</h5>
                         <p class="card-text"></p>
@@ -222,7 +222,7 @@
                       </div>
                     @else
                       <div class="card">
-                          <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
+                          <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">INE</h5>
                           <p class="card-text"></p>
@@ -243,7 +243,7 @@
                       </div>
                     @else
                       <div class="card">
-                          <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
+                          <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">LICENCIA O PASAPORTE</h5>
                           <p class="card-text"></p>
@@ -264,7 +264,7 @@
                       </div>
                     @else
                       <div class="card">
-                          <img src="http://fakeimg.pl/128x128/" class="img-thumbnail" alt="...">
+                          <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
                           <div class="card-body">
                           <h5 class="card-title">COMRPOBRANTE ÚLTIMO GRADO</h5>
                           <p class="card-text"></p>

@@ -298,6 +298,32 @@ class AlumnoController extends Controller
         }
 
         /**
+         * cargar comprobante_migratorio
+         */
+        if (is_null($request->input('comprobante_migratorio'))) {
+            # verdadero si es null...
+            $url_documento_comprobante_migratorio = '';
+            $comprobante_calidad_migratoria = false;
+        } else {
+            # falso si no es null
+            if ($request->hasFile('documento_comprobante_migratorio')) {
+                # llamamos al método
+                $validator = Validator::make($request->all(), [
+                    'documento_comprobante_migratorio' => 'mimes:pdf|max:2048',
+                ]);
+                if ($validator->fails()) {
+                    # code...
+                    return redirect('alumnos/sid-paso2/'.$id)
+                            ->withErrors($validator);
+                } else {
+                    $documento_comprobante_migratorio = $request->file('documento_comprobante_migratorio'); # obtenemos el archivo
+                    $url_documento_comprobante_migratorio = $this->uploaded_file($documento_comprobante_migratorio, $id, 'documento_comprobante_migratorio'); #invocamos el método
+                    $comprobante_calidad_migratoria = true;
+                }
+            }
+        }
+
+        /**
          * obtener el año correcto
          */
         $date = Carbon::now();
@@ -396,8 +422,8 @@ class AlumnoController extends Controller
             'empresa_trabaja' => $request->input('empresa'),
             'antiguedad' => $request->input('antiguedad'),
             'direccion_empresa' => $request->input('direccion_empresa'),
-            'medio_entero' => ($request->input('medio_entero') === 0) ? $request->input('medio_entero_especificar') : $request->input('medio_entero'),
-            'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion') === 0) ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion'),
+            'medio_entero' => ($request->input('medio_entero') === "0") ? $request->input('medio_entero_especificar') : $request->input('medio_entero'),
+            'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion') === "0") ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion'),
             'chk_acta_nacimiento' => $chk_acta_nacimiento,
             'acta_nacimiento' => $url_acta_nacimiento,
             'chk_curp' => $chk_curp,
@@ -413,7 +439,9 @@ class AlumnoController extends Controller
             'chk_comprobante_ultimo_grado' => $chk_ultimo_grado_estudios,
             'comprobante_ultimo_grado' => $url_grado_estudios,
             'puesto_empresa' => $request->input('puesto_empresa'),
-            'unidad' => $unidad
+            'unidad' => $unidad,
+            'chk_comprobante_calidad_migratoria' => $comprobante_calidad_migratoria,
+            'comprobante_calidad_migratoria' => $url_documento_comprobante_migratorio
         ]);
 
         $AlumnosPre->alumnos()->save($alumno);
