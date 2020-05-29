@@ -176,7 +176,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <h5><b>EXTRANGEROS ANEXAR:</b></h5>
+                        <h5><b>EXTRANJEROS ANEXAR:</b></h5>
                     </div>
                 </div>
                 <div class="form-row">
