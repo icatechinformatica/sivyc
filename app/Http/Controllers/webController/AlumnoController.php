@@ -69,7 +69,6 @@ class AlumnoController extends Controller
                 'sexo' => 'required',
                 'curp' => 'required',
                 'fecha_nacimiento' => 'required',
-                'telefono' => 'required',
                 'domicilio' => 'required',
                 'colonia' => 'required',
                 'cp' => 'required',
@@ -77,9 +76,11 @@ class AlumnoController extends Controller
                 'municipio' => 'required',
                 'estado_civil' => 'required',
                 'discapacidad' => 'required',
+                'interes_curso' => 'required'
             ]);
             if ($validator->fails()) {
                 # devolvemos un error
+                //dd($validator);
                 return redirect('/alumnos/sid')
                         ->withErrors($validator)
                         ->withInput();
