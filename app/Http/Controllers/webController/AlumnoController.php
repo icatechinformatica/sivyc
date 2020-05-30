@@ -104,7 +104,7 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->medio_entero = ($request->input('medio_entero') === "0") ? $request->input('medio_entero_especificar') : $request->input('medio_entero');
                 $AlumnoPreseleccion->puesto_empresa = $request->puesto_empresa;
                 $AlumnoPreseleccion->sistema_capacitacion_especificar = ($request->input('motivos_eleccion_sistema_capacitacion') === "0") ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion');
-                $AlumnoPreseleccion->empresa_trabaja = $request->empresa_trabaja;
+                $AlumnoPreseleccion->empresa_trabaja = $request->empresa;
                 $AlumnoPreseleccion->antiguedad = $request->antiguedad;
                 $AlumnoPreseleccion->save();
 
