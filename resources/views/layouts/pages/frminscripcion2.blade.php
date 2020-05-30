@@ -75,7 +75,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">ÚLTIMO GRADO DE ESTUDIOS</h5>
-                                <a href="{{ asset( $alumnoPre[0]->comprobante_ultimo_grado )}}" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre[0]->comprobante_ultimo_grado )}}" class="card-link"  border="2" width="158" height="150" hspace="10">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
