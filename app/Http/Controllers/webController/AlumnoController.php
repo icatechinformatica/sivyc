@@ -275,18 +275,18 @@ class AlumnoController extends Controller
         /**
          *
         */
-        if ($request->hasFile('grado_estudios')) {
+        if ($request->hasFile('comprobante_ultimo_grado_estudios')) {
             # llamamos al método
             $validator = Validator::make($request->all(), [
-                'grado_estudios' => 'mimes:pdf|max:2048',
+                'comprobante_ultimo_grado_estudios' => 'mimes:pdf|max:2048',
             ]);
             if ($validator->fails()) {
                 # code...
                 return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
-                $grado_estudios = $request->file('grado_estudios'); # obtenemos el archivo
-                $url_grado_estudios = $this->uploaded_file($grado_estudios, $AlumnosId, 'grado_estudios'); #invocamos el método
+                $grado_estudios = $request->file('comprobante_ultimo_grado_estudios'); # obtenemos el archivo
+                $url_grado_estudios = $this->uploaded_file($grado_estudios, $AlumnosId, 'comprobante_ultimo_grado_estudios'); #invocamos el método
                 $chk_ultimo_grado_estudios = true;
             }
         } else {

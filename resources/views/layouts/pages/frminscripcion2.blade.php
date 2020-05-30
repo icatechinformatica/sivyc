@@ -18,7 +18,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">ACTA DE NACIMIENTO</h5>
-                                <a href="#" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre[0]->acta_nacimiento )}}" target="_blank" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">DOCUMENTO CURP</h5>
-                                <a href="#" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre[0]->documento_curp )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">COMPROBANTE DOMICILIO</h5>
-                                <a href="#" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre[0]->comprobante_domicilio )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">INE</h5>
-                                <a href="#" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre[0]->ine )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,18 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">PASAPORTE O LICENCIA</h5>
-                                <a href="#" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre[0]->pasaporte_licencia_manejo )}}" class="card-link">DESCARGAR DOCUMENTO</a>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                @if (!empty($alumnoPre[0]->chk_comprobante_ultimo_grado))
+                    <div class="form-group col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">ÚLTIMO GRADO DE ESTUDIOS</h5>
+                                <a href="{{ asset( $alumnoPre[0]->comprobante_ultimo_grado )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
@@ -73,13 +84,14 @@
                 @if (!empty($alumnoPre[0]->chk_fotografia))
                     <div class="form-group col-md-3">
                         <div class="card">
-                            <img class="img-fluid img-thumbnail" src="https://source.unsplash.com/pWkk7iiCoDM/400x300" alt="Card image cap">
+                            <img class="img-fluid img-thumbnail" src="{{ asset( $alumnoPre[0]->fotografia )}}" alt="Card image cap">
                             <div class="card-footer">
                                 <small class="text-muted">FOTOGRAFÍAS</small>
                             </div>
                         </div>
                     </div>
                 @endif
+
             </div>
             <!--formulario datos generales-->
             <div class="form-row">
@@ -135,6 +147,15 @@
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="licencia_manejo" name="licencia_manejo">
                             <label class="custom-file-label" for="licencia_manejo">(PASAPORTE, LICENCIA DE MANEJO)</label>
+                        </div>
+                    </div>
+                @endif
+
+                @if (empty($alumnoPre[0]->chk_comprobante_ultimo_grado))
+                    <div class="form-group col-md-4">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="comprobante_ultimo_grado_estudios" name="comprobante_ultimo_grado_estudios">
+                            <label class="custom-file-label" for="comprobante_ultimo_grado_estudios">ÚLTIMO GRADO DE ESTUDIOS</label>
                         </div>
                     </div>
                 @endif
