@@ -345,12 +345,10 @@ $(function(){
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             licencia_manejo: {
-                required: 'Por favor, seleccione el documento',
                 extension: "Sólo se permiten pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             grado_estudios: {
-                required: 'Por favor, seleccione el documento',
                 extension: "Sólo se permiten pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
