@@ -150,7 +150,7 @@ class AlumnoController extends Controller
             ]);
             if ($validator->fails()) {
                 # code...
-                return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
                 $acta_nacimiento = $request->file('acta_nacimiento'); # obtenemos el archivo
@@ -172,7 +172,7 @@ class AlumnoController extends Controller
             ]);
             if ($validator->fails()) {
                 # code...
-                return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
                 $curp = $request->file('copia_curp'); # obtenemos el archivo
@@ -194,7 +194,7 @@ class AlumnoController extends Controller
             ]);
             if ($validator->fails()) {
                 # code...
-                return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
                 $comprobante_domicilio = $request->file('comprobante_domicilio'); # obtenemos el archivo
@@ -212,11 +212,11 @@ class AlumnoController extends Controller
         if ($request->hasFile('fotografias')) {
             # llamamos al método
             $validator = Validator::make($request->all(), [
-                'fotografias' => 'mimes:pdf|max:2048',
+                'fotografias' => 'mimes:jpg,jpeg,png|max:2048',
             ]);
             if ($validator->fails()) {
                 # code...
-                return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
                 $fotografia = $request->file('fotografias'); # obtenemos el archivo
@@ -238,7 +238,7 @@ class AlumnoController extends Controller
             ]);
             if ($validator->fails()) {
                 # code...
-                return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
                 $ine = $request->file('ine'); # obtenemos el archivo
@@ -260,7 +260,7 @@ class AlumnoController extends Controller
             ]);
             if ($validator->fails()) {
                 # code...
-                return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
                 $licencia_manejo = $request->file('licencia_manejo'); # obtenemos el archivo
@@ -282,7 +282,7 @@ class AlumnoController extends Controller
             ]);
             if ($validator->fails()) {
                 # code...
-                return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                         ->withErrors($validator);
             } else {
                 $grado_estudios = $request->file('grado_estudios'); # obtenemos el archivo
@@ -311,7 +311,7 @@ class AlumnoController extends Controller
                 ]);
                 if ($validator->fails()) {
                     # code...
-                    return redirect('alumnos/sid-paso2/'.$AlumnosId)
+                    return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
                             ->withErrors($validator);
                 } else {
                     $documento_comprobante_migratorio = $request->file('documento_comprobante_migratorio'); # obtenemos el archivo
