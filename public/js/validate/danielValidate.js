@@ -11,6 +11,11 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
+    }).attr('readonly', 'true').
+    keypress(function(event){
+      if(event.keyCode == 8){
+        event.preventDefault();
+      }
     });
 
     $("#fecha_validacion").datepicker({
@@ -261,6 +266,97 @@ $(function(){
             },
             discapacidad: {
                 required: 'Por favor seleccione una opción'
+            },
+            ultimo_grado_estudios: {
+                required: "Agregar último grado de estudios"
+            }
+        }
+    });
+
+    /**
+     * form paso 2
+     */
+    $("#form-sid-paso2").validate({
+        rules: {
+            acta_nacimiento: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            copia_curp: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            comprobante_domicilio: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            fotografias: {
+                required: true,
+                extension: "png|jpg|jpeg",
+                filesize: 2000000   //max size 2mb
+            },
+            ine: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            licencia_manejo: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            grado_estudios: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            },
+            documento_comprobante_migratorio: {
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            }
+        },
+        messages: {
+            acta_nacimiento: {
+                required: 'Por favor, seleccione el documento',
+                extension : "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            copia_curp: {
+                required: 'Por favor, seleccione el documento',
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            comprobante_domicilio: {
+                required: 'Por favor, seleccione el documento',
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            fotografias: {
+                required: 'Por favor, seleccione el documento',
+                extension: "formatos permitidos: png, jpg, jpeg",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            ine: {
+                required: 'Por favor, seleccione el documento',
+                extension: "formatos permitidos: pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            licencia_manejo: {
+                required: 'Por favor, seleccione el documento',
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            grado_estudios: {
+                required: 'Por favor, seleccione el documento',
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
+            },
+            documento_comprobante_migratorio: {
+                extension: "Sólo se permiten pdf",
+                filesize:"El archivo debe ser menor de 2 MB",
             }
         }
     });
@@ -270,34 +366,6 @@ $(function(){
      */
     $('#form_sid_registro').validate({
         rules: {
-            acta_nacimiento: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            copia_curp: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            comprobante_domicilio: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            fotografias: {
-                extension: "pdf|png|jpg|jpeg",
-                filesize: 2000000   //max size 2mb
-            },
-            ine: {
-                extension: "pdf|png|jpg|jpeg",
-                filesize: 2000000   //max size 2mb
-            },
-            licencia_manejo: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            grado_estudios: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
             especialidad_sid: {
                 required: true,
             },
@@ -307,45 +375,16 @@ $(function(){
             grupo: {
                 required: true
             },
-            ultimo_grado_estudios: {
+            tipo_curso: {
                 required: true
             },
-            documento_comprobante_migratorio: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
+            horario: {
+                required: true
             }
         },
         messages: {
             especialidad_sid: {
                 required: "Por favor, Seleccione la especialidad"
-            },
-            acta_nacimiento: {
-                extension : "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            copia_curp: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            comprobante_domicilio: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            fotografias: {
-                extension: "formatos permitidos: pdf, png, jpg, jpeg",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            ine: {
-                extension: "formatos permitidos: pdf, png, jpg, jpeg",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            licencia_manejo: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            grado_estudios: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
             },
             cursos_sid: {
                 required: "Por favor, Seleccione el curso"
@@ -353,12 +392,11 @@ $(function(){
             grupo: {
                 required: "Agregar el grupo"
             },
-            ultimo_grado_estudios: {
-                required: "Agregar último grado de estudios"
+            tipo_curso: {
+                required: "Por favor, Seleccione tipo de curso"
             },
-            documento_comprobante_migratorio: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
+            horario: {
+                required: "Agregar Horario"
             }
         }
     });
@@ -481,7 +519,11 @@ $(function(){
             } else {
                 if (medioEntero == 0) {
                     $("#medio_entero_especificar").css("display", "block");
-                    $('#medio_entero_especificar').rules('add', {required: true});
+                    $('#medio_entero_especificar').rules('add', {required: true,
+                        messages: {
+                            required: "Campo Requerido"
+                        }
+                    });
                     $('.medio_especificar').css("display", "block");
                 } else {
                     $("#medio_entero_especificar").css("display", "none");
@@ -502,7 +544,11 @@ $(function(){
             } else {
                 if (motivoEleccion == 0) {
                     $("#sistema_capacitacion_especificar").css("display", "block");
-                    $('#sistema_capacitacion_especificar').rules('add', {required: true});
+                    $('#sistema_capacitacion_especificar').rules('add', {required: true,
+                        messages: {
+                            required: "Campo Requerido"
+                        }
+                    });
                     $('.capacitacion_especificar').css("display", "block");
                 } else {
                     $("#sistema_capacitacion_especificar").css("display", "none");

@@ -62,15 +62,18 @@
         <!---->
         <hr style="border-color:dimgray">
         <div style="text-align: center;">
-            <h4><b>DATOS GENERALES</b></h4>
+            <h4><b>INFORMACIÓN DEL CURSO</b></h4>
         </div>
         <!---->
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="especialidad" class="control-label">ESPECIALIDAD: {{$alumnos[0]->especialidad}}</label>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="cursos" class="control-label">CURSO: {{$alumnos[0]->nombre_curso}} </label>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="unidad" class="control-label">UNIDAD DE CAPACITACIÓN: {{$alumnos[0]->unidad}}</label>
             </div>
         </div>
         <div class="form-row">
@@ -81,23 +84,12 @@
                 <label for="grupo" class="control-label">GRUPO: {{$alumnos[0]->grupo}} </label>
             </div>
             <div class="form-group col-md-4">
-                <label for="grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS: {{$alumnos[0]->ultimo_grado_estudios}} </label>
+                <label for="grado_estudios" class="control-label">TIPO DE CURSO: {{$alumnos[0]->tipo_curso}} </label>
             </div>
         </div>
         <hr style="border-color:dimgray">
         <div style="text-align: center;">
-            <h4><b>DOCUMENTACIÓN ENTREGADA</b></h4>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-8">
-                <h5><b>ANEXAR EXTRANJEROS:</b></h5>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="comprobante_migratorio" name="comprobante_migratorio">
-                    <label class="form-check-label" for="comprobante_migratorio">
-                        COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL
-                    </label>
-                </div>
-            </div>
+            <h4><b>DATOS GENERALES</b></h4>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -115,164 +107,10 @@
                 {{$alumnos[0]->antiguedad}}
             </div>
             <div class="form-group col-md-8">
-                <label for="direccion_empresa" class="control-label">DIRECCIÓN:</label>
+                <label for="direccion_empresa" class="control-label">DIRECCIÓN DE LA EMPRESA:</label>
                 {{$alumnos[0]->direccion_empresa}}
             </div>
         </div>
         <!---->
-        <div class="form-row">
-            <div class="row row-cols-1 row-cols-md-3">
-                <div class="col mb-3 col-md-3">
-                  @if ($alumnos[0]->chk_acta_nacimiento == true)
-                    <div class="card">
-                        <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">Acta de Nacimiento</h5>
-                        <p class="card-text">
-                            <a href="{{asset( $alumnos[0]->acta_nacimiento )}}" class="btn btn-default" target="_blank">Descargar</a>
-                        </p>
-                        </div>
-                    </div>
-                  @else
-                    <div class="card">
-                        <img src="{{asset("img/>no_image.png")}}" class="img-thumbnail" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">ACTA DE NACIMIENTO</h5>
-                        <p class="card-text"></p>
-                        </div>
-                    </div>
-                  @endif
-
-                </div>
-                <div class="col mb-3 col-md-3">
-                  @if ($alumnos[0]->chk_curp == true)
-                    <div class="card">
-                        <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">CURP</h5>
-                        <p class="card-text">
-                            <a href="{{asset( $alumnos[0]->curp )}}" class="btn btn-default" target="_blank">Descargar</a>
-                        </p>
-                        </div>
-                    </div>
-                  @else
-                    <div class="card">
-                        <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">CURP</h5>
-                        <p class="card-text"></p>
-                        </div>
-                    </div>
-                  @endif
-
-                </div>
-                <div class="col mb-3 col-md-3">
-                    @if ($alumnos[0]->chk_comprobante_domicilio == true)
-                        <div class="card">
-                            <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
-                            <div class="card-body">
-                            <h5 class="card-title">C. DOMICILIO</h5>
-                            <p class="card-text">
-                                <a href="{{ asset( $alumnos[0]->comprobante_domicilio )}}" class="btn btn-default" target="_blank">Descargar</a>
-                            </p>
-                            </div>
-                        </div>
-                    @else
-                        <div class="card">
-                            <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
-                            <div class="card-body">
-                            <h5 class="card-title">C. DOMICILIO</h5>
-                            <p class="card-text"></p>
-                            </div>
-                        </div>
-                    @endif
-
-                </div>
-                <div class="col mb-3 col-md-3">
-                  @if ($alumnos[0]->chk_fotografia == true)
-                    <div class="card">
-                        <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">FOTOGRAFÍA</h5>
-                        <p class="card-text">
-                            <a href="{{asset( $alumnos[0]->fotografia )}}" class="btn btn-default" target="_blank">Descargar</a>
-                        </p>
-                        </div>
-                    </div>
-                  @else
-                    <div class="card">
-                        <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
-                        <div class="card-body">
-                        <h5 class="card-title">FOTOGRAFÍA</h5>
-                        <p class="card-text"></p>
-                        </div>
-                    </div>
-                  @endif
-                </div>
-                <div class="col mb-3 col-md-3">
-                    @if ($alumnos[0]->chk_ine == true)
-                      <div class="card">
-                          <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
-                          <div class="card-body">
-                          <h5 class="card-title">INE</h5>
-                          <p class="card-text">
-                            <a href="{{asset( $alumnos[0]->ine )}}" class="btn btn-default" target="_blank">Descargar</a>
-                          </p>
-                          </div>
-                      </div>
-                    @else
-                      <div class="card">
-                          <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
-                          <div class="card-body">
-                          <h5 class="card-title">INE</h5>
-                          <p class="card-text"></p>
-                          </div>
-                      </div>
-                    @endif
-                </div>
-                <div class="col mb-3 col-md-3">
-                    @if ($alumnos[0]->chk_pasaporte_licencia == true)
-                      <div class="card">
-                          <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
-                          <div class="card-body">
-                          <h5 class="card-title">LICENCIA O PASAPORTE</h5>
-                          <p class="card-text">
-                            <a href="{{ asset($alumnos[0]->pasaporte_licencia_manejo) }}" class="btn btn-default" target="_blank">Descargar</a>
-                          </p>
-                          </div>
-                      </div>
-                    @else
-                      <div class="card">
-                          <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
-                          <div class="card-body">
-                          <h5 class="card-title">LICENCIA O PASAPORTE</h5>
-                          <p class="card-text"></p>
-                          </div>
-                      </div>
-                    @endif
-                </div>
-                <div class="col mb-3 col-md-3">
-                    @if ($alumnos[0]->chk_comprobante_ultimo_grado == true)
-                      <div class="card">
-                          <img src="{{asset("img/pdf.png") }}" class="img-thumbnail" alt="...">
-                          <div class="card-body">
-                          <h5 class="card-title">COMRPOBRANTE ÚLTIMO GRADO</h5>
-                          <p class="card-text">
-                            <a href="{{ asset($alumnos[0]->comprobante_ultimo_grado) }}" class="btn btn-default" target="_blank">Descargar</a>
-                          </p>
-                          </div>
-                      </div>
-                    @else
-                      <div class="card">
-                          <img src="{{asset("img/no_image.png")}}" class="img-thumbnail" alt="...">
-                          <div class="card-body">
-                          <h5 class="card-title">COMRPOBRANTE ÚLTIMO GRADO</h5>
-                          <p class="card-text"></p>
-                          </div>
-                      </div>
-                    @endif
-                </div>
-            </div>
-        </div>
     </div>
 @endsection

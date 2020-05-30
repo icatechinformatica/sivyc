@@ -79,9 +79,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('alumnos/sid', 'webController\AlumnoController@create')
         ->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
+    // alumnos
+    Route::get('/alumnos/preinscripcion/paso2/{id}', 'webController\AlumnoController@steptwo')->name('alumnos.preinscripcion.paso2')
+    ->middleware('can:alumnos.inscripcion-paso2');
     Route::get('alumnos/sid-paso2/{id}', 'webController\AlumnoController@show')
         ->name('alumnos.presincripcion-paso2')->middleware('can:alumnos.inscripcion-paso2');
     Route::post('alumnos/sid/update', 'webController\AlumnoController@update')->name('alumnos.update-sid');
+    Route::post('alumnos/sid/update_pregistro', 'webController\AlumnoController@update_pregistro')->name('alumnos.update.documentos.registro');
     // nueva ruta
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');
     Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos');
@@ -89,8 +93,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('cursos/guardar-catalogo', 'webController\CursosController@store')->name('cursos.guardar-catalogo');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
-    // alumnos
-    Route::get('/inscripcion/paso2', 'webController\AlumnoController@createpaso2sid')->name('inscripcion-paso2');
     // documentos pdf Desarrollado por Adrian
     Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@export_pdf')->name('presupuestaria');
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@export_pdf')->name('contratohonorarios');

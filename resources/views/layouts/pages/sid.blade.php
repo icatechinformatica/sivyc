@@ -66,24 +66,16 @@
             </div>
             <div class="form-row">
                 <!-- domicilio -->
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <label for="domicilio" class="control-label">Domicilio</label>
                     <input type="text" class="form-control" id="domicilio" name="domicilio" autocomplete="off">
                 </div>
                 <!-- domicilio END -->
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <label for="colonia" class="control-label">Colonia o Localidad</label>
                     <input type="text" class="form-control" id="colonia" name="colonia" autocomplete="off">
                 </div>
                 <!--COLONIA END-->
-                <div class="form-group col-md-4">
-                    <label for="interes_curso" class="control-label">Interés en curso</label>
-                    <select name="interes_curso" id="interes_curso" class="form-control">
-                        <option value="">--SELECCIONAR--</option>
-                        <option value="PRESENCIAL">PRESENCIAL</option>
-                        <option value="ONLINE">EN LÍNEA</option>
-                    </select>
-                </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
@@ -137,6 +129,82 @@
                     </select>
                 </div>
             </div>
+            <hr style="border-color:dimgray">
+            <div style="text-align: center;">
+                <h4><b>DATOS GENERALES DE CAPACITACIÓN</b></h4>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
+                    <input type="text" name="ultimo_grado_estudios" id="ultimo_grado_estudios" class="form-control" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="medio_entero" class="control-label">MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA</label>
+                    <select class="form-control" id="medio_entero" name="medio_entero">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="PRENSA">PRENSA</option>
+                        <option value="RADIO">RADIO</option>
+                        <option value="TELEVISIÓN">TELEVISIÓN</option>
+                        <option value="INTERNET">INTERNET</option>
+                        <option value="FOLLETOS, CARTELES, VOLANTES">FOLLETOS, CARTELES, VOLANTES</option>
+                        <option value="0">OTRO</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="medio_especificar">
+                        <label for="medio_entero_especificar" class="control-label">ESPECIFIQUE</label>
+                        <input type="text" class="form-control" name="medio_entero_especificar" id="medio_entero_especificar">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="motivos_eleccion_sistema_capacitacion" class="control-label">MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</label>
+                    <select class="form-control" name="motivos_eleccion_sistema_capacitacion" id="motivos_eleccion_sistema_capacitacion">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="EMPLEARSE O AUTOEMPLEARSE">PARA EMPLEARSE O AUTOEMPLEARSE</option>
+                        <option value="AHORRAR GASTOS AL INGRESO FAMILIAR">PARA AHORRAR GASTOS AL INGRESO FAMILIAR</option>
+                        <option value="ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA">POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA</option>
+                        <option value="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO">PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</option>
+                        <option value="POR DISPOSICIÓN DE TIEMPO LIBRE">POR DISPOSICIÓN DE TIEMPO LIBRE</option>
+                        <option value="0">OTRO</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="capacitacion_especificar">
+                        <label for="sistema_capacitacion_especificar" class="control-label">ESPECIFIQUE:</label>
+                        <input type="text" class="form-control" name="sistema_capacitacion_especificar" id="sistema_capacitacion_especificar">
+                    </div>
+                </div>
+            </div>
+            <!--DATOS DE EMPLEO-->
+            <hr style="border-color: dimgray">
+            <div style="text-align: center;">
+                <h4><b>DATOS DE EMPLEO</b></h4>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="empresa" class="control-label">EMPRESA DONDE TRABAJA:</label>
+                    <input type="text" name="empresa" id="empresa" class="form-control" autocomplete="off">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="puesto_empresa" class="control-label">PUESTO:</label>
+                    <input type="text" name="puesto_empresa" id="puesto_empresa" class="form-control" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="antiguedad" class="control-label">ANTIGUEDAD:</label>
+                    <input type="text" name="antiguedad" id="antiguedad" class="form-control" autocomplete="off">
+                </div>
+                <div class="form-group col-md-8">
+                    <label for="direccion_empresa" class="control-label">DIRECCIÓN:</label>
+                    <input type="text" name="direccion_empresa" id="direccion_empresa" class="form-control" autocomplete="off">
+                </div>
+            </div>
+
             <!--botones de enviar y retroceder-->
             <div class="row">
                 <div class="col-lg-12 margin-tb">

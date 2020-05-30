@@ -108,155 +108,21 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
+                        <label for="horario" class="control-label">TIPO DE CURSO</label>
+                        <select class="form-control" id="tipo_curso" name="tipo_curso" required>
+                            <option value="">--SELECCIONAR--</option>
+                            <option value="PRESENCIAL">PRESENCIAL</option>
+                            <option value="ONLINE">EN LÍNEA</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
                         <label for="horario" class="control-label">HORARIO:</label>
                         <input type="text" name="horario" id="horario" class="form-control" autocomplete="off">
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                         <label for="grupo" class="control-label">GRUPO:</label>
                         <input type="text" name="grupo" id="grupo" class="form-control" autocomplete="off">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
-                        <input type="text" name="ultimo_grado_estudios" id="ultimo_grado_estudios" class="form-control" autocomplete="off">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <h5><b>DOCUMENTACIÓN ENTREGADA:</b></h5>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="acta_nacimiento" name="acta_nacimiento">
-                            <label class="custom-file-label" for="customFile">ACTA DE NACIMIENTO</label>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="copia_curp" name="copia_curp">
-                            <label class="custom-file-label" for="copia_curp">COPIA DE LA CURP</label>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="comprobante_domicilio" name="comprobante_domicilio">
-                            <label class="custom-file-label" for="comprobante_domicilio">COMPROBANTE DE DOMICILIO</label>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="fotografias" name="fotografias">
-                            <label class="custom-file-label" for="fotografias">FOTOGRAFÍAS</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="ine" name="ine">
-                            <label class="custom-file-label" for="ine">COPIA DE LA CREDENCIAL DE ELECTOR</label>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="licencia_manejo" name="licencia_manejo">
-                            <label class="custom-file-label" for="licencia_manejo">(PASAPORTE, LICENCIA DE MANEJO)</label>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="grado_estudios" name="grado_estudios">
-                            <label class="custom-file-label" for="grado_estudios">ÚLTIMO GRADO DE ESTUDIOS</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <h5><b>EXTRANJEROS ANEXAR:</b></h5>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1" id="comprobante_migratorio" name="comprobante_migratorio">
-                            <label class="form-check-label" for="comprobante_migratorio">
-                                COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="documento_comprobante_migratorio" name="documento_comprobante_migratorio" disabled>
-                            <label class="custom-file-label" id="lbl_documento_comprobante_migratorio" for="documento_comprobante_migratorio">COMPROBANTE MIGRATORIO</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="empresa" class="control-label">EMPRESA DONDE TRABAJA:</label>
-                        <input type="text" name="empresa" id="empresa" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="puesto_empresa" class="control-label">PUESTO:</label>
-                        <input type="text" name="puesto_empresa" id="puesto_empresa" class="form-control" autocomplete="off">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="antiguedad" class="control-label">ANTIGUEDAD:</label>
-                        <input type="text" name="antiguedad" id="antiguedad" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="form-group col-md-8">
-                        <label for="direccion_empresa" class="control-label">DIRECCIÓN:</label>
-                        <input type="text" name="direccion_empresa" id="direccion_empresa" class="form-control" autocomplete="off">
-                    </div>
-                </div>
-                <hr style="border-color:dimgray">
-                <div style="text-align: center;">
-                    <h4><b>DATOS PARA LA UNIDAD DE CAPACITACIÓN</b></h4>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="medio_entero" class="control-label">MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA</label>
-                        <select class="form-control" id="medio_entero" name="medio_entero">
-                            <option value="">--SELECCIONAR--</option>
-                            <option value="PRENSA">PRENSA</option>
-                            <option value="RADIO">RADIO</option>
-                            <option value="TELEVISIÓN">TELEVISIÓN</option>
-                            <option value="INTERNET">INTERNET</option>
-                            <option value="FOLLETOS, CARTELES, VOLANTES">FOLLETOS, CARTELES, VOLANTES</option>
-                            <option value="0">OTRO</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="medio_especificar">
-                            <label for="medio_entero_especificar" class="control-label">ESPECIFIQUE</label>
-                            <input type="text" class="form-control" name="medio_entero_especificar" id="medio_entero_especificar">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="motivos_eleccion_sistema_capacitacion" class="control-label">MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</label>
-                        <select class="form-control" name="motivos_eleccion_sistema_capacitacion" id="motivos_eleccion_sistema_capacitacion">
-                            <option value="">--SELECCIONAR--</option>
-                            <option value="EMPLEARSE O AUTOEMPLEARSE">PARA EMPLEARSE O AUTOEMPLEARSE</option>
-                            <option value="AHORRAR GASTOS AL INGRESO FAMILIAR">PARA AHORRAR GASTOS AL INGRESO FAMILIAR</option>
-                            <option value="ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA">POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA</option>
-                            <option value="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO">PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</option>
-                            <option value="POR DISPOSICIÓN DE TIEMPO LIBRE">POR DISPOSICIÓN DE TIEMPO LIBRE</option>
-                            <option value="0">OTRO</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="capacitacion_especificar">
-                            <label for="sistema_capacitacion_especificar" class="control-label">ESPECIFIQUE:</label>
-                            <input type="text" class="form-control" name="sistema_capacitacion_especificar" id="sistema_capacitacion_especificar">
-                        </div>
                     </div>
                 </div>
                 <!--botones de enviar y retroceder-->

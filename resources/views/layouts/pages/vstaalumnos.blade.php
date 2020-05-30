@@ -29,21 +29,27 @@
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">telefono</th>
-                        <th scope="col">Curp</th>
-                        <th width="160px">Acciones</th>
+                        <th scope="col">NOMBRE</th>
+                        <th scope="col">CURP</th>
+                        <th scope="col">DOCUMENTOS</th>
+                        <th scope="col">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($retrieveAlumnos as $itemData)
                         <tr>
                             <td scope="row">{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
-                            <td>{{$itemData->telefono}}</td>
                             <td>{{$itemData->curp}}</td>
                             <td>
+                                <a href="{{route('alumnos.preinscripcion.paso2',['id' => base64_encode($itemData->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Anexar Documentos">
+                                    <i class="fa fa-upload" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                            <td>
                                 @can('alumnos.inscripcion-paso2')
-                                    <a class="btn btn-info" href="{{route('alumnos.presincripcion-paso2', ['id' => $itemData->id])}}">Matricular</a>
+                                    <a href="{{route('alumnos.presincripcion-paso2', ['id' => base64_encode($itemData->id)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Matricular">
+                                        <i class="fa fa-gears" aria-hidden="true"></i>
+                                    </a>
                                 @endcan
                             </td>
                         </tr>
@@ -56,7 +62,7 @@
             </table>
         @else
             <div class="alert alert-warning" role="alert">
-                <h2>No hay Alumnos Registrados!</h2>
+                <h2>NO HAY ALUMNOS REGISTRADOS!</h2>
             </div>
         @endif
         <br>
