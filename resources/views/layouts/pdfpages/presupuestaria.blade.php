@@ -56,7 +56,6 @@
       <tr>
         <td>
             <p class="izq">
-              Desarrolloweb.com
             </p>
         </td>
         <td>
