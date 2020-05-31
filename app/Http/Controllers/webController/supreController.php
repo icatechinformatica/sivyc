@@ -213,7 +213,7 @@ class supreController extends Controller
         $supre = supre::find($request->id);
         $supre->status = 'Validado';
         $supre->folio_validacion = $request->folio_validacion;
-        $supre->fecha_validacion = $request->fecha_validacion;
+        $supre->fecha_validacion = $request->fecha_val;
         $supre->save();
 
         supre_directorio::where('id', '=', $request->directorio_id)
