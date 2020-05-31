@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\curso;
 use App\Models\especialidad;
 use App\Models\Area;
+use App\Models\tbl_unidades;
 
 class CursosController extends Controller
 {
@@ -39,10 +40,12 @@ class CursosController extends Controller
     {
         $especialidad = new especialidad();
         $especialidades = $especialidad->all();
+        $unidades = new tbl_unidades();
+        $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
         $area = new Area();
         $areas = $area->all();
         // mostramos el formulario de cursos
-        return view('layouts.pages.frmcursos', compact('especialidades', 'areas'));
+        return view('layouts.pages.frmcursos', compact('especialidades', 'areas', 'unidadesMoviles'));
     }
 
     /**
@@ -57,12 +60,9 @@ class CursosController extends Controller
         try {
             //validación de archivos
 
-
-
             $cursos = new curso;
             $cursos->nombre_curso = trim($request->nombrecurso);
             $cursos->modalidad = trim($request->modalidad);
-            $cursos->horas = trim($request->horas);
             $cursos->clasificacion = trim($request->clasificacion);
             $cursos->costo = trim($request->costo);
             $cursos->duracion = trim($request->duracion);
@@ -75,7 +75,7 @@ class CursosController extends Controller
             $cursos->id_especialidad = $request->especialidadCurso;
             $cursos->unidad_amovil = trim($request->unidad_accion_movil);
             $cursos->area = $request->areaCursos;
-            $cursos->solicitud_autorizacion = (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false;
+            $cursos->solicitud_autorizacion = $request->solicitud_autorizacion;
             $cursos->memo_actualizacion = trim($request->memo_actualizacion);
             $cursos->memo_validacion = trim($request->memo_validacion);
             $cursos->cambios_especialidad = trim($request->cambios_especialidad);

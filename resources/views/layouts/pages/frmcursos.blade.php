@@ -15,14 +15,14 @@
     @endif
     <form method="POST" action="{{ url('cursos/guardar-catalogo') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
-        <div style="text-align: right;width:65%">
-            <label for="tituloformulariocurso"><h1>Formulario de Cursos</h1></label>
+        <div style="text-align: right;width:60%">
+            <label for="tituloformulariocurso"><h1>NUEVO CURSO</h1></label>
          </div>
          <hr style="border-color:dimgray">
         <div class="form-row">
           <!-- Unidad -->
           <div class="form-group col-md-6">
-            <label for="areaCursos" class="control-label">ÁREA</label>
+            <label for="areaCursos" class="control-label">CAMPO</label>
             <select class="form-control" id="areaCursos" name="areaCursos">
                 <option value="">--SELECCIONAR--</option>
                 @foreach ($areas as $itemareas)
@@ -33,7 +33,7 @@
           <!--Unidad Fin-->
           <!-- nombre curso -->
           <div class="form-group col-md-6">
-            <label for="especialidadCurso" class="control-label">Especialidad</label>
+            <label for="especialidadCurso" class="control-label">ESPECIALIDAD</label>
             <select class="form-control" id="especialidadCurso" name="especialidadCurso">
                 <option value="">--SELECCIONAR--</option>
             </select>
@@ -41,18 +41,22 @@
           <!-- nombre curso FIN-->
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="nombrecurso" class="control-label">Nombre del Curso</label>
+            <div class="form-group col-md-4">
+                <label for="nombrecurso" class="control-label">NOMBRE DEL CURSO</label>
                 <input type="text" class="form-control" id="nombrecurso" name="nombrecurso">
             </div>
-            <div class="form-group col-md-6">
-                <label for="unidad_accion_movil" class="control-label">Unidad Acción Móvil</label>
-                <input type="text" class="form-control" id="unidad_accion_movil" name="unidad_accion_movil">
+            <div class="form-group col-md-4">
+                <label for="unidad_accion_movil" class="control-label">UNIDAD ACCIÓN MOVIL</label>
+                <select class="form-control" name="unidad_accion_movil" id="unidad_accion_movil">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($unidadesMoviles as $itemUnidaMovil)
+                        <option value="{{$itemUnidaMovil->ubicacion}}">{{$itemUnidaMovil->ubicacion}}</option>
+                    @endforeach
+                </select>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="modalidad  " class="control-label">Modalidad</label>
+            <!--modalidad-->
+            <div class="form-group col-md-4">
+                <label for="modalidad  " class="control-label">MODALIDAD</label>
                 <select class="form-control" id="modalidad" name="modalidad">
                   <option value="">--SELECCIONAR--</option>
                   <option value="CAE">CAE</option>
@@ -60,9 +64,12 @@
                   <option value="EMP">EMP</option>
                 </select>
             </div>
+        </div>
+        <div class="form-row">
+
             <!--clasificacion-->
-            <div class="form-group col-md-6">
-                <label for="clasificacion  " class="control-label">Clasificación</label>
+            <div class="form-group col-md-4">
+                <label for="clasificacion  " class="control-label">CLASIFICACIÓN</label>
                 <select class="form-control" id="clasificacion" name="clasificacion">
                     <option value="">--SELECCIONAR--</option>
                     <option value="A-BASICO">A-BÁSICO</option>
@@ -71,35 +78,31 @@
                 </select>
             </div>
             <!--clasificacion END-->
-        </div>
-        <div class="form-row">
-          <!-- Destinatario -->
-          <div class="form-group col-md-6">
-            <label for="horas" class="control-label">Horas</label>
-            <input type="number" class="form-control" id="horas" name="horas" placeholder="Horas">
-          </div>
-          <!-- Destinatario END -->
-          <!-- Puesto-->
-          <div class="form-group col-md-6">
-            <label for="costo" class="control-label">Costo</label>
-            <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="costo">
-          </div>
-          <!-- Puesto END-->
-
-        </div>
-        <div class="form-row">
+            <!-- Puesto-->
+            <div class="form-group col-md-4">
+                <label for="costo" class="control-label">COSTO</label>
+                <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="costo">
+            </div>
+            <!-- Puesto END-->
             <!-- Duracion -->
-            <div class="form-group col-md-6">
-              <label for="duracion" class="control-label">Duración</label>
+            <div class="form-group col-md-4">
+              <label for="duracion" class="control-label">DURACIÓN EN HORAS</label>
               <input type="text" class="form-control" id="duracion" name="duracion" placeholder="duracion">
             </div>
             <!-- Duracion END -->
+        </div>
+        <div class="form-row">
+
             <!-- Perfil-->
             <div class="form-group col-md-6">
-              <label for="perfil" class="control-label">Perfil</label>
+              <label for="perfil" class="control-label">PERFIL</label>
               <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil">
             </div>
             <!-- Perfil END-->
+            <div class="form-group col-md-6">
+                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
+                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control">
+            </div>
         </div>
         <div class="form-row">
             <!-- Objetivo -->
@@ -115,18 +118,14 @@
             </div>
             <!-- Accion Movil END-->
         </div>
-        <hr>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE AUTORIZACIÓN</label>
-                <div class="col-sm-10">
-                    <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="solicitud_autorizacion" name="solicitud_autorizacion" value="true">
-                    <label class="form-check-label" for="solicitud_autorizacion">
-                        AUTORIZACIÓN
-                    </label>
-                    </div>
-                </div>
+                <select class="form-control" id="solicitud_autorizacion" name="solicitud_autorizacion">
+                    <option value="">--SELECCIONAR--</option>
+                    <option value="true">SI</option>
+                    <option value="false">NO</option>
+                </select>
             </div>
             <div class="form-group col-md-4">
                 <label for="memo_actualizacion" class="control-label">MEMO DE ACTUALIZACIÓN</label>
@@ -141,43 +140,39 @@
         <div class="form-row">
             <!-- Solicitud -->
             <div class="form-group col-md-4">
-              <label for="documento_solicitud_autorizacion" class="control-label">Documento Solicitud de Autorización</label>
+              <label for="documento_solicitud_autorizacion" class="control-label">DOCUMENTO SOLICITUD AUTORIZACIÓN</label>
               <input type="file" class="form-control" id="documento_solicitud_autorizacion" name="documento_solicitud_autorizacion">
             </div>
             <!-- Solicitud END -->
             <!-- memo_actualizacion -->
             <div class="form-group col-md-4">
-              <label for="documento_memo_actualizacion" class="control-label">Documento Memo Actualización</label>
+              <label for="documento_memo_actualizacion" class="control-label">DOCUMENTO MEMO ACTUALIZACIÓN</label>
               <input type="file" class="form-control" id="documento_memo_actualizacion" name="documento_memo_actualizacion">
             </div>
             <!-- fecha_validacion END -->
             <div class="form-group col-md-4">
-                <label for="documento_memo_validacion" class="control-label">Documento Memo Validación</label>
+                <label for="documento_memo_validacion" class="control-label">DOCUMENTO MEMO VALIDACIÓN</label>
                 <input type="file" class="form-control" id="documento_memo_validacion" name="documento_memo_validacion">
             </div>
         </div>
         <div class="form-row">
             <!-- fecha_validacion -->
             <div class="form-group col-md-6">
-              <label for="fecha_validacion" class="control-label">Fecha Validación</label>
-              <input type="date" class="form-control" id="fecha_validacion" name="fecha_validacion">
+              <label for="fecha_validacion" class="control-label">FECHA VALIDACIÓN</label>
+              <input type="text" class="form-control" id="fecha_validacion" name="fecha_validacion" autocomplete="off">
             </div>
             <!-- memo_actualizacion END -->
             <div class="form-group col-md-6">
-                <label for="fecha_actualizacion" class="control-label">Fecha Actualización</label>
-                <input type="date" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion">
+                <label for="fecha_actualizacion" class="control-label">FECHA AUTORIZACIÓN</label>
+                <input type="text" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion" autocomplete="off">
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label for="cambios_especialidad" class="control-label">CAMBIOS DE ESPECIALIDAD</label>
                 <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control">
             </div>
-            <div class="form-group col-md-4">
-                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO</label>
-                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control">
-            </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label for="categoria" class="control-label">CATEGORIA</label>
                 <input type="text" name="categoria" id="categoria" class="form-control">
             </div>

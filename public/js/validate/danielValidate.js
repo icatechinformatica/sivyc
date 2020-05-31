@@ -22,13 +22,23 @@ $(function(){
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });
+    }).attr('readonly', 'true').
+      keypress(function(event){
+        if(event.keyCode == 8){
+            event.preventDefault();
+        }
+      });
 
     $('#fecha_actualizacion').datepicker({
         changeMonth: true,
         changeYear: true,
         dateFormat: 'dd-mm-yy'
-    });
+    }).attr('readonly', 'true').
+      keypress(function(event){
+        if(event.keyCode == 8){
+            event.preventDefault();
+        }
+      });
 
     $('input[type=text]').val(function () {
         return this.value.toUpperCase();
@@ -577,9 +587,6 @@ $(function(){
      */
     $('#frmcursoscatalogo').validate({
         rules: {
-            especialidad: {
-                required: true
-            },
             nombrecurso: {
                 required: true
             },
@@ -600,12 +607,21 @@ $(function(){
             documento_memo_validacion: {
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
+            },
+            fecha_validacion: {
+                required: true
+            },
+            areaCursos: {
+                required: true
+            },
+            especialidadCurso: {
+                required: true
+            },
+            duracion: {
+                number: true
             }
         },
         messages: {
-            especialidad: {
-                required: "Por favor, Seleccione la especialidad"
-            },
             nombrecurso: {
                 required: "Por favor, Escriba nombre del curso"
             },
@@ -626,6 +642,18 @@ $(function(){
             documento_memo_validacion: {
                 extension: "Sólo se permiten pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
+            },
+            fecha_validacion: {
+                required: "la fecha de validación es requerido"
+            },
+            especialidadCurso: {
+                required: "Por favor, Seleccione la especialidad"
+            },
+            areaCursos: {
+                required: "Por favor, Seleccione el campo"
+            },
+            duracion: {
+                number: 'Acepta sólo números'
             }
         }
     });

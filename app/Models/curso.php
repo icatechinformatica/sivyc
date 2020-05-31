@@ -12,7 +12,7 @@ class curso extends Model
     protected $table = 'cursos';
 
     protected $fillable = [
-            'id','nombre_curso','modalidad','horas','clasificacion','costo','duracion',
+            'id','nombre_curso','modalidad','clasificacion','costo','duracion',
             'objetivo','perfil','solicitud_autorizacion','fecha_validacion','memo_validacion',
             'memo_actualizacion','fecha_actualizacion','unidad_amovil','descripcion','no_convenio','id_especialidad',
             'area', 'cambios_especialidad', 'nivel_estudio', 'categoria'
