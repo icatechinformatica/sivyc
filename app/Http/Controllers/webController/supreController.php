@@ -56,6 +56,7 @@ class supreController extends Controller
         $curso_validado = new tbl_curso();
         $directorio = new supre_directorio();
 
+
         //Guarda Solicitud
         $supre->unidad_capacitacion = strtoupper($request->unidad);
         $supre->no_memo = strtoupper($request->memorandum);
@@ -64,7 +65,6 @@ class supreController extends Controller
         $supre->save();
 
        $id = $supre->id;
-
        $directorio->supre_dest = $request->id_destino;
        $directorio->supre_rem = $request->id_remitente;
        $directorio->supre_valida = $request->id_valida;
@@ -72,14 +72,14 @@ class supreController extends Controller
        $directorio->supre_ccp1 = $request->id_ccp1;
        $directorio->supre_ccp2 = $request->id_ccp2;
        $directorio->id_supre = $id;
-       $directorio->save();
+
 
         //Guarda Folios
         foreach ($request->addmore as $key => $value){
             $folio = new folio();
             $folio->folio_validacion = strtoupper($value['folio']);
             $folio->numero_presupuesto = strtoupper($value['numeropresupuesto']);
-            $folio->iva = $value['iva'];
+            $folio->iva = $value['importe']*0.16;
             $clave = strtoupper($value['clavecurso']);
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
@@ -107,8 +107,11 @@ class supreController extends Controller
             {
                 supre::WHERE('id', '=', $id)->DELETE();
                 supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
+                return redirect()->route('supre-inicio')
+                        ->with('success','Error Interno. Intentelo mas tarde.');
             }
         }
+        $directorio->save();
 
         return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
@@ -164,7 +167,7 @@ class supreController extends Controller
             $folio = new folio();
             $folio->folio_validacion = $value['folio'];
             $folio->numero_presupuesto = $value['numeropresupuesto'];
-            $folio->iva = $value['iva'];
+            $folio->iva = $value['importe']*0.16;
             $clave = $value['clavecurso'];
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)

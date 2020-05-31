@@ -3,7 +3,7 @@
 @section('title', 'Registro de Instructor | Sivyc Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
-        <form action="{{ url('/instructor/guardar') }}" method="post" id="registerinstructor" enctype="multipart/form-data">
+        <form action="{{ url('/instructor/guardar') }}" method="post" id="reginstructor" enctype="multipart/form-data">
             @csrf
             <div class="text-center">
                 <h1>Formulario Instructor<h1>
