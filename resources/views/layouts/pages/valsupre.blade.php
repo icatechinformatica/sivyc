@@ -73,7 +73,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputfecha_validacion">Fecha de Validación</label>
-                        <input name="fecha_validacion" id="fecha_validacion" type="date" class="form-control">
+                        <input name="fecha_val" id="fecha_val" type="date" class="form-control">
                     </div>
                 </div>
                 <div id="div2" class="form-row d-none d-print-none">
