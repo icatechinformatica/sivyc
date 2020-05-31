@@ -106,7 +106,8 @@ $(function(){
     //Botones en tabla modsupre
         $("#addmodsupre").click(function(){
             ++m;
-            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /></td><td><input type="text" name="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
+            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
+            //<td><input type="text" name="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td>
         });
 
         $("#mod_supre").click(function(e){
@@ -116,9 +117,9 @@ $(function(){
                     $('#unidad_capacitacion').prop("disabled", false)
                     $('#no_memo').prop("disabled", false)
                     $('#fecha').prop("disabled", false)
-                    $('#nombre_para').prop("disabled", false)
+                    $('#destino').prop("disabled", false)
                     $('#puesto_para').prop("disabled", false)
-                    $('#nombre_remitente').prop("disabled",false)
+                    $('#remitente').prop("disabled",false)
                     $('#puesto_remitente').prop("disabled",false)
                     $('#nombre_valida').prop("disabled",false)
                     $('#puesto_valida').prop("disabled",false)
@@ -145,14 +146,6 @@ $(function(){
             success: function(){
                 $('#divrechazar').prop("class", "form-row")
                 $('#divconf_rechazar').prop("class", "form-row")
-                $('#div1').prop("class", "form-row")
-                $('#div2').prop("class", "form-row")
-                $('#div3').prop("class", "form-row")
-                $('#div4').prop("class", "form-row")
-                $('#div5').prop("class", "form-row")
-                $('#div6').prop("class", "form-row")
-                $('#div7').prop("class", "form-row")
-                $('#confval').prop("class", "form-row")
             }
         });
     });

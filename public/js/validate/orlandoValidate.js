@@ -40,21 +40,38 @@ $(function(){
         return 'sin especificar' !== value;
        }, "Value must not equal arg.");
 
-       //Valida Instructor
-   /* $('#registerinstructor').validate({
+    $('#registerinstructor').validate({
         rules: {
             nombre:{
                 required: true,
                 minlength: 3
+                },
+                apellido_paterno:{
+                    required: true,
+                    minlength: 3
+                },
+                apellido_materno:{
+                    required: true,
+                    minlength: 3
+                },
             },
-            apellido_paterno:{
-                required: true,
-                minlength: 3
+        messages: {
+            nombre: {
+                required: 'Por favor ingrese el nombre',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
             },
-            apellido_materno:{
-                required: true,
-                minlength: 3
+            apellido_paterno: {
+                required: 'Por favor ingrese el apellido paterno'
             },
+            apellido_materno: {
+                required: 'Por favor ingrese su apellido materno'
+            },
+        }
+    });
+
+       //Valida Instructor
+    $('#validadoinstructor').validate({
+        rules: {
             curp: {
                 required: true,
                 CURP: true
@@ -136,16 +153,6 @@ $(function(){
             }
         },
         messages: {
-            nombre: {
-                required: 'Por favor ingrese el nombre',
-                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
-            },
-            apellido_paterno: {
-                required: 'Por favor ingrese el apellido paterno'
-            },
-            apellido_materno: {
-                required: 'Por favor ingrese su apellido materno'
-            },
             curp: {
                 required: 'Por favor Ingresé la CURP',
                 CURP: "Por favor ingrese una CURP valida"
@@ -226,7 +233,7 @@ $(function(){
                 valueNotEquals: 'Por Favor ingrese la unidad donde se esta registrando al instructor'
             }
         }
-    });*/
+    });
 
         //Valida perfil_profesional
     $('#registerperf_prof').validate({

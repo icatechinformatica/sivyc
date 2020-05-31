@@ -36,7 +36,7 @@
                     <select class="form-control" name="perfil_instructor" id="perfil_instructor">
                         <option value="default">Sin Especificar</option>
                         @foreach ( $perfil_prof as $value )
-                            <option value={{$value->id}}>{{$value->nombre}}</option>
+                            <option value={{$value->id_espins}}>{{$value->nombre_especialidad}}</option>
                         @endforeach
                     </select>
                 </div>

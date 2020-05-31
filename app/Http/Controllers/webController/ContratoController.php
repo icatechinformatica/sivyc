@@ -13,6 +13,7 @@ use App\Models\InstructorPerfil;
 use App\Models\supre;
 use App\Models\folio;
 use App\Models\pago;
+use App\Models\especialidad_instructor;
 use App\Models\directorio;
 use App\Models\contrato_directorio;
 use App\Models\especialidad;
@@ -39,15 +40,18 @@ class ContratoController extends Controller
     public function create($id)
     {
         $folio = new folio();
-        $perfil = new especialidad();
+        $perfil = new InstructorPerfil();
         $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                               'instructores.apellidoMaterno','instructores.id','instructores.id_especialidad')
+                               'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
 
-        $perfil_prof = $perfil::WHERE('id', '=', $data->id_especialidad)->GET();
+        $perfil_prof = $perfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
+                                ->WHERE('instructor_perfil.numero_control', '=', $data->id)
+                                ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+                                ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
 
@@ -210,7 +214,7 @@ class ContratoController extends Controller
         $contrato->save();
 
         folio::where('id_folios', '=', $request->id_folio)
-        ->update(['status' => 'Verificando_Pago']);
+        ->update(['status' => 'Pago_Verificado']);
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Pago Agregado');
@@ -255,13 +259,16 @@ class ContratoController extends Controller
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
-                                  'instructores.domicilio','instructor_perfil.especialidad','especialidades.nombre AS nomes')
+                                  'instructores.domicilio')
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                          ->LEFTJOIN('instructor_perfil', 'instructor_perfil.id', '=', 'contratos.instructor_perfilid')
-                          ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'contratos.instructor_perfilid')
                           ->FIRST();
+                          //nomes especialidad
+        $especialidad = especialidad_instructor::SELECT('especialidades.nombre')
+                                                ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
+                                                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                                                ->FIRST();
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
 
         $date = strtotime($data_contrato->fecha_firma);
@@ -271,7 +278,7 @@ class ContratoController extends Controller
 
         $monto = explode(".",strval($data_contrato->cantidad_numero));
 
-        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto'));
+        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad'));
 
         return $pdf->download('Contrato Instructor.pdf');
     }

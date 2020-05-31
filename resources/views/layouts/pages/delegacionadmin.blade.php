@@ -50,7 +50,7 @@
                     <th>Numero Presupuesto</th>
                     <th>Clave Curso</th>
                     <th>Importe total</th>
-                    <th>Iva</th>
+                    <!--<th>Iva</th>-->
                     <th>Acción</th>
                 </tr>
                 <tr>
@@ -58,17 +58,17 @@
                     <td><input type="text" name="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" /></td>
                     <td><input type="text" name="addmore[0][clavecurso]" placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" name="addmore[0][importe]" placeholder="importe total" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][iva]" placeholder="IVA" class="form-control" /></td>
+                    <!--<td><input type="text" name="addmore[0][iva]" placeholder="IVA" class="form-control" /></td>-->
                     <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
                 </tr>
             </table>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6"> <!--  -->
+            <div class="form-group col-md-6">
                 <label for="inputremitente" class="control-label">Remitente</label>
                 <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="remitente" name="remitente" placeholder="Nombre">
             </div>
-            <div class="form-group col-md-6"> <!--  -->
+            <div class="form-group col-md-6">
                 <label for="inputremitente" class="control-label">Puesto</label>
                 <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="remitente_puesto" name="remitente_puesto" placeholder="Puesto">
                 <input id="id_remitente" name="id_remitente" type="text" hidden>
