@@ -402,17 +402,14 @@ $(function(){
                 filesize: 2000000   //max size 2mb
             },
             ine: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
             licencia_manejo: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
             grado_estudios: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
@@ -443,7 +440,6 @@ $(function(){
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             ine: {
-                required: 'Por favor, seleccione el documento',
                 extension: "formatos permitidos: pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
