@@ -141,8 +141,10 @@ class ConveniosController extends Controller
     public function edit($id)
     {
         //
-        $convenios = Convenio::find($id);
-        return view('layouts.pages.editconvenio',['convenios'=> $convenios]);
+        $municipio = new Municipio();
+        $municipios = $municipio->all();
+        $convenios = Convenio::findOrfail($id);
+        return view('layouts.pages.editconvenio',['convenios'=> $convenios, 'municipios' => $municipios]);
     }
 
     /**
