@@ -45,8 +45,9 @@
                 <label for="sector">SECTOR</label>
                 <select class="form-control" id="sector" name="sector">
                     <option value="">--SELECCIONAR--</option>
-                    <option value="PUBLICO">PÚBLICO</option>
-                    <option value="PRIVADO">PRIVADO</option>
+                    <option value="S">S</option>
+                    <option value="E">E</option>
+                    <option value="G">G</option>
                 </select>
             </div>
             <!-- Fin Sector-->

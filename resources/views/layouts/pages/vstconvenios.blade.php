@@ -34,7 +34,7 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('convenio.create')}}"> Agregar Convenio</a>
+                    <a class="btn btn-success btn-lg" href="{{route('convenio.create')}}">NUEVO</a>
                 </div>
             </div>
         </div>
