@@ -21,7 +21,7 @@ $(function(){
         var button = $(event.relatedTarget);
         var id = button.data('id');
         console.log(id);
-        if(id['4'] == 'Finalizado' || id['4'] == 'Verificando_Pago' || id['4'] == "Pago_verificado")
+        if(id['4'] == 'Finalizado' || id['4'] == 'Verificando_Pago' || id['4'] == "Pago_Verificado")
         {
             $('#sol_pdf').attr("class", "btn btn-danger");
             $('#sol_pdf').attr("href", "/contrato/solicitud-pago/pdf/" + id['0']);
