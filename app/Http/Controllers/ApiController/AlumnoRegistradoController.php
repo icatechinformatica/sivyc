@@ -87,7 +87,7 @@ class AlumnoRegistradoController extends Controller
         'alumnos_pre.comprobante_ultimo_grado', 'alumnos_pre.chk_comprobante_calidad_migratoria',
         'alumnos_pre.comprobante_calidad_migratoria', 'alumnos_pre.puesto_empresa', 'alumnos_pre.sistema_capacitacion_especificar',
         'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad', 'alumnos_registro.id AS id_registro')
-                ->WHERE('alumnos_registro.id', '=', $id)
+                ->WHERE('alumnos_registro.no_control', '=', $id)
                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                 ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
