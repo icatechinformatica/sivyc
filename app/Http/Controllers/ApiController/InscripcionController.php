@@ -103,7 +103,7 @@ class InscripcionController extends Controller
         try {
             //code...
             $Inscripcion = new Inscripcion();
-            $Inscripcion->whereId($id)->update($request->all());
+            $Inscripcion->WHERE('id_curso', '=', $id)->update($request->all());
             return response()->json(['success' => 'Inscripcion actualizada'], 200);
         } catch (Exception $e) {
             //throw $th;
