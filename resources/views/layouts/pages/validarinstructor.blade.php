@@ -84,7 +84,7 @@
                     <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputfolio_ine">Folio de INE</label>
+                    <label for="inputfolio_ine">Clave de Elector</label>
                     <input name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true">
                 </div>
             </div>
