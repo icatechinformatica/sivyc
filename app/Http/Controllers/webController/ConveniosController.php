@@ -33,10 +33,8 @@ class ConveniosController extends Controller
      */
     public function create()
     {
-        $municipio = new Municipio();
-        $municipios = $municipio->all();
         // mostrar formulario de convenio
-        return view('layouts.pages.frmconvenio', compact('municipios'));
+        return view('layouts.pages.frmconvenio');
     }
 
     /**
@@ -141,10 +139,8 @@ class ConveniosController extends Controller
     public function edit($id)
     {
         //
-        $municipio = new Municipio();
-        $municipios = $municipio->all();
         $convenios = Convenio::findOrfail($id);
-        return view('layouts.pages.editconvenio',['convenios'=> $convenios, 'municipios' => $municipios]);
+        return view('layouts.pages.editconvenio',['convenios'=> $convenios]);
     }
 
     /**

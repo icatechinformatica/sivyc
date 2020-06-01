@@ -83,12 +83,7 @@
             <!--municipio-->
             <div class="form-group col-md-4">
                 <label for="municipio" class="control-label">MUNICIPIO</label>
-                <select class="form-control" name="municipio" id="municipio">
-                    <option value="">--SELECCIONAR--</option>
-                    @foreach ($municipios as $itemMunicipio)
-                        <option {{( $convenios->muni == $itemMunicipio->muni) ? "selected" : ""}} value="{{$itemMunicipio->muni}}">{{$itemMunicipio->muni}}</option>
-                    @endforeach
-                </select>
+                <input type='text' id="poblacion" name="poblacion" class="form-control" value="{{$convenios->municipio}}"/>
             </div>
             <!--municipio END-->
             <!--nombre_titular-->

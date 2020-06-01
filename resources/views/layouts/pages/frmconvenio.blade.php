@@ -85,12 +85,7 @@
             <!--municipio-->
             <div class="form-group col-md-4">
                 <label for="municipio" class="control-label">MUNICIPIO</label>
-                <select class="form-control" name="municipio" id="municipio">
-                    <option value="">--SELECCIONAR--</option>
-                    @foreach ($municipios as $itemMunicipio)
-                        <option value="{{$itemMunicipio->muni}}">{{$itemMunicipio->muni}}</option>
-                    @endforeach
-                </select>
+                <input type='text' id="municipio" name="municipio" class="form-control" />
             </div>
             <!--municipio END-->
             <!--nombre_titular-->
