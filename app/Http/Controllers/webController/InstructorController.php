@@ -492,7 +492,7 @@ class InstructorController extends Controller
     public function cursoimpartir_form($id, $idins)
     {
         $perfil = instructorPerfil::SELECT('id','grado_profesional')->WHERE('numero_control', '=', $idins)->GET();
-        dd($idins);
+        dd($id);
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
         return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data'));
