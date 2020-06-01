@@ -166,7 +166,7 @@ class InstructorController extends Controller
         $instructor->correo = trim($request->correo);
         $instructor->tipo_honorario = trim($request->honorario);
         $instructor->clave_unidad = trim($request->unidad_registra);
-        $instructor->status = "Aprobado";
+        $instructor->status = "Validado";
 
         //Creacion de el numero de control
         $uni = substr($request->unidad_registra, -2);

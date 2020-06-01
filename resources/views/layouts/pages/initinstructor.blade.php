@@ -68,6 +68,9 @@
                             @if ($itemData->status == 'Aprobado')
                                     <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                             @endif
+                            @if ($itemData->status == 'Validado')
+                                    <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach
