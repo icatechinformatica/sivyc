@@ -113,7 +113,7 @@
             <div id="div3" class="form-row d-none d-print-none">
                 <div class="form-group col-md-3">
                     <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                    <input name='fecha_nacimiento' id='fecha_nacimiento' type="date" class="form-control" aria-required="true">
+                    <input name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad</label>
@@ -153,7 +153,8 @@
                     <select class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS">Honorarios</option>
-                        <option value="ASALARIADO ASIMILADO">Asalariado Asimilado</option>
+                        <option value="SIN HONORARIOS">Sin Honorarios</option>
+                        <option value="INTERNO">Interno</option>
                     </select>
                 </div>
             </div>

@@ -158,7 +158,7 @@ class InstructorController extends Controller
         $instructor->folio_ine = trim($request->folio_ine);
         $instructor->sexo = trim($request->sexo);
         $instructor->estado_civil = trim($request->estado_civil);
-        $instructor->fecha_nacimiento = $request->fecha_nacimiento;
+        $instructor->fecha_nacimiento = $request->fecha_nacimientoins;
         $instructor->entidad = trim($request->entidad);
         $instructor->municipio = trim($request->municipio);
         $instructor->asentamiento = trim($request->asentamiento);
