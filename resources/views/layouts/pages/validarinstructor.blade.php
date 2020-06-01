@@ -27,16 +27,16 @@
             </div>
             <h2>Vista de Documentos</h2>
             <div class="form-row">
-                <a class="btn btn-info" href={{$getinstructor->archivo_ine}} target="_blank">Solicitud de Pago</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_curp}} target="_blank">CURP</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_alta}} target="_blank">Alta de Instructor</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_ine}} target="_blank" download>Solicitud de Pago</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_domicilio}} target="_blank" download>Comprobante de Domicilio</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_curp}} target="_blank" download>CURP</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_alta}} target="_blank" download>Alta de Instructor</a><br>
             </div>
             <div class="form-row">
-                <a class="btn btn-info" href={{$getinstructor->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_fotografia}} target="_blank">Fotografía</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_estudios}} target="_blank">Estudios</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_otraid}} target="_blank">Otra Identificación</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_bancario}} target="_blank" download>Datos Bancarios</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_fotografia}} target="_blank" download>Fotografía</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_estudios}} target="_blank" download>Estudios</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_otraid}} target="_blank" download>Otra Identificación</a><br>
             </div>
             <br>
             <div class="row">
