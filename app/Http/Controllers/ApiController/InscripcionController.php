@@ -45,7 +45,7 @@ class InscripcionController extends Controller
             $Inscripcion = new Inscripcion();
             $Inscripcion->unidad = $request->unidad;
             $Inscripcion->matricula = $request->matricula;
-            $Inscripcion->nombre = $request->nombre;
+            $Inscripcion->alumno = $request->alumno;
             $Inscripcion->id_curso = $request->id_curso;
             $Inscripcion->curso = $request->curso;
             $Inscripcion->instructor = $request->instructor;

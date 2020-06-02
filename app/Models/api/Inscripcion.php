@@ -10,7 +10,7 @@ class Inscripcion extends Model
     protected $table = 'tbl_inscripcion';
 
     protected $fillable = [
-            'id','unidad','matricula','nombre','id_curso','curso',
+            'id','unidad','matricula','alumno','id_curso','curso',
             'instructor', 'inicio', 'termino', 'hinicio', 'hfin', 'tinscripcion', 'abrinscri', 'munidad', 'costo'
             , 'motivo', 'status'
         ];
