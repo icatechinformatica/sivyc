@@ -89,7 +89,7 @@
                 <label for="grado_estudios" class="control-label">TIPO DE CURSO: {{$alumnos[0]->tipo_curso}} </label>
             </div>
             <div class="form-group col-md-6">
-                <label for="grado_estudios" class="control-label">¿SE ENCUENTRA EN EL CERESO? {{$alumnos[0]->cerrs}} </label>
+                <label for="grado_estudios" class="control-label">¿SE ENCUENTRA EN EL CERESO? ($alumnos[0]->cerrs == 1) ? "SI" : "NO" </label>
             </div>
         </div>
         <hr style="border-color:dimgray">
