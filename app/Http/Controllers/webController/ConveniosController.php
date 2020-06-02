@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use App\Models\Municipio;
 
 class ConveniosController extends Controller
 {
@@ -49,7 +50,6 @@ class ConveniosController extends Controller
         $validador = Validator::make($request->all(), [
             'no_convenio' => 'required',
             'institucion' => 'required',
-            'tipo' => 'required',
             'telefono' => 'required',
             'sector' => 'required',
             'fecha_firma' => 'required',
@@ -60,7 +60,6 @@ class ConveniosController extends Controller
             'nombre_enlace' => 'required',
             'status' => 'required',
             'direccion' => 'required',
-            'archivo_convenio' => 'max:2048|mimes:pdf'
         ]);
 
         if ($validador->fails()) {
@@ -70,18 +69,18 @@ class ConveniosController extends Controller
         }
 
         $convenios = new Convenio;
-        $convenios['no_convenio'] = $request->input('no_convenio');
-        $convenios['institucion'] = $request->input('institucion');
-        $convenios['tipo_sector'] = $request->input('tipo');
-        $convenios['telefono'] = $request->input('telefono');
-        $convenios['fecha_firma'] = date('Y-m-d', strtotime($request->input('fecha_firma')));
-        $convenios['fecha_vigencia'] = date('Y-m-d H:i:s', strtotime($request->input('fecha_termino')));
-        $convenios['poblacion'] = $request->input('poblacion');
-        $convenios['municipio'] = $request->input('municipio');
-        $convenios['nombre_titular'] = $request->input('nombre_titular');
-        $convenios['nombre_enlace'] = $request->input('nombre_enlace');
-        $convenios['status'] = $request->input('status');
-        $convenios['direccion'] = $request->input('direccion');
+        $convenios['no_convenio'] = trim($request->input('no_convenio'));
+        $convenios['institucion'] = trim($request->input('institucion'));
+        $convenios['tipo_sector'] = $request->input('sector');
+        $convenios['telefono'] = trim($request->input('telefono'));
+        $convenios['fecha_firma'] = $convenios->getMyDateFormat($request->input('fecha_firma'));
+        $convenios['fecha_vigencia'] = $convenios->getMyDateFormat($request->input('fecha_termino'));
+        $convenios['poblacion'] = trim($request->input('poblacion'));
+        $convenios['municipio'] = trim($request->input('municipio'));
+        $convenios['nombre_titular'] = trim($request->input('nombre_titular'));
+        $convenios['nombre_enlace'] = trim($request->input('nombre_enlace'));
+        $convenios['status'] = trim($request->input('status'));
+        $convenios['direccion'] = trim($request->input('direccion'));
 
         $convenios->save();
 
@@ -91,18 +90,30 @@ class ConveniosController extends Controller
         $convenioId = $convenios->id;
 
         if ($request->hasFile('archivo_convenio')) {
-            # vamos a trabajar en el documento para guardarlo
-            $archivoConvenio = $request->file('archivo_convenio');
-            $extension_archivo = $archivoConvenio->getClientOriginalExtension(); # extension de archivo del cliente
-            $fileSize = $archivoConvenio->getClientSize(); # tamaño del archivo
-            # nuevo nombre del archivo
-            $fileName = "convenio".date('YmdHis')."_".$convenioId.".".$extension_archivo;
-            $request->file('archivo_convenio')->storeAs('/convenios/'.$convenioId, $fileName);
-            $docUrl = Storage::url('/convenios/'.$convenioId."/".$fileName);
-            // guardamos en la base de datos
-            $convenioUpdate = Convenio::find($convenioId);
-            $convenioUpdate->archivo_convenio = $docUrl;
-            $convenioUpdate->save();
+            #ANTES DE GUARDAR EL ARCHIVO SI ES QUE HAY UNO VALIDAMOS QUE CUMPLA CON EL REQUERIMIENTO
+
+            $validator = Validator::make($request->all(), [
+                'archivo_convenio' => 'max:2048|mimes:pdf',
+            ]);
+
+            if ($validator->fails()) {
+                # code...
+                return redirect('convenios/crear')
+                        ->withErrors($validator);
+            } else {
+                # vamos a trabajar en el documento para guardarlo
+                $archivoConvenio = $request->file('archivo_convenio');
+                $extension_archivo = $archivoConvenio->getClientOriginalExtension(); # extension de archivo del cliente
+                $fileSize = $archivoConvenio->getClientSize(); # tamaño del archivo
+                # nuevo nombre del archivo
+                $fileName = "convenio".date('YmdHis')."_".$convenioId.".".$extension_archivo;
+                $request->file('archivo_convenio')->storeAs('/convenios/'.$convenioId, $fileName);
+                $docUrl = Storage::url('/convenios/'.$convenioId."/".$fileName);
+                // guardamos en la base de datos
+                $convenioUpdate = Convenio::find($convenioId);
+                $convenioUpdate->archivo_convenio = $docUrl;
+                $convenioUpdate->save();
+            }
         }
 
         return redirect('/convenios/indice')->with('success', 'Convenio Agreado exitosamente!');
@@ -128,7 +139,7 @@ class ConveniosController extends Controller
     public function edit($id)
     {
         //
-        $convenios = Convenio::find($id);
+        $convenios = Convenio::findOrfail($id);
         return view('layouts.pages.editconvenio',['convenios'=> $convenios]);
     }
 

@@ -66,9 +66,8 @@
                     Reportes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Reporte 1</a>
-                        <a class="dropdown-item" href="#">Reporte 2</a>
-                        <a class="dropdown-item" href="#">SReporte 3</a>
+                        <a class="dropdown-item" href="https://datastudio.google.com/reporting/7c518e16-99ea-4cb2-8509-7064c0604e00" target="_blank">CURSOS VS OBJETIVOS</a>
+                        <a class="dropdown-item" href="https://datastudio.google.com/reporting/512e11eb-babf-4476-8827-8d4243e2c219" target="_blank">STATUS PAGO INSTRUCTORES</a>
                     </div>
                 </li>
 

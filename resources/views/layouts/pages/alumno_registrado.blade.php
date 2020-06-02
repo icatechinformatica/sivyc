@@ -77,14 +77,19 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label for="horario" class="control-label">HORARIO: {{$alumnos[0]->horario}} </label>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label for="grupo" class="control-label">GRUPO: {{$alumnos[0]->grupo}} </label>
             </div>
-            <div class="form-group col-md-4">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label for="grado_estudios" class="control-label">TIPO DE CURSO: {{$alumnos[0]->tipo_curso}} </label>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="grado_estudios" class="control-label">¿SE ENCUENTRA EN EL CERESO? {{($alumnos[0]->cerrs == 1) ? "SI" : "NO"}} </label>
             </div>
         </div>
         <hr style="border-color:dimgray">

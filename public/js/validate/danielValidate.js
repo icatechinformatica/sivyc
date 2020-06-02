@@ -40,6 +40,17 @@ $(function(){
         }
       });
 
+    $('#fecha_curso').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }).attr('readonly', 'true').
+      keypress(function(event){
+        if(event.keyCode == 8){
+            event.preventDefault();
+        }
+      });
+
     $('input[type=text]').val(function () {
         return this.value.toUpperCase();
     })
@@ -102,7 +113,7 @@ $(function(){
             },
             telefonoaspirante: {
                 required: true,
-                phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
+                //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
             },
             domicilioaspirante: {
                 required: true
@@ -176,6 +187,99 @@ $(function(){
         }
     });
 
+    /****
+     *
+     */
+    $('#conveniosFrm').validate({
+        rules: {
+            no_convenio: {
+                required: true
+            },
+            institucion: {
+                required: true
+            },
+            telefono: {
+                required: true
+            },
+            sector: {
+                required: true
+            },
+            fecha_firma: {
+                required: true
+            },
+            fecha_termino: {
+                required: true
+            },
+            poblacion: {
+                required: true
+            },
+            municipio: {
+                required: true
+            },
+            nombre_titular: {
+                required: true
+            },
+            nombre_enlace: {
+                required: true
+            },
+            status: {
+                required: true
+            },
+            direccion: {
+                required: true
+            },
+            archivo_convenio: {
+                required: true,
+                extension: "pdf",
+                filesize: 2000000   //max size 2mb
+            }
+        },
+        messages: {
+            no_convenio: {
+                required: "Campo requerido"
+            },
+            institucion: {
+                required: "Campo requerido"
+            },
+            telefono: {
+                required: "Campo requerido"
+            },
+            sector: {
+                required: "Campo requerido"
+            },
+            fecha_firma: {
+                required: "Campo requerido"
+            },
+            fecha_termino: {
+                required: "Campo requerido"
+            },
+            poblacion: {
+                required: "Campo requerido"
+            },
+            municipio: {
+                required: "Campo requerido"
+            },
+            nombre_titular: {
+                required: "Campo requerido"
+            },
+            nombre_enlace: {
+                required: "Campo requerido"
+            },
+            status: {
+                required: "Campo requerido"
+            },
+            direccion: {
+                required: "Campo requerido"
+            },
+            archivo_convenio: {
+                extension: "Sólo se permiten pdf",
+                filesize: "El archivo debe ser menor de 2 MB",
+                required: "Documento requerido"
+            }
+        }
+
+    });
+
     /**
      * validación nueva del SID
      */
@@ -206,7 +310,7 @@ $(function(){
             },
             telefonosid: {
                 required: true,
-                phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
+                //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
             },
             domicilio: {
                 required: true
@@ -309,17 +413,14 @@ $(function(){
                 filesize: 2000000   //max size 2mb
             },
             ine: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
             licencia_manejo: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
             grado_estudios: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
@@ -350,7 +451,6 @@ $(function(){
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             ine: {
-                required: 'Por favor, seleccione el documento',
                 extension: "formatos permitidos: pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
@@ -388,6 +488,9 @@ $(function(){
             },
             horario: {
                 required: true
+            },
+            cerrs: {
+                required: true
             }
         },
         messages: {
@@ -405,6 +508,9 @@ $(function(){
             },
             horario: {
                 required: "Agregar Horario"
+            },
+            cerrs: {
+                required: "Por favor, Seleccione una opción"
             }
         }
     });

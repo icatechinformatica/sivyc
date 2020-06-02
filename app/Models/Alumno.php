@@ -19,12 +19,21 @@ class Alumno extends Model
         'horario',
         'grupo',
         'unidad',
-        'tipo_curso'
+        'tipo_curso',
+        'realizo',
+        'cerrs',
+        'etnia'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
 
     public function alumnospre() {
         return $this->belongsTo(Alumnopre::class, 'id');
+    }
+
+    // in your model
+    public function getMyDateFormat($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }
