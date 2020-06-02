@@ -491,9 +491,6 @@ $(function(){
             },
             cerrs: {
                 required: true
-            },
-            fecha_curso: {
-                required: true
             }
         },
         messages: {
@@ -514,9 +511,6 @@ $(function(){
             },
             cerrs: {
                 required: "Por favor, Seleccione una opción"
-            },
-            fecha_curso: {
-                required: "Fecha requerida"
             }
         }
     });

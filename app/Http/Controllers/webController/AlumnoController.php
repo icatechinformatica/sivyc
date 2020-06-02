@@ -488,8 +488,7 @@ class AlumnoController extends Controller
             'unidad' => $unidad,
             'tipo_curso' => $request->input('tipo_curso'),
             'realizo' => $usuario,
-            'cerrs' => $request->input('cerrs'),
-            'fecha' => $alumno->getMyDateFormat($request->input('fecha_curso'))
+            'cerrs' => $request->input('cerrs')
         ]);
 
         $AlumnosPre->alumnos()->save($alumno);

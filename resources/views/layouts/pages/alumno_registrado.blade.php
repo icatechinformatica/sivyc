@@ -77,14 +77,11 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-6">
                 <label for="horario" class="control-label">HORARIO: {{$alumnos[0]->horario}} </label>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-6">
                 <label for="grupo" class="control-label">GRUPO: {{$alumnos[0]->grupo}} </label>
-            </div>
-            <div class="form-group col-md-3">
-                <label for="fecha" class="control-label">FECHA DEL CURSO: {{$alumnos[0]->fecha}} </label>
             </div>
         </div>
         <div class="form-row">
