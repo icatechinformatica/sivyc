@@ -48,7 +48,9 @@ class Alumnopre extends Model
         'comprobante_ultimo_grado',
         'comprobante_calidad_migratoria',
         'puesto_empresa',
-        'sistema_capacitacion_especificar'
+        'sistema_capacitacion_especificar',
+        'realizo',
+        'tiene_documentacion'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

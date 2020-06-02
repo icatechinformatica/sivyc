@@ -19,7 +19,8 @@ class Alumno extends Model
         'horario',
         'grupo',
         'unidad',
-        'tipo_curso'
+        'tipo_curso',
+        'realizo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

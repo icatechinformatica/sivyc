@@ -60,6 +60,8 @@ class AlumnoController extends Controller
     {
         $curp = strtoupper($request->input('curp'));
         $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET();
+        // obtener el usuario que agrega
+        $usuario = Auth::user()->name;
         if ($alumnoPre->isEmpty()) {
             # si la consulta no está vacía hacemos la inserción
             $validator =  Validator::make($request->all(), [
@@ -106,6 +108,8 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->sistema_capacitacion_especificar = ($request->input('motivos_eleccion_sistema_capacitacion') === "0") ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion');
                 $AlumnoPreseleccion->empresa_trabaja = $request->empresa;
                 $AlumnoPreseleccion->antiguedad = $request->antiguedad;
+                $AlumnoPreseleccion->realizo = $usuario;
+                $AlumnoPreseleccion->tiene_documentacion = false;
                 $AlumnoPreseleccion->save();
 
                 // redireccionamos con un mensaje de éxito
@@ -345,7 +349,8 @@ class AlumnoController extends Controller
             'ine' => $url_ine,
             'pasaporte_licencia_manejo' => $url_licencia_manejo,
             'comprobante_ultimo_grado' => $url_grado_estudios,
-            'comprobante_calidad_migratoria' => $url_documento_comprobante_migratorio
+            'comprobante_calidad_migratoria' => $url_documento_comprobante_migratorio,
+            'tiene_documentacion' => true
         ];
 
         $AlumnosUpdate->update($arrayUpdate);
@@ -469,6 +474,7 @@ class AlumnoController extends Controller
 
         // variable de unidad
         $unidad = Auth::user()->unidades()->first()->unidad;
+        $usuario = Auth::user()->name;
 
         /**
          * funcion alumnos
@@ -480,7 +486,8 @@ class AlumnoController extends Controller
             'horario' => $request->input('horario'),
             'grupo' => $request->input('grupo'),
             'unidad' => $unidad,
-            'tipo_curso' => $request->input('tipo_curso')
+            'tipo_curso' => $request->input('tipo_curso'),
+            'realizo' => $usuario,
         ]);
 
         $AlumnosPre->alumnos()->save($alumno);
