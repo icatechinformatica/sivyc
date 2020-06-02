@@ -108,7 +108,21 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
+                        <label for="horario" class="control-label">HORARIO:</label>
+                        <input type="text" name="horario" id="horario" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="grupo" class="control-label">GRUPO:</label>
+                        <input type="text" name="grupo" id="grupo" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="fecha_curso" class="control-label">FECHA CURSO:</label>
+                        <input type="text" name="fecha_curso" id="fecha_curso" class="form-control" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
                         <label for="horario" class="control-label">TIPO DE CURSO</label>
                         <select class="form-control" id="tipo_curso" name="tipo_curso" required>
                             <option value="">--SELECCIONAR--</option>
@@ -116,15 +130,7 @@
                             <option value="ONLINE">EN LÍNEA</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="horario" class="control-label">HORARIO:</label>
-                        <input type="text" name="horario" id="horario" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="grupo" class="control-label">GRUPO:</label>
-                        <input type="text" name="grupo" id="grupo" class="form-control" autocomplete="off">
-                    </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-6">
                         <label for="cerrs" class="control-label">¿SE ENCUENTRA EN EL CERESO?</label>
                         <select class="form-control" id="cerrs" name="cerrs" required>
                             <option value="">--SELECCIONAR--</option>

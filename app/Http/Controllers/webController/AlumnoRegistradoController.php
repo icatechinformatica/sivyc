@@ -74,7 +74,7 @@ class AlumnoRegistradoController extends Controller
         'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
         'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad',
         'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad AS unidades', 'alumnos_registro.cerrs',
-        'alumnos_registro.etnia')
+        'alumnos_registro.etnia', 'alumnos_registro.fecha')
                             ->WHERE('alumnos_registro.id', '=', $idmatricula)
                             ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                             ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')

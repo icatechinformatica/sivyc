@@ -30,4 +30,10 @@ class Alumno extends Model
     public function alumnospre() {
         return $this->belongsTo(Alumnopre::class, 'id');
     }
+
+    // in your model
+    public function getMyDateFormat($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
 }

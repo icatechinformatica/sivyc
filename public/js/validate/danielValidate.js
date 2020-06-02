@@ -40,6 +40,17 @@ $(function(){
         }
       });
 
+    $('#fecha_curso').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'dd-mm-yy'
+    }).attr('readonly', 'true').
+      keypress(function(event){
+        if(event.keyCode == 8){
+            event.preventDefault();
+        }
+      });
+
     $('input[type=text]').val(function () {
         return this.value.toUpperCase();
     })
@@ -480,6 +491,9 @@ $(function(){
             },
             cerrs: {
                 required: true
+            },
+            fecha_curso: {
+                required: true
             }
         },
         messages: {
@@ -500,6 +514,9 @@ $(function(){
             },
             cerrs: {
                 required: "Por favor, Seleccione una opción"
+            },
+            fecha_curso: {
+                required: "Fecha requerida"
             }
         }
     });
