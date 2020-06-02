@@ -299,7 +299,7 @@ $(function(){
             },
             telefonosid: {
                 required: true,
-                phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
+                //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
             },
             domicilio: {
                 required: true
