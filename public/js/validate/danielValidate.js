@@ -102,7 +102,7 @@ $(function(){
             },
             telefonoaspirante: {
                 required: true,
-                phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
+                //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
             },
             domicilioaspirante: {
                 required: true
