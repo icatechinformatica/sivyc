@@ -20,7 +20,9 @@ class Alumno extends Model
         'grupo',
         'unidad',
         'tipo_curso',
-        'realizo'
+        'realizo',
+        'cerrs',
+        'etnia'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

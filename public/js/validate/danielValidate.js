@@ -477,6 +477,9 @@ $(function(){
             },
             horario: {
                 required: true
+            },
+            cerrs: {
+                required: true
             }
         },
         messages: {
@@ -494,6 +497,9 @@ $(function(){
             },
             horario: {
                 required: "Agregar Horario"
+            },
+            cerrs: {
+                required: "Por favor, Seleccione una opción"
             }
         }
     });

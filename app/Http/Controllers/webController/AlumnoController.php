@@ -488,6 +488,7 @@ class AlumnoController extends Controller
             'unidad' => $unidad,
             'tipo_curso' => $request->input('tipo_curso'),
             'realizo' => $usuario,
+            'cerrs' => $request->input('cerrs'),
         ]);
 
         $AlumnosPre->alumnos()->save($alumno);
