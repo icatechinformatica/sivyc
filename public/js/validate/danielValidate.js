@@ -304,10 +304,6 @@ $(function(){
                 required: true,
                 CURP: true
             },
-            fecha_nacimiento: {
-                required: true,
-                //date: true
-            },
             telefonosid: {
                 required: true,
                 //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
@@ -333,6 +329,17 @@ $(function(){
             },
             discapacidad: {
                 required: true
+            },
+            dia: {
+                required: true
+            },
+            mes: {
+                required: true
+            },
+            anio: {
+                required: true,
+                maxlength: 4,
+                number: true
             }
         },
         messages: {
@@ -351,10 +358,6 @@ $(function(){
             },
             curp: {
                 required: 'Por favor Ingresé la curp',
-            },
-            fecha_nacimiento: {
-                required: 'Por favor, seleccione fecha',
-                //date: 'Formato de fecha no valido'
             },
             telefonosid: {
                 required: 'Por favor, ingrese telefóno',
@@ -383,6 +386,17 @@ $(function(){
             },
             ultimo_grado_estudios: {
                 required: "Agregar último grado de estudios"
+            },
+            dia: {
+                required: "Por favor, seleccione el día"
+            },
+            mes: {
+                required: "Por favor, seleccione el mes"
+            },
+            anio: {
+                required: "Por favor, Ingrese el año",
+                maxlength: "Sólo acepta 4 digitos",
+                number: "Sólo se aceptan números"
             }
         }
     });
@@ -864,6 +878,16 @@ $(function(){
             $("#documento_comprobante_migratorio").val('');
             $('#lbl_documento_comprobante_migratorio').html('COMPROBANTE MIGRATORIO');
             $('#documento_comprobante_migratorio').removeClass("{extension: 'pdf'}")
+        }
+    });
+
+    /****
+     * sólo acepta números en el texbox
+     */
+    $('#anio').keypress(function (e) {
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+            return false;
         }
     });
 });

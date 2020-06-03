@@ -43,7 +43,71 @@
                 <!-- apellido materno END-->
             </div>
             <div class="form-row">
+                <b><label for="fechanacimiento" class="control-label">FECHA DE NACIMIENTO</label></b>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-3">
+                    <label for="dia" class="control-label">DÍA</label>
+                    <select class="form-control" id="dia" name="dia">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="mes" class="control-label">MES</label>
+                    <select class="form-control" id="mes" name="mes">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="01">ENERO</option>
+                        <option value="02">FEBRERO</option>
+                        <option value="03">MARZO</option>
+                        <option value="04">ABRIL</option>
+                        <option value="05">MAYO</option>
+                        <option value="06">JUNIO</option>
+                        <option value="07">JULIO</option>
+                        <option value="08">AGOSTO</option>
+                        <option value="09">SEPTIEMBRE</option>
+                        <option value="10">OCTUBRE</option>
+                        <option value="11">NOVIEMBRE</option>
+                        <option value="12">DICIEMBRE</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="anio" class="control-label">AÑO</label>
+                    <input type="text" class="form-control" id="anio" name="anio" placeholder="INGRESA EL AÑO EJ. 1943" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
                     <label for="sexo" class="control-label">Genero</label>
                     <select class="form-control" id="sexo" name="sexo">
                         <option value="">--SELECCIONAR--</option>
@@ -51,15 +115,11 @@
                         <option value="MASCULINO">HOMBRE</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="curp" class="control-label">Curp Aspirante</label>
                     <input type="text" class="form-control" id="curp" name="curp" placeholder="Curp" autocomplete="off">
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="fecha_nacimiento" class="control-label">Fecha de Nacimiento</label>
-                    <input type="text" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" autocomplete="off">
-                </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="telefonosid" class="control-label">Teléfono</label>
                     <input type="text" class="form-control" id="telefonosid" name="telefonosid" autocomplete="off">
                 </div>
