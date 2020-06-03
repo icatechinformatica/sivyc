@@ -371,7 +371,8 @@ class AlumnoController extends Controller
     {
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno');
 
-        return $pdf->stream('registro.pdf');
+        return view('layouts\pdfpages\registroalumno');
+        return $pdf->stream('medium.pdf');
     }
 
     protected function show($id)
