@@ -407,22 +407,18 @@ $(function(){
     $("#form-sid-paso2").validate({
         rules: {
             acta_nacimiento: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
             copia_curp: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
             comprobante_domicilio: {
-                required: true,
                 extension: "pdf",
                 filesize: 2000000   //max size 2mb
             },
             fotografias: {
-                required: true,
                 extension: "png|jpg|jpeg",
                 filesize: 2000000   //max size 2mb
             },
@@ -445,22 +441,18 @@ $(function(){
         },
         messages: {
             acta_nacimiento: {
-                required: 'Por favor, seleccione el documento',
                 extension : "Sólo se permiten pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             copia_curp: {
-                required: 'Por favor, seleccione el documento',
                 extension: "Sólo se permiten pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             comprobante_domicilio: {
-                required: 'Por favor, seleccione el documento',
                 extension: "Sólo se permiten pdf",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
             fotografias: {
-                required: 'Por favor, seleccione el documento',
                 extension: "formatos permitidos: png, jpg, jpeg",
                 filesize:"El archivo debe ser menor de 2 MB",
             },
