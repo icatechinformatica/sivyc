@@ -340,6 +340,12 @@ $(function(){
                 required: true,
                 maxlength: 4,
                 number: true
+            },
+            medio_entero: {
+                required: true
+            },
+            motivos_eleccion_sistema_capacitacion: {
+                required: true
             }
         },
         messages: {
@@ -397,6 +403,12 @@ $(function(){
                 required: "Por favor, Ingrese el año",
                 maxlength: "Sólo acepta 4 digitos",
                 number: "Sólo se aceptan números"
+            },
+            medio_entero: {
+                required: "Por favor, seleccione una opción"
+            },
+            motivos_eleccion_sistema_capacitacion: {
+                required: "Por favor, seleccione una opción"
             }
         }
     });
