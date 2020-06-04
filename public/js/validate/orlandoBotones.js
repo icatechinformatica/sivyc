@@ -242,7 +242,7 @@ $(function(){
         $('#folio_ine').prop("disabled", false)
         $('#sexo').prop("disabled", false)
         $('#estado_civil').prop("disabled", false)
-        $('#fecha_nacimiento').prop("disabled", false)
+        $('#fecha_nacimientoins').prop("disabled", false)
         $('#entidad').prop("disabled", false)
         $('#municipio').prop("disabled", false)
         $('#asentamiento').prop("disabled", false)

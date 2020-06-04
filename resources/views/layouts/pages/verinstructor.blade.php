@@ -14,7 +14,7 @@
         <h2>Vista de Documentos</h2>
         <div class="form-row">
             @if ($datains->archivo_ine != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_ine}} download>Solicitud de Pago</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_ine}} download>Comprobante INE</a><br>
             @endif
             @if ($datains->archivo_domicilio != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_domicilio}} download>Comprobante de Domicilio</a><br>
@@ -83,11 +83,11 @@
                         <label for="inputsexo">Sexo</label>
                         <select class="form-control" name="sexo" id="sexo" disabled>
                             @if ($datains->sexo == 'MASCULINO')
-                                <option selected value="MASCULINO">Masculino</option>
-                                <option value="FEMENINO">Femenino</option>
+                                <option selected value='MASCULINO'>Masculino</option>
+                                <option value='FEMENINO'>Femenino</option>
                             @else
-                                <option value="MASCULINO">Masculino</option>
-                                <option selected value="FEMENINO">Femenino</option>
+                                <option value='MASCULINO'>Masculino</option>
+                                <option selected value='FEMENINO'>Femenino</option>
                             @endif
                         </select>
                     </div>
@@ -102,7 +102,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                        <input name='fecha_nacimiento' id='fecha_nacimiento' value="{{$datains->fecha_nacimiento}}" type="date" disabled class="form-control" aria-required="true">
+                        <input name='fecha_nacimientoins' id='fecha_nacimientoins' value="{{$datains->fecha_nacimiento}}" type="date" disabled class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
@@ -173,7 +173,7 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_foto">Archivo Fotografia</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled value="{{$datains->archivo_fotografia}}">
+                            <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled value="{{$datains->archivo_fotografia}}">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_estudio">Archivo Grado de Estudios</label>
@@ -214,7 +214,8 @@
                                 <option value="HONORARIOS">Honorarios</option>
                                 <option selected value="SIN HONORARIOS">Sin Honorarios</option>
                                 <option value="INTERNO">Interno</option>
-                            @else
+                            @endif
+                            @if ($datains->tipo_honorario == 'INTERNO')
                                 <option value="HONORARIOS">Honorarios</option>
                                 <option value="SIN HONORARIOS">Sin Honorarios</option>
                                 <option selected value="INTERNO">Interno</option>
