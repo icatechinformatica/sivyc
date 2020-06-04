@@ -70,7 +70,6 @@ class AlumnoController extends Controller
                 'apellidoMaterno' => 'required',
                 'sexo' => 'required',
                 'curp' => 'required',
-                'fecha_nacimiento' => 'required',
                 'domicilio' => 'required',
                 'colonia' => 'required',
                 'cp' => 'required',
@@ -87,13 +86,21 @@ class AlumnoController extends Controller
                         ->withInput();
             } else {
 
+                /**
+                 * formar el formato fecha para fecha de nacimiento
+                 */
+                $dia = trim($request->dia);
+                $mes = trim($request->mes);
+                $anio = trim($request->anio);
+                $fecha_nacimiento = $anio."-".$mes."-".$dia;
+
                 $AlumnoPreseleccion = new Alumnopre;
                 $AlumnoPreseleccion->nombre = $request->nombre;
                 $AlumnoPreseleccion->apellidoPaterno = $request->apellidoPaterno;
                 $AlumnoPreseleccion->apellidoMaterno = $request->apellidoMaterno;
                 $AlumnoPreseleccion->sexo = $request->sexo;
                 $AlumnoPreseleccion->curp = $request->curp;
-                $AlumnoPreseleccion->fecha_nacimiento = $AlumnoPreseleccion->setFechaNacAttribute($request->fecha_nacimiento);
+                $AlumnoPreseleccion->fecha_nacimiento = $fecha_nacimiento;
                 $AlumnoPreseleccion->telefono = $request->telefonosid;
                 $AlumnoPreseleccion->domicilio = $request->domicilio;
                 $AlumnoPreseleccion->colonia = $request->colonia;
@@ -364,7 +371,8 @@ class AlumnoController extends Controller
     {
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno');
 
-        return $pdf->stream('registro.pdf');
+        return view('layouts\pdfpages\registroalumno');
+        return $pdf->stream('medium.pdf');
     }
 
     protected function show($id)

@@ -13,8 +13,19 @@
                 </ul>
             </div> <br>
         @endif
-        <div style="text-align: center;">
-            <h3><b>Solicitud de Inscripción (SID)</b></h3>
+        <div class="row">
+            <div class="col-lg-8 margin-tb">
+                <div style="text-align: center;">
+                    <h3><b>Solicitud de Inscripción (SID)</b></h3>
+                </div>
+            </div>
+            <div class="col-lg-4 margin-tb">
+                <div class="pull-right">
+                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" href="#" data-toggle="modal" data-placement="top" title="INFORMACIÓN ACERCA DEL SID" data-target="#fullHeight">
+                        <i class="fa fa-info" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
         </div>
         <hr style="border-color:dimgray">
         <div style="text-align: center;">
@@ -43,7 +54,71 @@
                 <!-- apellido materno END-->
             </div>
             <div class="form-row">
+                <b><label for="fechanacimiento" class="control-label">FECHA DE NACIMIENTO</label></b>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-3">
+                    <label for="dia" class="control-label">DÍA</label>
+                    <select class="form-control" id="dia" name="dia">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="mes" class="control-label">MES</label>
+                    <select class="form-control" id="mes" name="mes">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="01">ENERO</option>
+                        <option value="02">FEBRERO</option>
+                        <option value="03">MARZO</option>
+                        <option value="04">ABRIL</option>
+                        <option value="05">MAYO</option>
+                        <option value="06">JUNIO</option>
+                        <option value="07">JULIO</option>
+                        <option value="08">AGOSTO</option>
+                        <option value="09">SEPTIEMBRE</option>
+                        <option value="10">OCTUBRE</option>
+                        <option value="11">NOVIEMBRE</option>
+                        <option value="12">DICIEMBRE</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="anio" class="control-label">AÑO</label>
+                    <input type="text" class="form-control" id="anio" name="anio" placeholder="INGRESA EL AÑO EJ. 1943" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
                     <label for="sexo" class="control-label">Genero</label>
                     <select class="form-control" id="sexo" name="sexo">
                         <option value="">--SELECCIONAR--</option>
@@ -51,15 +126,11 @@
                         <option value="MASCULINO">HOMBRE</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="curp" class="control-label">Curp Aspirante</label>
                     <input type="text" class="form-control" id="curp" name="curp" placeholder="Curp" autocomplete="off">
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="fecha_nacimiento" class="control-label">Fecha de Nacimiento</label>
-                    <input type="text" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" autocomplete="off">
-                </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="telefonosid" class="control-label">Teléfono</label>
                     <input type="text" class="form-control" id="telefonosid" name="telefonosid" autocomplete="off">
                 </div>
@@ -217,5 +288,82 @@
                 </div>
             </div>
         </form>
+        <!-- Full Height Modal Right -->
+            <div class="modal fade right" id="fullHeight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+
+            <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+            <div class="modal-dialog modal-full-height modal-right modal-notify modal-warning" role="document">
+
+
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title w-100" id="myModalLabel">INFORMACIÓN ACERCA DE...</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-justify">
+                        <p>
+                            LA INFORMACIÓN CONTENIDA EN ÉSTE APARTADO PERMITIRÁ AL OPERADOR DEL MÓDULO PODER CONOCER DE PRIMERA MANO
+                            LA INFORMACIÓN Y LOS CAMPOS QUE SON PUNTUALMENTE REQUERIDOS PARA OPTIMIZAR LA CARGA DE INFORMACIÓN PARA EL PROCESO DE
+                            CAPTURA DE LOS ALUMNOS DE DIFERENTES CURSOS QUE OTORGA EL INSTITUTO.
+                            <br><br> A CONTNUACIÓN SE ENLISTA LOS SIGUIENTES CAMPOS:
+
+                            <ul class="list-group z-depth-0">
+                                <li class="list-group-item justify-content-between">
+                                    <b> NOMBRE DEL ASPIRANTE - APELLIDO PATERNO - APELLIDO MATERNO</b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> DÍA - MES - AÑO </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> GENERO</b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> CURP </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> TELÉFONO </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> DOMICILIO </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> COLONIA </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> CP </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> ESTADO </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> MUNICIPIO </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> ESTADO CIVIL </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> DISCAPACIDAD </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA </b>
+                                </li>
+                                <li class="list-group-item justify-content-between">
+                                    <b> MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN </b>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
+                </div>
+                </div>
+            </div>
+            </div>
+        <!-- Full Height Modal Right -->
     </div>
 @endsection
