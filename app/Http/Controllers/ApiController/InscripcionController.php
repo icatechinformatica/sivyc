@@ -104,7 +104,7 @@ class InscripcionController extends Controller
             //code...
             $Inscripcion = new Inscripcion();
             $Inscripcion->WHERE('id_curso', '=', $id)
-            ->orWhere('matricula', '=', $matricula)->update($request->all());
+            ->WHERE('matricula', '=', $matricula)->update($request->all());
             return response()->json(['success' => 'Inscripcion actualizada'], 200);
         } catch (Exception $e) {
             //throw $th;
