@@ -1,6 +1,6 @@
 @extends('theme.sivyc.layout')
 <!--generado por Daniel Méndez-->
-@section('title', 'Matricular Alumno | Sivyc Icatech')
+@section('title', 'Modificar Alumno | Sivyc Icatech')
 <!--contenido-->
 @section('content')
     <div class="container g-pt-50">
@@ -14,7 +14,7 @@
             </div><br />
         @endif
         <div style="text-align: center;">
-            <h3><b>Matricular (SID - 01)</b></h3>
+            <h3><b>MODIFICAR ALUMNOS</b></h3>
         </div>
         <hr style="border-color:dimgray">
         <div style="text-align: center;">
@@ -205,6 +205,33 @@
                     </div>
                 </div>
             </div>
+
+            <!--DATOS DE EMPLEO-->
+            <hr style="border-color: dimgray">
+            <div style="text-align: center;">
+                <h4><b>DATOS DE EMPLEO</b></h4>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="empresa" class="control-label">EMPRESA DONDE TRABAJA:</label>
+                    <input type="text" name="empresa" id="empresa" class="form-control" autocomplete="off">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="puesto_empresa" class="control-label">PUESTO:</label>
+                    <input type="text" name="puesto_empresa" id="puesto_empresa" class="form-control" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="antiguedad" class="control-label">ANTIGUEDAD:</label>
+                    <input type="text" name="antiguedad" id="antiguedad" class="form-control" autocomplete="off">
+                </div>
+                <div class="form-group col-md-8">
+                    <label for="direccion_empresa" class="control-label">DIRECCIÓN:</label>
+                    <input type="text" name="direccion_empresa" id="direccion_empresa" class="form-control" autocomplete="off">
+                </div>
+            </div>
+
             <!--botones de enviar y retroceder-->
             <div class="row">
                 <div class="col-lg-12 margin-tb">
