@@ -262,6 +262,7 @@ $(function(){
         $('#arch_id').prop("disabled", false)
         $('#unidad_registra').prop("disabled", false)
         $('#honorario').prop("disabled", false)
+        $('#savemodbuttonins').prop("disabled", false)
     });
 
     //autocomplete
