@@ -162,7 +162,7 @@
             <div class="form-row">
                 <div class="form-group col-md-8">
                     <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
-                    <input type="text" name="ultimo_grado_estudios" id="ultimo_grado_estudios" class="form-control" autocomplete="off">
+                    <input type="text" name="ultimo_grado_estudios" id="ultimo_grado_estudios" value="{{$alumno->ultimo_grado_estudios}}" class="form-control" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
@@ -214,21 +214,21 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="empresa" class="control-label">EMPRESA DONDE TRABAJA:</label>
-                    <input type="text" name="empresa" id="empresa" class="form-control" autocomplete="off">
+                    <input type="text" name="empresa" id="empresa" class="form-control" value="{{$alumno->empresa_trabaja}}" autocomplete="off">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="puesto_empresa" class="control-label">PUESTO:</label>
-                    <input type="text" name="puesto_empresa" id="puesto_empresa" class="form-control" autocomplete="off">
+                    <input type="text" name="puesto_empresa" id="puesto_empresa" value="{{$alumno->puesto_empresa}}" class="form-control" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="antiguedad" class="control-label">ANTIGUEDAD:</label>
-                    <input type="text" name="antiguedad" id="antiguedad" class="form-control" autocomplete="off">
+                    <input type="text" name="antiguedad" id="antiguedad" class="form-control" value="{{$alumno->antiguedad}}" autocomplete="off">
                 </div>
                 <div class="form-group col-md-8">
                     <label for="direccion_empresa" class="control-label">DIRECCIÓN:</label>
-                    <input type="text" name="direccion_empresa" id="direccion_empresa" class="form-control" autocomplete="off">
+                    <input type="text" name="direccion_empresa" id="direccion_empresa" class="form-control" value="{{$alumno->direccion_empresa}}" autocomplete="off">
                 </div>
             </div>
 
