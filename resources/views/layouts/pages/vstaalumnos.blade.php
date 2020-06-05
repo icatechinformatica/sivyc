@@ -33,6 +33,7 @@
                         <th scope="col">CURP</th>
                         <th scope="col">DOCUMENTOS</th>
                         <th scope="col">ACCIONES</th>
+                        <th scope="col">MODIFICAR</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,6 +50,13 @@
                                 @can('alumnos.inscripcion-paso2')
                                     <a href="{{route('alumnos.presincripcion-paso2', ['id' => base64_encode($itemData->id)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="INSCRIBIR">
                                         <i class="fa fa-gears" aria-hidden="true"></i>
+                                    </a>
+                                @endcan
+                            </td>
+                            <td>
+                                @can('alumnos.inscripcion-paso2')
+                                    <a href="{{route('alumnos.presincripcion-modificar', ['id' => base64_encode($itemData->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
                                 @endcan
                             </td>

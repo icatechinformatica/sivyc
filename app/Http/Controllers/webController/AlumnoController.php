@@ -540,4 +540,28 @@ class AlumnoController extends Controller
         $documentUrl = Storage::url('/uploadFiles/alumnos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
+
+    protected function showUpdate($id)
+    {
+        $idpre = base64_decode($id);
+        $alumnos = new Alumnopre();
+        $municipio = new Municipio();
+        $estado = new Estado();
+        $municipios = $municipio->all();
+        $estados = $estado->all();
+        $alumno = $alumnos->findOrfail($idpre);
+        $fecha_nac = explode("-", $alumno->fecha_nacimiento);
+        $anio_nac = $fecha_nac[0];
+        $mes_nac = $fecha_nac[1];
+        $dia_nac = $fecha_nac[2];
+        return view('layouts.pages.sid-modificacion', compact('alumno', 'municipios', 'estados', 'anio_nac', 'mes_nac', 'dia_nac'));
+    }
+
+    protected function updateSid(Request $request) {
+        try {
+
+        } catch(Exception $e) {
+
+        }
+    }
 }
