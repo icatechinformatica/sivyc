@@ -110,4 +110,10 @@ class presupuestariaController extends Controller
         // (Optional) configuramos el tamaño y orientación de la hoja
         return $pdf->stream('medium.pdf');
     }
+
+    public function propa()
+    {
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago2');
+        return $pdf->stream('medium.pdf');
+    }
 }

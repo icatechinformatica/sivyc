@@ -12,7 +12,7 @@
       }
 </style>
  <div class="container g-pt-50">
-   <form method="POST" action="{{ route('solicitud-guardar') }}" id="registersupre">
+   <form method="POST" action="{{ route('solicitud-guardar') }}" id="regsupre">
        @csrf
        <div style="text-align: right;width:82%">
            <label for="tituloSupre1"><h2>Formulario para la Solicitud de Suficiencia Presupuestal</h2></label>

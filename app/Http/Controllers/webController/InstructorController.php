@@ -291,6 +291,8 @@ class InstructorController extends Controller
 
     public function save_ins(Request $request)
     {
+
+        dd($request);
         $modInstructor = instructor::find($request->id);
 
         $modInstructor->nombre = trim($request->nombre);
