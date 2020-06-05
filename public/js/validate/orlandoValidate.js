@@ -418,6 +418,69 @@ $(function(){
     });
 
     //Valida parte de delegacionadmin
+    $('#regsupre').validate({
+        rules: {
+            memorandum:{
+                required: true
+            },
+            fecha:{
+                required: true,
+                date: true
+            },
+            unidad:{
+                required: true
+            },
+            destino_puesto:{
+                required: true
+            },
+            remitente_puesto:{
+                required: true
+            },
+            puesto_valida:{
+                required: true
+            },
+            puesto_elabora:{
+                required: true
+            },
+            puesto_ccp1:{
+                required: true
+            },
+            puesto_ccp2:{
+                required: true
+            },
+        },
+        messages: {
+            memorandum:{
+                required: "Por favor ingrese el Memorandum"
+            },
+            fecha:{
+                required: "Por favor ingrese la fecha",
+                date: "Por favor ingrese la fecha correcta"
+            },
+            unidad:{
+                required: "Por favor ingrese la unidad"
+            },
+            destino_puesto:{
+                required: "Por favor ingrese el destinatario"
+            },
+            remitente_puesto:{
+                required: "Por favor ingrese el remitente"
+            },
+            puesto_valida:{
+                required: "Por favor ingrese quien valida"
+            },
+            puesto_elabora:{
+                required: "Por favor ingrese quien elabora"
+            },
+            puesto_ccp1:{
+                required: "Por favor ingrese el CCP"
+            },
+            puesto_ccp2:{
+                required: "Por favor ingrese el CCP"
+            },
+        }
+    });
+
     $('#registersupre').validate({
         rules: {
             memorandum:{
@@ -463,19 +526,19 @@ $(function(){
                 required: true,
                 date: true
             },
-            nombre_firmante:{
+            puesto_firmante:{
                 required: true
             },
-            ccp1:{
+            ccpa1:{
                 required: true
             },
-            ccp2:{
+            ccpa2:{
                 required: true
             },
-            ccp3:{
+            ccpa3:{
                 required: true
             },
-            ccp4:{
+            ccpa4:{
                 required: true
             }
         },
@@ -487,19 +550,19 @@ $(function(){
             fecha_validacion: {
                 required: 'Por favor ingrese la fecha de validación'
             },
-            nombre_firmante: {
+            puesto_firmante: {
                 required: 'Por favor ingrese el nombre del firmante'
             },
-            ccp1: {
+            ccpa1: {
                 required: 'Por favor ingrese el nombre correctamente'
             },
-            ccp2: {
+            ccpa2: {
                 required: 'Por favor ingrese el nombre correctamente'
             },
-            ccp3: {
+            ccpa3: {
                 required: 'Por favor ingrese el nombre correctamente'
             },
-            ccp4: {
+            ccpa4: {
                 required: 'Por favor ingrese el nombre correctamente'
             },
         }
