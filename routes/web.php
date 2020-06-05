@@ -86,6 +86,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('alumnos.presincripcion-paso2')->middleware('can:alumnos.inscripcion-paso2');
     Route::post('alumnos/sid/update', 'webController\AlumnoController@update')->name('alumnos.update-sid');
     Route::post('alumnos/sid/update_pregistro', 'webController\AlumnoController@update_pregistro')->name('alumnos.update.documentos.registro');
+    // modificacion alumnos
+    Route::get('alumnos/modificar/sid-paso2/{id}', 'webController\AlumnoRegistradoController@edit')->name('alumnos.update.registro');
     // nueva ruta
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');
     Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos');

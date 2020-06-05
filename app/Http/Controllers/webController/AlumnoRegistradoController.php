@@ -9,6 +9,10 @@ use App\Models\Alumno;
 use App\Models\Alumnopre;
 use Carbon\Carbon;
 use App\Models\Unidad;
+use App\Models\Municipio;
+use App\Models\Estado;
+use App\Models\especialidad;
+use App\Models\curso;
 
 class AlumnoRegistradoController extends Controller
 {
@@ -93,7 +97,37 @@ class AlumnoRegistradoController extends Controller
      */
     public function edit($id)
     {
+        $Especialidad = new especialidad;
+        $especialidades = $Especialidad->all();
+        $municipio = new Municipio();
+        $estado = new Estado();
+        $municipios = $municipio->all();
+        $estados = $estado->all();
+        $curso = new curso();
+        $cursos = $curso->all();
         //
+        $id_alumno_registro = base64_decode($id);
+        $alumnos_registrados = new Alumno();
+        $alumnos = $alumnos_registrados->SELECT('alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellidoPaterno', 'alumnos_pre.apellidoMaterno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
+        'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo', 'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio',
+        'alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
+        'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
+        'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad',
+        'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad AS unidades', 'alumnos_registro.cerrs',
+        'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_registro.id_especialidad', 'alumnos_registro.id_curso')
+                            ->WHERE('alumnos_registro.id', '=', $id_alumno_registro)
+                            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
+                            ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
+                            ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                            ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
+                            ->GET();
+
+        $fecha_nac = explode("-", $alumnos[0]->fecha_nacimiento);
+        $anio_nac = $fecha_nac[0];
+        $mes_nac = $fecha_nac[1];
+        $dia_nac = $fecha_nac[2];
+
+        return view('layouts.pages.alumno_registro_modificar', compact('alumnos', 'especialidades', 'municipios', 'estados', 'dia_nac', 'mes_nac', 'anio_nac', 'cursos'));
     }
 
     /**

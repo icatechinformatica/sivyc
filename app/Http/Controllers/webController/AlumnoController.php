@@ -397,6 +397,13 @@ class AlumnoController extends Controller
         $id = $request->alumno_id;
         $AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
 
+        // checamos si el usuario ya existe
+        if(!$AlumnosPre) {
+            // no se puede encontrar el alumno con el id_alumno
+        } else {
+            // si existe, se tiene que utilizar el mismo número de control
+        }
+
         /**
          * obtener el año correcto
          */

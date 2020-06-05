@@ -23,10 +23,10 @@
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>
-                        <th scope="col">N° Control</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Curp</th>
-                        <th width="160px">Acciones</th>
+                        <th scope="col">N° CONTROL</th>
+                        <th scope="col">NOMBRE</th>
+                        <th width="160px">ACCIONES</th>
+                        <th scope="col">MODIFICAR</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,10 +34,14 @@
                         <tr>
                             <td>{{$itemData->no_control}}</td>
                             <td scope="row">{{$itemData->nombrealumno}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
-                            <td>{{$itemData->curp_alumno}}</td>
                             <td>
                                 <a href="{{route('alumnos.inscritos.detail', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER REGISTRO">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{route('alumnos.update.registro', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 </a>
                             </td>
                         </tr>
