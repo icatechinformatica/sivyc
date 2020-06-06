@@ -50,7 +50,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_foto">Archivo Fotografia</label>
-                    <input type="file" accept="application/pdf" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
+                    <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_estudio">Archivo Grado de Estudios</label>

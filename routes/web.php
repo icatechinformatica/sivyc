@@ -90,7 +90,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('alumnos/modificar/sid-paso2/{id}', 'webController\AlumnoRegistradoController@edit')->name('alumnos.update.registro');
     // modificar la preinscripcion
     Route::get('alumnos/modificar/sid/{id}', 'webController\AlumnoController@showUpdate')->name('alumnos.presincripcion-modificar');
-    Route::post('alumnos/sid/modificar', 'webController\AlumnoController@updateSid')->name('sid.modificar');
+    Route::put('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
     // nueva ruta
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');
     Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos');
@@ -100,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
     // documentos pdf Desarrollado por Adrian
     Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@export_pdf')->name('presupuestaria');
-    Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@export_pdf')->name('contratohonorarios');
+    Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@propa')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
     Route::get('/cursos/especialidad_by_area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');

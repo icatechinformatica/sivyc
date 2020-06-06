@@ -93,6 +93,7 @@
         <script src="{{ asset("js/validate/conversor.js") }}"></script>
         <script src="{{ asset("js/validate/numberTostring.js") }}"></script>
         <script src="{{ asset("js/scripts/datepicker-es.js") }}"></script>
+        <script src="{{ asset("js/validate/sid-mod.js") }}"></script>
     </body>
 
 </html>

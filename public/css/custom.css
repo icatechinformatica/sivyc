@@ -77,3 +77,10 @@ input[type=text], select, textarea {
     line-height: 70px;
     font-size: 1.3rem;
   }
+  a.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+    pointer-events: none;
+  }

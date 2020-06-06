@@ -286,7 +286,6 @@ class InstructorController extends Controller
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                         ->LEFTJOIN('criterio_pago','criterio_pago.id','=','especialidad_instructores.pago_id')
                         ->GET();
-
         return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado'));
     }
 
@@ -302,7 +301,7 @@ class InstructorController extends Controller
         $modInstructor->folio_ine = trim($request->folio_ine);
         $modInstructor->sexo = trim($request->sexo);
         $modInstructor->estado_civil = trim($request->estado_civil);
-        $modInstructor->fecha_nacimiento = $request->fecha_nacimiento;
+        $modInstructor->fecha_nacimiento = $request->fecha_nacimientoins;
         $modInstructor->entidad = trim($request->entidad);
         $modInstructor->municipio = trim($request->municipio);
         $modInstructor->asentamiento = trim($request->asentamiento);

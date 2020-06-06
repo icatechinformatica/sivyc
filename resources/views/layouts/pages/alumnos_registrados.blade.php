@@ -40,7 +40,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="{{route('alumnos.update.registro', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
+                                <a href="{{route('alumnos.update.registro', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm isDisabled" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 </a>
                             </td>

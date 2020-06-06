@@ -97,10 +97,7 @@ $(function(){
             apaternoaspirante: {
                 required: true
             },
-            amaternoaspirante: {
-                required: true
-            },
-            curpaspirante: {
+            apellido_pat: {
                 required: true,
                 CURP: true
             },
@@ -144,9 +141,6 @@ $(function(){
                 minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
             },
             apaternoaspirante: {
-                required: 'Por favor ingrese su apellido'
-            },
-            amaternoaspirante: {
                 required: 'Por favor ingrese su apellido'
             },
             curpaspirante: {
@@ -293,10 +287,6 @@ $(function(){
                 required: true,
                 minlength: 3
             },
-            apellidoMaterno: {
-                required: true,
-                minlength: 3
-            },
             sexo: {
                 required: true
             },
@@ -307,16 +297,6 @@ $(function(){
             telefonosid: {
                 required: true,
                 //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
-            },
-            domicilio: {
-                required: true
-            },
-            colonia: {
-                required: true
-            },
-            cp: {
-                required: true,
-                number: true
             },
             estado: {
                 required: true
@@ -356,9 +336,6 @@ $(function(){
             apellidoPaterno: {
                 required: 'Por favor ingrese su apellido'
             },
-            apellidoMaterno: {
-                required: 'Por favor ingrese su apellido'
-            },
             sexo: {
                 required: 'Por favor Elegir su genero'
             },
@@ -367,16 +344,6 @@ $(function(){
             },
             telefonosid: {
                 required: 'Por favor, ingrese telefóno',
-            },
-            domicilio: {
-                required: 'Por favor, ingrese su domicilio'
-            },
-            colonia: {
-                required: 'Por favor, ingrese la colonia'
-            },
-            cp: {
-                required: 'Por favor, ingrese el código postal',
-                number: 'Acepta sólo números'
             },
             estado: {
                 required: 'Por favor, seleccione un estado'

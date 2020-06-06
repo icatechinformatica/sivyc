@@ -207,7 +207,12 @@
             <div class="form-row">
                 <div class="form-group col-md-8">
                     <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
-                    <input type="text" name="ultimo_grado_estudios" id="ultimo_grado_estudios" class="form-control" autocomplete="off">
+                    <select class="form-control" id="ultimo_grado_estudios" name="ultimo_grado_estudios">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($grado_estudio as $itemGradoEstudio => $val)
+                            <option value="{{$val}}">{{$val}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="form-row">
@@ -313,7 +318,7 @@
 
                             <ul class="list-group z-depth-0">
                                 <li class="list-group-item justify-content-between">
-                                    <b> NOMBRE DEL ASPIRANTE - APELLIDO PATERNO - APELLIDO MATERNO</b>
+                                    <b> NOMBRE DEL ASPIRANTE - APELLIDO PATERNO </b>
                                 </li>
                                 <li class="list-group-item justify-content-between">
                                     <b> DÍA - MES - AÑO </b>
@@ -326,15 +331,6 @@
                                 </li>
                                 <li class="list-group-item justify-content-between">
                                     <b> TELÉFONO </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> DOMICILIO </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> COLONIA </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> CP </b>
                                 </li>
                                 <li class="list-group-item justify-content-between">
                                     <b> ESTADO </b>

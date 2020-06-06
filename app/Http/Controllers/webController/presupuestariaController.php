@@ -101,13 +101,19 @@ class presupuestariaController extends Controller
         $M = date('m',$date);
         $Y = date("Y",$date);*/
         //$pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
-        $pdf = PDF::loadView('layouts.pdfpages.contrato');
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor');
         //$pdf = PDF::loadView('layouts.pdfpages.contratohonorarios');
         //return view('layouts.pdfpages.valsupre');
         //$pdf = PDF::loadView('layouts.pdfpages.valsupre');
         //$doomPdf->loadHtml('hello world');
 
         // (Optional) configuramos el tamaño y orientación de la hoja
+        return $pdf->stream('medium.pdf');
+    }
+
+    public function propa()
+    {
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago2');
         return $pdf->stream('medium.pdf');
     }
 }

@@ -32,9 +32,9 @@
                         <label for="inputestatus">Estatus</label>
                         <select class="form-control" name="estatus" id="estatus">
                             <option value="sin especificar">Sin Especificar</option>
-                            <option value="PRIMARIA CONCLUIDA">Primara Concluida</option>
-                            <option value="SECUNDARIA CONCLUIDA">Secundaria Concluida</option>
-                            <option value="PREPARATORIA CONCLUIDA">Preparatoria Concluida</option>
+                            <option value="PRIMARIA-CONCLUIDA">Primara Concluida</option>
+                            <option value="SECUNDARIA-CONCLUIDA">Secundaria Concluida</option>
+                            <option value="PREPARATORIA-CONCLUIDA">Preparatoria Concluida</option>
                             <option value="TRUNCO">Trunco</option>
                             <option value="PASANTE">Pasante</option>
                             <option value="TITULO">Titulo</option>
