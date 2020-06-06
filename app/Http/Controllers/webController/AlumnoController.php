@@ -406,7 +406,7 @@ class AlumnoController extends Controller
     public function update(Request $request)
     {
         $id = $request->alumno_id;
-        //$AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
+        $AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
 
         // checamos si el usuario ya existe
        // if(!$AlumnosPre) {
