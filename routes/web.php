@@ -106,6 +106,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cursos/especialidad_by_area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');
     Route::put('/cursos/actualiza-catalogo/{id}', 'webController\CursosController@update')->name('cursos-catalogo.update');
     Route::get('/cursos/editar-catalogo/{id}', 'webController\CursosController@show')->name('cursos-catalogo.show');
+
+    /**
+     * UNIDADES DE CAPACITACION
+     */
+    Route::get('/unidades/unidades_by_ubicacion/{ubicacion}', 'webController\UnidadController@ubicacion')->name('unidades.get_by_ubicacion');
     /**
      * obtener toda la información del curso por id
      */

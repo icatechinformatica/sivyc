@@ -11,6 +11,7 @@ use App\Models\Municipio;
 use App\Models\Estado;
 use App\Models\especialidad;
 use App\Models\curso;
+use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -391,9 +392,11 @@ class AlumnoController extends Controller
         $idpre = base64_decode($id);
         $AlumnoMatricula = new  Alumnopre;
         $Especialidad = new especialidad;
+        $unidadestbl = new tbl_unidades();
+        $tblUnidades = $unidadestbl->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
         $especialidades = $Especialidad->all();
         $Alumno = $AlumnoMatricula->findOrfail($idpre);
-        return view('layouts.pages.sid_general', compact('Alumno', 'especialidades'));
+        return view('layouts.pages.sid_general', compact('Alumno', 'especialidades', 'tblUnidades'));
     }
 
     /**
@@ -407,13 +410,6 @@ class AlumnoController extends Controller
     {
         $id = $request->alumno_id;
         $AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
-
-        // checamos si el usuario ya existe
-       // if(!$AlumnosPre) {
-            // no se puede encontrar el alumno con el id_alumno
-       // } else {
-            // si existe, se tiene que utilizar el mismo número de control
-       // }
 
         /**
          * obtener el año correcto
@@ -511,7 +507,7 @@ class AlumnoController extends Controller
             'id_curso' => $request->input('cursos_sid'),
             'horario' => $request->input('horario'),
             'grupo' => $request->input('grupo'),
-            'unidad' => $unidad,
+            'unidad' => $request->input('tblunidades'),
             'tipo_curso' => $request->input('tipo_curso'),
             'realizo' => $usuario,
             'cerrs' => $request->input('cerrs')
