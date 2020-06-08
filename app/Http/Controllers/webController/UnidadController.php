@@ -4,7 +4,7 @@ namespace App\Http\Controllers\webController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_unidades;
+use App\Models\Unidad;
 
 class UnidadController extends Controller
 {
@@ -89,7 +89,7 @@ class UnidadController extends Controller
         if (isset($ubicacion)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $Ubicacion = $ubicacion;
-            $Unidades = new tbl_unidades();
+            $Unidades = new Unidad();
 
             $TblUnidades = $Unidades->WHERE('ubicacion', '=', $ubicacion)->GET();
 

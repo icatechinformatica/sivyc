@@ -411,91 +411,79 @@ class AlumnoController extends Controller
         $id = $request->alumno_id;
         $AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
 
-        /**
-         * obtener el año correcto
-         */
-        $date = Carbon::now();
-        $anio = $date->format('Y');
+        $unidadesTbl_ = $request->input('tblunidades');
 
-        /**
-         * obtenemos los dos ultimos digitos de la fecha
-         */
-        $anio_division = substr($anio,2,2);
+        // checamos si el usuario ya existe
+        if(!$AlumnosPre) {
+            // no se puede encontrar el alumno con el id_alumno
 
-        /**
-         * obtenemos el valor de un campo de trabajo
-         */
-        $unidades = new Unidad();
-        $cct_unidades = $unidades->SELECT('cct')
-                        ->WHERE('unidad', '=', Auth::user()->unidades()->first()->unidad)
-                        ->GET();
-
-        /***
-         * obtener los numeros de las unidades
-         */
-        $cla = substr($cct_unidades[0]->cct,0,2); // dos primeros
-
-        $cli = $cla . substr($cct_unidades[0]->cct,5,5); //ultimos 5 caracteres
-
-        $cv = substr($cct_unidades[0]->cct,8,2); // ultimos dos caracteres
-
-        // CONSULTA
-        $registrados = new Alumno();
-        $unidade =  $registrados->where('unidad', '=', Auth::user()->unidades()->first()->unidad)->latest()->first();
-
-
-
-        /**
-         * VALIDACIÓN
-         */
-        if($unidade)
-        {
-            // si arroja algo la consulta se procede
-            // obtener ultima fecha
-            $ultima_fecha = Carbon::createFromFormat('Y-m-d H:i:s', $unidade->created_at)->year;
-            $ultima_fecha_division = substr($ultima_fecha,2,2);
-            // pasamos la variable a entero
-            $ad = (int)$anio_division;
-            // comparamos fechas
-            if ($ultima_fecha_division <> $ad) {
-                # nuevo código
-                $control = 0;
-                $contador = $control + 1;
-                $str_length = 4;
-                $value_control = substr("0000{$contador}", -$str_length);
-
-                $no_control = $anio_division . $cli . $value_control;
-
-            } else {
-                $alsumnados = new Alumno();
-                $als = $alsumnados->SELECT(
-                    DB::raw('(SUBSTRING(no_control FROM 10 FOR 13)) control ')
-                )
-                ->WHERE([[DB::raw('SUBSTRING(no_control FROM 8 FOR 2)'),'=',$cv],[DB::raw('SUBSTRING(no_control FROM 1 FOR 2)'),'=', $anio_division]])
-                ->orderBy('control', 'DESC')
-                ->limit(1)
-                ->GET();
-
-                $control_ = $als[0]->control;
-
-                $count = (int)$control_ + 1;
-                $str_length = 4;
-
-                $value_control = substr("0000{$count}", -$str_length);
-
-                $no_control = $anio_division . $cli . $value_control;
-            }
         } else {
-            $control = 0;
-            $contador = $control + 1;
-            $str_length = 4;
-            $value_control = substr("0000{$contador}", -$str_length);
+            // si existe, se tiene que utilizar el mismo número de control
+            // obtenemos su número de control
+            $Alumno_ = new Alumno();
+            $Alumnos_ = $Alumno_->WHERE([
+                ['id_pre', '=', $id]
+            ])
+            ->SKIP(0)->TAKE(1)->GET();
+            // aquí veré que obtenemos
+            if(count($Alumnos_)) {
+                // si hay datos obtenemos el número de control
+                $no_control = $Alumnos_[0]->no_control;
+            } else {
+                // no cuenta con registros, por lo tanto se tendrá que generar un nuevo numero de control
+                 /**
+                 * obtener el año correcto
+                 */
+                $date = Carbon::now();
+                $anio = $date->format('Y');
 
-            $no_control = $anio_division . $cli . $value_control;
+                /**
+                 * obtenemos los dos ultimos digitos de la fecha
+                 */
+                $anio_division = substr($anio,2,2);
+
+                /**
+                 * obtenemos el valor de un campo de trabajo
+                 */
+                $unidades = new Unidad();
+                $cct_unidades = $unidades->SELECT('cct')
+                                ->WHERE('unidad', '=', $unidadesTbl_)
+                                ->GET();
+
+                /***
+                 * obtener los numeros de las unidades
+                 */
+                $cla = substr($cct_unidades[0]->cct,0,2); // dos primeros
+
+                $cli = $cla . substr($cct_unidades[0]->cct,5,5); //ultimos 5 caracteres
+
+                $cv = substr($cct_unidades[0]->cct,8,2); // ultimos dos caracteres
+
+                // CONSULTA
+                $registrados = new Alumno();
+                $unidade =  $registrados->where('unidad', '=', $unidadesTbl_)->latest()->first();
+
+                /**
+                 * VALIDACIÓN
+                 */
+                if($unidade){
+                    // $cli, $unidade->created_at, $anio_division, $cv
+                    // llamamos al metodo setNumeroControl
+                    $no_control = $this->setNumeroControl($cli, $unidade->created_at, $anio_division, $cv);
+                    dd("entro".$no_control);
+                }
+                else {
+                    $control = 0;
+                    $contador = $control + 1;
+                    $str_length = 4;
+                    $value_control = substr("0000{$contador}", -$str_length);
+
+                    $no_control = $anio_division . $cli . $value_control;
+                }
+
+            }
         }
 
-        // variable de unidad
-        $unidad = Auth::user()->unidades()->first()->unidad;
         $usuario = Auth::user()->name;
 
         /**
@@ -625,5 +613,45 @@ class AlumnoController extends Controller
                 return redirect()->route('alumnos.index')
                     ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
             }
+    }
+    /***
+     * METODO
+     */
+    protected function setNumeroControl($cli_value, $created_at, $anioDivision, $cv){
+        // si arroja algo la consulta se procede
+        // obtener ultima fecha
+        $ultima_fecha = Carbon::createFromFormat('Y-m-d H:i:s', $created_at)->year;
+        $ultima_fecha_division = substr($ultima_fecha,2,2);
+        // pasamos la variable a entero
+        $ad = (int)$anioDivision;
+        // comparamos fechas
+        if ($ultima_fecha_division <> $ad) {
+            # nuevo código
+            $control = 0;
+            $contador = $control + 1;
+            $str_length = 4;
+            $value_control = substr("0000{$contador}", -$str_length);
+
+            return $control_number = $anioDivision . $cli_value . $value_control;
+
+        } else {
+            $alsumnados = new Alumno();
+            $als = $alsumnados->SELECT(
+                DB::raw('(SUBSTRING(no_control FROM 10 FOR 13)) control ')
+            )
+            ->WHERE([[DB::raw('SUBSTRING(no_control FROM 8 FOR 2)'),'=',$cv],[DB::raw('SUBSTRING(no_control FROM 1 FOR 2)'),'=', $anioDivision]])
+            ->orderBy('control', 'DESC')
+            ->limit(1)
+            ->GET();
+
+            $control_ = $als[0]->control;
+
+            $count = (int)$control_ + 1;
+            $str_length = 4;
+
+            $value_control = substr("0000{$count}", -$str_length);
+
+            return $control_number = $anioDivision . $cli_value . $value_control;
+        }
     }
 }
