@@ -12,7 +12,7 @@
       }
 </style>
  <div class="container g-pt-50">
-   <form action="{{ route('supre-mod-save') }}" id="registersupre" method="POST">
+   <form action="{{ route('supre-mod-save') }}" id="regsupre" method="POST">
        @csrf
        <div style="text-align: right;width:82%">
            <label for="tituloSupre1"><h2>Modificación de Solicitud para Suficiencia Presupuestal</h2></label>

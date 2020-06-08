@@ -50,10 +50,6 @@ $(function(){
                     required: true,
                     minlength: 3
                 },
-                apellido_materno:{
-                    required: true,
-                    minlength: 3
-                },
             },
         messages: {
             nombre: {
@@ -62,9 +58,6 @@ $(function(){
             },
             apellido_paterno: {
                 required: 'Por favor ingrese el apellido paterno'
-            },
-            apellido_materno: {
-                required: 'Por favor ingrese su apellido materno'
             },
         }
     });
@@ -594,13 +587,16 @@ $(function(){
             nombre_director:{
                 required: true
             },
-            testigo1:{
+            unidad_capacitacion:{
                 required: true
             },
-            testigo2:{
+            puesto_testigo1:{
                 required: true
             },
-            testigo3:{
+            puesto_testigo2:{
+                required: true
+            },
+            puesto_testigo3:{
                 required: true
             },
         },
@@ -631,13 +627,13 @@ $(function(){
             unidad_capacitacion: {
                 required: 'Por favor ingrese la unidad de capacitación'
             },
-            testigo1: {
+            puesto_testigo1: {
                 required: 'Por favor ingrese el nombre del testigo'
             },
-            testigo2: {
+            puesto_testigo2: {
                 required: 'Por favor ingrese el nombre del testigo'
             },
-            testigo3: {
+            puesto_testigo3: {
                 required: 'Por favor ingrese el nombre del testigo'
             }
         }
@@ -651,20 +647,20 @@ $(function(){
             nombre_elabora:{
                 required: true
             },
-            destino:{
+            destino_puesto:{
                 required: true
             },
             doc_pdf:{
                 required: true,
                 extension: "pdf"
             },
-            ccp1:{
+            ccpa1:{
                 required: true
             },
-            ccp2:{
+            ccpa2:{
                 required: true
             },
-            ccp3:{
+            ccpa3:{
                 required: true
             }
         },
@@ -675,20 +671,20 @@ $(function(){
             nombre_elabora: {
                 required: 'Por favor ingrese el nombre de quien elabora'
             },
-            destino: {
+            destino_puesto: {
                 required: 'Por favor ingrese el nombre a quien va destinado'
             },
             doc_pdf: {
                 required: 'Por favor ingrese el documento soporte',
                 extension: "Por favor ingrese el documento con extension PDF"
             },
-            ccp1: {
+            ccpa1: {
                 required: 'Por favor ingrese el nombre'
             },
-            ccp2: {
+            ccpa2: {
                 required: 'Por favor ingrese el nombre'
             },
-            ccp3: {
+            ccpa3: {
                 required: 'Por favor ingrese el nombre'
             }
         }
