@@ -71,7 +71,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="inputmemoranum_modificacion">Memorandum de Modificación</label>
+                        <label for="inputmemoranum_modificacion">Memorandum de Revalidación</label>
                         <input type="text" name="memoranum_modificacion" id="memoranum_modificacion" class="form-control" aria-required="true" value="{{$especvalid->memorandum_modificacion}}">
                     </div>
                 </div>
