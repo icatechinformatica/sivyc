@@ -25,7 +25,7 @@
         <div class="form-row">
           <!-- Unidad -->
           <div class="form-group col-md-6">
-            <label for="areaCursos" class="control-label">ÁREA</label>
+            <label for="areaCursos" class="control-label">CAMPO</label>
             <select class="form-control" id="areaCursos" name="areaCursos">
                 <option value="">--SELECCIONAR--</option>
                 @foreach ($areas as $itemareas)
@@ -36,7 +36,7 @@
           <!--Unidad Fin-->
           <!-- nombre curso -->
           <div class="form-group col-md-6">
-            <label for="especialidadCurso" class="control-label">Especialidad</label>
+            <label for="especialidadCurso" class="control-label">ESPECIALIDAD</label>
             <select class="form-control" id="especialidadCurso" name="especialidadCurso">
                 <option value="">--SELECCIONAR--</option>
                 @foreach ($especialidades as $itemespecialidades)
@@ -47,17 +47,20 @@
           <!-- nombre curso FIN-->
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="nombrecurso" class="control-label">Nombre del Curso</label>
+            <div class="form-group col-md-4">
+                <label for="nombrecurso" class="control-label">NOMBRE DEL CURSO</label>
                 <input type="text" class="form-control" id="nombrecurso" name="nombrecurso" value="{{$cursos[0]->nombre_curso}}">
             </div>
-            <div class="form-group col-md-6">
-                <label for="unidad_accion_movil" class="control-label">Unidad Acción Móvil</label>
-                <input type="text" class="form-control" id="unidad_accion_movil" name="unidad_accion_movil" value="{{$cursos[0]->unidad_amovil}}">
+            <div class="form-group col-md-4">
+                <label for="unidad_accion_movil" class="control-label">UNIDAD ACCIÓN MÓVIL</label>
+                <select class="form-control" name="unidad_accion_movil" id="unidad_accion_movil">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($unidadesMoviles as $itemUnidaMovil)
+                        <option {{( $cursos[0]->unidad_amovil == $itemUnidaMovil->ubicacion) ? "selected" : ""}} value="{{$itemUnidaMovil->ubicacion}}">{{$itemUnidaMovil->ubicacion}}</option>
+                    @endforeach
+                </select>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label for="modalidad  " class="control-label">Modalidad</label>
                 <select class="form-control" id="modalidad" name="modalidad">
                   <option value="">--SELECCIONAR--</option>
@@ -66,9 +69,12 @@
                   <option {{ trim($cursos[0]->modalidad) == "EMP" ? "selected" : "" }} value="EMP">EMP</option>
                 </select>
             </div>
+        </div>
+        <div class="form-row">
+
             <!--clasificacion-->
-            <div class="form-group col-md-6">
-                <label for="clasificacion  " class="control-label">Clasificación</label>
+            <div class="form-group col-md-4">
+                <label for="clasificacion  " class="control-label">CLASIFICACIÓN</label>
                 <select class="form-control" id="clasificacion" name="clasificacion">
                     <option value="">--SELECCIONAR--</option>
                     <option {{ trim($cursos[0]->clasificacion) == "A-BASICO" ? "selected" : "" }} value="A-BASICO">A-BÁSICO</option>
@@ -77,41 +83,37 @@
                 </select>
             </div>
             <!--clasificacion END-->
-        </div>
-        <div class="form-row">
-          <!-- Destinatario -->
-          <div class="form-group col-md-6">
-            <label for="horas" class="control-label">Horas</label>
-            <input type="number" class="form-control" id="horas" name="horas" placeholder="Horas" value="{{$cursos[0]->horas}}">
-          </div>
-          <!-- Destinatario END -->
-          <!-- Puesto-->
-          <div class="form-group col-md-6">
-            <label for="costo" class="control-label">Costo</label>
-            <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="costo" value="{{$cursos[0]->costo}}">
-          </div>
-          <!-- Puesto END-->
-
-        </div>
-        <div class="form-row">
+            <!-- Puesto-->
+            <div class="form-group col-md-4">
+                <label for="costo" class="control-label">COSTO</label>
+                <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="COSTO" value="{{$cursos[0]->costo}}">
+            </div>
+            <!-- Puesto END-->
             <!-- Duracion -->
-            <div class="form-group col-md-6">
-              <label for="duracion" class="control-label">Duración</label>
-              <input type="text" class="form-control" id="duracion" name="duracion" placeholder="duracion" value="{{$cursos[0]->duracion}}">
+            <div class="form-group col-md-4">
+              <label for="duracion" class="control-label">DURACIÓN EN HORAS</label>
+              <input type="text" class="form-control" id="duracion" name="duracion" placeholder="DURACIÓN EN HORAS" value="{{$cursos[0]->horas}}">
             </div>
             <!-- Duracion END -->
+        </div>
+        <div class="form-row">
+
             <!-- Perfil-->
             <div class="form-group col-md-6">
-              <label for="perfil" class="control-label">Perfil</label>
+              <label for="perfil" class="control-label">PEFIL</label>
               <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil" value="{{$cursos[0]->perfil}}">
             </div>
             <!-- Perfil END-->
+            <div class="form-group col-md-6">
+                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
+                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" value="{{$cursos[0]->nivel_estudio}}">
+            </div>
         </div>
         <div class="form-row">
             <!-- Objetivo -->
             <div class="form-group col-md-6">
-              <label for="objetivo" class="control-label">OBJECTIVO</label>
-              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO">
+              <label for="objetivo" class="control-label">OBJETIVO DEL CURSO</label>
+              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO DEL CURSO">
                   {{ $cursos[0]->objetivo }}
               </textarea>
             </div>
@@ -129,14 +131,11 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE AUTORIZACIÓN</label>
-                <div class="col-sm-10">
-                    <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="solicitud_autorizacion" name="solicitud_autorizacion" {{$cursos[0]->solicitud_autorizacion == true ? "checked" : "" }} value="true">
-                    <label class="form-check-label" for="solicitud_autorizacion">
-                        AUTORIZACIÓN
-                    </label>
-                    </div>
-                </div>
+                <select class="form-control" id="solicitud_autorizacion" name="solicitud_autorizacion">
+                    <option value="">--SELECCIONAR--</option>
+                    <option {{$cursos[0]->solicitud_autorizacion == true ? "selected" : "" }} value="true">SI</option>
+                    <option {{$cursos[0]->solicitud_autorizacion == false ? "selected" : "" }} value="false">NO</option>
+                </select>
             </div>
             <div class="form-group col-md-4">
                 <label for="memo_actualizacion" class="control-label">MEMO DE ACTUALIZACIÓN</label>
@@ -199,7 +198,9 @@
                     <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                 </div>
                 <div class="pull-right">
-                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                    @can('cursos.update')
+                        <button type="submit" class="btn btn-primary" >Actualizar</button>
+                    @endcan
                 </div>
             </div>
         </div>

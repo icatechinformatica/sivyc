@@ -65,7 +65,7 @@ class CursosController extends Controller
             $cursos->modalidad = trim($request->modalidad);
             $cursos->clasificacion = trim($request->clasificacion);
             $cursos->costo = trim($request->costo);
-            $cursos->duracion = trim($request->duracion);
+            $cursos->horas = trim($request->duracion);
             $cursos->objetivo = trim($request->objetivo);
             $cursos->perfil = trim($request->perfil);
             $cursos->fecha_validacion = $cursos->setFechaAttribute($request->fecha_validacion);
@@ -143,6 +143,8 @@ class CursosController extends Controller
 
             $Especialidad = new especialidad();
             $especialidades = $Especialidad->all();
+            $unidades = new tbl_unidades();
+            $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
 
             $idCurso = base64_decode($id);
             $curso = new curso();
@@ -160,7 +162,7 @@ class CursosController extends Controller
             $fechaVal = $curso->getMyDateFormat($cursos[0]->fecha_validacion);
             $fechaAct = $curso->getMyDateFormat($cursos[0]->fecha_actualizacion);
 
-            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct'));
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles'));
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -237,10 +239,9 @@ class CursosController extends Controller
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
-                'horas' => trim($request->horas),
+                'horas' => trim($request->duracion),
                 'clasificacion' => trim($request->clasificacion),
                 'costo' => trim($request->costo),
-                'duracion' => trim($request->duracion),
                 'objetivo' => trim($request->objetivo),
                 'perfil' => trim($request->perfil),
                 'fecha_validacion' => $cursos->setFechaAttribute($request->fecha_validacion),

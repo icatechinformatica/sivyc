@@ -107,8 +107,8 @@
         <div class="form-row">
             <!-- Objetivo -->
             <div class="form-group col-md-6">
-              <label for="objetivo" class="control-label">OBJECTIVO</label>
-              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO"></textarea>
+              <label for="objetivo" class="control-label">OBJETIVO DEL CURSO</label>
+              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO DEL CURSO"></textarea>
             </div>
             <!-- Objetivo END -->
             <!-- Accion Movil-->
@@ -183,7 +183,9 @@
                     <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                 </div>
                 <div class="pull-right">
-                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                    @can('cursos.store')
+                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                    @endcan
                 </div>
             </div>
         </div>
