@@ -29,7 +29,7 @@ Route::post('/instructor/espec-ins/guardar','webController\InstructorController@
 Route::post('/instructor/espec-ins/modificacion/guardar','webController\InstructorController@especval_mod_save')->name('especinstructor-modguardar');
 Route::post('/instructor/mod/perfilinstructor/guardar', 'webController\InstructorController@modperfilinstructor_save')->name('modperfilinstructor-guardar');
 
-Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio');
+
 Route::get('/alumno/registro/pdf', 'webController\AlumnoController@pdf_registro')->name('pdf-alumno');
 
 Route::get('/exportarpdf/solicitudsuficiencia', 'webController\presupuestariaController@index')->name('procesodepago');
@@ -94,8 +94,6 @@ Route::middleware(['auth'])->group(function () {
     // nueva ruta
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');
     Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos');
-    Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos');
-    Route::post('cursos/guardar-catalogo', 'webController\CursosController@store')->name('cursos.guardar-catalogo');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
     // documentos pdf Desarrollado por Adrian
@@ -103,18 +101,33 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@propa')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
-    Route::get('/cursos/especialidad_by_area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');
-    Route::put('/cursos/actualiza-catalogo/{id}', 'webController\CursosController@update')->name('cursos-catalogo.update');
-    Route::get('/cursos/editar-catalogo/{id}', 'webController\CursosController@show')->name('cursos-catalogo.show');
+
+    /**
+     * ============================================================================================================================================
+     * CURSOS
+     * ============================================================================================================================================
+     */
+    Route::get('/curso/inicio', 'webController\CursosController@index')->name('curso-inicio')->middleware('can:cursos.index');
+    Route::get('/cursos/crear', 'webController\CursosController@create')->name('frm-cursos')->middleware('can:cursos.create');
+    Route::get('/cursos/editar-catalogo/{id}', 'webController\CursosController@show')->name('cursos-catalogo.show')->middleware('can:cursos.show');
+   // Route::get('/cursos/crear', 'webController\CursoValidadoController@cv_crear')->name('cv_crear');
+   Route::put('/cursos/actualiza-catalogo/{id}', 'webController\CursosController@update')->name('cursos-catalogo.update')->middleware('can:cursos.update');
+   Route::post('cursos/guardar-catalogo', 'webController\CursosController@store')->name('cursos.guardar-catalogo')->middleware('can:cursos.store');
+   Route::get('/cursos/especialidad_by_area/{id_especialidad}', 'webController\CursosController@get_by_area')->name('cursos.get_by_area');
+    /**
+     * obtener toda la información del curso por id
+     */
+    Route::get('cursos/get_by_id/{idCurso}', 'webController\CursosController@get_by_id')->name('cursos.get_by_id');
+    /**
+     * ============================================================================================================================================
+     * CURSOS END
+     * ============================================================================================================================================
+     */
 
     /**
      * UNIDADES DE CAPACITACION
      */
     Route::get('/unidades/unidades_by_ubicacion/{ubicacion}', 'webController\UnidadController@ubicacion')->name('unidades.get_by_ubicacion');
-    /**
-     * obtener toda la información del curso por id
-     */
-    Route::get('cursos/get_by_id/{idCurso}', 'webController\CursosController@get_by_id')->name('cursos.get_by_id');
     /**
      * contratos Desarrollando por Daniel
      */
@@ -166,7 +179,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Validar Cursos
     Route::get('/cursos/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos.index');
-    // Route::get('/cursos/crear', 'webController\CursoValidadoController@cv_crear')->name('cv_crear');
     Route::post('/cursos/fill1', 'webController\CursoValidadoController@fill1');
     Route::post("/cursos/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
 

@@ -34,7 +34,9 @@
                 </div>
                 <br>
                 <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('frm-cursos')}}"> Nuevo</a>
+                    @can('cursos.create')
+                        <a class="btn btn-success btn-lg" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -63,9 +65,11 @@
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
                         <td>
-                            <a href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
-                                <i class="fa fa-wrench" aria-hidden="true"></i>
-                            </a>
+                            @can('cursos.show')
+                                <a href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
+                                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                                </a>
+                            @endcan
                         </td>
                         <td>
                             <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
