@@ -61,8 +61,8 @@ class CalificacionController extends Controller
             $Calificacion->ciclo = $request->ciclo;
             $Calificacion->periodo = $request->periodo;
             $Calificacion->calificacion = $request->calificacion;
-            $Calificacion->hini2 = $request->hini2;
-            $Calificacion->hfin2 = $request->hfin2;
+            $Calificacion->alumno = $request->alumno;
+            $Calificacion->valido = $request->valido;
             $Calificacion->save();
 
             return response()->json(['success' => 'El Calificacion se cargo exitosamente en la base de datos'], 200);
