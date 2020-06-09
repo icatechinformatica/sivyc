@@ -459,28 +459,7 @@ class AlumnoController extends Controller
 
                 $cv = substr($cct_unidades[0]->cct,8,2); // ultimos dos caracteres
 
-                // CONSULTA
-                $registrados = new Alumno();
-                $unidade =  $registrados->where('unidad', '=', $unidadesTbl_)->latest()->first();
-
-                /**
-                 * VALIDACIÓN
-                 */
-                if($unidade){
-                    // $cli, $unidade->created_at, $anio_division, $cv
-                    // llamamos al metodo setNumeroControl
-                    $no_control = $this->setNumeroControl($cli, $unidade->created_at, $anio_division, $cv);
-                    dd("entro".$no_control);
-                }
-                else {
-                    $control = 0;
-                    $contador = $control + 1;
-                    $str_length = 4;
-                    $value_control = substr("0000{$contador}", -$str_length);
-
-                    $no_control = $anio_division . $cli . $value_control;
-                }
-
+                $no_control = $this->setNumeroControl($cli, $anio_division, $cv);
             }
         }
 
@@ -617,15 +596,25 @@ class AlumnoController extends Controller
     /***
      * METODO
      */
-    protected function setNumeroControl($cli_value, $created_at, $anioDivision, $cv){
+    protected function setNumeroControl($cli_value, $anioDivision, $cv){
         // si arroja algo la consulta se procede
-        // obtener ultima fecha
-        $ultima_fecha = Carbon::createFromFormat('Y-m-d H:i:s', $created_at)->year;
-        $ultima_fecha_division = substr($ultima_fecha,2,2);
+        $alsumnados = new Alumno();
         // pasamos la variable a entero
-        $ad = (int)$anioDivision;
+        $ultima_fecha_division = $alsumnados->SELECT(
+            DB::raw('(SUBSTRING(no_control FROM 1 FOR 2)) control')
+        )->WHERE(DB::raw('SUBSTRING(no_control FROM 8 FOR 2)'),'=',$cv)
+        ->orderBy('control', 'DESC')->limit(1)->FIRST();
+
+        if(is_null($ultima_fecha_division)) {
+            // verdadero
+            $fechaControl = null;
+        } else {
+            // falso
+            $fechaControl = $ultima_fecha_division->control;
+        }
+
         // comparamos fechas
-        if ($ultima_fecha_division <> $ad) {
+        if ($fechaControl <> $anioDivision) {
             # nuevo código
             $control = 0;
             $contador = $control + 1;
@@ -635,7 +624,6 @@ class AlumnoController extends Controller
             return $control_number = $anioDivision . $cli_value . $value_control;
 
         } else {
-            $alsumnados = new Alumno();
             $als = $alsumnados->SELECT(
                 DB::raw('(SUBSTRING(no_control FROM 10 FOR 13)) control ')
             )
