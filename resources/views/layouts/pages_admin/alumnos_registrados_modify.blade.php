@@ -25,6 +25,7 @@
                     <tr>
                         <th scope="col">N° CONTROL</th>
                         <th scope="col">NOMBRE</th>
+                        <th scope="col">CURP</th>
                         <th scope="col">CURSO INSCRITO</th>
                         <th scope="col">MODIFICAR</th>
                     </tr>
@@ -34,6 +35,7 @@
                         <tr>
                             <td>{{$itemAlumnos->no_control}}</td>
                             <td scope="row">{{$itemAlumnos->apellidoPaterno}} {{$itemAlumnos->apellidoMaterno}} {{$itemAlumnos->nombrealumno}}</td>
+                            <td>{{$itemAlumnos->curp_alumno}}</td>
                             <td>{{$itemAlumnos->nombre_curso}}</td>
                             <td>
                                 <a href="{{route('alumno_registrado.modificar.show', ['id' => base64_encode($itemAlumnos->preiscripcion)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
