@@ -107,9 +107,10 @@ class AlumnoRegistradoModificarController extends Controller
         $id_pre = base64_decode($id);
         $codigo_verificacion = 'ABC12$D%&7!';
         $codigo_verificacion_edit = trim($request->codigo_verificacion_edit);
+        $numero_control = trim($request->numero_control_edit);
         if (strcmp($codigo_verificacion, $codigo_verificacion_edit) === 0){
             // actualizamos los registros
-            Alumno::whereIn('id_pre', $id_pre)->update(['estatus_modificacion' => true, 'no_control' => $request->numero_control_edit]);
+            Alumno::whereIn('id_pre', $id_pre)->update(['estatus_modificacion' => true, 'no_control' => $numero_control]);
 
             return redirect()->route('alumno_registrado.modificar.index')
             ->with('success', sprintf('ASPIRANTE MODIFICADO EXTIOSAMENTE!'));
