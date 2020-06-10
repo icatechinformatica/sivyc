@@ -111,12 +111,12 @@ class AlumnoRegistradoModificarController extends Controller
         $numero_control = trim($request->numero_control_edit);
         if (strcmp($codigo_verificacion, $codigo_verificacion_edit) === 0){
             // actualizamos los registros
-            Alumno::whereIn('id_pre', $id_pre)->update(['estatus_modificacion' => true, 'no_control' => $numero_control]);
+            Alumno::WHERE('id_pre', '=', $id_pre)->UPDATE(['estatus_modificacion' => true, 'no_control' => $numero_control]);
 
             return redirect()->route('alumno_registrado.modificar.index')
-            ->with('success', sprintf('ASPIRANTE MODIFICADO EXTIOSAMENTE!'));
+            ->with('success', 'ASPIRANTE MODIFICADO EXTIOSAMENTE!');
         } else {
-            return Redirect::back()->withErrors(['msg', 'EL CÓDIGO DE VERIFICACIÓN NO ES VÁLIDO']);
+            return redirect()->back()->withErrors(['msg', 'EL CÓDIGO DE VERIFICACIÓN NO ES VÁLIDO']);
         }
     }
 
