@@ -92,6 +92,26 @@ $(function(){
         }
      });
 
+    $("#frmalumno_registrado_modificar").validate({
+        rules: {
+            numero_control_edit: {
+                required: true
+            },
+            codigo_verificacion_edit: {
+                required: true
+            }
+        },
+        messages: {
+            numero_control_edit: {
+                required: "Elemento Requerido"
+            },
+            codigo_verificacion_edit: {
+                required: "Elemento Requerido"
+            }
+        }
+
+    });
+
      // escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar los cursos de esa especialidad
 
     $("#motivos_eleccion_sistema_capacitacion_mod").change(function(){
