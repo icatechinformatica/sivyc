@@ -221,7 +221,7 @@
                                 <option selected value="INTERNO">Interno</option>
                             @endif
                             @if ($datains->tipo_honorario == NULL)
-                                <option selected value="HONORARIOS">Honorarios</option>
+                                <option selected value="HONORARIOS">Entroaqui</option>
                                 <option value="SIN HONORARIOS">Sin Honorarios</option>
                                 <option value="INTERNO">Interno</option>
                             @endif
@@ -231,7 +231,7 @@
                 <br>
                 <label><h4>Perfiles Profesionales</h4></label>
                 @if (count($perfil) > 0)
-                    <table class="table table-bordered" id="table-perfprof">
+                    <table class="table table-bordered table-responsive-md" id="table-perfprof">
                         <thead>
                             <tr>
                                 <th scope="col">Grado Profesional</th>
@@ -278,7 +278,7 @@
                 <br>
                 <label><h4>Cursos Validados para Impartir</h4></label>
                 @if (count($validado) > 0)
-                <table class="table table-bordered" id="table-perfprof">
+                <table class="table table-bordered table-responsive-md" id="table-perfprof">
                     <thead>
                         <tr>
                             <th scope="col">Especialidad</th>

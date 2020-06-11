@@ -36,7 +36,7 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
-        <table  id="table-instructor" class="table table-bordered">
+        <table  id="table-instructor" class="table table-bordered table-responsive-md">
             <caption>Catalogo de Instructrores</caption>
             <thead>
                 <tr>

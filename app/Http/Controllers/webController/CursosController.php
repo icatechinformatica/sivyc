@@ -81,6 +81,7 @@ class CursosController extends Controller
             $cursos->cambios_especialidad = trim($request->cambios_especialidad);
             $cursos->nivel_estudio = trim($request->nivel_estudio);
             $cursos->categoria = trim($request->categoria);
+            $cursos->tipo_cursos = $request->tipo_curso;
             $cursos->save();
 
             # ==================================
@@ -147,7 +148,7 @@ class CursosController extends Controller
             $idCurso = base64_decode($id);
             $curso = new curso();
             $cursos = $curso::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
-                    'cursos.costo','cursos.duracion',
+                    'cursos.costo','cursos.duracion','cursos.tipo_curso',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
