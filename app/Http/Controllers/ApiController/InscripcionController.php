@@ -59,6 +59,7 @@ class InscripcionController extends Controller
             $Inscripcion->costo = $request->costo;
             $Inscripcion->motivo = $request->motivo;
             $Inscripcion->status = $request->status;
+            $Inscripcion->realizo = $request->realizo;
             $Inscripcion->save();
 
             return response()->json(['success' => 'Se ha generado una inscripcion exitosamente'], 200);

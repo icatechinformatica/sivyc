@@ -9,7 +9,7 @@
                     <b>Memorandum No.</b>
                 </div>
                 <div align=right>
-                    <b>}, Chiapas  de  del .</b>
+                    <b>, Chiapas  de  del .</b>
                 </div>
                 <br><br><b>orlando chavez.</b>
                 <br>prueba de puesto.
