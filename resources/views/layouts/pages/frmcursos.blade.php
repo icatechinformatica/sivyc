@@ -177,6 +177,16 @@
                 <input type="text" name="categoria" id="categoria" class="form-control">
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="categoria" class="control-label">TIPO DE CURSO</label>
+                <select class="form-control" id="tipo_curso" name="tipo_curso">
+                    <option value="">--SELECCIONAR--</option>
+                    <option value="PRESENCIAL">PRESENCIAL</option>
+                    <option value="ONLINE">ONLINE</option>
+                </select>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">

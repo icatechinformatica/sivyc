@@ -722,6 +722,10 @@ $(function(){
             },
             duracion: {
                 number: true
+            },
+            tipo_curso: {
+                    required: true,
+                    valueNotEquals: "default"
             }
         },
         messages: {
@@ -757,7 +761,11 @@ $(function(){
             },
             duracion: {
                 number: 'Acepta sólo números'
-            }
+            },
+            tipo_curso: {
+                required: "Por favor ingrese el tipo de curso",
+                valueNotEquals: "Por favor ingrese el tipo de curso"
+        }
         }
     });
 
