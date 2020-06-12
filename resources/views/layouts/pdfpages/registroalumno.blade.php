@@ -143,6 +143,20 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="tres">
+                        <small>
+                            <b>DOMICILIO: &nbsp;&nbsp;</b>
+                            <se>ANDADOR 25 MANZANA 15 CASA N° 2 INFONAVITT GRIJALVA 2 SECCIÓN</se>
+                        </small>
+                    </td>
+                    <td class="tres">
+                        <small>
+                            <b>COLONIA O LOCALIDAD: &nbsp;&nbsp;</b>
+                            <se>INFONAVIT GRIJALVA</se>
+                        </small>
+                    </td>
+                </tr>
+                <tr>
                     <td style='border-right:none; border-top:none;'>
                         <small>
                             <b>C.P.: &nbsp;&nbsp;</b>
@@ -152,7 +166,7 @@
                     <td colspan="2" style='border-left:none; border-right:none; border-top:none;'>
                         <small>
                             <b>MUNICIPIO: &nbsp;&nbsp;</b>
-                            <se>ANDADOR 25 MANZANA 15 CASA N° 2 INFONAVITT GRIJALVA 2 SECCIÓN</se>
+                            <se>CHIAPA DE CORZO</se>
                         </small>
                     </td>
                     <td style='border-left:none; border-right:none; border-top:none;'>
