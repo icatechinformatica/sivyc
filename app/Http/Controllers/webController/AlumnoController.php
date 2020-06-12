@@ -510,9 +510,10 @@ class AlumnoController extends Controller
         if (isset($request->idEsp)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad = $request->idEsp;
+            $tipo_curso = $request->tipo;
             $Curso = new curso();
-
-            $Cursos = $Curso->WHERE('id_especialidad', '=', $idEspecialidad)->GET();
+            $Cursos = $Curso->WHERE('id_especialidad', '=', $idEspecialidad)
+                            ->WHERE('tipo_curso', '=', $tipo_curso)->GET();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);
