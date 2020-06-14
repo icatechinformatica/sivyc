@@ -98,6 +98,14 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="form-group col-md-4">
+                        <label for="horario" class="control-label">TIPO DE CURSO</label>
+                        <select class="form-control" id="tipo_curso" name="tipo_curso" required>
+                            <option value="">--SELECCIONAR--</option>
+                            <option value="PRESENCIAL">PRESENCIAL</option>
+                            <option value="ONLINE">A DISTANCIA</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-8">
@@ -118,14 +126,6 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="horario" class="control-label">TIPO DE CURSO</label>
-                        <select class="form-control" id="tipo_curso" name="tipo_curso" required>
-                            <option value="">--SELECCIONAR--</option>
-                            <option value="PRESENCIAL">PRESENCIAL</option>
-                            <option value="ONLINE">EN LÍNEA</option>
-                        </select>
-                    </div>
                     <div class="form-group col-md-6">
                         <label for="cerrs" class="control-label">¿SE ENCUENTRA EN EL CERESO?</label>
                         <select class="form-control" id="cerrs" name="cerrs" required>

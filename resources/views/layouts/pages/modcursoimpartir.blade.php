@@ -7,7 +7,7 @@
                     <h1>Editar Especialidad Validada para Impartir</h1>
                 </div>
                 <br>
-                <table  id="table-instructor" class="table table-bordered">
+                <table  id="table-instructor" class="table table-bordered table-responsive-md">
                     <caption>Catalogo de Especialidades</caption>
                     <thead>
                         <tr>

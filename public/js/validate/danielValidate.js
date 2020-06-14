@@ -523,12 +523,14 @@ $(function(){
 
 
     // escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar los cursos de esa especialidad
-    $('#especialidad_sid').on("change", () => {
+    $('#especialidad_sid' && '#tipo_curso').on("change", () => {
 
         $("#especialidad_sid option:selected").each( () => {
             var IdEsp = $('#especialidad_sid').val();
-            var datos = { idEsp: IdEsp };
+            var tipo = $('#tipo_curso').val();
+            var datos = { idEsp: IdEsp, tipo: tipo};
             var url = '/alumnos/sid/cursos';
+            console.log(datos);
 
             var request = $.ajax
             ({
@@ -547,6 +549,7 @@ $(function(){
 
             request.done(( respuesta ) =>
             {
+                console.log(respuesta);
                 if (respuesta.length < 1) {
                     $("#cursos_sid").empty();
                     $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
@@ -722,6 +725,10 @@ $(function(){
             },
             duracion: {
                 number: true
+            },
+            tipo_curso: {
+                    required: true,
+                    valueNotEquals: "default"
             }
         },
         messages: {
@@ -757,7 +764,11 @@ $(function(){
             },
             duracion: {
                 number: 'Acepta sólo números'
-            }
+            },
+            tipo_curso: {
+                required: "Por favor ingrese el tipo de curso",
+                valueNotEquals: "Por favor ingrese el tipo de curso"
+        }
         }
     });
 

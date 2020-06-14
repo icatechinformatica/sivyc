@@ -48,7 +48,7 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
-        <table  id="table-instructor" class="table table-bordered Datatables">
+        <table  id="table-instructor" class="table table-bordered Datatables table-responsive-md">
             <caption>Catalogo de Suficiencias Presupuestales Validadas</caption>
             <thead>
                 <tr>
