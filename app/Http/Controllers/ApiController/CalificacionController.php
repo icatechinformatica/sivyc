@@ -100,13 +100,16 @@ class CalificacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $idcurso, $matricula)
     {
         //
         // actualizando
         try {
             $Calificacion = new Calificacion();
-            $Calificacion->whereId($id)->update($request->all());
+            $Calificacion->WHERE([
+                ['idcurso', '=', $request->idcurso],
+                ['matricula', '=', $request->matricula],
+            ])->update($request->all());
             return response()->json(['success' => 'Calificacion actualizada exitosamente'], 200);
         } catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);

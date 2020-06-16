@@ -10,9 +10,10 @@
   <style>
     body{
       font-family: sans-serif;
+      font-size: 1.3em;
     }
     @page {
-        margin: 50px 50px;
+        margin: 20px 20px;
     }
     small {
         font-size: .7em
@@ -26,11 +27,20 @@
     table {
         margin-top: .6em;
         margin-bottom: 0.5em;
+        padding: 0; margin: 0;
+        border: 0.8px solid black; //Cualquier otro tipo de borde como bottom que es el inferior o ninguno
     }
     table, td {
         border-style: none;
-        border: 1px solid black; //Cualquier otro tipo de borde como bottom que es el inferior o ninguno
         padding: 0;
+        border: 1px solid black; //Cualquier otro tipo de borde como bottom que es el inferior o ninguno
+    }
+    .dashed {
+        border: 1px dashed black;
+    }
+
+    .tds{
+        border: hidden;
     }
 
     td.tres { width: calc(100%/2); }
@@ -39,7 +49,7 @@
         font-size: .5em
     }
     td{
-        padding: 2px 3px;
+        padding: 2em 3px;
     }
     div.centrado {
         text-align: center;
@@ -58,10 +68,69 @@
       .centrados{
           text-align: center;
       }
+      .left-algn{
+        text-align: right;
+      }
+      img.izquierda {
+        float: left;
+      }
+
+      img.derecha {
+        float: right;
+      }
   </style>
 </head>
  <body>
-    <div class="container g-pt-70">
+    <div class="container g-pt-90">
+        <p>
+            <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
+            <img class="derecha" src="{{ public_path('img/sep1.png') }}">
+            <small>
+                <div class="centrados">
+                <b>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR
+                DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO
+                SOLICITUD DE INSCRIPCIÓN ( SID - 01 ).</b>
+                </div>
+            </small>
+        </p>
+        <table class="table tds">
+            <colgroup>
+                <col style="width: 33%"/>
+                <col style="width: 33%"/>
+                <col style="width: 33%"/>
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td style="border: hidden">
+                        <small>
+                            <div class="centrados">
+                                &nbsp;&nbsp;
+                                <div class="linea"></div>
+                                <br>FECHA
+                            </div>
+                        </small>
+                    </td>
+                    <td style="border: hidden">
+                        <small>
+                            <div class="centrados">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="linea"></div>
+                                N°. DE CONTROL
+                            </div>
+                        </small>
+                    </td>
+                    <td style="border: hidden">
+                        <small>
+                            <div class="centrados">
+                                &nbsp;&nbsp;
+                                <div class="linea"></div>
+                                NÚMERO DE SOLICITUD
+                            </div>
+                        </small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <table class="table td">
             <colgroup>
 				<col style="width: 30%"/>
@@ -120,24 +189,19 @@
             </thead>
             <tbody>
                 <tr>
-                    <td scope="row" class="cuatro" style='border-right:none; border-bottom:none;'>
-                        <small>
-                           <b> NOMBRE DEL ASPIRANTE: </b>
-                        </small>
-                    </td>
-                    <td scope="row" class="cuatro" style='border-left:none; border-right:none; border-bottom:none;'>
+                    <td scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
                         <small>
                             <b> PRIMER APELLIDO: &nbsp;&nbsp;</b>
                             <se>OZUNA</se>
                         </small>
                     </td>
-                    <td scope="row" class="cuatro" style='border-right:none;border-left:none; border-bottom:none;'>
+                    <td scope="row" style='border-right:none;border-left:none; border-bottom:none;'>
                         <small>
                             <b> SEGUNDO APELLIDO: &nbsp;&nbsp;</b>
                             <se>CANTORAL</se>
                         </small>
                     </td>
-                    <td scope="row" class="cuatro" style='border-left:none; border-bottom:none;'>
+                    <td scope="row" colspan="2" style='border-left:none; border-bottom:none;'>
                         <small>
                             <b> NOMBRE(S): &nbsp;&nbsp;</b>
                             <se>VICENTA DEL CARMEN</se>
@@ -166,7 +230,7 @@
                     <td style='border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>TELEFONO: &nbsp;&nbsp;</b>
-                            <se class="linea"> 9612766372 </se>
+                            <se>9612766372</se>
                         </small>
                     </td>
                 </tr>
@@ -296,7 +360,6 @@
                         <small>
                             <b>PUESTO: &nbsp;&nbsp;</b>
                             <se>MAESTRA</se>
-                            <div class="linea"></div>
                         </small>
                     </td>
                 </tr>
@@ -385,6 +448,124 @@
                                 <b> NOMBRE Y FIRMA DE LA PERSONA QUE INSCRIBE </b>
                             </div>
                        </small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table dashed" cellspacing="0" cellpadding="0">
+            <colgroup>
+				<col style="width: 25%"/>
+                <col style="width: 25%"/>
+                <col style="width: 25%"/>
+                <col style="width: 25%"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <td colspan="4" style='border-right:none; border-top:none; border-bottom:none;'>
+                        <div class="left-algn">
+                            <small>
+                                <b>COMPROBANTE PARA EL INSTITUTO</b>
+                            </small>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
+                        <small>
+                            <b>FECHA:</b>
+                            <se></se>
+                        </small>
+                    </td>
+                    <td colspan="2" scope="row" class="tres" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
+                        <small>
+                            <b>NÚMERO DE SOLICITUD:</b>
+                            <se></se>
+                        </small>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
+                        <small>
+                            <b>NOMBRE DEL ASPIRANTE:</b>
+                            <se></se>
+                        </small>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="cuatro" style='border-right:none;border-top:none; border-bottom:none;'>
+                        <small>
+                            <b>CURSO:</b>
+                            <se></se>
+                        </small>
+                    </td>
+                    <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <b>HORARIO:</b>
+                            <se></se>
+                        </small>
+                    </td>
+                    <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <b>GRUPO:</b>
+                            <se></se>
+                        </small>
+                    </td>
+                    <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <b>COSTO:$</b>
+                            <se></se>
+                        </small>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <div class="centrados">
+                                <b> AMAYRANI ORTEGA ESPINOZA </b>
+                                <div class="linea"></div>
+                            </div>
+                        </small>
+                    </td>
+                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <div class="centrados">
+                                &nbsp;&nbsp;
+                                <div class="linea"></div>
+                            </div>
+                        </small>
+                    </td>
+                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <div class="centrados">
+                                &nbsp;&nbsp;
+                                <div class="linea"></div>
+                            </div>
+                        </small>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <div class="centrados">
+                                <b> NOMBRE Y FIRMA DE LA PERSONA QUE RECIBE </b>
+                            </div>
+                        </small>
+                    </td>
+                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <div class="centrados">
+                                <b>SELLO</b>
+                            </div>
+                        </small>
+                    </td>
+                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
+                        <small>
+                            <div class="centrados">
+                                <b>FIRMA DEL ASPIRANTE</b>
+                            </div>
+                        </small>
                     </td>
                 </tr>
             </tbody>

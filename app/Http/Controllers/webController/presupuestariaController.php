@@ -102,6 +102,9 @@ class presupuestariaController extends Controller
         $Y = date("Y",$date);*/
         //$pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y'));
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno');
+        // (Optional) Setup the paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+        // Render the HTML as PDF
         // PDF::loadView('layouts.pdfpages.validacioninstructor');
         //$pdf = PDF::loadView('layouts.pdfpages.contratohonorarios');
         //return view('layouts.pdfpages.valsupre');
