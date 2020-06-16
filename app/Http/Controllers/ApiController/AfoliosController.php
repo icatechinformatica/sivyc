@@ -4,7 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Afolios;
+use App\Models\api\Afolios;
 
 class AfoliosController extends Controller
 {

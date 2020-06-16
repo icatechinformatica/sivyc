@@ -4,7 +4,7 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Folio;
+use App\Models\api\Folio;
 
 class FolioController extends Controller
 {
