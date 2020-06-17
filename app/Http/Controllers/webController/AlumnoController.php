@@ -18,6 +18,7 @@ use PDF;
 use Carbon\Carbon;
 use App\Models\Unidad;
 use Illuminate\Support\Facades\DB;
+use SebastianBergmann\Environment\Console;
 
 class AlumnoController extends Controller
 {
@@ -517,6 +518,26 @@ class AlumnoController extends Controller
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+        return $json;
+    }
+
+    protected function getmunicipios(Request $request)
+    {
+        if (isset($request->idEst)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $nombre=$request->idEst;
+            $Estado = new Estado();
+            $getest = $Estado->WHERE('nombre', '=', $nombre)->FIRST();
+            $idEstado = $getest;
+            $municipio = new municipio();
+            $municipios = $municipio->WHERE('id_estado', '=', $idEstado)->GET();
+
+            /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
+            $json=json_encode($idEstado);
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
         }

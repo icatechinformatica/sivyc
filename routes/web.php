@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
+
 //Ruta Instructor
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
 Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');

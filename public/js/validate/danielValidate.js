@@ -596,12 +596,12 @@ $(function(){
         });
     });
 
-    $('#estado').on("change", () => {
-
-        /*$("#estado option:selected").each( () => {
+  /*  $('#estado').on("change", () => {
+        var IdEst =$('#estado').val();
+        $("#estado option:selected").each( () => {
             var IdEst = $('#estado').val();
-            var datos = { idEst: IdEst};
-            var url = '/alumnos/sid/cursos';
+            var datos = {idEst: IdEst};
+            var url = '/alumnos/sid/municipios';
             console.log(datos);
 
             var request = $.ajax
@@ -621,31 +621,30 @@ $(function(){
 
             request.done(( respuesta ) =>
             {
-                console.log(respuesta);
                 if (respuesta.length < 1) {
-                    $("#cursos_sid").empty();
-                    $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                    console.log("hola");
+                    $("#municipio").empty();
+                    $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                 } else {
                     if(!respuesta.hasOwnProperty('error')){
-                        $("#cursos_sid").empty();
-                        $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        $("#municipio").empty();
+                        $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                         $.each(respuesta, (k, v) => {
-                            $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                            $('#municipio').append('<option value="' + v.muni + '">' + v.muni + '</option>');
                         });
-                        $("#cursos_sid").focus();
+                        $("#municipio").focus();
                     }else{
 
                         //Puedes mostrar un mensaje de error en algún div del DOM
                     }
                 }
             });
-
             request.fail(( jqXHR, textStatus ) =>
             {
                 alert( "Hubo un error: " + textStatus );
             });
-        });*/
-    });
+        });
+    });*/
 
     /**
      * cambios select dependientes
