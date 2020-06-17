@@ -221,7 +221,7 @@
                                 <option selected value="INTERNO">Interno</option>
                             @endif
                             @if ($datains->tipo_honorario == NULL)
-                                <option selected value="HONORARIOS">Entroaqui</option>
+                                <option selected value="HONORARIOS">Honorarios</option>
                                 <option value="SIN HONORARIOS">Sin Honorarios</option>
                                 <option value="INTERNO">Interno</option>
                             @endif

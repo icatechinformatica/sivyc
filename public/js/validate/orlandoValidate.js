@@ -599,6 +599,9 @@ $(function(){
             puesto_testigo3:{
                 required: true
             },
+            factura:{
+                extension: "pdf"
+            }
         },
         messages: {
             numero_contrato: {
@@ -635,6 +638,9 @@ $(function(){
             },
             puesto_testigo3: {
                 required: 'Por favor ingrese el nombre del testigo'
+            },
+            factura:{
+                extension: "Por favor que sea extension PDF"
             }
         }
     });

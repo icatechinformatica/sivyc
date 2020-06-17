@@ -4,7 +4,7 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
-        <form action="{{ route('contrato-save') }}" method="post" id="registercontrato">
+        <form action="{{ route('contrato-save') }}" method="post" id="registercontrato" enctype="multipart/form-data">
             @csrf
             <div style="text-align: right;width:65%">
                 <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
@@ -70,6 +70,13 @@
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
                     <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>
+                    <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
+                    <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
                 </div>
             </div>
             <hr style="border-color:dimgray">

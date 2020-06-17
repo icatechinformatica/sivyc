@@ -113,7 +113,7 @@
             <!-- Objetivo END -->
             <!-- Accion Movil-->
             <div class="form-group col-md-6">
-                <label for="descripcionCurso" class="control-label">DESCRIPCIÓN</label>
+                <label for="descripcionCurso" class="control-label">OBSERVACION</label>
                 <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="5" placeholder="DESCRIPCIÓN"></textarea>
             </div>
             <!-- Accion Movil END-->

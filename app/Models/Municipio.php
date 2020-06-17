@@ -10,7 +10,7 @@ class Municipio extends Model
     protected $table = 'tbl_municipios';
 
     protected $fillable = [
-        'id','muni','ze'
+        'id','muni','ze','id_estado'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

@@ -118,7 +118,7 @@
             <!-- Objetivo END -->
             <!-- Accion Movil-->
             <div class="form-group col-md-6">
-                <label for="descripcionCurso" class="control-label">DESCRIPCIÓN</label>
+                <label for="descripcionCurso" class="control-label">OBSERVACIONES</label>
                 <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="5" placeholder="DESCRIPCIÓN">
                     {{ $cursos[0]->descripcion }}
                 </textarea>
@@ -199,10 +199,10 @@
                 <select class="form-control" id="tipo_curso" name="tipo_curso">
                     @if ($cursos[0]->tipo_curso == 'PRESENCIAl')
                         <option selected value="PRESENCIAL">PRESENCIAL</option>
-                        <option value="ONLINE">ONLINE</option>
+                        <option value="ONLINE">A DISTANCIA</option>
                     @else
                         <option value="PRESENCIAL">PRESENCIAL</option>
-                        <option selected value="ONLINE">ONLINE</option>
+                        <option selected value="ONLINE">A DISTANCIA</option>
                     @endif
                 </select>
             </div>

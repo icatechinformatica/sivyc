@@ -596,6 +596,57 @@ $(function(){
         });
     });
 
+    $('#estado').on("change", () => {
+
+        /*$("#estado option:selected").each( () => {
+            var IdEst = $('#estado').val();
+            var datos = { idEst: IdEst};
+            var url = '/alumnos/sid/cursos';
+            console.log(datos);
+
+            var request = $.ajax
+            ({
+                url: url,
+                method: 'POST',
+                data: datos,
+                dataType: 'json'
+            });
+
+            /*
+                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+
+
+            request.done(( respuesta ) =>
+            {
+                console.log(respuesta);
+                if (respuesta.length < 1) {
+                    $("#cursos_sid").empty();
+                    $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                } else {
+                    if(!respuesta.hasOwnProperty('error')){
+                        $("#cursos_sid").empty();
+                        $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        $.each(respuesta, (k, v) => {
+                            $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                        });
+                        $("#cursos_sid").focus();
+                    }else{
+
+                        //Puedes mostrar un mensaje de error en algún div del DOM
+                    }
+                }
+            });
+
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                alert( "Hubo un error: " + textStatus );
+            });
+        });*/
+    });
+
     /**
      * cambios select dependientes
      */
