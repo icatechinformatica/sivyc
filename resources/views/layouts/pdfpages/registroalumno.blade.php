@@ -352,13 +352,13 @@
                     <td style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>EMPRESA DONDE TRABAJA: &nbsp;&nbsp;</b>
-                            <se>GURDERÍA</se>
+                            <se>{{ $alumnos[0]->empresa_trabaja }}</se>
                         </small>
                     </td>
                     <td style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>PUESTO: &nbsp;&nbsp;</b>
-                            <se>MAESTRA</se>
+                            <se>{{ $alumnos[0]->puesto_empresa }}</se>
                         </small>
                     </td>
                 </tr>
@@ -366,13 +366,13 @@
                     <td style='border-right:none; border-top:none;'>
                         <small>
                             <b>ANTIGUEDAD: &nbsp;&nbsp;</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->antiguedad }}</se>
                         </small>
                     </td>
                     <td style='border-right:none; border-left:none; border-top:none;'>
                         <small>
                             <b>DIRECCIÓN: &nbsp;&nbsp;</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->direccion_empresa }}</se>
                         </small>
                     </td>
                 </tr>
@@ -394,7 +394,7 @@
                     <td colspan="2" style='border-right:none; border-top:none;  border-bottom:none;'>
                         <small>
                             <b>MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA: &nbsp;&nbsp;</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->medio_entero }}</se>
                         </small>
                     </td>
                 </tr>
@@ -402,7 +402,7 @@
                     <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN: &nbsp;&nbsp;</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->sistema_capacitacion_especificar }}</se>
                         </small>
                     </td>
                 </tr>
@@ -419,7 +419,7 @@
                     <td scope="row" class="tres" style='border-right:none;border-top:none; border-bottom:none;'>
                         <small>
                             <div class="centrados">
-                                <b> OZUNA CANTORAL VICENTA DEL CARMEN </b>
+                                <b> {{ $alumnos[0]->apellidoPaterno }} {{ $alumnos[0]->apellidoMaterno }} {{ $alumnos[0]->nombrealumno }}</b>
                                 <div class="linea"></div>
                             </div>
                         </small>
@@ -427,7 +427,7 @@
                     <td scope="row" class="tres" style='border-left:none;border-top:none; border-bottom:none;'>
                        <small>
                             <div class="centrados">
-                                <b> AMAYRANI ORTEGA ESPINOZA </b>
+                                <b> {{ $alumnos[0]->realizo }} </b>
                                 <div class="linea"></div>
                             </div>
                        </small>
@@ -496,7 +496,7 @@
                     <td class="cuatro" style='border-right:none;border-top:none; border-bottom:none;'>
                         <small>
                             <b>CURSO:</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->nombre_curso }}</se>
                         </small>
                     </td>
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
@@ -508,13 +508,13 @@
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <b>GRUPO:</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->grupo }}</se>
                         </small>
                     </td>
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <b>COSTO:$</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->costo }}</se>
                         </small>
                     </td>
                 </tr>
