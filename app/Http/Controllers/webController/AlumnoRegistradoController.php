@@ -13,6 +13,8 @@ use App\Models\Municipio;
 use App\Models\Estado;
 use App\Models\especialidad;
 use App\Models\curso;
+// reference the Dompdf namespace
+use PDF;
 
 class AlumnoRegistradoController extends Controller
 {
@@ -151,5 +153,32 @@ class AlumnoRegistradoController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    protected function getDocumentoSid($nocontrol)
+    {
+        $noControl = base64_decode($nocontrol);
+        $alumnos_registrados = new Alumno();
+        $alumnos = $alumnos_registrados->SELECT('alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellidoPaterno', 'alumnos_pre.apellidoMaterno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
+        'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo', 'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio',
+        'alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
+        'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
+        'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad',
+        'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad AS unidades', 'alumnos_registro.cerrs',
+        'alumnos_registro.etnia', 'alumnos_registro.fecha')
+                            ->WHERE('alumnos_registro.no_control', '=', $noControl)
+                            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
+                            ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
+                            ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                            ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
+                            ->GET();
+        $edad = Carbon::parse($alumnos[0]->fecha_nacimiento)->age;
+
+        $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad'));
+        // (Optional) Setup the paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('documento_sid_'.$noControl.'.pdf');
+
+        //return view('layouts.pdfpages.registroalumno', compact('alumnos'));
     }
 }

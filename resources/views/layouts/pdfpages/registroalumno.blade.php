@@ -1,16 +1,15 @@
 <html>
     <!--pdf registro para alumnos-->
 <head>
-  <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
+
   <style>
     body{
       font-family: sans-serif;
       font-size: 1.3em;
+      margin: 10px;
     }
     @page {
         margin: 20px 20px;
@@ -104,7 +103,7 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                &nbsp;&nbsp;
+                                16/06/2020
                                 <div class="linea"></div>
                                 <br>FECHA
                             </div>
@@ -113,7 +112,7 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                {{ $alumnos[0]->no_control }}
                                 <div class="linea"></div>
                                 N°. DE CONTROL
                             </div>
@@ -122,7 +121,7 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                &nbsp;&nbsp;
+                                1005
                                 <div class="linea"></div>
                                 NÚMERO DE SOLICITUD
                             </div>
@@ -159,13 +158,13 @@
               <tr>
                 <td scope="row" class="tres" style='border-right:none;border-top:none'>
                     <small>
-                        <b> UNIDAD DE CAPACITACIÓN: </b>
+                        <b> UNIDAD DE CAPACITACIÓN: &nbsp;&nbsp; {{ $alumnos[0]->unidad }}</b>
                     </small>
 
                 </td>
                 <td scope="row" class="tres" style='border-left:none;border-top:none'>
                    <small>
-                       <b> CLAVE CCT: </b>
+                       <b> CLAVE CCT:  {{$alumnos[0]->unidades }}</b>
                    </small>
                 </td>
               </tr>
@@ -191,20 +190,20 @@
                 <tr>
                     <td scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
                         <small>
-                            <b> PRIMER APELLIDO: &nbsp;&nbsp;</b>
-                            <se>OZUNA</se>
+                            <b> PRIMER APELLIDO: &nbsp;&nbsp; </b>
+                            <se>{{ $alumnos[0]->apellidoPaterno }}</se>
                         </small>
                     </td>
                     <td scope="row" style='border-right:none;border-left:none; border-bottom:none;'>
                         <small>
                             <b> SEGUNDO APELLIDO: &nbsp;&nbsp;</b>
-                            <se>CANTORAL</se>
+                            <se>{{ $alumnos[0]->apellidoMaterno }}</se>
                         </small>
                     </td>
                     <td scope="row" colspan="2" style='border-left:none; border-bottom:none;'>
                         <small>
                             <b> NOMBRE(S): &nbsp;&nbsp;</b>
-                            <se>VICENTA DEL CARMEN</se>
+                            <se>{{ $alumnos[0]->nombrealumno }}</se>
                         </small>
                     </td>
                 </tr>
@@ -212,25 +211,25 @@
                     <td style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>SEXO: &nbsp;&nbsp;</b>
-                            <se>MUJER</se>
+                            <se>{{ $alumnos[0]->sexo }}</se>
                         </small>
                     </td>
                     <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>CURP: &nbsp;&nbsp;</b>
-                            <se>OUCV640323MCSZNC03</se>
+                            <se>{{ $alumnos[0]->curp_alumno }}</se>
                         </small>
                     </td>
                     <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>EDAD: &nbsp;&nbsp;</b>
-                            <se>31 AÑOS</se>
+                            <se>{{ $edad }} AÑOS </se>
                         </small>
                     </td>
                     <td style='border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>TELEFONO: &nbsp;&nbsp;</b>
-                            <se>9612766372</se>
+                            <se>{{ $alumnos[0]->telefono }}</se>
                         </small>
                     </td>
                 </tr>
@@ -239,14 +238,14 @@
                         <small>
                             <b>DOMICILIO: &nbsp;&nbsp;</b>
                             <se>
-                                ANDADOR 25 MANZANA 15 CASA N° 2 INFONAVITT GRIJALVA 2 SECCIÓN
+                                {{ $alumnos[0]->domicilio }}
                             </se>
                         </small>
                     </td>
                     <td colspan="2" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>COLONIA O LOCALIDAD: &nbsp;&nbsp;</b>
-                            <se>INFONAVIT GRIJALVA</se>
+                            <se>{{ $alumnos[0]->colonia }}</se>
                         </small>
                     </td>
                 </tr>
@@ -254,19 +253,19 @@
                     <td style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>C.P.: &nbsp;&nbsp;</b>
-                            <se>29000</se>
+                            <se>{{ $alumnos[0]->cp }}</se>
                         </small>
                     </td>
                     <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>MUNICIPIO: &nbsp;&nbsp;</b>
-                            <se>CHIAPA DE CORZO</se>
+                            <se>{{ $alumnos[0]->municipio }}</se>
                         </small>
                     </td>
                     <td colspan="2" style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>ESTADO: &nbsp;&nbsp;</b>
-                            <se>CHIAPAS</se>
+                            <se>{{ $alumnos[0]->estado }}</se>
                         </small>
                     </td>
                 </tr>
@@ -274,7 +273,7 @@
                     <td colspan="4" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>ESTADO CIVIL: &nbsp;&nbsp;</b>
-                            <se>SOLTERO</se>
+                            <se>{{ $alumnos[0]->estado_civil }}</se>
                         </small>
                     </td>
                 </tr>
@@ -282,7 +281,7 @@
                     <td colspan="4" style='border-right:none; border-top:none;'>
                         <small>
                             <b>DISCAPACIDAD QUE PRESENTA: &nbsp;&nbsp;</b>
-                            <se>NINGUNA</se>
+                            <se>{{ $alumnos[0]->discapacidad }}</se>
                         </small>
                     </td>
                 </tr>
@@ -307,7 +306,7 @@
                     <td colspan="2" scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
                         <small>
                             <b> ESPECIALIDAD A LA QUE DESEAN INSCRIBIRSE: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-                            <se>ALIMENTOS Y BEBIDAS</se>
+                            <se>{{ $alumnos[0]->especialidad }}</se>
                          </small>
                     </td>
                 </tr>
@@ -315,7 +314,7 @@
                     <td colspan="2" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>CURSO: &nbsp;&nbsp;</b>
-                            <se>MANPULACIÓN HIGIENICA</se>
+                            <se>{{ $alumnos[0]->nombre_curso }}</se>
                         </small>
                     </td>
                 </tr>
@@ -323,13 +322,13 @@
                     <td scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>HORARIO: &nbsp;&nbsp;</b>
-                            <se>8 PM A 9 PM</se>
+                            <se>{{ $alumnos[0]->horario }}</se>
                         </small>
                     </td>
                     <td scope="row" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>GRUPO: &nbsp;&nbsp;</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->grupo }}</se>
                         </small>
                     </td>
                 </tr>

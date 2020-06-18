@@ -49,7 +49,6 @@ class AfoliosController extends Controller
             $afolio->total = $request->total;
             $afolio->mod = $request->mod;
             $afolio->facta = $request->facta;
-            $afolio->idfolios = $request->idfolios;
             $afolio->realizo = $request->realizo;
 
             $afolio->save();
