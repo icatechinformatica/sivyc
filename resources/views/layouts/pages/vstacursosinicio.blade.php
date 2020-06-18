@@ -51,7 +51,9 @@
                     <th scope="col">Modalidad</th>
                     <th scope="col">Clasificación</th>
                     <th scope="col">Costo</th>
-                    <th scope="col">Acciones</th>
+                    @can('cursos.show')
+                        <th scope="col">Acciones</th>
+                    @endcan
                     <th scope="col">Registros</th>
                 </tr>
             </thead>
@@ -64,13 +66,15 @@
                         <td>{{$itemData->modalidad}}</td>
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
+
+                        @can('cursos.show')
                         <td>
-                            @can('cursos.show')
-                                <a href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
-                                    <i class="fa fa-wrench" aria-hidden="true"></i>
-                                </a>
-                            @endcan
+                            <a href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
+                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                            </a>
                         </td>
+                        @endcan
+
                         <td>
                             <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                 data-toggle="modal" data-placement="top"
