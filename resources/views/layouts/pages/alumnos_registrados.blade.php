@@ -51,6 +51,7 @@
                                     </a>
                                 </td>
                             @endcan
+
                         </tr>
                     @endforeach
                 </tbody>
