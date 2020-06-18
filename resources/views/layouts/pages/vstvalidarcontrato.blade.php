@@ -15,30 +15,104 @@
             <label for="titulocontrato"><h1>Validar Contrato</h1></label>
         </div>
         <hr style="border-color:dimgray">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-            <label for="numero_contrato" class="control-label">Número de Contrato</label>
-            <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato" value="{{$data->numero_contrato}}" disabled>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-5">
-                <label for="inputnombre_curso" class="control-label">Nombre del Curso</label>
-                <input type="text" disabled class="form-control" value="{{$data->nombre}}" id="nombre_curso" name="nombre_curso">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="clavecurso" class="control-label">Clave del Curso</label>
-                <input type="text" disabled value={{$data->clave}} class="form-control" id="clavecurso" name="clavecurso">
-            </div>
-        </div>
+        <h2>Datos de Validación de Instructor</h2>
         <div class="form-row">
             <div class="form-group col-md-5">
                 <label for="inputnombre_instructor" class="control-label">Nombre del Instructor</label>
                 <input type="text" disabled class="form-control" value="{{$data->insnom}} {{$data->apellidoPaterno}} {{$data->apellidoMaterno}}" id="nombre_instructor" name="nombre_instructor">
             </div>
-            <div class="form-group col-md-4">
-                <label for="clavecurso" class="control-label">Area de Conocimiento del Instructor</label>
+            <div class="form-group col-md-5">
+                <label for="clavecurso" class="control-label">Especialidad</label>
                 <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->especialidad}}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="clavecurso" class="control-label">Memorándum de Validación</label>
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->memorandum_validacion}}">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="clavecurso" class="control-label">Tipo Honorario</label>
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->tipo_honorario}}">
+            </div>
+        </div>
+        @if ($data->arch_factura != NULL)
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <a class="btn btn-danger form-control" href={{$data->arch_factura}} download>Factura/Anexo PDF</a><br>
+                </div>
+            </div>
+        @endif
+        <hr style="border-color:dimgray">
+        <h2>Datos del Curso</h2>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputnombre_curso" class="control-label">Nombre del Curso</label>
+                <input type="text" disabled class="form-control" value="{{$data->curso}}" id="nombre_curso" name="nombre_curso">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="clavecurso" class="control-label">Clave del Curso</label>
+                <input type="text" disabled value={{$data->clave}} class="form-control" id="clavecurso" name="clavecurso">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="modcurso" class="control-label">Modalidad</label>
+                <input type="text" disabled value={{$data->mod}} class="form-control" id="modcurso" name="modcurso">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="inputnombre_curso" class="control-label">Duración</label>
+                <input type="text" disabled class="form-control" value="{{$data->dura}} HORAS" id="nombre_curso" name="nombre_curso">
+            </div>
+            <div class="form-group col-md-1">
+                <label for="modcurso" class="control-label">Cupo</label>
+                <input type="text" disabled value="{{$cupo}}" class="form-control" id="cupo" name="cupo">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="modcurso" class="control-label">Cuota de Recuparación por Alumno</label>
+                <input type="text" disabled value="$ {{$data->costo}}" class="form-control" id="costoinscr" name="costoinscr">
+            </div>
+            <div class="form-group col-md-5">
+                <label for="clavecurso" class="control-label">Especialidad</label>
+                <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->especialidad}}">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="inputfinicio" class="control-label">Fecha de Inicio</label>
+                <input type="text" disabled value="{{$data->inicio}}" class="form-control" id="finicio" name="finicio">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputftermino" class="control-label">Fecha de Término</label>
+                <input type="text" disabled value="{{$data->termino}}" class="form-control" id="ftermino" name="ftermino">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="inputefisico" class="control-label">Lugar de Impartición</label>
+                <input type="text" disabled value="{{$data->efisico}}" class="form-control" id="efisico" name="efisico">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputfinicio" class="control-label">Días</label>
+                <input type="text" disabled value="{{$data->dia}} y {{$data->dia2}} " class="form-control" id="finicio" name="finicio">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputftermino" class="control-label">Horario</label>
+                <input type="text" disabled value="{{$data->hini}} a {{$data->hfin}} HRS. {{$data->hini2}} a {{$data->hfin2}} HRS. " class="form-control" id="ftermino" name="ftermino">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputfinicio" class="control-label">Perfil del Grupo</label>
+                <input type="text" disabled value="{{$data->perfil}}" class="form-control" id="perfil" name="perfil">
+            </div>
+        </div>
+        <hr style="border-color:dimgray">
+        <h2>Datos del Contrato</h2>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+            <label for="numero_contrato" class="control-label">Número de Contrato</label>
+            <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato" value="{{$data->numero_contrato}}" disabled>
             </div>
         </div>
         <div class="form-row">

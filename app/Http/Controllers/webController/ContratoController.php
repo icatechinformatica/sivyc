@@ -69,6 +69,9 @@ class ContratoController extends Controller
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
+        $file = $request->file('factura'); # obtenemos el archivo
+        $urldocs = $this->pago_upload($file, $request->id_contrato);
+        $contrato->arch_factura = $urldocs;
         $contrato->save();
 
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
@@ -123,6 +126,14 @@ class ContratoController extends Controller
         $contrato->municipio = $request->lugar_expedicion;
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
+
+        if($request->factura != NULL)
+        {
+            $file = $request->file('factura'); # obtenemos el archivo
+            $urldocs = $this->pago_upload($file, $request->id_contrato);
+            $contrato->arch_factura = $urldocs;
+        }
+
         $contrato->save();
 
         $folio = folio::find($request->id_folio);
@@ -144,15 +155,24 @@ class ContratoController extends Controller
 
     public function validar_contrato($id){
         $data = contratos::SELECT('contratos.id_contrato','contratos.numero_contrato','contratos.cantidad_letras1','contratos.fecha_firma',
-                                 'contratos.municipio','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
-                                 'contratos.cantidad_numero','folios.iva','folios.id_cursos','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                                 'instructores.apellidoMaterno','instructores.id','especialidades.nombre AS especialidad')
+                                 'contratos.municipio','contratos.arch_factura','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
+                                 'contratos.cantidad_numero','folios.iva','folios.id_cursos','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod',
+                                 'instructores.nombre AS insnom','instructores.apellidoPaterno','instructores.tipo_honorario','tbl_cursos.dura',
+                                 'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia','tbl_cursos.dia2',
+                                 'tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.hini2','tbl_cursos.hfin2',
+                                 'instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id','especialidad_instructores.memorandum_validacion','especialidades.nombre AS especialidad',
+                                 'tbl_inscripcion.costo','cursos.perfil')
                             ->WHERE('id_contrato', '=', $id)
                             ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                             ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                             ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
-                            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'contratos.instructor_perfilid')
+                            ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
+                            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                            ->LEFTJOIN('tbl_inscripcion', 'tbl_inscripcion.id_curso', '=', 'tbl_cursos.id')
+                            ->LEFTJOIN('cursos','cursos.id', '=', 'tbl_cursos.id_curso')
                             ->FIRST();
+
+        $cupo = $data->hombre + $data->mujer;
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
@@ -160,7 +180,7 @@ class ContratoController extends Controller
         $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
-        return view('layouts.pages.vstvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3'));
+        return view('layouts.pages.vstvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3','cupo'));
     }
 
     public function rechazar_contrato(Request $request){
@@ -204,7 +224,6 @@ class ContratoController extends Controller
                   'solpa_ccp1' => $request->id_ccp1,
                   'solpa_ccp2' => $request->id_ccp2,
                   'solpa_ccp3' => $request->id_ccp3]);
-
 
         $file = $request->file('doc_pdf'); # obtenemos el archivo
         $urldocs = $this->pago_upload($file, $request->id_contrato); #invocamos el método
