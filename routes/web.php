@@ -88,7 +88,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
     // alumnos
     Route::get('/alumnos/preinscripcion/paso2/{id}', 'webController\AlumnoController@steptwo')->name('alumnos.preinscripcion.paso2')
-    ->middleware('can:alumnos.inscripcion-paso2');
+    ->middleware('can:alumno.inscripcion-documento');
     Route::get('alumnos/sid-paso2/{id}', 'webController\AlumnoController@show')
         ->name('alumnos.presincripcion-paso2')->middleware('can:alumnos.inscripcion-paso3');
     Route::post('alumnos/sid/update', 'webController\AlumnoController@update')->name('alumnos.update-sid');
