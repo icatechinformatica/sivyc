@@ -183,7 +183,7 @@
                 <select class="form-control" id="tipo_curso" name="tipo_curso">
                     <option value="">--SELECCIONAR--</option>
                     <option value="PRESENCIAL">PRESENCIAL</option>
-                    <option value="ONLINE">ONLINE</option>
+                    <option value="ONLINE">A DISTANCIA</option>
                 </select>
             </div>
         </div>
