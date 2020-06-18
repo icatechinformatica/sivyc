@@ -47,7 +47,7 @@
                                 </a>
                             </td>
                             <td>
-                                @can('alumnos.inscripcion-paso2')
+                                @can('alumnos.inscripcion-paso3')
                                     <a href="{{route('alumnos.presincripcion-paso2', ['id' => base64_encode($itemData->id)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="INSCRIBIR">
                                         <i class="fa fa-gears" aria-hidden="true"></i>
                                     </a>

@@ -57,7 +57,7 @@
                         @can('alumnos.index')
                             <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
                         @endcan
-                        @can('alumnos.index')
+                        @can('alumnos.inscritos.index')
                             <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>

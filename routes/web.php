@@ -90,18 +90,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alumnos/preinscripcion/paso2/{id}', 'webController\AlumnoController@steptwo')->name('alumnos.preinscripcion.paso2')
     ->middleware('can:alumnos.inscripcion-paso2');
     Route::get('alumnos/sid-paso2/{id}', 'webController\AlumnoController@show')
-        ->name('alumnos.presincripcion-paso2')->middleware('can:alumnos.inscripcion-paso2');
+        ->name('alumnos.presincripcion-paso2')->middleware('can:alumnos.inscripcion-paso3');
     Route::post('alumnos/sid/update', 'webController\AlumnoController@update')->name('alumnos.update-sid');
     Route::post('alumnos/sid/update_pregistro', 'webController\AlumnoController@update_pregistro')->name('alumnos.update.documentos.registro');
     // modificacion alumnos
-    Route::get('alumnos/modificar/sid-paso2/{id}', 'webController\AlumnoRegistradoController@edit')->name('alumnos.update.registro');
+    Route::get('alumnos/modificar/sid-paso2/{id}', 'webController\AlumnoRegistradoController@edit')->name('alumnos.update.registro')
+    ->middleware('can:alumno.inscrito.edit');
     // modificar la preinscripcion
     Route::get('alumnos/modificar/sid/{id}', 'webController\AlumnoController@showUpdate')->name('alumnos.presincripcion-modificar');
     Route::put('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
     Route::get('alumnos/sid/documento/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoSid')->name('documento.sid');
     // nueva ruta
-    Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail');
-    Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos');
+    Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail')
+    ->middleware('can:alumno.inscrito.show');
+    Route::get('alumnos/registrados', 'webController\AlumnoRegistradoController@index')->name('alumnos.inscritos')
+    ->middleware('can:alumnos.inscritos.index');
     // supre
     Route::post("/supre/save","webController\supreController@store")->name('store-supre');
     // documentos pdf Desarrollado por Adrian

@@ -216,9 +216,11 @@
                         <div class="pull-left">
                             <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                         </div>
-                        <div class="pull-right">
-                            <button type="submit" class="btn btn-primary" >Modificar</button>
-                        </div>
+                        @can('alumno.inscrito.update')
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-primary" >Modificar</button>
+                            </div>
+                        @endcan
                     </div>
                 </div>
                 <input type="hidden" name="alumno_id" id="alumno_id" value="{{$alumnos[0]->id}}">
