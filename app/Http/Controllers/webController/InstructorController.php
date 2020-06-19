@@ -52,82 +52,93 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
-        $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
-        $saveInstructor = new instructor();
-        $id = $uid->id + 1;
-        # Proceso de Guardado
-        #----- Personal -----
-        $saveInstructor->id = $id;
-        $saveInstructor->nombre = trim($request->nombre);
-        $saveInstructor->apellidoPaterno = trim($request->apellido_paterno);
-        $saveInstructor->apellidoMaterno = trim($request->apellido_materno);
-        $saveInstructor->banco = $request->banco;
-        $saveInstructor->interbancaria = $request->clabe;
-        $saveInstructor->no_cuenta = $request->numero_cuenta;
-        $saveInstructor->domicilio = $request->domicilio;
-        $saveInstructor->numero_control = "Pendiente";
-        $saveInstructor->status = "En Proceso";
+        $verify = instructor::WHERE('numero_control','=', $request->curp)->FIRST();
 
-        if ($request->file('arch_ine') != null)
+        if($verify->isEmpty())
         {
-            $ine = $request->file('arch_ine'); # obtenemos el archivo
-            $urline = $this->pdf_upload($ine, $id, 'ine'); # invocamos el método
-            $saveInstructor->archivo_ine = $urline; # guardamos el path
-        }
+            $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+            $saveInstructor = new instructor();
+            $id = $uid->id + 1;
+            # Proceso de Guardado
+            #----- Personal -----
+            $saveInstructor->id = $id;
+            $saveInstructor->nombre = trim($request->nombre);
+            $saveInstructor->apellidoPaterno = trim($request->apellido_paterno);
+            $saveInstructor->apellidoMaterno = trim($request->apellido_materno);
+            $saveInstructor->curp = trim($request->curp);
+            $saveInstructor->banco = $request->banco;
+            $saveInstructor->interbancaria = $request->clabe;
+            $saveInstructor->no_cuenta = $request->numero_cuenta;
+            $saveInstructor->domicilio = $request->domicilio;
+            $saveInstructor->numero_control = "Pendiente";
+            $saveInstructor->status = "En Proceso";
 
-        if ($request->file('arch_domicilio') != null)
+            if ($request->file('arch_ine') != null)
+            {
+                $ine = $request->file('arch_ine'); # obtenemos el archivo
+                $urline = $this->pdf_upload($ine, $id, 'ine'); # invocamos el método
+                $saveInstructor->archivo_ine = $urline; # guardamos el path
+            }
+
+            if ($request->file('arch_domicilio') != null)
+            {
+                $dom = $request->file('arch_domicilio'); # obtenemos el archivo
+                $urldom = $this->pdf_upload($dom, $id, 'dom'); # invocamos el método
+                $saveInstructor->archivo_domicilio = $urldom; # guardamos el path
+            }
+
+            if ($request->file('arch_curp') != null)
+            {
+                $curp = $request->file('arch_curp'); # obtenemos el archivo
+                $urlcurp = $this->pdf_upload($curp, $id, 'curp'); # invocamos el método
+                $saveInstructor->archivo_curp = $urlcurp; # guardamos el path
+            }
+
+            if ($request->file('arch_alta') != null)
+            {
+                $alta = $request->file('arch_alta'); # obtenemos el archivo
+                $urlalta = $this->pdf_upload($alta, $id, 'alta'); # invocamos el método
+                $saveInstructor->archivo_alta = $urlalta; # guardamos el path
+            }
+
+            if ($request->file('arch_banco') != null)
+            {
+                $banco = $request->file('arch_banco'); # obtenemos el archivo
+                $urlbanco = $this->pdf_upload($banco, $id, 'banco'); # invocamos el método
+                $saveInstructor->archivo_bancario = $urlbanco; # guardamos el path
+            }
+
+            if ($request->file('arch_foto') != null)
+            {
+                $foto = $request->file('arch_foto'); # obtenemos el archivo
+                $urlfoto = $this->pdf_upload($foto, $id, 'foto'); # invocamos el método
+                $saveInstructor->archivo_fotografia = $urlfoto; # guardamos el path
+            }
+
+            if ($request->file('arch_estudio') != null)
+            {
+                $estudio = $request->file('arch_estudio'); # obtenemos el archivo
+                $urlestudio = $this->pdf_upload($estudio, $id, 'estudios'); # invocamos el método
+                $saveInstructor->archivo_estudios = $urlestudio; # guardamos el path
+            }
+
+            if ($request->file('arch_id') != null)
+            {
+                $otraid = $request->file('arch_id'); # obtenemos el archivo
+                $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
+                $saveInstructor->archivo_otraid = $urlotraid; # guardamos el path
+            }
+
+            $saveInstructor->save();
+
+            return redirect()->route('instructor-inicio')
+                        ->with('success','Perfil profesional agregado');
+        }
+        else
         {
-            $dom = $request->file('arch_domicilio'); # obtenemos el archivo
-            $urldom = $this->pdf_upload($dom, $id, 'dom'); # invocamos el método
-            $saveInstructor->archivo_domicilio = $urldom; # guardamos el path
+            $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos.";
+            return redirect('/instructor/crear')->withErrors($mensaje);
         }
-
-        if ($request->file('arch_curp') != null)
-        {
-            $curp = $request->file('arch_curp'); # obtenemos el archivo
-            $urlcurp = $this->pdf_upload($curp, $id, 'curp'); # invocamos el método
-            $saveInstructor->archivo_curp = $urlcurp; # guardamos el path
-        }
-
-        if ($request->file('arch_alta') != null)
-        {
-            $alta = $request->file('arch_alta'); # obtenemos el archivo
-            $urlalta = $this->pdf_upload($alta, $id, 'alta'); # invocamos el método
-            $saveInstructor->archivo_alta = $urlalta; # guardamos el path
-        }
-
-        if ($request->file('arch_banco') != null)
-        {
-            $banco = $request->file('arch_banco'); # obtenemos el archivo
-            $urlbanco = $this->pdf_upload($banco, $id, 'banco'); # invocamos el método
-            $saveInstructor->archivo_bancario = $urlbanco; # guardamos el path
-        }
-
-        if ($request->file('arch_foto') != null)
-        {
-            $foto = $request->file('arch_foto'); # obtenemos el archivo
-            $urlfoto = $this->pdf_upload($foto, $id, 'foto'); # invocamos el método
-            $saveInstructor->archivo_fotografia = $urlfoto; # guardamos el path
-        }
-
-        if ($request->file('arch_estudio') != null)
-        {
-            $estudio = $request->file('arch_estudio'); # obtenemos el archivo
-            $urlestudio = $this->pdf_upload($estudio, $id, 'estudios'); # invocamos el método
-            $saveInstructor->archivo_estudios = $urlestudio; # guardamos el path
-        }
-
-        if ($request->file('arch_id') != null)
-        {
-            $otraid = $request->file('arch_id'); # obtenemos el archivo
-            $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
-            $saveInstructor->archivo_otraid = $urlotraid; # guardamos el path
-        }
-
-        $saveInstructor->save();
-
-        return redirect()->route('instructor-inicio')
-                    ->with('success','Perfil profesional agregado');
     }
 
     public function validar($id)
@@ -153,7 +164,6 @@ class InstructorController extends Controller
     {
         $instructor = instructor::find($request->id);
 
-        $instructor->curp = trim($request->curp);
         $instructor->rfc = trim($request->rfc);
         $instructor->folio_ine = trim($request->folio_ine);
         $instructor->sexo = trim($request->sexo);
@@ -175,9 +185,8 @@ class InstructorController extends Controller
         $rfcpart = substr($request->rfc, 0, 10);
         $numero_control = $uni.$year.$rfcpart;
         $instructor->numero_control = trim($numero_control);
-        $instructor->save();
-
-        return redirect()->route('instructor-inicio')
+            $instructor->save();
+            return redirect()->route('instructor-inicio')
             ->with('success','Instructor Validado');
     }
 

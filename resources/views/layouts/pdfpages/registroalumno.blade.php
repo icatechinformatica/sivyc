@@ -76,6 +76,8 @@
 
       img.derecha {
         float: right;
+        width: 100px;
+        height: 100px;
       }
   </style>
 </head>
@@ -83,7 +85,7 @@
     <div class="container g-pt-90">
         <p>
             <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
-            <img class="derecha" src="{{ public_path('img/sep1.png') }}">
+            <!--aqui va img-->
             <small>
                 <div class="centrados">
                 <b>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR
@@ -103,7 +105,7 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                16/06/2020
+                                {{$date}}
                                 <div class="linea"></div>
                                 <br>FECHA
                             </div>
@@ -130,6 +132,7 @@
                 </tr>
             </tbody>
         </table>
+        <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
         <table class="table td">
             <colgroup>
 				<col style="width: 30%"/>
@@ -451,6 +454,7 @@
                 </tr>
             </tbody>
         </table>
+        <br><br><br><br><br><br><br><br><br>
         <table class="table dashed" cellspacing="0" cellpadding="0">
             <colgroup>
 				<col style="width: 25%"/>
