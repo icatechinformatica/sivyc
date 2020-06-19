@@ -176,6 +176,26 @@ class ConveniosController extends Controller
 
             // validamos si hay archivos
             if ($request->hasFile('archivo_convenio')) {
+                $convenios = new Convenio();
+                $getConvenio = $convenios->WHERE('id', '=', $id)->GET();
+
+                if (!is_null($getConvenio[0]->archivo_convenio)) {
+                    # si no está nulo
+                    $docConvenio = explode("/",$getConvenio[0]->archivo_convenio, 5);
+                    // validación de documento en el servidor
+                    if (Storage::exists($docConvenio[4])) {
+                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                        Storage::delete($docConvenio[4]);
+                    }
+                }
+
+                $archivo_convenio = $request->file('archivo_convenio'); # obtenemos el archivo
+                $url_archivo_convenio = $this->uploaded_file($archivo_convenio, $idConvenio, 'arcivo_convenio'); #invocamos el método
+                // guardamos en la base de datos
+                $convenioUpdate = Convenio::findOrfail($id);
+                $convenioUpdate->update([
+                    'archivo_convenio' => $url_archivo_convenio
+                ]);
             }
         }
     }
