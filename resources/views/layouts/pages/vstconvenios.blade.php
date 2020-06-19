@@ -50,8 +50,11 @@
                     <th scope="col">FECHA DE FIRMA</th>
                     <th scope="col">FECHA DE VIGENCIA</th>
                     <th scope="col">ESTADO</th>
+                    @can('convenios.show')
+                        <th scope="col">VER</th>
+                    @endcan
                     @can('convenios.edit')
-                    <th width="160px">MODIFICAR</th>
+                        <th width="160px">MODIFICAR</th>
                     @endcan
                 </tr>
             </thead>
@@ -62,11 +65,26 @@
                         <td>{{$itemData->institucion}}</td>
                         <td>{{$itemData->fecha_firma}}</td>
                         <td>{{$itemData->fecha_vigencia}}</td>
-                        <td>{{$itemData->status}}</td>
+                        <td>
+                           @if (isset($itemData->status))
+                            {{ ($itemData->status == true) ? "ACTIVO" : "TERMINADO"}}
+                           @endif
+                        </td>
+
+                        @can('convenios.show')
+                            <td>
+                                <a href="{{ route('convenios.show', ['id' => base64_encode($itemData->id)])}}"
+                                    class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="DETALLES">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        @endcan
+
                         @can('convenios.edit')
                         <td>
-                            <a class="btn btn-warning" href="{{route('convenios.edit', ['id' => $itemData->id])}}">
-                                Mostrar
+                            <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="EDITAR CONVENIO"
+                                href="{{route('convenios.edit', ['id' => base64_encode($itemData->id) ])}}">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </a>
                         </td>
                         @endcan

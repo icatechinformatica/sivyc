@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Models\Municipio;
+use Carbon\Carbon;
 
 class ConveniosController extends Controller
 {
@@ -128,6 +129,17 @@ class ConveniosController extends Controller
     public function show($id)
     {
         //
+        $id_convenio = base64_decode($id);
+        $convenios = Convenio::WHERE('id', '=', $id_convenio)->GET();
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $fecha = Carbon::parse($convenios[0]->fecha_firma);
+        $mes = $meses[($fecha->format('n')) - 1];
+        $fecha_firma = $fecha->format('d') . ' de ' . $mes . ' de ' . $fecha->format('Y');
+        $fecha_vigencia = Carbon::parse($convenios[0]->fecha_vigencia);
+        $mes_vigencia = $meses[($fecha_vigencia->format('n')) - 1];
+        $fecha_vig = $fecha_vigencia->format('d') . ' de ' . $mes_vigencia . ' de ' . $fecha_vigencia->format('Y');
+
+        return view('layouts.pages.vstshowconvenio',['convenios'=> $convenios, 'fecha_firma' => $fecha_firma, 'fecha_vigencia' => $fecha_vig]);
     }
 
     /**
@@ -139,7 +151,8 @@ class ConveniosController extends Controller
     public function edit($id)
     {
         //
-        $convenios = Convenio::findOrfail($id);
+        $idConvenio = base64_decode($id);
+        $convenios = Convenio::findOrfail($idConvenio);
         return view('layouts.pages.editconvenio',['convenios'=> $convenios]);
     }
 
@@ -153,9 +166,9 @@ class ConveniosController extends Controller
     public function update(Request $request, $id)
     {
         $idConvenio = base64_decode($id);
+
         //
         if (isset($idConvenio)) {
-            $convenios_update = new Convenio();
             # code...
             $array_update = [
                 'no_convenio' => trim($request->no_convenio),
@@ -172,12 +185,12 @@ class ConveniosController extends Controller
                 'status' => trim($request->status),
             ];
 
-            $convenios_update->findOrfail($idConvenio)->update($array_update);
+            Convenio::findOrfail($idConvenio)->update($array_update);
 
             // validamos si hay archivos
             if ($request->hasFile('archivo_convenio')) {
                 $convenios = new Convenio();
-                $getConvenio = $convenios->WHERE('id', '=', $id)->GET();
+                $getConvenio = $convenios->WHERE('id', '=', $idConvenio)->GET();
 
                 if (!is_null($getConvenio[0]->archivo_convenio)) {
                     # si no está nulo
@@ -192,11 +205,15 @@ class ConveniosController extends Controller
                 $archivo_convenio = $request->file('archivo_convenio'); # obtenemos el archivo
                 $url_archivo_convenio = $this->uploaded_file($archivo_convenio, $idConvenio, 'arcivo_convenio'); #invocamos el método
                 // guardamos en la base de datos
-                $convenioUpdate = Convenio::findOrfail($id);
+                $convenioUpdate = Convenio::findOrfail($idConvenio);
                 $convenioUpdate->update([
                     'archivo_convenio' => $url_archivo_convenio
                 ]);
             }
+
+            $noConvenio = $request->no_convenio;
+            return redirect()->route('curso-inicio')
+                    ->with('success', sprintf('CONVENIO %s  ACTUALIZADO EXTIOSAMENTE!', $noConvenio));
         }
     }
 

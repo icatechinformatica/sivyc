@@ -209,6 +209,8 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:convenios.edit');
     Route::put('/convenios/modificar/{id}', 'webController\ConveniosController@update')->name('convenios.update')
     ->middleware('can:convenios.update');
+    Route::get('/convenios/mostrar/{id}', 'webController\ConveniosController@show')->name('convenios.show')
+    ->middleware('can:convenios.show');
     /**
      * agregando financiero rutas -- DMC
      */
