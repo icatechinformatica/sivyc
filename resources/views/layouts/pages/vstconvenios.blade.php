@@ -33,9 +33,11 @@
                     <h2>Convenios</h2>
                 </div>
                 <br>
-                <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('convenio.create')}}">NUEVO</a>
-                </div>
+                @can('convenios.create')
+                    <div class="pull-right">
+                        <a class="btn btn-success btn-lg" href="{{route('convenio.create')}}">NUEVO</a>
+                    </div>
+                @endcan
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -43,12 +45,14 @@
             <caption>Catalogo de Solcitudes</caption>
             <thead>
                 <tr>
-                    <th scope="col">No. de Convenio</th>
-                    <th scope="col">Institución</th>
-                    <th scope="col">Fecha de Firma</th>
-                    <th scope="col">Fecha de Vigencia</th>
-                    <th scope="col">Estado</th>
-                    <th width="160px">Acción</th>
+                    <th scope="col">NO. DE CONVENIO</th>
+                    <th scope="col">INSTITUCIÓN</th>
+                    <th scope="col">FECHA DE FIRMA</th>
+                    <th scope="col">FECHA DE VIGENCIA</th>
+                    <th scope="col">ESTADO</th>
+                    @can('convenios.edit')
+                    <th width="160px">MODIFICAR</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -59,11 +63,13 @@
                         <td>{{$itemData->fecha_firma}}</td>
                         <td>{{$itemData->fecha_vigencia}}</td>
                         <td>{{$itemData->status}}</td>
+                        @can('convenios.edit')
                         <td>
                             <a class="btn btn-warning" href="{{route('convenios.edit', ['id' => $itemData->id])}}">
                                 Mostrar
                             </a>
                         </td>
+                        @endcan
                     </tr>
                 @endforeach
             </tbody>

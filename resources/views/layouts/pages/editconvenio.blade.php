@@ -13,8 +13,9 @@
             </ul>
         </div><br />
     @endif
-    <form method="POST" action="{{ route('convenios.store') }}" id="conveniosFrm" enctype="multipart/form-data" autocomplete="off">
+    <form method="POST" action="{{ route('convenios.update', ['id' => $convenios->id ]) }}" id="conveniosFrm" enctype="multipart/form-data" autocomplete="off">
         @csrf
+        @method('PUT')
         <div style="text-align: center">
             <label for="tituloagregar_convenio"><h1>EDITAR CONVENIO</h1></label>
          </div>
@@ -83,7 +84,7 @@
             <!--municipio-->
             <div class="form-group col-md-4">
                 <label for="municipio" class="control-label">MUNICIPIO</label>
-                <input type='text' id="poblacion" name="poblacion" class="form-control" value="{{$convenios->municipio}}"/>
+                <input type='text' id="municipio" name="municipio" class="form-control" value="{{$convenios->municipio}}"/>
             </div>
             <!--municipio END-->
             <!--nombre_titular-->
@@ -119,9 +120,11 @@
                 <div class="pull-left">
                     <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                 </div>
-                <div class="pull-right">
-                    <button type="submit" class="btn btn-primary" >Guardar</button>
-                </div>
+                @can('convenios.update')
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary" >Modificar</button>
+                    </div>
+                @endcan
             </div>
         </div>
     </form>

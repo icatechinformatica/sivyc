@@ -200,10 +200,15 @@ Route::middleware(['auth'])->group(function () {
      * agregado en 06 de marzo del 2020
      */
     Route::get('/convenios/indice', 'webController\ConveniosController@index')->name('convenios.index');
-    Route::get('/convenios/crear', 'webController\ConveniosController@create')->name('convenio.create');
-    Route::post('/convenios/guardar', 'webController\ConveniosController@store')->name('convenios.store');
+    Route::get('/convenios/crear', 'webController\ConveniosController@create')->name('convenio.create')
+    ->middleware('can:convenios.create');
+    Route::post('/convenios/guardar', 'webController\ConveniosController@store')->name('convenios.store')
+    ->middleware('can:convenios.store');
     //Route::get('/convenios/show/{id}', 'UserProfileController@show')->name('convenios.show');
-    Route::get('/convenios/edit/{id}', 'webController\ConveniosController@edit')->name('convenios.edit');
+    Route::get('/convenios/edit/{id}', 'webController\ConveniosController@edit')->name('convenios.edit')
+    ->middleware('can:convenios.edit');
+    Route::put('/convenios/modificar/{id}', 'webController\ConveniosController@update')->name('convenios.update')
+    ->middleware('can:convenios.update');
     /**
      * agregando financiero rutas -- DMC
      */
