@@ -11,6 +11,30 @@
             </div>
             <!--DOCUMENTACIÓN ENTREGADA-->
             <hr style="border-color:dimgray">
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile" name="customFile">
+                        <label class="custom-file-label" for="customFile">ACTA DE NACIMIENTO</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="areaCursos" class="control-label">ELEGIR EL TIPO DE ARCHIVO</label>
+                    <select class="form-control" id="areaCursos" name="areaCursos">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="acta_nacimiento">ACTA DE NACIMIENTO</option>
+                        <option value="copia_curp">COPIA DE LA CURP</option>
+                        <option value="comprobante_domicilio">COMPROBANTE DE DOMICILIO</option>
+                        <option value="fotografia">FOTOGRAFÍA</option>
+                        <option value="credencial_electoral">CREDENCIAL DE ELECTOR</option>
+                        <option value="pasaporte_licencia_manejo">PASAPORTE, LICENCIA DE MANEJO</option>
+                        <option value="ultimo_grado_estudios">ÚLTIMO GRADO DE ESTUDIOS</option>
+                        <option value="comprobante_migratorio">COMPROBANTE MIGRATORIO</option>
+                    </select>
+                </div>
+            </div>
 
             <div class="form-row">
                 @if (!empty($alumnoPre[0]->chk_acta_nacimiento))
