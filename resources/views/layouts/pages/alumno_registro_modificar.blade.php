@@ -198,7 +198,7 @@
                         <select class="form-control" id="tipo_curso" name="tipo_curso" required>
                             <option value="">--SELECCIONAR--</option>
                             <option {{ ($alumnos[0]->tipo_curso == "PRESENCIAL") ? "selected" : "" }} value="PRESENCIAL">PRESENCIAL</option>
-                            <option {{ ($alumnos[0]->tipo_curso == "ONLINE") ? "selected" : "" }} value="ONLINE">EN LÍNEA</option>
+                            <option {{ ($alumnos[0]->tipo_curso == "ONLINE") ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
