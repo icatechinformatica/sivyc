@@ -258,6 +258,7 @@ class CursosController extends Controller
                 'cambios_especialidad' => trim($request->cambios_especialidad),
                 'nivel_estudio' => trim($request->nivel_estudio),
                 'categoria' => trim($request->categoria),
+                'tipo_curso' => trim($request->tipo_curso)
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
