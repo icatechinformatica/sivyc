@@ -24,6 +24,7 @@
                 <thead>
                     <tr>
                         <th scope="col">N° CONTROL</th>
+                        <th scope="col">CURSOS</th>
                         <th scope="col">NOMBRE</th>
                         <th width="160px">ACCIONES</th>
                         @can('alumno.inscrito.edit')
@@ -36,6 +37,7 @@
                     @foreach ($alumnos as $itemData)
                         <tr>
                             <td>{{$itemData->no_control}}</td>
+                            <td scope="row">{{ $itemData->nombre_curso }}</td>
                             <td scope="row">{{$itemData->nombrealumno}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
                             @can('alumno.inscrito.show')
                                 <td>
