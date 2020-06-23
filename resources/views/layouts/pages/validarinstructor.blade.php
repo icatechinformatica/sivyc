@@ -76,10 +76,6 @@
             @csrf
             <div id="div1" class="form-row d-none d-print-none">
                 <div class="form-group col-md-4">
-                    <label for="inputcurp">CURP</label>
-                    <input name='curp' id='curp' type="text" class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-4">
                     <label for="inputrfc">RFC</label>
                     <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true">
                 </div>

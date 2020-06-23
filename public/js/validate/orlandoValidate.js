@@ -45,14 +45,17 @@ $(function(){
 
     $('#registerinstructor').validate({
         rules: {
-            nombre:{
-                required: true,
-                minlength: 3
-                },
+                nombre:{
+                    required: true,
+                    minlength: 3
+                    },
                 apellido_paterno:{
                     required: true,
                     minlength: 3
-                },
+                    },
+                curp:{
+                    required:true,
+                }
             },
         messages: {
             nombre: {
@@ -62,6 +65,9 @@ $(function(){
             apellido_paterno: {
                 required: 'Por favor ingrese el apellido paterno'
             },
+            curp:{
+                required: 'Por favor ingrese la CURP'
+            }
         }
     });
 

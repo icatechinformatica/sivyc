@@ -26,6 +26,12 @@
                 </div>
             </div>
             <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputcurp">CURP</label>
+                    <input name='curp' id='curp' type="text" class="form-control" aria-required="true">
+                </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputarch_ine">Archivo INE</label>
                     <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
