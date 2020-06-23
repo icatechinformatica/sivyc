@@ -123,7 +123,7 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                1005
+                                {{$alumnos[0]->no_control}}{{$alumnos[0]->id}}
                                 <div class="linea"></div>
                                 NÚMERO DE SOLICITUD
                             </div>
@@ -339,7 +339,12 @@
                     <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>DOCUMENTACIÓN ENTREGADA: &nbsp;&nbsp;</b>
-                            <se></se>
+                            <se><br>
+                                @if($alumnos[0]->chk_acta_nacimiento == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;@if($alumnos[0]->chk_ine == TRUE)(X) @else() ( ) @endif COPIA DE LA CREDENCIAL DEL ELECTOR (INE) O IDENTIFICACIÓN OFICIAL
+                            <p>@if($alumnos[0]->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE LA CURP;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos[0]->chk_pasaporte_licencia == TRUE)(X) @else() ( ) @endif PASAPORTE, LICENCIA DE MANEJO O CARTILLA MILITAR
+                            <br>@if($alumnos[0]->chk_comprobante_domicilio == TRUE)(X) @else() ( ) @endif COPIA DE COMPROBANTE DE DOMICILIO&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos[0]->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS
+                            <br>@if($alumnos[0]->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA </se>
+
                         </small>
                     </td>
                 </tr>
@@ -347,7 +352,7 @@
                     <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>EXTRANJEROS ANEXAR: &nbsp;&nbsp;</b>
-                            <se></se>
+                            <se><p>@if($alumnos[0]->chk_comprobante_calidad_migratoria == TRUE)(X) @else() ( ) @endif COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL</se>
                         </small>
                     </td>
                 </tr>
@@ -386,6 +391,15 @@
                         </small>
                     </td>
                 </tr>
+            </tbody>
+        </table>
+        <p><p><p> <p><p><p> <br><br><br><br><br>
+        <table class="table td" cellspacing="0" cellpadding="0">
+            <colgroup>
+				<col style="width: 50%"/>
+                <col style="width: 50%"/>
+            </colgroup>
+            <tbody>
                 <tr>
                     <td scope="col" colspan="2">
                         <div align="center">
@@ -454,7 +468,7 @@
                 </tr>
             </tbody>
         </table>
-        <br><br><br><br><br><br><br><br><br>
+
         <table class="table dashed" cellspacing="0" cellpadding="0">
             <colgroup>
 				<col style="width: 25%"/>
@@ -478,13 +492,13 @@
                     <td colspan="2" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>FECHA:</b>
-                            <se></se>
+                            <se>{{$date}}</se>
                         </small>
                     </td>
                     <td colspan="2" scope="row" class="tres" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>NÚMERO DE SOLICITUD:</b>
-                            <se></se>
+                            <se>{{$alumnos[0]->no_control}}{{$alumnos[0]->id}}</se>
                         </small>
                     </td>
                 </tr>
@@ -492,7 +506,7 @@
                     <td colspan="4" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>NOMBRE DEL ASPIRANTE:</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->apellidoPaterno }} {{ $alumnos[0]->apellidoMaterno }} {{ $alumnos[0]->nombrealumno }}</se>
                         </small>
                     </td>
                 </tr>
@@ -506,7 +520,7 @@
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <b>HORARIO:</b>
-                            <se></se>
+                            <se>{{ $alumnos[0]->horario }}</se>
                         </small>
                     </td>
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
@@ -526,7 +540,7 @@
                     <td colspan="2" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <div class="centrados">
-                                <b> AMAYRANI ORTEGA ESPINOZA </b>
+                                <b> {{ $alumnos[0]->realizo }} </b>
                                 <div class="linea"></div>
                             </div>
                         </small>
