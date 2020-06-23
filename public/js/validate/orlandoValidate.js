@@ -4,17 +4,20 @@ $(function(){
         $('#table-perfprof').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-            }
+            },
+            responsive: true
         });
         $('#table-instructor').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-            }
+            },
+            responsive: true
         });
         $('#table-folios').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
-            }
+            },
+            responsive: true
         });
     // ---- END tablas de consultas
 

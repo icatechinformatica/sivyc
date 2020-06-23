@@ -35,6 +35,13 @@ Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegist
 Route::get('/alumnos_registrados/modificar/show/{id}', 'adminController\AlumnoRegistradoModificarController@edit')->name('alumno_registrado.modificar.show');
 Route::put('alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
 
+/***
+ * modificación de roles y permisos
+ */
+Route::get('/usuarios/permisos/index', 'adminController\UserController@index')->name('usuario_permisos.index');
+Route::get('/usuarios/permisos/perfil/{id}', 'adminController\UserController@show')->name('usuarios_permisos.show');
+Route::get('/permisos/roles/index', 'adminController\PermissionController@index')->name('permisos_roles.index');
+
 
 
 Route::get('/alumno/registro/pdf', 'webController\AlumnoController@pdf_registro')->name('pdf-alumno');

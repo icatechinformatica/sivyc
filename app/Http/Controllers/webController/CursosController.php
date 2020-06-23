@@ -81,7 +81,7 @@ class CursosController extends Controller
             $cursos->cambios_especialidad = trim($request->cambios_especialidad);
             $cursos->nivel_estudio = trim($request->nivel_estudio);
             $cursos->categoria = trim($request->categoria);
-            $cursos->tipo_cursos = $request->tipo_curso;
+            $cursos->tipo_cursos = trim($request->tipo_curso);
             $cursos->save();
 
             # ==================================
