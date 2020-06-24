@@ -155,7 +155,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="estado" class="control-label">Estado</label>
-                    <select class="form-control" id="estado" name="estado" required
+                    <select class="form-control" id="estado" name="estado" required>
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($estados as $itemEstado)
                             <option value="{{$itemEstado->nombre}}">{{ $itemEstado->nombre }}</option>
