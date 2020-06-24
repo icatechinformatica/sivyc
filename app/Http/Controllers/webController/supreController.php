@@ -56,6 +56,14 @@ class supreController extends Controller
         $curso_validado = new tbl_curso();
         $directorio = new supre_directorio();
 
+        if($request->unidad == "TAPACHULA")
+        {
+            $iva = 0.11;
+        }
+        else
+        {
+            $iva=0.16;
+        }
 
         //Guarda Solicitud
         $supre->unidad_capacitacion = strtoupper($request->unidad);
@@ -79,7 +87,7 @@ class supreController extends Controller
             $folio = new folio();
             $folio->folio_validacion = strtoupper($value['folio']);
             $folio->numero_presupuesto = strtoupper($value['numeropresupuesto']);
-            $folio->iva = $value['importe']*0.16;
+            $folio->iva = $value['importe']*$iva;
             $clave = strtoupper($value['clavecurso']);
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
