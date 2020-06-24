@@ -56,7 +56,6 @@ class InstructorController extends Controller
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
         if(is_null($verify) == TRUE)
         {
-            dd("paso");
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
             $saveInstructor = new instructor();
             $id = $uid->id + 1;
