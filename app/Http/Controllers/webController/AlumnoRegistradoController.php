@@ -188,7 +188,7 @@ class AlumnoRegistradoController extends Controller
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg'));
         // (Optional) Setup the paper size and orientation
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream('documento_sid_'.$noControl.'.pdf');
+        return $pdf->download('documento_sid_'.$noControl.'.pdf');
 
         //return view('layouts.pdfpages.registroalumno', compact('alumnos','edad','date'));
     }
