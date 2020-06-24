@@ -56,7 +56,7 @@
                             @endcan
 
                             <td>
-                                <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->no_control)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" target="_blank" data-placement="top" title="DESCARGAR SID">
+                                <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->no_control)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" download="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                 </a>
                             </td>
