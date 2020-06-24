@@ -63,6 +63,7 @@ class CalificacionController extends Controller
             $Calificacion->calificacion = $request->calificacion;
             $Calificacion->alumno = $request->alumno;
             $Calificacion->valido = $request->valido;
+            $Calificacion->realizo = $request->realizo;
             $Calificacion->save();
 
             return response()->json(['success' => 'El Calificacion se cargo exitosamente en la base de datos'], 200);
