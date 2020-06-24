@@ -581,7 +581,6 @@ $(function(){
             var IdEst = $('#estado').val();
             var datos = {idEst: IdEst};
             var url = '/alumnos/sid/municipios';
-            console.log(datos);
 
             var request = $.ajax
             ({
