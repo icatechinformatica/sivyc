@@ -52,10 +52,11 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
-        $verify = instructor::WHERE('numero_control','=', $request->curp)->FIRST();
 
-        if($verify->isEmpty())
+        $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
+        if(is_null($verify) == TRUE)
         {
+            dd("paso");
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
             $saveInstructor = new instructor();
             $id = $uid->id + 1;
