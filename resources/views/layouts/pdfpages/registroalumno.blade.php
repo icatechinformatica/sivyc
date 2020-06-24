@@ -132,7 +132,11 @@
                 </tr>
             </tbody>
         </table>
-        <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
+        @if ($alumnos[0]->chk_fotografia == TRUE)
+            <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
+        @else
+            <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
+        @endif
         <table class="table td">
             <colgroup>
 				<col style="width: 30%"/>
