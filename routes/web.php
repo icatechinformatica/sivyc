@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('alumnos.presincripcion-paso2')->middleware('can:alumnos.inscripcion-paso3');
     Route::post('alumnos/sid/update', 'webController\AlumnoController@update')->name('alumnos.update-sid')->middleware('can:alumnos.inscripcion.store');
     Route::post('alumnos/sid/update_pregistro', 'webController\AlumnoController@update_pregistro')->name('alumnos.update.documentos.registro');
+    Route::put('alumnos/sid/update_registro/{idregistrado}', 'webController\AlumnoRegistradoController@update')->name('alumnos-cursos.update');
     // modificacion alumnos
     Route::get('alumnos/modificar/sid-paso2/{id}', 'webController\AlumnoRegistradoController@edit')->name('alumnos.update.registro')
     ->middleware('can:alumno.inscrito.edit');
@@ -119,6 +120,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
     Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
+    Route::post('/alumnos/sid/cursos_update', 'webController\AlumnoController@getcursos_update');
 
     /**
      * ============================================================================================================================================
