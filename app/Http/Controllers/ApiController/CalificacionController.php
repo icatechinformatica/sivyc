@@ -106,12 +106,13 @@ class CalificacionController extends Controller
         //
         // actualizando
         try {
-            $Calificacion = new Calificacion();
-            $Calificacion->WHERE([
-                ['idcurso', '=', $request->idcurso],
-                ['matricula', '=', $request->matricula],
-            ])->update($request->all());
-            return response()->json(['success' => 'Calificacion actualizada exitosamente'], 200);
+            $solicitud_request = $request->all();
+            // $Calificacion = new Calificacion();
+            // $Calificacion->WHERE([
+            //     ['idcurso', '=', $request->idcurso],
+            //     ['matricula', '=', $request->matricula],
+            // ])->update($request->all());
+            return response()->json(['success' => $solicitud_request], 200);
         } catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
         }
