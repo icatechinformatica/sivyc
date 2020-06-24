@@ -105,7 +105,7 @@
                     <select class="form-control" id="estado_mod" name="estado_mod">
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($estados as $itemEstado)
-                            <option {{ (trim($alumno->estado) == trim($itemEstado->nombre)) ? "selected" : "" }} value="{{$itemEstado->nombre}}">{{ $itemEstado->nombre }}</option>
+                            <option {{ (trim($alumno->estado) == trim($itemEstado->nombre)) ? "selected" : "" }} value="{{$itemEstado->id}}">{{ $itemEstado->nombre }}</option>
                         @endforeach
                     </select>
                 </div>

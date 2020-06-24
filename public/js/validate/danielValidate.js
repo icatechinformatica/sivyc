@@ -601,7 +601,6 @@ $(function(){
             request.done(( respuesta ) =>
             {
                 if (respuesta.length < 1) {
-                    console.log("hola");
                     $("#municipio").empty();
                     $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                 } else {
@@ -979,6 +978,58 @@ $(function(){
             request.fail(( jqXHR, textStatus ) =>
             {
                     alert( "Hubo un error: " + textStatus );
+            });
+        });
+    });
+
+    /**
+     * Modificacion estado municipios
+     */
+    $('#estado_mod').on("change", () => {
+        var IdEst =$('#estado_mod').val();
+        $("#estado_mod option:selected").each( () => {
+            var IdEst = $('#estado_mod').val();
+            var datos = {idEst: IdEst};
+            var url = '/alumnos/sid/municipios';
+
+            var request = $.ajax
+            ({
+                url: url,
+                method: 'POST',
+                data: datos,
+                dataType: 'json'
+            });
+
+            /*
+                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+            */
+
+
+            request.done(( respuesta ) =>
+            {
+                if (respuesta.length < 1) {
+                    $("#municipio_mod").empty();
+                    $("#municipio_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                } else {
+                    if(!respuesta.hasOwnProperty('error')){
+                        $("#municipio_mod").empty();
+                        $("#municipio_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        $.each(respuesta, (k, v) => {
+                            $('#municipio_mod').append('<option value="' + v.muni + '">' + v.muni + '</option>');
+                        });
+                        $("#municipio_mod").focus();
+                    }else{
+
+                        //Puedes mostrar un mensaje de error en algún div del DOM
+                    }
+                }
+            });
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                alert( "Hubo un error: " + textStatus );
             });
         });
     });

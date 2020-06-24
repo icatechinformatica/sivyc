@@ -105,6 +105,9 @@ class AlumnoController extends Controller
                 $anio = trim($request->anio);
                 $fecha_nacimiento = $anio."-".$mes."-".$dia;
 
+                //estados
+                $nombre_estado = Estado::WHERE('id', '=', $request->estado)->GET();
+
                 $AlumnoPreseleccion = new Alumnopre;
                 $AlumnoPreseleccion->nombre = $request->nombre;
                 $AlumnoPreseleccion->apellidoPaterno = $request->apellidoPaterno;
@@ -116,7 +119,7 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->domicilio = $request->domicilio;
                 $AlumnoPreseleccion->colonia = $request->colonia;
                 $AlumnoPreseleccion->cp = $request->cp;
-                $AlumnoPreseleccion->estado = $request->estado;
+                $AlumnoPreseleccion->estado = $nombre_estado[0]->nombre;
                 $AlumnoPreseleccion->municipio = $request->municipio;
                 $AlumnoPreseleccion->estado_civil = $request->estado_civil;
                 $AlumnoPreseleccion->discapacidad = $request->discapacidad;
@@ -577,6 +580,9 @@ class AlumnoController extends Controller
                 $anio = trim($request->anio_mod);
                 $fecha_nacimiento = $anio."-".$mes."-".$dia;
 
+                //obtener el estado
+                $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
+
             # code...
                 $array = [
                     'nombre' => trim($request->nombre_alum_mod),
@@ -588,7 +594,7 @@ class AlumnoController extends Controller
                     'domicilio' => trim($request->domicilio_mod),
                     'colonia' => trim($request->colonia_mod),
                     'cp' => trim($request->codigo_postal_mod),
-                    'estado' => trim($request->estado_mod),
+                    'estado' => trim($nombre_estado_mod[0]->nombre),
                     'municipio' => trim($request->municipio_mod),
                     'estado_civil' => trim($request->estado_civil_mod),
                     'discapacidad' => trim($request->discapacidad_mod),
