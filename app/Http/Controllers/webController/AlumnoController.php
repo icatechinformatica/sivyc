@@ -518,7 +518,7 @@ class AlumnoController extends Controller
             $municipios = $municipio->WHERE('id_estado', '=', $idEstado)->GET();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
-            $json=json_encode($idEstado);
+            $json=json_encode($municipios);
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
         }

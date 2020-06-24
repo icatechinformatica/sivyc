@@ -575,7 +575,7 @@ $(function(){
         });
     });
 
-  /*  $('#estado').on("change", () => {
+    $('#estado').on("change", () => {
         var IdEst =$('#estado').val();
         $("#estado option:selected").each( () => {
             var IdEst = $('#estado').val();
@@ -596,6 +596,7 @@ $(function(){
                 *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
                 *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
                 *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+            */
 
 
             request.done(( respuesta ) =>
@@ -623,7 +624,7 @@ $(function(){
                 alert( "Hubo un error: " + textStatus );
             });
         });
-    });*/
+    });
 
     /**
      * cambios select dependientes

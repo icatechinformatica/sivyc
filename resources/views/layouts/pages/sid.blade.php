@@ -155,7 +155,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="estado" class="control-label">Estado</label>
-                    <select class="form-control" id="estado" name="estado">
+                    <select class="form-control" id="estado" name="estado" required
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($estados as $itemEstado)
                             <option value="{{$itemEstado->nombre}}">{{ $itemEstado->nombre }}</option>
@@ -166,9 +166,6 @@
                     <label for="municipio" class="control-label">Municipio</label>
                     <select class="form-control" id="municipio" name="municipio">
                         <option value="">--SELECCIONAR--</option>
-                        @foreach ($municipios as $itemMunicipio)
-                            <option value="{{$itemMunicipio->muni}}">{{ $itemMunicipio->muni }}</option>
-                        @endforeach
                     </select>
                 </div>
             </div>
