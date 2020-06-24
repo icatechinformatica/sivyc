@@ -56,11 +56,9 @@ class AlumnoController extends Controller
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
             'POSTGRADO' => 'POSTGRADO'
         ];
-        $municipio = new Municipio();
         $estado = new Estado();
-        $municipios = $municipio->all();
         $estados = $estado->all();
-        return view('layouts.pages.sid', compact('municipios', 'estados', 'grado_estudio'));
+        return view('layouts.pages.sid', compact('estados', 'grado_estudio'));
     }
 
     /**
@@ -510,10 +508,7 @@ class AlumnoController extends Controller
     {
         if (isset($request->idEst)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $nombre=$request->idEst;
-            $Estado = new Estado();
-            $getest = $Estado->WHERE('nombre', '=', $nombre)->FIRST();
-            $idEstado = $getest;
+            $idEstado=$request->idEst;
             $municipio = new municipio();
             $municipios = $municipio->WHERE('id_estado', '=', $idEstado)->GET();
 

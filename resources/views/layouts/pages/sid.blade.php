@@ -158,7 +158,7 @@
                     <select class="form-control" id="estado" name="estado" required>
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($estados as $itemEstado)
-                            <option value="{{$itemEstado->nombre}}">{{ $itemEstado->nombre }}</option>
+                            <option value="{{ $itemEstado->id }}">{{ $itemEstado->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
