@@ -66,6 +66,9 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td colspan="6">
+                            {{ $alumnos->links() }}
+                        </td>
                     </tr>
                 </tfoot>
             </table>
