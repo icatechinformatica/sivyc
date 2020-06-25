@@ -13,18 +13,18 @@ class Folio extends Model
         'id',
         'unidad',
         'id_curso',
-        'fecha_acta',
         'matricula',
         'nombre',
         'folio',
-        'fecha_expedicion',
         'movimiento',
         'motivo',
         'mod',
         'fini',
         'ffin',
         'focan',
-        'realizo'
+        'realizo',
+        'fecha_acta',
+        'fecha_expedicion',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
