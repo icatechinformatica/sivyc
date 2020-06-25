@@ -45,11 +45,9 @@ class FolioController extends Controller
             $folio = new Folio;
             $folio->unidad = $request->unidad;
             $folio->id_curso = $request->id_curso;
-            $folio->fecha_acta = $request->fecha_acta;
             $folio->matricula = $request->matricula;
             $folio->nombre = $request->nombre;
             $folio->folio = $request->folio;
-            $folio->fecha_expedicion = $request->fecha_expedicion;
             $folio->movimiento = $request->movimiento;
             $folio->motivo = $request->motivo;
             $folio->mod = $request->mod;
@@ -57,6 +55,8 @@ class FolioController extends Controller
             $folio->ffin = $request->ffin;
             $folio->focan = $request->focan;
             $folio->realizo = $request->realizo;
+            $folio->fecha_acta = $request->fecha_acta;
+            $folio->fecha_expedicion = $request->fecha_expedicion;
 
             $folio->save();
             // redireccionamos con un mensaje de éxito
