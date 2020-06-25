@@ -14,45 +14,45 @@
 
 
             <div class="form-row">
-                @if (!empty($alumnoPre[0]->chk_acta_nacimiento))
+                @if (!empty($alumnoPre->chk_acta_nacimiento))
                     <div class="form-group col-md-3">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">ACTA DE NACIMIENTO</h5>
-                                <a href="{{ asset( $alumnoPre[0]->acta_nacimiento )}}" target="_blank" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre->acta_nacimiento )}}" target="_blank" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
                 @endif
 
-                @if (!empty($alumnoPre[0]->chk_curp))
+                @if (!empty($alumnoPre->chk_curp))
                     <div class="form-group col-md-3">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">DOCUMENTO CURP</h5>
-                                <a href="{{ asset( $alumnoPre[0]->documento_curp )}}" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre->documento_curp )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
                 @endif
 
-                @if (!empty($alumnoPre[0]->chk_comprobante_domicilio))
+                @if (!empty($alumnoPre->chk_comprobante_domicilio))
                     <div class="form-group col-md-3">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">COMPROBANTE DOMICILIO</h5>
-                                <a href="{{ asset( $alumnoPre[0]->comprobante_domicilio )}}" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre->comprobante_domicilio )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
                 @endif
 
-                @if (!empty($alumnoPre[0]->chk_ine))
+                @if (!empty($alumnoPre->chk_ine))
                     <div class="form-group col-md-3">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">INE</h5>
-                                <a href="{{ asset( $alumnoPre[0]->ine )}}" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre->ine )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
@@ -60,32 +60,32 @@
 
             </div>
             <div class="form-row">
-                @if (!empty($alumnoPre[0]->chk_pasaporte_licencia))
+                @if (!empty($alumnoPre->chk_pasaporte_licencia))
                     <div class="form-group col-md-3">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">PASAPORTE O LICENCIA</h5>
-                                <a href="{{ asset( $alumnoPre[0]->pasaporte_licencia_manejo )}}" class="card-link">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre->pasaporte_licencia_manejo )}}" class="card-link">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
                 @endif
 
-                @if (!empty($alumnoPre[0]->chk_comprobante_ultimo_grado))
+                @if (!empty($alumnoPre->chk_comprobante_ultimo_grado))
                     <div class="form-group col-md-3">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">ÚLTIMO GRADO DE ESTUDIOS</h5>
-                                <a href="{{ asset( $alumnoPre[0]->comprobante_ultimo_grado )}}" class="card-link"  border="2" width="158" height="150" hspace="10">DESCARGAR DOCUMENTO</a>
+                                <a href="{{ asset( $alumnoPre->comprobante_ultimo_grado )}}" class="card-link"  border="2" width="158" height="150" hspace="10">DESCARGAR DOCUMENTO</a>
                             </div>
                         </div>
                     </div>
                 @endif
 
-                @if (!empty($alumnoPre[0]->chk_fotografia))
+                @if (!empty($alumnoPre->chk_fotografia))
                     <div class="form-group col-md-3">
                         <div class="card">
-                            <img class="img-fluid img-thumbnail" src="{{ asset( $alumnoPre[0]->fotografia )}}" alt="Card image cap">
+                            <img class="img-fluid img-thumbnail" src="{{ asset( $alumnoPre->fotografia )}}" alt="Card image cap">
                             <div class="card-footer">
                                 <small class="text-muted">FOTOGRAFÍAS</small>
                             </div>
@@ -96,7 +96,7 @@
             </div>
             <!--formulario datos generales-->
             <div class="form-row">
-                @if (empty($alumnoPre[0]->chk_acta_nacimiento))
+                @if (empty($alumnoPre->chk_acta_nacimiento))
                     <!--está null-->
                     <div class="form-group col-md-3">
                         <div class="custom-file">
@@ -106,7 +106,7 @@
                     </div>
                 @endif
 
-                @if (empty($alumnoPre[0]->chk_curp))
+                @if (empty($alumnoPre->chk_curp))
                     <div class="form-group col-md-3">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="copia_curp" name="copia_curp">
@@ -115,7 +115,7 @@
                     </div>
                 @endif
 
-                @if (empty($alumnoPre[0]->chk_comprobante_domicilio))
+                @if (empty($alumnoPre->chk_comprobante_domicilio))
                     <div class="form-group col-md-3">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="comprobante_domicilio" name="comprobante_domicilio">
@@ -124,7 +124,7 @@
                     </div>
                 @endif
 
-                @if (empty($alumnoPre[0]->chk_fotografia))
+                @if (empty($alumnoPre->chk_fotografia))
                     <div class="form-group col-md-3">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="fotografias" name="fotografias">
@@ -134,7 +134,7 @@
                 @endif
             </div>
             <div class="form-row">
-                @if (empty($alumnoPre[0]->chk_ine))
+                @if (empty($alumnoPre->chk_ine))
                     <div class="form-group col-md-4">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="ine" name="ine">
@@ -143,7 +143,7 @@
                     </div>
                 @endif
 
-                @if (empty($alumnoPre[0]->chk_pasaporte_licencia))
+                @if (empty($alumnoPre->chk_pasaporte_licencia))
                     <div class="form-group col-md-4">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="licencia_manejo" name="licencia_manejo">
@@ -152,7 +152,7 @@
                     </div>
                 @endif
 
-                @if (empty($alumnoPre[0]->chk_comprobante_ultimo_grado))
+                @if (empty($alumnoPre->chk_comprobante_ultimo_grado))
                     <div class="form-group col-md-4">
                         <div class="custom-file">
                             <input type="file" class="custom-file-input" id="comprobante_ultimo_grado_estudios" name="comprobante_ultimo_grado_estudios">

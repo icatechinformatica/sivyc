@@ -32,7 +32,7 @@ class AlumnoController extends Controller
     {
         //
         $alumnos = new Alumnopre();
-        $retrieveAlumnos = $alumnos->all();
+        $retrieveAlumnos = $alumnos->all(['id', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'curp']);
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
@@ -57,7 +57,7 @@ class AlumnoController extends Controller
             'POSTGRADO' => 'POSTGRADO'
         ];
         $estado = new Estado();
-        $estados = $estado->all();
+        $estados = $estado->all(['id', 'nombre']);
         return view('layouts.pages.sid', compact('estados', 'grado_estudio'));
     }
 
@@ -70,7 +70,7 @@ class AlumnoController extends Controller
     public function store(Request $request)
     {
         $curp = strtoupper($request->input('curp'));
-        $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET();
+        $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET(['curp']);
         // obtener el usuario que agrega
         $usuario = Auth::user()->name;
         if ($alumnoPre->isEmpty()) {
@@ -106,7 +106,7 @@ class AlumnoController extends Controller
                 $fecha_nacimiento = $anio."-".$mes."-".$dia;
 
                 //estados
-                $nombre_estado = Estado::WHERE('id', '=', $request->estado)->GET();
+                $nombre_estado = Estado::WHERE('id', '=', $request->estado)->FIRST(['nombre']);
 
                 $AlumnoPreseleccion = new Alumnopre;
                 $AlumnoPreseleccion->nombre = $request->nombre;
@@ -119,7 +119,7 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->domicilio = $request->domicilio;
                 $AlumnoPreseleccion->colonia = $request->colonia;
                 $AlumnoPreseleccion->cp = $request->cp;
-                $AlumnoPreseleccion->estado = $nombre_estado[0]->nombre;
+                $AlumnoPreseleccion->estado = $nombre_estado->nombre;
                 $AlumnoPreseleccion->municipio = $request->municipio;
                 $AlumnoPreseleccion->estado_civil = $request->estado_civil;
                 $AlumnoPreseleccion->discapacidad = $request->discapacidad;
@@ -150,7 +150,9 @@ class AlumnoController extends Controller
     protected function steptwo($id)
     {
         $id_prealumno = base64_decode($id);
-        $alumnoPre = Alumnopre::WHERE('id', '=', $id_prealumno)->GET();
+        $alumnoPre = Alumnopre::WHERE('id', '=', $id_prealumno)->FIRST(['chk_acta_nacimiento', 'acta_nacimiento', 'chk_curp', 'documento_curp',
+        'chk_comprobante_domicilio', 'comprobante_domicilio', 'chk_ine', 'ine', 'chk_pasaporte_licencia', 'pasaporte_licencia_manejo', 'chk_comprobante_ultimo_grado', 'comprobante_ultimo_grado',
+        'chk_fotografia', 'fotografia', 'comprobante_calidad_migratoria', 'chk_comprobante_calidad_migratoria']);
         return view('layouts.pages.frminscripcion2', compact('id_prealumno', 'alumnoPre'));
     }
 
@@ -395,9 +397,11 @@ class AlumnoController extends Controller
         $AlumnoMatricula = new  Alumnopre;
         $Especialidad = new especialidad;
         $unidadestbl = new tbl_unidades();
-        $tblUnidades = $unidadestbl->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
-        $especialidades = $Especialidad->all();
-        $Alumno = $AlumnoMatricula->findOrfail($idpre);
+        $tblUnidades = $unidadestbl->SELECT('ubicacion')->GROUPBY('ubicacion')->GET(['ubicacion']);
+        $especialidades = $Especialidad->all(['id', 'nombre']);
+        $Alumno = $AlumnoMatricula->findOrfail($idpre, ['id', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'sexo', 'curp', 'fecha_nacimiento',
+        'telefono', 'cp', 'estado', 'municipio', 'estado_civil', 'discapacidad', 'domicilio', 'colonia']);
+
         return view('layouts.pages.sid_general', compact('Alumno', 'especialidades', 'tblUnidades'));
     }
 

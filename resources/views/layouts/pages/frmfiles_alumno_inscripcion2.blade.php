@@ -16,7 +16,7 @@
                 <div class="form-group col-md-8">
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" id="customFile" name="customFile">
-                        <label class="custom-file-label" for="customFile">ACTA DE NACIMIENTO</label>
+                        <label class="custom-file-label" for="customFile">SELECCIONAR DOCUMENTO</label>
                     </div>
                 </div>
             </div>
