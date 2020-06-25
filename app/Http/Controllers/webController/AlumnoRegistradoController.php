@@ -25,18 +25,16 @@ class AlumnoRegistradoController extends Controller
      */
     public function index()
     {
-        $alumnos_registrados = new Alumno();
-        $alumnos = $alumnos_registrados->SELECT('alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellidoPaterno', 'alumnos_pre.apellidoMaterno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
-        'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo', 'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio',
-        'alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id AS id_registro',
-        'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad', 'alumnos_registro.cerrs',
-        'alumnos_registro.etnia')
-                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
+        $alumnos = Alumno::LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                 ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                 ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
                 ->ORDERBY('id_registro', 'desc')
-                ->GET();
+                ->GET([
+                    'alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellidoPaterno', 'alumnos_pre.apellidoMaterno',
+                    'alumnos_registro.no_control', 'alumnos_registro.id AS id_registro',
+                    'cursos.nombre_curso',
+                ]);
 
         return view('layouts.pages.alumnos_registrados', compact('alumnos'));
 
