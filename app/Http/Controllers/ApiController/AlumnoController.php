@@ -19,8 +19,7 @@ class AlumnoController extends Controller
     public function index()
     {
         //
-        $alumnos = new Alumnopre();
-        $retrieveAlumnos = $alumnos->all();
+        $retrieveAlumnos = Alumnopre::all();
         return response()->json($retrieveAlumnos, 200);
     }
 
@@ -72,8 +71,8 @@ class AlumnoController extends Controller
 
                     $AlumnoPreseleccion = new Alumnopre;
                     $AlumnoPreseleccion->nombre = $request->nombre;
-                    $AlumnoPreseleccion->apellidoPaterno = $request->apellidoPaterno;
-                    $AlumnoPreseleccion->apellidoMaterno = $request->apellidoMaterno;
+                    $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
+                    $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
                     $AlumnoPreseleccion->sexo = $request->sexo;
                     $AlumnoPreseleccion->curp = $request->curp;
                     $AlumnoPreseleccion->fecha_nacimiento = $AlumnoPreseleccion->setFechaNacAttribute($request->fecha_nacimiento);

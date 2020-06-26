@@ -12,8 +12,8 @@ class AlumnosPre extends Model
     protected $fillable = [
         'id',
         'nombre',
-        'apellidoPaterno',
-        'apellidoMaterno',
+        'apellido_paterno',
+        'apellido_materno',
         'telefono',
         'curp',
         'sexo',
