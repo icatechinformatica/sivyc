@@ -42,8 +42,6 @@ class AlumnoRegistradoController extends Controller
                     'cursos.nombre_curso',
                 ]);
 
-            Log::info($alumnos);
-
         return view('layouts.pages.alumnos_registrados', compact('alumnos'));
 
     }

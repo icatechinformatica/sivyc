@@ -67,4 +67,28 @@ class Alumnopre extends Model
      public function setFechaNacAttribute($value) {
         return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
      }
+
+     // scopes
+    public function scopeBusquedaPor($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'curp_aspirante':
+                        # code...
+                        return $query->where('curp', '=', $buscar);
+                        break;
+                    case 'nombre_aspirante':
+                        # code...
+                        return $query->where( \DB::raw("CONCAT(apellido_paterno, ' ',apellido_materno,' ',nombre)"), 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
 }

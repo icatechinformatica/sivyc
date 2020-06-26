@@ -28,11 +28,14 @@ class AlumnoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $alumnos = new Alumnopre();
-        $retrieveAlumnos = $alumnos->all(['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp']);
+        $buscar_aspirante = $request->get('busqueda_aspirantepor');
+
+        $tipoaspirante = $request->get('busqueda_aspirante');
+        $retrieveAlumnos = Alumnopre::busquedapor($tipoaspirante, $buscar_aspirante)
+        ->PAGINATE(30, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp']);
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }

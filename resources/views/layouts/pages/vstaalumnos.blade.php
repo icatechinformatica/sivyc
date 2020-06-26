@@ -12,9 +12,19 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Registro de Alumnos</h2>
+                    <h2>ASPIRANTES</h2>
+
+                    {!! Form::open(['route' => 'alumnos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="busqueda_aspirante" class="form-control mr-sm-2" id="busqueda_aspirante">
+                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="curp_aspirante">CURP</option>
+                            <option value="nombre_aspirante">NOMBRE</option>
+                        </select>
+
+                        {!! Form::text('busqueda_aspirantepor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
                 </div>
-                <br>
 
                 <div class="pull-right">
                     @can('alumnos.inscripcion-paso1')
@@ -45,7 +55,7 @@
                 <tbody>
                     @foreach ($retrieveAlumnos as $itemData)
                         <tr>
-                            <td scope="row">{{$itemData->nombre}} {{$itemData->apellido_paterno}} {{$itemData->apellido_materno}}</td>
+                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
                             <td>{{$itemData->curp}}</td>
                             @can('alumno.inscripcion-documento')
                                 <td>
@@ -78,6 +88,9 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td colspan="5">
+                            {{ $retrieveAlumnos->links() }}
+                        </td>
                     </tr>
                 </tfoot>
             </table>
