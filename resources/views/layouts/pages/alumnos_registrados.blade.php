@@ -26,7 +26,7 @@
                         </select>
 
                         {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">BUSCAR</button>
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
                 </div>
             </div>
