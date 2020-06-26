@@ -11,7 +11,7 @@
         <div class="form-row">
             <!--nombre aspirante-->
             <div class="form-group col-md-6">
-                <label for="nombre " class="control-label">Nombre: {{$alumnos[0]->nombrealumno}} {{$alumnos[0]->apellidoPaterno}} {{$alumnos[0]->apellidoMaterno}}</label>
+                <label for="nombre " class="control-label">Nombre: {{$alumnos[0]->nombrealumno}} {{$alumnos[0]->apellido_paterno}} {{$alumnos[0]->apellido_materno}}</label>
             </div>
             <!--nombre aspirante END-->
             <div class="form-group col-md-6">

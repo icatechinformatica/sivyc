@@ -15,6 +15,20 @@
                 <div class="pull-left">
                     <h2>Alumnos Matriculados</h2>
                 </div>
+
+                <div class="pull-right">
+                    {!! Form::open(['route' => 'alumnos.inscritos', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_busqueda" class="form-control mr-sm-2" id="tipo_busqueda">
+                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="no_control">N° DE CONTROL</option>
+                            <option value="curso">CURSO</option>
+                            <option value="nombres">NOMBRE</option>
+                        </select>
+
+                        {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
+                </div>
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -38,7 +52,7 @@
                         <tr>
                             <td>{{$itemData->no_control}}</td>
                             <td scope="row">{{ $itemData->nombre_curso }}</td>
-                            <td scope="row">{{$itemData->nombrealumno}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
+                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
                             @can('alumno.inscrito.show')
                                 <td>
                                     <a href="{{route('alumnos.inscritos.detail', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER REGISTRO">

@@ -37,4 +37,32 @@ class Alumno extends Model
     {
         return Carbon::parse($value)->format('d-m-Y');
     }
+
+    // scopes
+    public function scopeBusqueda($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'no_control':
+                        # code...
+                        return $query->where('alumnos_registro.no_control', '=', $buscar);
+                        break;
+                    case 'nombres':
+                        # code...
+                        return $query->where( \DB::raw("CONCAT(alumnos_pre.apellido_paterno, ' ',alumnos_pre.apellido_materno,' ',alumnos_pre.nombre)"), 'LIKE', "%$buscar%");
+                        break;
+                    case 'curso':
+                        # code...
+                        return $query->where('cursos.nombre_curso', 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
 }

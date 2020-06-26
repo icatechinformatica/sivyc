@@ -14,13 +14,13 @@
             </div><br />
         @endif
         <div style="text-align: center;">
-            <h3><b>MODIFICACIÓN (SID - {{ $alumnos[0]->no_control }})</b></h3>
+            <h3><b>MODIFICACIÓN (SID - {{ $alumnos->no_control }})</b></h3>
         </div>
         <hr style="border-color:dimgray">
         <div style="text-align: center;">
             <h4><b>DATOS DEL CURSO</b></h4>
         </div>
-        <form method="POST" id="form_sid_registro" action="{{ route('alumnos-cursos.update', ['idregistrado' => base64_encode($alumnos[0]->id) ]) }}" enctype="multipart/form-data">
+        <form method="POST" id="form_sid_registro" action="{{ route('alumnos-cursos.update', ['idregistrado' => base64_encode($alumnos->id) ]) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="form-row">
@@ -28,8 +28,8 @@
                     <label for="horario" class="control-label">TIPO DE CURSO</label>
                     <select class="form-control" id="tipo_curso" name="tipo_curso_mod" required>
                         <option value="">--SELECCIONAR--</option>
-                        <option {{ ($alumnos[0]->tipo_curso == "PRESENCIAL") ? "selected" : "" }} value="PRESENCIAL">PRESENCIAL</option>
-                        <option {{ ($alumnos[0]->tipo_curso == "A DISTANCIA") ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
+                        <option {{ ($alumnos->tipo_curso == "PRESENCIAL") ? "selected" : "" }} value="PRESENCIAL">PRESENCIAL</option>
+                        <option {{ ($alumnos->tipo_curso == "A DISTANCIA") ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
                     </select>
                 </div>
 
@@ -38,7 +38,7 @@
                     <select class="form-control" id="especialidad_sid_mod" name="especialidad_sid_mod">
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($especialidades as $itemEspecialidad)
-                            <option {{ ($alumnos[0]->id_especialidad == $itemEspecialidad->id) ? "selected" : "" }} value="{{$itemEspecialidad->id}}">{{ $itemEspecialidad->nombre }}</option>
+                            <option {{ ($alumnos->id_especialidad == $itemEspecialidad->id) ? "selected" : "" }} value="{{$itemEspecialidad->id}}">{{ $itemEspecialidad->nombre }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -49,7 +49,7 @@
                     <select class="form-control" id="curso_sid_mod" name="curso_sid_mod">
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($cursos as $itemCursos)
-                            <option {{ ($alumnos[0]->id_curso == $itemCursos->id) ? "selected" : "" }} value="{{$itemCursos->id}}">{{ $itemCursos->nombre_curso }}</option>
+                            <option {{ ($alumnos->id_curso == $itemCursos->id) ? "selected" : "" }} value="{{$itemCursos->id}}">{{ $itemCursos->nombre_curso }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -57,11 +57,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="horario" class="control-label">HORARIO:</label>
-                    <input type="text" name="horario_mod" id="horario_mod" value="{{$alumnos[0]->horario}}" class="form-control" autocomplete="off">
+                    <input type="text" name="horario_mod" id="horario_mod" value="{{$alumnos->horario}}" class="form-control" autocomplete="off">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="grupo_mod" class="control-label">GRUPO:</label>
-                    <input type="text" name="grupo_mod" id="grupo_mod" value="{{$alumnos[0]->grupo}}" class="form-control" autocomplete="off">
+                    <input type="text" name="grupo_mod" id="grupo_mod" value="{{$alumnos->grupo}}" class="form-control" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
@@ -69,8 +69,8 @@
                     <label for="cerrs_mod" class="control-label">¿SE ENCUENTRA EN EL CERESO?</label>
                     <select class="form-control" id="cerrs_mod" name="cerrs_mod" required>
                         <option value="">--SELECCIONAR--</option>
-                        <option {{ ($alumnos[0]->cerrs == true) ? "selected" : "" }} value="true">SI</option>
-                        <option {{ ($alumnos[0]->cerrs == false) ? "selected" : "" }} value="false">NO</option>
+                        <option {{ ($alumnos->cerrs == true) ? "selected" : "" }} value="true">SI</option>
+                        <option {{ ($alumnos->cerrs == false) ? "selected" : "" }} value="false">NO</option>
                     </select>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     @endcan
                 </div>
             </div>
-            <input type="hidden" name="no_control_update" id="no_control_update" value="{{$alumnos[0]->no_control}}">
+            <input type="hidden" name="no_control_update" id="no_control_update" value="{{$alumnos->no_control}}">
         </form>
     </div>
 @endsection

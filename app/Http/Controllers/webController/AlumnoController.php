@@ -32,7 +32,7 @@ class AlumnoController extends Controller
     {
         //
         $alumnos = new Alumnopre();
-        $retrieveAlumnos = $alumnos->all(['id', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'curp']);
+        $retrieveAlumnos = $alumnos->all(['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp']);
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
@@ -110,8 +110,8 @@ class AlumnoController extends Controller
 
                 $AlumnoPreseleccion = new Alumnopre;
                 $AlumnoPreseleccion->nombre = $request->nombre;
-                $AlumnoPreseleccion->apellidoPaterno = $request->apellidoPaterno;
-                $AlumnoPreseleccion->apellidoMaterno = $request->apellidoMaterno;
+                $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
+                $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
                 $AlumnoPreseleccion->sexo = $request->sexo;
                 $AlumnoPreseleccion->curp = $request->curp;
                 $AlumnoPreseleccion->fecha_nacimiento = $fecha_nacimiento;
@@ -399,7 +399,7 @@ class AlumnoController extends Controller
         $unidadestbl = new tbl_unidades();
         $tblUnidades = $unidadestbl->SELECT('ubicacion')->GROUPBY('ubicacion')->GET(['ubicacion']);
         $especialidades = $Especialidad->all(['id', 'nombre']);
-        $Alumno = $AlumnoMatricula->findOrfail($idpre, ['id', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'sexo', 'curp', 'fecha_nacimiento',
+        $Alumno = $AlumnoMatricula->findOrfail($idpre, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'sexo', 'curp', 'fecha_nacimiento',
         'telefono', 'cp', 'estado', 'municipio', 'estado_civil', 'discapacidad', 'domicilio', 'colonia']);
 
         return view('layouts.pages.sid_general', compact('Alumno', 'especialidades', 'tblUnidades'));
@@ -609,8 +609,8 @@ class AlumnoController extends Controller
             # code...
                 $array = [
                     'nombre' => trim($request->nombre_alum_mod),
-                    'apellidoPaterno' => trim($request->apellido_pat_mod),
-                    'apellidoMaterno' => trim($request->apellido_mat_mod),
+                    'apellido_paterno' => trim($request->apellido_pat_mod),
+                    'apellido_materno' => trim($request->apellido_mat_mod),
                     'sexo' => trim($request->sexo_mod),
                     'fecha_nacimiento' => trim($fecha_nacimiento),
                     'telefono' => trim($request->telefono_mod),

@@ -45,7 +45,7 @@
                 <tbody>
                     @foreach ($retrieveAlumnos as $itemData)
                         <tr>
-                            <td scope="row">{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
+                            <td scope="row">{{$itemData->nombre}} {{$itemData->apellido_paterno}} {{$itemData->apellido_materno}}</td>
                             <td>{{$itemData->curp}}</td>
                             @can('alumno.inscripcion-documento')
                                 <td>

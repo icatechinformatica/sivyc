@@ -27,13 +27,13 @@
                 <!-- apellido paterno -->
                 <div class="form-group col-md-3">
                     <label for="apellidoPaterno" class="control-label">APELLIDO PATERNO:</label>
-                    <input type="text" class="form-control" name="apellido_pat_mod" id="apellido_pat_mod" value="{{$alumno->apellidoPaterno}}">
+                    <input type="text" class="form-control" name="apellido_pat_mod" id="apellido_pat_mod" value="{{$alumno->apellido_paterno}}">
                 </div>
                 <!-- apellido paterno END -->
                 <!-- apellido materno-->
                 <div class="form-group col-md-3">
                     <label for="apellidoMaterno" class="control-label">APELLIDO MATERNO:</label>
-                    <input type="text" name="apellido_mat_mod" id="apellido_mat_mod" class="form-control" value="{{$alumno->apellidoMaterno}}">
+                    <input type="text" name="apellido_mat_mod" id="apellido_mat_mod" class="form-control" value="{{$alumno->apellido_materno}}">
                 </div>
                 <!-- apellido materno END-->
                 <!--nombre aspirante-->

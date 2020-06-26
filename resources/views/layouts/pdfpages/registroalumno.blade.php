@@ -198,13 +198,13 @@
                     <td scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
                         <small>
                             <b> PRIMER APELLIDO: &nbsp;&nbsp; </b>
-                            <se>{{ $alumnos[0]->apellidoPaterno }}</se>
+                            <se>{{ $alumnos[0]->apellido_paterno }}</se>
                         </small>
                     </td>
                     <td scope="row" style='border-right:none;border-left:none; border-bottom:none;'>
                         <small>
                             <b> SEGUNDO APELLIDO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->apellidoMaterno }}</se>
+                            <se>{{ $alumnos[0]->apellido_materno }}</se>
                         </small>
                     </td>
                     <td scope="row" colspan="2" style='border-left:none; border-bottom:none;'>
@@ -440,7 +440,7 @@
                     <td scope="row" class="tres" style='border-right:none;border-top:none; border-bottom:none;'>
                         <small>
                             <div class="centrados">
-                                <b> {{ $alumnos[0]->apellidoPaterno }} {{ $alumnos[0]->apellidoMaterno }} {{ $alumnos[0]->nombrealumno }}</b>
+                                <b> {{ $alumnos[0]->apellido_paterno }} {{ $alumnos[0]->apellido_materno }} {{ $alumnos[0]->nombrealumno }}</b>
                                 <div class="linea"></div>
                             </div>
                         </small>
@@ -510,7 +510,7 @@
                     <td colspan="4" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>NOMBRE DEL ASPIRANTE:</b>
-                            <se>{{ $alumnos[0]->apellidoPaterno }} {{ $alumnos[0]->apellidoMaterno }} {{ $alumnos[0]->nombrealumno }}</se>
+                            <se>{{ $alumnos[0]->apellido_paterno }} {{ $alumnos[0]->apellido_materno }} {{ $alumnos[0]->nombrealumno }}</se>
                         </small>
                     </td>
                 </tr>

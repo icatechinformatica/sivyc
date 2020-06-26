@@ -28,12 +28,12 @@
                 <!--nombre aspirante END-->
                 <!-- apellido paterno -->
                 <div class="form-group col-md-3">
-                    <label for="apellidoPaterno" class="control-label">Apellido Paterno: {{$Alumno->apellidoPaterno}}</label>
+                    <label for="apellidoPaterno" class="control-label">Apellido Paterno: {{$Alumno->apellido_paterno}}</label>
                 </div>
                 <!-- apellido paterno END -->
                 <!-- apellido materno-->
                 <div class="form-group col-md-3">
-                    <label for="apellidoMaterno" class="control-label">Apellido Materno: {{$Alumno->apellidoMaterno}}</label>
+                    <label for="apellidoMaterno" class="control-label">Apellido Materno: {{$Alumno->apellido_materno}}</label>
                 </div>
                 <!-- apellido materno END-->
                 <div class="form-group col-md-3">
