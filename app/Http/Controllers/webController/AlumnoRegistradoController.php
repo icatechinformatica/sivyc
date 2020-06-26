@@ -36,7 +36,7 @@ class AlumnoRegistradoController extends Controller
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                 ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
                 ->ORDERBY('id_registro', 'desc')
-                ->PAGINATE(5, [
+                ->PAGINATE(25, [
                     'alumnos_pre.nombre', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno',
                     'alumnos_registro.no_control', 'alumnos_registro.id AS id_registro',
                     'cursos.nombre_curso',

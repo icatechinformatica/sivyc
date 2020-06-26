@@ -35,7 +35,7 @@ class AlumnoController extends Controller
 
         $tipoaspirante = $request->get('busqueda_aspirante');
         $retrieveAlumnos = Alumnopre::busquedapor($tipoaspirante, $buscar_aspirante)
-        ->PAGINATE(30, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp']);
+        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp']);
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
