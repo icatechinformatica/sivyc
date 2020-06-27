@@ -4,10 +4,15 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
-        <form method="POST" id="form-sid-paso2"  action="{{ route('alumnos.update.documentos.registro') }}" enctype="multipart/form-data">
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
+        <form method="POST" id="paso2UploadFiles"  action="{{ route('alumnos.update.documentos.registro') }}" enctype="multipart/form-data">
             @csrf
             <div style="text-align: center;">
-                <h3><b>DOCUMENTACIÓN ENTREGADA</b></h3>
+                <h3><b>DOCUMENTACIÓN ENTREGADA PARA {{ $alumnoPre->apellido_paterno }} {{ $alumnoPre->apellido_materno }} {{ $alumnoPre->nombre }}</b></h3>
             </div>
             <!--DOCUMENTACIÓN ENTREGADA-->
             <hr style="border-color:dimgray">
@@ -22,8 +27,8 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">
-                    <label for="areaCursos" class="control-label">ELEGIR EL TIPO DE ARCHIVO</label>
-                    <select class="form-control" id="areaCursos" name="areaCursos">
+                    <label for="tipoDocumento" class="control-label">ELEGIR EL TIPO DE ARCHIVO</label>
+                    <select class="form-control" id="tipoDocumento" name="tipoDocumento">
                         <option value="">--SELECCIONAR--</option>
                         <option value="acta_nacimiento">ACTA DE NACIMIENTO</option>
                         <option value="copia_curp">COPIA DE LA CURP</option>
@@ -36,7 +41,107 @@
                     </select>
                 </div>
             </div>
-
+            <br>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <table  id="table-instructor" class="table table-bordered Datatables">
+                        <caption>ARCHIVOS VINCULADOS</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">DOCUMENTO</th>
+                                <th scope="col">DESCARGAR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!empty($alumnoPre->chk_acta_nacimiento) && $alumnoPre->chk_acta_nacimiento == true)
+                            <tr>
+                                <td>
+                                    ACTA DE NACIMIENTO
+                                </td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->acta_nacimiento )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="ACTA DE NACIMIENTO">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                            @if (!empty($alumnoPre->chk_curp) && $alumnoPre->chk_curp == true)
+                            <tr>
+                                <td>CURP</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->documento_curp )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="ACTA DE NACIMIENTO">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                            @if (!empty($alumnoPre->chk_comprobante_domicilio) && $alumnoPre->chk_comprobante_domicilio == true)
+                            <tr>
+                                <td>COMPROBANTE DE DOMICILIO</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->comprobante_domicilio )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="COMPROBANTE DE DOMICILIO">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                            @if (!empty($alumnoPre->chk_ine) && $alumnoPre->chk_ine == true)
+                            <tr>
+                                <td>INE</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->ine )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="DESCARGAR INE">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                            @if (!empty($alumnoPre->chk_pasaporte_licencia) && $alumnoPre->chk_pasaporte_licencia == true)
+                            <tr>
+                                <td>(PASAPORTE, LICENCIA DE MANEJO)</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->pasaporte_licencia_manejo )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="DESCARGAR INE">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                            @if (!empty($alumnoPre->chk_comprobante_ultimo_grado) && $alumnoPre->chk_comprobante_ultimo_grado == true)
+                            <tr>
+                                <td>COMPROBANTE ÚLTIMO GRADO DE ESTUDIOS</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->comprobante_ultimo_grado )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="COMPROBANTE ULTIMO GRADO">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                            @if(!empty($alumnoPre->chk_fotografia) && $alumnoPre->chk_fotografia == true)
+                            <tr>
+                                <td>FOTOGRAFÍA</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->fotografia )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="FOTOGRAFÍA">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                            @if(!empty($alumnoPre->chk_comprobante_calidad_migratoria) && $alumnoPre->chk_comprobante_calidad_migratoria == true)
+                            <tr>
+                                <td>COMPROBANTE DE CALIDAD MIGRATORIA</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->comprobante_calidad_migratoria )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="FOTOGRAFÍA">
+                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <br>
             <!--botones de enviar y retroceder-->
             <div class="row">
                 <div class="col-lg-12 margin-tb">
@@ -45,7 +150,7 @@
                     </div>
                     @can('alumno.cargar-documento')
                         <div class="pull-right">
-                            <button type="submit" class="btn btn-primary" >Guardar</button>
+                            <button id="submitDocs" type="submit" class="btn btn-primary" >Cargar Archivo</button>
                         </div>
                     @endcan
 

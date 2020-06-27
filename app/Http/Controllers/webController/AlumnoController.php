@@ -155,235 +155,369 @@ class AlumnoController extends Controller
         $id_prealumno = base64_decode($id);
         $alumnoPre = Alumnopre::WHERE('id', '=', $id_prealumno)->FIRST(['chk_acta_nacimiento', 'acta_nacimiento', 'chk_curp', 'documento_curp',
         'chk_comprobante_domicilio', 'comprobante_domicilio', 'chk_ine', 'ine', 'chk_pasaporte_licencia', 'pasaporte_licencia_manejo', 'chk_comprobante_ultimo_grado', 'comprobante_ultimo_grado',
-        'chk_fotografia', 'fotografia', 'comprobante_calidad_migratoria', 'chk_comprobante_calidad_migratoria']);
-        return view('layouts.pages.frminscripcion2', compact('id_prealumno', 'alumnoPre'));
+        'chk_fotografia', 'fotografia', 'comprobante_calidad_migratoria', 'chk_comprobante_calidad_migratoria',
+        'nombre', 'apellido_paterno', 'apellido_materno']);
+        return view('layouts.pages.frmfiles_alumno_inscripcion2', compact('id_prealumno', 'alumnoPre'));
     }
 
     protected function update_pregistro(Request $request)
     {
-        # ==================================
-        # Aquí tenemos el id recién guardado
-        # ==================================
-        $AlumnosId = $request->alumno_id;
+        if (isset($request->tipoDocumento)) {
+            $idPre = $request->alumno_id;
+            # validamos que haya un tipo de documento iniciado, es decir la variable
+            switch ($request->tipoDocumento) {
+                case 'acta_nacimiento':
+                    # trabajamos cargando el acta de nacimiento al servidor
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:pdf|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de acta_nacimiento
+                            $alumnoPre = Alumnopre::WHERE('id', $idPre)->FIRST();
+                            // checamos que no sea nulo
+                            if (!is_null($alumnoPre->acta_nacimiento)) {
+                                # si no está nulo
+                                if(!empty($alumnoPre->acta_nacimiento)){
+                                    $docActanacimiento = explode("/",$alumnoPre->acta_nacimiento, 5);
+                                    if (Storage::exists($docActanacimiento[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($docActanacimiento[4]);
+                                    }
+                                }
+                            }
 
-        /***
-         * MÉTODOS PARA GUARDAR ARCHIVOS
-        */
+                            $acta_nacimiento = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($acta_nacimiento, $idPre, 'acta_nacimiento'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'acta_nacimiento' => $url_documento,
+                                'chk_acta_nacimiento' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
+                    break;
+                case 'copia_curp':
+                    # modificacion de documento curp
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:pdf|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de documento_curp
+                            $alumnoPre = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+                            // checamos que no sea nulo
 
-        /**
-        * checar si hay un documento para poder llamar el método
-        */
-        if ($request->hasFile('acta_nacimiento')) {
-            # llamamos al método
-            $validator = Validator::make($request->all(), [
-                'acta_nacimiento' => 'mimes:pdf|max:2048'
-            ]);
-            if ($validator->fails()) {
-                # code...
-                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                        ->withErrors($validator);
-            } else {
-                $acta_nacimiento = $request->file('acta_nacimiento'); # obtenemos el archivo
-                $url_acta_nacimiento = $this->uploaded_file($acta_nacimiento, $AlumnosId, 'acta_nacimiento'); #invocamos el método
-                $chk_acta_nacimiento = true;
-            }
-        } else {
-            $chk_acta_nacimiento = false;
-            $url_acta_nacimiento = '';
-        }
+                            if (!is_null($alumnoPre->documento_curp)) {
+                                # si no está nulo
+                                if(!empty($alumnoPre->documento_curp)){
+                                    $docCurp = explode("/",$alumnoPre->documento_curp, 5);
+                                    if (Storage::exists($docCurp[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($docCurp[4]);
+                                    }
+                                }
+                            }
 
-        /**
-            * checar si hay un documento para poder llamar el método
-        */
-        if ($request->hasFile('copia_curp')) {
-            # llamamos el método
-            $validator = Validator::make($request->all(), [
-                'copia_curp' => 'mimes:pdf|max:2048',
-            ]);
-            if ($validator->fails()) {
-                # code...
-                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                        ->withErrors($validator);
-            } else {
-                $curp = $request->file('copia_curp'); # obtenemos el archivo
-                $url_curp = $this->uploaded_file($curp, $AlumnosId, 'curp'); #invocamos el método
-                $chk_curp = true;
-            }
-        } else {
-            $chk_curp = false;
-            $url_curp = '';
-        }
+                            $documento_curp = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($documento_curp, $idPre, 'documento_curp'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'documento_curp' => $url_documento,
+                                'chk_curp' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
+                    break;
+                case 'comprobante_domicilio':
+                    # comprobante de domicilio
 
-        /**
-         * checar si hay un documento para poder llamar el método
-        */
-        if ($request->hasFile('comprobante_domicilio')) {
-            # llamamos al método
-            $validator = Validator::make($request->all(), [
-                'comprobante_domicilio' => 'mimes:pdf|max:2048',
-            ]);
-            if ($validator->fails()) {
-                # code...
-                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                        ->withErrors($validator);
-            } else {
-                $comprobante_domicilio = $request->file('comprobante_domicilio'); # obtenemos el archivo
-                $url_comprobante_domicilio = $this->uploaded_file($comprobante_domicilio, $AlumnosId, 'comprobante_domicilio'); #invocamos el método
-                $chk_comprobante_domicilio = true;
-            }
-        } else {
-            $url_comprobante_domicilio = '';
-            $chk_comprobante_domicilio = false;
-        }
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:pdf|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de documento_curp
+                            $alumnoPre = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+                            // checamos que no sea nulo
 
-        /**
-         * checar si hay un documento para poder llamar el método
-        */
-        if ($request->hasFile('fotografias')) {
-            # llamamos al método
-            $validator = Validator::make($request->all(), [
-                'fotografias' => 'mimes:jpg,jpeg,png|max:2048',
-            ]);
-            if ($validator->fails()) {
-                # code...
-                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                        ->withErrors($validator);
-            } else {
-                $fotografia = $request->file('fotografias'); # obtenemos el archivo
-                $url_fotografia = $this->uploaded_file($fotografia, $AlumnosId, 'fotografia'); #invocamos el método
-                $chk_fotografia = true;
-            }
-        } else {
-            $url_fotografia = '';
-            $chk_fotografia = false;
-        }
+                            if (!is_null($alumnoPre->comprobante_domicilio)) {
+                                # si no está nulo
+                                if (!empty($alumnoPre->comprobante_domicilio)) {
+                                    # code...
+                                    $comprobanteDomicilio = explode("/",$alumnoPre->comprobante_domicilio, 5);
+                                    if (Storage::exists($comprobanteDomicilio[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($comprobanteDomicilio[4]);
+                                    }
+                                }
+                            }
 
-        /**
-         * checar si hay un documento para poder llamar el método
-        */
-        if ($request->hasFile('ine')) {
-            # llamamos al método
-            $validator = Validator::make($request->all(), [
-                'ine' => 'mimes:pdf|max:2048',
-            ]);
-            if ($validator->fails()) {
-                # code...
-                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                        ->withErrors($validator);
-            } else {
-                $ine = $request->file('ine'); # obtenemos el archivo
-                $url_ine = $this->uploaded_file($ine, $AlumnosId, 'ine'); #invocamos el método
-                $chk_ine = true;
-            }
-        } else {
-            $chk_ine = false;
-            $url_ine = '';
-        }
+                            $comprobante_domicilio = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($comprobante_domicilio, $idPre, 'comprobante_domicilio'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'comprobante_domicilio' => $url_documento,
+                                'chk_comprobante_domicilio' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
 
-        /**
-         * checar si hay un documento para poder llamar el método
-        */
-        if ($request->hasFile('licencia_manejo')) {
-            # llamamos al método
-            $validator = Validator::make($request->all(), [
-                'licencia_manejo' => 'mimes:pdf|max:2048',
-            ]);
-            if ($validator->fails()) {
-                # code...
-                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                        ->withErrors($validator);
-            } else {
-                $licencia_manejo = $request->file('licencia_manejo'); # obtenemos el archivo
-                $url_licencia_manejo = $this->uploaded_file($licencia_manejo, $AlumnosId, 'licencia_manejo'); #invocamos el método
-                $chk_licencia_manejo = true;
-            }
-        } else {
-            $chk_licencia_manejo = false;
-            $url_licencia_manejo = '';
-        }
+                    break;
+                case 'fotografia':
+                    # fotografia
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:jpeg,jpg,png|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de documento_curp
+                            $alumnoPre = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+                            // checamos que no sea nulo
 
-        /**
-         *
-        */
-        if ($request->hasFile('comprobante_ultimo_grado_estudios')) {
-            # llamamos al método
-            $validator = Validator::make($request->all(), [
-                'comprobante_ultimo_grado_estudios' => 'mimes:pdf|max:2048',
-            ]);
-            if ($validator->fails()) {
-                # code...
-                return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                        ->withErrors($validator);
-            } else {
-                $grado_estudios = $request->file('comprobante_ultimo_grado_estudios'); # obtenemos el archivo
-                $url_grado_estudios = $this->uploaded_file($grado_estudios, $AlumnosId, 'comprobante_ultimo_grado_estudios'); #invocamos el método
-                $chk_ultimo_grado_estudios = true;
-            }
-        } else {
-            $chk_ultimo_grado_estudios = false;
-            $url_grado_estudios = '';
-        }
+                            if (!is_null($alumnoPre->fotografia)) {
+                                # si no está nulo y el campo fotografia no presenta ''
+                                if(!empty($alumnoPre->fotografia)){
+                                    $fotografia = explode("/",$alumnoPre->fotografia, 5);
+                                    if (Storage::exists($fotografia[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($fotografia[4]);
+                                    }
+                                }
+                            }
 
-        /**
-         * cargar comprobante_migratorio
-        */
-        if (is_null($request->input('comprobante_migratorio'))) {
-            # verdadero si es null...
-            $url_documento_comprobante_migratorio = '';
-            $chk_comprobante_calidad_migratoria = false;
-        } else {
-            $chk_comprobante_calidad_migratoria = true;
-            # falso si no es null
-            if ($request->hasFile('documento_comprobante_migratorio')) {
-                # llamamos al método
-                $validator = Validator::make($request->all(), [
-                    'documento_comprobante_migratorio' => 'mimes:pdf|max:2048',
-                ]);
-                if ($validator->fails()) {
+                            $fotografia = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($fotografia, $idPre, 'fotografia'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'fotografia' => $url_documento,
+                                'chk_fotografia' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
+
+                    break;
+                case 'credencial_electoral':
+                    # credencial electoral o credencial de elector
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:pdf|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de documento_curp
+                            $alumnoPre = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+                            // checamos que no sea nulo
+
+                            if (!is_null($alumnoPre->ine)) {
+                                # si no está nulo
+                                if (!empty($alumnoPre->ine)) {
+                                    # code...
+                                    $documentoIne = explode("/",$alumnoPre->ine, 5);
+                                    if (Storage::exists($documentoIne[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($documentoIne[4]);
+                                    }
+                                }
+
+                            }
+
+                            $ine = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($ine, $idPre, 'ine'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'ine' => $url_documento,
+                                'chk_ine' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
+
+                    break;
+                case 'pasaporte_licencia_manejo':
+
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:pdf|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de documento_curp
+                            $alumnoPre = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+                            // checamos que no sea nulo
+
+                            if (!is_null($alumnoPre->pasaporte_licencia_manejo)) {
+                                # si no está nulo
+                                if (!empty($alumnoPre->pasaporte_licencia_manejo)) {
+                                    # code...
+                                    $documentoLicenciaManejo = explode("/",$alumnoPre->pasaporte_licencia_manejo, 5);
+                                    if (Storage::exists($documentoLicenciaManejo[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($documentoLicenciaManejo[4]);
+                                    }
+                                }
+                            }
+
+                            $pasaporte_licencia_manejo = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($pasaporte_licencia_manejo, $idPre, 'pasaporte_licencia_manejo'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'pasaporte_licencia_manejo' => $url_documento,
+                                'chk_pasaporte_licencia' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
+                    break;
+                case 'ultimo_grado_estudios':
+
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:pdf|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de documento_curp
+                            $alumnoPre = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+                            // checamos que no sea nulo
+
+                            if (!is_null($alumnoPre->comprobante_ultimo_grado)) {
+                                # si no está nulo
+                                if (!empty($alumnoPre->comprobante_ultimo_grado)) {
+                                    # code...
+                                    $ultimoGradoEstudios = explode("/",$alumnoPre->comprobante_ultimo_grado, 5);
+                                    if (Storage::exists($ultimoGradoEstudios[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($ultimoGradoEstudios[4]);
+                                    }
+                                }
+                            }
+
+                            $comprobante_ultimo_grado = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($comprobante_ultimo_grado, $idPre, 'comprobante_ultimo_grado'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'comprobante_ultimo_grado' => $url_documento,
+                                'chk_comprobante_ultimo_grado' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
+                    break;
+                case 'comprobante_migratorio':
+
+                    if ($request->hasFile('customFile')) {
+                        # llamamos al método
+                        $validator = Validator::make($request->all(), [
+                            'customFile' => 'mimes:pdf|max:2048'
+                        ]);
+                        if ($validator->fails()) {
+                            # code...
+                            return redirect('alumnos/preinscripcion/paso2/'.base64_encode($idPre))
+                                    ->withErrors($validator);
+                        } else {
+                            // obtenemos el valor de documento_curp
+                            $alumnoPre = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+                            // checamos que no sea nulo
+
+                            if (!is_null($alumnoPre->comprobante_calidad_migratoria)) {
+                                # si no está nulo
+                                if (!empty($alumnoPre->comrprobante_calidad_migratoria )) {
+                                    # code...
+                                    $comprobanteCalidadMigratoria = explode("/",$alumnoPre->comprobante_calidad_migratoria, 5);
+                                    if (Storage::exists($comprobanteCalidadMigratoria[4])) {
+                                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                                        Storage::delete($comprobanteCalidadMigratoria[4]);
+                                    }
+                                }
+                            }
+
+                            $comprobante_calidad_migratoria = $request->file('customFile'); # obtenemos el archivo
+                            $url_documento = $this->uploaded_file($comprobante_calidad_migratoria, $idPre, 'comprobante_calidad_migratoria'); #invocamos el método
+                            $chk_documento = true;
+                            // creamos un arreglo
+                            $arregloDocs = [
+                                'comprobante_calidad_migratoria' => $url_documento,
+                                'chk_comprobante_calidad_migratoria' => $chk_documento
+                            ];
+                        }
+                    } else {
+                        $url_documento = '';
+                        $chk_documento = false;
+                    }
+                    break;
+                default:
                     # code...
-                    return redirect('alumnos/sid-paso2/'.base64_encode($AlumnosId))
-                            ->withErrors($validator);
-                } else {
-                    $documento_comprobante_migratorio = $request->file('documento_comprobante_migratorio'); # obtenemos el archivo
-                    $url_documento_comprobante_migratorio = $this->uploaded_file($documento_comprobante_migratorio, $AlumnosId, 'documento_comprobante_migratorio'); #invocamos el método
-                }
-            } else {
-                $url_documento_comprobante_migratorio = '';
+                    break;
             }
+            // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+            Alumnopre::findOrfail($idPre)->update($arregloDocs);
+            $aspirante = Alumnopre::WHERE('id', '=', $idPre)->FIRST();
+
+            $nombre_aspirante = $aspirante->apellido_paterno.' '.$aspirante->apellido_materno.' '.$aspirante->nombre;
+            // limpiamos el arreglo
+            unset($arregloDocs);
+
+            return redirect()->route('alumnos.index')->with('success', sprintf('DOCUMENTO DEL ALUMNO  %s  CARGADO EXTIOSAMENTE!', $nombre_aspirante));
+
         }
-
-        # =================================================================================================================================
-        #
-        #                                               ACTUALIZAR REGISTROS
-        #
-        # =================================================================================================================================
-        $AlumnosUpdate = Alumnopre::findOrfail($AlumnosId);
-
-        $arrayUpdate = [
-            'chk_acta_nacimiento' => $chk_acta_nacimiento,
-            'chk_curp' => $chk_curp,
-            'chk_comprobante_domicilio' => $chk_comprobante_domicilio,
-            'chk_fotografia' => $chk_fotografia,
-            'chk_ine' => $chk_ine,
-            'chk_pasaporte_licencia' => $chk_licencia_manejo,
-            'chk_comprobante_ultimo_grado' => $chk_ultimo_grado_estudios,
-            'chk_comprobante_calidad_migratoria' => $chk_comprobante_calidad_migratoria,
-            'acta_nacimiento' => $url_acta_nacimiento,
-            'documento_curp' => $url_curp,
-            'comprobante_domicilio' => $url_comprobante_domicilio,
-            'fotografia' => $url_fotografia,
-            'ine' => $url_ine,
-            'pasaporte_licencia_manejo' => $url_licencia_manejo,
-            'comprobante_ultimo_grado' => $url_grado_estudios,
-            'comprobante_calidad_migratoria' => $url_documento_comprobante_migratorio,
-            'tiene_documentacion' => true
-        ];
-
-        $AlumnosUpdate->update($arrayUpdate);
-        // destruye el arreglo
-        unset($arrayUpdate);
-        // redireccionamos con un mensaje de éxito
-        return redirect('alumnos/indice')->with('success', sprintf('REGISTRO %d  ACTUALIZADO EXTIOSAMENTE!', $AlumnosId));
     }
 
     public function pdf_registro()
