@@ -146,7 +146,7 @@
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                        <a class="btn btn-danger" href="{{ route('alumnos.index') }}">Regresar</a>
                     </div>
                     @can('alumno.cargar-documento')
                         <div class="pull-right">
