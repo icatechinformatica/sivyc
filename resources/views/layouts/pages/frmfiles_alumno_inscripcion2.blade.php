@@ -53,24 +53,35 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if(!empty($alumnoPre->chk_fotografia) && $alumnoPre->chk_fotografia == true)
+                            <tr>
+                                <td>FOTOGRAFÍA</td>
+                                <td>
+                                    <a href="{{ asset( $alumnoPre->fotografia )}}" class="btn btn-info btn-circle m-1 btn-circle-sm" download="{{ $alumnoPre->fotografia }}" data-toggle="tooltip" data-placement="top" title="FOTOGRAFÍA">
+                                        <i class="fa fa-picture-o" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+
                             @if (!empty($alumnoPre->chk_acta_nacimiento) && $alumnoPre->chk_acta_nacimiento == true)
                             <tr>
                                 <td>
                                     ACTA DE NACIMIENTO
                                 </td>
                                 <td>
-                                    <a href="{{ asset( $alumnoPre->acta_nacimiento )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="ACTA DE NACIMIENTO">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    <a href="{{ asset( $alumnoPre->acta_nacimiento )}}" download="acta_nacimiento_{{ $alumnoPre->curp }}.pdf" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="ACTA DE NACIMIENTO">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
                             @endif
                             @if (!empty($alumnoPre->chk_curp) && $alumnoPre->chk_curp == true)
                             <tr>
-                                <td>CURP</td>
+                                <td>DOCUMENTO CURP</td>
                                 <td>
-                                    <a href="{{ asset( $alumnoPre->documento_curp )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="ACTA DE NACIMIENTO">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    <a href="{{ asset( $alumnoPre->documento_curp )}}" download="copia_curp_{{ $alumnoPre->curp }}.pdf" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="DOCUMENTO CURP">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -79,18 +90,18 @@
                             <tr>
                                 <td>COMPROBANTE DE DOMICILIO</td>
                                 <td>
-                                    <a href="{{ asset( $alumnoPre->comprobante_domicilio )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="COMPROBANTE DE DOMICILIO">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    <a href="{{ asset( $alumnoPre->comprobante_domicilio )}}" download="comprobante_domicilio_{{ $alumnoPre->curp }}.pdf" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="COMPROBANTE DE DOMICILIO">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
                             @endif
                             @if (!empty($alumnoPre->chk_ine) && $alumnoPre->chk_ine == true)
                             <tr>
-                                <td>INE</td>
+                                <td>CREDENCIAL DE ELECTOR</td>
                                 <td>
-                                    <a href="{{ asset( $alumnoPre->ine )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="DESCARGAR INE">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    <a href="{{ asset( $alumnoPre->ine )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" download="credencial_elector_{{ $alumnoPre->curp }}.pdf"  data-toggle="tooltip" data-placement="top" title="CREDENCIAL DE ELECTOR">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -99,8 +110,8 @@
                             <tr>
                                 <td>(PASAPORTE, LICENCIA DE MANEJO)</td>
                                 <td>
-                                    <a href="{{ asset( $alumnoPre->pasaporte_licencia_manejo )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="DESCARGAR INE">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    <a href="{{ asset( $alumnoPre->pasaporte_licencia_manejo )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" download="pasaporte_licencia_manejo_{{ $alumnoPre->curp }}.pdf" data-toggle="tooltip" data-placement="top" title="(PASAPORTE, LICENCIA DE MANEJO)">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -109,28 +120,19 @@
                             <tr>
                                 <td>COMPROBANTE ÚLTIMO GRADO DE ESTUDIOS</td>
                                 <td>
-                                    <a href="{{ asset( $alumnoPre->comprobante_ultimo_grado )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="COMPROBANTE ULTIMO GRADO">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    <a href="{{ asset( $alumnoPre->comprobante_ultimo_grado )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" download="comprobante_ultimo_grado_estudios_{{ $alumnoPre->curp }}.pdf"  data-toggle="tooltip" data-placement="top" title="COMPROBANTE ÚLTIMO GRADO DE ESTUDIOS">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
                             @endif
-                            @if(!empty($alumnoPre->chk_fotografia) && $alumnoPre->chk_fotografia == true)
-                            <tr>
-                                <td>FOTOGRAFÍA</td>
-                                <td>
-                                    <a href="{{ asset( $alumnoPre->fotografia )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="FOTOGRAFÍA">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endif
+
                             @if(!empty($alumnoPre->chk_comprobante_calidad_migratoria) && $alumnoPre->chk_comprobante_calidad_migratoria == true)
                             <tr>
                                 <td>COMPROBANTE DE CALIDAD MIGRATORIA</td>
                                 <td>
-                                    <a href="{{ asset( $alumnoPre->comprobante_calidad_migratoria )}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="FOTOGRAFÍA">
-                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                    <a href="{{ asset( $alumnoPre->comprobante_calidad_migratoria )}}" download="comprobante_calidad_migratoria_{{$alumnoPre->curp}}.pdf" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="COMPROBANTE DE CALIDAD MIGRATORIA">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
