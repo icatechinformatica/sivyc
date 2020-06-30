@@ -103,7 +103,7 @@ class FolioController extends Controller
             //code...
             $folio = new Folio();
             $folio->WHERE([
-                ['id', '=', $matricula],
+                ['id', '=', $id],
                 ['id_curso', '=', $curso]
             ])->update($request->all());
             return response()->json(['success' => 'Folio actualizado exitosamente'], 200);
