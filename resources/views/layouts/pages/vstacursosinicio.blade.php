@@ -31,6 +31,21 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>Catalogo de Cursos</h2>
+
+                    {!! Form::open(['route' => 'curso-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_busqueda" class="form-control mr-sm-2" id="tipo_busqueda">
+                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="especialidad">N° DE CONTROL</option>
+                            <option value="curso">CURSO</option>
+                            <option value="duracion">NOMBRE</option>
+                            <option value="modalidad">NOMBRE</option>
+                            <option value="clasificacion">NOMBRE</option>
+                        </select>
+
+                        {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
+
                 </div>
                 <br>
                 <div class="pull-right">
