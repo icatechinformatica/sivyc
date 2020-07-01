@@ -33,7 +33,7 @@
                     @foreach ($alumnos_pre as $item_alumnos_pre)
                     <tr>
                         <td>{{$item_alumnos_pre->no_control}}</td>
-                        <td>{{$item_alumnos_pre->apellidoPaterno}} {{$item_alumnos_pre->apellidoMaterno}} {{$item_alumnos_pre->nombrealumno}}</td>
+                        <td>{{$item_alumnos_pre->apellido_paterno}} {{$item_alumnos_pre->apellido_materno}} {{$item_alumnos_pre->nombrealumno}}</td>
                     </tr>
                     @endforeach
                 </tbody>
