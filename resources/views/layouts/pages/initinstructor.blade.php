@@ -92,6 +92,9 @@
 
             <tfoot>
                 <tr>
+                    <td colspan="5">
+                        {{ $data->appends(request()->query())->links() }}
+                    </td>
                 </tr>
             </tfoot>
         </table>

@@ -50,17 +50,17 @@ class instructor extends Model
                 switch ($tipo) {
                     case 'clave_instructor':
                         # code...
-                        return $query->where('especialidades.nombre', 'LIKE', "%$buscar%");
+                        return $query->where('numero_control', '=', $buscar);
                         break;
                     case 'nombre_instructor':
                         # code...
-                        return $query->where( 'cursos.nombre_curso', 'LIKE', "%$buscar%");
+                        return $query->where( \DB::raw("CONCAT('apellidoPaterno', ' ','apellidoMaterno',' ',nombre)"), 'LIKE', "%$buscar%");
                         break;
                     case 'telefono_instructor':
-                        return $query->where( 'cursos.horas', '=', "$buscar");
+                        return $query->where( 'telefono', 'LIKE', "%$buscar%");
                         break;
                     case 'estatus_instructor':
-                        return $query->where( 'cursos.modalidad', 'LIKE', "%$buscar%");
+                        return $query->where( 'status', 'LIKE', "%$buscar%");
                         break;
                     default:
                         # code...
