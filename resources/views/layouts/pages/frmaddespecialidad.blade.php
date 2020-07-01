@@ -81,6 +81,41 @@
                         <textarea name="observaciones" id="observaciones" class="form-control" cols="5" rows="8"></textarea>
                     </div>
                 </div>
+                <!--
+                    <hr style="border-color:dimgray">
+                    <h2>Selección de Cursos Validados para Impartir</h2>
+                    <table  id="table-instructor" class="table table-bordered table-responsive-md">
+                    <caption>Catalogo de Instructrores</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Objetivo</th>
+                            <th scope="col">Tipo de curso</th>
+                            <th width="160px">Añadir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        foreach ($cursos as $itemData)
+                            <tr>
+                                <td>{{itemData>nombre_curso}}</td>
+                                <td>{{itemData>objetivo}}</td>
+                                <td>
+                                    if ($itemData->tipo_curso == "ONLINE")
+                                        <label>A DISTANCIA<label>
+                                    else
+                                        <label>PRESENCIAL<label>
+                                    endif
+                                </td>
+                                <td><label>hola</label></td>
+                            </tr>
+                        endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                        </tr>
+                    </tfoot>
+                    </table>
+                -->
                 <br>
                 <div class="form-row">
                     <div class="form-group col-md-1" style="text-align: right;width:0%">

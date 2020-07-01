@@ -507,7 +507,8 @@ class InstructorController extends Controller
         $perfil = instructorPerfil::SELECT('id','grado_profesional')->WHERE('numero_control', '=', $idins)->GET();
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data'));
+        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET();
+        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos'));
     }
 
     public function especval_mod_save(Request $request)
@@ -547,6 +548,21 @@ class InstructorController extends Controller
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');
+    }
+
+    public function alta_baja($id)
+    {
+        $instructor = instructor::findOrfail($id);
+        if($instructor->status == 'Aprobado')
+        {
+            $instructor->status = 'Baja';
+        }
+        else
+        {
+            $instructor->status = 'Aprobado';
+        }
+        $instructor->save();
+        return redirect()->route('instructor-inicio')->with('info', 'El instructor ha sido modificado exitosamente.');
     }
 
     protected function pdf_upload($pdf, $id, $nom)

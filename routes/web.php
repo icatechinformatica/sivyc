@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Ruta Supre busqueda
+Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats');
+
+Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
 
 //Ruta Instructor
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
@@ -22,6 +26,7 @@ Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar
 Route::get('/instructor/editar/especialidad-validada/{id}/{idins}', 'webController\InstructorController@edit_especval')->name('instructor-editespectval');
 Route::get('/instructor/editar/especialidad-valid/{id}/{idins}/{idesp}', 'webController\InstructorController@edit_especval2')->name('instructor-editespectval2');
 Route::get('/instructor/mod/perfil-profesional/{id}/{idins}', 'webController\InstructorController@mod_perfil')->name('instructor-perfilmod');
+Route::get('/instructor/baja-alta/{id}', 'webController\InstructorController@alta_baja')->name('instructor-alta_baja');
 Route::post('/instructor/rechazo','webController\InstructorController@rechazo_save')->name('instructor-rechazo');
 Route::post('/instructor/validado','webController\InstructorController@validado_save')->name('instructor-validado');
 Route::post('/instructor/guardar-mod','webController\InstructorController@guardar_mod')->name('instructor-guardarmod');
