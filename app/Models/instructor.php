@@ -54,13 +54,13 @@ class instructor extends Model
                         break;
                     case 'nombre_instructor':
                         # code...
-                        return $query->where( \DB::raw("CONCAT('apellidoPaterno', ' ','apellidoMaterno',' ',nombre)"), 'LIKE', "%$buscar%");
+                        return $query->where( \DB::raw("CONCAT(apellidoPaterno, ' ',apellidoMaterno,' ',nombre)"), 'LIKE', "%$buscar%");
                         break;
                     case 'telefono_instructor':
                         return $query->where( 'telefono', 'LIKE', "%$buscar%");
                         break;
                     case 'estatus_instructor':
-                        return $query->where( 'status', 'LIKE', "%$buscar%");
+                        return $query->where( 'status', '=', strtolower($buscar));
                         break;
                     default:
                         # code...
