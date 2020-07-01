@@ -15,7 +15,7 @@ class AlumnoRegistradoModificarController extends Controller
      */
     public function index(Request $request)
     {
-        $tipo_alumno_registrado = $request>get('tipo_busqueda_por_alumno_registrado');
+        $tipo_alumno_registrado = $request->get('tipo_busqueda_por_alumno_registrado');
         $busqueda_alumno_registrado = $request->get('busquedaporAlumnoRegistrado');
         //
         $alumnos = Alumno::busqueda($tipo_alumno_registrado, $busqueda_alumno_registrado)->WHERE('alumnos_registro.estatus_modificacion', '=', false)
