@@ -33,16 +33,16 @@
                     <h2>Catalogo de Cursos</h2>
 
                     {!! Form::open(['route' => 'curso-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                        <select name="tipo_busqueda" class="form-control mr-sm-2" id="tipo_busqueda">
+                        <select name="tipo_curso" class="form-control mr-sm-2" id="tipo_curso">
                             <option value="">BUSCAR POR TIPO</option>
-                            <option value="especialidad">N° DE CONTROL</option>
+                            <option value="especialidad">ESPECIALIDAD</option>
                             <option value="curso">CURSO</option>
-                            <option value="duracion">NOMBRE</option>
-                            <option value="modalidad">NOMBRE</option>
-                            <option value="clasificacion">NOMBRE</option>
+                            <option value="duracion">DURACIÓN</option>
+                            <option value="modalidad">MODALIDAD</option>
+                            <option value="clasificacion">CLASIFICACIÓN</option>
                         </select>
 
-                        {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
 
@@ -102,6 +102,13 @@
                     </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="8">
+                        {{ $data->appends(request()->query())->links() }}
+                    </td>
+                </tr>
+            </tfoot>
         </table>
         <br>
         <!-- Full Height Modal Right -->

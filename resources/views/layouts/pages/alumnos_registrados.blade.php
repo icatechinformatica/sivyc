@@ -81,7 +81,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="6">
-                            {{ $alumnos->links() }}
+                            {{ $alumnos->appends(request()->query())->links() }}
                         </td>
                     </tr>
                 </tfoot>

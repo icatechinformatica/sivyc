@@ -25,7 +25,21 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Registro de Instructrores</h2>
+                    <h2>REGISTRO DE INSTRUCTORES</h2>
+
+                    {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
+                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="clave_instructor">CLAVE INSTRUCTOR</option>
+                            <option value="nombre_instructor">NOMBRE</option>
+                            <option value="telefono_instructor">TELÉFONO</option>
+                            <option value="estatus_instructor">ESTATUS</option>
+                        </select>
+
+                        {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
+
                 </div>
                 <br>
                 <div class="pull-right">

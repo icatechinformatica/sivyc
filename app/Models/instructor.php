@@ -41,6 +41,35 @@ class instructor extends Model
         return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
      }
 
+    public function scopeSearchInstructor($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'clave_instructor':
+                        # code...
+                        return $query->where('especialidades.nombre', 'LIKE', "%$buscar%");
+                        break;
+                    case 'nombre_instructor':
+                        # code...
+                        return $query->where( 'cursos.nombre_curso', 'LIKE', "%$buscar%");
+                        break;
+                    case 'telefono_instructor':
+                        return $query->where( 'cursos.horas', '=', "$buscar");
+                        break;
+                    case 'estatus_instructor':
+                        return $query->where( 'cursos.modalidad', 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
+
 
 }
 

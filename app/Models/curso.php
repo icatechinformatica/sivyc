@@ -46,4 +46,40 @@ class curso extends Model
         return Carbon::parse($value)->format('d-m-Y');
     }
 
+    /***
+     * busqueda por parametros
+     * scopes
+     */
+    public function scopeSearchPorCurso($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'especialidad':
+                        # code...
+                        return $query->where('especialidades.nombre', 'LIKE', "%$buscar%");
+                        break;
+                    case 'curso':
+                        # code...
+                        return $query->where( 'cursos.nombre_curso', 'LIKE', "%$buscar%");
+                        break;
+                    case 'duracion':
+                        return $query->where( 'cursos.horas', '=', "$buscar");
+                        break;
+                    case 'modalidad':
+                        return $query->where( 'cursos.modalidad', 'LIKE', "%$buscar%");
+                        break;
+                    case 'clasificacion':
+                        return $query->where( 'cursos.clasificacion', 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
+
 }

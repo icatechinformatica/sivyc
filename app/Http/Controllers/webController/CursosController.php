@@ -21,13 +21,20 @@ class CursosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = curso::SELECT('cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.horas', 'cursos.clasificacion', 'cursos.costo',
-        'cursos.duracion', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
-        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion', 'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre')
-        ->WHERE('cursos.id', '!=', '0')
-        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')->GET();
+        /**
+         *
+         */
+        $buscar_curso = $request->get('busquedaPorCurso');
+
+        $tipoCurso = $request->get('tipo_curso');
+
+        $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
+        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')->PAGINATE(25, [
+            'cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion', 'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
+        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion', 'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre'
+        ]);
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
 

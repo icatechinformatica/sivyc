@@ -91,7 +91,7 @@ class AlumnoRegistradoController extends Controller
                     'alumnos_pre.comprobante_ultimo_grado', 'alumnos_pre.chk_comprobante_calidad_migratoria',
                     'alumnos_pre.comprobante_calidad_migratoria', 'alumnos_pre.puesto_empresa', 'alumnos_pre.sistema_capacitacion_especificar',
                     'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct', 'alumnos_registro.id AS id_registro', 'alumnos_registro.cerrs',
-                    'alumnos_registro.etnia', 'alumnos_registro.unidad'
+                    'alumnos_registro.etnia', 'alumnos_registro.unidad', 'alumnos_registro.etnia', 'alumnos_registro.indigena', 'alumnos_registro.migrante'
                 ]);
 
         return response()->json($alumnos, 200);

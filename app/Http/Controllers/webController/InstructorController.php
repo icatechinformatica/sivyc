@@ -30,10 +30,15 @@ class InstructorController extends Controller
      */
 
      #----- instructor/inicio -----#
-    public function index()
+    public function index(Request $request)
     {
-        $instructor = new instructor();
-        $data = $instructor::where('id', '!=', '0')->latest()->get();
+        $busquedaInstructor = $request->get('busquedaPorInstructor');
+
+        $tipoInstructor = $request->get('tipo_busqueda_instructor');
+
+        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->where('id', '!=', '0')->PAGINATE(25, [
+            'nombre', 'telefono', 'status'
+        ]);
         return view('layouts.pages.initinstructor', compact('data'));
     }
 
