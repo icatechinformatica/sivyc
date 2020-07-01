@@ -60,7 +60,7 @@ class instructor extends Model
                         return $query->where( 'telefono', 'LIKE', "%$buscar%");
                         break;
                     case 'estatus_instructor':
-                        return $query->where( 'status', '=', strtolower($buscar));
+                        return $query->where( 'status', '=', ucwords($buscar));
                         break;
                     default:
                         # code...
