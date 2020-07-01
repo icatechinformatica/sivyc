@@ -321,6 +321,20 @@
                         </div>
                     </div>
                 </div>
+                <hr style="border-color:dimgray">
+                <label><h2>Baja/Alta al Instructor</h2></label>
+                @if ($datains->status == 'Aprobado')
+                    <div class="form-group col-md-8">
+                        <a class="btn btn-danger" id="baja_ins" name="baja_ins" data-toggle="modal" data-target="#alta_bajaModel" data-id="{{$datains->id}}" >Dar de Baja</a>
+                        <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario.</footer>
+                    </div>
+                @else
+                    <div class="form-group col-md-8">
+                        <a class="btn btn-info" id="alta_ins" name="alta_ins" data-toggle="modal" data-target="#alta_bajaModel" data-id="{{$datains->id}}" >Dar de Alta</a>
+                        <footer>El instructor dado de alta puede ser dado de baja de nuevo en cualquier momento necesario.</footer>
+                    </div>
+                @endif
+
                 <br>
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
@@ -332,8 +346,32 @@
                         </div>
                     </div>
                 </div>
-                <br>
+            <br>
         </form>
+        <!--Modal-->
+        <div class="modal fade" id="alta_bajaModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmar Proceso</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Está seguro de cambiar el status del instructor?
+                    </div>
+                    <div class="modal-footer">
+                        <form action="" id="validarForm" method="get">
+                            @csrf
+                            <input type="hidden" name="id">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Validar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 @stop
 

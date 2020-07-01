@@ -21,7 +21,12 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="unidad" name="unidad"  placeholder="unidad">
+                <select name="unidad" id="unidad" class="form-control">
+                    <option value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
+                    @foreach ($unidades as $data )
+                        <option value="{{$data->unidad}}">{{$data->unidad}}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="form-group col-md-5">
                 <label for="mamorandum" class="control-label">Memoramdum No. </label>
@@ -50,15 +55,15 @@
                     <th>Numero Presupuesto</th>
                     <th>Clave Curso</th>
                     <th>Importe total</th>
-                    <!--<th>Iva</th>-->
+                    <th>Iva</th>
                     <th>Acción</th>
                 </tr>
                 <tr>
-                    <td><input type="text" name="addmore[0][folio]" placeholder="folio" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][clavecurso]" placeholder="clave curso" class="form-control" /></td>
-                    <td><input type="text" name="addmore[0][importe]" placeholder="importe total" class="form-control" /></td>
-                    <!--<td><input type="text" name="addmore[0][iva]" placeholder="IVA" class="form-control" /></td>-->
+                    <td><input type="text" name="addmore[0][folio]" id="addmore[0][folio]" placeholder="folio" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][numeropresupuesto]" id="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][clavecurso]" id="addmore[0][clavecurso]" placeholder="clave curso" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][importe]" id="addmore[0][importe]" placeholder="importe total" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][iva]" id="addmore[0][iva]" placeholder="IVA" class="form-control" /></td>
                     <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
                 </tr>
             </table>

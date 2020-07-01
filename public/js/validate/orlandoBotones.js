@@ -106,8 +106,8 @@ $(function(){
     //Botones en tabla modsupre
         $("#addmodsupre").click(function(){
             ++m;
-            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
-            //<td><input type="text" name="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td>
+            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /></td><td><input type="text" name="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
+
         });
 
         $("#mod_supre").click(function(e){
@@ -204,6 +204,14 @@ $(function(){
         var button = $(event.relatedTarget);
         var id = button.data('id');
         $('#validarForm').attr("action", "/contrato/valcontrato/" + id);
+    });
+
+    //Boton Insturctor alta/baja modal
+    $('#alta_bajaModel').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        console.log(id);
+        $('#validarForm').attr("action", "/instructor/baja-alta" + "/" + id);
     });
 
     //Boton Instructor Rechazar

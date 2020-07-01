@@ -10,6 +10,8 @@ use App\ProductoStock;
 use App\Models\cursoValidado;
 use App\Models\supre_directorio;
 use App\Models\directorio;
+use App\Models\criterio_pago;
+use App\Models\tbl_unidades;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PDF;
@@ -48,22 +50,15 @@ class supreController extends Controller
     }
 
     public function frm_formulario() {
-        return view('layouts.pages.delegacionadmin');
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.delegacionadmin', compact('unidades'));
     }
 
     public function store(Request $request) {
         $supre = new supre();
         $curso_validado = new tbl_curso();
         $directorio = new supre_directorio();
-
-        if($request->unidad == "TAPACHULA")
-        {
-            $iva = 0.11;
-        }
-        else
-        {
-            $iva=0.16;
-        }
 
         //Guarda Solicitud
         $supre->unidad_capacitacion = strtoupper($request->unidad);
@@ -87,7 +82,7 @@ class supreController extends Controller
             $folio = new folio();
             $folio->folio_validacion = strtoupper($value['folio']);
             $folio->numero_presupuesto = strtoupper($value['numeropresupuesto']);
-            $folio->iva = $value['importe']*$iva;
+            $folio->iva = $value['iva'];
             $clave = strtoupper($value['clavecurso']);
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
@@ -132,6 +127,10 @@ class supreController extends Controller
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
+
+        $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
+        $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $getsupre->unidad_capacitacion)->GET();
+
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.numero_presupuesto',
                                     'folios.importe_total','folios.iva','tbl_cursos.clave')
                             ->WHERE('id_supre','=', $getsupre->id)
@@ -143,7 +142,7 @@ class supreController extends Controller
         $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
         $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio'));
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio', 'unidadsel','unidadlist'));
     }
 
     public function solicitud_mod_guardar(Request $request)
@@ -175,7 +174,7 @@ class supreController extends Controller
             $folio = new folio();
             $folio->folio_validacion = $value['folio'];
             $folio->numero_presupuesto = $value['numeropresupuesto'];
-            $folio->iva = $value['importe']*0.16;
+            $folio->iva = $value['iva'];
             $clave = $value['clavecurso'];
             $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
@@ -236,6 +235,48 @@ class supreController extends Controller
 
             return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Validado');
+    }
+
+    protected function getcursostats(Request $request)
+    {
+        if (isset($request->valor)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $claveCurso = $request->valor;
+            $Curso = new tbl_curso();
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.horas')
+                                    ->WHERE('clave', '=', $claveCurso)->FIRST();
+
+            if($Cursos != NULL)
+            {
+                if ($Cursos->ze == 'II')
+                {
+                    $criterio = criterio_pago::SELECT('monto_hora_ze2 AS monto')->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                }
+                else
+                {
+                    $criterio = criterio_pago::SELECT('monto_hora_ze3 AS monto')->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                }
+
+                if($criterio != NULL)
+                {
+                    $total = $criterio->monto * $Cursos->horas;
+                }
+                else
+                {
+                    $total = 'N/A';
+                }
+            }
+            else
+            {
+                $total = 'N/A';
+            }
+            $json=json_encode($total);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+
+        return $json;
     }
 
     public function supre_pdf($id){

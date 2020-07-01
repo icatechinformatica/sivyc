@@ -65,7 +65,7 @@
                                     <a class="btn btn-info" href="{{route('instructor-editar', ['id' => $itemData->id])}}">Editar</a>
                                 @endcan
                             @endif
-                            @if ($itemData->status == 'Aprobado')
+                            @if ($itemData->status == 'Aprobado' || $itemData->status == 'Baja')
                                     <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                             @endif
                             @if ($itemData->status == 'Validado')
