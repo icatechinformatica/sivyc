@@ -48,7 +48,7 @@
                     @foreach ($alumnos as $itemAlumnos)
                         <tr>
                             <td>{{$itemAlumnos->no_control}}</td>
-                            <td scope="row">{{$itemAlumnos->apellidoPaterno}} {{$itemAlumnos->apellidoMaterno}} {{$itemAlumnos->nombrealumno}}</td>
+                            <td scope="row">{{$itemAlumnos->apellido_paterno}} {{$itemAlumnos->apellido_materno}} {{$itemAlumnos->nombrealumno}}</td>
                             <td>{{$itemAlumnos->curp_alumno}}</td>
                             <td>{{$itemAlumnos->nombre_curso}}</td>
                             <td>
