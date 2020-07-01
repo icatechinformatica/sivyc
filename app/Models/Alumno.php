@@ -58,6 +58,9 @@ class Alumno extends Model
                         # code...
                         return $query->where('cursos.nombre_curso', 'LIKE', "%$buscar%");
                         break;
+                    case 'curp':
+                        return $query->where('alumnos_pre.curp', '=', $buscar);
+                        break;
                     default:
                         # code...
                         break;
