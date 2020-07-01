@@ -37,7 +37,7 @@ class InstructorController extends Controller
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
 
         $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->where('id', '!=', '0')->PAGINATE(25, [
-            'nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control'
+            'nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id'
         ]);
         return view('layouts.pages.initinstructor', compact('data'));
     }
