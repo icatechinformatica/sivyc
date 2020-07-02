@@ -556,7 +556,7 @@ $(function(){
             var IdEsp = $('#especialidad_sid').val();
             var tipo = $('#tipo_curso').val();
             var datos = { idEsp: IdEsp, tipo: tipo};
-            var url = '/supre/busqueda/curso';
+            var url = '/alumnos/sid/cursos';
             console.log(datos);
 
             var request = $.ajax
