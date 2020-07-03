@@ -42,13 +42,16 @@
                         <th scope="col">NOMBRE</th>
                         <th scope="col">CURP</th>
                         @can('alumno.inscripcion-documento')
-                        <th scope="col">DOCUMENTOS</th>
+                            <th scope="col">DOCUMENTOS</th>
                         @endcan
                         @can('alumnos.inscripcion-paso3')
-                        <th scope="col">ACCIONES</th>
+                            <th scope="col">ACCIONES</th>
                         @endcan
                         @can('alumnos.inscripcion-paso2')
-                        <th scope="col">MODIFICAR</th>
+                            <th scope="col">MODIFICAR</th>
+                        @endcan
+                        @can('alumnos.inscripcion-update-jefe')
+                            <th scope="col">MODIFICAR</th>
                         @endcan
                     </tr>
                 </thead>
@@ -78,6 +81,14 @@
                             @can('alumnos.inscripcion-paso2')
                                 <td>
                                     <a href="{{route('alumnos.presincripcion-modificar', ['id' => base64_encode($itemData->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            @endcan
+
+                            @can('alumnos.inscripcion-update-jefe')
+                                <td>
+                                    <a href="{{route('alumnos.modificar-jefe-unidad', ['id' => base64_encode($itemData->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
                                 </td>

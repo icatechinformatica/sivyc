@@ -181,6 +181,112 @@ $(function(){
         }
     });
 
+    $('#sid_registro_modificacion_jefe_unidad').validate({
+        rules: {
+            nombre_alum_mod: {
+                required: true,
+                minlength: 3
+            },
+            apellido_pat_mod: {
+                required: true,
+                minlength: 3
+            },
+            sexo_mod: {
+                required: true
+            },
+            curp_mod: {
+                required: true,
+                CURP: true
+            },
+            telefono_mod: {
+                required: true,
+            },
+            estado_mod: {
+                required: true
+            },
+            municipio_mod: {
+                required: true
+            },
+            estado_civil_mod: {
+                required: true
+            },
+            discapacidad_mod: {
+                required: true
+            },
+            dia_mod: {
+                required: true
+            },
+            mes_mod: {
+                required: true
+            },
+            anio_mod: {
+                required: true,
+                maxlength: 4,
+                number: true
+            },
+            medio_entero_mod: {
+                required: true
+            },
+            motivos_eleccion_sistema_capacitacion_mod: {
+                required: true
+            },
+            ultimo_grado_estudios_mod: {
+                required: true
+            }
+        },
+        messages: {
+            nombre_alum_mod: {
+                required: 'Por favor ingrese su nombre',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+            },
+            apellido_pat_mod: {
+                required: 'Por favor ingrese su apellido',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+            },
+            sexo_mod: {
+                required: 'Por favor Elegir su genero'
+            },
+            curp_mod: {
+                required: 'Por favor Ingresé la curp',
+            },
+            telefono_mod: {
+                required: 'Por favor, ingrese telefóno',
+            },
+            estado_mod: {
+                required: 'Por favor, seleccione un estado'
+            },
+            municipio_mod: {
+                required: 'Por favor, seleccione el municipio'
+            },
+            estado_civil_mod: {
+                required: 'Por favor, seleccione su estado civil'
+            },
+            discapacidad_mod: {
+                required: 'Por favor seleccione una opción'
+            },
+            ultimo_grado_estudios_mod: {
+                required: "Agregar último grado de estudios"
+            },
+            dia_mod: {
+                required: "Por favor, seleccione el día"
+            },
+            mes_mod: {
+                required: "Por favor, seleccione el mes"
+            },
+            anio_mod: {
+                required: "Por favor, Ingrese el año",
+                maxlength: "Sólo acepta 4 digitos",
+                number: "Sólo se aceptan números"
+            },
+            medio_entero_mod: {
+                required: "Por favor, seleccione una opción"
+            },
+            motivos_eleccion_sistema_capacitacion_mod: {
+                required: "Por favor, seleccione una opción"
+            }
+        }
+    });
+
     /****
      *
      */

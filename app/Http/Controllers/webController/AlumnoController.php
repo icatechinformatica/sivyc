@@ -758,6 +758,32 @@ class AlumnoController extends Controller
         return view('layouts.pages.sid-modificacion', compact('alumno', 'municipios', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio'));
     }
 
+    protected function modifyUpdateChief($id){
+        $grado_estudio = [
+            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO' => 'POSTGRADO'
+        ];
+        $idpre = base64_decode($id);
+        $alumnos = new Alumnopre();
+        $municipio = new Municipio();
+        $estado = new Estado();
+        $municipios = $municipio->all();
+        $estados = $estado->all();
+        $alumno = $alumnos->findOrfail($idpre);
+        $fecha_nac = explode("-", $alumno->fecha_nacimiento);
+        $anio_nac = $fecha_nac[0];
+        $mes_nac = $fecha_nac[1];
+        $dia_nac = $fecha_nac[2];
+        return view('layouts.pages.sid-modificacion-jefe', compact('alumno', 'municipios', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -811,6 +837,54 @@ class AlumnoController extends Controller
                 return redirect()->route('alumnos.index')
                     ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
             }
+    }
+
+    public function updateSidJefeUnidad(Request $request, $idAspirante){
+        if (isset($idAspirante)) {
+            # code...
+            $AlumnoPre = new Alumnopre();
+
+            $dia = trim($request->dia_mod);
+            $mes = trim($request->mes_mod);
+            $anio = trim($request->anio_mod);
+            $fecha_nacimiento = $anio."-".$mes."-".$dia;
+
+            //obtener el estado
+            $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
+
+        # code...
+            $array = [
+                'nombre' => trim($request->nombre_alum_mod),
+                'apellido_paterno' => trim($request->apellido_pat_mod),
+                'apellido_materno' => trim($request->apellido_mat_mod),
+                'sexo' => trim($request->sexo_mod),
+                'fecha_nacimiento' => trim($fecha_nacimiento),
+                'telefono' => trim($request->telefono_mod),
+                'domicilio' => trim($request->domicilio_mod),
+                'colonia' => trim($request->colonia_mod),
+                'cp' => trim($request->codigo_postal_mod),
+                'estado' => trim($nombre_estado_mod[0]->nombre),
+                'municipio' => trim($request->municipio_mod),
+                'estado_civil' => trim($request->estado_civil_mod),
+                'discapacidad' => trim($request->discapacidad_mod),
+                'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
+                'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
+                'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
+                'empresa_trabaja' => trim($request->empresa_mod),
+                'antiguedad' => trim($request->antiguedad_mod),
+                'puesto_empresa' => trim($request->puesto_empresa_mod),
+                'direccion_empresa' => trim($request->direccion_empresa_mod),
+                'curp' => trim($request->curp_mod)
+            ];
+
+            $AspiranteId = base64_decode($idAspirante);
+
+            $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
+
+            $curpAlumno = $request->curp_mod;
+            return redirect()->route('alumnos.index')
+                ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
+        }
     }
     /***
      * METODO
