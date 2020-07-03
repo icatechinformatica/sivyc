@@ -24,8 +24,12 @@ class Instructor extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    function curso_Validado()
+    public function curso_Validado()
     {
         return $this->hasMany(CursoValidado::class);
+    }
+
+    public function instructor_pefil(){
+        return $this->hasMany(InstructorPerfil::class, 'numero_control', 'id');
     }
 }

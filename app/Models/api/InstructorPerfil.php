@@ -17,4 +17,8 @@ class InstructorPerfil extends Model
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    public function instructor(){
+        return $this->belongsTo(Instructor::class, 'numero_control', 'id');
+    }
 }
