@@ -37,14 +37,8 @@ $(function(){
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
                             document.getElementById('addmore['+x+'][importe]').value = respuesta;
-                            if(document.getElementById('unidad').value == 'TAPACHULA')
-                            {
-                                iva = respuesta * 0.11;
-                            }
-                            else
-                            {
-                                iva = respuesta * 0.16;
-                            }
+
+                            iva = respuesta * 0.16;
                             document.getElementById('addmore['+x+'][iva]').value = iva;
                         }else{
 
