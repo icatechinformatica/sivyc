@@ -15,8 +15,7 @@ class InstructoresController extends Controller
      */
     public function index()
     {
-        $instructores = Instructor::WITH('instructor_pefil')
-        ->WHERE('instructores.status', '=', 'Validado')
+        $instructores = Instructor::WHERE('instructores.status', '=', 'Validado')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'instructores.id_especialidad')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')->GET([
             'instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
