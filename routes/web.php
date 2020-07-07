@@ -45,6 +45,13 @@ Route::put('alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoR
 Route::get('/usuarios/permisos/index', 'adminController\UserController@index')->name('usuario_permisos.index');
 Route::get('/usuarios/permisos/perfil/{id}', 'adminController\UserController@show')->name('usuarios_permisos.show');
 Route::get('/permisos/roles/index', 'adminController\PermissionController@index')->name('permisos_roles.index');
+/**
+ * Alumnos sice Registrados
+ */
+Route::get('/alumnos_registrados/sice/index', 'adminController\alumnosRegistroSiceController@index')->name('alumnos_registrados_sice.inicio');
+Route::get('/alumnos_registrados/sice/editar/{id}', 'adminController\alumnosRegistroSiceController@edit')->name('registro_alumnos_sice.modificar.show');
+Route::put('alumnos_registrados/sice/update/{id}', 'adminController\alumnosRegistroSiceController@update')->name('registro_alumnos_sice.modificar.update');
+//
 
 
 
