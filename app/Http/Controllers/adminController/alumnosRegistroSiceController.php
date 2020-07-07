@@ -18,7 +18,7 @@ class alumnosRegistroSiceController extends Controller
         //
         $busqueda_curp = $request->get('busqueda_curp');
         $alumnosRegistradosSice = AlumnosSice::busquedacurp($busqueda_curp)->PAGINATE(30, [
-            'id', 'no_control', 'curp'
+            'id', 'no_control', 'curp', 'estado_modificado'
         ]);
         return view('layouts.pages_admin.registro_alumnos_sice', compact('alumnosRegistradosSice'));
     }
@@ -83,7 +83,7 @@ class alumnosRegistroSiceController extends Controller
         $numero_control = trim($request->numero_control_edit);
         if (!empty(trim($numero_control))){
             // actualizamos los registros
-            AlumnosSice::WHERE('id', $id_registro_sice)->UPDATE(['no_control' => $numero_control]);
+            AlumnosSice::WHERE('id', $id_registro_sice)->UPDATE(['no_control' => $numero_control, 'estado_modificado' => true,]);
 
             return redirect()->route('alumnos_registrados_sice.inicio')
             ->with('success', 'ASPIRANTE MODIFICADO EXTIOSAMENTE!');

@@ -10,7 +10,7 @@ class AlumnosSice extends Model
     protected $table = 'registro_alumnos_sice';
 
     protected $fillable = [
-        'id', 'no_control', 'curp'
+        'id', 'no_control', 'curp', 'estado_modificado'
 
     ];
 
