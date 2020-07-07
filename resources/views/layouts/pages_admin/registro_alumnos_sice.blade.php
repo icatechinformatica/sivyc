@@ -15,16 +15,9 @@
                 <div class="pull-left">
                     <h2>ALUMNOS MATRICULADOS</h2>
 
-                    {!! Form::open(['route' => 'alumno_registrado.modificar.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                        <select name="tipo_busqueda_por_alumno_registrado" class="form-control mr-sm-2" id="tipo_busqueda_por_alumno_registrado">
-                            <option value="">BUSCAR POR TIPO</option>
-                            <option value="no_control">N° DE CONTROL</option>
-                            <option value="nombres">NOMBRE</option>
-                            <option value="curso">CURSO INSCRITO</option>
-                            <option value="curp">CURP</option>
-                        </select>
+                    {!! Form::open(['route' => 'alumnos_registrados_sice.inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
 
-                        {!! Form::text('busquedaporAlumnoRegistrado', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        {!! Form::text('busqueda_curp', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
 
