@@ -65,7 +65,7 @@
                 @foreach ($data as $itemData)
                     <tr>
                     <th scope="row">{{$itemData->numero_control}}</th>
-                        <td>{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
+                        <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
                         <td>{{$itemData->telefono}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
