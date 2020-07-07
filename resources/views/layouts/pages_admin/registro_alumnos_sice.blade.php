@@ -37,7 +37,7 @@
                 </thead>
                 <tbody>
                     @foreach ($alumnosRegistradosSice as $itemRegistradoSice)
-                        <tr {{ ($itemRegistradoSice->estado_modificado == true) ? class="table-success" : "" }}>
+                        <tr {{ ($itemRegistradoSice->estado_modificado == true) ? "class='table-success'" : "" }}>
                             <td>{{$itemRegistradoSice->curp}}</td>
                             <td>{{$itemRegistradoSice->no_control}}</td>
                             <td>
