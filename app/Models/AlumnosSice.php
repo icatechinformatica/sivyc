@@ -14,7 +14,7 @@ class AlumnosSice extends Model
 
     ];
 
-    protected function scopeBusquedaCurp($query, $buscar){
+    public function scopeBusquedaCurp($query, $buscar){
         if (!empty(trim($buscar))) {
             return $query->where('curp', '=', $buscar);
         }
