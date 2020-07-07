@@ -16,6 +16,7 @@ use App\Models\especialidad;
 use App\Models\estado_civil;
 use App\Models\status;
 use App\Models\especialidad_instructor;
+use App\Models\instructorAvailable;
 use App\Models\criterio_pago;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -190,7 +191,51 @@ class InstructorController extends Controller
         $rfcpart = substr($request->rfc, 0, 10);
         $numero_control = $uni.$year.$rfcpart;
         $instructor->numero_control = trim($numero_control);
-            $instructor->save();
+        $instructor->save();
+
+        //Guardado de instructor_available
+        $ins_available = new instructorAvailable();
+        $ins_available->insturctor_id = $request->id;
+            $ins_available->CHK_TUXTLA = TRUE;
+            $ins_available->CHK_TAPACHULA = TRUE;
+            $ins_available->CHK_COMITAN = TRUE;
+            $ins_available->CHK_REFORMA = TRUE;
+            $ins_available->CHK_TONALA = TRUE;
+            $ins_available->CHK_VILLAFLORES = TRUE;
+            $ins_available->CHK_JIQUIPILAS = TRUE;
+            $ins_available->CHK_CATAZAJA = TRUE;
+            $ins_available->CHK_YAJALON = TRUE;
+            $ins_available->CHK_SAN_CRISTOBAL = TRUE;
+            $ins_available->CHK_CHIAPA_DE_CORZO = TRUE;
+            $ins_available->CHK_MOTOZINTLA = TRUE;
+            $ins_available->CHK_BERRIOZABAL = TRUE;
+            $ins_available->CHK_PIJIJIAPAN = TRUE;
+            $ins_available->CHK_JITOTOL = TRUE;
+            $ins_available->CHK_LA_CONCORDIA = TRUE;
+            $ins_available->CHK_VENUSTIANO_CARRANZA = TRUE;
+            $ins_available->CHK_TILA = TRUE;
+            $ins_available->CHK_TEOPISCA = TRUE;
+            $ins_available->CHK_OCOSINGO = TRUE;
+            $ins_available->CHK_CINTALAPA = TRUE;
+            $ins_available->CHK_COPAINALA = TRUE;
+            $ins_available->CHK_SOYALO = TRUE;
+            $ins_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
+            $ins_available->CHK_ARRIAGA = TRUE;
+            $ins_available->CHK_PICHUCALCO = TRUE;
+            $ins_available->CHK_JUAREZ = TRUE;
+            $ins_available->CHK_SIMOJOVEL = TRUE;
+            $ins_available->CHK_MAPASTEPEC = TRUE;
+            $ins_available->CHK_VILLA_CORZO = TRUE;
+            $ins_available->CHK_CACAHOTAN = TRUE;
+            $ins_available->CHK_ONCE_DE_ABRIL = TRUE;
+            $ins_available->CHK_TUXTLA_CHICO = TRUE;
+            $ins_available->CHK_OXCHUC = TRUE;
+            $ins_available->CHK_CHAMULA = TRUE;
+            $ins_available->CHK_OSTUACAN = TRUE;
+            $ins_available->CHK_PALENQUE = TRUE;
+            $ins_available->save();
+
+
             return redirect()->route('instructor-inicio')
             ->with('success','Instructor Validado');
     }
@@ -552,17 +597,158 @@ class InstructorController extends Controller
 
     public function alta_baja($id)
     {
-        $instructor = instructor::findOrfail($id);
-        if($instructor->status == 'Aprobado')
+        $available = instructorAvailable::WHERE('instructor_id', '=', $id)->FIRST();
+        if($available->id == NULL)
         {
-            $instructor->status = 'Baja';
+            if($available->status == 'BAJA')
+            {
+                $val = FALSE;
+            }
+            else
+            {
+                $val = TRUE;
+            }
+            $ins_available = new instructorAvailable();
+            $ins_available->insturctor_id = $id;
+            $ins_available->CHK_TUXTLA = $val;
+            $ins_available->CHK_TAPACHULA = $val;
+            $ins_available->CHK_COMITAN = $val;
+            $ins_available->CHK_REFORMA = $val;
+            $ins_available->CHK_TONALA = $val;
+            $ins_available->CHK_VILLAFLORES = $val;
+            $ins_available->CHK_JIQUIPILAS = $val;
+            $ins_available->CHK_CATAZAJA = $val;
+            $ins_available->CHK_YAJALON = $val;
+            $ins_available->CHK_SAN_CRISTOBAL = $val;
+            $ins_available->CHK_CHIAPA_DE_CORZO = $val;
+            $ins_available->CHK_MOTOZINTLA = $val;
+            $ins_available->CHK_BERRIOZABAL = $val;
+            $ins_available->CHK_PIJIJIAPAN = $val;
+            $ins_available->CHK_JITOTOL = $val;
+            $ins_available->CHK_LA_CONCORDIA = $val;
+            $ins_available->CHK_VENUSTIANO_CARRANZA = $val;
+            $ins_available->CHK_TILA = $val;
+            $ins_available->CHK_TEOPISCA = $val;
+            $ins_available->CHK_OCOSINGO = $val;
+            $ins_available->CHK_CINTALAPA = $val;
+            $ins_available->CHK_COPAINALA = $val;
+            $ins_available->CHK_SOYALO = $val;
+            $ins_available->CHK_ANGEL_ALBINO_CORZO = $val;
+            $ins_available->CHK_ARRIAGA = $val;
+            $ins_available->CHK_PICHUCALCO = $val;
+            $ins_available->CHK_JUAREZ = $val;
+            $ins_available->CHK_SIMOJOVEL = $val;
+            $ins_available->CHK_MAPASTEPEC = $val;
+            $ins_available->CHK_VILLA_CORZO = $val;
+            $ins_available->CHK_CACAHOTAN = $val;
+            $ins_available->CHK_ONCE_DE_ABRIL = $val;
+            $ins_available->CHK_TUXTLA_CHICO = $val;
+            $ins_available->CHK_OXCHUC = $val;
+            $ins_available->CHK_CHAMULA = $val;
+            $ins_available->CHK_OSTUACAN = $val;
+            $ins_available->CHK_PALENQUE = $val;
+            $ins_available->save();
+
+            $available = instructorAvailable::WHERE('instructor_id', '=', $id)->FIRST();
+        }
+        return view('layouts.pages.vstaltabajains', compact('id','available'));
+    }
+
+    public function alta_baja_save(Request $request)
+    {
+        dd($request);
+        $av_mod = instructorAvailable::find($request->id_available);
+        $answer = $this->checkComparator($request->chk_tuxtla);
+        $av_mod->CHK_TUXTLA = $answer;
+        $answer = $this->checkComparator($request->chk_tapachula);
+        $av_mod->CHK_TAPACHULA = $answer;
+        $answer = $this->checkComparator($request->chk_comitan);
+        $av_mod->CHK_COMITAN = $answer;
+        $answer = $this->checkComparator($request->chk_reforma);
+        $av_mod->CHK_REFORMA = $answer;
+        $answer = $this->checkComparator($request->chk_tonala);
+        $av_mod->CHK_TONALA = $answer;
+        $answer = $this->checkComparator($request->chk_villaflores);
+        $av_mod->CHK_VILLAFLORES = $answer;
+        $answer = $this->checkComparator($request->chk_jiquipilas);
+        $av_mod->CHK_JIQUIPILAS = $answer;
+        $answer = $this->checkComparator($request->chk_catazaja);
+        $av_mod->CHK_CATAZAJA = $answer;
+        $answer = $this->checkComparator($request->chk_yajalon);
+        $av_mod->CHK_YAJALON = $answer;
+        $answer = $this->checkComparator($request->chk_san_cristobal);
+        $av_mod->CHK_SAN_CRISTOBAL = $answer;
+        $answer = $this->checkComparator($request->chk_chiapa_de_corzo);
+        $av_mod->CHK_CHIAPA_DE_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_motozintla);
+        $av_mod->CHK_MOTOZINTLA = $answer;
+        $answer = $this->checkComparator($request->chk_berriozabal);
+        $av_mod->CHK_BERRIOZABAL = $answer;
+        $answer = $this->checkComparator($request->chk_pijijiapan);
+        $av_mod->CHK_PIJIJIAPAN = $answer;
+        $answer = $this->checkComparator($request->chk_jitotol);
+        $av_mod->CHK_JITOTOL = $answer;
+        $answer = $this->checkComparator($request->chk_la_concordia);
+        $av_mod->CHK_LA_CONCORDIA = $answer;
+        $answer = $this->checkComparator($request->chk_venustiano_carranza);
+        $av_mod->CHK_VENUSTIANO_CARRANZA = $answer;
+        $answer = $this->checkComparator($request->chk_tila);
+        $av_mod->CHK_TILA = $answer;
+        $answer = $this->checkComparator($request->chk_teopisca);
+        $av_mod->CHK_TEOPISCA = $answer;
+        $answer = $this->checkComparator($request->chk_ocosingo);
+        $av_mod->CHK_OCOSINGO = $answer;
+        $answer = $this->checkComparator($request->chk_cintalapa);
+        $av_mod->CHK_CINTALAPA = $answer;
+        $answer = $this->checkComparator($request->chk_copainala);
+        $av_mod->CHK_COPAINALA = $answer;
+        $answer = $this->checkComparator($request->chk_soyalo);
+        $av_mod->CHK_SOYALO = $answer;
+        $answer = $this->checkComparator($request->chk_angel_albino_corzo);
+        $av_mod->CHK_ANGEL_ALBINO_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_arriaga);
+        $av_mod->CHK_ARRIAGA = $answer;
+        $answer = $this->checkComparator($request->chk_pichucalco);
+        $av_mod->CHK_PICHUCALCO = $answer;
+        $answer = $this->checkComparator($request->chk_juarez);
+        $av_mod->CHK_JUAREZ = $answer;
+        $answer = $this->checkComparator($request->chk_simojovel);
+        $av_mod->CHK_SIMOJOVEL = $answer;
+        $answer = $this->checkComparator($request->chk_mapastepec);
+        $av_mod->CHK_MAPASTEPEC = $answer;
+        $answer = $this->checkComparator($request->chk_villa_corzo);
+        $av_mod->CHK_VILLA_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_cacahoatan);
+        $av_mod->CHK_CACAHOTAN = $answer;
+        $answer = $this->checkComparator($request->chk_once_de_abril);
+        $av_mod->CHK_ONCE_DE_ABRIL = $answer;
+        $answer = $this->checkComparator($request->chk_tuxtla_chico);
+        $av_mod->CHK_TUXTLA_CHICO = $answer;
+        $answer = $this->checkComparator($request->chk_oxchuc);
+        $av_mod->CHK_OXCHUC = $answer;
+        $answer = $this->checkComparator($request->chk_chamula);
+        $av_mod->CHK_CHAMULA = $answer;
+        $answer = $this->checkComparator($request->chk_ostuacan);
+        $av_mod->CHK_OSTUACAN = $answer;
+        $answer = $this->checkComparator($request->chk_palenque);
+        $av_mod->CHK_PALENQUE = $answer;
+        $av_mod->save();
+
+        return redirect()->route('instructor-inicio')
+                ->with('success','Instructor Modificado');
+    }
+
+    protected function checkComparator($check)
+    {
+        if(isset($check))
+        {
+            $stat = TRUE;
         }
         else
         {
-            $instructor->status = 'Aprobado';
+            $stat = FALSE;
         }
-        $instructor->save();
-        return redirect()->route('instructor-inicio')->with('info', 'El instructor ha sido modificado exitosamente.');
+        return $stat;
     }
 
     protected function pdf_upload($pdf, $id, $nom)

@@ -39,6 +39,7 @@ $(function(){
                             document.getElementById('addmore['+x+'][importe]').value = respuesta;
 
                             iva = respuesta * 0.16;
+                            iva = parseFloat(iva).toFixed(2);
                             document.getElementById('addmore['+x+'][iva]').value = iva;
                         }else{
 
