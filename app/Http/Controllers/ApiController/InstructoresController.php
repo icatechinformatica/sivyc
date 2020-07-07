@@ -56,8 +56,8 @@ class InstructoresController extends Controller
             //instructores
             $instructor = new Instructor();
             $instructor->nombre = $request->nombre;
-            $instructor->apellido_paterno = $request->apellido_paterno;
-            $instructor->apellido_materno = $request->apellido_materno;
+            $instructor->apellidoPaterno = $request->apellido_paterno;
+            $instructor->apellidoMaterno = $request->apellido_materno;
             $instructor->curp = $request->curp;
             $instructor->rfc = $request->rfc;
             $instructor->cv = $request->cv;
@@ -79,7 +79,7 @@ class InstructoresController extends Controller
      */
     public function show($nombre,$apaterno,$amaterno)
     {
-        return Instructor::where([['nombre','=',$nombre],['apellido_paterno','=',$apaterno],['apellido_materno','=',$amaterno]])->get();
+        return Instructor::where([['nombre','=',$nombre],['apellidoPaterno','=',$apaterno],['apellidoMaterno','=',$amaterno]])->get();
     }
 
     /**
