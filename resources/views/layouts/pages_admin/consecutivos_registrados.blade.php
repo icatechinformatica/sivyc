@@ -46,7 +46,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="4">{{ $consecutivos_unidad->appends(request()->query())->links() }}</td>
+                        <td colspan="4"></td>
                     </tr>
                 </tfoot>
             </table>
