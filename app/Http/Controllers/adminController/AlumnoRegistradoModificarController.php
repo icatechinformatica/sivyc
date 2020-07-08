@@ -140,7 +140,7 @@ class AlumnoRegistradoModificarController extends Controller
 
         $consecutivos_unidad = Alumno::busqueda($tipo, $request->get('busquedaConsecutivo'))->WHERE('unidad', $request->get('unidades_ubicacion'))
         ->orderBy(DB::raw('(SUBSTRING(no_control, length(no_control)-3, length(no_control)))'), 'ASC')
-        ->PAGINATE(50, [
+        ->GET([
             'no_control',
             DB::raw('(SUBSTRING(no_control FROM 1 FOR 2)) anio '),
             'numero_solicitud',
