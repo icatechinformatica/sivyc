@@ -18,7 +18,7 @@
                     {!! Form::open(['route' => 'alumno_registrado.modificar.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_busqueda_por_alumno_registrado" class="form-control mr-sm-2" id="tipo_busqueda_por_alumno_registrado">
                             <option value="">BUSCAR POR TIPO</option>
-                            <option value="no_control">N° DE CONTROL</option>
+                            <option value="no_control_busqueda">N° DE CONTROL</option>
                             <option value="nombres">NOMBRE</option>
                             <option value="curso">CURSO INSCRITO</option>
                             <option value="curp">CURP</option>
@@ -46,7 +46,7 @@
                 </thead>
                 <tbody>
                     @foreach ($alumnos as $itemAlumnos)
-                        <tr>
+                        <tr {{ ($itemAlumnos->estatus_modificacion == true) ? "class='table-warning'" : "" }}>
                             <td>{{$itemAlumnos->no_control}}</td>
                             <td scope="row">{{$itemAlumnos->apellido_paterno}} {{$itemAlumnos->apellido_materno}} {{$itemAlumnos->nombrealumno}}</td>
                             <td>{{$itemAlumnos->curp_alumno}}</td>

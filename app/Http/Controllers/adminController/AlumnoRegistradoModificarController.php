@@ -18,7 +18,7 @@ class AlumnoRegistradoModificarController extends Controller
         $tipo_alumno_registrado = $request->get('tipo_busqueda_por_alumno_registrado');
         $busqueda_alumno_registrado = $request->get('busquedaporAlumnoRegistrado');
         //
-        $alumnos = Alumno::busqueda($tipo_alumno_registrado, $busqueda_alumno_registrado)->WHERE('alumnos_registro.estatus_modificacion', '=', false)
+        $alumnos = Alumno::busqueda($tipo_alumno_registrado, $busqueda_alumno_registrado)
                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                 ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
@@ -29,7 +29,7 @@ class AlumnoRegistradoModificarController extends Controller
                     'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo', 'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio',
                     'alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id AS id_registro',
                     'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad', 'alumnos_registro.cerrs',
-                    'alumnos_registro.etnia', 'alumnos_registro.id_pre AS preiscripcion'
+                    'alumnos_registro.etnia', 'alumnos_registro.id_pre AS preiscripcion', 'alumnos_registro.estatus_modificacion'
                 ]);
 
         return view('layouts.pages_admin.alumnos_registrados_modify', compact('alumnos'));
