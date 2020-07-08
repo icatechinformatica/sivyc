@@ -97,8 +97,8 @@
                     <tbody>
                         foreach ($cursos as $itemData)
                             <tr>
-                                <td>{{itemData>nombre_curso}}</td>
-                                <td>{{itemData>objetivo}}</td>
+                                <td>itemData>nombre_curso}}</td>
+                                <td>itemData>objetivo}}</td>
                                 <td>
                                     if ($itemData->tipo_curso == "ONLINE")
                                         <label>A DISTANCIA<label>

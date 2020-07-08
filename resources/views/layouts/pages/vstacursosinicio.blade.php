@@ -77,7 +77,7 @@
                     <tr>
                     <th scope="row">{{$itemData->nombre}}</th>
                         <td>{{$itemData->nombre_curso}}</td>
-                        <td>{{$itemData->duracion}}</td>
+                        <td>{{$itemData->horas}}</td>
                         <td>{{$itemData->modalidad}}</td>
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>

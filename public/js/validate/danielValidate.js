@@ -1011,6 +1011,9 @@ $(function(){
                   +     '<b> ESPECIALIDAD: </b> ' + response[0].especialidad
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Curso Tipo: </b> ' + response[0].tipo_curso
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
                   +     '<b> SOLICITUD AUTORIZACION: </b> ' + '<a href="'+response[0].documento_solicitud_autorizacion+'" target="_blank">DOCUMENTO</a>'
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
