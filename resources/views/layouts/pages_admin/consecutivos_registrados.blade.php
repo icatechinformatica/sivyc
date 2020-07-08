@@ -32,6 +32,7 @@
                         <th scope="col">AÑO</th>
                         <th scope="col">CONSECUTIVO</th>
                         <th scope="col">UNIDAD</th>
+                        <th scope="col">ALUMNO PREREGISTRO</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,7 @@
                             <td>{{$itemconsetuvitos->anio}}</td>
                             <td>{{$itemconsetuvitos->consecutivo}}</td>
                             <td>{{ $itemconsetuvitos->unidad }}</td>
+                            <td>{{ $itemconsetuvitos->id_pre }}</td>
                         </tr>
                     @endforeach
                 </tbody>

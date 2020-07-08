@@ -146,7 +146,8 @@ class AlumnoRegistradoModificarController extends Controller
             'numero_solicitud',
             DB::raw('(SUBSTRING(no_control, length(no_control)-3, length(no_control))) consecutivo '),
             'id',
-            'unidad'
+            'unidad',
+            'id_pre'
         ]);
 
         return view('layouts.pages_admin.consecutivos_registrados', compact('consecutivos_unidad'));
