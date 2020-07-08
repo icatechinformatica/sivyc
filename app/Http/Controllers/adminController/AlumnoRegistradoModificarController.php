@@ -5,6 +5,8 @@ namespace App\Http\Controllers\adminController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Alumno;
+use App\Models\tbl_unidades;
+use Illuminate\Support\Facades\DB;
 
 class AlumnoRegistradoModificarController extends Controller
 {
@@ -132,4 +134,27 @@ class AlumnoRegistradoModificarController extends Controller
     {
         //
     }
+
+    public function indexConsecutivo(Request $request){
+        $tipo = 'no_control';
+
+        $consecutivos_unidad = Alumno::busqueda($tipo, $request->get('busquedaConsecutivo'))->WHERE('unidad', $request->get('unidades_ubicacion'))
+        ->orderBy(DB::raw('(SUBSTRING(no_control, length(no_control)-3, length(no_control)))'), 'ASC')
+        ->PAGINATE(50, [
+            'no_control',
+            DB::raw('(SUBSTRING(no_control FROM 1 FOR 2)) anio '),
+            'numero_solicitud',
+            DB::raw('(SUBSTRING(no_control, length(no_control)-3, length(no_control))) consecutivo '),
+            'id',
+            'unidad'
+        ]);
+
+        return view('layouts.pages_admin.consecutivos_registrados', compact('consecutivos_unidad'));
+    }
+
+    public function indexUnidad(){
+        $tblUnidades = tbl_unidades::SELECT('ubicacion')->GROUPBY('ubicacion')->GET(['ubicacion']);
+        return view('layouts.pages_admin.accion_movil', compact('tblUnidades'));
+    }
+
 }
