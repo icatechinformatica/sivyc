@@ -89,6 +89,23 @@
             <form method="POST" id="form_sid_registro" action="{{ route('alumnos.update-sid') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="tblubicacion" class="control-label">UNIDADES</label>
+                        <select class="form-control" id="tblubicacion" name="tblubicacion" required>
+                            <option value="">--SELECCIONAR--</option>
+                            @foreach ($tblUnidades as $itemTblUnidades)
+                                <option value="{{$itemTblUnidades->ubicacion}}">{{$itemTblUnidades->ubicacion}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="tblunidades" class="control-label">UNIDAD O ACCIÓN MÓVIL A LA QUE SE DESEA INSCRIBIRSE</label>
+                        <select class="form-control" id="tblunidades" name="tblunidades" required>
+                            <option value="">--SELECCIONAR--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="especialidad" class="control-label">ESPECIALIDAD A LA QUE DESEA INSCRIBIRSE:</label>
                         <select class="form-control" id="especialidad_sid" name="especialidad_sid" required>
@@ -132,23 +149,6 @@
                             <option value="">--SELECCIONAR--</option>
                             <option value="true">SI</option>
                             <option value="false">NO</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="tblubicacion" class="control-label">UNIDADES</label>
-                        <select class="form-control" id="tblubicacion" name="tblubicacion" required>
-                            <option value="">--SELECCIONAR--</option>
-                            @foreach ($tblUnidades as $itemTblUnidades)
-                                <option value="{{$itemTblUnidades->ubicacion}}">{{$itemTblUnidades->ubicacion}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="tblunidades" class="control-label">UNIDAD O ACCIÓN MÓVIL A LA QUE SE DESEA INSCRIBIRSE</label>
-                        <select class="form-control" id="tblunidades" name="tblunidades" required>
-                            <option value="">--SELECCIONAR--</option>
                         </select>
                     </div>
                 </div>
