@@ -194,8 +194,8 @@ class InstructorController extends Controller
         $instructor->save();
 
         //Guardado de instructor_available
-        $ins_available = new instructorAvailable();
-        $ins_available->insturctor_id = $request->id;
+            $ins_available = new instructorAvailable();
+            $ins_available->insturctor_id = $request->id;
             $ins_available->CHK_TUXTLA = TRUE;
             $ins_available->CHK_TAPACHULA = TRUE;
             $ins_available->CHK_COMITAN = TRUE;
@@ -234,6 +234,7 @@ class InstructorController extends Controller
             $ins_available->CHK_OSTUACAN = TRUE;
             $ins_available->CHK_PALENQUE = TRUE;
             $ins_available->save();
+        //END
 
 
             return redirect()->route('instructor-inicio')
@@ -598,7 +599,7 @@ class InstructorController extends Controller
     public function alta_baja($id)
     {
         $available = instructorAvailable::WHERE('instructor_id', '=', $id)->FIRST();
-        if($available->id == NULL)
+        if($available == NULL)
         {
             if($available->status == 'BAJA')
             {

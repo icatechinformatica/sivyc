@@ -15,9 +15,12 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//Ruta Cursos Alta/Baja
+Route::get('/cursos/alta-baja/{id}', 'webController\CursosController@alta_baja')->name('curso-alta_baja');
+Route::post('/instructor/alta-baja/save','webController\InstructorController@alta_baja_save')->name('instructor-alta-baja-save');
+
 // Ruta Supre busqueda
 Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats');
-
 Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
 
 //Ruta Instructor

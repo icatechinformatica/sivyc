@@ -201,6 +201,12 @@
                 </select>
             </div>
         </div>
+        <hr style="border-color:dimgray">
+        <label><h2>Alta/Baja al Curso</h2></label>
+        <div class="form-group col-md-8">
+            <a class="btn btn-danger" href="{{ route('curso-alta_baja', ['id' => $curso->id]) }}" >Alta/Baja</a>
+            <footer>El curso dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
+        </div>
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
