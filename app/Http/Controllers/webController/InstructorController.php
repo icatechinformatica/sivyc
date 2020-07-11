@@ -195,7 +195,7 @@ class InstructorController extends Controller
 
         //Guardado de instructor_available
             $ins_available = new instructorAvailable();
-            $ins_available->insturctor_id = $request->id;
+            $ins_available->instructor_id = $request->id;
             $ins_available->CHK_TUXTLA = TRUE;
             $ins_available->CHK_TAPACHULA = TRUE;
             $ins_available->CHK_COMITAN = TRUE;
@@ -610,7 +610,7 @@ class InstructorController extends Controller
                 $val = TRUE;
             }
             $ins_available = new instructorAvailable();
-            $ins_available->insturctor_id = $id;
+            $ins_available->instructor_id = $id;
             $ins_available->CHK_TUXTLA = $val;
             $ins_available->CHK_TAPACHULA = $val;
             $ins_available->CHK_COMITAN = $val;
