@@ -12,6 +12,7 @@ use App\Models\Estado;
 use App\Models\especialidad;
 use App\Models\curso;
 use App\Models\tbl_unidades;
+use App\Models\cursoAvailable;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -683,6 +684,21 @@ class AlumnoController extends Controller
 
         return $json;
     }
+
+    protected function checkcursos(Request $request)
+    {
+        if (isset($request->unidad)){
+            $idcurso = $request->idcur;
+            $unidad = 'cursos_available.CHK_' . str_replace(' ', '_', $request->unidad) . ' AS chk';
+            $check = cursoAvailable::SELECT($unidad, 'curso_id')->WHERE('curso_id', '=', $idcurso)->FIRST();
+            $json=json_encode($check);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+        return $json;
+    }
+
 
     protected function getcursos_update(Request $request)
     {

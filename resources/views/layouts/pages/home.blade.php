@@ -72,6 +72,22 @@
                     </div>
                 </div>
               </div>
+              <div class="col mb-4">
+                <div class="card h-100">
+                    <div class="row no-gutters">
+                        <div class="col-md-5" style="background: #ffffff;">
+                            <img src="{{asset("img/blade_icons/catalog.png")}}" class="card-img-top h-80" alt="Catalogos">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card-body">
+                                <h5 class="card-title">Manuales</h5>
+                                <p class="card-text">Aprenda a manejar el modulo que le han asignado de manera eficiente con el sencillo manual que explica paso a paso el manejo del sistema.</p>
+                                <a href="/user/manuales" class="btn btn-primary stretched-link">Manuales</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
             </div>
         </div>
     </div>

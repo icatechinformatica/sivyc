@@ -661,8 +661,10 @@ $(function(){
         $("#especialidad_sid option:selected").each( () => {
             var IdEsp = $('#especialidad_sid').val();
             var tipo = $('#tipo_curso').val();
+            var unidad = $('#tblunidades').val();
             var datos = { idEsp: IdEsp, tipo: tipo};
             var url = '/alumnos/sid/cursos';
+            var url2 = '/alumnos/sid/checkcursos';
             console.log(datos);
 
             var request = $.ajax
@@ -691,7 +693,30 @@ $(function(){
                         $("#cursos_sid").empty();
                         $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                         $.each(respuesta, (k, v) => {
-                            $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                            idcur = v.id;
+                            var data = {unidad: unidad, idcur: idcur};
+                            console.log(data);
+
+                            var request = $.ajax
+                            ({
+                                url: url2,
+                                method: 'POST',
+                                data: data,
+                                dataType: 'json'
+                            });
+
+                            request.done(( resp ) =>
+                            {
+                                if(resp.chk == true)
+                                {
+                                    $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                                }
+                            });
+
+                            request.fail(( jqXHR, textStatus ) =>
+                            {
+                                alert( "Hubo un error: " + textStatus );
+                            });
                         });
                         $("#cursos_sid").focus();
                     }else{

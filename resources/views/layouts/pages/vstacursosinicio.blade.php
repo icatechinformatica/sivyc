@@ -89,7 +89,6 @@
                             </a>
                         </td>
                         @endcan
-
                         <td>
                             <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                 data-toggle="modal" data-placement="top"
