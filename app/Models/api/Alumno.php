@@ -22,7 +22,9 @@ class Alumno extends Model
         'tipo_curso',
         'realizo',
         'cerrs',
-        'etnia'
+        'etnia',
+        'indigena',
+        'migrante'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

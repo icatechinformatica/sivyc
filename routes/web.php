@@ -48,6 +48,14 @@ Route::post('/instructor/alta-baja/save','webController\InstructorController@alt
 Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegistradoModificarController@index')->name('alumno_registrado.modificar.index');
 Route::get('/alumnos_registrados/modificar/show/{id}', 'adminController\AlumnoRegistradoModificarController@edit')->name('alumno_registrado.modificar.show');
 Route::put('alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
+// consecutivos
+Route::get('/registros/unidad/index', 'adminController\AlumnoRegistradoModificarController@indexUnidad')->name('registro_unidad.index');
+Route::post('/alumnos_registrados/consecutivos', 'adminController\AlumnoRegistradoModificarController@indexConsecutivo')->name('registrado_consecutivo.index');
+Route::get('/registrados/consecutivos/index', 'adminController\AlumnoRegistradoModificarController@registradosConsecutivos')->name('registrados.consecutivos');
+/**
+* UNIDADES DE CAPACITACION
+*/
+Route::get('/unidades/unidad_by_ubicacion/{ubicacion}', 'webController\UnidadController@ubicacion');
 
 /***
  * modificación de roles y permisos
@@ -55,6 +63,13 @@ Route::put('alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoR
 Route::get('/usuarios/permisos/index', 'adminController\UserController@index')->name('usuario_permisos.index');
 Route::get('/usuarios/permisos/perfil/{id}', 'adminController\UserController@show')->name('usuarios_permisos.show');
 Route::get('/permisos/roles/index', 'adminController\PermissionController@index')->name('permisos_roles.index');
+/**
+ * Alumnos sice Registrados
+ */
+Route::get('/alumnos_registrados/sice/index', 'adminController\alumnosRegistroSiceController@index')->name('alumnos_registrados_sice.inicio');
+Route::get('/alumnos_registrados/sice/editar/{id}', 'adminController\alumnosRegistroSiceController@edit')->name('registro_alumnos_sice.modificar.show');
+Route::put('alumnos_registrados/sice/update/{id}', 'adminController\alumnosRegistroSiceController@update')->name('registro_alumnos_sice.modificar.update');
+//
 
 
 
@@ -120,7 +135,9 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:alumno.inscrito.edit');
     // modificar la preinscripcion
     Route::get('alumnos/modificar/sid/{id}', 'webController\AlumnoController@showUpdate')->name('alumnos.presincripcion-modificar');
+    Route::get('alumnos/modificar/jefe-unidad/sid/{id}', 'webController\AlumnoController@modifyUpdateChief')->name('alumnos.modificar-jefe-unidad');
     Route::put('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
+    Route::put('alumnos/sid/modificar/jefe-unidad/{idAspirante}', 'webController\AlumnoController@updateSidJefeUnidad')->name('sid.modificar-jefe-unidad')->middleware('can:alumnos.inscripcion-jefe-unidad-update');
     Route::get('alumnos/sid/documento/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoSid')->name('documento.sid');
     // nueva ruta
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail')

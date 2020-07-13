@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use App\Models\Unidad;
 use Illuminate\Support\Facades\DB;
 use SebastianBergmann\Environment\Console;
+use App\Models\AlumnosSice;
 
 class AlumnoController extends Controller
 {
@@ -555,78 +556,113 @@ class AlumnoController extends Controller
         $id = $request->alumno_id;
         $AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
 
-        $unidadesTbl_ = $request->input('tblunidades');
-
         // checamos si el usuario ya existe
         if(!$AlumnosPre) {
             // no se puede encontrar el alumno con el id_alumno
-
         } else {
             // si existe, se tiene que utilizar el mismo número de control
             // obtenemos su número de control
-            $Alumno_ = new Alumno();
-            $Alumnos_ = $Alumno_->WHERE([
-                ['id_pre', '=', $id]
-            ])
-            ->SKIP(0)->TAKE(1)->GET();
-            // aquí veré que obtenemos
-            if(count($Alumnos_)) {
-                // si hay datos obtenemos el número de control
-                $no_control = $Alumnos_[0]->no_control;
+            // primeramente habrá que buscarlo en la tabla AlumnoSice
+            $alumnos_sice = AlumnosSice::WHERE('curp', $AlumnosPre->curp)->GET();
+            // comprobamos si existe algo en la busqueda de la tabla
+            if(count($alumnos_sice) > 0){
+                // registro encontrado
+                $no_control_sice = $alumnos_sice[0]->no_control;
+
+                // hacemos el guardado del alumno con el curso que desea tomar
+                $usuario = Auth::user()->name;
+
+                /**
+                 * funcion alumnos
+                 */
+                $alumno = new Alumno([
+                    'no_control' => $no_control_sice,
+                    'id_especialidad' => $request->input('especialidad_sid'),
+                    'id_curso' => $request->input('cursos_sid'),
+                    'horario' => $request->input('horario'),
+                    'grupo' => $request->input('grupo'),
+                    'unidad' => $request->input('tblunidades'),
+                    'tipo_curso' => $request->input('tipo_curso'),
+                    'realizo' => $usuario,
+                    'cerrs' => $request->input('cerrs')
+                ]);
+
+                $AlumnosPre->alumnos()->save($alumno);
+
+                return redirect('alumnos/registrados')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control_sice));
+
             } else {
-                // no cuenta con registros, por lo tanto se tendrá que generar un nuevo numero de control
-                 /**
-                 * obtener el año correcto
-                 */
-                $date = Carbon::now();
-                $anio = $date->format('Y');
+                // no encontrado
+
+                $unidadesTbl_ = $request->input('tblunidades');
+
+                $Alumno_ = new Alumno();
+                $Alumnos_ = $Alumno_->WHERE([
+                    ['id_pre', '=', $id]
+                ])
+                ->SKIP(0)->TAKE(1)->GET();
+                // aquí veré que obtenemos
+                if(count($Alumnos_)) {
+                    // si hay datos obtenemos el número de control
+                    $no_control = $Alumnos_[0]->no_control;
+                } else {
+                    // no cuenta con registros, por lo tanto se tendrá que generar un nuevo numero de control
+                    /**
+                     * obtener el año correcto
+                     */
+                    $date = Carbon::now();
+                    $anio = $date->format('Y');
+
+                    /**
+                     * obtenemos los dos ultimos digitos de la fecha
+                     */
+                    $anio_division = substr($anio,2,2);
+
+                    /**
+                     * obtenemos el valor de un campo de trabajo
+                     */
+                    $unidades = new Unidad();
+                    $cct_unidades = $unidades->SELECT('cct')
+                                    ->WHERE('unidad', '=', $unidadesTbl_)
+                                    ->GET();
+
+                    /***
+                     * obtener los numeros de las unidades
+                     */
+                    $cla = substr($cct_unidades[0]->cct,0,2); // dos primeros
+
+                    $cli = $cla . substr($cct_unidades[0]->cct,5,5); //ultimos 5 caracteres
+
+                    $cv = substr($cct_unidades[0]->cct,8,2); // ultimos dos caracteres
+
+                    $no_control = $this->setNumeroControl($cli, $anio_division, $cv);
+                }
+
+
+                $usuario = Auth::user()->name;
 
                 /**
-                 * obtenemos los dos ultimos digitos de la fecha
+                 * funcion alumnos
                  */
-                $anio_division = substr($anio,2,2);
+                $alumno = new Alumno([
+                    'no_control' => $no_control,
+                    'id_especialidad' => $request->input('especialidad_sid'),
+                    'id_curso' => $request->input('cursos_sid'),
+                    'horario' => $request->input('horario'),
+                    'grupo' => $request->input('grupo'),
+                    'unidad' => $request->input('tblunidades'),
+                    'tipo_curso' => $request->input('tipo_curso'),
+                    'realizo' => $usuario,
+                    'cerrs' => $request->input('cerrs')
+                ]);
 
-                /**
-                 * obtenemos el valor de un campo de trabajo
-                 */
-                $unidades = new Unidad();
-                $cct_unidades = $unidades->SELECT('cct')
-                                ->WHERE('unidad', '=', $unidadesTbl_)
-                                ->GET();
+                $AlumnosPre->alumnos()->save($alumno);
 
-                /***
-                 * obtener los numeros de las unidades
-                 */
-                $cla = substr($cct_unidades[0]->cct,0,2); // dos primeros
+                return redirect('alumnos/registrados')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control));
 
-                $cli = $cla . substr($cct_unidades[0]->cct,5,5); //ultimos 5 caracteres
-
-                $cv = substr($cct_unidades[0]->cct,8,2); // ultimos dos caracteres
-
-                $no_control = $this->setNumeroControl($cli, $anio_division, $cv);
             }
+
         }
-
-        $usuario = Auth::user()->name;
-
-        /**
-         * funcion alumnos
-         */
-        $alumno = new Alumno([
-            'no_control' => $no_control,
-            'id_especialidad' => $request->input('especialidad_sid'),
-            'id_curso' => $request->input('cursos_sid'),
-            'horario' => $request->input('horario'),
-            'grupo' => $request->input('grupo'),
-            'unidad' => $request->input('tblunidades'),
-            'tipo_curso' => $request->input('tipo_curso'),
-            'realizo' => $usuario,
-            'cerrs' => $request->input('cerrs')
-        ]);
-
-        $AlumnosPre->alumnos()->save($alumno);
-
-        return redirect('alumnos/registrados')->with('success', 'Nuevo Alumno Matriculado Exitosamente!');
 
     }
 
@@ -738,6 +774,32 @@ class AlumnoController extends Controller
         return view('layouts.pages.sid-modificacion', compact('alumno', 'municipios', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio'));
     }
 
+    protected function modifyUpdateChief($id){
+        $grado_estudio = [
+            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO' => 'POSTGRADO'
+        ];
+        $idpre = base64_decode($id);
+        $alumnos = new Alumnopre();
+        $municipio = new Municipio();
+        $estado = new Estado();
+        $municipios = $municipio->all();
+        $estados = $estado->all();
+        $alumno = $alumnos->findOrfail($idpre);
+        $fecha_nac = explode("-", $alumno->fecha_nacimiento);
+        $anio_nac = $fecha_nac[0];
+        $mes_nac = $fecha_nac[1];
+        $dia_nac = $fecha_nac[2];
+        return view('layouts.pages.sid-modificacion-jefe', compact('alumno', 'municipios', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -791,6 +853,54 @@ class AlumnoController extends Controller
                 return redirect()->route('alumnos.index')
                     ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
             }
+    }
+
+    public function updateSidJefeUnidad(Request $request, $idAspirante){
+        if (isset($idAspirante)) {
+            # code...
+            $AlumnoPre = new Alumnopre();
+
+            $dia = trim($request->dia_mod);
+            $mes = trim($request->mes_mod);
+            $anio = trim($request->anio_mod);
+            $fecha_nacimiento = $anio."-".$mes."-".$dia;
+
+            //obtener el estado
+            $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
+
+        # code...
+            $array = [
+                'nombre' => trim($request->nombre_alum_mod),
+                'apellido_paterno' => trim($request->apellido_pat_mod),
+                'apellido_materno' => trim($request->apellido_mat_mod),
+                'sexo' => trim($request->sexo_mod),
+                'fecha_nacimiento' => trim($fecha_nacimiento),
+                'telefono' => trim($request->telefono_mod),
+                'domicilio' => trim($request->domicilio_mod),
+                'colonia' => trim($request->colonia_mod),
+                'cp' => trim($request->codigo_postal_mod),
+                'estado' => trim($nombre_estado_mod[0]->nombre),
+                'municipio' => trim($request->municipio_mod),
+                'estado_civil' => trim($request->estado_civil_mod),
+                'discapacidad' => trim($request->discapacidad_mod),
+                'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
+                'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
+                'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
+                'empresa_trabaja' => trim($request->empresa_mod),
+                'antiguedad' => trim($request->antiguedad_mod),
+                'puesto_empresa' => trim($request->puesto_empresa_mod),
+                'direccion_empresa' => trim($request->direccion_empresa_mod),
+                'curp' => trim($request->curp_mod)
+            ];
+
+            $AspiranteId = base64_decode($idAspirante);
+
+            $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
+
+            $curpAlumno = $request->curp_mod;
+            return redirect()->route('alumnos.index')
+                ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
+        }
     }
     /***
      * METODO
