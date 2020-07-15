@@ -100,7 +100,6 @@
             </div>
             <!--nombre_enlace END-->
         </div>
-
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="status">ARCHIVO DE CONVENIO</label>
@@ -114,6 +113,13 @@
                 <textarea name="direccion" class="form-control" id="direccion">{{$convenios->direccion}}</textarea>
             </div>
         </div>
+        <hr style="border-color:dimgray">
+        <label><h2>Alta/Baja al Convenio</h2></label>
+        <div class="form-group col-md-8">
+            <a class="btn btn-danger" href="{{ route('convenio-alta_baja', ['id' => $convenios->id]) }}" >Alta/Baja</a>
+            <footer>El convenio dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
+        </div>
+        <br>
         <!--botones de enviar y retroceder-->
         <div class="row">
             <div class="col-lg-12 margin-tb">
