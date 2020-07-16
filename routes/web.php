@@ -21,9 +21,11 @@ Route::get('/user/manuales', 'webController\manualController@index')->name('manu
 
 Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcursos');
 
-//Ruta Cursos Alta/Baja
+//Ruta Alta/Baja
 Route::get('/cursos/alta-baja/{id}', 'webController\CursosController@alta_baja')->name('curso-alta_baja');
-Route::post('/instructor/alta-baja/save','webController\InstructorController@alta_baja_save')->name('curso-alta-baja-save');
+Route::post('/cursos/alta-baja/save','webController\CursosController@alta_baja_save')->name('curso-alta-baja-save');
+Route::get('/convenios/alta-baja/{id}', 'webController\ConveniosController@alta_baja')->name('convenio-alta_baja');
+Route::post('/Convenios/alta-baja/save','webController\ConveniosController@alta_baja_save')->name('convenio-alta-baja-save');
 
 // Ruta Supre busqueda
 Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats');

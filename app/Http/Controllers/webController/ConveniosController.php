@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Models\Municipio;
+use App\Models\convenioAvailable;
 use Carbon\Carbon;
 
 class ConveniosController extends Controller
@@ -223,9 +224,151 @@ class ConveniosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function alta_baja($id)
     {
-        //
+        $available = convenioAvailable::WHERE('convenio_id', '=', $id)->FIRST();
+        if($available == NULL)
+        {
+            $conv_available = new convenioAvailable();
+            $conv_available->convenio_id = $id;
+            $conv_available->CHK_TUXTLA = TRUE;
+            $conv_available->CHK_TAPACHULA = TRUE;
+            $conv_available->CHK_COMITAN = TRUE;
+            $conv_available->CHK_REFORMA = TRUE;
+            $conv_available->CHK_TONALA = TRUE;
+            $conv_available->CHK_VILLAFLORES = TRUE;
+            $conv_available->CHK_JIQUIPILAS = TRUE;
+            $conv_available->CHK_CATAZAJA = TRUE;
+            $conv_available->CHK_YAJALON = TRUE;
+            $conv_available->CHK_SAN_CRISTOBAL = TRUE;
+            $conv_available->CHK_CHIAPA_DE_CORZO = TRUE;
+            $conv_available->CHK_MOTOZINTLA = TRUE;
+            $conv_available->CHK_BERRIOZABAL = TRUE;
+            $conv_available->CHK_PIJIJIAPAN = TRUE;
+            $conv_available->CHK_JITOTOL = TRUE;
+            $conv_available->CHK_LA_CONCORDIA = TRUE;
+            $conv_available->CHK_VENUSTIANO_CARRANZA = TRUE;
+            $conv_available->CHK_TILA = TRUE;
+            $conv_available->CHK_TEOPISCA = TRUE;
+            $conv_available->CHK_OCOSINGO = TRUE;
+            $conv_available->CHK_CINTALAPA = TRUE;
+            $conv_available->CHK_COPAINALA = TRUE;
+            $conv_available->CHK_SOYALO = TRUE;
+            $conv_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
+            $conv_available->CHK_ARRIAGA = TRUE;
+            $conv_available->CHK_PICHUCALCO = TRUE;
+            $conv_available->CHK_JUAREZ = TRUE;
+            $conv_available->CHK_SIMOJOVEL = TRUE;
+            $conv_available->CHK_MAPASTEPEC = TRUE;
+            $conv_available->CHK_VILLA_CORZO = TRUE;
+            $conv_available->CHK_CACAHOTAN = TRUE;
+            $conv_available->CHK_ONCE_DE_ABRIL = TRUE;
+            $conv_available->CHK_TUXTLA_CHICO = TRUE;
+            $conv_available->CHK_OXCHUC = TRUE;
+            $conv_available->CHK_CHAMULA = TRUE;
+            $conv_available->CHK_OSTUACAN = TRUE;
+            $conv_available->CHK_PALENQUE = TRUE;
+            $conv_available->save();
+
+            $available = convenioAvailable::WHERE('instructor_id', '=', $id)->FIRST();
+        }
+        return view('layouts.pages.vstaltabajains', compact('id','available'));
+    }
+
+    public function alta_baja_save(Request $request)
+    {
+        dd($request);
+        $av_mod = convenioAvailable::find($request->id_available);
+        $answer = $this->checkComparator($request->chk_tuxtla);
+        $av_mod->CHK_TUXTLA = $answer;
+        $answer = $this->checkComparator($request->chk_tapachula);
+        $av_mod->CHK_TAPACHULA = $answer;
+        $answer = $this->checkComparator($request->chk_comitan);
+        $av_mod->CHK_COMITAN = $answer;
+        $answer = $this->checkComparator($request->chk_reforma);
+        $av_mod->CHK_REFORMA = $answer;
+        $answer = $this->checkComparator($request->chk_tonala);
+        $av_mod->CHK_TONALA = $answer;
+        $answer = $this->checkComparator($request->chk_villaflores);
+        $av_mod->CHK_VILLAFLORES = $answer;
+        $answer = $this->checkComparator($request->chk_jiquipilas);
+        $av_mod->CHK_JIQUIPILAS = $answer;
+        $answer = $this->checkComparator($request->chk_catazaja);
+        $av_mod->CHK_CATAZAJA = $answer;
+        $answer = $this->checkComparator($request->chk_yajalon);
+        $av_mod->CHK_YAJALON = $answer;
+        $answer = $this->checkComparator($request->chk_san_cristobal);
+        $av_mod->CHK_SAN_CRISTOBAL = $answer;
+        $answer = $this->checkComparator($request->chk_chiapa_de_corzo);
+        $av_mod->CHK_CHIAPA_DE_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_motozintla);
+        $av_mod->CHK_MOTOZINTLA = $answer;
+        $answer = $this->checkComparator($request->chk_berriozabal);
+        $av_mod->CHK_BERRIOZABAL = $answer;
+        $answer = $this->checkComparator($request->chk_pijijiapan);
+        $av_mod->CHK_PIJIJIAPAN = $answer;
+        $answer = $this->checkComparator($request->chk_jitotol);
+        $av_mod->CHK_JITOTOL = $answer;
+        $answer = $this->checkComparator($request->chk_la_concordia);
+        $av_mod->CHK_LA_CONCORDIA = $answer;
+        $answer = $this->checkComparator($request->chk_venustiano_carranza);
+        $av_mod->CHK_VENUSTIANO_CARRANZA = $answer;
+        $answer = $this->checkComparator($request->chk_tila);
+        $av_mod->CHK_TILA = $answer;
+        $answer = $this->checkComparator($request->chk_teopisca);
+        $av_mod->CHK_TEOPISCA = $answer;
+        $answer = $this->checkComparator($request->chk_ocosingo);
+        $av_mod->CHK_OCOSINGO = $answer;
+        $answer = $this->checkComparator($request->chk_cintalapa);
+        $av_mod->CHK_CINTALAPA = $answer;
+        $answer = $this->checkComparator($request->chk_copainala);
+        $av_mod->CHK_COPAINALA = $answer;
+        $answer = $this->checkComparator($request->chk_soyalo);
+        $av_mod->CHK_SOYALO = $answer;
+        $answer = $this->checkComparator($request->chk_angel_albino_corzo);
+        $av_mod->CHK_ANGEL_ALBINO_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_arriaga);
+        $av_mod->CHK_ARRIAGA = $answer;
+        $answer = $this->checkComparator($request->chk_pichucalco);
+        $av_mod->CHK_PICHUCALCO = $answer;
+        $answer = $this->checkComparator($request->chk_juarez);
+        $av_mod->CHK_JUAREZ = $answer;
+        $answer = $this->checkComparator($request->chk_simojovel);
+        $av_mod->CHK_SIMOJOVEL = $answer;
+        $answer = $this->checkComparator($request->chk_mapastepec);
+        $av_mod->CHK_MAPASTEPEC = $answer;
+        $answer = $this->checkComparator($request->chk_villa_corzo);
+        $av_mod->CHK_VILLA_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_cacahoatan);
+        $av_mod->CHK_CACAHOTAN = $answer;
+        $answer = $this->checkComparator($request->chk_once_de_abril);
+        $av_mod->CHK_ONCE_DE_ABRIL = $answer;
+        $answer = $this->checkComparator($request->chk_tuxtla_chico);
+        $av_mod->CHK_TUXTLA_CHICO = $answer;
+        $answer = $this->checkComparator($request->chk_oxchuc);
+        $av_mod->CHK_OXCHUC = $answer;
+        $answer = $this->checkComparator($request->chk_chamula);
+        $av_mod->CHK_CHAMULA = $answer;
+        $answer = $this->checkComparator($request->chk_ostuacan);
+        $av_mod->CHK_OSTUACAN = $answer;
+        $answer = $this->checkComparator($request->chk_palenque);
+        $av_mod->CHK_PALENQUE = $answer;
+        $av_mod->save();
+
+        return redirect('/convenios/indice')->with('success', 'Convenio Modificado exitosamente!');
+    }
+
+    protected function checkComparator($check)
+    {
+        if(isset($check))
+        {
+            $stat = TRUE;
+        }
+        else
+        {
+            $stat = FALSE;
+        }
+        return $stat;
     }
 
     protected function uploaded_file($file, $id, $name)
