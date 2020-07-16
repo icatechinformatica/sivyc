@@ -63,6 +63,13 @@
                     </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        {{ $data->appends(request()->query())->links() }}
+                    </td>
+                </tr>
+            </tfoot>
         </table>
         <br>
     </div>
