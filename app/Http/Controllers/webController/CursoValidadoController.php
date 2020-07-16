@@ -25,15 +25,20 @@ class CursoValidadoController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function cv_inicio() {
-        $cd = new tbl_curso();
-        $data = $cd::SELECT('tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
-                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                            'tbl_cursos.inicio','tbl_cursos.termino')
+    public function cv_inicio(Request $request) {
+        // parametros de busqueda
+        $buscarcursoValidado = $request->get('busqueda_curso_validado');
+
+        $tipoCursoValidad = $request->get('tipobusquedacursovalidado');
+
+        $data = tbl_curso::busquedacursovalidado($tipoCursoValidad, $buscarcursoValidado)
                     ->WHERE('tbl_cursos.clave', '!=', '0')
                     ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
                     ->LEFTJOIN('instructores','instructores.id','=','tbl_cursos.id_instructor')
-                    ->GET();
+                    ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
+                    'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                    'tbl_cursos.inicio','tbl_cursos.termino']);
+
         return view('layouts.pages.vstacvinicio', compact('data'));
     }
 

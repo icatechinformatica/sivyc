@@ -24,4 +24,32 @@ class tbl_curso extends Model
     public function instructor() {
         return $this->belongsTo(instructor::class, 'id_instructor');
     }
+
+    // scope
+    public function scopeBusquedaCursoValidado($query, $tipo, $buscar){
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'clave':
+                        # code...
+                        return $query->WHERE('clave', '=', $buscar);
+                        break;
+                    case 'nombre_curso':
+                        # code...
+                        return $query->where( 'nombre', 'LIKE', "%$buscar%");
+                        break;
+                    case 'instructor':
+                        # code...
+                        return $query->where( \DB::raw('CONCAT("instructores.nombre", '."' '".' , "instructores.apellidoPaterno", '."' '".' , "instructores.apellidoMaterno")'), 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
+
 }
