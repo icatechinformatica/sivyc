@@ -65,7 +65,6 @@ class CursosController extends Controller
     public function store(Request $request)
     {
         //
-        dd($request);
         try {
             //validación de archivos
 
