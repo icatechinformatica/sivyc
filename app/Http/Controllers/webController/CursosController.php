@@ -409,7 +409,7 @@ class CursosController extends Controller
         if($available == NULL)
         {
             $ins_available = new cursoAvailable();
-            $ins_available->insturctor_id = $id;
+            $ins_available->curso_id = $id;
             $ins_available->CHK_TUXTLA = TRUE;
             $ins_available->CHK_TAPACHULA = TRUE;
             $ins_available->CHK_COMITAN = TRUE;
