@@ -51,7 +51,7 @@
         <div class="form-row">
             <div class="form-group col-md-6"> <!-- Destinatario -->
                 <label for="iddestino" class="control-label">Destinatario</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
+                <input type="text" class="form-control" aria-required="true" value="{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
             </div>
             <div class="form-group col-md-6"> <!-- Puesto-->
                 <label for="idpuesto" class="control-label">Puesto</label>
@@ -74,8 +74,8 @@
                     <td><input type="text" id="addmore[{{$key}}][folio]" name="addmore[{{$key}}][folio]" value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="{{ $data->numero_presupuesto }}" placeholder="numero presupuesto" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" value="{{ $data->clave}}" placeholder="clave curso" class="form-control" /></td>
-                    <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" /></td>
-                    <td><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" readonly /></td>
+                    <td><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" readonly /></td>
                     <input hidden id="addmore[{{$key}}][id_cursos]" name="addmore[{{$key}}][id_cursos]" value="{{$data->id_cursos}}">
                     @if ($key == 0)
                     <td><button type="button" name="addmodsupre" id="addmodsupre" class="btn btn-success">Agregar</button></td>
