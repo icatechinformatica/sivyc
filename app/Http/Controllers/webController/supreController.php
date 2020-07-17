@@ -243,7 +243,7 @@ class supreController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;
             $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.horas')
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
@@ -259,7 +259,7 @@ class supreController extends Controller
 
                 if($criterio != NULL)
                 {
-                    $total = $criterio->monto * $Cursos->horas;
+                    $total = $criterio->monto * $Cursos->dura;
                 }
                 else
                 {
