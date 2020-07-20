@@ -286,7 +286,8 @@ class supreController extends Controller
         $data_folio = $folio::WHERE('id_supre', '=', $id)->GET();
         $date = strtotime($data_supre->fecha);
         $D = date('d', $date);
-        $M = date('m',$date);
+        $MO = date('m',$date);
+        $M = $this->monthToString(date('m',$date));
         $Y = date("Y",$date);
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
@@ -306,7 +307,7 @@ class supreController extends Controller
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura')
                     ->WHERE('id_supre', '=', $id )
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -319,12 +320,12 @@ class supreController extends Controller
 
         $date = strtotime($data2->fecha);
         $D = date('d', $date);
-        $M = date('m',$date);
+        $M = $this->monthToString(date('m',$date));
         $Y = date("Y",$date);
 
         $datev = strtotime($data2->fecha_validacion);
         $Dv = date('d', $datev);
-        $Mv = date('m',$datev);
+        $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
         $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente'));
@@ -342,7 +343,7 @@ class supreController extends Controller
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.horas')
+                        'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura')
                     ->WHERE('id_supre', '=', $id )
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -353,12 +354,12 @@ class supreController extends Controller
 
         $date = strtotime($data2->fecha);
         $D = date('d', $date);
-        $M = date('m',$date);
+        $M = $this->monthToString(date('m',$date));
         $Y = date("Y",$date);
 
         $datev = strtotime($data2->fecha_validacion);
         $Dv = date('d', $datev);
-        $Mv = date('m',$datev);
+        $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
@@ -379,4 +380,57 @@ class supreController extends Controller
         return view('layouts.pdfpages.valsupre', compact('data','data2'));
     }
 
+    protected function monthToString($month)
+    {
+        switch ($month)
+        {
+            case 1:
+                return 'ENERO';
+            break;
+
+            case 2:
+                return 'FEBRERO';
+            break;
+
+            case 3:
+                return 'MARZO';
+            break;
+
+            case 4:
+                return 'ABRIL';
+            break;
+
+            case 5:
+                return 'MAYO';
+            break;
+
+            case 6:
+                return 'JUNIO';
+            break;
+
+            case 7:
+                return 'JULIO';
+            break;
+
+            case 8:
+                return 'AGOSTO';
+            break;
+
+            case 9:
+                return 'SEPTIEMBRE';
+            break;
+
+            case 10:
+                return 'OCTUBRE';
+            break;
+
+            case 11:
+                return 'NOVIEMBRE';
+            break;
+
+            case 12:
+                return 'DICIEMBRE';
+            break;
+        }
+    }
 }
