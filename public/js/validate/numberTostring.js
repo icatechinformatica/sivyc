@@ -4,7 +4,7 @@ $(function() {
     salida = $("#cantidad_letras");
 
     // escuchar el click
-    $("#cantidad_numero").keyup(function () {
+    $(document).ready(function () {
         // Obtener valor que hay en el input
         valor = parseFloat($("#cantidad_numero").val());
         // Simple validación

@@ -112,7 +112,7 @@
                                 <td><small>{{$item->curso_nombre}}</small></td>
                                 <td><small>{{$item->clave}}</small></td>
                                 <td><small>{{$item->ze}}</small></td>
-                                <td><small>{{$item->horas}}</small></td>
+                                <td><small>{{$item->dura}}</small></td>
                                 <td><small>{{$item->importe_hora}}</small></td>
                                 <td><small>{{$item->iva}}</small></td>
                                 <td><small>12101 Honorarios</small></td>

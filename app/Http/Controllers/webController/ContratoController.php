@@ -41,7 +41,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -319,7 +319,7 @@ class ContratoController extends Controller
 
         $date = strtotime($data->created_at);
         $D = date('d', $date);
-        $M = date('m',$date);
+        $M = $this->toMonth(date('m',$date));
         $Y = date("Y",$date);
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();

@@ -44,7 +44,7 @@
                             <td scope="col" class="text-center"><small>{{$item->curso_nombre}}</td>
                             <td scope="col" class="text-center"><small>{{$item->clave}}</small></td>
                             <td scope="col" class="text-center"><small>{{$item->ze}}</small></td>
-                            <td scope="col" class="text-center"><small>{{$item->horas}}</small></td>
+                            <td scope="col" class="text-center"><small>{{$item->dura}}</small></td>
                             <td scope="col" class="text-center"><small>{{$item->importe_hora}}</td>
                             <td scope="col" class="text-center"><small>{{$item->iva}}</td>
                             <td scope="col" class="text-center"><small>12101 Honorarios</td>
