@@ -259,4 +259,7 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::get('financiero/indice', 'webController\FinancieroController@index')
            ->name('financiero.index');
+    Route::get('reportes/formato_t_reporte/index', function () {
+        return view('layouts.pages.reportes.formato_t_reporte');
+    })->name('reportes.formatoT');
 });

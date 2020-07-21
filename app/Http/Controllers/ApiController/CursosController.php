@@ -5,6 +5,8 @@ namespace App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\api\Curso;
+use App\Models\api\Calificacion;
+use App\Models\api\Inscripcion;
 use Illuminate\Http\Response;
 
 class CursosController extends Controller
@@ -144,6 +146,31 @@ class CursosController extends Controller
         try {
             $Cursos= new Curso();
             $Cursos->whereId($id)->update($request->all());
+            // parte de calificaciones
+            $Calificacion = new Calificacion();
+            $Calificacion->WHERE('idcurso', $id)->update([
+                'instructor' => $request->instructor,
+                'idgrupo' => $request->idgrupo,
+                'espe' => $request->espe,
+                'curso' => $request->curso,
+                'mod' => $request->mod,
+                'inicio' => $request->inicio,
+                'termino' => $request->termino,
+                'hini' => $request->hini,
+                'hfin' => $request->hfin,
+                'dura' => $request->dura
+            ]);
+            // parte de inscripciones
+            $Inscripcion = new Inscripcion();
+            $Inscripcion->WHERE('id_curso', $id)->update([
+                'instructor' => $request->instructor,
+                'curso' => $request->curso,
+                'inicio' => $request->inicio,
+                'termino' => $request->termino,
+                'hinicio' => $request->hinicio,
+                'hfin' => $request->hfin,
+                'munidad' => $request->munidad
+            ]);
             return response()->json(['success' => 'Curso actualizado exitosamente'], 200);
         } catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
