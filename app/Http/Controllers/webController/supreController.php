@@ -84,19 +84,19 @@ class supreController extends Controller
             $folio->numero_presupuesto = strtoupper($value['numeropresupuesto']);
             $folio->iva = $value['iva'];
             $clave = strtoupper($value['clavecurso']);
-            $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
+            $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
-            $X = $hora->horas;
+            $X = $hora->dura;
             if ($X != NULL)
             {
-                if (strpos($hora->horas, " ")) {
+                if (strpos($hora->dura, " ")) {
                     # si tiene un espacio en blanco la cadena
-                    $str_horas = explode (" ", $hora->horas);
+                    $str_horas = explode (" ", $hora->dura);
                     $horas = (int) $str_horas[0];
                 } else {
-                    $horas = (int) $hora->horas;
+                    $horas = (int) $hora->dura;
                 }
                 $importe_hora = $importe / $horas;
                 $folio->importe_hora = $importe_hora;
@@ -176,11 +176,11 @@ class supreController extends Controller
             $folio->numero_presupuesto = $value['numeropresupuesto'];
             $folio->iva = $value['iva'];
             $clave = $value['clavecurso'];
-            $hora = $curso_validado->SELECT('tbl_cursos.horas','tbl_cursos.id')
+            $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
             $importe = $value['importe'];
-            $importe_hora = $importe / $hora->horas;
+            $importe_hora = $importe / $hora->dura;
             $folio->importe_hora = $importe_hora;
             $folio->importe_total = $value['importe'];
             $folio->id_supre = $id->id;
