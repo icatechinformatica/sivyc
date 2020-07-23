@@ -56,6 +56,7 @@
                     <th>Clave Curso</th>
                     <th>Importe total</th>
                     <th>Iva</th>
+                    <th>Observación</th>
                     <th>Acción</th>
                 </tr>
                 <tr>
@@ -64,6 +65,7 @@
                     <td><input type="text" name="addmore[0][clavecurso]" id="addmore[0][clavecurso]" placeholder="clave curso" class="form-control" /></td>
                     <td><input type="text" name="addmore[0][importe]" id="addmore[0][importe]" placeholder="importe total" class="form-control" readonly/></td>
                     <td><input type="text" name="addmore[0][iva]" id="addmore[0][iva]" placeholder="IVA" class="form-control" readonly /></td>
+                    <td><input type="text" name="addmore[0][comentario]" id="addmore[0][comentario]" placeholder="Comentario" class="form-control" /></td>
                     <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
                 </tr>
             </table>

@@ -49,7 +49,7 @@
                             <td scope="col" class="text-center"><small>{{$item->iva}}</td>
                             <td scope="col" class="text-center"><small>12101 Honorarios</td>
                             <td scope="col" class="text-center"><small>{{$item->importe_total}}</td>
-                            <td scope="col" class="text-center"><small></small></td>
+                            <td scope="col" class="text-center"><small>{{$item->comentario}}</small></td>
 
                         </tr>
                     @endforeach

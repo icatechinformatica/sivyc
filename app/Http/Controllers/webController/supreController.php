@@ -83,6 +83,7 @@ class supreController extends Controller
             $folio->folio_validacion = strtoupper($value['folio']);
             $folio->numero_presupuesto = strtoupper($value['numeropresupuesto']);
             $folio->iva = $value['iva'];
+            $folio->comentario = $value['comentario'];
             $clave = strtoupper($value['clavecurso']);
             $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
@@ -131,7 +132,7 @@ class supreController extends Controller
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
         $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $getsupre->unidad_capacitacion)->GET();
 
-        $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.numero_presupuesto',
+        $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.numero_presupuesto','folios.comentario',
                                     'folios.importe_total','folios.iva','tbl_cursos.clave')
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -147,12 +148,13 @@ class supreController extends Controller
 
     public function solicitud_mod_guardar(Request $request)
     {
+        //dd($request);
         $supre = new supre();
         $curso_validado = new tbl_curso();
 
         supre::where('id', '=', $request->id_supre)
         ->update(['status' => 'En_Proceso',
-                  'unidad_capacitacion' => $request->unidad_capacitacion,
+                  'unidad_capacitacion' => $request->unidad,
                   'no_memo' => $request->no_memo,
                   'fecha' => $request->fecha]);
 
@@ -175,6 +177,7 @@ class supreController extends Controller
             $folio->folio_validacion = $value['folio'];
             $folio->numero_presupuesto = $value['numeropresupuesto'];
             $folio->iva = $value['iva'];
+            $folio->comentario = $value['comentario'];
             $clave = $value['clavecurso'];
             $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
@@ -306,7 +309,7 @@ class supreController extends Controller
         $supre = new supre;
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
-                        'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
+                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
                         'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura')
                     ->WHERE('id_supre', '=', $id )
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -342,7 +345,7 @@ class supreController extends Controller
         $supre = new supre;
         $curso = new tbl_curso;
         $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
-                        'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
+                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
                         'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura')
                     ->WHERE('id_supre', '=', $id )
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
