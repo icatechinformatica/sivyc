@@ -105,7 +105,7 @@
                     <tbody>
                         @foreach ($data as $key=>$item)
                             <tr>
-                                <td><small>{{$item->numero_presupuesto}}</small></td>
+                                <td><small>{{$item->folio_validacion}}</small></td>
                                 <td><small>{{$item->fecha}}</small></td>
                                 <td><small>{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
                                 <td><small>{{$item->unidad}}</small></td>

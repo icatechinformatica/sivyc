@@ -37,7 +37,7 @@
                 <tbody>
                     @foreach ($data as $key=>$item)
                         <tr>
-                            <td scope="col" class="text-center"><small>{{$item->numero_presupuesto}}</small></td>
+                            <td scope="col" class="text-center"><small>{{$item->folio_validacion}}</small></td>
                             <td scope="col" class="text-center"><small>{{$item->fecha}}</small></td>
                             <td scope="col" class="text-center"><small>{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
                             <td scope="col" class="text-center"><small>{{$item->unidad}}</small></td>

@@ -308,7 +308,7 @@ class supreController extends Controller
     public function tablasupre_pdf($id){
         $supre = new supre;
         $curso = new tbl_curso;
-        $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
+        $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
                         'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura')
                     ->WHERE('id_supre', '=', $id )
@@ -344,7 +344,7 @@ class supreController extends Controller
     public function valsupre_pdf($id){
         $supre = new supre;
         $curso = new tbl_curso;
-        $data = supre::SELECT('tabla_supre.fecha','folios.numero_presupuesto','folios.importe_hora','folios.iva','folios.importe_total',
+        $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
                         'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura')
                     ->WHERE('id_supre', '=', $id )
@@ -378,7 +378,7 @@ class supreController extends Controller
 
 
 
-        return $pdf->download('medium.pdf');
+        return $pdf->stream('medium.pdf');
 
         return view('layouts.pdfpages.valsupre', compact('data','data2'));
     }
