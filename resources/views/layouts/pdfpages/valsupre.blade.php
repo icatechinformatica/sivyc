@@ -117,8 +117,8 @@
                                 <td><small>{{$item->iva}}</small></td>
                                 <td><small>12101 Honorarios</small></td>
                                 <td><small>{{$item->importe_total}}</small></td>
+                                <td style="text-align: center"><small>X</small></td>
                                 <td><small>{{$item->comentario}}</small></td>
-                                <td><small></small></td>
                             </tr>
                         @endforeach
                     </tbody>
