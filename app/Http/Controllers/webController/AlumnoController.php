@@ -83,7 +83,6 @@ class AlumnoController extends Controller
             $validator =  Validator::make($request->all(), [
                 'nombre' => 'required',
                 'apellidoPaterno' => 'required',
-                'apellidoMaterno' => 'required',
                 'sexo' => 'required',
                 'curp' => 'required',
                 'domicilio' => 'required',
