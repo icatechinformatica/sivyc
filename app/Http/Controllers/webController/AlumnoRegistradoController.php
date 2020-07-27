@@ -183,7 +183,7 @@ class AlumnoRegistradoController extends Controller
     {
         $noControl = base64_decode($nocontrol);
 
-        $alumnos = Alumno::WHERE('alumnos_registro.no_control', '=', $noControl)
+        $alumnos = Alumno::WHERE('alumnos_registro.id', '=', $noControl)
                             ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                             ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                             ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
