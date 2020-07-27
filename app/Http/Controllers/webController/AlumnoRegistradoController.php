@@ -198,7 +198,6 @@ class AlumnoRegistradoController extends Controller
                             'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_pre.realizo', 'cursos.costo']);
         $edad = Carbon::parse($alumnos->fecha_nacimiento)->age;
         $date = carbon::now()->toDateString();
-        dd($alumnos);
         set_time_limit(300);
 
         // Descomentar este pathimg si se trabajara con el archivo de forma local
