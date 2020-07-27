@@ -378,7 +378,7 @@ class supreController extends Controller
 
 
 
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('medium.pdf');
 
         return view('layouts.pdfpages.valsupre', compact('data','data2'));
     }
