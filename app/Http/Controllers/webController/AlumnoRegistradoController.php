@@ -182,30 +182,30 @@ class AlumnoRegistradoController extends Controller
     protected function getDocumentoSid($nocontrol)
     {
         $noControl = base64_decode($nocontrol);
-        $alumnos_registrados = new Alumno();
-        $alumnos = $alumnos_registrados->SELECT('alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
-        'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo','alumnos_pre.chk_acta_nacimiento','alumnos_pre.chk_curp','alumnos_pre.chk_comprobante_domicilio','alumnos_pre.chk_fotografia',
-        'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio','alumnos_pre.fotografia', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio','alumnos_pre.chk_ine','alumnos_pre.chk_pasaporte_licencia',
-        'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
-        'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
-        'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id',
-        'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad AS unidades', 'alumnos_registro.cerrs',
-        'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_pre.realizo', 'cursos.costo')
-                            ->WHERE('alumnos_registro.no_control', '=', $noControl)
+
+        $alumnos = Alumno::WHERE('alumnos_registro.no_control', '=', $noControl)
                             ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                             ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                             ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                             ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
-                            ->GET();
-        $edad = Carbon::parse($alumnos[0]->fecha_nacimiento)->age;
+                            ->FIRST(['alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
+                            'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo','alumnos_pre.chk_acta_nacimiento','alumnos_pre.chk_curp','alumnos_pre.chk_comprobante_domicilio','alumnos_pre.chk_fotografia',
+                            'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio','alumnos_pre.fotografia', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio','alumnos_pre.chk_ine','alumnos_pre.chk_pasaporte_licencia',
+                            'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
+                            'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
+                            'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id',
+                            'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad AS unidades', 'alumnos_registro.cerrs',
+                            'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_pre.realizo', 'cursos.costo']);
+        $edad = Carbon::parse($alumnos->fecha_nacimiento)->age;
         $date = carbon::now()->toDateString();
+        dd($alumnos);
         set_time_limit(300);
 
         // Descomentar este pathimg si se trabajara con el archivo de forma local
         // $pathimg = substr($alumnos[0]->fotografia,22);
 
         // Comentar este pathimg si se trabajara con el archivo de forma local
-        $pathimg = substr($alumnos[0]->fotografia ,33);
+        $pathimg = substr($alumnos->fotografia ,33);
 
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg'));
         // (Optional) Setup the paper size and orientation

@@ -1,4 +1,4 @@
-@extends('theme.sivyc.layout')
+@extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
 @section('title', 'Inscripción Alumno | Sivyc Icatech')
 <!--contenido-->

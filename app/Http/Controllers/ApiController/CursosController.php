@@ -146,6 +146,28 @@ class CursosController extends Controller
         try {
             $Cursos= new Curso();
             $Cursos->whereId($id)->update($request->all());
+            return response()->json(['success' => 'Curso actualizado exitosamente'], 200);
+        } catch(Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 501);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+
+    public function updateCursosCalificaciones(Request $request, $id){
+        try {
+            //modificaciones
+            $Cursos= new Curso();
+            $Cursos->whereId($id)->update($request->all());
             // parte de calificaciones
             $Calificacion = new Calificacion();
             $Calificacion->WHERE('idcurso', $id)->update([
@@ -172,19 +194,8 @@ class CursosController extends Controller
                 'munidad' => $request->munidad
             ]);
             return response()->json(['success' => 'Curso actualizado exitosamente'], 200);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

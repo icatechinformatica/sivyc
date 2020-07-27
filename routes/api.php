@@ -48,4 +48,5 @@ Route::group(['middleware' => ['cors']], function(){
     Route::apiResource('folios', 'ApiController\FolioController');
     Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
     Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
+    Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
 });

@@ -114,7 +114,7 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                {{ $alumnos[0]->no_control }}
+                                {{ $alumnos->no_control }}
                                 <div class="linea"></div>
                                 N°. DE CONTROL
                             </div>
@@ -123,7 +123,7 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                {{$alumnos[0]->no_control}}{{$alumnos[0]->id}}
+                                {{$alumnos->no_control}}{{$alumnos->id}}
                                 <div class="linea"></div>
                                 NÚMERO DE SOLICITUD
                             </div>
@@ -132,7 +132,7 @@
                 </tr>
             </tbody>
         </table>
-        @if ($alumnos[0]->chk_fotografia == TRUE)
+        @if ($alumnos->chk_fotografia == TRUE)
             <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
         @else
             <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
@@ -165,13 +165,13 @@
               <tr>
                 <td scope="row" class="tres" style='border-right:none;border-top:none'>
                     <small>
-                        <b> UNIDAD DE CAPACITACIÓN: &nbsp;&nbsp; {{ $alumnos[0]->unidad }}</b>
+                        <b> UNIDAD DE CAPACITACIÓN: &nbsp;&nbsp; {{ $alumnos->unidad }}</b>
                     </small>
 
                 </td>
                 <td scope="row" class="tres" style='border-left:none;border-top:none'>
                    <small>
-                       <b> CLAVE CCT:  {{$alumnos[0]->unidades }}</b>
+                       <b> CLAVE CCT:  {{$alumnos->unidades }}</b>
                    </small>
                 </td>
               </tr>
@@ -198,19 +198,19 @@
                     <td scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
                         <small>
                             <b> PRIMER APELLIDO: &nbsp;&nbsp; </b>
-                            <se>{{ $alumnos[0]->apellido_paterno }}</se>
+                            <se>{{ $alumnos->apellido_paterno }}</se>
                         </small>
                     </td>
                     <td scope="row" style='border-right:none;border-left:none; border-bottom:none;'>
                         <small>
                             <b> SEGUNDO APELLIDO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->apellido_materno }}</se>
+                            <se>{{ $alumnos->apellido_materno }}</se>
                         </small>
                     </td>
                     <td scope="row" colspan="2" style='border-left:none; border-bottom:none;'>
                         <small>
                             <b> NOMBRE(S): &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->nombrealumno }}</se>
+                            <se>{{ $alumnos->nombrealumno }}</se>
                         </small>
                     </td>
                 </tr>
@@ -218,13 +218,13 @@
                     <td style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>SEXO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->sexo }}</se>
+                            <se>{{ $alumnos->sexo }}</se>
                         </small>
                     </td>
                     <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>CURP: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->curp_alumno }}</se>
+                            <se>{{ $alumnos->curp_alumno }}</se>
                         </small>
                     </td>
                     <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
@@ -236,7 +236,7 @@
                     <td style='border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>TELEFONO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->telefono }}</se>
+                            <se>{{ $alumnos->telefono }}</se>
                         </small>
                     </td>
                 </tr>
@@ -245,14 +245,14 @@
                         <small>
                             <b>DOMICILIO: &nbsp;&nbsp;</b>
                             <se>
-                                {{ $alumnos[0]->domicilio }}
+                                {{ $alumnos->domicilio }}
                             </se>
                         </small>
                     </td>
                     <td colspan="2" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>COLONIA O LOCALIDAD: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->colonia }}</se>
+                            <se>{{ $alumnos->colonia }}</se>
                         </small>
                     </td>
                 </tr>
@@ -260,19 +260,19 @@
                     <td style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>C.P.: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->cp }}</se>
+                            <se>{{ $alumnos->cp }}</se>
                         </small>
                     </td>
                     <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>MUNICIPIO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->municipio }}</se>
+                            <se>{{ $alumnos->municipio }}</se>
                         </small>
                     </td>
                     <td colspan="2" style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>ESTADO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->estado }}</se>
+                            <se>{{ $alumnos->estado }}</se>
                         </small>
                     </td>
                 </tr>
@@ -280,7 +280,7 @@
                     <td colspan="4" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>ESTADO CIVIL: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->estado_civil }}</se>
+                            <se>{{ $alumnos->estado_civil }}</se>
                         </small>
                     </td>
                 </tr>
@@ -288,7 +288,7 @@
                     <td colspan="4" style='border-right:none; border-top:none;'>
                         <small>
                             <b>DISCAPACIDAD QUE PRESENTA: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->discapacidad }}</se>
+                            <se>{{ $alumnos->discapacidad }}</se>
                         </small>
                     </td>
                 </tr>
@@ -313,7 +313,7 @@
                     <td colspan="2" scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
                         <small>
                             <b> ESPECIALIDAD A LA QUE DESEAN INSCRIBIRSE: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->especialidad }}</se>
+                            <se>{{ $alumnos->especialidad }}</se>
                          </small>
                     </td>
                 </tr>
@@ -321,7 +321,7 @@
                     <td colspan="2" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>CURSO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->nombre_curso }}</se>
+                            <se>{{ $alumnos->nombre_curso }}</se>
                         </small>
                     </td>
                 </tr>
@@ -329,13 +329,13 @@
                     <td scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>HORARIO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->horario }}</se>
+                            <se>{{ $alumnos->horario }}</se>
                         </small>
                     </td>
                     <td scope="row" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>GRUPO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->grupo }}</se>
+                            <se>{{ $alumnos->grupo }}</se>
                         </small>
                     </td>
                 </tr>
@@ -344,10 +344,10 @@
                         <small>
                             <b>DOCUMENTACIÓN ENTREGADA: &nbsp;&nbsp;</b>
                             <se><br>
-                                @if($alumnos[0]->chk_acta_nacimiento == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;@if($alumnos[0]->chk_ine == TRUE)(X) @else() ( ) @endif COPIA DE LA CREDENCIAL DEL ELECTOR (INE) O IDENTIFICACIÓN OFICIAL
-                            <p>@if($alumnos[0]->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE LA CURP;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos[0]->chk_pasaporte_licencia == TRUE)(X) @else() ( ) @endif PASAPORTE, LICENCIA DE MANEJO O CARTILLA MILITAR
-                            <br>@if($alumnos[0]->chk_comprobante_domicilio == TRUE)(X) @else() ( ) @endif COPIA DE COMPROBANTE DE DOMICILIO&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos[0]->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS
-                            <br>@if($alumnos[0]->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA </se>
+                                @if($alumnos->chk_acta_nacimiento == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;@if($alumnos->chk_ine == TRUE)(X) @else() ( ) @endif COPIA DE LA CREDENCIAL DEL ELECTOR (INE) O IDENTIFICACIÓN OFICIAL
+                            <p>@if($alumnos->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE LA CURP;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos->chk_pasaporte_licencia == TRUE)(X) @else() ( ) @endif PASAPORTE, LICENCIA DE MANEJO O CARTILLA MILITAR
+                            <br>@if($alumnos->chk_comprobante_domicilio == TRUE)(X) @else() ( ) @endif COPIA DE COMPROBANTE DE DOMICILIO&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS
+                            <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA </se>
 
                         </small>
                     </td>
@@ -356,7 +356,7 @@
                     <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>EXTRANJEROS ANEXAR: &nbsp;&nbsp;</b>
-                            <se><p>@if($alumnos[0]->chk_comprobante_calidad_migratoria == TRUE)(X) @else() ( ) @endif COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL</se>
+                            <se><p>@if($alumnos->chk_comprobante_calidad_migratoria == TRUE)(X) @else() ( ) @endif COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL</se>
                         </small>
                     </td>
                 </tr>
@@ -364,13 +364,13 @@
                     <td style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>EMPRESA DONDE TRABAJA: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->empresa_trabaja }}</se>
+                            <se>{{ $alumnos->empresa_trabaja }}</se>
                         </small>
                     </td>
                     <td style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>PUESTO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->puesto_empresa }}</se>
+                            <se>{{ $alumnos->puesto_empresa }}</se>
                         </small>
                     </td>
                 </tr>
@@ -378,13 +378,13 @@
                     <td style='border-right:none; border-top:none;'>
                         <small>
                             <b>ANTIGUEDAD: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->antiguedad }}</se>
+                            <se>{{ $alumnos->antiguedad }}</se>
                         </small>
                     </td>
                     <td style='border-right:none; border-left:none; border-top:none;'>
                         <small>
                             <b>DIRECCIÓN: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->direccion_empresa }}</se>
+                            <se>{{ $alumnos->direccion_empresa }}</se>
                         </small>
                     </td>
                 </tr>
@@ -415,7 +415,7 @@
                     <td colspan="2" style='border-right:none; border-top:none;  border-bottom:none;'>
                         <small>
                             <b>MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->medio_entero }}</se>
+                            <se>{{ $alumnos->medio_entero }}</se>
                         </small>
                     </td>
                 </tr>
@@ -423,7 +423,7 @@
                     <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos[0]->sistema_capacitacion_especificar }}</se>
+                            <se>{{ $alumnos->sistema_capacitacion_especificar }}</se>
                         </small>
                     </td>
                 </tr>
@@ -440,7 +440,7 @@
                     <td scope="row" class="tres" style='border-right:none;border-top:none; border-bottom:none;'>
                         <small>
                             <div class="centrados">
-                                <b> {{ $alumnos[0]->apellido_paterno }} {{ $alumnos[0]->apellido_materno }} {{ $alumnos[0]->nombrealumno }}</b>
+                                <b> {{ $alumnos->apellido_paterno }} {{ $alumnos->apellido_materno }} {{ $alumnos->nombrealumno }}</b>
                                 <div class="linea"></div>
                             </div>
                         </small>
@@ -448,7 +448,7 @@
                     <td scope="row" class="tres" style='border-left:none;border-top:none; border-bottom:none;'>
                        <small>
                             <div class="centrados">
-                                <b> {{ $alumnos[0]->realizo }} </b>
+                                <b> {{ $alumnos->realizo }} </b>
                                 <div class="linea"></div>
                             </div>
                        </small>
@@ -502,7 +502,7 @@
                     <td colspan="2" scope="row" class="tres" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>NÚMERO DE SOLICITUD:</b>
-                            <se>{{$alumnos[0]->no_control}}{{$alumnos[0]->id}}</se>
+                            <se>{{$alumnos->no_control}}{{$alumnos->id}}</se>
                         </small>
                     </td>
                 </tr>
@@ -510,7 +510,7 @@
                     <td colspan="4" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>NOMBRE DEL ASPIRANTE:</b>
-                            <se>{{ $alumnos[0]->apellido_paterno }} {{ $alumnos[0]->apellido_materno }} {{ $alumnos[0]->nombrealumno }}</se>
+                            <se>{{ $alumnos->apellido_paterno }} {{ $alumnos->apellido_materno }} {{ $alumnos->nombrealumno }}</se>
                         </small>
                     </td>
                 </tr>
@@ -518,25 +518,25 @@
                     <td class="cuatro" style='border-right:none;border-top:none; border-bottom:none;'>
                         <small>
                             <b>CURSO:</b>
-                            <se>{{ $alumnos[0]->nombre_curso }}</se>
+                            <se>{{ $alumnos->nombre_curso }}</se>
                         </small>
                     </td>
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <b>HORARIO:</b>
-                            <se>{{ $alumnos[0]->horario }}</se>
+                            <se>{{ $alumnos->horario }}</se>
                         </small>
                     </td>
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <b>GRUPO:</b>
-                            <se>{{ $alumnos[0]->grupo }}</se>
+                            <se>{{ $alumnos->grupo }}</se>
                         </small>
                     </td>
                     <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <b>COSTO:$</b>
-                            <se>{{ $alumnos[0]->costo }}</se>
+                            <se>{{ $alumnos->costo }}</se>
                         </small>
                     </td>
                 </tr>
@@ -544,7 +544,7 @@
                     <td colspan="2" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
                         <small>
                             <div class="centrados">
-                                <b> {{ $alumnos[0]->realizo }} </b>
+                                <b> {{ $alumnos->realizo }} </b>
                                 <div class="linea"></div>
                             </div>
                         </small>
