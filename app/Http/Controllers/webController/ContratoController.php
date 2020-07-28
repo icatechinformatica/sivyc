@@ -70,8 +70,11 @@ class ContratoController extends Controller
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
         $file = $request->file('factura'); # obtenemos el archivo
-        $urldocs = $this->pago_upload($file, $request->id_contrato);
-        $contrato->arch_factura = $urldocs;
+        if ($file != NULL)
+        {
+            $urldocs = $this->pago_upload($file, $request->id_contrato);
+            $contrato->arch_factura = $urldocs;
+        }
         $contrato->save();
 
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
