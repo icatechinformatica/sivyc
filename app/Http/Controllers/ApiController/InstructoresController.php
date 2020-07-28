@@ -31,7 +31,7 @@ class InstructoresController extends Controller
             'tbl_unidades.unidad AS unidades', 'instructores.motivo',
             'instructor_perfil.area_carrera', 'instructor_perfil.grado_profesional', 'instructor_perfil.cursos_recibidos',
             'instructor_perfil.estandar_conocer', 'instructor_perfil.registro_stps', 'especialidad_instructores.memorandum_validacion',
-            'instructor_perfil.estatus',  'especialidad_instructores.nombre AS nombre_especialidad'
+            'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad'
         ]);
         return response()->json($instructores, 200);
     }
