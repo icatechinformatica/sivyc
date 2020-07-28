@@ -17,9 +17,9 @@ class InstructoresController extends Controller
     {
         $instructores = Instructor::WHERE('instructores.status', '=', 'Validado')
         ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'instructores.id_especialidad')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.especialidad_id', '=', 'especialidades.id')
         ->GET([
             'instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
             'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
@@ -28,10 +28,10 @@ class InstructoresController extends Controller
             'instructores.tipo_honorario', 'instructores.archivo_ine', 'instructores.archivo_domicilio', 'instructores.archivo_curp',
             'instructores.archivo_alta', 'instructores.archivo_bancario', 'instructores.archivo_fotografia', 'instructores.archivo_estudios',
             'instructores.archivo_otraid', 'instructores.status', 'instructores.rechazo', 'instructores.clave_unidad',
-            'especialidades.nombre AS nombre_especialidad', 'tbl_unidades.unidad AS unidades', 'instructores.motivo',
+            'tbl_unidades.unidad AS unidades', 'instructores.motivo',
             'instructor_perfil.area_carrera', 'instructor_perfil.grado_profesional', 'instructor_perfil.cursos_recibidos',
             'instructor_perfil.estandar_conocer', 'instructor_perfil.registro_stps', 'especialidad_instructores.memorandum_validacion',
-            'instructor_perfil.estatus'
+            'instructor_perfil.estatus', 'especialidad_instructores.nombre AS nombre_especialidad'
         ]);
         return response()->json($instructores, 200);
     }
