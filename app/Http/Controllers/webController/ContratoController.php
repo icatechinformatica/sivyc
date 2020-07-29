@@ -107,8 +107,11 @@ class ContratoController extends Controller
                         ->FIRST();
         $perfil_sel = $especialidad::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
 
-        $perfil_prof = $especialidad::WHERE('id', '=', $data->id)
-                               ->WHERE('id', '!=', $datacon->instructor_perfilid)->GET();
+        $perfil_prof = InstructorPerfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
+                                ->WHERE('instructor_perfil.numero_control', '=', $data->id)
+                                ->WHERE('especialidad_instructores.especialidad_id', '!=', $datacon->instructor_perfilid)
+                                ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+                                ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();

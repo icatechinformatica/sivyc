@@ -22,9 +22,9 @@
                     <div class="form-group col-md-4">
                         <label for="inputvalido_perfil">Perfil Profesional con el que se valido</label>
                         <select class="form-control" name="valido_perfil" id="valido_perfil">
-                            <option value="{{$sel_espec->id}}">{{$sel_espec->grado_profesional}}</option>
+                            <option value="{{$sel_espec->id}}">{{$sel_espec->grado_profesional}} {{$sel_espec->area_carrera}}</option>
                             @foreach ($data_espec as $item)
-                                <option value="{{$item->id}}">{{$item->grado_profesional}}</option>
+                                <option value="{{$item->id}}">{{$item->grado_profesional}} {{$sel_espec->area_carrera}}</option>
                             @endforeach
                         </select>
                     </div>
