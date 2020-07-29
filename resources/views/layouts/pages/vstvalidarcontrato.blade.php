@@ -94,11 +94,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputfinicio" class="control-label">Días</label>
-                <input type="text" disabled value="{{$data->dia}} y {{$data->dia2}} " class="form-control" id="finicio" name="finicio">
+                <input type="text" disabled value="{{$data->dia}}" class="form-control" id="finicio" name="finicio">
             </div>
             <div class="form-group col-md-6">
                 <label for="inputftermino" class="control-label">Horario</label>
-                <input type="text" disabled value="{{$data->hini}} a {{$data->hfin}} HRS. {{$data->hini2}} a {{$data->hfin2}} HRS. " class="form-control" id="ftermino" name="ftermino">
+                <input type="text" disabled value="{{$data->hini}} a {{$data->hfin}} HRS." class="form-control" id="ftermino" name="ftermino">
             </div>
         </div>
         <div class="form-row">
