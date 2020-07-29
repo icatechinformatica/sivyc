@@ -559,7 +559,6 @@ class InstructorController extends Controller
 
     public function especval_mod_save(Request $request)
     {
-
         $espec_mod = especialidad_instructor::find($request->idespec);
         $espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;

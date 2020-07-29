@@ -95,7 +95,7 @@
                     </div>
                 </div>
                 <br>
-                <input type="hidden" name="idesp" id="idesp" value="{{ $idesp }}">
+                <input type="hidden" name="idesp" id="idesp" value="{{ $id }}">
                 <input type="hidden" name="idins" id="idins" value="{{ $idins }}">
                 <input type="hidden" name="idespec" id="idespec" value="{{$especvalid->id}}">
         </form>
