@@ -656,7 +656,6 @@ class InstructorController extends Controller
 
     public function alta_baja_save(Request $request)
     {
-        dd($request);
         $av_mod = instructorAvailable::find($request->id_available);
         $answer = $this->checkComparator($request->chk_tuxtla);
         $av_mod->CHK_TUXTLA = $answer;

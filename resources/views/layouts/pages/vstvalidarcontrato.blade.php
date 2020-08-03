@@ -16,6 +16,51 @@
         </div>
         <hr style="border-color:dimgray">
         <h2>Datos de Validación de Instructor</h2>
+        <h2>Vista de Documentos</h2>
+        <div class="form-row">
+            @if ($data->archivo_ine != NULL)
+                <a class="btn btn-info" href={{$data->archivo_ine}} download>Comprobante INE</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Comprobante INE</a><br>
+            @endif
+            @if ($data->archivo_domicilio != NULL)
+                <a class="btn btn-info" href={{$data->archivo_domicilio}} download>Comprobante de Domicilio</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Comprobante de Domicilio</a><br>
+            @endif
+            @if ($data->archivo_curp != NULL)
+                <a class="btn btn-info" href={{$data->archivo_curp}} download>CURP</a><br>
+            @else
+                <a class="btn btn-danger" disabled>CURP</a><br>
+            @endif
+            @if ($data->archivo_alta != NULL)
+                <a class="btn btn-info" href={{$data->archivo_alta}} download>Alta de Instructor</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Alta de Instructor</a><br>
+            @endif
+        </div>
+        <div class="form-row">
+            @if ($data->archivo_bancario != NULL)
+                <a class="btn btn-info" href={{$data->archivo_bancario}} download>Datos Bancarios</a><br>
+                @else
+                <a class="btn btn-danger" disabled>Datos Bancarios</a><br>
+            @endif
+            @if ($data->archivo_fotografia != NULL)
+                <a class="btn btn-info" href={{$data->archivo_fotografia}} download>Fotografía</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Fotografía</a><br>
+            @endif
+            @if ($data->archivo_estudios != NULL)
+                <a class="btn btn-info" href={{$data->archivo_estudios}} download>Estudios</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Estudios</a><br>
+            @endif
+            @if ($data->archivo_otraid != NULL)
+                <a class="btn btn-info" href={{$data->archivo_otraid}} download>Otra Identificación</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Otra Identificación</a><br>
+            @endif
+        </div>
         <div class="form-row">
             <div class="form-group col-md-5">
                 <label for="inputnombre_instructor" class="control-label">Nombre del Instructor</label>

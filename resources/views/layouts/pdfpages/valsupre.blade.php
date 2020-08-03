@@ -54,6 +54,21 @@
       }
     </style>
 
+    <script defer>
+        function alumn(h, m)
+        {
+            console.log(h);
+            var total = h + m;
+            if(total < 9)
+            {
+                document.write("<td style='text-align: center'><small>Federal</small></td>");
+            }
+            else
+            {
+                document.write("<td style='text-align: center'><small>Estatal</small></td>");
+            }
+        }
+    </script>
 </head>
     <body>
         <div id="wrappertop">
@@ -98,7 +113,7 @@
                             <td scope="col"><small>IVA 16%</small></td>
                             <td scope="col" ><small>PARTIDA/ CONCEPTO</small></td>
                             <td scope="col"><small>IMPORTE</small></td>
-                            <td scope="col"><small>Fuente de financiamiento federal</small></td>
+                            <td scope="col"><small>Fuente de Financiamiento</small></td>
                             <td scope="col" ><small>OBSERVACION</small></td>
                         </tr>
                     </thead>
@@ -115,9 +130,12 @@
                                 <td><small>{{$item->dura}}</small></td>
                                 <td><small>{{$item->importe_hora}}</small></td>
                                 <td><small>{{$item->iva}}</small></td>
+                                <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
+                                <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
                                 <td><small>12101 Honorarios</small></td>
                                 <td><small>{{$item->importe_total}}</small></td>
-                                <td style="text-align: center"><small>X</small></td>
+                                <script>alumn(hombre{{$key}}.value, mujer{{$key}}.value);</script>
+                                <!--<td style="text-align: center"><small>X</small></td>-->
                                 <td><small>{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
