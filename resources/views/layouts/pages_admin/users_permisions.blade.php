@@ -1,60 +1,68 @@
 <!--Creado por Daniel Méndez Cruz-->
-@extends('theme.sivyc.layout')
-<!--llamar a la plantilla -->
-@section('title', 'Alumnos | SIVyC Icatech')
-<!--seccion-->
+@extends('theme.sivyc_admin.layout')
+<!--generado por Daniel Méndez-->
+@section('title', 'usuarios | Sivyc Icatech')
+<!--contenido-->
 @section('content')
-    <div class="container g-pt-50">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
-        @endif
+    <div class="container-fluid mt--6">
         <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>Alumnos Matriculados</h2>
-                </div>
-                <div class="pull-right">
-                    <a href="{{route('permisos_roles.index')}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="ROLES Y PERMISOS">
-                        <i class="fa fa-list-alt" aria-hidden="true"></i>
-                    </a>
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                              <h3 class="mb-0">Usuarios de SIVYC</h3>
+                            </div>
+                            <div class="col-4 text-right">
+                              <a href="#!" class="btn btn-sm btn-success">Nuevo Usuario</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Light table -->
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">NOMBRE</th>
+                                    <th scope="col">INFORMACIÓN</th>
+                                    <th scope="col">MODIFICAR</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list">
+                                @foreach ($usuarios as $itemUsuarios)
+                                    <tr>
+                                        <td scope="row">{{$itemUsuarios->name}}</td>
+                                        <td>
+                                            <a href="{{route('usuarios.perfil.modificar', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR USUARIO">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{route('usuarios_permisos.show', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Card footer -->
+                    <div class="card-footer py-4">
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end mb-0">
+                                <li class="page-item">
+                                    {{ $usuarios->appends(request()->query())->links() }}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
-        <hr style="border-color:dimgray">
 
-            <table  id="table-instructor" class="table table-bordered Datatables">
-                <caption>Catalogo de Alumnos</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">CORREO ELECTRÓNICO</th>
-                        <th scope="col">NOMBRE</th>
-                        <th scope="col">PERMISOS</th>
-                        <th scope="col">MODIFICAR</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($usuarios as $itemUsuarios)
-                        <tr>
-                            <td>{{$itemUsuarios->email}}</td>
-                            <td scope="row">{{$itemUsuarios->name}}</td>
-                            <td></td>
-                            <td>
-                                <a href="{{route('usuarios_permisos.show', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
-                                    <i class="fa fa-wrench" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr>
-                    </tr>
-                </tfoot>
-            </table>
-
-        <br>
+        <!-- FOOTER PORTAL DE GOBIERNO -->
+        @include("theme.sivyc_admin.footer")
+        <!-- FOOTER PORTAL DE GOBIERNO END-->
     </div>
-    <br>
 @endsection

@@ -18,7 +18,7 @@ class userController extends Controller
     public function index()
     {
         //
-        $usuarios = User::all();
+        $usuarios = User::PAGINATE(25);
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
@@ -67,6 +67,9 @@ class userController extends Controller
     public function edit($id)
     {
         //
+        $iduser = base64_decode($id);
+        $usuario = User::findOrfail($iduser);
+        return view('layouts.pages_admin.users_profile', compact('usuario'));
     }
 
     /**
