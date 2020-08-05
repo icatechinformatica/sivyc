@@ -340,7 +340,8 @@ class InstructorController extends Controller
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
 
         $validado = $instructor_perfil->SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
-                        'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid')
+                        'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
+                        'especialidad_instructores.memorandum_validacion')
                         ->WHERE('instructor_perfil.numero_control', '=', $id)
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')

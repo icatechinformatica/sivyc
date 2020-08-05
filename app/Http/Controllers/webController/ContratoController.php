@@ -54,8 +54,9 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        $pago = round($data->importe_total*0.84, 2);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago'));
     }
 
     public function contrato_save(Request $request)
@@ -297,7 +298,6 @@ class ContratoController extends Controller
                                                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
                                                 ->FIRST();
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-
         $date = strtotime($data_contrato->fecha_firma);
         $D = date('d', $date);
         $M = $this->toMonth(date('m', $date));

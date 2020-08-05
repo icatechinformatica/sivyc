@@ -44,7 +44,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputcantidad_numero" class="control-label">Monto Total de los Honorarios (En Numero)</label>
-                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero" value="{{$data->importe_total}}" readonly>
+                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero" value="{{$pago}}" readonly>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputcantidad_letras" class="control-label">Monto Total de los Honorarios (En Letra)</label>
