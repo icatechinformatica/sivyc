@@ -49,7 +49,8 @@ Route::post('/instructor/alta-baja/save','webController\InstructorController@alt
 
 Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegistradoModificarController@index')->name('alumno_registrado.modificar.index');
 Route::get('/alumnos_registrados/modificar/show/{id}', 'adminController\AlumnoRegistradoModificarController@edit')->name('alumno_registrado.modificar.show');
-Route::put('alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
+Route::put('/alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
+Route::get('/alumnos_registrados/modificar/delete/{id}/{id_pre}', 'adminController\AlumnoRegistradoModificarController@destroy')->name('alumno_registrado.modificar.eliminar');
 // consecutivos/
 Route::get('/registros/unidad/index', 'adminController\AlumnoRegistradoModificarController@indexUnidad')->name('registro_unidad.index');
 Route::post('/alumnos_registrados/consecutivos', 'adminController\AlumnoRegistradoModificarController@indexConsecutivo')->name('registrado_consecutivo.index');

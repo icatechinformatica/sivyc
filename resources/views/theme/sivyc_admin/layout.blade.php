@@ -20,6 +20,7 @@
         <link rel="stylesheet" href="{{asset("css/argon.css?v=1.2.0") }}">
         <link rel="stylesheet" href="{{asset("vendor/nucleo/css/nucleo.css") }}">
         <link rel="stylesheet" href="{{asset("vendor/@fortawesome/fontawesome-free/css/all.min.css") }}" type="text/css">
+        <link rel="stylesheet" href="{{asset("css/mdb.min.css") }}">
 
     </head>
 
@@ -41,13 +42,15 @@
             <!-- PAGINA FIN -->
         </div>
 
-        <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
+        <script src="{{asset("js/scripts/jquery.min.js")}}"></script>
         <script src="{{asset("vendor/bootstrap/dist/js/bootstrap.bundle.min.js")}}"></script>
         <!--argon-->
         <script src="{{asset("vendor/scrollbar/jquery.scrollbar.min.js") }}"></script>
         <script src="{{asset("vendor/js-cookie/js.cookie.js") }}"></script>
         <script src="{{asset("vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js") }}"></script>
         <script src="{{asset("js/scripts/argon.js?v=1.2.0") }}"></script>
+        <script src="{{ asset("js/mdb.min.js") }}"></script>
+        @yield("scripts_content")
     </body>
 
 </html>

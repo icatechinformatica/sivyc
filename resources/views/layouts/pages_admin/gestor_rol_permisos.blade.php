@@ -36,8 +36,10 @@
                             @endforeach
 
                         </div>
-                        <input type="submit" value="crear" class="btn btn-sm btn-success">
+
                       </div>
+                      <br>
+                      <input type="submit" value="crear" class="btn btn-sm btn-success">
                     </form>
                   </div>
                 </div>

@@ -1,4 +1,3 @@
-
 <!--Creado por Daniel Méndez Cruz-->
 @extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
