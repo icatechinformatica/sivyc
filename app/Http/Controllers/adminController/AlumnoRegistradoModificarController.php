@@ -132,9 +132,16 @@ class AlumnoRegistradoModificarController extends Controller
     public function destroy($id, $id_pre)
     {
         //
-        $ids = base64_decode($id);
-        Alumno::WHERE('id', $ids)->delete();
-        return redirect()->route('alumno_registrado.modificar.show', ['id' => $id_pre]);
+
+        if (isset($id)){
+            $ids = base64_decode($id);
+            Alumno::WHERE('id', $ids)->delete();
+            $json=json_encode($ids);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+        return $json;
     }
 
     public function indexConsecutivo(Request $request){

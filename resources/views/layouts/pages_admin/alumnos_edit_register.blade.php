@@ -42,7 +42,7 @@
                             </thead>
                             <tbody class="list">
                                 @foreach ($alumnos_pre as $item_alumnos_pre)
-                                    <tr>
+                                    <tr id="{{ $item_alumnos_pre->id }}">
                                         <td>{{$item_alumnos_pre->no_control}}</td>
                                         <td>{{$item_alumnos_pre->apellido_paterno}} {{$item_alumnos_pre->apellido_materno}} {{$item_alumnos_pre->nombrealumno}}</td>
                                         <td>{{$item_alumnos_pre->nombre_curso}}</td>
@@ -124,6 +124,8 @@
                         <a type="button" class="btn btn-success waves-effect waves-light" id="deleteitemtype">ELIMINAR</a>
                         <a type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">CANCELAR</a>
                     </div>
+                    <input type="hidden" name="" id="idalumnos">
+                    <input type="hidden" name="" id="idpre">
                 </div>
                 <!--/.Content-->
             </div>
@@ -142,17 +144,13 @@
             {
                     $.ajax({
                         type: 'GET',
-                        url: '/alumnos_registrados/modificar/delete/'+id+'/'+idpre,
-                        data: {status: status, name: name},
+                        url: '/alumnos_registrados/modificar/delete/'+id.val()+'/'+idpre.val(),
                         dataType: 'json',
                         success: (response) => {
-                            var contenidoModal = $("#contextoModalBody");
-                            var myModalLabel = $("#myModalLabel");
-                            myModalLabel.append(
-                                response[0].nombre_curso
-                            );
-                            contenidoModal.append(
-                            );
+                            if(response !== null)
+                            {
+                                $('#'+response+'').remove();
+                            }
                         },
                         error: () => {
                             console.log("No se ha podido obtener la información")
@@ -163,23 +161,30 @@
             /**
             *  modificación de modal bootsrap
             */
-            $('#sideModalBRDangerDemo').on('show.bs.modal', function (event) {
+            $('#sideModalBRDangerDemo').on('show.bs.modal', (event) => {
                 var button = $(event.relatedTarget);
                 var id = button.data('id');
                 var idPre = button.data('pre-id');
-                console.log(id);
-                //getdataFromAlumnos(id);
+                var idalumno = $("#idalumnos");
+                var idpres = $("#idpre");
+                idalumno.val(id);
+                idpres.val(idPre);
             });
 
             $('#sideModalBRDangerDemo').on('hidden.bs.modal', function (e) {
-                var contenidoModal = $("#contextoModalBody");
-                var myModalLabel = $("#myModalLabel");
-                contenidoModal.empty();
-                myModalLabel.empty();
+                var idalumno = $("#idalumnos");
+                var idpres = $("#idpre");
+                idalumno.removeAttr('value');
+                idpres.removeAttr('value');
             });
 
             $('#deleteitemtype').on('click', (evt) => {
-                    console.log('triggered');
+                    var idalumno = $("#idalumnos");
+                    var idpres = $("#idpre");
+
+                    getdataFromAlumnos(idalumno, idpres);
+                    // cerrar modal
+                    $('#sideModalBRDangerDemo').modal('hide');
                 }
             );
 
