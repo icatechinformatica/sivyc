@@ -5,6 +5,7 @@ namespace App\Http\Controllers\adminController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Permission;
+use App\Models\Rol;
 
 class PermissionController extends Controller
 {
@@ -16,7 +17,7 @@ class PermissionController extends Controller
     public function index()
     {
         //
-        $permisos = Permission::all();
+        $permisos = Permission::PAGINATE(3);
         return  view('layouts.pages_admin.permissions_roles', compact('permisos'));
     }
 
@@ -28,6 +29,7 @@ class PermissionController extends Controller
     public function create()
     {
         //
+        return  view('layouts.pages_admin.permissions_create');
     }
 
     /**
@@ -61,6 +63,9 @@ class PermissionController extends Controller
     public function edit($id)
     {
         //
+        $idpermission = base64_decode($id);
+        $permiso = Permission::findOrfail($idpermission);
+        return view('layouts.pages_admin.permisos_editar', compact('permiso'));
     }
 
     /**
@@ -84,5 +89,18 @@ class PermissionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function permiso_rol(){
+        $rol = Rol::PAGINATE(5, ['id', 'name', 'slug', 'description']);
+        // $permisos = Permission::PAGINATE(5);
+        return  view('layouts.pages_admin.permiso_rol', compact('rol'));
+    }
+
+    public function gestorPermisosRoles($id){
+        $idRol = base64_decode($id);
+        $permisos = Permission::all();
+        $roles = Rol::findOrfail($idRol);
+        return view('layouts.pages_admin.gestor_rol_permisos', compact('roles', 'permisos'));
     }
 }

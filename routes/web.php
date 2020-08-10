@@ -49,7 +49,8 @@ Route::post('/instructor/alta-baja/save','webController\InstructorController@alt
 
 Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegistradoModificarController@index')->name('alumno_registrado.modificar.index');
 Route::get('/alumnos_registrados/modificar/show/{id}', 'adminController\AlumnoRegistradoModificarController@edit')->name('alumno_registrado.modificar.show');
-Route::put('alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
+Route::put('/alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
+Route::get('/alumnos_registrados/modificar/delete/{id}/{id_pre}', 'adminController\AlumnoRegistradoModificarController@destroy')->name('alumno_registrado.modificar.eliminar');
 // consecutivos/
 Route::get('/registros/unidad/index', 'adminController\AlumnoRegistradoModificarController@indexUnidad')->name('registro_unidad.index');
 Route::post('/alumnos_registrados/consecutivos', 'adminController\AlumnoRegistradoModificarController@indexConsecutivo')->name('registrado_consecutivo.index');
@@ -63,11 +64,25 @@ Route::get('/administracion/index', function () {
 Route::get('/unidades/unidad_by_ubicacion/{ubicacion}', 'webController\UnidadController@ubicacion');
 
 /***
- * modificación de roles y permisos
+ * modificación de roles y permisos -- nuevos registros
  */
-Route::get('/usuarios/permisos/index', 'adminController\UserController@index')->name('usuario_permisos.index');
-Route::get('/usuarios/permisos/perfil/{id}', 'adminController\UserController@show')->name('usuarios_permisos.show');
-Route::get('/permisos/roles/index', 'adminController\PermissionController@index')->name('permisos_roles.index');
+Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
+Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
+Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
+Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
+Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
+Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');
+Route::get('/roles/create', 'adminController\RolesController@create')->name('roles.create');
+Route::get('/permisos/create', 'adminController\PermissionController@create')->name('permisos.crear');
+Route::get('/permisos/edit/{id}', 'adminController\PermissionController@edit')->name('permisos.editar');
+Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
+Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
+Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
+Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
+/**
+ * UNIDADES DE CAPACITACION
+ */
+Route::get('/unidades/unidades_ubicacion/{ubicacion}', 'webController\UnidadController@ubicacion');
 /**
  * Alumnos sice Registrados
  */

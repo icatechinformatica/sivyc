@@ -570,3 +570,15 @@ License - nucleoapp.com/license/
 
 
 /* all icon font classes list here */
+label.error {
+    color: red;
+    font-size: 1rem;
+    display: block;
+    margin-top: 5px;
+}
+
+input.error, textarea.error, select.error {
+    border: 1px solid red;
+    font-weight: 300;
+    color: red;
+}
