@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Models\Permission;
 use App\Models\Rol;
+use App\Models\Unidad;
+use Illuminate\Support\Facades\Hash;
 
 class userController extends Controller
 {
@@ -29,7 +31,9 @@ class userController extends Controller
      */
     public function create()
     {
-        //
+        $ubicacion = Unidad::groupBy('ubicacion')->GET(['ubicacion']);
+        // crear formulario usuario
+        return view('layouts.pages_admin.users_create', compact('ubicacion'));
     }
 
     /**
@@ -40,7 +44,24 @@ class userController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //checar que no exista un usario con el correo electrónico que se piensa introducir
+        $user = User::where('email', '=', $request->get('emailInput'))->first();
+        if ($user === null) {
+            # usuario no encontrado
+            User::create([
+                'name' => $request->get('nameInput'),
+                'email' => $request->get('emailInput'),
+                'password' => Hash::make($request->get('passwordInput')),
+                'puesto' => $request->get('puestoInput'),
+                'unidad' => $request->get('capacitacionInput')
+            ]);
+            // si funciona redireccionamos
+            return redirect()->route('usuario_permisos.index')->with('success', 'NUEVO USUARIO AGREGADO!');
+        } else {
+            # usuario encontrado
+            return redirect()->back()->withErrors(['EL CORREO ELECTRÓNICO ASOCIADO A ESTA CUENTA YA SE ENCUENTRA EN LA BASE DE DATOS']);
+        }
+
     }
 
     /**

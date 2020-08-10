@@ -14,14 +14,38 @@
             <li class="nav-item">
               <a class="nav-link active" href="dashboard.html">
                 <i class="ni ni-tv-2 text-primary"></i>
-                <span class="nav-link-text">Dashboard</span>
+                <span class="nav-link-text">INICIO</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="icons.html">
-                <i class="fa fa-database text-red"></i>
-                <span class="nav-link-text">Registros</span>
+                <i class="fa fa-list-alt text-red"></i>
+                <span class="nav-link-text">CURSOS</span>
               </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('usuario_permisos.index') }}" >
+                    <i class="fa fa-users text-primary"></i>
+                    <span class="nav-link-text">Usuarios</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('roles.index') }}">
+                    <i class="ni ni-ui-04 text-default"></i>
+                    <span class="nav-link-text">Roles</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('permisos.index') }}" >
+                    <i class="fa fa-braille text-default"></i>
+                    <span class="nav-link-text">Permisos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('permisos.roles.index') }}" >
+                    <i class="fa fa-link text-info"></i>
+                    <span class="nav-link-text">permisos-roles</span>
+                </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="map.html">
@@ -45,51 +69,6 @@
               <a class="nav-link" href="login.html">
                 <i class="ni ni-key-25 text-info"></i>
                 <span class="nav-link-text">Login</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="register.html">
-                <i class="ni ni-circle-08 text-pink"></i>
-                <span class="nav-link-text">Register</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="upgrade.html">
-                <i class="ni ni-send text-dark"></i>
-                <span class="nav-link-text">Upgrade</span>
-              </a>
-            </li>
-          </ul>
-          <!-- Divider -->
-          <hr class="my-3">
-          <!-- Heading -->
-          <h6 class="navbar-heading p-0 text-muted">
-            <span class="docs-normal">Administración</span>
-          </h6>
-          <!-- Navigation -->
-          <ul class="navbar-nav mb-md-3">
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('usuario_permisos.index') }}" >
-                <i class="ni ni-circle-08"></i>
-                <span class="nav-link-text">Usuarios</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('roles.index') }}">
-                <i class="ni ni-ui-04"></i>
-                <span class="nav-link-text">Roles</span>
-              </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('permisos.index') }}" >
-                  <i class="fa fa-braille"></i>
-                  <span class="nav-link-text">Permisos</span>
-                </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('permisos.roles.index') }}" >
-                <i class="fa fa-link"></i>
-                <span class="nav-link-text">permisos-roles</span>
               </a>
             </li>
           </ul>

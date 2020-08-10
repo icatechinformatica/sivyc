@@ -72,30 +72,26 @@
                     <img alt="Image placeholder" src="{{asset("img/blade_icons/nophoto.png")}}">
                     </span>
                     <div class="media-body  ml-2  d-none d-lg-block">
-                    <span class="mb-0 text-sm  font-weight-bold">John Snow</span>
+                    <span class="mb-0 text-sm  font-weight-bold">PERFIL</span>
                     </div>
                 </div>
                 </a>
                 <div class="dropdown-menu  dropdown-menu-right ">
                 <div class="dropdown-header noti-title">
-                    <h6 class="text-overflow m-0">Welcome!</h6>
+                    <h6 class="text-overflow m-0">BIENVENIDO A SIVYC!</h6>
                 </div>
                 <a href="#!" class="dropdown-item">
-                    <i class="ni ni-single-02"></i>
-                    <span>My profile</span>
+                    <i class="ni ni-single-02 text-yellow"></i>
+                    <span>Mi perfil</span>
                 </a>
                 <a href="#!" class="dropdown-item">
-                    <i class="ni ni-settings-gear-65"></i>
-                    <span>Settings</span>
-                </a>
-                <a href="#!" class="dropdown-item">
-                    <i class="ni ni-calendar-grid-58"></i>
-                    <span>Activity</span>
+                    <i class="ni ni-settings-gear-65 text-default"></i>
+                    <span>Ajustes</span>
                 </a>
                 <div class="dropdown-divider"></div>
                 <a href="#!" class="dropdown-item">
-                    <i class="ni ni-user-run"></i>
-                    <span>Logout</span>
+                    <i class="ni ni-user-run text-danger"></i>
+                    <span>Cerrar Sesión</span>
                 </a>
                 </div>
             </li>
