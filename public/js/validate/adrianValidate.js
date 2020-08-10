@@ -36,12 +36,13 @@ $(function(){
                         document.getElementById('addmore['+x+'][iva]').value = null;
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
-                            total = respuesta;
-                            total = parseFloat(respuesta).toFixed(2);
-                            document.getElementById('addmore['+x+'][importe]').value = total;
-
                             iva = respuesta * 0.16;
                             iva = parseFloat(iva).toFixed(2);
+                            total = respuesta-iva;
+                            total = parseFloat(total).toFixed(2);
+
+                            document.getElementById('addmore['+x+'][importe]').value = total;
+
                             document.getElementById('addmore['+x+'][iva]').value = iva;
                         }else{
 
