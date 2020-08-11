@@ -38,7 +38,7 @@ $(function(){
                         if(!respuesta.hasOwnProperty('error')){
                             iva = respuesta * 0.16;
                             iva = parseFloat(iva).toFixed(2);
-                            total = respuesta-iva;
+                            total = respuesta+iva;
                             total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = total;
