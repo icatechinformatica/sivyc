@@ -69,6 +69,9 @@
                                 @can('supre.edit')
                                     <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
                                 @endcan
+                                @can('supre.delete')
+                                    <a class="btn btn-warning" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">Eliminar</a>
+                                @endcan
                                 <input hidden value={{$itemData->id}} id='pdfp'>
                             @endif
                             @if ($itemData->status == 'Validado')

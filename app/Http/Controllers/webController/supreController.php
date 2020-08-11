@@ -240,6 +240,16 @@ class supreController extends Controller
                     ->with('success','Suficiencia Presupuestal Validado');
     }
 
+    public function delete($id)
+    {
+        supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
+        folio::where('id_supre', '=', $id)->delete();
+        supre::where('id', '=', $id)->delete();
+
+        return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Eliminada');
+    }
+
     protected function getcursostats(Request $request)
     {
         if (isset($request->valor)){

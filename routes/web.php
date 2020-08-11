@@ -27,9 +27,10 @@ Route::post('/cursos/alta-baja/save','webController\CursosController@alta_baja_s
 Route::get('/convenios/alta-baja/{id}', 'webController\ConveniosController@alta_baja')->name('convenio-alta_baja');
 Route::post('/Convenios/alta-baja/save','webController\ConveniosController@alta_baja_save')->name('convenio-alta-baja-save');
 
-// Ruta Supre busqueda
+// Ruta Supre busqueda & misc
 Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats');
 Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
+Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
 
 //Ruta Instructor
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
