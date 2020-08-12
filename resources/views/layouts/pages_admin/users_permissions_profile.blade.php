@@ -1,57 +1,75 @@
 <!--Creado por Daniel Méndez Cruz-->
-@extends('theme.sivyc.layout')
-<!--llamar a la plantilla -->
-@section('title', 'Alumnos | SIVyC Icatech')
-<!--seccion-->
+@extends('theme.sivyc_admin.layout')
+<!--generado por Daniel Méndez-->
+@section('title', 'ASIGNAR ROL A USUARIO | Sivyc Icatech')
+<!--contenido-->
 @section('content')
-    <div class="container g-pt-50">
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="container-fluid mt--6">
         <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>FORMULARIO DE PERMISOS PARA USUARIOS</h2>
+
+            <div class="col-xl-12 order-xl-1">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="row align-items-center">
+                      <div class="col-8">
+                        <h3 class="mb-0">EDITAR PERMISO</h3>
+                      </div>
+                      <div class="col-4 text-right">
+                        <a href="{{ route('usuario_permisos.index') }}" class="btn btn-sm btn-danger">REGRESAR</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <form action="{{ route('usuarios_permisos.rol.edit', ['id' => base64_encode($usuario->id) ]) }}" id="formUsuarioAsignarRol" name="formUsuarioAsignarRol" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <label for="numero_control_edit" class="control-label">USUARIO</label>
+                                <input type="text" name="numero_control_edit" id="numero_control_edit" class="form-control" value="{{ $usuario->name }}" readonly placeholder="NÚMERO DE CONTROL PARA MODIFICAR">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="codigo_verificacion_edit" class="control-label">ROL</label>
+                                <select class="form-control" id="inputRol" name="inputRol">
+                                    <option value="">--SELECCIONAR--</option>
+                                    @foreach ($roles as $itemRol)
+                                        @foreach ($usuario->roles as $itemUserRol)
+                                            <option {{ ($itemUserRol->pivot->role_id == $itemRol->id) ? 'selected' : '' }} value="{{ $itemRol->id }}">{{ $itemRol->name }}</option>
+                                        @endforeach
+                                        <option value="{{ $itemRol->id }}">{{ $itemRol->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success" >Asignar</button>
+                    </form>
+                  </div>
                 </div>
             </div>
         </div>
-        <form action="" id="frmalumno_registrado_modificar" method="post">
-            @csrf
-            @method('PUT')
-            <div class="form-row">
-                <div class="form-group col-md-8">
-                    <label for="numero_control_edit" class="control-label">NÚMERO DE CONTROL PARA MODIFICAR</label>
-                    <input type="text" name="numero_control_edit" id="numero_control_edit" class="form-control" value="{{ $usuario->name }}" readonly placeholder="NÚMERO DE CONTROL PARA MODIFICAR">
-                </div>
-                <div class="form-group col-md-8">
-                    <label for="codigo_verificacion_edit" class="control-label">CÓDIGO DE VERIFICACIÓN</label>
-                    <select class="form-control" id="areaCursos" name="areaCursos">
-                        <option value="">--SELECCIONAR--</option>
-                        @foreach ($roles as $itemRol)
-                            @foreach ($usuario->roles as $itemUserRol)
-                                <option {{ ($itemUserRol->pivot->role_id == $itemRol->id) ? 'selected' : '' }} value="{{ $itemRol->id }}">{{ $itemRol->name }}</option>
-                            @endforeach
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
-                    </div>
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-success" >Asignar</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+
+        <!-- FOOTER PORTAL DE GOBIERNO -->
+        @include("theme.sivyc_admin.footer")
+        <!-- FOOTER PORTAL DE GOBIERNO END-->
     </div>
-    <br>
+@endsection
+@section('scripts_content')
+    <script type="text/javascript">
+        $(function(){
+
+            $('#formUsuarioAsignarRol').validate({
+                rules: {
+                    inputRol: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    inputRol: {
+                        required: 'Por favor, seleccione un rol',
+                    }
+                }
+            });
+
+        });
+    </script>
 @endsection

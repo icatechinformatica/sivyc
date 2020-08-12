@@ -90,7 +90,8 @@ class userController extends Controller
         //
         $iduser = base64_decode($id);
         $usuario = User::findOrfail($iduser);
-        return view('layouts.pages_admin.users_profile', compact('usuario'));
+        $ubicacion = Unidad::groupBy('ubicacion')->GET(['ubicacion']);
+        return view('layouts.pages_admin.users_profile', compact('usuario', 'ubicacion'));
     }
 
     /**
@@ -102,7 +103,34 @@ class userController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // modificacion de un recurso guardado
+        if (isset($id)) {
+            $idUsuario = base64_decode($id);
+            $usuarios = new User();
+
+            if (!empty($request->input('inputPasswordUpdate'))) {
+                # si no está vacio se agrega
+                $arrayUser = [
+                    'name' => trim($request->inputNameUpdate),
+                    'password' => trim($request->rolDescripcionUpdate),
+                    'puesto' => trim($request->get('inputPuestoUpdate')),
+                    'unidad' => trim($request->get('inputCapacitacionUpdate'))
+                ];
+            } else {
+                # si está vacio no se agrega al arreglo
+                $arrayUser = [
+                    'name' => trim($request->inputNameUpdate),
+                    'slug' => trim($request->rolSlugUpdate),
+                    'puesto' => trim($request->get('inputPuestoUpdate')),
+                    'unidad' => trim($request->get('inputCapacitacionUpdate'))
+                ];
+            }
+
+            $usuarios->WHERE('id', $idUsuario)->UPDATE($arrayUser);
+            return redirect()->route('usuario_permisos.index')
+                    ->with('success', 'USUARIO ACTUALIZADO EXTIOSAMENTE!');
+        }
+
     }
 
     /**
@@ -114,5 +142,18 @@ class userController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function updateRol(Request $request, $id){
+        // roles usuarios
+        $idUsuario = base64_decode($id);
+        $usuario = User::findOrfail($idUsuario);
+        // borrar los permisos de dicho rol
+        $usuario->roles()->detach();
+        $idrol = $request->get('inputRol');
+        $usuario->roles()->attach($idrol);
+
+        return redirect()->route('usuario_permisos.index')
+            ->with('success', 'USUARIO VINCULADO A ROL CORRECTAMENTE!');
     }
 }

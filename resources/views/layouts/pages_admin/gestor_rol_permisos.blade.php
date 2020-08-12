@@ -1,7 +1,7 @@
 <!--Creado por Daniel Méndez Cruz-->
 @extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
-@section('title', 'CREAR PERMISO | Sivyc Icatech')
+@section('title', 'ASIGNAR PERMISO | Sivyc Icatech')
 <!--contenido-->
 @section('content')
     <div class="container-fluid mt--6">
@@ -10,6 +10,11 @@
             <div class="col-xl-12 order-xl-1">
                 <div class="card">
                   <div class="card-header">
+                    @if ($message = Session::get('success'))
+                        <div class="alert alert-success">
+                            <p>{{ $message }}</p>
+                        </div>
+                    @endif
                     <div class="row align-items-center">
                       <div class="col-8">
                         <h3 class="mb-0">GESTOR DE PERMISOS A ROL</h3>
@@ -20,26 +25,36 @@
                     </div>
                   </div>
                   <div class="card-body">
-                    <form>
+                    <form method="POST" action="{{ route('gestor.permisos.roles.create') }}">
+                    @csrf
                       <h6 class="heading-small text-muted mb-4">Información del rol</h6>
                       <div class="pl-lg-4">
                         <div class="row">
                             @foreach ($permisos as $itemPermisos)
                                 <div class="col-lg-8">
                                     <div class="custom-control custom-control-alternative custom-checkbox">
-                                        <input class="custom-control-input" id="{{ $itemPermisos->id }}" name="permisos_{{ $itemPermisos->id }}" type="checkbox">
+
+                                        @foreach ($itemPermisos->roles as $item)
+                                            <input class="custom-control-input" id="{{ $itemPermisos->id }}" name="permisos[]"
+                                            type="checkbox" {{( $item->pivot->permission_id == $itemPermisos->id && $item->pivot->role_id == $idRol ) ? 'checked': ''}}
+                                            value="{{ $itemPermisos->id }}">
+                                        @endforeach
+                                        <input class="custom-control-input" id="{{ $itemPermisos->id }}" name="permisos[]"
+                                            type="checkbox" value="{{ $itemPermisos->id }}">
                                         <label class="custom-control-label" for="{{ $itemPermisos->id }}">
-                                          <span class="text-muted">{{ $itemPermisos->name }}</span>
+                                        <span class="text-muted">{{ $itemPermisos->name }}</span>
+
                                         </label>
                                     </div>
+
                                 </div>
                             @endforeach
-
                         </div>
 
                       </div>
                       <br>
-                      <input type="submit" value="crear" class="btn btn-sm btn-success">
+                      <input type="submit" value="Asignar" class="btn btn-sm btn-success">
+                      <input type="hidden" name="idrole" id="idrole" value="{{ $idRol }}">
                     </form>
                   </div>
                 </div>

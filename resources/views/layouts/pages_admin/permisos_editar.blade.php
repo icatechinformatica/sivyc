@@ -15,26 +15,28 @@
                         <h3 class="mb-0">EDITAR PERMISO</h3>
                       </div>
                       <div class="col-4 text-right">
-                        <a href="{{URL::previous()}}" class="btn btn-sm btn-danger">REGRESAR</a>
+                        <a href="{{ route('permisos.index') }}" class="btn btn-sm btn-danger">REGRESAR</a>
                       </div>
                     </div>
                   </div>
                   <div class="card-body">
-                    <form>
+                    <form method="POST" action="{{ route('permiso.update', ['id' => base64_encode($permiso->id) ]) }}" name="formPermisoEdit" id="formPermisoEdit">
+                    @csrf
+                    @method('PUT')
                       <h6 class="heading-small text-muted mb-4">Información del permiso</h6>
                       <div class="pl-lg-4">
                         <div class="row">
                           <div class="col-lg-6">
                             <div class="form-group">
-                              <label class="form-control-label" for="rol-name">nombre</label>
-                              <input type="text" id="permiso-name" class="form-control" value="{{ $permiso->name }}">
+                              <label class="form-control-label" for="permisoNameEdit">NOMBRE</label>
+                              <input type="text" id="permisoNameEdit" id="permisoNameEdit" class="form-control" value="{{ $permiso->name }}">
                             </div>
                           </div>
 
                           <div class="col-lg-6">
                             <div class="form-group">
-                              <label class="form-control-label" for="rol-slug">slug</label>
-                              <input type="text" id="permiso-slug" class="form-control" value="{{ $permiso->slug }}">
+                              <label class="form-control-label" for="permisoSlugEdit">SLUG</label>
+                              <input type="text" id="permisoSlugEdit" name="permisoSlugEdit" class="form-control" value="{{ $permiso->slug }}" readonly>
                             </div>
                           </div>
 
@@ -47,11 +49,11 @@
                         <div class="row">
                           <div class="col-md-12">
                             <div class="form-group">
-                              <label class="form-control-label" for="rol-descripcion">descripcion</label>
-                              <textarea rows="4" class="form-control" name="permiso-descripcion">{{ $permiso->description}}</textarea>
+                              <label class="form-control-label" for="permisoDescripcionEdit">DESCRIPCIÓN</label>
+                              <textarea rows="4" class="form-control" name="permisoDescripcionEdit" id="permisoDescripcionEdit">{{ $permiso->description}}</textarea>
                             </div>
                           </div>
-                          <input type="submit" value="Actualizar" class="btn btn-sm btn-info">
+                          <input type="submit" value="Actualizar" class="btn btn-sm btn-warning">
                         </div>
                       </div>
                     </form>
@@ -64,4 +66,32 @@
         @include("theme.sivyc_admin.footer")
         <!-- FOOTER PORTAL DE GOBIERNO END-->
     </div>
+@endsection
+@section('scripts_content')
+    <script type="text/javascript">
+        $(function(){
+
+            $('#formPermisoEdit').validate({
+                rules: {
+                    permisoNameEdit: {
+                        required: true,
+                        email: true
+                    },
+                    permisoSlugEdit: {
+                        required: true,
+                        minlength: 3
+                    }
+                },
+                messages: {
+                    permisoNameEdit: {
+                        required: 'Por favor ingrese su nombre del permiso',
+                    },
+                    permisoSlugEdit: {
+                        required: 'Por favor ingrese el slug del permiso'
+                    }
+                }
+            });
+
+        });
+    </script>
 @endsection
