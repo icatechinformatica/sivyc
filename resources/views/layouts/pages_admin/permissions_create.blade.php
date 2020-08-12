@@ -83,7 +83,6 @@
                 rules: {
                     permisoName: {
                         required: true,
-                        email: true
                     },
                     permisoSlug: {
                         required: true,
@@ -95,7 +94,8 @@
                         required: 'Por favor ingrese su nombre del permiso',
                     },
                     permisoSlug: {
-                        required: 'Por favor ingrese el slug del permiso'
+                        required: 'Por favor ingrese el slug del permiso',
+                        minlength: 'Minimo se necesita una longitud de 3 caracteres'
                     }
                 }
             });
