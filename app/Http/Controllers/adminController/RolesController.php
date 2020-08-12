@@ -5,6 +5,7 @@ namespace App\Http\Controllers\adminController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Rol;
+use Illuminate\Support\Facades\Validator;
 
 class RolesController extends Controller
 {
@@ -39,7 +40,28 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validar
+        $validator =  Validator::make($request->all(), [
+            'rolName' => 'required',
+            'rolSlug' => 'required',
+        ]);
+        if ($validator->fails()) {
+            # devolvemos un error
+            return redirect()->back()->withErrors($validator)
+                    ->withInput();
+        } else {
+            // guardar registro en la base de datos
+            $rolRegistro = new Rol;
+            $rolRegistro->name = trim($request->get('rolName'));
+            $rolRegistro->slug = trim($request->get('rolSlug'));
+            $rolRegistro->description = trim($request->get('rolDescripcion'));
+            $rolRegistro->save();
+
+            // redireccionamos con un mensaje de éxito
+            return redirect()->route('roles.index')
+            ->with('success', 'ROL AGREGADO CORRECTAMENTE!');
+        }
+
     }
 
     /**
@@ -77,6 +99,22 @@ class RolesController extends Controller
     public function update(Request $request, $id)
     {
         //
+        // modificacion de un recurso guardado
+        if (isset($id)) {
+            $idroles = base64_decode($id);
+            $roles = new Rol();
+
+            # code...
+            $arrayRol = [
+                'name' => trim($request->rolNameUpdate),
+                'slug' => trim($request->rolSlugUpdate),
+                'description' => trim($request->rolDescripcionUpdate),
+            ];
+
+            $roles->WHERE('id', $idroles)->UPDATE($arrayRol);
+            return redirect()->route('roles.index')
+                    ->with('success', 'ROL ACTUALIZADO EXTIOSAMENTE!');
+        }
     }
 
     /**

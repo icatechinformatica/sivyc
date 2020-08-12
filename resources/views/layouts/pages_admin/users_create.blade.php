@@ -9,6 +9,7 @@
 
             <div class="col-xl-12 order-xl-1">
                 <div class="card">
+                  <div class="card-header">
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
@@ -18,7 +19,6 @@
                             </ul>
                         </div><br />
                     @endif
-                  <div class="card-header">
                     <div class="row align-items-center">
                       <div class="col-8">
                         <h3 class="mb-0">NUEVO USUARIO</h3>

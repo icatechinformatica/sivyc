@@ -18,7 +18,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="icons.html">
+              <a class="nav-link" href="{{ route('alumno_registrado.modificar.index') }}">
                 <i class="fa fa-list-alt text-red"></i>
                 <span class="nav-link-text">CURSOS</span>
               </a>

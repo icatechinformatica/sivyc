@@ -8,12 +8,13 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success">
-                            <p>{{ $message }}</p>
-                        </div>
-                    @endif
+
                     <div class="card-header border-0">
+                        @if ($message = Session::get('success'))
+                            <div class="alert alert-success">
+                                <p>{{ $message }}</p>
+                            </div>
+                        @endif
                         <div class="row align-items-center">
                             <div class="col-8">
                               <h3 class="mb-0">Usuarios de SIVYC</h3>

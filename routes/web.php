@@ -79,6 +79,13 @@ Route::get('/permisos/roles/index', 'adminController\PermissionController@permis
 Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
 Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
 Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
+Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
+Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
+Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
+Route::put('/usuarios/profile/update/{id}', 'adminController\userController@update')->name('usuarios_permisos.update');
+Route::post('/permisos/store', 'adminController\PermissionController@storePermission')->name('permission.store');
+Route::put('/permisos/update/{id}', 'adminController\PermissionController@update')->name('permiso.update');
+Route::put('/usuarios/permisos/perfil/rol/{id}', 'adminController\userController@updateRol')->name('usuarios_permisos.rol.edit');
 /**
  * UNIDADES DE CAPACITACION
  */

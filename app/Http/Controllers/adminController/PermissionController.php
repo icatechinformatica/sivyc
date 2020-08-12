@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Permission;
 use App\Models\Rol;
+use App\Models\PermisosRol;
+use Illuminate\Support\Facades\Validator;
 
 class PermissionController extends Controller
 {
@@ -40,7 +42,18 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // permissions
+        $idRol = $request->get('idrole');
+        $roles = Rol::findOrfail($idRol);
+        // borrar los permisos de dicho rol
+        $roles->permissions()->detach();
+        foreach($request->get('permisos') as $arraPermisos)
+        {
+            $roles->permissions()->attach($arraPermisos);
+        }
+
+        return redirect()->route('gestor.permisos.roles', ['id' => base64_encode($idRol)])
+            ->with('success', 'PERMISOS OTORGADOS CORRECTAMENTE!');
     }
 
     /**
@@ -77,7 +90,22 @@ class PermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // modificacion de un permiso guardado
+        if (isset($id)) {
+            $idpermisos = base64_decode($id);
+            $permisos = new Permission();
+
+            # code...
+            $arrayPermisos = [
+                'name' => trim($request->permisoNameEdit),
+                'slug' => trim($request->permisoSlugEdit),
+                'description' => trim($request->permisoDescripcionEdit),
+            ];
+
+            $permisos->WHERE('id', $idpermisos)->UPDATE($arrayPermisos);
+            return redirect()->route('permisos.index')
+                    ->with('success', 'PERMISO ACTUALIZADO EXTIOSAMENTE!');
+        }
     }
 
     /**
@@ -101,6 +129,32 @@ class PermissionController extends Controller
         $idRol = base64_decode($id);
         $permisos = Permission::all();
         $roles = Rol::findOrfail($idRol);
-        return view('layouts.pages_admin.gestor_rol_permisos', compact('roles', 'permisos'));
+        return view('layouts.pages_admin.gestor_rol_permisos', compact('roles', 'permisos', 'idRol'));
+    }
+
+    public function storePermission(Request $request){
+        $validator =  Validator::make($request->all(), [
+            'permisoName' => 'required',
+            'permisoSlug' => 'required',
+        ]);
+        if ($validator->fails()) {
+            # devolvemos un error
+            return redirect()->back()->withErrors($validator)
+                    ->withInput();
+        } else {
+            // guardar registro en la base de datos
+            $permisoRegistro = new Permission;
+            $permisoRegistro->name = trim($request->get('permisoName'));
+            $permisoRegistro->slug = trim($request->get('permisoSlug'));
+            if (!empty($request->get('permisoDescripcion'))) {
+                # si no está vacio se le asigna a la variable...
+                $permisoRegistro->description = trim($request->get('permisoDescripcion'));
+            }
+            $permisoRegistro->save();
+
+            // redireccionamos con un mensaje de éxito
+            return redirect()->route('permisos.index')
+            ->with('success', 'PERMISO AGREGADO CORRECTAMENTE!');
+        }
     }
 }

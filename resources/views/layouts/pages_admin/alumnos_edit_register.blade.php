@@ -25,7 +25,7 @@
                         <h2>ALUMNOS INSCRITOS A MODIFICAR NÚMERO DE CONTROL</h2>
                       </div>
                       <div class="col-4 text-right">
-                        <a href="{{URL::previous()}}" class="btn btn-sm btn-danger">REGRESAR</a>
+                        <a href="{{ route('alumno_registrado.modificar.index') }}" class="btn btn-sm btn-danger">REGRESAR</a>
                       </div>
                     </div>
                   </div>
