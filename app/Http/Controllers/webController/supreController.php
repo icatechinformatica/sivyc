@@ -405,7 +405,7 @@ class supreController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
         $pdf->setPaper('A4', 'Landscape');
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('medium.pdf');
 
         return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
     }
