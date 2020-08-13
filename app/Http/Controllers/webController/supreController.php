@@ -354,6 +354,8 @@ class supreController extends Controller
     public function valsupre_pdf($id){
         $supre = new supre;
         $curso = new tbl_curso;
+        $recursos = array();
+        $i = 0;
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
                         'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer')
@@ -364,6 +366,24 @@ class supreController extends Controller
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
+
+        $cadwell = folio::SELECT('id_cursos')->WHERE('id_supre', '=', $id)->GET();
+        foreach ($cadwell as $item)
+        {
+            $h = tbl_curso::SELECT('hombre')->WHERE('id', '=', $item->id_cursos)->FIRST();
+            $m = tbl_curso::SELECT('mujer')->WHERE('id', '=', $item->id_cursos)->FIRST();
+            $hm = $h->hombre+$m->mujer;
+            if ($hm < 10)
+            {
+                $recursos[$i] = "Estatal";
+            }
+            else
+            {
+                $recursos[$i] = "Federal";
+            }
+            $i++;
+        }
+
 
         $date = strtotime($data2->fecha);
         $D = date('d', $date);
@@ -382,16 +402,12 @@ class supreController extends Controller
         $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
         $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
         $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
-        //return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
         $pdf->setPaper('A4', 'Landscape');
+        return $pdf->stream('medium.pdf');
 
-
-
-        return $pdf->download('medium.pdf');
-
-        return view('layouts.pdfpages.valsupre', compact('data','data2'));
+        return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
     }
 
     protected function monthToString($month)

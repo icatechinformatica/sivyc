@@ -134,8 +134,8 @@
                                 <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
                                 <td><small>12101 Honorarios</small></td>
                                 <td><small>{{$item->importe_total}}</small></td>
-                                <script>alumn(hombre{{$key}}.value, mujer{{$key}}.value);</script>
-                                <!--<td style="text-align: center"><small>X</small></td>-->
+                                <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
+                                <td style="text-align: center"><small>{{$recursos[$key]}}</small></td>
                                 <td><small>{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
