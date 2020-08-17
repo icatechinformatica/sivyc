@@ -464,7 +464,9 @@ class InstructorController extends Controller
         $sel_unidad = tbl_unidades::WHERE('unidad', '=', $especvalid->unidad_solicita)->FIRST();
         $data_unidad = tbl_unidades::WHERE('unidad', '!=', $especvalid->unidad_solicita)->GET();
 
-        return view('layouts.pages.frmmodespecialidad', compact('especvalid','sel_espec','data_espec','sel_pago','data_pago','sel_unidad','data_unidad', 'idesp','id','idins'));
+        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+
+        return view('layouts.pages.frmmodespecialidad', compact('especvalid','sel_espec','data_espec','sel_pago','data_pago','sel_unidad','data_unidad', 'idesp','id','idins','nomesp'));
     }
 
     public function add_perfil($id)
@@ -555,7 +557,8 @@ class InstructorController extends Controller
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
         $cursos = curso::WHERE('id_especialidad', '=', $id)->GET();
-        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos'));
+        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
     }
 
     public function especval_mod_save(Request $request)

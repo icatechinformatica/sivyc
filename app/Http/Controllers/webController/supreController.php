@@ -236,8 +236,22 @@ class supreController extends Controller
         folio::where('id_supre', '=', $request->id)
         ->update(['status' => 'Validado']);
 
-            return redirect()->route('supre-inicio')
-                    ->with('success','Suficiencia Presupuestal Validado');
+        $id = $request->id;
+        $directorio_id = $request->directorio_id;
+        return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id'));
+    }
+
+    public function valsupre_checkmod(Request $request){
+        $data = supre::find($request->id);
+        $directorio = supre_directorio::find($request->directorio_id);
+        $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
+        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        $getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
+        $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
+        $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
+        $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
+
+        return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
     }
 
     public function delete($id)

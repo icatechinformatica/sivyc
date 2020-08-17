@@ -110,6 +110,7 @@ Auth::routes();
 Route::get('/supre/solicitud/opc', 'webController\supreController@opcion')->name('solicitud-opcion');
 Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_folios')->name('solicitud-folio');
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
+Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
 //Ruta Contrato
 Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
