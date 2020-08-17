@@ -17,6 +17,7 @@
             @csrf
                 <div class="text-center">
                     <h1>Añadir Especialidad Validada a Impartir</h1>
+                    <br><h2>Especialidad Seleccionada: {{$nomesp->nombre}}</h2>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
