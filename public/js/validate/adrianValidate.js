@@ -36,6 +36,8 @@ $(function(){
                         document.getElementById('addmore['+x+'][iva]').value = null;
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
+                            console.log('respuesta= ')
+                            console.log(respuesta)
                             iva = respuesta * 0.16;
                             iva = parseFloat(iva).toFixed(2);
                             total = respuesta*1.16
