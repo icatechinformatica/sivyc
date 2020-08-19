@@ -17,10 +17,20 @@
                         @endif
                         <div class="row align-items-center">
                             <div class="col-8">
-                              <h3 class="mb-0">Usuarios de SIVYC</h3>
+                              <h3 class="mb-0">PERSONAL ICATECH</h3>
+                                {!! Form::open(['route' => 'personal.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                                    <select name="tipo_busqueda_personal" class="form-control mr-sm-2" id="tipo_busqueda_personal">
+                                        <option value="">BUSCAR POR TIPO</option>
+                                        <option value="numero_enlace">NÚMERO DE ENLACE</option>
+                                        <option value="nombres">NOMBRE COMPLETO</option>
+                                    </select>
+
+                                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                                {!! Form::close() !!}
                             </div>
                             <div class="col-4 text-right">
-                              <a href="{{route('usuarios.perfil.crear')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>
+                              <a href="{{route('personal.crear')}}" class="btn btn-sm btn-success">NUEVO PERSONAL</a>
                             </div>
                         </div>
                     </div>
@@ -29,23 +39,25 @@
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                                 <tr>
+                                    <th scope="col">N° ENLACE</th>
                                     <th scope="col">NOMBRE</th>
-                                    <th scope="col">INFORMACIÓN</th>
-                                    <th scope="col">MODIFICAR</th>
+                                    <th scope="col">DETALLES</th>
                                 </tr>
                             </thead>
                             <tbody class="list">
-                                @foreach ($usuarios as $itemUsuarios)
+                                @foreach ($directorio as $directorioItem)
                                     <tr>
-                                        <td scope="row">{{$itemUsuarios->name}}</td>
-                                        <td>
-                                            <a href="{{route('usuarios.perfil.modificar', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR USUARIO">
-                                                <i class="fa fa-user" aria-hidden="true"></i>
-                                            </a>
+                                        <td scope="row">{{ $directorioItem->numero_enlace }}</td>
+                                        <td scope="row">
+                                            {{ $directorioItem->apellidoPaterno}} {{ $directorioItem->apellidoMaterno}} {{$directorioItem->nombre}}
                                         </td>
                                         <td>
-                                            <a href="{{route('usuarios_permisos.show', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
-                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            <a href="{{route('personal.edit', ['id' => base64_encode($directorioItem->id)])}}"
+                                                class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="tooltip" data-placement="top"
+                                                title="MODIFICAR REGISTRO">
+
+                                                <i class="fa fa-users" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -58,7 +70,7 @@
                         <nav aria-label="...">
                             <ul class="pagination justify-content-end mb-0">
                                 <li class="page-item">
-                                    {{ $usuarios->appends(request()->query())->links() }}
+                                    {{ $directorio->appends(request()->query())->links() }}
                                 </li>
                             </ul>
                         </nav>

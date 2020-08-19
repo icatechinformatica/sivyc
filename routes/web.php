@@ -87,6 +87,12 @@ Route::put('/usuarios/profile/update/{id}', 'adminController\userController@upda
 Route::post('/permisos/store', 'adminController\PermissionController@storePermission')->name('permission.store');
 Route::put('/permisos/update/{id}', 'adminController\PermissionController@update')->name('permiso.update');
 Route::put('/usuarios/permisos/perfil/rol/{id}', 'adminController\userController@updateRol')->name('usuarios_permisos.rol.edit');
+Route::get('/personal/index', 'adminController\PersonalController@index')->name('personal.index');
+Route::get('/personal/create', 'adminController\PersonalController@create')->name('personal.crear');
+Route::post('/personal/store', 'adminController\PersonalController@store')->name('personal.store');
+Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
+Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
+Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
 /**
  * UNIDADES DE CAPACITACION
  */
