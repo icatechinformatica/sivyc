@@ -223,10 +223,10 @@
             /**
             * cambios select dependientes de tbl_unidades
             */
-            $('#inputUbicacionUpdate').on("change", () => {
-                $("#inputUbicacionUpdate option:selected").each( () => {
-                    var ubicacion = $('#inputUbicacionUpdate').val();
-                    var url = '/unidades/unidades_ubicacion/'+ ubicacion;
+            $('#inputAdscripcionUpdate').on("change", () => {
+                $("#inputAdscripcionUpdate option:selected").each( () => {
+                    var areaAds = $('#inputAdscripcionUpdate').val();
+                    var url = '/organo/organo_administrativo/'+ areaAds;
 
                     var request = $.ajax
                     ({
@@ -244,16 +244,16 @@
 
                     request.done(( respuesta ) => {
                         if (respuesta.length < 1) {
-                            $("#inputCapacitacionUpdate").empty();
-                            $("#inputCapacitacionUpdate").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                            $("#inputAdscripcionUpdate").empty();
+                            $("#inputAdscripcionUpdate").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                         } else {
                             if(!respuesta.hasOwnProperty('error')){
-                                $("#inputCapacitacionUpdate").empty();
-                                $("#inputCapacitacionUpdate").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                $("#inputAdscripcionUpdate").empty();
+                                $("#inputAdscripcionUpdate").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                                 $.each(respuesta, (k, v) => {
-                                    $('#inputCapacitacionUpdate').append('<option value="' + v.id + '">' + v.unidad + '</option>');
+                                    $('#inputAdscripcionUpdate').append('<option value="' + v.id + '">' + v.area + '</option>');
                                 });
-                                $("#inputCapacitacionUpdate").focus();
+                                $("#inputAdscripcionUpdate").focus();
                             }else{
 
                                 //Puedes mostrar un mensaje de error en algún div del DOM
