@@ -195,7 +195,7 @@ class AlumnoRegistradoController extends Controller
                             'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
                             'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id',
                             'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad AS unidades', 'alumnos_registro.cerrs',
-                            'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_pre.realizo', 'cursos.costo']);
+                            'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo']);
         $edad = Carbon::parse($alumnos->fecha_nacimiento)->age;
         $date = carbon::now()->toDateString();
         set_time_limit(300);
