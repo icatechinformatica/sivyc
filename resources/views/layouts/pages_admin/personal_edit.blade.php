@@ -223,10 +223,10 @@
             /**
             * cambios select dependientes de tbl_unidades
             */
-            $('#inputAdscripcionUpdate').on("change", () => {
-                $("#inputAdscripcionUpdate option:selected").each( () => {
-                    var areaAds = $('#inputAdscripcionUpdate').val();
-                    var url = '/organo/organo_administrativo/'+ areaAds;
+            $('#inputOrganoUpdate').on("change", () => {
+                $("#inputOrganoUpdate option:selected").each( () => {
+                    var organoAdmin = $('#inputOrganoUpdate').val();
+                    var url = '/organo/organo_administrativo/'+ organoAdmin;
 
                     var request = $.ajax
                     ({
