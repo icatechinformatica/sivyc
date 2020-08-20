@@ -71,7 +71,7 @@
                         <div class="row">
                           <div class="col-lg-6">
                             <div class="form-group">
-                              <label class="form-control-label" for="inputnumeroControl">N° DE CONTROL</label>
+                              <label class="form-control-label" for="inputnumeroControl">N° DE ENLACE</label>
                               <input type="text" id="inputnumeroControl" name="inputnumeroControl" class="form-control" >
                             </div>
                           </div>
@@ -248,6 +248,17 @@
                             alert( "Hubo un error: " + textStatus );
                     });
                 });
+            });
+
+            /**
+            * ESCRIBIR SÓLO NÚMEROS
+            */
+            $("#inputnumeroControl").keypress(function (e) {
+                //if the letter is not digit then display error and don't type anything
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                   //retornar falso
+                   return false;
+               }
             });
 
         });

@@ -132,6 +132,7 @@ class PersonalController extends Controller
         $activos = ($request->activos !== null) ? false : true;
 
         $array_personal_update = [
+            'numero_enlace' => $numero_enlace,
             'nombre' => trim($request->inputNameUpdate),
             'apellidoPaterno' => trim($request->inputPaternoUpdate),
             'apellidoMaterno' => trim($request->inputMaternoUpdate),

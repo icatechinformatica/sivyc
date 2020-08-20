@@ -68,7 +68,7 @@
                         <h3 class="mb-0">EDITAR PERFIL</h3>
                       </div>
                       <div class="col-4 text-right">
-                        <a href="{{ route('usuario_permisos.index') }}" class="btn btn-sm btn-danger">REGRESAR</a>
+                        <a href="{{ route('personal.index') }}" class="btn btn-sm btn-danger">REGRESAR</a>
                       </div>
                     </div>
                   </div>
@@ -81,8 +81,8 @@
                         <div class="row">
                           <div class="col-lg-6">
                             <div class="form-group">
-                              <label class="form-control-label" for="inputNumeroEnlaceUpdate">N° ENLACE</label>
-                              <input type="text" id="inputNumeroEnlaceUpdate" name="inputNumeroEnlaceUpdate" class="form-control" readonly value="{{ $directorioPersonal->numero_enlace }}">
+                              <label class="form-control-label" for="inputNumeroEnlaceUpdate">N° DE ENLACE</label>
+                              <input type="text" id="inputNumeroEnlaceUpdate" name="inputNumeroEnlaceUpdate" class="form-control" value="{{ $directorioPersonal->numero_enlace }}">
                             </div>
                           </div>
 
@@ -266,6 +266,17 @@
                             alert( "Hubo un error: " + textStatus );
                     });
                 });
+            });
+
+            /**
+            * ESCRIBIR SÓLO NÚMEROS
+            */
+            $("#inputNumeroEnlaceUpdate").keypress(function (e) {
+                //if the letter is not digit then display error and don't type anything
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                   //retornar falso
+                   return false;
+               }
             });
 
         });
