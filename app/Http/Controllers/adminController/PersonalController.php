@@ -35,7 +35,7 @@ class PersonalController extends Controller
         //
         $organo = new OrganoAdministrativo;
         $oA = $organo->all();
-        return view('layouts.pages_admin.personal', compact('directorio', 'oA'));
+        return view('layouts.pages_admin.personal', compact('oA'));
     }
 
     /**
