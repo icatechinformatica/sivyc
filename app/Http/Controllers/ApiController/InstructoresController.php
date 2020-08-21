@@ -20,6 +20,7 @@ class InstructoresController extends Controller
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+        ->LEFTJOIN('criterio_pago', 'especialidad_instructores.pago_id', '=', 'criterio_pago.id')
         ->GET([
             'instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
             'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
@@ -31,7 +32,8 @@ class InstructoresController extends Controller
             'tbl_unidades.unidad AS unidades', 'instructores.motivo',
             'instructor_perfil.area_carrera', 'instructor_perfil.grado_profesional', 'instructor_perfil.cursos_recibidos',
             'instructor_perfil.estandar_conocer', 'instructor_perfil.registro_stps', 'especialidad_instructores.memorandum_validacion',
-            'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad'
+            'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad',
+            'criterio_pago.perfil_profesional', 'criterio_pago.monto_hora_ze2', 'criterio_pago.monto_hora_ze3'
         ]);
         return response()->json($instructores, 200);
     }
