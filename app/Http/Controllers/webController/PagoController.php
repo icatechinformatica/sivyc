@@ -50,8 +50,8 @@ class PagoController extends Controller
                                     ->FIRST();
 
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-
-        return view('layouts.pages.frmpago', compact('data', 'nomins'));
+        $importe = round($data->importe_total-$data->iva, 2);
+        return view('layouts.pages.frmpago', compact('data', 'nomins','importe'));
     }
 
     public function modificar_pago()

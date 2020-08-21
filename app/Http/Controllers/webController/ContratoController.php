@@ -54,7 +54,7 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        $pago = round($data->importe_total+$data->iva, 2);
+        $pago = round($data->importe_total-$data->iva, 2);
 
         return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago'));
     }
