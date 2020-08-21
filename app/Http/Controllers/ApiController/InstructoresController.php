@@ -33,7 +33,6 @@ class InstructoresController extends Controller
             'instructor_perfil.area_carrera', 'instructor_perfil.grado_profesional', 'instructor_perfil.cursos_recibidos',
             'instructor_perfil.estandar_conocer', 'instructor_perfil.registro_stps', 'especialidad_instructores.memorandum_validacion',
             'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad',
-            'criterio_pago.perfil_profesional', 'criterio_pago.monto_hora_ze2', 'criterio_pago.monto_hora_ze3',
             'especialidad_instructores.pago_id'
         ]);
         return response()->json($instructores, 200);
