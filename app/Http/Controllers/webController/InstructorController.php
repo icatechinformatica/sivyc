@@ -602,9 +602,12 @@ class InstructorController extends Controller
     public function alta_baja($id)
     {
         $available = instructorAvailable::WHERE('instructor_id', '=', $id)->FIRST();
+        $checkins = instructor::WHERE('id', '=',$id)->FIRST();
         if($available == NULL)
         {
-            if($available->status == 'BAJA')
+            $uid = instructorAvailable::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+            $id = $uid->id + 1;
+            if($checkins->status == 'BAJA')
             {
                 $val = FALSE;
             }
@@ -613,6 +616,7 @@ class InstructorController extends Controller
                 $val = TRUE;
             }
             $ins_available = new instructorAvailable();
+            $ins_available->id = $id;
             $ins_available->instructor_id = $id;
             $ins_available->CHK_TUXTLA = $val;
             $ins_available->CHK_TAPACHULA = $val;
