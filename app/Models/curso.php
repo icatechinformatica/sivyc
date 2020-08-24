@@ -15,7 +15,7 @@ class curso extends Model
             'id','nombre_curso','modalidad','clasificacion','costo','duracion',
             'objetivo','perfil','solicitud_autorizacion','fecha_validacion','memo_validacion',
             'memo_actualizacion','fecha_actualizacion','unidad_amovil','descripcion','no_convenio','id_especialidad',
-            'area', 'cambios_especialidad', 'nivel_estudio', 'categoria','tipo_curso'
+            'area', 'cambios_especialidad', 'nivel_estudio', 'categoria','tipo_curso', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
