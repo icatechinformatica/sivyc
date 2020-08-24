@@ -21,6 +21,7 @@ class InstructoresController extends Controller
         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
         ->LEFTJOIN('criterio_pago', 'especialidad_instructores.pago_id', '=', 'criterio_pago.id')
+        ->LEFTJOIN('instructor_available', 'instructor_available.instructor_id', '=', 'instructores.id')
         ->GET([
             'instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
             'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
@@ -33,7 +34,15 @@ class InstructoresController extends Controller
             'instructor_perfil.area_carrera', 'instructor_perfil.grado_profesional', 'instructor_perfil.cursos_recibidos',
             'instructor_perfil.estandar_conocer', 'instructor_perfil.registro_stps', 'especialidad_instructores.memorandum_validacion',
             'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad',
-            'especialidad_instructores.pago_id'
+            'especialidad_instructores.pago_id',
+            'instructor_available.CHK_TUXTLA', 'instructor_available.CHK_TAPACHULA', 'instructor_available.CHK_COMITAN', 'instructor_available.CHK_REFORMA','instructor_available.CHK_TONALA',
+            'instructor_available.CHK_VILLAFLORES', 'instructor_available.CHK_JIQUIPILAS', 'instructor_available.CHK_CATAZAJA', 'instructor_available.CHK_YAJALON',
+            'instructor_available.CHK_SAN_CRISTOBAL', 'instructor_available.CHK_CHIAPA_DE_CORZO', 'instructor_available.MOTOZINTLA', 'instructor_available.CHK_BERRIOZABAL',
+            'instructor_available.CHK_PIJIJIAPAN', 'instructor_available.CHK_JITOTOL', 'instructor_available.CHK_LA_CONCORDIA', 'instructor_available.CHK_VENUSTIANO_CARRANZA',
+            'instructor_available.CHK_TILA', 'instructor_available.CHK_TEOPISCA', 'instructor_available.CHK_OCOSINGO', 'instructor_available.CHK_CINTALAPA', 'instructor_available.CHK_COPAINALA',
+            'instructor_available.CHK_SOYALO', 'instructor_available.CHK_ANGEL_ALBINO_CORZO', 'instructor_available.CHK_ARRIAGA', 'instructor_available.CHK_PICHUCALCO', 'instructor_available.CHK_JUAREZ',
+            'instructor_available.CHK_SIMOJOVEL', 'instructor_available.CHK_MAPASTEPEC', 'instructor_available.CHK_VILLA_CORZO', 'instructor_available.CHK_CACAHOTAN', 'instructor_available.CHK_ONCE_DE_ABRIL',
+            'instructor_available.CHK_OXCHUC', 'instructor_available.CHK_CHAMULA', 'instructor_available.CHK_OSTUACAN', 'instructor_available.CHK_PALENQUE'
         ]);
         return response()->json($instructores, 200);
     }
