@@ -37,7 +37,7 @@ class InstructoresController extends Controller
             'especialidad_instructores.pago_id',
             'instructor_available.CHK_TUXTLA', 'instructor_available.CHK_TAPACHULA', 'instructor_available.CHK_COMITAN', 'instructor_available.CHK_REFORMA','instructor_available.CHK_TONALA',
             'instructor_available.CHK_VILLAFLORES', 'instructor_available.CHK_JIQUIPILAS', 'instructor_available.CHK_CATAZAJA', 'instructor_available.CHK_YAJALON',
-            'instructor_available.CHK_SAN_CRISTOBAL', 'instructor_available.CHK_CHIAPA_DE_CORZO', 'instructor_available.MOTOZINTLA', 'instructor_available.CHK_BERRIOZABAL',
+            'instructor_available.CHK_SAN_CRISTOBAL', 'instructor_available.CHK_CHIAPA_DE_CORZO', 'instructor_available.CHK_MOTOZINTLA', 'instructor_available.CHK_BERRIOZABAL',
             'instructor_available.CHK_PIJIJIAPAN', 'instructor_available.CHK_JITOTOL', 'instructor_available.CHK_LA_CONCORDIA', 'instructor_available.CHK_VENUSTIANO_CARRANZA',
             'instructor_available.CHK_TILA', 'instructor_available.CHK_TEOPISCA', 'instructor_available.CHK_OCOSINGO', 'instructor_available.CHK_CINTALAPA', 'instructor_available.CHK_COPAINALA',
             'instructor_available.CHK_SOYALO', 'instructor_available.CHK_ANGEL_ALBINO_CORZO', 'instructor_available.CHK_ARRIAGA', 'instructor_available.CHK_PICHUCALCO', 'instructor_available.CHK_JUAREZ',
