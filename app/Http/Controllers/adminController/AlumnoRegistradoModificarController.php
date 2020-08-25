@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Alumno;
 use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\DB;
+use App\Models\Inscripcion;
+use App\Models\Folios;
+use App\Models\Calificacion;
 
 class AlumnoRegistradoModificarController extends Controller
 {
@@ -113,6 +116,19 @@ class AlumnoRegistradoModificarController extends Controller
         $codigo_verificacion_edit = trim($request->codigo_verificacion_edit);
         $numero_control = trim($request->numero_control_edit);
         if (strcmp($codigo_verificacion, $codigo_verificacion_edit) === 0){
+            /**
+             *
+             *   MODIFICACIÓN DE REGISTROS PARA LAS SIGUIENTES TABLAS
+             *   tbl_inscripcion, tbl_calificaciones, tbl_folios
+             *
+             *
+            */
+            $numero_de_control = Alumno::WHERE('id_pre', '=', $id_pre)->FIRST(['no_control']);
+            Inscripcion::WHERE('matricula', $numero_de_control->no_control)->UPDATE(['matricula' => $numero_control]);
+            // modificacion de folio
+            Folios::WHERE('matricula', $numero_de_control->no_control)->UPDATE(['matricula' => $numero_control]);
+            // modificacion de calificaciones
+            Calificacion::WHERE('matricula', $numero_de_control->no_control)->UPDATE(['matricula' => $numero_control]);
             // actualizamos los registros
             Alumno::WHERE('id_pre', '=', $id_pre)->UPDATE(['estatus_modificacion' => true, 'no_control' => $numero_control]);
 
