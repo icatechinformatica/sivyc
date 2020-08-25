@@ -117,7 +117,7 @@ class InstructorController extends Controller
             if ($request->file('arch_foto') != null)
             {
                 $foto = $request->file('arch_foto'); # obtenemos el archivo
-                $urlfoto = $this->pdf_upload($foto, $id, 'foto'); # invocamos el método
+                $urlfoto = $this->jpg_upload($foto, $id, 'foto'); # invocamos el método
                 $saveInstructor->archivo_fotografia = $urlfoto; # guardamos el path
             }
 
@@ -300,7 +300,7 @@ class InstructorController extends Controller
         if ($request->file('arch_foto') != null)
         {
             $foto = $request->file('arch_foto'); # obtenemos el archivo
-            $urlfoto = $this->pdf_upload($foto, $request->id, 'foto'); # invocamos el método
+            $urlfoto = $this->jpg_upload($foto, $request->id, 'foto'); # invocamos el método
             $modInstructor->archivo_fotografia = $urlfoto; # guardamos el path
         }
 
@@ -419,7 +419,7 @@ class InstructorController extends Controller
         if ($request->file('arch_foto') != null)
         {
         $foto = $request->file('arch_foto'); # obtenemos el archivo
-        $urlfoto = $this->pdf_upload($foto, $request->id, 'foto'); # invocamos el método
+        $urlfoto = $this->jpg_upload($foto, $request->id, 'foto'); # invocamos el método
         $modInstructor->archivo_fotografia = $urlfoto; # guardamos el path
         }
 
@@ -765,6 +765,15 @@ class InstructorController extends Controller
         $pdf->storeAs('/uploadFiles/instructor/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
         $pdfUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
+    }
+
+    protected function jpg_upload($jpg, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $jpgFile = trim($nom."_".date('YmdHis')."_".$id.".jpg");
+        $jpg->storeAs('/uploadFiles/instructor/'.$id, $jpgFile); // guardamos el archivo en la carpeta storage
+        $jpgUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$jpgFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $jpgUrl;
     }
 
     public function paginate($items, $perPage = 5, $page = null)
