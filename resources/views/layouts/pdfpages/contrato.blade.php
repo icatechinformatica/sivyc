@@ -57,37 +57,37 @@
     <body>
         <div class= "container g-pt-30">
             <div id="content">
-                <div align=right> <b>Contrato No..</b> </div>
-                <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR EL (LA) , EN SU CARÁCTER DE  DE LA UNIDAD DE CAPACITACIÓN  Y POR LA OTRA (EL) (LA) C., EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “EL ICATECH” Y “EL PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
+                <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}.</b> </div>
+                <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR EL (LA) {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, EN SU CARÁCTER DE {{$director->puesto}} DE LA UNIDAD DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA (EL) (LA) C.{{$nomins}}, EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “EL ICATECH” Y “EL PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
                 <br><div align="center"> DECLARACIONES</div>
                 <div align="justify">
                     <dl>
                         <dt>I.Declara <b>“EL ICATECH”</b> que:<br>
                         <br><dd>I.1 Es un Organismo Descentralizado de la Administración Pública Estatal, con personalidad jurídica y patrimonio propios, conforme a lo dispuesto en el artículo 1 del Decreto número 182, publicado en el Periódico Oficial número 032, de fecha 26 de Julio del año 2000 y del Decreto número 183 por el que se reforman, derogan y adicionan diversas disposiciones del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, publicado en el Periódico Oficial número 094, de fecha 21 de mayo del año 2008..</dd>
                         <br><dd>I.2 La Mtra. Fabiola Lizbeth Astudillo Reyes, es Directora General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, personalidad que se acredita con nombramiento expedido a su favor por el Dr. Rutilio Escandón Cadenas, Gobernador del Estado de Chiapas, de fecha 16 de enero de 2019, por lo que se encuentra plenamente facultada en términos de lo dispuesto en los artículos 28 fracción I de la Ley de Entidades Paraestatales del Estado de Chiapas; 15 fracción I del Decreto por el que se crea el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, así como el 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, mismas que no le han sido limitadas o revocadas en forma alguna.</dd>
-                        <br><dd>I.3 Con fundamento en el artículo 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, la Mtra. Fabiola Lizbeth Astudillo Reyes, en su carácter de Directora General, tiene como atribución delegable la de celebrar y suscribir convenios, acuerdos, contratos y demás actos de carácter administrativo de conformidad con las actividades de <b>“EL ICATECH”</b>. En ese sentido, tuvo a bien designar mediante Circular No. <b>ICATECH/100/001/20</b> de fecha 28 de enero de 2020, y conforme a lo dispuesto por el artículo 29 fracción I, III y XI del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, al (a la) C.,  de la Unidad de Capacitación , para suscribir el presente acuerdo de voluntades.</dd>
+                        <br><dd>I.3 Con fundamento en el artículo 13 fracción IV del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, la Mtra. Fabiola Lizbeth Astudillo Reyes, en su carácter de Directora General, tiene como atribución delegable la de celebrar y suscribir convenios, acuerdos, contratos y demás actos de carácter administrativo de conformidad con las actividades de <b>“EL ICATECH”</b>. En ese sentido, tuvo a bien designar mediante Circular No. <b>ICATECH/100/001/20</b> de fecha 28 de enero de 2020, y conforme a lo dispuesto por el artículo 29 fracción I, III y XI del Reglamento Interior del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, al (a la) C.{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} de la Unidad de Capacitación {{$data_contrato->unidad_capacitacion}}, para suscribir el presente acuerdo de voluntades.</dd>
                         <br><dd>I.4 Tiene como objetivo impartir e impulsar la capacitación para el trabajo en la entidad, procurando la mejor calidad y vinculación de este servicio con el aparato productivo y las necesidades de desarrollo regional, estatal y nacional; promover la impartición de cursos de capacitación a obreros en mano de obra calificada, que corresponden a las necesidades de los mercado s laborales del estado; apoyar las acciones de capacitación para el trabajo de los sectores productivos del estado, así como la capacitación tanto para el trabajo de personas sin empleo o discapacitadas, como no egresados de primarias, secundarias o preparatorias y aumentar con los programas de capacitación el nivel de productividad de los trabajadores.</dd>
-                        <br><dd>I.5 De acuerdo a las necesidades de <b>“EL ICATECH”</b>, se requiere contar con los servicios de una persona física con conocimientos en , por lo que se ha determinado llevar a cabo la Contratación por Honorarios en la modalidad de horas curso de <b>"EL PRESTADOR DE SERVICIOS"</b>.</dd>
+                        <br><dd>I.5 De acuerdo a las necesidades de <b>“EL ICATECH”</b>, se requiere contar con los servicios de una persona física con conocimientos en {{$especialidad->nombre}}, por lo que se ha determinado llevar a cabo la Contratación por Honorarios en la modalidad de horas curso de <b>"EL PRESTADOR DE SERVICIOS"</b>.</dd>
                         <br><dd>I.6 Para los efectos del presente contrato se cuenta con el Dictamen de autorización de habilidades como instructor según memorándum que se agrega al presente instrumento como <b>Anexo I</b>, emitido por la Dirección Técnica Académica de <b>“EL ICATECH”</b>.</dd>
                         <br><dd>I.7 Para los efectos del presente contrato se cuenta con la clave de grupo que se agrega al presente instrumento como <b>Anexo II</b>, emitido por la Dirección Técnica Académica de <b>“EL ICATECH”</b>.</dd>
                         <br><dd>I.8 Para los efectos del presente contrato se cuenta con la suficiencia presupuestal, que se agrega al presente instrumento como <b>Anexo III</b>, emitido por la Dirección de Planeación de <b>“EL ICATECH”</b>.</dd>
                         <br><dd>I.9 Para los efectos del presente Contrato señala como su domicilio legal, el ubicado en la 14 poniente norte, número 239, Colonia Moctezuma, C. P. 29030, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
                     </dl>
                     <br><dl><dt>II.Declara <b>"EL PRESTADOR DE SERVICIOS"</b> que:</dt>
-                        <br><dd>II.1 Es una persona física, de nacionalidad Mexicana, lo cual acredita mediante credencial de elector número de folio , por lo que cuenta con los conocimientos necesarios para impartir el curso.</dd>
-                        <br><dd>II.2 Se encuentra al corriente en el pago de sus impuestos y cuenta con el Registro Federal de Contribuyentes número , otorgado por el Servicio de Administración Tributaria de la Secretaría de Hacienda y Crédito Público.</dd>
-                        <br><dd>II.3 Cuenta con la Clave Única del Registro de Población (CURP) y su número es .</dd>
-                        <br><dd>II.4 Goza de plena capacidad jurídica y facultades que le otorga la ley, para contratar y obligarse, así como también con los estudios, conocimientos y la experiencia necesaria en la materia de  y conoce plenamente las necesidades de los servicios objeto del presente contrato, así como que ha considerado todos los factores que intervienen para desarrollar eficazmente las actividades que desempeñará.</dd>
+                        <br><dd>II.1 Es una persona física, de nacionalidad Mexicana, lo cual acredita mediante credencial de elector número de folio {{$data->folio_ine}}, por lo que cuenta con los conocimientos necesarios para impartir el curso.</dd>
+                        <br><dd>II.2 Se encuentra al corriente en el pago de sus impuestos y cuenta con el Registro Federal de Contribuyentes número {{$data->rfc}}, otorgado por el Servicio de Administración Tributaria de la Secretaría de Hacienda y Crédito Público.</dd>
+                        <br><dd>II.3 Cuenta con la Clave Única del Registro de Población (CURP) y su número es {{$data->curp}}.</dd>
+                        <br><dd>II.4 Goza de plena capacidad jurídica y facultades que le otorga la ley, para contratar y obligarse, así como también con los estudios, conocimientos y la experiencia necesaria en la materia de {{$especialidad->nombre}} y conoce plenamente las necesidades de los servicios objeto del presente contrato, así como que ha considerado todos los factores que intervienen para desarrollar eficazmente las actividades que desempeñará.</dd>
                         <br><dd>II.5 Es conforme de que <b>“EL ICATECH”</b>, le retenga los impuestos a que haya lugar por concepto de la Prestación de Servicios Profesionales por Honorarios.</dd>
                         <br><dd>II.6 Bajo protesta de decir verdad, no se encuentra inhabilitado por autoridad competente alguna, así como a la suscripción del presente documento no ha sido parte en juicios del orden civil, mercantil o laboral en contra de <b>“EL ICATECH”</b> o de alguna otra institución pública o privada; y que no se encuentra en algún otro supuesto o situación que pudiera generar conflicto de intereses para prestar los servicios profesionales objeto del presente contrato.</dd>
-                        <br><dd>II.7 Para los efectos del presente contrato, señala como su domicilio legal el ubicado en .</dd>
+                        <br><dd>II.7 Para los efectos del presente contrato, señala como su domicilio legal el ubicado en {{$data->domicilio}}.</dd>
                     </dl>
                 </div>
                 <div align="justify">Con base en las declaraciones antes expuestas, declaran las partes que es su voluntad celebrar el presente contrato, sujetándose a las siguientes:</div>
-                <div align="center"> Clausulas </div>
+                <div align="center"><strong> CLAUSULAS </strong></div>
                 <br><div align="justify">
                     <dd><b>PRIMERA.- OBJETO DEL CONTRATO</b>. En los términos y condiciones del presente contrato <b>“EL PRESTADOR DE SERVICIOS”</b> se obliga a prestar sus servicios profesionales por <b>Honorarios</b> a <b>“EL ICATECH”</b>, consistente en otorgar el curso que se detalla en el <b>Anexo II</b>, formando parte integrante del presente contrato como si a la letra se insertase, donde se establece bajo que especialidad, periodo de impartición, horario, días, horas que se cubrirán y en el lugar que será impartido el curso.</dd>
-                    <br><dd><b>SEGUNDA.- MONTO DE LOS HONORARIOS</b>. El monto total de los honorarios que <b>“EL ICATECH”</b>, pagará a <b>“EL PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b></b>, más el (16% (dieciséis por ciento)), del Impuesto al Valor Agregado, menos las retenciones que <b>“EL ICATECH”</b> le retendrá como pago provisional por concepto del Impuesto Sobre la Renta e Impuesto al Valor Agregado, enterando a las autoridades hacendarias las retenciones correspondientes.</dd>
+                    <br><dd><b>SEGUNDA.- MONTO DE LOS HONORARIOS</b>. El monto total de los honorarios que <b>“EL ICATECH”</b>, pagará a <b>“EL PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>${{$data_contrato->cantidad_numero}} ({{$data_contrato->cantidad_letras1}} {{$monto['1']}}/100 M.N.)</b>, más el (16% (dieciséis por ciento)), del Impuesto al Valor Agregado, menos las retenciones que <b>“EL ICATECH”</b> le retendrá como pago provisional por concepto del Impuesto Sobre la Renta e Impuesto al Valor Agregado, enterando a las autoridades hacendarias las retenciones correspondientes.</dd>
                     <br><dd><b>“EL PRESTADOR DE SERVICIOS”</b> recibirá el monto resultante señalado en el <b>párrafo primero</b> de esta cláusula, él pago se realizará en una sola exhibición, por medio de transferencia electrónica interbancaria a la cuenta que señala y se agrega al presente contrato como <b>Anexo IV</b>, formando parte integrante del presente instrumento como si a la letra se insertase, después de haber concluido el curso, contra la entrega del recibo de honorarios y/o factura correspondiente, (la cual se agrega al presente instrumento como <b>Anexo V</b>), mismo que deberá cubrir los requisitos fiscales estipulados por la Secretaría de Hacienda y Crédito Público; por lo que <b>“EL PRESTADOR DE SERVICIOS”</b> no podrá exigir retribución alguna por ningún otro concepto.</dd>
                     <br><dd><b>TERCERA.- DE LA OBLIGACIÓN DE “EL PRESTADOR DE SERVICIOS”</b>. <b>“EL PRESTADOR DE SERVICIOS”</b> se obliga a desempeñar las obligaciones que contrae en este acto y con todo el sentido ético y profesional que requiere <b>“EL ICATECH”</b> y de acuerdo con las políticas y reglamentos del mismo. <b>“EL PRESTADOR DE SERVICIOS”</b> declara conocer y se obliga a:</dd>
                     <Ol type = "I">
@@ -133,11 +133,11 @@
                     <br><dd><b>DÉCIMA TERCERA</b>.- Manifiestan ambas partes bajo protesta de decir verdad que en el presente contrato no ha mediado dolo, error, mala fe, engaño, violencia, intimidación, ni cualquiera otra causa que pudiera invalidar el contenido y fuerza legal del mismo.</dd>
                     <br><dd><b>DÉCIMA CUARTA.- DOMICILIOS</b>. Para los efectos del presente instrumento las partes señalan como sus domicilios legales los siguientes:</dd>
                     <br><dd><b>“EL ICATECH”</b>: ubicado en la 14 poniente norte número 239, de la Colonia Moctezuma, con Código Postal 29030, en la Ciudad de Tuxtla Gutiérrez, Chiapas.</dd>
-                    <br><dd><b>“EL PRESTADOR DE SERVICIOS”</b>: .</dd>
+                    <br><dd><b>“EL PRESTADOR DE SERVICIOS”</b>: {{$data->domicilio}}.</dd>
                     <br><dd>Mientras las partes no notifiquen por escrito el cambio de su domicilio, los emplazamientos y demás diligencias judiciales y extrajudiciales, se practicarán en el domicilio señalado en esta cláusula.</dd>
                     <br><dd><b>DÉCIMA QUINTA.- RESPONSABILIDAD DE “EL PRESTADOR DE SERVICIOS”</b>. <b>“EL PRESTADOR DE SERVICIOS”</b> será el responsable de la ejecución de los trabajos y deberá sujetarse en la realización de éstos, a todos aquellos reglamentos administrativos y manuales que las autoridades competentes hayan emitido, así como a las disposiciones establecidas al efecto por <b>“EL ICATECH”</b>.</dd>
                     <br><dd><b>DÉCIMA SEXTA.- JURISDICCIÓN</b>. Para la interpretación y cumplimiento del presente contrato, así como para todo aquello que no esté expresamente estipulado en el mismo, las partes se someterán a la jurisdicción y competencia de los tribunales del fuero común de la ciudad de Tuxtla Gutiérrez, Chiapas, renunciando al fuero que pudiera corresponderles por razón de su domicilio presente o futuro.</dd>
-                    <br><dd>Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de , Chiapas; el día  de  del año , en dos tantos originales.</dd>
+                    <br><dd>Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de {{$data_contrato->municipio}}, Chiapas; el día {{$D}} de {{$M}} del año {{$Y}}, en dos tantos originales.</dd>
                 </div>
                 <br><br>
                 <table>
@@ -146,51 +146,45 @@
                         <td colspan="2"><p align="center">"EL PRESTADOR DE SERVICIOS"</p></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center"><br><br><br></td></div>
-                        <td colspan="2"><div align="center"><br><br><br></td></div>
+                        <td colspan="2"><div align="center"><br><br></td></div>
+                        <td colspan="2"><div align="center"><br><br></td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">mtr. jose aurelio domingues domingues</td></div>
-                        <td colspan="2"><div align="center">C. gilberto miguel eduarto gomez perez </td></div>
+                        <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
+                        <td colspan="2"><div align="center">C. {{$nomins}}</td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center"> de la Unidad de Capacitación</td></div>
+                        <td colspan="2"><div align="center">{{$director->puesto}} de la Unidad de Capacitación {{$data_contrato->unidad_capacitacion}}</td></div>
                         <td colspan="2"><div align="center"></td></div>
                     </tr>
                 </table>
                 <br><br>
                 <p align="center">"TESTIGOS"</p>
                 <br><br>
-
                 <table>
                     <tr>
                         <td colspan="2"><p align="center"></p></td>
                         <td colspan="2"><p align="center"></p></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center"><br><br></td></div>
-                        <td colspan="2"><div align="center"><br><br></td></div>
+                        <td colspan="2"><div align="center">{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}</td></div>
+                        <td colspan="2"><div align="center">{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}</td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">mtr. jose aurelio domingues domingues</td></div>
-                        <td colspan="2"><div align="center">C. gilberto miguel eduarto gomez perez </td></div>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div align="center"> encargado del departamento academico</td></div>
-                        <td colspan="2"><div align="center"> encargado del departamento de vinculacion</td></div>
+                        <td colspan="2"><div align="center">{{$testigo1->puesto}}</td></div>
+                        <td colspan="2"><div align="center">{{$testigo2->puesto}}</td></div>
                     </tr>
                 </table>
-                
                 <div align=center>
                     <br>
                     <br/>
                     <br>________________________________________
-                    <br><small></small>
-                    <br><small> DE LA DELEGACIÓN ADMINISTRATIVO (A)</small></b>
+                    <br><small>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</small>
+                    <br><small>{{$testigo3->puesto}} DE LA DELEGACIÓN ADMINISTRATIVO (A)</small></b>
                 </div>
                 <br><br>
                 <div align=justify>
-                    <small>Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas cursos No. , que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. ,  (a) de la Unidad de Capacitación , y el C. , en el Municipio de , a  de  del año .</small>
+                    <small>Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas cursos No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} (a) de la Unidad de Capacitación {{$data_contrato->unidad_capacitacion}}, y el C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}.</small>
                 </div>
             </div>
         </div>
