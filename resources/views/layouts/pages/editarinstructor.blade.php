@@ -24,8 +24,11 @@
             </div>
             <div class="form-row">
                 <a class="btn btn-info" href={{$datains->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
+                <a class="btn btn-info" href={{$datains->archivo_rfc}} target="_blank">RFC</a><br>
                 <a class="btn btn-info" href={{$datains->archivo_fotografia}} target="_blank">Fotografía</a><br>
                 <a class="btn btn-info" href={{$datains->archivo_estudios}} target="_blank">Estudios</a><br>
+            </div>
+            <div class="form-row">
                 <a class="btn btn-info" href={{$datains->archivo_otraid}} target="_blank">Otra Identificación</a><br>
             </div>
             <hr style="border-color:dimgray">
@@ -56,6 +59,10 @@
                     <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
                 </div>
                 <div class="form-group col-md-3">
+                    <label for="inputarch_rfc">RFC</label>
+                    <input type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
+                </div>
+                <div class="form-group col-md-3">
                     <label for="inputarch_foto">Archivo Fotografia</label>
                     <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
                 </div>
@@ -63,6 +70,8 @@
                     <label for="inputarch_estudio">Archivo Grado de Estudios</label>
                     <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
                 </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputarch_id">Archivo Otra Identificación</label>
                     <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">

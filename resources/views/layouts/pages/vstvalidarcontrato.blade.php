@@ -33,6 +33,11 @@
             @else
                 <a class="btn btn-danger" disabled>CURP</a><br>
             @endif
+            @if ($data->archivo_rfc != NULL)
+                <a class="btn btn-info" href={{$data->archivo_rfc}} download>RFC</a><br>
+            @else
+                <a class="btn btn-danger" disabled>RFC</a><br>
+            @endif
             @if ($data->archivo_alta != NULL)
                 <a class="btn btn-info" href={{$data->archivo_alta}} download>Alta de Instructor</a><br>
             @else

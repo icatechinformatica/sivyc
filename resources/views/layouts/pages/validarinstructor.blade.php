@@ -34,8 +34,11 @@
             </div>
             <div class="form-row">
                 <a class="btn btn-info" href={{$getinstructor->archivo_bancario}} target="_blank" download>Datos Bancarios</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_rfc}} target="_blank" download>RFC</a><br>
                 <a class="btn btn-info" href={{$getinstructor->archivo_fotografia}} target="_blank" download>Fotografía</a><br>
                 <a class="btn btn-info" href={{$getinstructor->archivo_estudios}} target="_blank" download>Estudios</a><br>
+            </div>
+            <div class="form-row">
                 <a class="btn btn-info" href={{$getinstructor->archivo_otraid}} target="_blank" download>Otra Identificación</a><br>
             </div>
             <br>

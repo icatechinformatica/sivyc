@@ -168,7 +168,7 @@ class ContratoController extends Controller
                                  'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia',
                                  'tbl_cursos.hini','tbl_cursos.hfin','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
                                  'instructores.archivo_ine','instructores.archivo_domicilio','instructores.archivo_curp','instructores.archivo_alta','instructores.archivo_bancario',
-                                 'instructores.archivo_fotografia','instructores.archivo_estudios','instructores.archivo_otraid','especialidad_instructores.memorandum_validacion',
+                                 'instructores.archivo_fotografia','instructores.archivo_estudios','instructores.archivo_otraid','instructores.archivo_rfc','especialidad_instructores.memorandum_validacion',
                                  'especialidades.nombre AS especialidad','tbl_inscripcion.costo','cursos.perfil')
                             ->WHERE('id_contrato', '=', $id)
                             ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')

@@ -30,6 +30,9 @@
             @if ($datains->archivo_bancario != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_bancario}} download>Datos Bancarios</a><br>
             @endif
+            @if ($datains->archivo_otraid != NULL)
+                <a class="btn btn-danger" href={{$datains->archivo_rfc}} download>R F C</a><br>
+            @endif
             @if ($datains->archivo_fotografia != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_fotografia}} download>Fotografía</a><br>
             @endif
@@ -151,37 +154,43 @@
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="inputarch_ine">Archivo INE</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled value="{{$datains->archivo_ine}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_domicilio}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_curp">Archivo CURP</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled value="{{$datains->archivo_curp}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_alta">Archivo Alta de Instructor</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled value="{{$datains->archivo_alta}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="inputarch_banco">Archivo Datos Bancarios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled value="{{$datains->archivo_bancario}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_rfc">RFC</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_foto">Archivo Fotografia</label>
-                            <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled value="{{$datains->archivo_fotografia}}">
+                            <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_estudio">Archivo Grado de Estudios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_estudios}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="inputarch_id">Archivo Otra Identificación</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled value="{{$datains->archivo_otraid}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
                         </div>
                     </div>
                 </div>

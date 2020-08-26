@@ -114,6 +114,13 @@ class InstructorController extends Controller
                 $saveInstructor->archivo_bancario = $urlbanco; # guardamos el path
             }
 
+            if ($request->file('arch_rfc') != null)
+            {
+                $rfc = $request->file('arch_banco'); # obtenemos el archivo
+                $urlrfc = $this->pdf_upload($rfc, $id, 'rfc'); # invocamos el método
+                $saveInstructor->archivo_rfc = $urlrfc; # guardamos el path
+            }
+
             if ($request->file('arch_foto') != null)
             {
                 $foto = $request->file('arch_foto'); # obtenemos el archivo
@@ -297,6 +304,13 @@ class InstructorController extends Controller
             $modInstructor->archivo_bancario = $urlbanco; # guardamos el path
         }
 
+        if ($request->file('arch_rfc') != null)
+            {
+                $rfc = $request->file('arch_banco'); # obtenemos el archivo
+                $urlrfc = $this->pdf_upload($rfc, $request->id, 'rfc'); # invocamos el método
+                $modInstructor->archivo_rfc = $urlrfc; # guardamos el path
+            }
+
         if ($request->file('arch_foto') != null)
         {
             $foto = $request->file('arch_foto'); # obtenemos el archivo
@@ -414,6 +428,13 @@ class InstructorController extends Controller
         $banco = $request->file('arch_banco'); # obtenemos el archivo
         $urlbanco = $this->pdf_upload($banco, $request->id, 'banco'); # invocamos el método
         $modInstructor->archivo_bancario = $urlbanco; # guardamos el path
+        }
+
+        if ($request->file('arch_rfc') != null)
+        {
+            $rfc = $request->file('arch_banco'); # obtenemos el archivo
+            $urlrfc = $this->pdf_upload($rfc, $request->id, 'rfc'); # invocamos el método
+            $modInstructor->archivo_rfc = $urlrfc; # guardamos el path
         }
 
         if ($request->file('arch_foto') != null)
