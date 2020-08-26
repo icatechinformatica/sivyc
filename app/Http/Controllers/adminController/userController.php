@@ -49,11 +49,11 @@ class userController extends Controller
         if ($user === null) {
             # usuario no encontrado
             User::create([
-                'name' => $request->get('nameInput'),
-                'email' => $request->get('emailInput'),
-                'password' => Hash::make($request->get('passwordInput')),
-                'puesto' => $request->get('puestoInput'),
-                'unidad' => $request->get('capacitacionInput')
+                'name' => trim($request->get('nameInput')),
+                'email' => trim($request->get('emailInput')),
+                'password' => Hash::make(trim($request->get('passwordInput'))),
+                'puesto' => trim($request->get('puestoInput')),
+                'unidad' => trim($request->get('capacitacionInput'))
             ]);
             // si funciona redireccionamos
             return redirect()->route('usuario_permisos.index')->with('success', 'NUEVO USUARIO AGREGADO!');
@@ -112,7 +112,7 @@ class userController extends Controller
                 # si no está vacio se agrega
                 $arrayUser = [
                     'name' => trim($request->inputNameUpdate),
-                    'password' => trim($request->rolDescripcionUpdate),
+                    'password' => Hash::make(trim($request->get('inputPasswordUpdate'))),
                     'puesto' => trim($request->get('inputPuestoUpdate')),
                     'unidad' => trim($request->get('inputCapacitacionUpdate'))
                 ];

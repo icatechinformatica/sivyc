@@ -123,10 +123,12 @@
                             </div>
                             <!--modificacion de las unidades-->
                             <div class="col-md-6">
-                                <label for="form-control-label">Unidades de capacitación</label>
-                                <select name="inputCapacitacionUpdate" id="inputCapacitacionUpdate" class="form-control">
-                                    <option value="">--SELECCIONAR--</option>
-                                </select>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="inputCapacitacionUpdate">Unidades de capacitación</label>
+                                    <select name="inputCapacitacionUpdate" id="inputCapacitacionUpdate" class="form-control">
+                                        <option value="">--SELECCIONAR--</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <input type="submit" value="Modificar" class="btn btn-sm btn-warning">
