@@ -116,7 +116,7 @@ class InstructorController extends Controller
 
             if ($request->file('arch_rfc') != null)
             {
-                $rfc = $request->file('arch_banco'); # obtenemos el archivo
+                $rfc = $request->file('arch_rfc'); # obtenemos el archivo
                 $urlrfc = $this->pdf_upload($rfc, $id, 'rfc'); # invocamos el método
                 $saveInstructor->archivo_rfc = $urlrfc; # guardamos el path
             }
@@ -306,7 +306,7 @@ class InstructorController extends Controller
 
         if ($request->file('arch_rfc') != null)
             {
-                $rfc = $request->file('arch_banco'); # obtenemos el archivo
+                $rfc = $request->file('arch_rfc'); # obtenemos el archivo
                 $urlrfc = $this->pdf_upload($rfc, $request->id, 'rfc'); # invocamos el método
                 $modInstructor->archivo_rfc = $urlrfc; # guardamos el path
             }
@@ -366,6 +366,7 @@ class InstructorController extends Controller
 
     public function save_ins(Request $request)
     {
+
         $modInstructor = instructor::find($request->id);
 
         $modInstructor->nombre = trim($request->nombre);
@@ -394,6 +395,7 @@ class InstructorController extends Controller
         $modInstructor->interbancaria = $request->clabe;
         $modInstructor->no_cuenta = $request->numero_cuenta;
         $modInstructor->domicilio = $request->domicilio;
+
 
         if ($request->file('arch_ine') != null)
         {
@@ -432,7 +434,7 @@ class InstructorController extends Controller
 
         if ($request->file('arch_rfc') != null)
         {
-            $rfc = $request->file('arch_banco'); # obtenemos el archivo
+            $rfc = $request->file('arch_rfc'); # obtenemos el archivo
             $urlrfc = $this->pdf_upload($rfc, $request->id, 'rfc'); # invocamos el método
             $modInstructor->archivo_rfc = $urlrfc; # guardamos el path
         }
