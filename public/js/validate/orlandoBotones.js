@@ -267,6 +267,7 @@ $(function(){
         $('#arch_banco').prop("disabled", false)
         $('#arch_estudio').prop("disabled", false)
         $('#arch_foto').prop("disabled", false)
+        $('#arch_rfc').prop("disabled", false)
         $('#arch_id').prop("disabled", false)
         $('#unidad_registra').prop("disabled", false)
         $('#honorario').prop("disabled", false)

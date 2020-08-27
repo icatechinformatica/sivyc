@@ -31,7 +31,7 @@
                 <a class="btn btn-danger" href={{$datains->archivo_bancario}} download>Datos Bancarios</a><br>
             @endif
             @if ($datains->archivo_otraid != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_rfc}} download>R F C</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_rfc}} download>RFC/Constancia Fiscal</a><br>
             @endif
             @if ($datains->archivo_fotografia != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_fotografia}} download>Fotografía</a><br>
@@ -73,7 +73,7 @@
                         <input name='curp' id='curp' value="{{$datains->curp}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputrfc">RFC</label>
+                        <label for="inputrfc">RFC/Constancia Fiscal</label>
                         <input name='rfc' id='rfc' value="{{$datains->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
@@ -175,7 +175,7 @@
                             <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="inputarch_rfc">RFC</label>
+                            <label for="inputarch_rfc">RFC/Constancia Fiscal</label>
                             <input type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
@@ -188,7 +188,7 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-6">
                             <label for="inputarch_id">Archivo Otra Identificación</label>
                             <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
                         </div>

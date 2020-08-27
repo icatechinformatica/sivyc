@@ -55,7 +55,7 @@
                     <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputarch_id">Archivo RFC</label>
+                    <label for="inputarch_id">Archivo RFC/Constancia Fiscal</label>
                     <input type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
                 </div>
                 <div class="form-group col-md-3">
