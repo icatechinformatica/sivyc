@@ -30,7 +30,7 @@
             @if ($datains->archivo_bancario != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_bancario}} download>Datos Bancarios</a><br>
             @endif
-            @if ($datains->archivo_otraid != NULL)
+            @if ($datains->archivo_rfc != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_rfc}} download>RFC/Constancia Fiscal</a><br>
             @endif
             @if ($datains->archivo_fotografia != NULL)
