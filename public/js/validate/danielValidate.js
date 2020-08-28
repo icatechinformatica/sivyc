@@ -765,7 +765,6 @@ $(function(){
             var datos = { idEsp: IdEsp, tipo: tipo};
             var url = '/alumnos/sid/cursos';
             var url2 = '/alumnos/sid/checkcursos';
-            console.log(datos);
 
             var request = $.ajax
             ({
@@ -784,7 +783,6 @@ $(function(){
 
             request.done(( respuesta ) =>
             {
-                console.log(respuesta);
                 if (respuesta.length < 1) {
                     $("#cursos_sid").empty();
                     $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
@@ -795,7 +793,6 @@ $(function(){
                         $.each(respuesta, (k, v) => {
                             idcur = v.id;
                             var data = {unidad: unidad, idcur: idcur};
-                            console.log(data);
 
                             var request = $.ajax
                             ({
@@ -815,12 +812,14 @@ $(function(){
 
                             request.fail(( jqXHR, textStatus ) =>
                             {
-                                alert( "Hubo un error: " + textStatus );
+                                jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                                console.log(jqXHR.responseText);
+                                alert( "Hubo un error: " + jsonValue );
                             });
                         });
                         $("#cursos_sid").focus();
                     }else{
-
+                        console.log('errores');
                         //Puedes mostrar un mensaje de error en algún div del DOM
                     }
                 }
@@ -828,7 +827,9 @@ $(function(){
 
             request.fail(( jqXHR, textStatus ) =>
             {
-                alert( "Hubo un error: " + textStatus );
+                jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                console.log(jqXHR.status);
+                alert( "Hubo un error: " + jsonValue );
             });
         });
     });

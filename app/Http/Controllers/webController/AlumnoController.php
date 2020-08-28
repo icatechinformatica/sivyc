@@ -688,7 +688,7 @@ class AlumnoController extends Controller
     {
         if (isset($request->unidad)){
             $idcurso = $request->idcur;
-            $unidad = 'cursos_available.CHK_' . str_replace(' ', '_', $request->unidad) . ' AS chk';
+            $unidad = 'CHK_' . str_replace(' ', '_', $request->unidad) . ' AS chk';
             $check = cursoAvailable::SELECT($unidad, 'curso_id')->WHERE('curso_id', '=', $idcurso)->FIRST();
             $json=json_encode($check);
         }else{
