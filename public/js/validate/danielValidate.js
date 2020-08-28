@@ -815,12 +815,13 @@ $(function(){
 
                             request.fail(( jqXHR, textStatus ) =>
                             {
+                                console.log(jqXHR);
                                 alert( "Hubo un error: " + textStatus );
                             });
                         });
                         $("#cursos_sid").focus();
                     }else{
-
+                        console.log('errores');
                         //Puedes mostrar un mensaje de error en algún div del DOM
                     }
                 }
