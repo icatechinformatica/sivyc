@@ -794,7 +794,6 @@ $(function(){
                         $.each(respuesta, (k, v) => {
                             idcur = v.id;
                             var data = {unidad: unidad, idcur: idcur};
-                            console.log(data);
 
                             var request = $.ajax
                             ({
@@ -815,7 +814,7 @@ $(function(){
                             request.fail(( jqXHR, textStatus ) =>
                             {
                                 console.log(jqXHR.status);
-                                alert( "Hubo un error: " + textStatus.status );
+                                alert( "Hubo un error: " + jqXHR.status );
                             });
                         });
                         $("#cursos_sid").focus();
