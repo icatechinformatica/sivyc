@@ -815,7 +815,7 @@ $(function(){
 
                             request.fail(( jqXHR, textStatus ) =>
                             {
-                                console.log(jqXHR);
+                                console.log(jqXHR.status);
                                 alert( "Hubo un error: " + textStatus );
                             });
                         });
@@ -829,6 +829,7 @@ $(function(){
 
             request.fail(( jqXHR, textStatus ) =>
             {
+                console.log(jqXHR.status);
                 alert( "Hubo un error: " + textStatus );
             });
         });
