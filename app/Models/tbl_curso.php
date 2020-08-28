@@ -42,7 +42,7 @@ class tbl_curso extends Model
                         break;
                     case 'instructor':
                         # code...
-                        return $query->where( \DB::raw('CONCAT(nombre, '."' '".' , "apellidoPaterno", '."' '".' , "apellidoMaterno")'), 'LIKE', "%$buscar%");
+                        return $query->where( \DB::raw('CONCAT(instructores.nombre, '."' '".' , instructores."apellidoPaterno", '."' '".' , instructores."apellidoMaterno")'), 'LIKE', "%$buscar%");
                         break;
                     default:
                         # code...
