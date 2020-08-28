@@ -765,7 +765,6 @@ $(function(){
             var datos = { idEsp: IdEsp, tipo: tipo};
             var url = '/alumnos/sid/cursos';
             var url2 = '/alumnos/sid/checkcursos';
-            console.log(datos);
 
             var request = $.ajax
             ({
@@ -816,7 +815,7 @@ $(function(){
                             request.fail(( jqXHR, textStatus ) =>
                             {
                                 console.log(jqXHR.status);
-                                alert( "Hubo un error: " + textStatus );
+                                alert( "Hubo un error: " + textStatus.status );
                             });
                         });
                         $("#cursos_sid").focus();
@@ -830,7 +829,7 @@ $(function(){
             request.fail(( jqXHR, textStatus ) =>
             {
                 console.log(jqXHR.status);
-                alert( "Hubo un error: " + textStatus );
+                alert( "Hubo un error: " + textStatus.status );
             });
         });
     });
