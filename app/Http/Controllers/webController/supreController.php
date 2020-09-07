@@ -6,6 +6,7 @@ use App\Models\instructor;
 use App\Models\supre;
 use App\Models\folio;
 use App\Models\tbl_curso;
+use Illuminate\Support\Facades\Storage;
 use App\ProductoStock;
 use App\Models\cursoValidado;
 use App\Models\supre_directorio;
@@ -307,6 +308,17 @@ class supreController extends Controller
         return $json;
     }
 
+    public function doc_valsupre_upload(Request $request)
+    {
+        $supre = supre::find($request->idinsmod);
+        $doc = $request->file('doc_validado'); # obtenemos el archivo
+        $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
+        $supre->doc_validado = $urldoc; # guardamos el path
+        $supre->save();
+        return redirect()->route('supre-inicio')
+                    ->with('success','Validación de Suficiencia Presupuestal Firmada ha sido cargada con Extio');
+    }
+
     public function supre_pdf($id){
         $supre = new supre();
         $folio = new folio();
@@ -477,5 +489,14 @@ class supreController extends Controller
                 return 'DICIEMBRE';
             break;
         }
+    }
+
+    protected function pdf_upload($pdf, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
+        $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/supre/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $pdfUrl;
     }
 }

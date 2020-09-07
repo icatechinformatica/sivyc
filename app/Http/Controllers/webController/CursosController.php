@@ -163,7 +163,7 @@ class CursosController extends Controller
                 $cur_available->CHK_SIMOJOVEL = TRUE;
                 $cur_available->CHK_MAPASTEPEC = TRUE;
                 $cur_available->CHK_VILLA_CORZO = TRUE;
-                $cur_available->CHK_CACAHOTAN = TRUE;
+                $cur_available->CHK_CACAHOATAN = TRUE;
                 $cur_available->CHK_ONCE_DE_ABRIL = TRUE;
                 $cur_available->CHK_TUXTLA_CHICO = TRUE;
                 $cur_available->CHK_OXCHUC = TRUE;
@@ -440,7 +440,7 @@ class CursosController extends Controller
             $ins_available->CHK_SIMOJOVEL = TRUE;
             $ins_available->CHK_MAPASTEPEC = TRUE;
             $ins_available->CHK_VILLA_CORZO = TRUE;
-            $ins_available->CHK_CACAHOTAN = TRUE;
+            $ins_available->CHK_CACAHOATAN = TRUE;
             $ins_available->CHK_ONCE_DE_ABRIL = TRUE;
             $ins_available->CHK_TUXTLA_CHICO = TRUE;
             $ins_available->CHK_OXCHUC = TRUE;
@@ -518,7 +518,7 @@ class CursosController extends Controller
         $answer = $this->checkComparator($request->chk_villa_corzo);
         $av_mod->CHK_VILLA_CORZO = $answer;
         $answer = $this->checkComparator($request->chk_cacahoatan);
-        $av_mod->CHK_CACAHOTAN = $answer;
+        $av_mod->CHK_CACAHOATAN = $answer;
         $answer = $this->checkComparator($request->chk_once_de_abril);
         $av_mod->CHK_ONCE_DE_ABRIL = $answer;
         $answer = $this->checkComparator($request->chk_tuxtla_chico);

@@ -649,6 +649,7 @@ $(function(){
         }
     });
 
+    //Solicitud de Pago
     $('#register_solpa').validate({
         rules: {
             no_memo:{
@@ -660,7 +661,15 @@ $(function(){
             destino_puesto:{
                 required: true
             },
-            doc_pdf:{
+            arch_factura:{
+                required: true,
+                extension: "pdf"
+            },
+            arch_asistencia:{
+                required: true,
+                extension: "pdf"
+            },
+            arch_evidencia:{
                 required: true,
                 extension: "pdf"
             },
@@ -684,8 +693,16 @@ $(function(){
             destino_puesto: {
                 required: 'Por favor ingrese el nombre a quien va destinado'
             },
-            doc_pdf: {
-                required: 'Por favor ingrese el documento soporte',
+            arch_factura: {
+                required: 'Por favor ingrese la factura',
+                extension: "Por favor ingrese el documento con extension PDF"
+            },
+            arch_evidencia: {
+                required: 'Por favor ingrese la evidencia',
+                extension: "Por favor ingrese el documento con extension PDF"
+            },
+            arch_asistencia: {
+                required: 'Por favor ingrese la asistencia',
                 extension: "Por favor ingrese el documento con extension PDF"
             },
             ccpa1: {

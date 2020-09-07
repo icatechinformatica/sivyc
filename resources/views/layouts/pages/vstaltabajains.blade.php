@@ -341,7 +341,7 @@
                         </td>
                         <td style="vertical-align:bottom;"><strong>Cacahoatán</strong></td>
                         <td class="custom-checkbox checkbox-xl" id='choice-td'>
-                            @if ($available->CHK_CACAHOTAN == TRUE)
+                            @if ($available->CHK_CACAHOATAN == TRUE)
                                 <input type="checkbox" class="custom-control-input" id="chk_cacahoatan" name='chk_cacahoatan' checked>
                             @else
                                 <input type="checkbox" class="custom-control-input" id="chk_cacahoatan" name='chk_cacahoatan'>

@@ -43,10 +43,27 @@
                     <input id="id_destino" name="id_destino" hidden>
                 </div>
             </div>
+            <hr style="border-color:dimgray">
+            <h2>Documentación para Soporte de Pago</h2>
+            <br>
             <div class="form-row">
+                @if($datac->arch_factura == NULL)
+                    <div class="form-group col-md-4">
+                        <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
+                    </div>
+                @else
                 <div class="form-group col-md-4">
-                    <label for="input doc_pdf" class="control-label"><h4>Documentación para Soporte de Pago</h4></label>
-                    <input type="file" accept="application/pdf" class="form-control" id="doc_pdf" name="doc_pdf" placeholder="Archivo PDF">
+                    <label for="input arch_factura" class="control-label"><h4>La Factura de Instructor ya fue Cargada.</h4></label>
+                </div>
+                @endif
+                <div class="form-group col-md-4">
+                    <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
+                    <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputarch_evidencia" class="control-label">Evidencia Fotográfica</label>
+                    <input type="file" accept="application/pdf" name="arch_evidencia" id="arch_evidencia" class="form-control">
                 </div>
             </div>
             <br>
@@ -56,6 +73,18 @@
                            <br>Se recomienda comprimir el pdf <a href='https://smallpdf.com/es/comprimir-pdf' target="blank">aqui</a>
                            <br>Peso maximo: 4 MB
                     </label></h6>
+                </div>
+            </div>
+            <h2>Vista de Datos Bancarios</h2>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label></label>
+                    <a class="btn btn-info form-control" href={{$bancario->archivo_bancario}} download>Datos Bancarios</a><br>
+                </div>
+                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4">
+                    <label for="inputarch_bancario" class="control-label">Modificar Archivo de Datos Bancarios</label>
+                    <input type="file" accept="application/pdf" name="arch_bancario" id="arch_bancario" class="form-control">
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -101,6 +130,7 @@
             <!-- END CC -->
             <input hidden id='id_folio' name="id_folio" value="{{$dataf->id_folios}}">
             <input hidden id='id_contrato' name="id_contrato" value="{{$datac->id_contrato}}">
+            <input hidden id='id_instructor' name="id_instructor" value="{{$bancario->idins}}">
             <div class="pull-left">
                 <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
             </div>
