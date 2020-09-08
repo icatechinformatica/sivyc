@@ -42,18 +42,28 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        // permissions
-        $idRol = $request->get('idrole');
-        $roles = Rol::findOrfail($idRol);
-        // borrar los permisos de dicho rol
-        $roles->permissions()->detach();
-        foreach($request->get('permisos') as $arraPermisos)
-        {
-            $roles->permissions()->attach($arraPermisos);
+        // permisos
+
+        $permisos = $request->get('permisos');
+        if (empty($permisos)) {
+            # la lista está vacia - verdadero
+            return redirect()->back()->withErrors("No se seleccionaron ningún elemento para lo")
+            ->withInput();
+        } else {
+
+            $idRol = $request->get('idrole');
+            $roles = Rol::findOrfail($idRol);
+            // borrar los permisos de dicho rol
+            $roles->permissions()->detach();
+            foreach($request->get('permisos') as $arraPermisos)
+            {
+                $roles->permissions()->attach($arraPermisos);
+            }
+
+            return redirect()->route('gestor.permisos.roles', ['id' => base64_encode($idRol)])
+            ->with('success', 'PERMISOS OTORGADOS CORRECTAMENTE!');
         }
 
-        return redirect()->route('gestor.permisos.roles', ['id' => base64_encode($idRol)])
-            ->with('success', 'PERMISOS OTORGADOS CORRECTAMENTE!');
     }
 
     /**

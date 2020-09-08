@@ -213,7 +213,7 @@
                 </select>
             </div>
             <div class="form-group col-md-4">
-                <label for="criterio_pago_maximo_edit" class="control-label">CRITERIO DE PAGO MINIMO</label>
+                <label for="criterio_pago_maximo_edit" class="control-label">CRITERIO DE PAGO MÁXIMO</label>
                 <select class="form-control" id="criterio_pago_maximo_edit" name="criterio_pago_maximo_edit">
                     <option value="">--SELECCIONAR--</option>
                     @foreach ($criterio_pago as $item_criterio_pago_maximo)

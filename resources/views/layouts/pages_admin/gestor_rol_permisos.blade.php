@@ -15,6 +15,15 @@
                             <p>{{ $message }}</p>
                         </div>
                     @endif
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div><br />
+                    @endif
                     <div class="row align-items-center">
                       <div class="col-8">
                         <h3 class="mb-0">GESTOR DE PERMISOS A ROL</h3>
@@ -34,13 +43,13 @@
                                 <div class="col-lg-8">
                                     <div class="custom-control custom-control-alternative custom-checkbox">
 
-                                        @foreach ($itemPermisos->roles as $item)
+
                                             <input class="custom-control-input" id="{{ $itemPermisos->id }}" name="permisos[]"
-                                            type="checkbox" {{( $item->pivot->permission_id == $itemPermisos->id && $item->pivot->role_id == $idRol ) ? 'checked': ''}}
+                                            type="checkbox"
+                                            @foreach ($itemPermisos->roles as $item)
+                                                {{( $item->pivot->permission_id == $itemPermisos->id && $item->pivot->role_id == $idRol ) ? 'checked': ''}}
+                                            @endforeach
                                             value="{{ $itemPermisos->id }}">
-                                        @endforeach
-                                        <input class="custom-control-input" id="{{ $itemPermisos->id }}" name="permisos[]"
-                                            type="checkbox" value="{{ $itemPermisos->id }}">
                                         <label class="custom-control-label" for="{{ $itemPermisos->id }}">
                                         <span class="text-muted">{{ $itemPermisos->name }}</span>
 
