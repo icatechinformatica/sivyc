@@ -186,6 +186,24 @@
                     <option value="A DISTANCIA">A DISTANCIA</option>
                 </select>
             </div>
+            <div class="form-group col-md-4">
+                <label for="criterio_pago_minimo" class="control-label">CRITERIO DE PAGO MINIMO</label>
+                <select class="form-control" id="criterio_pago_minimo" name="criterio_pago_minimo">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($cp as $criterioPagoMin)
+                        <option value="{{$criterioPagoMin->id}}">{{$criterioPagoMin->perfil_profesional}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="criterio_pago_maximo" class="control-label">CRITERIO DE PAGO MÁXIMO</label>
+                <select class="form-control" id="criterio_pago_maximo" name="criterio_pago_maximo">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($cp as $criterioPagoMax)
+                        <option value="{{$criterioPagoMax->id}}">{{$criterioPagoMax->perfil_profesional}}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
         <div class="row">
             <div class="col-lg-12 margin-tb">

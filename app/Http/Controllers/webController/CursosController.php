@@ -14,6 +14,7 @@ use App\Models\cursoAvailable;
 use App\Models\especialidad;
 use App\Models\Area;
 use App\Models\tbl_unidades;
+use App\Models\criterio_pago;
 
 class CursosController extends Controller
 {
@@ -50,10 +51,12 @@ class CursosController extends Controller
         $especialidades = $especialidad->all();
         $unidades = new tbl_unidades();
         $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
+        $criterioPago = new criterio_pago;
+        $cp = $criterioPago->all();
         $area = new Area();
         $areas = $area->all();
         // mostramos el formulario de cursos
-        return view('layouts.pages.frmcursos', compact('especialidades', 'areas', 'unidadesMoviles'));
+        return view('layouts.pages.frmcursos', compact('especialidades', 'areas', 'unidadesMoviles', 'cp'));
     }
 
     /**
@@ -90,6 +93,8 @@ class CursosController extends Controller
             $cursos->nivel_estudio = trim($request->nivel_estudio);
             $cursos->categoria = trim($request->categoria);
             $cursos->tipo_curso = trim($request->tipo_curso);
+            $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
+            $cursos->rango_criterio_pago_maximo = trim($request->criterio_pago_maximo);
             $cursos->save();
 
             # ==================================
@@ -197,6 +202,8 @@ class CursosController extends Controller
             $especialidades = $Especialidad->all();
             $unidades = new tbl_unidades();
             $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
+            $criterioPago = new criterio_pago;
+            $criterio_pago = $criterioPago->all();
 
             $idCurso = base64_decode($id);
             $curso = new curso();
@@ -206,7 +213,8 @@ class CursosController extends Controller
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
                     'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria', 'cursos.documento_memo_validacion',
-                    'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion')
+                    'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
+                    'cursos.rango_criterio_pago_minimo', 'rango_criterio_pago_maximo')
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->GET();
@@ -214,7 +222,7 @@ class CursosController extends Controller
             $fechaVal = $curso->getMyDateFormat($cursos[0]->fecha_validacion);
             $fechaAct = $curso->getMyDateFormat($cursos[0]->fecha_actualizacion);
 
-            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles'));
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago'));
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -309,7 +317,9 @@ class CursosController extends Controller
                 'cambios_especialidad' => trim($request->cambios_especialidad),
                 'nivel_estudio' => trim($request->nivel_estudio),
                 'categoria' => trim($request->categoria),
-                'tipo_curso' => trim($request->tipo_curso)
+                'tipo_curso' => trim($request->tipo_curso),
+                'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);

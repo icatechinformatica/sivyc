@@ -17,4 +17,9 @@ class especialidad_instructor extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    public function cursos()
+    {
+        return $this->belongsToMany(curso::class, 'especialidad_instructor_curso', 'id_especialidad_instructor', 'curso_id');
+    }
+
 }

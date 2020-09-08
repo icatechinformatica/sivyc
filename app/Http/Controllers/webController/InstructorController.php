@@ -21,6 +21,7 @@ use App\Models\criterio_pago;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class InstructorController extends Controller
 {
@@ -64,7 +65,14 @@ class InstructorController extends Controller
         {
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
             $saveInstructor = new instructor();
-            $id = $uid->id + 1;
+            if ($uid['id'] === null) {
+                # si es nulo entra una vez y se le asigna un valor
+                $id = 1;
+            } else {
+                # entra pero no se le asigna valor
+                $id = $uid->id + 1;
+            }
+
             # Proceso de Guardado
             #----- Personal -----
             $saveInstructor->id = $id;
@@ -352,7 +360,7 @@ class InstructorController extends Controller
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
-//ap
+        // consulta
         $validado = $instructor_perfil->SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
                         'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
                         'especialidad_instructores.memorandum_validacion')
@@ -486,10 +494,12 @@ class InstructorController extends Controller
 
         $sel_unidad = tbl_unidades::WHERE('unidad', '=', $especvalid->unidad_solicita)->FIRST();
         $data_unidad = tbl_unidades::WHERE('unidad', '!=', $especvalid->unidad_solicita)->GET();
+        // cursos totales
+        $catcursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
 
         $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
 
-        return view('layouts.pages.frmmodespecialidad', compact('especvalid','sel_espec','data_espec','sel_pago','data_pago','sel_unidad','data_unidad', 'idesp','id','idins','nomesp'));
+        return view('layouts.pages.frmmodespecialidad', compact('especvalid','sel_espec','data_espec','sel_pago','data_pago','sel_unidad','data_unidad', 'idesp','id','idins','nomesp', 'catcursos'));
     }
 
     public function add_perfil($id)
@@ -576,17 +586,17 @@ class InstructorController extends Controller
 
     public function cursoimpartir_form($id, $idins)
     {
-        $perfil = instructorPerfil::SELECT('id','grado_profesional')->WHERE('numero_control', '=', $idins)->GET();
+        $perfil = instructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional']);
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET();
+        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
         $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
         return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
     }
 
     public function especval_mod_save(Request $request)
     {
-        $espec_mod = especialidad_instructor::find($request->idespec);
+        $espec_mod = especialidad_instructor::findOrFail($request->idespec);
         $espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;
         $espec_mod->pago_id = $request->criterio_pago;
@@ -598,6 +608,22 @@ class InstructorController extends Controller
         $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_mod->observacion = $request->observaciones;
         $espec_mod->save();
+        // eliminar registros previamente
+        DB::table('especialidad_instructor_curso')->WHERE('id_especialidad_instructor', $request->especialidad)->delete();
+        // declarar un arreglo
+        $pila_edit = array();
+
+        // se trabajará en el loop
+        foreach ($request->check_cursos_mod as $checkCursosMod) {
+            # iteramos en el loop para cargar los datos seleccionados
+            array_push($pila_edit, $checkCursosMod);
+        }
+        // obtener la especialidad instrcutor
+        $cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+
+        $cursos_mod->cursos()->attach($pila_edit);
+        // Eliminar todos los elementos del array
+        unset($pila_edit);
 
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
@@ -617,6 +643,21 @@ class InstructorController extends Controller
         $espec_save->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_save->observacion = $request->observaciones;
         $espec_save->save();
+        // obtener el ultimo id que se ha registrado
+        $especialidadInstrcutorId = $espec_save->id;
+        // declarar un arreglo
+        $pila = array();
+
+        // se trabajará en un loop
+        foreach($request->check_cursos as $cursosCheck)
+        {
+            array_push($pila, $cursosCheck);
+        }
+        // hacemos la llamada al módelo
+        $instructorEspecialidad = new especialidad_instructor();
+        $especialidadesInstructoresCurso = $instructorEspecialidad->findOrFail($especialidadInstrcutorId);
+
+        $especialidadesInstructoresCurso->cursos()->attach($pila);
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');

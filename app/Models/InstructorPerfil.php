@@ -31,4 +31,9 @@ class InstructorPerfil extends Model
         return $this->belongsTo(contratos::class);
     }
 
+    public function curso()
+    {
+        return $this->belongsToMany(curso::class, 'perfil_cursos');
+    }
+
 }
