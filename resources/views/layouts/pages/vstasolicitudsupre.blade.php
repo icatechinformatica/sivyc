@@ -62,7 +62,7 @@
                         </td>
                         <td>
                             @if ( $itemData->status == 'En_Proceso')
-                            <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                            <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>PDF</a>
                                 @can('supre.validar')
                                     <a class="btn btn-success" href="{{route('supre-validacion', ['id' => $itemData->id])}}">Validar</a>
                                 @endcan
@@ -75,10 +75,21 @@
                                 <input hidden value={{$itemData->id}} id='pdfp'>
                             @endif
                             @if ($itemData->status == 'Validado')
-                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>PDF</a>
+                                @if ($itemData->doc_validado == NULL)
+                                    @can('supre.upload_valsupre')
+                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#DocModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                    @endcan
+                                @endif
                             @endif
                             @if ($itemData->status == 'Rechazado')
-                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
+                                <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>PDF</a>
                                 @can('supre.edit')
                                     <a class="btn btn-info" href="{{route('modificar_supre', ['id' => $itemData->id])}}">Editar</a>
                                 @endcan
@@ -94,33 +105,64 @@
         </table>
         <br>
         <!-- Modal -->
-        <div class="modal fade" id="supreModal" role="dialog">
-            <div class="modal-dialog">
-            <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Archivos PDF Generables</h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="text-align:center">
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
+            <div class="modal fade" id="supreModal" role="dialog">
+                <div class="modal-dialog">
+                <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Archivos PDF Generables</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo Solicitud de Suficiencia Presupuestal</a><br>
+                        <div class="modal-body" style="text-align:center">
+                            <div style="text-align:center" class="form-group">
+                                <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
+                            </div>
+                            <div style="text-align:center" class="form-group">
+                                <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo Solicitud de Suficiencia Presupuestal</a><br>
+                            </div>
+                            <div style="text-align:center" class="form-group">
+                                <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                            </div>
+                            <div style="text-align:center" class="form-group">
+                                <a class="btn btn-danger" id="valsupre2_pdf" name="valsupre2_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal Autorizada</a><br>
+                            </div>
                         </div>
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- END -->
+        <!-- Modal -->
+            <div class="modal fade" id="DocModal" role="dialog">
+                <div class="modal-dialog">
+                    <form method="POST" enctype="multipart/form-data" action="{{ route('doc-valsupre-guardar') }}" id="doc_valsupre">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Cargar Validación de Suficiencia Presupuestal Firmada</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="text-align:center">
+                                <div style="text-align:center" class="form-group">
+                                    <input type="file" accept="application/pdf" class="form-control" id="doc_validado" name="doc_validado" placeholder="Archivo PDF">
+                                    <input id="idinsmod" name="idinsmod" hidden>
+                                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <!-- END -->
     </div>
     <br>
 @endsection

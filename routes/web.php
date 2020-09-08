@@ -30,6 +30,7 @@ Route::post('/Convenios/alta-baja/save','webController\ConveniosController@alta_
 // Ruta Supre busqueda & misc
 Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats');
 Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
+Route::post('/supre/validacion/upload_doc','webController\SupreController@doc_valsupre_upload')->name('doc-valsupre-guardar');
 Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
 
 //Ruta Instructor

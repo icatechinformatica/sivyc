@@ -28,20 +28,25 @@
             @else
                 <a class="btn btn-danger" disabled>Comprobante de Domicilio</a><br>
             @endif
-            @if ($data->archivo_curp != NULL)
-                <a class="btn btn-info" href={{$data->archivo_curp}} download>CURP</a><br>
+            @if ($data->archivo_alta != NULL)
+                <a class="btn btn-info" href={{$data->archivo_alta}} download>Alta de Instructor</a><br>
             @else
-                <a class="btn btn-danger" disabled>CURP</a><br>
+                <a class="btn btn-danger" disabled>Alta de Instructor</a><br>
+            @endif
+            @if ($data->archivo_alta != NULL)
+                <a class="btn btn-info" href={{$data->arch_factura}} download>Factura</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Factura</a><br>
             @endif
             @if ($data->archivo_rfc != NULL)
                 <a class="btn btn-info" href={{$data->archivo_rfc}} download>RFC/Constancia Fiscal</a><br>
             @else
                 <a class="btn btn-danger" disabled>RFC/Constancia Fiscal</a><br>
             @endif
-            @if ($data->archivo_alta != NULL)
-                <a class="btn btn-info" href={{$data->archivo_alta}} download>Alta de Instructor</a><br>
+            @if ($data->archivo_curp != NULL)
+                <a class="btn btn-info" href={{$data->doc_validado}} download>Suficiencia Presupuestal Validada</a><br>
             @else
-                <a class="btn btn-danger" disabled>Alta de Instructor</a><br>
+                <a class="btn btn-danger" disabled>Suficiencia Presupuestal Validada</a><br>
             @endif
         </div>
         <div class="form-row">
