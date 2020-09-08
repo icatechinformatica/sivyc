@@ -40,8 +40,7 @@
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-
-
+        @yield("content_script_css")
     </head>
 
     <body>
@@ -98,6 +97,7 @@
         <!--Load the AJAX API-->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="{{ asset("js/reportes/formatot.js") }}"></script>
+        @yield('script_content_js')
     </body>
 
 </html>
