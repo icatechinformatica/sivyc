@@ -123,7 +123,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputmemoranum_modificacion">Memorandum de Revalidación</label>
-                        <input type="text" name="memoranum_modificacion" id="memoranum_modificacion" class="form-control" aria-required="true">
+                        <input type="text" name="memorandum_modificacion" id="memorandum_modificacion" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
@@ -186,7 +186,7 @@
                                     <div class="col-md-2" role="gridcell">
                                         <label>CRITERIO DE PAGO</label>
                                         <div class="form-control-plaintext text-truncate">
-                                            <select class="form-control" name="data[{{$itemData->id}}][criterio_pago]" id="criterio_pago">
+                                            <select class="form-control" name="itemAdd[{{$itemData->id}}][criterio_pago]" id="criterio_pago">
                                                 <option value="">SIN ESPECIFICAR</option>
                                                 @foreach ($pago as $item)
                                                     <option value="{{$item->id}}">{{$item->perfil_profesional}}</option>
@@ -197,7 +197,7 @@
                                     <div class="col-md-2" role="gridcell">
                                         <label>ZONA</label>
                                         <div class="form-control-plaintext text-truncate">
-                                            <select class="form-control" name="data[{{$itemData->id}}][zona]" id="zona">
+                                            <select class="form-control" name="itemAdd[{{$itemData->id}}][zona]" id="zona">
                                                 <option value="">SIN ESPECIFICAR</option>
                                                 <option value="2">Zona II</option>
                                                 <option value="3">Zona III</option>
@@ -214,7 +214,7 @@
                                                 data-off="OFF"
                                                 data-onstyle="success"
                                                 data-offstyle="danger"
-                                                name="data[{{$itemData->id}}][check_cursos]"
+                                                name="itemAdd[{{$itemData->id}}][check_cursos]"
                                                 value="{{$itemData->id}}">
                                         </div>
                                     </div>

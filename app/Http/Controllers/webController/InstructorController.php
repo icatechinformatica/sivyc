@@ -598,27 +598,34 @@ class InstructorController extends Controller
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
         $espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;
-        $espec_mod->pago_id = $request->criterio_pago;
-        $espec_mod->zona = $request->zona;
-        $espec_mod->validado_impartir = $request->impartir;
         $espec_mod->unidad_solicita = $request->unidad_validacion;
         $espec_mod->memorandum_validacion = $request->memorandum;
         $espec_mod->fecha_validacion = $request->fecha_validacion;
         $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_mod->observacion = $request->observaciones;
         $espec_mod->save();
-        // eliminar registros previamente
-        DB::table('especialidad_instructor_curso')->WHERE('id_especialidad_instructor', $request->especialidad)->delete();
         // declarar un arreglo
         $pila_edit = array();
-
         // se trabajará en el loop
-        foreach ($request->check_cursos_mod as $checkCursosMod) {
-            # iteramos en el loop para cargar los datos seleccionados
-            array_push($pila_edit, $checkCursosMod);
-        }
-        // obtener la especialidad instrcutor
         $cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+        // eliminar registros previamente
+        $cursos_mod->cursos()->detach();
+
+        //dd($request->itemEdit);
+
+        foreach ( (array) $request->itemEdit as $key => $value) {
+            # iteramos en el loop para cargar los datos seleccionados
+            if(isset($value['check_cursos_edit']))
+            {
+                $arreglos_edit = [
+                    'curso_id' => $value['check_cursos_edit'],
+                    'pago_id' => $value['criterio_pago_edit'],
+                    'zona' => $value['zona_edit']
+                ];
+                array_push($pila_edit, $arreglos_edit);
+            }
+
+        }
 
         $cursos_mod->cursos()->attach($pila_edit);
         // Eliminar todos los elementos del array
@@ -645,18 +652,26 @@ class InstructorController extends Controller
         $pila = array();
 
         // se trabajará en un loop
-        foreach($request->check_cursos as $cursosCheck)
+        foreach( (array) $request->itemAdd as $key => $value)
         {
-            array_push($pila, $cursosCheck);
-        }
-        foreach($request->data as $key => $value) {
-
+            if(isset($value['check_cursos']))
+            {
+                $arreglos = [
+                    'curso_id' => $value['check_cursos'],
+                    'pago_id' => $value['criterio_pago'],
+                    'zona' => $value['zona']
+                ];
+                array_push($pila, $arreglos);
+            }
         }
         // hacemos la llamada al módelo
         $instructorEspecialidad = new especialidad_instructor();
         $especialidadesInstructoresCurso = $instructorEspecialidad->findOrFail($especialidadInstrcutorId);
 
         $especialidadesInstructoresCurso->cursos()->attach($pila);
+
+        // limpiar array
+        unset($pila);
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');

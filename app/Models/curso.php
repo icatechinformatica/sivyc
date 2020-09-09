@@ -84,7 +84,10 @@ class curso extends Model
 
     public function especialidadinstructor()
     {
-        return $this->belongsToMany(especialidad_instructor::class, 'especialidad_instructor_curso', 'curso_id', 'id_especialidad_instructor');
+        return $this->belongsToMany(especialidad_instructor::class, 'especialidad_instructor_curso', 'curso_id', 'id_especialidad_instructor')->withPivot([
+            'pago_id',
+            'zona',
+        ]);
     }
 
 }
