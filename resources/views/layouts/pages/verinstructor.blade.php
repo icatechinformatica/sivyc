@@ -291,8 +291,6 @@
                     <thead>
                         <tr>
                             <th scope="col">Especialidad</th>
-                            <th scope="col">Criterio de Pago</th>
-                            <th scope="col">Zona</th>
                             <th scope="col">Memo. Validación</th>
                             <th scope="col">Obsevaciones</th>
                             <th width="85px">Acción</th>
@@ -302,8 +300,6 @@
                         @foreach ($validado as $item)
                             <tr>
                                 <th scope="row">{{$item->nombre}}</th>
-                                <td>{{ $item->perfil_profesional }}</td>
-                                <td>{{ $item->zona }}</td>
                                 <td>{{ $item->memorandum_validacion}}</td>
                                 <td>{{ $item->observacion }}</td>
                                 <td>

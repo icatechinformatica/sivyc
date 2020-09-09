@@ -361,13 +361,12 @@ class InstructorController extends Controller
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
         // consulta
-        $validado = $instructor_perfil->SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
-                        'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
-                        'especialidad_instructores.memorandum_validacion')
+        $validado = $instructor_perfil->SELECT('especialidades.nombre',
+        'especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
+        'especialidad_instructores.memorandum_validacion')
                         ->WHERE('instructor_perfil.numero_control', '=', $id)
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
-                        ->LEFTJOIN('criterio_pago','criterio_pago.id','=','especialidad_instructores.pago_id')
                         ->GET();
         return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado'));
     }
@@ -634,9 +633,6 @@ class InstructorController extends Controller
         $espec_save = new especialidad_instructor;
         $espec_save->especialidad_id = $request->idespec;
         $espec_save->perfilprof_id = $request->valido_perfil;
-        $espec_save->pago_id = $request->criterio_pago;
-        $espec_save->zona = $request->zona;
-        $espec_save->validado_impartir = $request->impartir;
         $espec_save->unidad_solicita = $request->unidad_validacion;
         $espec_save->memorandum_validacion = $request->memorandum;
         $espec_save->fecha_validacion = $request->fecha_validacion;
@@ -652,6 +648,9 @@ class InstructorController extends Controller
         foreach($request->check_cursos as $cursosCheck)
         {
             array_push($pila, $cursosCheck);
+        }
+        foreach($request->data as $key => $value) {
+
         }
         // hacemos la llamada al módelo
         $instructorEspecialidad = new especialidad_instructor();
