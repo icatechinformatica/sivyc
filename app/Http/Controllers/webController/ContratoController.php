@@ -269,7 +269,7 @@ class ContratoController extends Controller
         }
 
         folio::where('id_folios', '=', $request->id_folio)
-        ->update(['status' => 'Pago_Verificado']);
+        ->update(['status' => 'Verificando_Pago']);
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Pago Agregado');
