@@ -20,7 +20,6 @@ class InstructoresController extends Controller
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
-        ->LEFTJOIN('criterio_pago', 'especialidad_instructores.pago_id', '=', 'criterio_pago.id')
         ->LEFTJOIN('instructor_available', 'instructor_available.instructor_id', '=', 'instructores.id')
         ->GET([
             'instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
@@ -34,7 +33,6 @@ class InstructoresController extends Controller
             'instructor_perfil.area_carrera', 'instructor_perfil.grado_profesional', 'instructor_perfil.cursos_recibidos',
             'instructor_perfil.estandar_conocer', 'instructor_perfil.registro_stps', 'especialidad_instructores.memorandum_validacion',
             'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad',
-            'especialidad_instructores.pago_id',
             'instructor_available.CHK_TUXTLA', 'instructor_available.CHK_TAPACHULA', 'instructor_available.CHK_COMITAN', 'instructor_available.CHK_REFORMA','instructor_available.CHK_TONALA',
             'instructor_available.CHK_VILLAFLORES', 'instructor_available.CHK_JIQUIPILAS', 'instructor_available.CHK_CATAZAJA', 'instructor_available.CHK_YAJALON',
             'instructor_available.CHK_SAN_CRISTOBAL', 'instructor_available.CHK_CHIAPA_DE_CORZO', 'instructor_available.CHK_MOTOZINTLA', 'instructor_available.CHK_BERRIOZABAL',
