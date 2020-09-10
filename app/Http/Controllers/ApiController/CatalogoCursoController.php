@@ -27,7 +27,7 @@ class CatalogoCursoController extends Controller
         'cursos.costo', 'cursos.duracion', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
         'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion', 'cursos.fecha_actualizacion',
         'cursos.unidad_amovil', 'especialidades.nombre AS especialidad',
-        'area.formacion_profesional AS area', 'cursos.id_especialidad', 'cursos.area AS id_area', 'cursos.tipo_curso']);
+        'area.formacion_profesional AS area', 'cursos.id_especialidad', 'cursos.area AS id_area', 'cursos.tipo_curso', 'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo']);
         return response()->json($data, 200);
     }
 
@@ -72,6 +72,8 @@ class CatalogoCursoController extends Controller
             $catalogo->no_convenio = $request->no_convenio;
             $catalogo->id_especialidad = $request->id_especialidad;
             $catalogo->area = $request->area;
+            $catalogo->rango_criterio_pago_minimo = $request->rango_criterio_pago_minimo;
+            $catagolo->rango_criterio_pago_maximo = $request->rango_criterio_pago_maximo;
             $catalogo->save();
 
             return response()->json(['success' => 'El Catalogo de Cursos se cargo exitosamente!'], 200);
