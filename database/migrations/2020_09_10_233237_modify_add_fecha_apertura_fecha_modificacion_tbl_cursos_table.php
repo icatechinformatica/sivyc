@@ -15,8 +15,8 @@ class ModifyAddFechaAperturaFechaModificacionTblCursosTable extends Migration
     {
         Schema::table('tbl_cursos', function (Blueprint $table) {
             //
-            $table->date('fecha_apertura');
-            $table->date('fecha_modificacion');
+            $table->date('fecha_apertura')->nullable();
+            $table->date('fecha_modificacion')->nullable();
         });
     }
 
