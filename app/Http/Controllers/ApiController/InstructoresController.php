@@ -21,6 +21,8 @@ class InstructoresController extends Controller
         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
         ->LEFTJOIN('instructor_available', 'instructor_available.instructor_id', '=', 'instructores.id')
+        ->LEFTJOIN('especialidad_instructor_curso', 'especialidad_instructores.id', '=', 'especialidad_instructor_curso.id_especialidad_instructor')
+        ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructor_curso.pago_id')
         ->GET([
             'instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
             'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
@@ -40,7 +42,8 @@ class InstructoresController extends Controller
             'instructor_available.CHK_TILA', 'instructor_available.CHK_TEOPISCA', 'instructor_available.CHK_OCOSINGO', 'instructor_available.CHK_CINTALAPA', 'instructor_available.CHK_COPAINALA',
             'instructor_available.CHK_SOYALO', 'instructor_available.CHK_ANGEL_ALBINO_CORZO', 'instructor_available.CHK_ARRIAGA', 'instructor_available.CHK_PICHUCALCO', 'instructor_available.CHK_JUAREZ',
             'instructor_available.CHK_SIMOJOVEL', 'instructor_available.CHK_MAPASTEPEC', 'instructor_available.CHK_VILLA_CORZO', 'instructor_available.CHK_CACAHOTAN', 'instructor_available.CHK_ONCE_DE_ABRIL',
-            'instructor_available.CHK_OXCHUC', 'instructor_available.CHK_CHAMULA', 'instructor_available.CHK_OSTUACAN', 'instructor_available.CHK_PALENQUE'
+            'instructor_available.CHK_OXCHUC', 'instructor_available.CHK_CHAMULA', 'instructor_available.CHK_OSTUACAN', 'instructor_available.CHK_PALENQUE',
+            'criterio_pago.perfil_profesional', 'criterio_pago.monto_hora_ze2', 'criterio_pago.monto_hora_ze3'
         ]);
         return response()->json($instructores, 200);
     }
