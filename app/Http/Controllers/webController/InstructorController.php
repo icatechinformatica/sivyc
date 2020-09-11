@@ -348,13 +348,17 @@ class InstructorController extends Controller
 
     public function ver_instructor($id)
     {
+        $estado_civil = null;
         $instructor_perfil = new InstructorPerfil();
         $curso_validado = new cursoValidado();
         $det_curso = new Curso();
         $datains = instructor::WHERE('id', '=', $id)->FIRST();
 
-        $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
         $lista_civil = estado_civil::WHERE('nombre', '!=', $datains->estado_civil)->GET();
+        if ($datains->estado_civil != NULL )
+        {
+            $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
+        }
 
         $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();

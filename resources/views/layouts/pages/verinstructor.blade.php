@@ -97,7 +97,9 @@
                     <div class="form-gorup col-md-4">
                         <label for="inputestado_civil">Estado Civil</label>
                         <select class="form-control" name="estado_civil" id="estado_civil" disabled>
-                            <option selected value="{{$estado_civil->nombre}}">{{$estado_civil->nombre}}</option>
+                            @if($estado_civil != NULL)
+                                <option selected value="{{$estado_civil->nombre}}">{{$estado_civil->nombre}}</option>
+                            @endif
                             @foreach ($lista_civil as $item)
                                 <option value="{{$item->nombre}}">{{$item->nombre}}</option>
                             @endforeach
