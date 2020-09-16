@@ -1,5 +1,93 @@
-<html>
+<!DOCTYPE HTML>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <style>
+            body{
+                font-family: sans-serif;
+            }
+            @page {
+                margin: 120px 40px 80px;
+            }
+            header { position: fixed;
+                left: 0px;
+                top: -90px;
+                right: 0px;
+                height: 60px;
+                background-color: white;
+                color: black;
+                text-align: center;
+                line-height: 60px;
+            }
+            footer {
+                position: fixed;
+                left: 0px;
+                bottom: -10px;
+                right: 0px;
+                height: 60px;
+                background-color: white;
+                color: black;
+                text-align: center;
+                line-height: 35px;
+            }
+            img.izquierda {
+                float: left;
+                width: 300px;
+                height: 60px;
+            }
+
+            img.izquierdabot {
+                float: inline-end;
+                width: 350px;
+                height: 60px;
+            }
+
+            img.derechabot {
+                position: absolute;
+                left: 450px;
+                width: 250px;
+                height: 60px;
+
+            }
+
+            img.derecha {
+                float: right;
+                width: 200px;
+                height: 60px;
+            }
+            table, td {
+              border:1px solid black;
+            }
+            table {
+              border-collapse:collapse;
+              width:100%;
+            }
+            td {
+              padding:px;
+            }
+
+            .table1, .table1 td {
+                border:0px ;
+            }
+            .table1 td {
+                padding:5px;
+            }
+            small {
+                font-size: .7em
+            }
+
+        </style>
+    </head>
     <body>
+        <header>
+            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
+            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
+        </header>
+        <footer>
+            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
+            <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
+        </footer>
         <div class= "container g-pt-20">
             <div id="content">
                 <div align=right>
@@ -97,72 +185,4 @@
             </div>
         </div>
     </body>
-
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <style>
-        body{
-            font-family: sans-serif;
-          }
-          @page {
-            margin: 80px 30px;
-          }
-          header { position: fixed;
-            left: 0px;
-            top: -155px;
-            right: 0px;
-            height: 100px;
-            background-color: #ddd;
-            text-align: center;
-          }
-          header h1{
-            margin: 10px 0;
-          }
-          header h2{
-            margin: 0 0 10px 0;
-          }
-          footer {
-            position: fixed;
-            left: 0px;
-            bottom: -50px;
-            right: 0px;
-            height: 10px;
-            border-bottom: 2px solid #ddd;
-          }
-          footer .page:after {
-            content: counter(page);
-          }
-          footer table {
-            width: 10%;
-          }
-          footer p {
-            text-align: right;
-          }
-          footer .izq {
-            text-align: left;
-          }
-        table, td {
-          border:1px solid black;
-        }
-        table {
-          border-collapse:collapse;
-          width:100%;
-        }
-        td {
-          padding:px;
-        }
-
-        .table1, .table1 td {
-            border:0px ;
-        }
-        .table1 td {
-            padding:5px;
-        }
-        small {
-            font-size: .7em
-        }
-
-    </style>
-
 </html>

@@ -1,116 +1,131 @@
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <style>
-    body{
-      font-family: sans-serif;
-    }
-    @page {
-      margin: 90px 50px;
-    }
-    header { position: fixed;
-      left: 0px;
-      top: -155px;
-      right: 0px;
-      height: 100px;
-      background-color: #ddd;
-      text-align: center;
-    }
-    header h1{
-      margin: 10px 0;
-    }
-    header h2{
-      margin: 0 0 10px 0;
-    }
-    footer {
-      position: fixed;
-      left: 0px;
-      bottom: -50px;
-      right: 0px;
-      height: 40px;
-      border-bottom: 2px solid #ddd;
-    }
-    footer .page:after {
-      content: counter(page);
-    }
-    footer table {
-      width: 100%;
-    }
-    footer p {
-      text-align: right;
-    }
-    footer .izq {
-      text-align: left;
-    }
-  </style>
-</head>
- <body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <style>
+            body{
+            font-family: sans-serif;
+            }
+            @page {
+            margin: 80px 40px 80px;
+            }
+            header { position: fixed;
+            left: 0px;
+            top: -50px;
+            right: 0px;
+            height: 60px;
+            background-color: white;
+            color: black;
+            text-align: center;
+            line-height: 60px;
+            }
+            header h1{
+            margin: 10px 0;
+            }
+            header h2{
+            margin: 0 0 10px 0;
+            }
+            footer {
+            position: fixed;
+            left: 0px;
+            bottom: -10px;
+            right: 0px;
+            height: 60px;
+            background-color: white;
+            color: black;
+            text-align: center;
+            line-height: 35px;
+            }
+            footer .page:after {
+                content: counter(page);
+            }
+            footer table {
+                width: 100%;
+            }
+            footer p {
+                text-align: right;
+            }
+            footer .izq {
+                text-align: left;
+                }
+            img.izquierda {
+                float: left;
+                width: 300px;
+                height: 60px;
+            }
 
-    <div class= "container g-pt-30">
- <footer>
-    <table>
-      <tr>
-        <td>
-            <p class="izq">
-            </p>
-        </td>
-        <td>
-          <p class="page">
-            Página
-          </p>
-        </td>
-      </tr>
-    </table>
-  </footer>
-  <div id="content">
-  <div align=right> <b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}</b> </div>
-    <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
-    <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
+            img.izquierdabot {
+                float: inline-end;
+                width: 350px;
+                height: 60px;
+            }
 
-    <br><br><b>{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}.</b>
-    <br>{{$getdestino->puesto}}
-    <br>Presente.
+            img.derecha {
+                float: right;
+                width: 200px;
+                height: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
+            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
+            <br><h5>"2020, Año de Leona Vicario Benemérita Madre de la Patria"</h5>
+        </header>
+        <footer>
+            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
+            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
+        </footer>
+        <br><br>
+        <div class= "container g-pt-30">
+            <div id="content">
+                <div align=right> <b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}</b> </div>
+                <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
+                <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-    <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
-    <br><br><div align=center> <b>Números de Folio</b></div>
+                <br><br><b>{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}.</b>
+                <br>{{$getdestino->puesto}}
+                <br>Presente.
 
-    <table class="table table-bordered">
+                <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
+                <br><br><div align=justify> <b>Números de Folio</b></div>
 
-        <thead>
-        </thead>
-        <tbody>
-            @foreach ($data_folio as $key=>$value )
-                @if ($key == 0 || $key == 3 || $key == 6 || $key == 9 || $key == 12 || $key == 15)
-                <tr><td>{{$value->folio_validacion}}</td>
-                @else
-                <td>{{$value->folio_validacion}}</td>
-                @endif
-                @if ($key == 2 || $key == 5 || $key == 8 || $key == 11 || $key == 14)
-                </tr>
-                @endif
-            @endforeach
-          <tr>
-        </tbody>
-    </table>
+                <table class="table table-bordered">
 
-    <br><p class="text-left"><p>Sin mas por el momento, aprovecho la ocacion para enviarle un cordial saludo.</p></p>
-    <br><p class="text-left"><p>Atentamente.</p></p>
-    <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
-    <br><b>{{$getremitente->puesto}}</b>
-    <br><b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}.</b>
-    <br><br><br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
-    <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
-    <h6><small><b>Archivo/Minutario<b></small></h6>
-    <br><br><small><b>Valido: {{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}.-{{$getvalida->puesto}}<b></small></h6>
-    <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}<b></small></h6>
+                    <thead>
+                    </thead>
+                    <tbody>
+                        @foreach ($data_folio as $key=>$value )
+                            @if ($key == 0 || $key == 3 || $key == 6 || $key == 9 || $key == 12 || $key == 15)
+                            <tr><td>{{$value->folio_validacion}}</td>
+                            @else
+                            <td>{{$value->folio_validacion}}</td>
+                            @endif
+                            @if ($key == 2 || $key == 5 || $key == 8 || $key == 11 || $key == 14)
+                            </tr>
+                            @endif
+                        @endforeach
+                    <tr>
+                    </tbody>
+                </table>
 
-  </div>
-    </div>
- </body>
+                <br><p class="text-left"><p>Sin mas por el momento, aprovecho la ocacion para enviarle un cordial saludo.</p></p>
+                <br><p class="text-left"><p>Atentamente.</p></p>
+                <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
+                <br><b>{{$getremitente->puesto}}</b>
+                <br><b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}.</b>
+                <br><br><br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
+                <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
+                <h6><small><b>Archivo/Minutario<b></small></h6>
+                <br><br><small><b>Valido: {{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}.-{{$getvalida->puesto}}<b></small></h6>
+                <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}<b></small></h6>
+            </div>
+        </div>
+    </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

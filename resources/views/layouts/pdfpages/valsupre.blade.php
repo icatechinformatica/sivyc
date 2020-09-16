@@ -11,6 +11,74 @@
         box-sizing: border-box;
         }
 
+        @page {
+            margin: 120px 40px 40px;
+            }
+            header { position: fixed;
+            left: 0px;
+            top: -90px;
+            right: 0px;
+            height: 60px;
+            background-color: white;
+            color: black;
+            text-align: center;
+            line-height: 60px;
+            }
+            header h1{
+            margin: 10px 0;
+            }
+            header h2{
+            margin: 0 0 10px 0;
+            }
+            footer {
+            position: fixed;
+            left: 0px;
+            bottom: -10px;
+            right: 0px;
+            height: 60px;
+            background-color: white;
+            color: black;
+            text-align: center;
+            line-height: 35px;
+            }
+            footer .page:after {
+                content: counter(page);
+            }
+            footer table {
+                width: 100%;
+            }
+            footer p {
+                text-align: right;
+            }
+            footer .izq {
+                text-align: left;
+                }
+            img.izquierda {
+                float: left;
+                width: 300px;
+                height: 60px;
+            }
+
+            img.izquierdabot {
+                float: inline-end;
+                width: 350px;
+                height: 60px;
+            }
+
+            img.derechabot {
+                position: absolute;
+                left: 700px;
+                width: 350px;
+                height: 60px;
+
+            }
+
+            img.derecha {
+                float: right;
+                width: 200px;
+                height: 60px;
+            }
+
         #wrappertop {
         margin-top: 0%
         background-image: url('img/search.png');
@@ -71,6 +139,15 @@
     </script>
 </head>
     <body>
+        <header>
+            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
+            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
+            <br><h5>"2020, Año de Leona Vicario Benemérita Madre de la Patria"</h5>
+        </header>
+        <footer>
+            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
+            <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
+        </footer>
         <div id="wrappertop">
             <div align=center> <FONT SIZE=0><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS<br/>
                 <FONT SIZE=0>DIRECCION DE PLANEACION</FONT><br/>
