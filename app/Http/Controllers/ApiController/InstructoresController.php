@@ -22,7 +22,7 @@ class InstructoresController extends Controller
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
         ->LEFTJOIN('instructor_available', 'instructor_available.instructor_id', '=', 'instructores.id')
         ->LEFTJOIN('especialidad_instructor_curso', 'especialidad_instructores.id', '=', 'especialidad_instructor_curso.id_especialidad_instructor')
-        ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructor_curso.pago_id')
+        ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
         ->GET([
             'instructores.id', 'instructores.numero_control', 'instructores.nombre', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno',
             'instructores.rfc', 'instructores.curp', 'instructores.sexo', 'instructores.estado_civil', 'instructores.fecha_nacimiento', 'instructores.entidad', 'instructores.municipio',
@@ -34,7 +34,7 @@ class InstructoresController extends Controller
             'tbl_unidades.unidad AS unidades', 'instructores.motivo',
             'instructor_perfil.area_carrera', 'instructor_perfil.grado_profesional', 'instructor_perfil.cursos_recibidos',
             'instructor_perfil.estandar_conocer', 'instructor_perfil.registro_stps', 'especialidad_instructores.memorandum_validacion',
-            'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad', 'criterio_pago.perfil_profesional'
+            'instructor_perfil.estatus',  'especialidades.nombre AS nombre_especialidad', 'criterio_pago.perfil_profesional', 'especialidad_instructores.criterio_pago_id'
         ]);
         return response()->json($instructores, 200);
     }
