@@ -64,7 +64,7 @@
                 <a class="btn btn-success" id="verificar_pago" name="verificar_pago" data-toggle="modal" data-target="#validarModel" data-id="{{ $contratos->id_folios }}">Verificar</a>
             </div>
         </div>
-        <form method="POST" action="{{ route('pago.validar') }}">
+        <form method="POST" action="{{ route('pago.rechazar') }}">
             @csrf
             <div id="rechazar_contrato" class="form-row d-none d-print-none">
                 <div class="form-group col-md-6">
@@ -75,7 +75,7 @@
             <div id="btn_rechazar" class="form-row d-none d-print-none">
                 <div class= "form-group col-md-3">
                     <button type="submit" class="btn btn-danger" >Confirmar Rechazo</button>
-                    <input hidden id="idContrato" name="idContrato" value="{{$contratos->id_contrato}}">
+                    <input hidden id="idPago" name="idPago" value="{{$datapago->id}}">
                     <input hidden id="idfolios" name="idfolios" value="{{$contratos->id_folios}}">
                 </div>
             </div>

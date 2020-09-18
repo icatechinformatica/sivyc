@@ -105,6 +105,16 @@ class PagoController extends Controller
         folio::WHERE('id_folios', '=', $request->id_folio)
         ->update(['status' => 'Finalizado']);
 
+        return redirect()->route('pago-inicio');
+    }
+
+    public function rechazar_pago(Request $request)
+    {
+        folio::WHERE('id_folios', '=', $request->id_folio)
+        ->update(['status' => 'Pago_Rechazado']);
+
+        pago::where('id', '=', $request->id_pago)
+        ->update(['observacion' => $request->observaciones]);
 
         return redirect()->route('pago-inicio');
     }
