@@ -231,7 +231,7 @@ class CursosController extends Controller
             if ($request->hasFile('pdf_curso')) {
                 // obtenemos el valor de pdf_curso
                 $cursos = new Curso();
-                $curso = $cursos->WHERE('id', $id)->FIRST();
+                $curso = $cursos->WHERE('id', $id)->GET();
                 // checamos que no sea nulo
                 if (!is_null($curso->pdf_curso)) {
                     # si no está nulo
