@@ -99,7 +99,7 @@ class CursosController extends Controller
                 $Curso->nmunidad = $request->nmunidad;
                 $Curso->nmacademico = $request->nmacademico;
                 $Curso->observaciones = $request->observaciones;
-                $Curso->status = $request->status;
+                $Curso->status_curso = $request->status_curso;
                 $Curso->realizo = $request->realizo;
                 $Curso->valido = $request->valido;
                 $Curso->arc = $request->arc;
@@ -213,7 +213,7 @@ class CursosController extends Controller
                 'nmunidad' => trim($request->nmunidad),
                 'nmacademico' => trim($request->nmacademico),
                 'observaciones' => trim($request->observaciones),
-                'status' => trim($request->status),
+                'status_curso' => trim($request->status_curso),
                 'realizo' => trim($request->realizo),
                 'valido' => trim($request->valido),
                 'arc' => trim($request->arc),
