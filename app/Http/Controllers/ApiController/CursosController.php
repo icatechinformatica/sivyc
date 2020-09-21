@@ -99,7 +99,7 @@ class CursosController extends Controller
                 $Curso->nmunidad = $request->nmunidad;
                 $Curso->nmacademico = $request->nmacademico;
                 $Curso->observaciones = $request->observaciones;
-                $Curso->status_curso = $request->status_curso;
+                $Curso->status = $request->status;
                 $Curso->realizo = $request->realizo;
                 $Curso->valido = $request->valido;
                 $Curso->arc = $request->arc;
@@ -108,6 +108,7 @@ class CursosController extends Controller
                 $Curso->fecha_modificacion = $request->fecha_modificacion;
                 $Curso->costo = $request->costo;
                 $Curso->motivo_correccion = $request->motivo_correccion;
+                $Curso->status_curso = $request->status_curso;
                 $Curso->save();
 
                 #==================================
@@ -213,7 +214,7 @@ class CursosController extends Controller
                 'nmunidad' => trim($request->nmunidad),
                 'nmacademico' => trim($request->nmacademico),
                 'observaciones' => trim($request->observaciones),
-                'status_curso' => trim($request->status_curso),
+                'status' => trim($request->status),
                 'realizo' => trim($request->realizo),
                 'valido' => trim($request->valido),
                 'arc' => trim($request->arc),
@@ -222,6 +223,7 @@ class CursosController extends Controller
                 'fecha_modificacion' => $request->fecha_modificacion,
                 'costo' => trim($request->costo),
                 'motivo_correccion' => trim($request->motivo_correccion),
+                'status_curso' => trim($request->status_curso)
             ];
             $Cursos->WHERE('id', $id)->update($cursosArray);
 
