@@ -167,7 +167,6 @@ class CursosController extends Controller
         try {
             $Cursos= new Curso();
             $cursosArray = [
-                'id' => trim($request->id),
                 'cct' => trim($request->cct),
                 'unidad' => trim($request->unidad),
                 'nombre' => trim($request->nombre),
@@ -219,12 +218,12 @@ class CursosController extends Controller
                 'valido' => trim($request->valido),
                 'arc' => trim($request->arc),
                 'tcapacitacion' => trim($request->tcapacitacion),
-                'fecha_apertura' => trim($request->fecha_apertura),
-                'fecha_modificacion' => trim($request->fecha_modificacion),
+                'fecha_apertura' => $request->fecha_apertura,
+                'fecha_modificacion' => $request->fecha_modificacion,
                 'costo' => trim($request->costo),
                 'motivo_correccion' => trim($request->motivo_correccion),
             ];
-            $Cursos->whereId($id)->update($cursosArray);
+            $Cursos->WHERE('id', $id)->update($cursosArray);
 
             // validamos si hay archivos
             if ($request->hasFile('pdf_curso')) {
