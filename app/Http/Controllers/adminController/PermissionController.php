@@ -50,14 +50,54 @@ class PermissionController extends Controller
             return redirect()->back()->withErrors("No se seleccionaron ningún elemento para lo")
             ->withInput();
         } else {
-
+            // obtener el último registro del permiso_rol
             $idRol = $request->get('idrole');
             $roles = Rol::findOrfail($idRol);
-            // borrar los permisos de dicho rol
-            $roles->permissions()->detach();
-            foreach($request->get('permisos') as $arraPermisos)
-            {
-                $roles->permissions()->attach($arraPermisos);
+            // checamos si existen los registros
+            if ($roles ) {
+                # existe
+                // arreglo permisos rol
+                $arrayPermisosRol = array();
+                // borrar los permisos de dicho rol
+                $roles->permissions()->detach();
+                $permiso_rol = new PermisosRol;
+                $pr = $permiso_rol->all()->last()->id;
+                // bucle de datos
+                foreach($request->get('permisos') as $arraPermisos)
+                {
+                    $pr += 1;
+                    $arreglo = [
+                        'id' => $pr,
+                        'permission_id' => $arraPermisos,
+                    ];
+                    array_push($arrayPermisosRol, $arreglo);
+                }
+
+                // guardar los registros
+                $roles->permissions()->attach($arrayPermisosRol);
+                // Eliminar todos los elementos del array
+                unset($arrayPermisosRol);
+            } else {
+                # no existe
+                // arreglo permisos rol
+                $arrayPermisosRol = array();
+                $permiso_rol = new PermisosRol;
+                $pr = $permiso_rol->all()->last()->id;
+                // bucle de datos
+                foreach($request->get('permisos') as $arraPermisos)
+                {
+                    $pr += 1;
+                    $arreglo = [
+                        'id' => $pr,
+                        'permission_id' => $arraPermisos,
+                    ];
+                    array_push($arrayPermisosRol, $arreglo);
+                }
+
+                // guardar los registros
+                $roles->permissions()->attach($arrayPermisosRol);
+                // Eliminar todos los elementos del array
+                unset($arrayPermisosRol);
             }
 
             return redirect()->route('gestor.permisos.roles', ['id' => base64_encode($idRol)])

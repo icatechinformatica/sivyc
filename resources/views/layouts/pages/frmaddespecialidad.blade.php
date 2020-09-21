@@ -92,8 +92,8 @@
                     <br><h2>Especialidad Seleccionada: {{$nomesp->nombre}}</h2>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="inputvalido_perfil">Perfil Profesional con el que se valido</label>
+                    <div class="form-group col-md-4">
+                        <label for="inputvalido_perfil">PERFIL PROFESIONAL CON EL QUE SE VALIDO</label>
                         <select class="form-control" name="valido_perfil" id="valido_perfil">
                             <option value="sin especificar">SIN ESPECIFICAR</option>
                             @foreach ($perfil as $item)
@@ -101,8 +101,8 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="inputunidad_validacion">Unidad de Capacitación que Solicita Validación</label>
+                    <div class="form-group col-md-4">
+                        <label for="inputunidad_validacion">UNIDAD DE CAPACITACIÓN QUE SOLICITA VALIDACIÓN</label>
                         <select name="unidad_validacion" id="unidad_validacion" class="form-control">
                             <option value="sin especificar">SIN ESPECIFICAR</option>
                             @foreach ($data as $item)
@@ -110,51 +110,54 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="form-group col-md-4">
+                        <label for="criterio_pago_instructor">CRITERIO DE PAGO</label>
+                        <select name="criterio_pago_instructor" id="criterio_pago_instructor" class="form-control">
+                            <option value="sin especificar">SIN ESPECIFICAR</option>
+                            @foreach ($pago as $item)
+                                <option value="{{$item->id}}">{{$item->perfil_profesional}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="form-row">
 
                     <div class="form-group col-md-4">
-                        <label for="inputmemorandum">Memorandum de Validación</label>
+                        <label for="inputmemorandum">MEMORANDUM DE VALIDACIÓN</label>
                         <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputfecha_validacion">Fecha de Validación</label>
+                        <label for="inputfecha_validacion">FECHA DE VALIDACIÓN</label>
                         <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputmemoranum_modificacion">Memorandum de Revalidación</label>
+                        <label for="inputmemoranum_modificacion">MEMORANDUM DE REVALIDACIÓN</label>
                         <input type="text" name="memorandum_modificacion" id="memorandum_modificacion" class="form-control" aria-required="true">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-8">
-                        <label for="inputexp_doc"><h2>Observaciones</h2></label>
+                        <label for="inputexp_doc"><h2>OBSERVACIONES</h2></label>
                         <textarea name="observaciones" id="observaciones" class="form-control" cols="5" rows="8"></textarea>
                     </div>
                 </div>
 
                     <hr style="border-color:dimgray">
-                    <h2>Selección de Cursos Validados para Impartir</h2>
+                    <h2>SELECCIÓN DE CURSOS VALIDADOS PARA IMPARTIR</h2>
 
                     <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
                         <div class="card-header">
                             <div class="row" role="row">
-                                <div class="col-md-2" role="columnheader">
+                                <div class="col-md-3" role="columnheader">
                                     <p class="form-control-plaintext">NOMBRE</p>
                                 </div>
-                                <div class="col-md-2" role="columnheader">
+                                <div class="col-md-3" role="columnheader">
                                     <p class="form-control-plaintext">RANGOS</p>
                                 </div>
-                                <div class="col-md-2" role="columnheader">
+                                <div class="col-md-3" role="columnheader">
                                     <p class="form-control-plaintext">TIPO DE CURSO</p>
                                 </div>
-                                <div class="col-md-2" role="columnheader">
-                                    <p class="form-control-plaintext">CRITERIO DE PAGO</p>
-                                </div>
-                                <div class="col-md-2" role="columnheader">
-                                    <p class="form-control-plaintext">ZONA</p>
-                                </div>
-                                <div class="col-md-2" role="columnheader">
+                                <div class="col-md-3" role="columnheader">
                                     <p class="form-control-plaintext">AÑADIR</p>
                                 </div>
                             </div>
@@ -165,15 +168,15 @@
                         <div class="card-body">
                             @foreach ($cursos as $itemData)
                                 <div class="row" role="row">
-                                    <div class="col-md-2" role="gridcell">
+                                    <div class="col-md-3" role="gridcell">
                                         <label><h5>NOMBRE</h5></label>
                                         <div class="form-control-plaintext text-truncate">{{$itemData->nombre_curso}}</div>
                                     </div>
-                                    <div class="col-md-2" role="gridcell">
+                                    <div class="col-md-3" role="gridcell">
                                         <label><h5>RANGOS</h5></label>
                                         <div class="form-control-plaintext text-truncate">MINIMO {{$itemData->rango_criterio_pago_minimo}} -- MÁXIMO {{$itemData->rango_criterio_pago_maximo}}</div>
                                     </div>
-                                    <div class="col-md-2" role="gridcell">
+                                    <div class="col-md-3" role="gridcell">
                                         <label><h5>TIPO DE CURSO</h5></label>
                                         <div class="form-control-plaintext text-truncate">
                                             @if ($itemData->tipo_curso === "ONLINE")
@@ -183,28 +186,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-2" role="gridcell">
-                                        <label>CRITERIO DE PAGO</label>
-                                        <div class="form-control-plaintext text-truncate">
-                                            <select class="form-control" name="itemAdd[{{$itemData->id}}][criterio_pago]" id="criterio_pago">
-                                                <option value="">SIN ESPECIFICAR</option>
-                                                @foreach ($pago as $item)
-                                                    <option value="{{$item->id}}">{{$item->perfil_profesional}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2" role="gridcell">
-                                        <label>ZONA</label>
-                                        <div class="form-control-plaintext text-truncate">
-                                            <select class="form-control" name="itemAdd[{{$itemData->id}}][zona]" id="zona">
-                                                <option value="">SIN ESPECIFICAR</option>
-                                                <option value="2">Zona II</option>
-                                                <option value="3">Zona III</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2" role="gridcell">
+                                    <div class="col-md-3" role="gridcell">
                                         <label>AÑADIR</label>
                                         <div class="form-control-plaintext text-truncate">
                                             <input type="checkbox"

@@ -8,6 +8,7 @@ use App\Models\api\Curso;
 use App\Models\api\Calificacion;
 use App\Models\api\Inscripcion;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class CursosController extends Controller
 {
@@ -103,7 +104,28 @@ class CursosController extends Controller
                 $Curso->valido = $request->valido;
                 $Curso->arc = $request->arc;
                 $Curso->tcapacitacion = $request->tcapacitacion;
+                $Curso->fecha_apertura = $request->fecha_apertura;
+                $Curso->fecha_modificacion = $request->fecha_modificacion;
+                $Curso->costo = $request->costo;
+                $Curso->motivo_correccion = $request->motivo_correccion;
+                $Curso->status_curso = $request->status_curso;
                 $Curso->save();
+
+                #==================================
+                # Aquí tenemos el id recién guardado
+                #==================================
+                $cursosId = $Curso->id;
+
+                // validamos si hay archivos
+                if ($request->hasFile('pdf_curso')) {
+                    # Carga el archivo y obtener la url
+                    $documento_pdf_curso = $request->file('pdf_curso'); # obtenemos el archivo
+                    $url_documento_pdf_curso = $this->uploaded_file($documento_solicitud_autorizacion, $cursosId, 'pdf_curso'); #invocamos el método
+                    // guardamos en la base de datos
+                    $cursoUpdate = Curso::findOrfail($cursosId);
+                    $cursoUpdate->pdf_curso = $url_documento_pdf_curso;
+                    $cursoUpdate->save();
+                }
 
                 return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);
         } catch (Exception $e) {
@@ -145,7 +167,93 @@ class CursosController extends Controller
         // actualizando
         try {
             $Cursos= new Curso();
-            $Cursos->whereId($id)->update($request->all());
+            $cursosArray = [
+                'cct' => trim($request->cct),
+                'unidad' => trim($request->unidad),
+                'nombre' => trim($request->nombre),
+                'curp' => trim($request->curp),
+                'rfc' => trim($request->rfc),
+                'clave' => trim($request->clave),
+                'mvalida' => trim($request->mvalida),
+                'mod' => trim($request->mod),
+                'area' => trim($request->area),
+                'espe' => trim($request->espe),
+                'curso' => trim($request->curso),
+                'inicio' => trim($request->inicio),
+                'termino' => trim($request->termino),
+                'dia' => trim($request->dia),
+                'dura' => trim($request->dura),
+                'hini' => trim($request->hini),
+                'hfin' => trim($request->hfin),
+                'horas' => trim($request->horas),
+                'ciclo' => trim($request->ciclo),
+                'plantel' => trim($request->plantel),
+                'depen' => trim($request->depen),
+                'muni' => trim($request->muni),
+                'sector' => trim($request->sector),
+                'programa' => trim($request->programa),
+                'nota' => trim($request->nota),
+                'munidad' => trim($request->munidad),
+                'efisico' => trim($request->efisico),
+                'cespecifico' => trim($request->cespecifico),
+                'mpaqueteria' => trim($request->mpaqueteria),
+                'mexoneracion' => trim($request->mexoneracion),
+                'hombre' => trim($request->hombre),
+                'mujer' => trim($request->mujer),
+                'tipo' => trim($request->tipo),
+                'fcespe' => trim($request->fcespe),
+                'cgeneral' => trim($request->cgeneral),
+                'fcgen' => trim($request->fcgen),
+                'opcion' => trim($request->opcion),
+                'motivo' => trim($request->motivo),
+                'cp' => trim($request->cp),
+                'ze' => trim($request->ze),
+                'id_curso' => trim($request->id_curso),
+                'id_instructor' => trim($request->id_instructor),
+                'modinstructor' => trim($request->modinstructor),
+                'nmunidad' => trim($request->nmunidad),
+                'nmacademico' => trim($request->nmacademico),
+                'observaciones' => trim($request->observaciones),
+                'status' => trim($request->status),
+                'realizo' => trim($request->realizo),
+                'valido' => trim($request->valido),
+                'arc' => trim($request->arc),
+                'tcapacitacion' => trim($request->tcapacitacion),
+                'fecha_apertura' => $request->fecha_apertura,
+                'fecha_modificacion' => $request->fecha_modificacion,
+                'costo' => trim($request->costo),
+                'motivo_correccion' => trim($request->motivo_correccion),
+                'status_curso' => trim($request->status_curso)
+            ];
+            $Cursos->WHERE('id', $id)->update($cursosArray);
+
+            // validamos si hay archivos
+            if ($request->hasFile('pdf_curso')) {
+                // obtenemos el valor de pdf_curso
+                $cursos = new Curso();
+                $curso = $cursos->WHERE('id', $id)->FIRST();
+                // checamos que no sea nulo
+                if (!is_null($curso->pdf_curso)) {
+                    # si no está nulo
+                    $docPdfCurso = explode("/",$curso->pdf_curso, 5);
+                    //dd($docPdfCurso[4]);
+                    //dd(Storage::exists($docPdfCurso[4]));
+                    if (Storage::exists($docPdfCurso[4])) {
+                        # checamos si hay un documento de ser así procedemos a eliminarlo
+                        Storage::delete($docPdfCurso[4]);
+                    }
+                }
+
+                # Carga el archivo y obtener la url
+                $pdf_curso = $request->file('pdf_curso'); # obtenemos el archivo
+                $url_pdf_curso = $this->uploaded_file($pdf_curso, $id, 'pdf_curso_update'); #invocamos el método
+                // guardamos en la base de datos
+                $cursoUpdate = Curso::findOrfail($id);
+                $cursoUpdate->update([
+                    'pdf_curso' => $url_pdf_curso
+                ]);
+            }
+
             return response()->json(['success' => 'Curso actualizado exitosamente'], 200);
         } catch(Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
@@ -197,5 +305,18 @@ class CursosController extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
         }
+    }
+
+    /***
+     * funcion para subir un archivo al servidor
+     */
+    protected function uploaded_file($file, $id, $name){
+        $tamanio = $file->getClientSize(); #obtener el tamaño del archivo del cliente
+        $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
+        # nuevo nombre del archivo
+        $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
+        $file->storeAs('/uploadFiles/cursosvalidados/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+        $documentUrl = Storage::url('/uploadFiles/cursosvalidados/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $documentUrl;
     }
 }

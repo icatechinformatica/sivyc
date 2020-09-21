@@ -92,21 +92,30 @@
                     <br><h2>Especialidad Seleccionada: {{$nomesp->nombre}}</h2>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="inputvalido_perfil">Perfil Profesional con el que se valido</label>
+                    <div class="form-group col-md-4">
+                        <label for="inputvalido_perfil">PERFIL PROFESIONAL CON EL QUE SE VALIDO</label>
                         <select class="form-control" name="valido_perfil" id="valido_perfil">
-                            <option value="{{$sel_espec->id}}">{{$sel_espec->grado_profesional}} {{$sel_espec->area_carrera}}</option>
-                            @foreach ($data_espec as $item)
-                                <option value="{{$item->id}}">{{$item->grado_profesional}} {{$sel_espec->area_carrera}}</option>
+                            <option value="">--SELECCIONAR--</option>
+                            @foreach ($data_espec as $itemPerfilProf)
+                                <option {{ ($especvalid->perfilprof_id == $itemPerfilProf->id) ? 'selected' : '' }} value="{{$itemPerfilProf->id}}">{{$itemPerfilProf->grado_profesional}} {{$itemPerfilProf->area_carrera}}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="inputunidad_validacion">Unidad de Capacitación que Solicita Validación</label>
+                    <div class="form-group col-md-4">
+                        <label for="inputunidad_validacion">UNIDAD DE CAPACITACIÓN QUE SOLICITA VALIDACIÓN</label>
                         <select name="unidad_validacion" id="unidad_validacion" class="form-control">
-                            <option value="{{$sel_unidad->unidad}}">{{$sel_unidad->unidad}}</option>
-                            @foreach ($data_unidad as $item)
-                                <option value="{{$item->unidad}}">{{$item->unidad}}</option>
+                            <option value="">--SELECCIONAR--</option>
+                            @foreach ($data_unidad as $itemUnidad)
+                                <option {{ ($especvalid->unidad_solicita == $itemUnidad->unidad) ? 'selected' : '' }} value="{{$itemUnidad->unidad}}">{{$itemUnidad->unidad}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="criterio_pago_mod">CRITERIO DE PAGO</label>
+                        <select name="criterio_pago_mod" id="criterio_pago_mod" class="form-control">
+                            <option value="">--SELECCIONAR--</option>
+                            @foreach ($data_pago as $itemCriterioPago)
+                                <option {{ ($especvalid->criterio_pago_id == $itemCriterioPago->id) ? 'selected' : '' }} value="{{$itemCriterioPago->id}}">{{$itemCriterioPago->perfil_profesional}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -114,21 +123,21 @@
                 <div class="form-row">
 
                     <div class="form-group col-md-4">
-                        <label for="inputmemorandum">Memorandum de Validación</label>
+                        <label for="inputmemorandum">MEMORANDUM DE VALIDACIÓN</label>
                         <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true" value={{$especvalid->memorandum_validacion}}>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputfecha_validacion">Fecha de Validación</label>
+                        <label for="inputfecha_validacion">FECHA DE VALIDACIÓN</label>
                         <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true" value="{{$especvalid->fecha_validacion}}">
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputmemoranum_modificacion">Memorandum de Revalidación</label>
+                        <label for="inputmemoranum_modificacion">MEMORANDUM DE REVALIDACIÓN</label>
                         <input type="text" name="memorandum_modificacion" id="memorandum_modificacion" class="form-control" aria-required="true" value="{{$especvalid->memorandum_modificacion}}">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-8">
-                        <label for="inputexp_doc"><h2>Observaciones</h2></label>
+                        <label for="inputexp_doc"><h2>OBSERVACIONES</h2></label>
                         <textarea name="observaciones" id="observaciones" class="form-control" cols="5" rows="8">{{$especvalid->observacion}}</textarea>
                     </div>
                 </div>
@@ -139,22 +148,16 @@
                 <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
                     <div class="card-header">
                         <div class="row" role="row">
-                            <div class="col-md-2" role="columnheader">
+                            <div class="col-md-3" role="columnheader">
                                 <p class="form-control-plaintext">NOMBRE</p>
                             </div>
-                            <div class="col-md-2" role="columnheader">
+                            <div class="col-md-3" role="columnheader">
                                 <p class="form-control-plaintext">RANGOS</p>
                             </div>
-                            <div class="col-md-2" role="columnheader">
+                            <div class="col-md-3" role="columnheader">
                                 <p class="form-control-plaintext">TIPO DE CURSO</p>
                             </div>
-                            <div class="col-md-2" role="columnheader">
-                                <p class="form-control-plaintext">CRITERIO DE PAGO</p>
-                            </div>
-                            <div class="col-md-2" role="columnheader">
-                                <p class="form-control-plaintext">ZONA</p>
-                            </div>
-                            <div class="col-md-2" role="columnheader">
+                            <div class="col-md-3" role="columnheader">
                                 <p class="form-control-plaintext">AÑADIR</p>
                             </div>
                         </div>
@@ -165,15 +168,15 @@
                     <div class="card-body">
                         @foreach ($catcursos as $itemDataCatCurso)
                         <div class="row" role="row">
-                            <div class="col-md-2" role="gridcell">
+                            <div class="col-md-3" role="gridcell">
                                 <label><h5>NOMBRE</h5></label>
                                 <div class="form-control-plaintext text-truncate">{{$itemDataCatCurso->nombre_curso}}</div>
                             </div>
-                            <div class="col-md-2" role="gridcell">
+                            <div class="col-md-3" role="gridcell">
                                 <label><h5>RANGOS</h5></label>
                                 <div class="form-control-plaintext text-truncate">MINIMO {{$itemDataCatCurso->rango_criterio_pago_minimo}} -- MÁXIMO {{$itemDataCatCurso->rango_criterio_pago_maximo}}</div>
                             </div>
-                            <div class="col-md-2" role="gridcell">
+                            <div class="col-md-3" role="gridcell">
                                 <label><h5>TIPO DE CURSO</h5></label>
                                 <div class="form-control-plaintext text-truncate">
                                     @if ($itemDataCatCurso->tipo_curso === "ONLINE")
@@ -183,41 +186,7 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-2" role="gridcell">
-                                <label>CRITERIO DE PAGO</label>
-                                <div class="form-control-plaintext text-truncate">
-                                    <select class="form-control" name="itemEdit[{{$itemDataCatCurso->id}}][criterio_pago_edit]" id="criterio_pago">
-                                        <option value="">--SELECCIONAR--</option>
-                                        @foreach ($data_pago as $item)
-                                            <option
-                                            @foreach ($itemDataCatCurso->especialidadinstructor as $itemCatInstructorCurso)
-                                                {{ $itemCatInstructorCurso->pivot->pago_id  }}
-                                                {{ ($itemCatInstructorCurso->pivot->pago_id == $item->id) ? 'selected' : '' }}
-                                            @endforeach
-                                            value="{{$item->id}}">{{$item->perfil_profesional}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2" role="gridcell">
-                                <label>ZONA</label>
-                                <div class="form-control-plaintext text-truncate">
-                                    <select class="form-control"  name="itemEdit[{{$itemDataCatCurso->id}}][zona_edit]" id="zona">
-                                        <option value="">--SELECCIONAR--</option>
-                                        <option
-                                            @foreach ($itemDataCatCurso->especialidadinstructor as $itemCat)
-                                                {{($itemCat->pivot->zona == 2 ) ? 'selected' : ''}}
-                                            @endforeach
-                                            value="2">Zona II</option>
-                                        <option
-                                            @foreach ($itemDataCatCurso->especialidadinstructor as $itemCat)
-                                                {{($itemCat->pivot->zona == 3 ) ? 'selected' : ''}}
-                                            @endforeach
-                                            value="3">Zona III</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2" role="gridcell">
+                            <div class="col-md-3" role="gridcell">
                                 <label>AÑADIR</label>
                                 <div class="form-control-plaintext text-truncate">
 

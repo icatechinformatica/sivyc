@@ -489,20 +489,17 @@ class InstructorController extends Controller
     {
         $especvalid = especialidad_instructor::WHERE('id', '=', $idesp)->FIRST();
 
-        $sel_espec = InstructorPerfil::WHERE('id', '=', $especvalid->perfilprof_id)->FIRST();
-        $data_espec = InstructorPerfil::where('id', '!=', $especvalid->perfilprof_id)->get();
+        $data_espec = InstructorPerfil::all();
 
-        $sel_pago = criterio_pago::WHERE('id', '=', $especvalid->pago_id)->FIRST();
-        $data_pago = criterio_pago::WHERE('id', '!=', $especvalid->pago_id)->GET();
+        $data_pago = criterio_pago::all();
 
-        $sel_unidad = tbl_unidades::WHERE('unidad', '=', $especvalid->unidad_solicita)->FIRST();
-        $data_unidad = tbl_unidades::WHERE('unidad', '!=', $especvalid->unidad_solicita)->GET();
+        $data_unidad = tbl_unidades::all();
         // cursos totales
         $catcursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
 
         $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
 
-        return view('layouts.pages.frmmodespecialidad', compact('especvalid','sel_espec','data_espec','sel_pago','data_pago','sel_unidad','data_unidad', 'idesp','id','idins','nomesp', 'catcursos'));
+        return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'idesp','id','idins','nomesp', 'catcursos'));
     }
 
     public function add_perfil($id)
@@ -589,7 +586,7 @@ class InstructorController extends Controller
 
     public function cursoimpartir_form($id, $idins)
     {
-        $perfil = instructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional']);
+        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional']);
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
         $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
@@ -607,6 +604,7 @@ class InstructorController extends Controller
         $espec_mod->fecha_validacion = $request->fecha_validacion;
         $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_mod->observacion = $request->observaciones;
+        $espec_mod->criterio_pago_id = $request->criterio_pago_mod;
         $espec_mod->save();
         // declarar un arreglo
         $pila_edit = array();
@@ -622,9 +620,7 @@ class InstructorController extends Controller
             if(isset($value['check_cursos_edit']))
             {
                 $arreglos_edit = [
-                    'curso_id' => $value['check_cursos_edit'],
-                    'pago_id' => $value['criterio_pago_edit'],
-                    'zona' => $value['zona_edit']
+                    'curso_id' => $value['check_cursos_edit']
                 ];
                 array_push($pila_edit, $arreglos_edit);
             }
@@ -649,6 +645,7 @@ class InstructorController extends Controller
         $espec_save->fecha_validacion = $request->fecha_validacion;
         $espec_save->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_save->observacion = $request->observaciones;
+        $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
         $especialidadInstrcutorId = $espec_save->id;
@@ -661,9 +658,7 @@ class InstructorController extends Controller
             if(isset($value['check_cursos']))
             {
                 $arreglos = [
-                    'curso_id' => $value['check_cursos'],
-                    'pago_id' => $value['criterio_pago'],
-                    'zona' => $value['zona']
+                    'curso_id' => $value['check_cursos']
                 ];
                 array_push($pila, $arreglos);
             }
