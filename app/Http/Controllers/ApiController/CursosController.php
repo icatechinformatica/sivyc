@@ -230,12 +230,12 @@ class CursosController extends Controller
             // validamos si hay archivos
             if ($request->hasFile('pdf_curso')) {
                 // obtenemos el valor de pdf_curso
-                $cursos = new Curso();
-                $curso = $cursos->WHERE('id', $id)->GET();
+                $cursos_pdf = new Curso();
+                $cursoPdf = $cursos_pdf->WHERE('id', '=' , $id)->GET();
                 // checamos que no sea nulo
-                if (!is_null($curso->pdf_curso)) {
+                if (!is_null($cursoPdf[0]->pdf_curso)) {
                     # si no está nulo
-                    $docPdfCurso = explode("/",$curso->pdf_curso, 5);
+                    $docPdfCurso = explode("/",$cursoPdf[0]->pdf_curso, 5);
                     //dd($docPdfCurso[4]);
                     //dd(Storage::exists($docPdfCurso[4]));
                     if (Storage::exists($docPdfCurso[4])) {
