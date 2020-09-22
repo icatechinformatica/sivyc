@@ -53,7 +53,6 @@ class PermissionController extends Controller
             // obtener el último registro del permiso_rol
             $idRol = $request->get('idrole');
             $roles = Rol::findOrfail($idRol);
-            dd($roles);
             // checamos si existen los registros
             if ($roles ) {
                 # existe
@@ -65,7 +64,7 @@ class PermissionController extends Controller
                 $pr = $permiso_rol->all();
                 $permisosRoles = $pr->last();
                 $idPermisosRoles = $permisosRoles->id;
-                dd($idPermisosRoles);
+                dd($pr);
                 // bucle de datos
                 foreach($request->get('permisos') as $arraPermisos)
                 {
