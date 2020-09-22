@@ -88,7 +88,7 @@ class PermissionController extends Controller
                 $pr = $permiso_rol->all();
                 $permisosRoles = $pr->last();
                 $idPermisosRoles = $permisosRoles->id;
-                dd($idPermisosRoles);
+                dd($permisosRoles);
                 // bucle de datos
                 foreach($request->get('permisos') as $arraPermisos)
                 {
