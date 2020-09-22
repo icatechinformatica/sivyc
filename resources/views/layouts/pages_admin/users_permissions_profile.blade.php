@@ -33,10 +33,12 @@
                                 <select class="form-control" id="inputRol" name="inputRol">
                                     <option value="">--SELECCIONAR--</option>
                                     @foreach ($roles as $itemRol)
-                                        @foreach ($usuario->roles as $itemUserRol)
-                                            <option {{ ($itemUserRol->pivot->role_id == $itemRol->id) ? 'selected' : '' }} value="{{ $itemRol->id }}">{{ $itemRol->name }}</option>
-                                        @endforeach
-                                        <option value="{{ $itemRol->id }}">{{ $itemRol->name }}</option>
+                                        <option
+                                            @foreach ($usuario->roles as $itemUserRol)
+                                                {{ ($itemUserRol->pivot->role_id == $itemRol->id) ? 'selected' : '' }}
+                                            @endforeach
+                                            value="{{ $itemRol->id }}">{{ $itemRol->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>

@@ -58,10 +58,11 @@
                     <th scope="col">Estatus</th>
                     <th scope="col">Folio de Validación</th>
                     <th scope="col">Acción</th>
+                    <th scope="col">semaforo</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($data as $key=>$itemData)
+                @foreach ($querySupre as $itemData)
                     <tr>
                         <th scope="row">{{$itemData->no_memo}}</th>
                         <td>{{$itemData->unidad_capacitacion}}</td>
@@ -110,6 +111,18 @@
                             @if ($itemData->status == 'Finalizado')
                                 <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>PDF</a>
                             @endif
+                        </td>
+                        <td
+                            @if ($itemData->fecha_dif > 0)
+                                style="background-color: red"
+
+                            @elseif ($itemData->fecha_dif >= -3)
+                                style="background-color: yellow"
+                            @else
+                                style="background-color: green"
+                            @endif
+                        >
+
                         </td>
                     </tr>
                 @endforeach

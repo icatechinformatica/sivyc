@@ -20,18 +20,27 @@ use App\Models\contrato_directorio;
 use App\Models\especialidad;
 use App\Models\instructor;
 use PDF;
+use Illuminate\Support\Facades\DB;
+
 class ContratoController extends Controller
 {
     public function index()
     {
         $supre = new supre();
-        $data = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
-                               'folios.folio_validacion','contratos.docs','contratos.id_contrato')
-                        ->where('folios.status', '!=', 'En_Proceso')
-                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
-                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
-                        ->get();
-        return view('layouts.pages.vstacontratoini', compact('data'));
+        $querySupre = DB::TABLE('tabla_supre')
+                          ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
+                          ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+                          ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                          ->SELECT(
+                            'tabla_supre.id','tabla_supre.no_memo',
+                            'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                            'folios.id_folios', 'folios.folio_validacion',
+                            'contratos.docs','contratos.id_contrato', 'tbl_cursos.termino AS fecha_termino',
+                            'tbl_cursos.inicio AS fecha_inicio', DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                            )
+                          ->GET();
+
+        return view('layouts.pages.vstacontratoini', compact('querySupre'));
     }
 
     /**
