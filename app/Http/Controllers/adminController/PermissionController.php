@@ -62,7 +62,7 @@ class PermissionController extends Controller
                 $roles->permissions()->detach();
                 $permiso_rol = new PermisosRol;
                 $pr = $permiso_rol->latest('id')->first();
-                dd($pr->id);
+                $idPermisosRoles = $pr->id;
                 // bucle de datos
                 foreach($request->get('permisos') as $arraPermisos)
                 {
@@ -84,7 +84,7 @@ class PermissionController extends Controller
                 $arrayPermisosRol = array();
                 $permiso_rol = new PermisosRol;
                 $pr = $permiso_rol->latest('id')->first();
-                dd($permisosRoles);
+                $idPermisosRoles = $pr->id;
                 // bucle de datos
                 foreach($request->get('permisos') as $arraPermisos)
                 {
