@@ -61,9 +61,7 @@ class PermissionController extends Controller
                 // borrar los permisos de dicho rol
                 $roles->permissions()->detach();
                 $permiso_rol = new PermisosRol;
-                $pr = $permiso_rol->all();
-                $permisosRoles = $pr->last();
-                $idPermisosRoles = $permisosRoles->id;
+                $pr = $permiso_rol->orderBy('id')->take(1, 'DESC')->get();
                 dd($pr);
                 // bucle de datos
                 foreach($request->get('permisos') as $arraPermisos)
