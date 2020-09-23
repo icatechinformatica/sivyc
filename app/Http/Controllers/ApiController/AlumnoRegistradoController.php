@@ -32,8 +32,7 @@ class AlumnoRegistradoController extends Controller
                     'alumnos_pre.antiguedad', 'alumnos_pre.direccion_empresa', 'alumnos_pre.medio_entero', 'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.grupo',
                     'alumnos_pre.acta_nacimiento', 'alumnos_pre.curp',
                     'alumnos_pre.comprobante_domicilio', 'alumnos_pre.fotografia', 'alumnos_pre.ine', 'alumnos_pre.pasaporte_licencia_manejo',
-                    'alumnos_pre.comprobante_ultimo_grado', 'alumnos_pre.chk_comprobante_calidad_migratoria',
-                    'alumnos_pre.comprobante_calidad_migratoria', 'alumnos_pre.puesto_empresa', 'alumnos_pre.sistema_capacitacion_especificar',
+                    'alumnos_pre.comprobante_ultimo_grado', 'alumnos_pre.comprobante_calidad_migratoria', 'alumnos_pre.puesto_empresa', 'alumnos_pre.sistema_capacitacion_especificar',
                     'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct',
                     'alumnos_registro.unidad', 'alumnos_registro.etnia', 'alumnos_registro.indigena', 'alumnos_registro.migrante'
                 ]);
