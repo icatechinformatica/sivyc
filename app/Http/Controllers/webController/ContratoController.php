@@ -21,6 +21,7 @@ use App\Models\especialidad;
 use App\Models\instructor;
 use PDF;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ContratoController extends Controller
 {
@@ -52,7 +53,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -67,7 +68,19 @@ class ContratoController extends Controller
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $pago = round($data->importe_total-$data->iva, 2);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago'));
+        $date = strtotime($data->termino);
+        $dacarbon = strtotime(Carbon::now());
+
+        if($dacarbon > $date)
+        {
+            $term = TRUE;
+        }
+        else
+        {
+            $term = FALSE;
+        }
+
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term'));
     }
 
     public function contrato_save(Request $request)
@@ -84,7 +97,7 @@ class ContratoController extends Controller
         $file = $request->file('factura'); # obtenemos el archivo
         if ($file != NULL)
         {
-            $urldocs = $this->pago_upload($file, $request->id_contrato);
+            $urldocs = $this->pdf_upload($file, $request->id_contrato,'factura');
             $contrato->arch_factura = $urldocs;
         }
         $contrato->save();
@@ -148,7 +161,7 @@ class ContratoController extends Controller
         if($request->factura != NULL)
         {
             $file = $request->file('factura'); # obtenemos el archivo
-            $urldocs = $this->pago_upload($file, $request->id_contrato);
+            $urldocs = $this->pdf_upload($file, $request->id_contrato,'factura');
             $contrato->arch_factura = $urldocs;
         }
 
@@ -242,12 +255,12 @@ class ContratoController extends Controller
         $pago->id_contrato = $request->id_contrato;
 
         $file = $request->file('arch_asistencia'); # obtenemos el archivo
-        $urldocs = $this->pago_upload($file, $request->id_contrato); #invocamos el método
+        $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
         // guardamos en la base de datos
         $pago->arch_asistencia = trim($urldocs);
 
         $file = $request->file('arch_evidencia'); # obtenemos el archivo
-        $urldocs = $this->pago_upload($file, $request->id_contrato); #invocamos el método
+        $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
         // guardamos en la base de datos
         $pago->arch_evidencia = trim($urldocs);
         $pago->save();
@@ -261,7 +274,7 @@ class ContratoController extends Controller
         if($request->arch_factura != NULL)
         {
             $file = $request->file('arch_factura'); # obtenemos el archivo
-            $urldocs = $this->pago_upload($file, $request->id_contrato); #invocamos el método
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'factura'); #invocamos el método
             // guardamos en la base de datos
             $contrato = contratos::find($request->id_contrato);
             $contrato->arch_factura = trim($urldocs);
