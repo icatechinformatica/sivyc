@@ -29,9 +29,9 @@
                 <a class="btn btn-danger" disabled>Comprobante de Domicilio</a><br>
             @endif
             @if ($data->archivo_alta != NULL)
-                <a class="btn btn-info" href={{$data->archivo_alta}} download>Alta de Instructor</a><br>
+                <a class="btn btn-info" href={{$data->archivo_alta}} download>Validación de Instructor</a><br>
             @else
-                <a class="btn btn-danger" disabled>Alta de Instructor</a><br>
+                <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
             @endif
             @if ($data->archivo_alta != NULL)
                 <a class="btn btn-info" href={{$data->arch_factura}} download>Factura</a><br>
@@ -44,31 +44,9 @@
                 <a class="btn btn-danger" disabled>RFC/Constancia Fiscal</a><br>
             @endif
             @if ($data->archivo_curp != NULL)
-                <a class="btn btn-info" href={{$data->doc_validado}} download>Suficiencia Presupuestal Validada</a><br>
+                <a class="btn btn-info" href={{$data->doc_validado}} download>Validación de Suficiencia Presupuestal</a><br>
             @else
-                <a class="btn btn-danger" disabled>Suficiencia Presupuestal Validada</a><br>
-            @endif
-        </div>
-        <div class="form-row">
-            @if ($data->archivo_bancario != NULL)
-                <a class="btn btn-info" href={{$data->archivo_bancario}} download>Datos Bancarios</a><br>
-                @else
-                <a class="btn btn-danger" disabled>Datos Bancarios</a><br>
-            @endif
-            @if ($data->archivo_fotografia != NULL)
-                <a class="btn btn-info" href={{$data->archivo_fotografia}} download>Fotografía</a><br>
-            @else
-                <a class="btn btn-danger" disabled>Fotografía</a><br>
-            @endif
-            @if ($data->archivo_estudios != NULL)
-                <a class="btn btn-info" href={{$data->archivo_estudios}} download>Estudios</a><br>
-            @else
-                <a class="btn btn-danger" disabled>Estudios</a><br>
-            @endif
-            @if ($data->archivo_otraid != NULL)
-                <a class="btn btn-info" href={{$data->archivo_otraid}} download>Otra Identificación</a><br>
-            @else
-                <a class="btn btn-danger" disabled>Otra Identificación</a><br>
+                <a class="btn btn-danger" disabled>Validación Suficiencia Presupuestal</a><br>
             @endif
         </div>
         <div class="form-row">

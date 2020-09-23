@@ -76,7 +76,11 @@
                 <div class="form-group col-md-3">
                     <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>
                     <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
-                    <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
+                    @if ($term == TRUE)
+                        <footer style="color:red;" class="control-footer">La fecha de termino del curso ha sido alcanzada. Anexar documento de factura en caso de contar con ella</footer>
+                    @else
+                        <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
+                    @endif
                 </div>
             </div>
             <hr style="border-color:dimgray">
