@@ -5,6 +5,18 @@ use App\Http\Controllers\webController\InstructorController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+Route::get('/supervision/instructor/{token}', 'supervisionController\InstructorController@index')->name('supervision.instructor');
+Route::post('/supervision/instructor/{token}', 'supervisionController\InstructorController@index')->name('supervision.instructor');
+Route::post('/supervision/instructore/guardar', 'supervisionController\InstructorController@guardar')->name('supervision-instructore-guardar');
+
+Route::get('/supervision/alumno/{token}', 'supervisionController\AlumnoController@index')->name('supervision.alumno');
+Route::post('/supervision/alumno/{token}', 'supervisionController\AlumnoController@index')->name('supervision.alumno');
+Route::post('/supervision/alumn/guardar', 'supervisionController\AlumnoController@guardar')->name('supervision-alumno-guardar');
+    
+Route::get('/supervision/funcionario/{token}', 'supervisionController\FuncionarioController@index')->name('supervision.funcionario');
+Route::post('/supervision/funcionario/{token}', 'supervisionController\FuncionarioController@index')->name('supervision.funcionario');
+Route::post('/supervision/funcionario-guardar', 'supervisionController\FuncionarioController@guardar')->name('supervision-funcionario-guardar');
+    
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -152,13 +164,24 @@ Route::middleware(['auth'])->group(function () {
      * contratos Desarrollando por Daniel
      */
     Route::get('/contratos/crear/{id}', 'webController\ContratoController@create')->name('contratos.create');
+    
+     
+    Route::get('/', function () {
+        return view('home');
+    });
+    Route::get('/home', function() {
+        return view('home');
+    })->name('home');
+    
+    
+    /*
     Route::get('/', function () {
         return view('layouts.pages.home');
     });
     Route::get('/home', function() {
         return view('layouts.pages.home');
     })->name('home');
-
+    */
     /***
      * Desarrollado por Orlando
      */
@@ -224,5 +247,49 @@ Route::middleware(['auth'])->group(function () {
      * agregando financiero rutas -- DMC
      */
     Route::get('financiero/indice', 'webController\FinancieroController@index')
-           ->name('financiero.index');
+           ->name('financiero.index');           
+    
+    /* SUPERVISIONES INSTRUCTORES*/
+    Route::get('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');    
+    Route::post('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');        
+    //Route::post('/supervision/instructor/guardar', 'webController\SupervisionInstructorController@store')->name('supervision-instructor-guardar')->middleware('can:SupervisionInstructor.store');
+        
+    Route::get('/supervision/url/instructor/{id}', 'supervisionController\SupervisionInstructorController@generarUrl')->name('supervision-url-instructor');
+    Route::get('/supervision/revision/instructor/{id}', 'supervisionController\SupervisionInstructorController@revision')->name('supervision-revision-instructor');
+    Route::post('/supervision/revision/guardar', 'supervisionController\SupervisionInstructorController@update')->name('supervision.revision.guardar');
+    //Route::get('/supervision/revision/instructor/{id}', 'supervisionController\SupervisionInstructorController@revision')->name('supervision-revision-instructor');
+    
+    /*SUPERVISIONES ALUMNOS*/
+    Route::get('/supervision/lst/alumno/{id}', 'supervisionController\SupervisionAlumnoController@lista')->name('supervision-lst-alumnos');
+    Route::get('/supervision/url/alumno/{id}', 'supervisionController\SupervisionAlumnoController@generarUrl')->name('supervision-url-alumno');
+    Route::get('/supervision/revision/alumno/{id}', 'supervisionController\SupervisionAlumnoController@revision')->name('supervision-revision-alumno');
+    Route::post('/supervision/revision/guardar-alumno', 'supervisionController\SupervisionAlumnoController@update')->name('supervision.revision.guardar.alumno');
+    
+    /*SUPERVISION UNIDADES*/
+    Route::get('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
+    Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
+    Route::get('/supervision/unidades/detalle/{id}', 'supervisionController\UnidadesController@detalle')->name('supervision.unidades.detalle');
+    //Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');    
+    
+    Route::get('/formato-tecnico', 'indicadoresController\FormatoTecnicoController@index')->name('indicadores.formato-tecnico');
+    Route::post('/formato-tecnico', 'indicadoresController\FormatoTecnicoController@index')->name('indicadores.formato-tecnico');
+    Route::get('/formato-tecnico/table', 'indicadoresController\FormatoTecnicoController@table')->name('indicadores.formato-tecnico.table');
+
+
+    Route::get('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
+    Route::post('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
+    Route::get('/tablero/table', 'indicadoresController\tableroController@table')->name('indicadores.tablero.table');
+    
+    /*TABLERO DE CONTROL*/
+    Route::get('/tablero/', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    Route::get('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    Route::post('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    
+    Route::get('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
+    Route::post('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
+    
+    Route::get('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
+    Route::post('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
+    
+           
 });
