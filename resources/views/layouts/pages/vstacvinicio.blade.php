@@ -33,6 +33,7 @@
                             <option value="clave">CLAVE DEL CURSO</option>
                             <option value="nombre_curso">NOMBRE DEL CURSO</option>
                             <option value="instructor">INSTRUCTORES</option>
+                            <option value="unidad">UNIDAD</option>
                         </select>
 
                         {!! Form::text('busqueda_curso_validado', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
@@ -47,19 +48,21 @@
             <caption>Catalogo de Cursos Validados</caption>
             <thead>
                 <tr>
-                    <th scope="col">Clave de Curso</th>
-                    <th scope="col">Nombre del Curso</th>
-                    <th scope="col">Instructor</th>
-                    <th scope="col">Fecha Impartir</th>
+                    <th scope="col">UNIDAD</th>
+                    <th scope="col">CLAVE DE CURSO</th>
+                    <th scope="col">NOMBRE DEL CURSO</th>
+                    <th scope="col">INSTRUCTOR</th>
+                    <th scope="col">FECHA IMPARTIR</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->clave}}</th>
+                        <td>{{$itemData->unidad}}</td>
+                        <td>{{$itemData->clave}}</td>
                         <td>{{$itemData->nombrecur}}</td>
                         <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
-                        <td>{{$itemData->inicio}} al {{$itemData->termino}}</td>
+                        <td>{{ \Carbon\Carbon::parse($itemData->inicio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($itemData->termino)->format('d/m/Y') }}</td>
                     </tr>
                 @endforeach
             </tbody>
