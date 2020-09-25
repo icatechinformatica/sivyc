@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+//Ruta Pago 25/09/2020
+Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@historial_validacion')->name('pago.historial-verificarpago');
+
+// Ruta Contrato 24/09/2020
+Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
+
 //Ruta Manual
 Route::get('/user/manuales', 'webController\manualController@index')->name('manuales');
 
@@ -122,7 +128,7 @@ Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_fo
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
 Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
-//Ruta Contrato
+//Ruta
 Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');

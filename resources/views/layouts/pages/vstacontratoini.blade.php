@@ -102,6 +102,9 @@
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                     </a>
                                 @endcan
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
                             @endif
                             @if ($itemData->status == 'Contratado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
@@ -112,6 +115,9 @@
                                         <i class="fa fa-money" aria-hidden="true"></i>
                                     </a>
                                 @endcan
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
                             @endif
                             @if ($itemData->status == 'Pago_Rechazado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">
@@ -125,20 +131,32 @@
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                     </a>
                                 @endcan
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
                             @endif
                             @if ($itemData->status == 'Verificando_Pago')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
                                     <i class="fa fa-file" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             @endif
                             @if ($itemData->status == 'Pago_Verificado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
                                     <i class="fa fa-file" aria-hidden="true"></i>
                                 </a>
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
                             @endif
                             @if ($itemData->status == 'Finalizado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
                                     <i class="fa fa-file" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             @endif
                         </td>
