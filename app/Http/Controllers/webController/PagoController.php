@@ -127,6 +127,28 @@ class PagoController extends Controller
         return redirect()->route('pago-inicio')->with('info', 'El pago ha sido verificado exitosamente.');
     }
 
+    public function historial_validacion($id)
+    {
+        //
+        $contrato = new contratos();
+
+        $contratos = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_numero',
+        'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.arch_factura',
+        'folios.status', 'folios.id_folios','tbl_cursos.id_instructor','instructores.id AS idins','instructores.archivo_bancario')
+        ->WHERE('contratos.id_contrato', '=', $id)
+        ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+        ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+        ->LEFTJOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
+        ->FIRST();
+
+        $datapago = pago::WHERE('id_contrato', '=', $id)->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $contratos->id_contrato)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+
+        return view('layouts.pages.vsthistorialvalidarpago', compact('contratos','director','datapago'));
+    }
+
     public function mostrar_pago($id)
     {
         $data = contratos::SELECT('instructores.numero_control','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
