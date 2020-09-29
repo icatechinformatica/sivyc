@@ -28,7 +28,7 @@ Route::get('/user/manuales', 'webController\manualController@index')->name('manu
 Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcursos');
 
 //ruta Pago
-Route::post('/pago/validar_pago', 'webController\PagoController@rechazar_pago')->name('pago.rechazar');
+Route::post('/pago/rechazar_pago', 'webController\PagoController@rechazar_pago')->name('pago-rechazo');
 
 //Ruta Alta/Baja
 Route::get('/cursos/alta-baja/{id}', 'webController\CursosController@alta_baja')->name('curso-alta_baja');

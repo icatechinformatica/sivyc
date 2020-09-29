@@ -55,7 +55,8 @@
                     <th scope="col">No. de Memoramdum</th>
                     <th scope="col">Unidad de Capacitación</th>
                     <th scope="col">Fecha</th>
-                    <th scope="col">Estatus</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Ultima Modificación de Status</th>
                     <th scope="col">Folio de Validación</th>
                     <th scope="col">Acción</th>
                     <th scope="col">semaforo</th>
@@ -68,6 +69,7 @@
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->fecha}}</td>
                         <td>{{$itemData->status}}</td>
+                        <td>{{$itemData->fecha_status}}</td>
                         <td>{{$itemData->folio_validacion}}</td>
                         <td>
                             @if ($itemData->status == 'Validado')

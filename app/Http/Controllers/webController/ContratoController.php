@@ -36,7 +36,7 @@ class ContratoController extends Controller
                             'tabla_supre.id','tabla_supre.no_memo',
                             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
                             'folios.id_folios', 'folios.folio_validacion',
-                            'contratos.docs','contratos.id_contrato', 'tbl_cursos.termino AS fecha_termino',
+                            'contratos.docs','contratos.id_contrato','contratos.fecha_status', 'tbl_cursos.termino AS fecha_termino',
                             'tbl_cursos.inicio AS fecha_inicio', DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                             )
                           ->GET();
@@ -94,6 +94,7 @@ class ContratoController extends Controller
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
+        $contrato->fecha_status = carbon::now();
         $file = $request->file('factura'); # obtenemos el archivo
         if ($file != NULL)
         {
@@ -157,6 +158,7 @@ class ContratoController extends Controller
         $contrato->municipio = $request->lugar_expedicion;
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
+        $contrato->fecha_status = carbon::now();
 
         if($request->factura != NULL)
         {
@@ -187,7 +189,8 @@ class ContratoController extends Controller
     public function validar_contrato($id){
         $data = contratos::SELECT('contratos.id_contrato','contratos.numero_contrato','contratos.cantidad_letras1','contratos.fecha_firma',
                                  'contratos.municipio','contratos.arch_factura','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
-                                 'contratos.cantidad_numero','contratos.arch_factura','folios.iva','folios.id_cursos','folios.id_supre','tabla_supre.doc_validado','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod',
+                                 'contratos.cantidad_numero','contratos.arch_factura','folios.iva','folios.id_cursos','folios.id_supre','tabla_supre.doc_validado',
+                                 'tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod','tbl_cursos.pdf_curso',
                                  'instructores.nombre AS insnom','instructores.apellidoPaterno','instructores.tipo_honorario','tbl_cursos.dura',
                                  'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia',
                                  'tbl_cursos.hini','tbl_cursos.hfin','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
@@ -219,6 +222,7 @@ class ContratoController extends Controller
     public function rechazar_contrato(Request $request){
         $contrato = contratos::find($request->idContrato);
         $contrato->observacion = $request->observaciones;
+        $contrato->fecha_status = carbon::now();
         $contrato->save();
 
         $folio = folio::find($request->idfolios);
@@ -230,6 +234,9 @@ class ContratoController extends Controller
     }
 
     public function valcontrato($id){
+        contratos::where('id_folios', '=', $id)
+        ->update(['fecha_status' => carbon::now()]);
+
         $folio = folio::find($id);
         $folio->status = "Contratado";
         $folio->save();
@@ -263,6 +270,7 @@ class ContratoController extends Controller
         $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
         // guardamos en la base de datos
         $pago->arch_evidencia = trim($urldocs);
+        $pago->fecha_status = carbon::now();
         $pago->save();
 
         contrato_directorio::where('id_contrato', '=', $request->id_contrato)
