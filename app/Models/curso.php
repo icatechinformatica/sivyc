@@ -15,7 +15,7 @@ class curso extends Model
             'id','nombre_curso','modalidad','clasificacion','costo','duracion',
             'objetivo','perfil','solicitud_autorizacion','fecha_validacion','memo_validacion',
             'memo_actualizacion','fecha_actualizacion','unidad_amovil','descripcion','no_convenio','id_especialidad',
-            'area', 'cambios_especialidad', 'nivel_estudio', 'categoria','tipo_curso'
+            'area', 'cambios_especialidad', 'nivel_estudio', 'categoria','tipo_curso', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -44,6 +44,47 @@ class curso extends Model
     public function getMyDateFormat($value)
     {
         return Carbon::parse($value)->format('d-m-Y');
+    }
+
+    /***
+     * busqueda por parametros
+     * scopes
+     */
+    public function scopeSearchPorCurso($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'especialidad':
+                        # code...
+                        return $query->where('especialidades.nombre', 'LIKE', "%$buscar%");
+                        break;
+                    case 'curso':
+                        # code...
+                        return $query->where( 'cursos.nombre_curso', 'LIKE', "%$buscar%");
+                        break;
+                    case 'duracion':
+                        return $query->where( 'cursos.horas', '=', "$buscar");
+                        break;
+                    case 'modalidad':
+                        return $query->where( 'cursos.modalidad', 'LIKE', "%$buscar%");
+                        break;
+                    case 'clasificacion':
+                        return $query->where( 'cursos.clasificacion', 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
+
+    public function especialidadinstructor()
+    {
+        return $this->belongsToMany(especialidad_instructor::class, 'especialidad_instructor_curso', 'curso_id', 'id_especialidad_instructor');
     }
 
 }

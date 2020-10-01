@@ -15,21 +15,33 @@ use App\Models\folio;
 use App\Models\pago;
 use App\Models\especialidad_instructor;
 use App\Models\directorio;
+use App\Models\tbl_curso;
 use App\Models\contrato_directorio;
 use App\Models\especialidad;
+use App\Models\instructor;
 use PDF;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 class ContratoController extends Controller
 {
     public function index()
     {
         $supre = new supre();
-        $data = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
-                               'folios.folio_validacion','contratos.docs','contratos.id_contrato')
-                        ->where('folios.status', '!=', 'En_Proceso')
-                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
-                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
-                        ->get();
-        return view('layouts.pages.vstacontratoini', compact('data'));
+        $querySupre = DB::TABLE('tabla_supre')
+                          ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
+                          ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+                          ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                          ->SELECT(
+                            'tabla_supre.id','tabla_supre.no_memo',
+                            'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                            'folios.id_folios', 'folios.folio_validacion',
+                            'contratos.docs','contratos.id_contrato', 'tbl_cursos.termino AS fecha_termino',
+                            'tbl_cursos.inicio AS fecha_inicio', DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                            )
+                          ->GET();
+
+        return view('layouts.pages.vstacontratoini', compact('querySupre'));
     }
 
     /**
@@ -41,7 +53,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -54,8 +66,21 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        $pago = round($data->importe_total-$data->iva, 2);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof'));
+        $date = strtotime($data->termino);
+        $dacarbon = strtotime(Carbon::now());
+
+        if($dacarbon > $date)
+        {
+            $term = TRUE;
+        }
+        else
+        {
+            $term = FALSE;
+        }
+
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term'));
     }
 
     public function contrato_save(Request $request)
@@ -70,8 +95,11 @@ class ContratoController extends Controller
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
         $file = $request->file('factura'); # obtenemos el archivo
-        $urldocs = $this->pago_upload($file, $request->id_contrato);
-        $contrato->arch_factura = $urldocs;
+        if ($file != NULL)
+        {
+            $urldocs = $this->pdf_upload($file, $request->id_contrato,'factura');
+            $contrato->arch_factura = $urldocs;
+        }
         $contrato->save();
 
         $id_contrato = contratos::SELECT('id_contrato')->WHERE('numero_contrato', '=', $request->numero_contrato)->FIRST();
@@ -104,8 +132,11 @@ class ContratoController extends Controller
                         ->FIRST();
         $perfil_sel = $especialidad::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
 
-        $perfil_prof = $especialidad::WHERE('id', '=', $data->id)
-                               ->WHERE('id', '!=', $datacon->instructor_perfilid)->GET();
+        $perfil_prof = InstructorPerfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
+                                ->WHERE('instructor_perfil.numero_control', '=', $data->id)
+                                ->WHERE('especialidad_instructores.especialidad_id', '!=', $datacon->instructor_perfilid)
+                                ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+                                ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
@@ -130,7 +161,7 @@ class ContratoController extends Controller
         if($request->factura != NULL)
         {
             $file = $request->file('factura'); # obtenemos el archivo
-            $urldocs = $this->pago_upload($file, $request->id_contrato);
+            $urldocs = $this->pdf_upload($file, $request->id_contrato,'factura');
             $contrato->arch_factura = $urldocs;
         }
 
@@ -156,14 +187,16 @@ class ContratoController extends Controller
     public function validar_contrato($id){
         $data = contratos::SELECT('contratos.id_contrato','contratos.numero_contrato','contratos.cantidad_letras1','contratos.fecha_firma',
                                  'contratos.municipio','contratos.arch_factura','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
-                                 'contratos.cantidad_numero','folios.iva','folios.id_cursos','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod',
+                                 'contratos.cantidad_numero','contratos.arch_factura','folios.iva','folios.id_cursos','folios.id_supre','tabla_supre.doc_validado','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod',
                                  'instructores.nombre AS insnom','instructores.apellidoPaterno','instructores.tipo_honorario','tbl_cursos.dura',
-                                 'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia','tbl_cursos.dia2',
-                                 'tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.hini2','tbl_cursos.hfin2',
-                                 'instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id','especialidad_instructores.memorandum_validacion','especialidades.nombre AS especialidad',
-                                 'tbl_inscripcion.costo','cursos.perfil')
+                                 'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia',
+                                 'tbl_cursos.hini','tbl_cursos.hfin','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
+                                 'instructores.archivo_ine','instructores.archivo_domicilio','instructores.archivo_alta','instructores.archivo_bancario',
+                                 'instructores.archivo_fotografia','instructores.archivo_estudios','instructores.archivo_otraid','instructores.archivo_rfc','especialidad_instructores.memorandum_validacion',
+                                 'especialidades.nombre AS especialidad','tbl_inscripcion.costo','cursos.perfil')
                             ->WHERE('id_contrato', '=', $id)
                             ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                            ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                             ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                             ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                             ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
@@ -209,7 +242,10 @@ class ContratoController extends Controller
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
         $datac = $X::where('id_folios', '=', $id)->first();
-        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf'));
+        $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins')
+                                ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
+                                ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
+        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario'));
     }
 
     public function save_doc(Request $request){
@@ -217,27 +253,82 @@ class ContratoController extends Controller
 
         $pago->no_memo = $request->no_memo;
         $pago->id_contrato = $request->id_contrato;
+
+        $file = $request->file('arch_asistencia'); # obtenemos el archivo
+        $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
+        // guardamos en la base de datos
+        $pago->arch_asistencia = trim($urldocs);
+
+        $file = $request->file('arch_evidencia'); # obtenemos el archivo
+        $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
+        // guardamos en la base de datos
+        $pago->arch_evidencia = trim($urldocs);
         $pago->save();
+
         contrato_directorio::where('id_contrato', '=', $request->id_contrato)
         ->update(['solpa_elaboro' => $request->id_elabora,
                   'solpa_para' => $request->id_destino,
                   'solpa_ccp1' => $request->id_ccp1,
                   'solpa_ccp2' => $request->id_ccp2,
                   'solpa_ccp3' => $request->id_ccp3]);
+        if($request->arch_factura != NULL)
+        {
+            $file = $request->file('arch_factura'); # obtenemos el archivo
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'factura'); #invocamos el método
+            // guardamos en la base de datos
+            $contrato = contratos::find($request->id_contrato);
+            $contrato->arch_factura = trim($urldocs);
+            $contrato->save();
+        }
 
-        $file = $request->file('doc_pdf'); # obtenemos el archivo
-        $urldocs = $this->pago_upload($file, $request->id_contrato); #invocamos el método
-        // guardamos en la base de datos
-        $contrato = contratos::find($request->id_contrato);
-        $contrato->docs = trim($urldocs);
-        $contrato->save();
+        if ($request->file('arch_bancario') != null)
+        {
+            $banco = $request->file('arch_bancario'); # obtenemos el archivo
+            $urlbanco = $this->pdf_upload($banco, $request->id_instructor, 'banco'); # invocamos el método
+            $instructor = instructor::find($request->id_instructor);
+            $instructor->archivo_bancario = trim($urlbanco);
+            $instructor->save();
+        }
 
         folio::where('id_folios', '=', $request->id_folio)
-        ->update(['status' => 'Pago_Verificado']);
+        ->update(['status' => 'Verificando_Pago']);
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Pago Agregado');
 
+    }
+
+    public function historial_validado($id){
+        $data = contratos::SELECT('contratos.id_contrato','contratos.numero_contrato','contratos.cantidad_letras1','contratos.fecha_firma',
+                                 'contratos.municipio','contratos.arch_factura','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
+                                 'contratos.cantidad_numero','contratos.arch_factura','contratos.observacion','folios.iva','folios.id_cursos','folios.id_supre','folios.status',
+                                 'tabla_supre.doc_validado','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod',
+                                 'instructores.nombre AS insnom','instructores.apellidoPaterno','instructores.tipo_honorario','tbl_cursos.dura',
+                                 'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia',
+                                 'tbl_cursos.hini','tbl_cursos.hfin','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
+                                 'instructores.archivo_ine','instructores.archivo_domicilio','instructores.archivo_alta','instructores.archivo_bancario',
+                                 'instructores.archivo_fotografia','instructores.archivo_estudios','instructores.archivo_otraid','instructores.archivo_rfc','especialidad_instructores.memorandum_validacion',
+                                 'especialidades.nombre AS especialidad','tbl_inscripcion.costo','cursos.perfil')
+                            ->WHERE('id_contrato', '=', $id)
+                            ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                            ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                            ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                            ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
+                            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                            ->LEFTJOIN('tbl_inscripcion', 'tbl_inscripcion.id_curso', '=', 'tbl_cursos.id')
+                            ->LEFTJOIN('cursos','cursos.id', '=', 'tbl_cursos.id_curso')
+                            ->FIRST();
+
+        $cupo = $data->hombre + $data->mujer;
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
+        return view('layouts.pages.vsthistorialvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3','cupo'));
     }
 
     public function get_directorio(Request $request){
@@ -279,6 +370,7 @@ class ContratoController extends Controller
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
                                   'instructores.domicilio')
+                          ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -289,7 +381,6 @@ class ContratoController extends Controller
                                                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
                                                 ->FIRST();
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-
         $date = strtotime($data_contrato->fecha_firma);
         $D = date('d', $date);
         $M = $this->toMonth(date('m', $date));
@@ -319,7 +410,7 @@ class ContratoController extends Controller
 
         $date = strtotime($data->created_at);
         $D = date('d', $date);
-        $M = date('m',$date);
+        $M = $this->toMonth(date('m',$date));
         $Y = date("Y",$date);
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
@@ -359,6 +450,14 @@ class ContratoController extends Controller
         $pdfFile = trim("docs"."_".date('YmdHis')."_".$id.".".$extensionPdf);
         $pdf->storeAs('/uploadContrato/contrato/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
         $pdfUrl = Storage::url('/uploadContrato/contrato/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $pdfUrl;
+    }
+    protected function pdf_upload($pdf, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
+        $pdf->storeAs('/uploadFiles/instructor/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
     }
 

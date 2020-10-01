@@ -84,7 +84,7 @@
                     </dl>
                 </div>
                 <div align="justify">Con base en las declaraciones antes expuestas, declaran las partes que es su voluntad celebrar el presente contrato, sujetándose a las siguientes:</div>
-                <div align="center"> Clausulas </div>
+                <div align="center"><strong> CLAUSULAS </strong></div>
                 <br><div align="justify">
                     <dd><b>PRIMERA.- OBJETO DEL CONTRATO</b>. En los términos y condiciones del presente contrato <b>“EL PRESTADOR DE SERVICIOS”</b> se obliga a prestar sus servicios profesionales por <b>Honorarios</b> a <b>“EL ICATECH”</b>, consistente en otorgar el curso que se detalla en el <b>Anexo II</b>, formando parte integrante del presente contrato como si a la letra se insertase, donde se establece bajo que especialidad, periodo de impartición, horario, días, horas que se cubrirán y en el lugar que será impartido el curso.</dd>
                     <br><dd><b>SEGUNDA.- MONTO DE LOS HONORARIOS</b>. El monto total de los honorarios que <b>“EL ICATECH”</b>, pagará a <b>“EL PRESTADOR DE SERVICIOS”</b> será por la cantidad de <b>${{$data_contrato->cantidad_numero}} ({{$data_contrato->cantidad_letras1}} {{$monto['1']}}/100 M.N.)</b>, más el (16% (dieciséis por ciento)), del Impuesto al Valor Agregado, menos las retenciones que <b>“EL ICATECH”</b> le retendrá como pago provisional por concepto del Impuesto Sobre la Renta e Impuesto al Valor Agregado, enterando a las autoridades hacendarias las retenciones correspondientes.</dd>

@@ -26,7 +26,7 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ route('tablero.unidades.index') }}">
                 <i class="fa fa-list-alt text-red"></i>
-                <span class="nav-link-text">SITACI&Oacute;N ACTUAL</span>
+                <span class="nav-link-text">SITUACI&Oacute;N ACTUAL</span>
               </a>
             </li>
             <li class="nav-item">

@@ -43,7 +43,7 @@
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputmonto_pago">Monto de Pago</label>
-                    <input type="text" name="monto_pago" id="monto_pago" disabled class="form-control" aria-required="true" value="{{$data->importe_total}}">
+                    <input type="text" name="monto_pago" id="monto_pago" disabled class="form-control" aria-required="true" value="{{$importe}}">
                 </div>
                 <div class="form-gorup col-md-2">
                     <label for="inputiva">IVA</label>

@@ -31,6 +31,21 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>Catalogo de Cursos</h2>
+
+                    {!! Form::open(['route' => 'curso-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_curso" class="form-control mr-sm-2" id="tipo_curso">
+                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="especialidad">ESPECIALIDAD</option>
+                            <option value="curso">CURSO</option>
+                            <option value="duracion">DURACIÓN</option>
+                            <option value="modalidad">MODALIDAD</option>
+                            <option value="clasificacion">CLASIFICACIÓN</option>
+                        </select>
+
+                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
+
                 </div>
                 <br>
                 <div class="pull-right">
@@ -62,7 +77,7 @@
                     <tr>
                     <th scope="row">{{$itemData->nombre}}</th>
                         <td>{{$itemData->nombre_curso}}</td>
-                        <td>{{$itemData->duracion}}</td>
+                        <td>{{$itemData->horas}}</td>
                         <td>{{$itemData->modalidad}}</td>
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
@@ -74,7 +89,6 @@
                             </a>
                         </td>
                         @endcan
-
                         <td>
                             <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                 data-toggle="modal" data-placement="top"
@@ -87,6 +101,13 @@
                     </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="8">
+                        {{ $data->appends(request()->query())->links() }}
+                    </td>
+                </tr>
+            </tfoot>
         </table>
         <br>
         <!-- Full Height Modal Right -->

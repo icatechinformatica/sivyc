@@ -200,6 +200,36 @@
                     <option {{$cursos[0]->tipo_curso == 'A DISTANCIA' ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
                 </select>
             </div>
+            <div class="form-group col-md-4">
+                <label for="criterio_pago_minimo_edit" class="control-label">CRITERIO DE PAGO MINIMO</label>
+                <select class="form-control" id="criterio_pago_minimo_edit" name="criterio_pago_minimo_edit">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($criterio_pago as $item_criterio_pago_minimo)
+                        <option {{ ($cursos[0]->rango_criterio_pago_minimo == $item_criterio_pago_minimo->id)}}
+                            value="{{$item_criterio_pago_minimo->id}}">
+                                {{$item_criterio_pago_minimo->perfil_profesional}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="criterio_pago_maximo_edit" class="control-label">CRITERIO DE PAGO MÁXIMO</label>
+                <select class="form-control" id="criterio_pago_maximo_edit" name="criterio_pago_maximo_edit">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($criterio_pago as $item_criterio_pago_maximo)
+                        <option {{ ($cursos[0]->rango_criterio_pago_maximo == $item_criterio_pago_maximo->id)}}
+                            value="{{$item_criterio_pago_maximo->id}}">
+                                {{$item_criterio_pago_maximo->perfil_profesional}}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <hr style="border-color:dimgray">
+        <label><h2>Alta/Baja al Curso</h2></label>
+        <div class="form-group col-md-8">
+            <a class="btn btn-danger" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Alta/Baja</a>
+            <footer>El curso dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
         </div>
         <div class="row">
             <div class="col-lg-12 margin-tb">

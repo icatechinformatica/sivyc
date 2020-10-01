@@ -34,8 +34,11 @@
             </div>
             <div class="form-row">
                 <a class="btn btn-info" href={{$getinstructor->archivo_bancario}} target="_blank" download>Datos Bancarios</a><br>
+                <a class="btn btn-info" href={{$getinstructor->archivo_rfc}} target="_blank" download>RFC/Constancia Fiscal</a><br>
                 <a class="btn btn-info" href={{$getinstructor->archivo_fotografia}} target="_blank" download>Fotografía</a><br>
                 <a class="btn btn-info" href={{$getinstructor->archivo_estudios}} target="_blank" download>Estudios</a><br>
+            </div>
+            <div class="form-row">
                 <a class="btn btn-info" href={{$getinstructor->archivo_otraid}} target="_blank" download>Otra Identificación</a><br>
             </div>
             <br>
@@ -80,7 +83,7 @@
                     <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputfolio_ine">Clave de Elector</label>
+                    <label for="inputfolio_ine">Folio de Elector</label>
                     <input name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true">
                 </div>
             </div>

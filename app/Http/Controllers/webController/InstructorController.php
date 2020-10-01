@@ -16,10 +16,12 @@ use App\Models\especialidad;
 use App\Models\estado_civil;
 use App\Models\status;
 use App\Models\especialidad_instructor;
+use App\Models\instructorAvailable;
 use App\Models\criterio_pago;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class InstructorController extends Controller
 {
@@ -30,10 +32,15 @@ class InstructorController extends Controller
      */
 
      #----- instructor/inicio -----#
-    public function index()
+    public function index(Request $request)
     {
-        $instructor = new instructor();
-        $data = $instructor::where('id', '!=', '0')->latest()->get();
+        $busquedaInstructor = $request->get('busquedaPorInstructor');
+
+        $tipoInstructor = $request->get('tipo_busqueda_instructor');
+
+        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->where('id', '!=', '0')->PAGINATE(25, [
+            'nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id'
+        ]);
         return view('layouts.pages.initinstructor', compact('data'));
     }
 
@@ -58,7 +65,14 @@ class InstructorController extends Controller
         {
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
             $saveInstructor = new instructor();
-            $id = $uid->id + 1;
+            if ($uid['id'] === null) {
+                # si es nulo entra una vez y se le asigna un valor
+                $id = 1;
+            } else {
+                # entra pero no se le asigna valor
+                $id = $uid->id + 1;
+            }
+
             # Proceso de Guardado
             #----- Personal -----
             $saveInstructor->id = $id;
@@ -108,10 +122,17 @@ class InstructorController extends Controller
                 $saveInstructor->archivo_bancario = $urlbanco; # guardamos el path
             }
 
+            if ($request->file('arch_rfc') != null)
+            {
+                $rfc = $request->file('arch_rfc'); # obtenemos el archivo
+                $urlrfc = $this->pdf_upload($rfc, $id, 'rfc'); # invocamos el método
+                $saveInstructor->archivo_rfc = $urlrfc; # guardamos el path
+            }
+
             if ($request->file('arch_foto') != null)
             {
                 $foto = $request->file('arch_foto'); # obtenemos el archivo
-                $urlfoto = $this->pdf_upload($foto, $id, 'foto'); # invocamos el método
+                $urlfoto = $this->jpg_upload($foto, $id, 'foto'); # invocamos el método
                 $saveInstructor->archivo_fotografia = $urlfoto; # guardamos el path
             }
 
@@ -185,7 +206,52 @@ class InstructorController extends Controller
         $rfcpart = substr($request->rfc, 0, 10);
         $numero_control = $uni.$year.$rfcpart;
         $instructor->numero_control = trim($numero_control);
-            $instructor->save();
+        $instructor->save();
+
+        //Guardado de instructor_available
+            $ins_available = new instructorAvailable();
+            $ins_available->instructor_id = $request->id;
+            $ins_available->CHK_TUXTLA = TRUE;
+            $ins_available->CHK_TAPACHULA = TRUE;
+            $ins_available->CHK_COMITAN = TRUE;
+            $ins_available->CHK_REFORMA = TRUE;
+            $ins_available->CHK_TONALA = TRUE;
+            $ins_available->CHK_VILLAFLORES = TRUE;
+            $ins_available->CHK_JIQUIPILAS = TRUE;
+            $ins_available->CHK_CATAZAJA = TRUE;
+            $ins_available->CHK_YAJALON = TRUE;
+            $ins_available->CHK_SAN_CRISTOBAL = TRUE;
+            $ins_available->CHK_CHIAPA_DE_CORZO = TRUE;
+            $ins_available->CHK_MOTOZINTLA = TRUE;
+            $ins_available->CHK_BERRIOZABAL = TRUE;
+            $ins_available->CHK_PIJIJIAPAN = TRUE;
+            $ins_available->CHK_JITOTOL = TRUE;
+            $ins_available->CHK_LA_CONCORDIA = TRUE;
+            $ins_available->CHK_VENUSTIANO_CARRANZA = TRUE;
+            $ins_available->CHK_TILA = TRUE;
+            $ins_available->CHK_TEOPISCA = TRUE;
+            $ins_available->CHK_OCOSINGO = TRUE;
+            $ins_available->CHK_CINTALAPA = TRUE;
+            $ins_available->CHK_COPAINALA = TRUE;
+            $ins_available->CHK_SOYALO = TRUE;
+            $ins_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
+            $ins_available->CHK_ARRIAGA = TRUE;
+            $ins_available->CHK_PICHUCALCO = TRUE;
+            $ins_available->CHK_JUAREZ = TRUE;
+            $ins_available->CHK_SIMOJOVEL = TRUE;
+            $ins_available->CHK_MAPASTEPEC = TRUE;
+            $ins_available->CHK_VILLA_CORZO = TRUE;
+            $ins_available->CHK_CACAHOATAN = TRUE;
+            $ins_available->CHK_ONCE_DE_ABRIL = TRUE;
+            $ins_available->CHK_TUXTLA_CHICO = TRUE;
+            $ins_available->CHK_OXCHUC = TRUE;
+            $ins_available->CHK_CHAMULA = TRUE;
+            $ins_available->CHK_OSTUACAN = TRUE;
+            $ins_available->CHK_PALENQUE = TRUE;
+            $ins_available->save();
+        //END
+
+
             return redirect()->route('instructor-inicio')
             ->with('success','Instructor Validado');
     }
@@ -246,10 +312,17 @@ class InstructorController extends Controller
             $modInstructor->archivo_bancario = $urlbanco; # guardamos el path
         }
 
+        if ($request->file('arch_rfc') != null)
+            {
+                $rfc = $request->file('arch_rfc'); # obtenemos el archivo
+                $urlrfc = $this->pdf_upload($rfc, $request->id, 'rfc'); # invocamos el método
+                $modInstructor->archivo_rfc = $urlrfc; # guardamos el path
+            }
+
         if ($request->file('arch_foto') != null)
         {
             $foto = $request->file('arch_foto'); # obtenemos el archivo
-            $urlfoto = $this->pdf_upload($foto, $request->id, 'foto'); # invocamos el método
+            $urlfoto = $this->jpg_upload($foto, $request->id, 'foto'); # invocamos el método
             $modInstructor->archivo_fotografia = $urlfoto; # guardamos el path
         }
 
@@ -275,31 +348,36 @@ class InstructorController extends Controller
 
     public function ver_instructor($id)
     {
+        $estado_civil = null;
         $instructor_perfil = new InstructorPerfil();
         $curso_validado = new cursoValidado();
         $det_curso = new Curso();
         $datains = instructor::WHERE('id', '=', $id)->FIRST();
 
-        $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
         $lista_civil = estado_civil::WHERE('nombre', '!=', $datains->estado_civil)->GET();
+        if ($datains->estado_civil != NULL )
+        {
+            $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
+        }
 
         $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
-
-        $validado = $instructor_perfil->SELECT('especialidades.nombre','criterio_pago.perfil_profesional',
-                        'especialidad_instructores.zona','especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid')
+        // consulta
+        $validado = $instructor_perfil->SELECT('especialidades.nombre',
+        'especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
+        'especialidad_instructores.memorandum_validacion')
                         ->WHERE('instructor_perfil.numero_control', '=', $id)
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
-                        ->LEFTJOIN('criterio_pago','criterio_pago.id','=','especialidad_instructores.pago_id')
                         ->GET();
         return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado'));
     }
 
     public function save_ins(Request $request)
     {
+
         $modInstructor = instructor::find($request->id);
 
         $modInstructor->nombre = trim($request->nombre);
@@ -328,6 +406,7 @@ class InstructorController extends Controller
         $modInstructor->interbancaria = $request->clabe;
         $modInstructor->no_cuenta = $request->numero_cuenta;
         $modInstructor->domicilio = $request->domicilio;
+
 
         if ($request->file('arch_ine') != null)
         {
@@ -364,10 +443,17 @@ class InstructorController extends Controller
         $modInstructor->archivo_bancario = $urlbanco; # guardamos el path
         }
 
+        if ($request->file('arch_rfc') != null)
+        {
+            $rfc = $request->file('arch_rfc'); # obtenemos el archivo
+            $urlrfc = $this->pdf_upload($rfc, $request->id, 'rfc'); # invocamos el método
+            $modInstructor->archivo_rfc = $urlrfc; # guardamos el path
+        }
+
         if ($request->file('arch_foto') != null)
         {
         $foto = $request->file('arch_foto'); # obtenemos el archivo
-        $urlfoto = $this->pdf_upload($foto, $request->id, 'foto'); # invocamos el método
+        $urlfoto = $this->jpg_upload($foto, $request->id, 'foto'); # invocamos el método
         $modInstructor->archivo_fotografia = $urlfoto; # guardamos el path
         }
 
@@ -403,16 +489,17 @@ class InstructorController extends Controller
     {
         $especvalid = especialidad_instructor::WHERE('id', '=', $idesp)->FIRST();
 
-        $sel_espec = InstructorPerfil::WHERE('id', '=', $especvalid->perfilprof_id)->FIRST();
-        $data_espec = InstructorPerfil::where('id', '!=', $especvalid->perfilprof_id)->get();
+        $data_espec = InstructorPerfil::all();
 
-        $sel_pago = criterio_pago::WHERE('id', '=', $especvalid->pago_id)->FIRST();
-        $data_pago = criterio_pago::WHERE('id', '!=', $especvalid->pago_id)->GET();
+        $data_pago = criterio_pago::all();
 
-        $sel_unidad = tbl_unidades::WHERE('unidad', '=', $especvalid->unidad_solicita)->FIRST();
-        $data_unidad = tbl_unidades::WHERE('unidad', '!=', $especvalid->unidad_solicita)->GET();
+        $data_unidad = tbl_unidades::all();
+        // cursos totales
+        $catcursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
 
-        return view('layouts.pages.frmmodespecialidad', compact('especvalid','sel_espec','data_espec','sel_pago','data_pago','sel_unidad','data_unidad', 'idesp','id','idins'));
+        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+
+        return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'idesp','id','idins','nomesp', 'catcursos'));
     }
 
     public function add_perfil($id)
@@ -499,27 +586,50 @@ class InstructorController extends Controller
 
     public function cursoimpartir_form($id, $idins)
     {
-        $perfil = instructorPerfil::SELECT('id','grado_profesional')->WHERE('numero_control', '=', $idins)->GET();
+        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional']);
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data'));
+        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
     }
 
     public function especval_mod_save(Request $request)
     {
-
-        $espec_mod = especialidad_instructor::find($request->idespec);
+        $espec_mod = especialidad_instructor::findOrFail($request->idespec);
         $espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;
-        $espec_mod->pago_id = $request->criterio_pago;
-        $espec_mod->zona = $request->zona;
-        $espec_mod->validado_impartir = $request->impartir;
         $espec_mod->unidad_solicita = $request->unidad_validacion;
         $espec_mod->memorandum_validacion = $request->memorandum;
         $espec_mod->fecha_validacion = $request->fecha_validacion;
         $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_mod->observacion = $request->observaciones;
+        $espec_mod->criterio_pago_id = $request->criterio_pago_mod;
         $espec_mod->save();
+        // declarar un arreglo
+        $pila_edit = array();
+        // se trabajará en el loop
+        $cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+        // eliminar registros previamente
+        $cursos_mod->cursos()->detach();
+
+        //dd($request->itemEdit);
+
+        foreach ( (array) $request->itemEdit as $key => $value) {
+            # iteramos en el loop para cargar los datos seleccionados
+            if(isset($value['check_cursos_edit']))
+            {
+                $arreglos_edit = [
+                    'curso_id' => $value['check_cursos_edit']
+                ];
+                array_push($pila_edit, $arreglos_edit);
+            }
+
+        }
+
+        $cursos_mod->cursos()->attach($pila_edit);
+        // Eliminar todos los elementos del array
+        unset($pila_edit);
 
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
@@ -530,18 +640,199 @@ class InstructorController extends Controller
         $espec_save = new especialidad_instructor;
         $espec_save->especialidad_id = $request->idespec;
         $espec_save->perfilprof_id = $request->valido_perfil;
-        $espec_save->pago_id = $request->criterio_pago;
-        $espec_save->zona = $request->zona;
-        $espec_save->validado_impartir = $request->impartir;
         $espec_save->unidad_solicita = $request->unidad_validacion;
         $espec_save->memorandum_validacion = $request->memorandum;
         $espec_save->fecha_validacion = $request->fecha_validacion;
         $espec_save->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_save->observacion = $request->observaciones;
+        $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
         $espec_save->save();
+        // obtener el ultimo id que se ha registrado
+        $especialidadInstrcutorId = $espec_save->id;
+        // declarar un arreglo
+        $pila = array();
+
+        // se trabajará en un loop
+        foreach( (array) $request->itemAdd as $key => $value)
+        {
+            if(isset($value['check_cursos']))
+            {
+                $arreglos = [
+                    'curso_id' => $value['check_cursos']
+                ];
+                array_push($pila, $arreglos);
+            }
+        }
+        // hacemos la llamada al módelo
+        $instructorEspecialidad = new especialidad_instructor();
+        $especialidadesInstructoresCurso = $instructorEspecialidad->findOrFail($especialidadInstrcutorId);
+
+        $especialidadesInstructoresCurso->cursos()->attach($pila);
+
+        // limpiar array
+        unset($pila);
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');
+    }
+
+    public function alta_baja($id)
+    {
+        $available = instructorAvailable::WHERE('instructor_id', '=', $id)->FIRST();
+        $checkins = instructor::WHERE('id', '=',$id)->FIRST();
+        if($available == NULL)
+        {
+            $uid = instructorAvailable::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+            $idnew = $uid->id + 1;
+            if($checkins->status == 'BAJA')
+            {
+                $val = FALSE;
+            }
+            else
+            {
+                $val = TRUE;
+            }
+            $ins_available = new instructorAvailable();
+            $ins_available->id = $idnew;
+            $ins_available->instructor_id = $id;
+            $ins_available->CHK_TUXTLA = $val;
+            $ins_available->CHK_TAPACHULA = $val;
+            $ins_available->CHK_COMITAN = $val;
+            $ins_available->CHK_REFORMA = $val;
+            $ins_available->CHK_TONALA = $val;
+            $ins_available->CHK_VILLAFLORES = $val;
+            $ins_available->CHK_JIQUIPILAS = $val;
+            $ins_available->CHK_CATAZAJA = $val;
+            $ins_available->CHK_YAJALON = $val;
+            $ins_available->CHK_SAN_CRISTOBAL = $val;
+            $ins_available->CHK_CHIAPA_DE_CORZO = $val;
+            $ins_available->CHK_MOTOZINTLA = $val;
+            $ins_available->CHK_BERRIOZABAL = $val;
+            $ins_available->CHK_PIJIJIAPAN = $val;
+            $ins_available->CHK_JITOTOL = $val;
+            $ins_available->CHK_LA_CONCORDIA = $val;
+            $ins_available->CHK_VENUSTIANO_CARRANZA = $val;
+            $ins_available->CHK_TILA = $val;
+            $ins_available->CHK_TEOPISCA = $val;
+            $ins_available->CHK_OCOSINGO = $val;
+            $ins_available->CHK_CINTALAPA = $val;
+            $ins_available->CHK_COPAINALA = $val;
+            $ins_available->CHK_SOYALO = $val;
+            $ins_available->CHK_ANGEL_ALBINO_CORZO = $val;
+            $ins_available->CHK_ARRIAGA = $val;
+            $ins_available->CHK_PICHUCALCO = $val;
+            $ins_available->CHK_JUAREZ = $val;
+            $ins_available->CHK_SIMOJOVEL = $val;
+            $ins_available->CHK_MAPASTEPEC = $val;
+            $ins_available->CHK_VILLA_CORZO = $val;
+            $ins_available->CHK_CACAHOATAN = $val;
+            $ins_available->CHK_ONCE_DE_ABRIL = $val;
+            $ins_available->CHK_TUXTLA_CHICO = $val;
+            $ins_available->CHK_OXCHUC = $val;
+            $ins_available->CHK_CHAMULA = $val;
+            $ins_available->CHK_OSTUACAN = $val;
+            $ins_available->CHK_PALENQUE = $val;
+            $ins_available->save();
+
+            $available = instructorAvailable::WHERE('instructor_id', '=', $id)->FIRST();
+        }
+        return view('layouts.pages.vstaltabajains', compact('id','available'));
+    }
+
+    public function alta_baja_save(Request $request)
+    {
+        $av_mod = instructorAvailable::find($request->id_available);
+        $answer = $this->checkComparator($request->chk_tuxtla);
+        $av_mod->CHK_TUXTLA = $answer;
+        $answer = $this->checkComparator($request->chk_tapachula);
+        $av_mod->CHK_TAPACHULA = $answer;
+        $answer = $this->checkComparator($request->chk_comitan);
+        $av_mod->CHK_COMITAN = $answer;
+        $answer = $this->checkComparator($request->chk_reforma);
+        $av_mod->CHK_REFORMA = $answer;
+        $answer = $this->checkComparator($request->chk_tonala);
+        $av_mod->CHK_TONALA = $answer;
+        $answer = $this->checkComparator($request->chk_villaflores);
+        $av_mod->CHK_VILLAFLORES = $answer;
+        $answer = $this->checkComparator($request->chk_jiquipilas);
+        $av_mod->CHK_JIQUIPILAS = $answer;
+        $answer = $this->checkComparator($request->chk_catazaja);
+        $av_mod->CHK_CATAZAJA = $answer;
+        $answer = $this->checkComparator($request->chk_yajalon);
+        $av_mod->CHK_YAJALON = $answer;
+        $answer = $this->checkComparator($request->chk_san_cristobal);
+        $av_mod->CHK_SAN_CRISTOBAL = $answer;
+        $answer = $this->checkComparator($request->chk_chiapa_de_corzo);
+        $av_mod->CHK_CHIAPA_DE_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_motozintla);
+        $av_mod->CHK_MOTOZINTLA = $answer;
+        $answer = $this->checkComparator($request->chk_berriozabal);
+        $av_mod->CHK_BERRIOZABAL = $answer;
+        $answer = $this->checkComparator($request->chk_pijijiapan);
+        $av_mod->CHK_PIJIJIAPAN = $answer;
+        $answer = $this->checkComparator($request->chk_jitotol);
+        $av_mod->CHK_JITOTOL = $answer;
+        $answer = $this->checkComparator($request->chk_la_concordia);
+        $av_mod->CHK_LA_CONCORDIA = $answer;
+        $answer = $this->checkComparator($request->chk_venustiano_carranza);
+        $av_mod->CHK_VENUSTIANO_CARRANZA = $answer;
+        $answer = $this->checkComparator($request->chk_tila);
+        $av_mod->CHK_TILA = $answer;
+        $answer = $this->checkComparator($request->chk_teopisca);
+        $av_mod->CHK_TEOPISCA = $answer;
+        $answer = $this->checkComparator($request->chk_ocosingo);
+        $av_mod->CHK_OCOSINGO = $answer;
+        $answer = $this->checkComparator($request->chk_cintalapa);
+        $av_mod->CHK_CINTALAPA = $answer;
+        $answer = $this->checkComparator($request->chk_copainala);
+        $av_mod->CHK_COPAINALA = $answer;
+        $answer = $this->checkComparator($request->chk_soyalo);
+        $av_mod->CHK_SOYALO = $answer;
+        $answer = $this->checkComparator($request->chk_angel_albino_corzo);
+        $av_mod->CHK_ANGEL_ALBINO_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_arriaga);
+        $av_mod->CHK_ARRIAGA = $answer;
+        $answer = $this->checkComparator($request->chk_pichucalco);
+        $av_mod->CHK_PICHUCALCO = $answer;
+        $answer = $this->checkComparator($request->chk_juarez);
+        $av_mod->CHK_JUAREZ = $answer;
+        $answer = $this->checkComparator($request->chk_simojovel);
+        $av_mod->CHK_SIMOJOVEL = $answer;
+        $answer = $this->checkComparator($request->chk_mapastepec);
+        $av_mod->CHK_MAPASTEPEC = $answer;
+        $answer = $this->checkComparator($request->chk_villa_corzo);
+        $av_mod->CHK_VILLA_CORZO = $answer;
+        $answer = $this->checkComparator($request->chk_cacahoatan);
+        $av_mod->CHK_CACAHOATAN = $answer;
+        $answer = $this->checkComparator($request->chk_once_de_abril);
+        $av_mod->CHK_ONCE_DE_ABRIL = $answer;
+        $answer = $this->checkComparator($request->chk_tuxtla_chico);
+        $av_mod->CHK_TUXTLA_CHICO = $answer;
+        $answer = $this->checkComparator($request->chk_oxchuc);
+        $av_mod->CHK_OXCHUC = $answer;
+        $answer = $this->checkComparator($request->chk_chamula);
+        $av_mod->CHK_CHAMULA = $answer;
+        $answer = $this->checkComparator($request->chk_ostuacan);
+        $av_mod->CHK_OSTUACAN = $answer;
+        $answer = $this->checkComparator($request->chk_palenque);
+        $av_mod->CHK_PALENQUE = $answer;
+        $av_mod->save();
+
+        return redirect()->route('instructor-inicio')
+                ->with('success','Instructor Modificado');
+    }
+
+    protected function checkComparator($check)
+    {
+        if(isset($check))
+        {
+            $stat = TRUE;
+        }
+        else
+        {
+            $stat = FALSE;
+        }
+        return $stat;
     }
 
     protected function pdf_upload($pdf, $id, $nom)
@@ -551,6 +842,15 @@ class InstructorController extends Controller
         $pdf->storeAs('/uploadFiles/instructor/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
         $pdfUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
+    }
+
+    protected function jpg_upload($jpg, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $jpgFile = trim($nom."_".date('YmdHis')."_".$id.".jpg");
+        $jpg->storeAs('/uploadFiles/instructor/'.$id, $jpgFile); // guardamos el archivo en la carpeta storage
+        $jpgUrl = Storage::url('/uploadFiles/instructor/'.$id."/".$jpgFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $jpgUrl;
     }
 
     public function paginate($items, $perPage = 5, $page = null)

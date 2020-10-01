@@ -1,6 +1,6 @@
 <!-- Creado por Orlando Chávez -->
 @extends('theme.sivyc.layout')
-@section('title', 'Registro de Curso Validado para Impartir| Sivyc Icatech')
+@section('title', 'Validación de Suficiencia Presupuestal| Sivyc Icatech')
 @section('content')
     <section class="container g-pt-50">
         <form method="POST" action="{{ route('supre-rechazo') }}" id="rechazosupre">

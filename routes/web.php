@@ -12,11 +12,11 @@ Route::post('/supervision/instructore/guardar', 'supervisionController\Instructo
 Route::get('/supervision/alumno/{token}', 'supervisionController\AlumnoController@index')->name('supervision.alumno');
 Route::post('/supervision/alumno/{token}', 'supervisionController\AlumnoController@index')->name('supervision.alumno');
 Route::post('/supervision/alumn/guardar', 'supervisionController\AlumnoController@guardar')->name('supervision-alumno-guardar');
-    
+
 Route::get('/supervision/funcionario/{token}', 'supervisionController\FuncionarioController@index')->name('supervision.funcionario');
 Route::post('/supervision/funcionario/{token}', 'supervisionController\FuncionarioController@index')->name('supervision.funcionario');
 Route::post('/supervision/funcionario-guardar', 'supervisionController\FuncionarioController@guardar')->name('supervision-funcionario-guardar');
-    
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,12 +28,39 @@ Route::post('/supervision/funcionario-guardar', 'supervisionController\Funcionar
 |
 */
 
+//Ruta Pago 25/09/2020
+Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@historial_validacion')->name('pago.historial-verificarpago');
+
+// Ruta Contrato 24/09/2020
+Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
+
+//Ruta Manual
+Route::get('/user/manuales', 'webController\manualController@index')->name('manuales');
+
+Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcursos');
+
+//ruta Pago
+Route::post('/pago/validar_pago', 'webController\PagoController@rechazar_pago')->name('pago.rechazar');
+
+//Ruta Alta/Baja
+Route::get('/cursos/alta-baja/{id}', 'webController\CursosController@alta_baja')->name('curso-alta_baja');
+Route::post('/cursos/alta-baja/save','webController\CursosController@alta_baja_save')->name('curso-alta-baja-save');
+Route::get('/convenios/alta-baja/{id}', 'webController\ConveniosController@alta_baja')->name('convenio-alta_baja');
+Route::post('/Convenios/alta-baja/save','webController\ConveniosController@alta_baja_save')->name('convenio-alta-baja-save');
+
+// Ruta Supre busqueda & misc
+Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats');
+Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
+Route::post('/supre/validacion/upload_doc','webController\SupreController@doc_valsupre_upload')->name('doc-valsupre-guardar');
+Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
+
 //Ruta Instructor
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
 Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');
 Route::get('/instructor/editar/especialidad-validada/{id}/{idins}', 'webController\InstructorController@edit_especval')->name('instructor-editespectval');
 Route::get('/instructor/editar/especialidad-valid/{id}/{idins}/{idesp}', 'webController\InstructorController@edit_especval2')->name('instructor-editespectval2');
 Route::get('/instructor/mod/perfil-profesional/{id}/{idins}', 'webController\InstructorController@mod_perfil')->name('instructor-perfilmod');
+Route::get('/instructor/alta-baja/{id}', 'webController\InstructorController@alta_baja')->name('instructor-alta_baja');
 Route::post('/instructor/rechazo','webController\InstructorController@rechazo_save')->name('instructor-rechazo');
 Route::post('/instructor/validado','webController\InstructorController@validado_save')->name('instructor-validado');
 Route::post('/instructor/guardar-mod','webController\InstructorController@guardar_mod')->name('instructor-guardarmod');
@@ -41,17 +68,64 @@ Route::post('/instructor/saveins','webController\InstructorController@save_ins')
 Route::post('/instructor/espec-ins/guardar','webController\InstructorController@espec_val_save')->name('especinstructor-guardar');
 Route::post('/instructor/espec-ins/modificacion/guardar','webController\InstructorController@especval_mod_save')->name('especinstructor-modguardar');
 Route::post('/instructor/mod/perfilinstructor/guardar', 'webController\InstructorController@modperfilinstructor_save')->name('modperfilinstructor-guardar');
+Route::post('/instructor/alta-baja/save','webController\InstructorController@alta_baja_save')->name('instructor-alta-baja-save');
 
 Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegistradoModificarController@index')->name('alumno_registrado.modificar.index');
 Route::get('/alumnos_registrados/modificar/show/{id}', 'adminController\AlumnoRegistradoModificarController@edit')->name('alumno_registrado.modificar.show');
-Route::put('alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
+Route::put('/alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
+Route::get('/alumnos_registrados/modificar/delete/{id}/{id_pre}', 'adminController\AlumnoRegistradoModificarController@destroy')->name('alumno_registrado.modificar.eliminar');
+// consecutivos/
+Route::get('/registros/unidad/index', 'adminController\AlumnoRegistradoModificarController@indexUnidad')->name('registro_unidad.index');
+Route::post('/alumnos_registrados/consecutivos', 'adminController\AlumnoRegistradoModificarController@indexConsecutivo')->name('registrado_consecutivo.index');
+Route::get('/registrados/consecutivos/index', 'adminController\AlumnoRegistradoModificarController@registradosConsecutivos')->name('registrados.consecutivos');
+Route::get('/administracion/index', function () {
+    return view('layouts.pages_admin.index');
+})->name('administracion.index');
+/**
+* UNIDADES DE CAPACITACION
+*/
+Route::get('/unidades/unidad_by_ubicacion/{ubicacion}', 'webController\UnidadController@ubicacion');
 
 /***
- * modificación de roles y permisos
+ * modificación de roles y permisos -- nuevos registros
  */
-Route::get('/usuarios/permisos/index', 'adminController\UserController@index')->name('usuario_permisos.index');
-Route::get('/usuarios/permisos/perfil/{id}', 'adminController\UserController@show')->name('usuarios_permisos.show');
-Route::get('/permisos/roles/index', 'adminController\PermissionController@index')->name('permisos_roles.index');
+Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
+Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
+Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
+Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
+Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
+Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');
+Route::get('/roles/create', 'adminController\RolesController@create')->name('roles.create');
+Route::get('/permisos/create', 'adminController\PermissionController@create')->name('permisos.crear');
+Route::get('/permisos/edit/{id}', 'adminController\PermissionController@edit')->name('permisos.editar');
+Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
+Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
+Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
+Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
+Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
+Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
+Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
+Route::put('/usuarios/profile/update/{id}', 'adminController\userController@update')->name('usuarios_permisos.update');
+Route::post('/permisos/store', 'adminController\PermissionController@storePermission')->name('permission.store');
+Route::put('/permisos/update/{id}', 'adminController\PermissionController@update')->name('permiso.update');
+Route::put('/usuarios/permisos/perfil/rol/{id}', 'adminController\userController@updateRol')->name('usuarios_permisos.rol.edit');
+Route::get('/personal/index', 'adminController\PersonalController@index')->name('personal.index');
+Route::get('/personal/create', 'adminController\PersonalController@create')->name('personal.crear');
+Route::post('/personal/store', 'adminController\PersonalController@store')->name('personal.store');
+Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
+Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
+Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
+/**
+ * UNIDADES DE CAPACITACION
+ */
+Route::get('/unidades/unidades_ubicacion/{ubicacion}', 'webController\UnidadController@ubicacion');
+/**
+ * Alumnos sice Registrados
+ */
+Route::get('/alumnos_registrados/sice/index', 'adminController\alumnosRegistroSiceController@index')->name('alumnos_registrados_sice.inicio');
+Route::get('/alumnos_registrados/sice/editar/{id}', 'adminController\alumnosRegistroSiceController@edit')->name('registro_alumnos_sice.modificar.show');
+Route::put('alumnos_registrados/sice/update/{id}', 'adminController\alumnosRegistroSiceController@update')->name('registro_alumnos_sice.modificar.update');
+//
 
 
 
@@ -64,8 +138,9 @@ Auth::routes();
 Route::get('/supre/solicitud/opc', 'webController\supreController@opcion')->name('solicitud-opcion');
 Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_folios')->name('solicitud-folio');
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
+Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
-//Ruta Contrato
+//Ruta
 Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
@@ -117,7 +192,9 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:alumno.inscrito.edit');
     // modificar la preinscripcion
     Route::get('alumnos/modificar/sid/{id}', 'webController\AlumnoController@showUpdate')->name('alumnos.presincripcion-modificar');
+    Route::get('alumnos/modificar/jefe-unidad/sid/{id}', 'webController\AlumnoController@modifyUpdateChief')->name('alumnos.modificar-jefe-unidad');
     Route::put('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
+    Route::put('alumnos/sid/modificar/jefe-unidad/{idAspirante}', 'webController\AlumnoController@updateSidJefeUnidad')->name('sid.modificar-jefe-unidad')->middleware('can:alumnos.inscripcion-jefe-unidad-update');
     Route::get('alumnos/sid/documento/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoSid')->name('documento.sid');
     // nueva ruta
     Route::get('alumnos/registrados/{id}', 'webController\AlumnoRegistradoController@show')->name('alumnos.inscritos.detail')
@@ -164,16 +241,16 @@ Route::middleware(['auth'])->group(function () {
      * contratos Desarrollando por Daniel
      */
     Route::get('/contratos/crear/{id}', 'webController\ContratoController@create')->name('contratos.create');
-    
-     
+
+
     Route::get('/', function () {
         return view('home');
     });
     Route::get('/home', function() {
         return view('home');
     })->name('home');
-    
-    
+
+
     /*
     Route::get('/', function () {
         return view('layouts.pages.home');
@@ -247,30 +324,34 @@ Route::middleware(['auth'])->group(function () {
      * agregando financiero rutas -- DMC
      */
     Route::get('financiero/indice', 'webController\FinancieroController@index')
-           ->name('financiero.index');           
-    
+           ->name('financiero.index');
+
+    Route::get('reportes/formato_t_reporte/index', function () {
+        return view('layouts.pages.reportes.formato_t_reporte');
+    })->name('reportes.formatoT');
+
     /* SUPERVISIONES INSTRUCTORES*/
-    Route::get('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');    
-    Route::post('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');        
+    Route::get('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');
+    Route::post('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');
     //Route::post('/supervision/instructor/guardar', 'webController\SupervisionInstructorController@store')->name('supervision-instructor-guardar')->middleware('can:SupervisionInstructor.store');
-        
+
     Route::get('/supervision/url/instructor/{id}', 'supervisionController\SupervisionInstructorController@generarUrl')->name('supervision-url-instructor');
     Route::get('/supervision/revision/instructor/{id}', 'supervisionController\SupervisionInstructorController@revision')->name('supervision-revision-instructor');
     Route::post('/supervision/revision/guardar', 'supervisionController\SupervisionInstructorController@update')->name('supervision.revision.guardar');
     //Route::get('/supervision/revision/instructor/{id}', 'supervisionController\SupervisionInstructorController@revision')->name('supervision-revision-instructor');
-    
+
     /*SUPERVISIONES ALUMNOS*/
     Route::get('/supervision/lst/alumno/{id}', 'supervisionController\SupervisionAlumnoController@lista')->name('supervision-lst-alumnos');
     Route::get('/supervision/url/alumno/{id}', 'supervisionController\SupervisionAlumnoController@generarUrl')->name('supervision-url-alumno');
     Route::get('/supervision/revision/alumno/{id}', 'supervisionController\SupervisionAlumnoController@revision')->name('supervision-revision-alumno');
     Route::post('/supervision/revision/guardar-alumno', 'supervisionController\SupervisionAlumnoController@update')->name('supervision.revision.guardar.alumno');
-    
+
     /*SUPERVISION UNIDADES*/
     Route::get('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
     Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
     Route::get('/supervision/unidades/detalle/{id}', 'supervisionController\UnidadesController@detalle')->name('supervision.unidades.detalle');
-    //Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');    
-    
+    //Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');
+
     Route::get('/formato-tecnico', 'indicadoresController\FormatoTecnicoController@index')->name('indicadores.formato-tecnico');
     Route::post('/formato-tecnico', 'indicadoresController\FormatoTecnicoController@index')->name('indicadores.formato-tecnico');
     Route::get('/formato-tecnico/table', 'indicadoresController\FormatoTecnicoController@table')->name('indicadores.formato-tecnico.table');
@@ -279,17 +360,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
     Route::post('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
     Route::get('/tablero/table', 'indicadoresController\tableroController@table')->name('indicadores.tablero.table');
-    
+
     /*TABLERO DE CONTROL*/
+
     Route::get('/tablero/', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::get('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::post('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
-    
+
     Route::get('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
     Route::post('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
-    
+
     Route::get('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
     Route::post('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
-    
-           
+
 });

@@ -16,6 +16,13 @@ $(function(){
        $('#validarForm').attr("action", "/pago/validacion" + "/" + id);
    });
 
+   //Modal Subir Valsupre Firmado
+   $('#DocModal').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id = button.data('id');
+    $('#idinsmod').val(id);
+    });
+
    //Modal en Contratos
    $('#myModal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
@@ -71,6 +78,7 @@ $(function(){
             $('#anexo_pdf').attr("class", "btn btn-danger");
             $('#anexo_pdf').attr("href", "/supre/tabla-pdf/" + id['0']);
             $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            $('#valsupre2_pdf').attr("class", "btn btn-danger disabled");
         }
         else if(id['1'] == 'Validado')
         {
@@ -80,6 +88,15 @@ $(function(){
             $('#anexo_pdf').attr("href", "/supre/tabla-pdf/" + id['0']);
             $('#valsupre_pdf').attr("class", "btn btn-danger");
             $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['0']);
+            if(id['2'] != "")
+            {
+                $('#valsupre2_pdf').attr("class", "btn btn-danger");
+                $('#valsupre2_pdf').attr("href", id['2']);
+            }
+            if(id['2'] == "")
+            {
+                $('#valsupre2_pdf').attr("class", "btn btn-danger disabled");
+            }
         }
     });
    /**

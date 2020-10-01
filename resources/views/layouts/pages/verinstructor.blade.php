@@ -30,6 +30,9 @@
             @if ($datains->archivo_bancario != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_bancario}} download>Datos Bancarios</a><br>
             @endif
+            @if ($datains->archivo_rfc != NULL)
+                <a class="btn btn-danger" href={{$datains->archivo_rfc}} download>RFC/Constancia Fiscal</a><br>
+            @endif
             @if ($datains->archivo_fotografia != NULL)
                 <a class="btn btn-danger" href={{$datains->archivo_fotografia}} download>Fotografía</a><br>
             @endif
@@ -70,11 +73,11 @@
                         <input name='curp' id='curp' value="{{$datains->curp}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputrfc">RFC</label>
+                        <label for="inputrfc">RFC/Constancia Fiscal</label>
                         <input name='rfc' id='rfc' value="{{$datains->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputfolio_ine">Clave de Elector</label>
+                        <label for="inputfolio_ine">Folio INE</label>
                         <input name='folio_ine' id='folio_ine' value="{{$datains->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
                 </div>
@@ -94,7 +97,9 @@
                     <div class="form-gorup col-md-4">
                         <label for="inputestado_civil">Estado Civil</label>
                         <select class="form-control" name="estado_civil" id="estado_civil" disabled>
-                            <option selected value="{{$estado_civil->nombre}}">{{$estado_civil->nombre}}</option>
+                            @if($estado_civil != NULL)
+                                <option selected value="{{$estado_civil->nombre}}">{{$estado_civil->nombre}}</option>
+                            @endif
                             @foreach ($lista_civil as $item)
                                 <option value="{{$item->nombre}}">{{$item->nombre}}</option>
                             @endforeach
@@ -151,37 +156,43 @@
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="inputarch_ine">Archivo INE</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled value="{{$datains->archivo_ine}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_domicilio}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_curp">Archivo CURP</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled value="{{$datains->archivo_curp}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_alta">Archivo Alta de Instructor</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled value="{{$datains->archivo_alta}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label for="inputarch_banco">Archivo Datos Bancarios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled value="{{$datains->archivo_bancario}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_rfc">RFC/Constancia Fiscal</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_foto">Archivo Fotografia</label>
-                            <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled value="{{$datains->archivo_fotografia}}">
+                            <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled>
                         </div>
                         <div class="form-group col-md-3">
                             <label for="inputarch_estudio">Archivo Grado de Estudios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled value="{{$datains->archivo_estudios}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled>
                         </div>
-                        <div class="form-group col-md-3">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
                             <label for="inputarch_id">Archivo Otra Identificación</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled value="{{$datains->archivo_otraid}}">
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
                         </div>
                     </div>
                 </div>
@@ -282,8 +293,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Especialidad</th>
-                            <th scope="col">Criterio de Pago</th>
-                            <th scope="col">Zona</th>
+                            <th scope="col">Memo. Validación</th>
                             <th scope="col">Obsevaciones</th>
                             <th width="85px">Acción</th>
                         </tr>
@@ -292,8 +302,7 @@
                         @foreach ($validado as $item)
                             <tr>
                                 <th scope="row">{{$item->nombre}}</th>
-                                <td>{{ $item->perfil_profesional }}</td>
-                                <td>{{ $item->zona }}</td>
+                                <td>{{ $item->memorandum_validacion}}</td>
                                 <td>{{ $item->observacion }}</td>
                                 <td>
                                     @can('instructor.editar_fase2')
@@ -321,6 +330,12 @@
                         </div>
                     </div>
                 </div>
+                <hr style="border-color:dimgray">
+                <label><h2>Alta/Baja al Instructor</h2></label>
+                <div class="form-group col-md-8">
+                    <a class="btn btn-danger" href="{{ route('instructor-alta_baja', ['id' => $datains->id]) }}" >Alta/Baja</a>
+                    <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
+                </div>
                 <br>
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
@@ -332,8 +347,32 @@
                         </div>
                     </div>
                 </div>
-                <br>
+            <br>
         </form>
+        <!--Modal-->
+        <div class="modal fade" id="alta_bajaModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmar Proceso</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Está seguro de cambiar el status del instructor?
+                    </div>
+                    <div class="modal-footer">
+                        <form action="" id="validarForm" method="get">
+                            @csrf
+                            <input type="hidden" name="id">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-success">Validar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 @stop
 

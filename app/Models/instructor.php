@@ -13,7 +13,7 @@ class instructor extends Model
     protected $fillable = ['id','numero_control','nombre','apellidoPaterno','apellidoMaterno','tipo_honorario',
     'rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio','asentamiento','domicilio','telefono',
     'correo','banco','no_cuenta','interbancaria','folio_ine','status','rechazo','clave_unidad','archivo_ine','archivo_domicilio','archivo_curp',
-    'archivo_alta','archivo_bancario','archivo_fotografia','archivo_estudios','archivo_otraid','id_especialidad'];
+    'archivo_alta','archivo_bancario','archivo_fotografia','archivo_estudios','archivo_otraid','id_especialidad','archivo_rfc'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
@@ -40,6 +40,35 @@ class instructor extends Model
     public function setFechaNacAttribute($value) {
         return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
      }
+
+    public function scopeSearchInstructor($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'clave_instructor':
+                        # code...
+                        return $query->where('numero_control', '=', $buscar);
+                        break;
+                    case 'nombre_instructor':
+                        # code...
+                        return $query->where( \DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',nombre)'), 'LIKE', "%$buscar%");
+                        break;
+                    case 'telefono_instructor':
+                        return $query->where( 'telefono', 'LIKE', "%$buscar%");
+                        break;
+                    case 'estatus_instructor':
+                        return $query->where( 'status', '=', ucwords(strtolower($buscar)));
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
 
 
 }

@@ -50,8 +50,8 @@ class PagoController extends Controller
                                     ->FIRST();
 
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-
-        return view('layouts.pages.frmpago', compact('data', 'nomins'));
+        $importe = round($data->importe_total-$data->iva, 2);
+        return view('layouts.pages.frmpago', compact('data', 'nomins','importe'));
     }
 
     public function modificar_pago()
@@ -79,16 +79,20 @@ class PagoController extends Controller
         $contrato = new contratos();
 
         $contratos = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_numero',
-        'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
-        'folios.status', 'folios.id_folios')
+        'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.arch_factura',
+        'folios.status', 'folios.id_folios','tbl_cursos.id_instructor','instructores.id AS idins','instructores.archivo_bancario')
         ->WHERE('contratos.id_contrato', '=', $id)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+        ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+        ->LEFTJOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
         ->FIRST();
+
+        $datapago = pago::WHERE('id_contrato', '=', $id)->FIRST();
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $contratos->id_contrato)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
 
-        return view('layouts.pages.vstvalidarpago', compact('contratos','director'));
+        return view('layouts.pages.vstvalidarpago', compact('contratos','director','datapago'));
     }
 
     public function guardar_pago(Request $request)
@@ -101,6 +105,16 @@ class PagoController extends Controller
         folio::WHERE('id_folios', '=', $request->id_folio)
         ->update(['status' => 'Finalizado']);
 
+        return redirect()->route('pago-inicio');
+    }
+
+    public function rechazar_pago(Request $request)
+    {
+        folio::WHERE('id_folios', '=', $request->id_folio)
+        ->update(['status' => 'Pago_Rechazado']);
+
+        pago::where('id', '=', $request->id_pago)
+        ->update(['observacion' => $request->observaciones]);
 
         return redirect()->route('pago-inicio');
     }
@@ -111,6 +125,28 @@ class PagoController extends Controller
         $folio->status = 'Pago_Verificado';
         $folio->save();
         return redirect()->route('pago-inicio')->with('info', 'El pago ha sido verificado exitosamente.');
+    }
+
+    public function historial_validacion($id)
+    {
+        //
+        $contrato = new contratos();
+
+        $contratos = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_numero',
+        'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.arch_factura',
+        'folios.status', 'folios.id_folios','tbl_cursos.id_instructor','instructores.id AS idins','instructores.archivo_bancario')
+        ->WHERE('contratos.id_contrato', '=', $id)
+        ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+        ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
+        ->LEFTJOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
+        ->FIRST();
+
+        $datapago = pago::WHERE('id_contrato', '=', $id)->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $contratos->id_contrato)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+
+        return view('layouts.pages.vsthistorialvalidarpago', compact('contratos','director','datapago'));
     }
 
     public function mostrar_pago($id)

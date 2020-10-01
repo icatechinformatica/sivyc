@@ -26,50 +26,81 @@ class tbl_curso extends Model
     public function instructor() {
         return $this->belongsTo(instructor::class, 'id_instructor');
     }
-    
-    // scope TABLERO DE CONTROL .- Romelia Pérez Nangüelu
+
+    // scope
+    public function scopeBusquedaCursoValidado($query, $tipo, $buscar){
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'clave':
+                        # code...
+                        return $query->WHERE('clave', '=', $buscar);
+                        break;
+                    case 'nombre_curso':
+                        # code...
+                        return $query->where( 'nombre', 'LIKE', "%$buscar%");
+                        break;
+                    case 'instructor':
+                        # code...
+                        return $query->where( \DB::raw('CONCAT(instructores.nombre, '."' '".' , instructores."apellidoPaterno", '."' '".' , instructores."apellidoMaterno")'), 'LIKE', "%$buscar%");
+                        break;
+                    case 'unidad':
+                        # retornar una consulta
+                        return $query->where( 'unidad', 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
+
+	// scope TABLERO DE CONTROL .- Romelia PÃ©rez NangÃ¼elu
     public function scopeBusquedaTablero($query, $ubicacion, $fecha_inicio, $fecha_termino){
-        if(!$fecha_inicio AND !$fecha_termino)$fecha_hoy = "2020-09-01"; //date("Y-m-d");
+        if(!$fecha_inicio AND !$fecha_termino)$fecha_hoy = date("Y-m-d");
         else $fecha_hoy="";
-        
-        if($ubicacion)  $query->where('tbl_cursos.unidad',$ubicacion);        
-        
-        if($fecha_hoy){ 
+
+        if($ubicacion)  $query->where('tbl_cursos.unidad',$ubicacion);
+
+        if($fecha_hoy){
             $query->where('tbl_cursos.fecha_apertura',$fecha_hoy);
             $fecha_inicio = $fecha_hoy;
         }elseif($fecha_inicio AND $fecha_termino){
             if($fecha_inicio > $fecha_termino)
                 $query->where('tbl_cursos.fecha_apertura','>=',$fecha_termino)->where('tbl_cursos.fecha_apertura','<=',$fecha_inicio);
-            else 
+            else
                 $query->where('tbl_cursos.fecha_apertura','>=',$fecha_inicio)->where('tbl_cursos.fecha_apertura','<=',$fecha_termino);
-        }elseif($fecha_inicio){            
+        }elseif($fecha_inicio){
             $query->where('tbl_cursos.fecha_apertura',$fecha_inicio);
-        }elseif($fecha_termino){                        
+        }elseif($fecha_termino){
             $query->where('tbl_cursos.fecha_apertura',$fecha_termino);
-        } 
+        }
         return $query;
     }
-   
-    public function scopeBusquedaSupervisor($query, $tipo, $valor, $fecha, $unidades){   
-                   
+
+    public function scopeBusquedaSupervisor($query, $tipo, $valor, $fecha, $unidades){
+
         if($fecha)$query = $query->where('inicio','<=',$fecha)->where('termino','>=',$fecha);
         if($unidades) {
             $unidades = explode(',',$unidades);
             $query = $query->whereIn('unidad',$unidades);
         }
-        if (!empty($tipo) AND !empty(trim($valor))) {                     
+        if (!empty($tipo) AND !empty(trim($valor))) {
             switch ($tipo) {
-                case 'nombre_instructor':                        
+                case 'nombre_instructor':
                     $query = $query->where('nombre', 'like', '%'.$valor.'%');
                     break;
-                case 'clave_curso':                        
+                case 'clave_curso':
                     $query = $query->where('clave',$valor);
                     break;
-                case 'nombre_curso':                        
+                case 'nombre_curso':
                     $query = $query->where('curso', 'LIKE', '%'.$valor.'%');
-                    break;                    
+                    break;
             }
-    
+
             return $query->orderBy('inicio', 'DESC');
         }
     }

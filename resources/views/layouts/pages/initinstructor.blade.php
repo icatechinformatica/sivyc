@@ -25,7 +25,21 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Registro de Instructrores</h2>
+                    <h2>REGISTRO DE INSTRUCTORES</h2>
+
+                    {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
+                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="clave_instructor">CLAVE INSTRUCTOR</option>
+                            <option value="nombre_instructor">NOMBRE</option>
+                            <option value="telefono_instructor">TELÉFONO</option>
+                            <option value="estatus_instructor">ESTATUS</option>
+                        </select>
+
+                        {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
+
                 </div>
                 <br>
                 <div class="pull-right">
@@ -51,7 +65,7 @@
                 @foreach ($data as $itemData)
                     <tr>
                     <th scope="row">{{$itemData->numero_control}}</th>
-                        <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
+                        <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
                         <td>{{$itemData->telefono}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
@@ -65,7 +79,7 @@
                                     <a class="btn btn-info" href="{{route('instructor-editar', ['id' => $itemData->id])}}">Editar</a>
                                 @endcan
                             @endif
-                            @if ($itemData->status == 'Aprobado')
+                            @if ($itemData->status == 'Aprobado' || $itemData->status == 'Baja')
                                     <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                             @endif
                             @if ($itemData->status == 'Validado')
@@ -78,6 +92,9 @@
 
             <tfoot>
                 <tr>
+                    <td colspan="5">
+                        {{ $data->appends(request()->query())->links() }}
+                    </td>
                 </tr>
             </tfoot>
         </table>

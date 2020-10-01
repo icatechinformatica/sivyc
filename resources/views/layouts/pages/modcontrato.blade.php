@@ -4,7 +4,7 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
-        <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato">
+        <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato"  enctype="multipart/form-data">
             @csrf
             <div style="text-align: right;width:65%">
                 <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
@@ -46,7 +46,7 @@
                     <select class="form-control" name="perfil_instructor" disabled id="perfil_instructor">
                         <option value={{$perfil_sel->id}}>{{$perfil_sel->nombre}}</option>
                         @foreach ( $perfil_prof as $value )
-                            <option value={{$value->id}}>{{$value->nombre}}</option>
+                            <option value={{$value->id_espins}}>{{$value->nombre_especialidad}}</option>
                         @endforeach
                     </select>
                 </div>

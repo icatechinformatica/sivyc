@@ -43,12 +43,12 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="inputcantidad_numero" class="control-label">Monto Total de los Honorarios (En Numero)</label>
-                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero">
+                    <label for="inputcantidad_numero" class="control-label">Monto Total de los Honorarios sin IVA (En Numero)</label>
+                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero" value="{{$pago}}" readonly>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputcantidad_letras" class="control-label">Monto Total de los Honorarios (En Letra)</label>
-                    <input type="text" class="form-control" id="cantidad_letras" name="cantidad_letras">
+                    <input type="text" class="form-control" id="cantidad_letras" name="cantidad_letras" readonly>
                 </div>
             </div>
             <div class="form-row">
@@ -76,7 +76,11 @@
                 <div class="form-group col-md-3">
                     <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>
                     <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
-                    <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
+                    @if ($term == TRUE)
+                        <footer style="color:red;" class="control-footer">La fecha de termino del curso ha sido alcanzada. Anexar documento de factura en caso de contar con ella</footer>
+                    @else
+                        <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
+                    @endif
                 </div>
             </div>
             <hr style="border-color:dimgray">

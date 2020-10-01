@@ -181,6 +181,212 @@ $(function(){
         }
     });
 
+    $('#sid_registro_modificacion_jefe_unidad').validate({
+        rules: {
+            nombre_alum_mod: {
+                required: true,
+                minlength: 3
+            },
+            apellido_pat_mod: {
+                required: true,
+                minlength: 2
+            },
+            sexo_mod: {
+                required: true
+            },
+            curp_mod: {
+                required: true,
+                CURP: true
+            },
+            telefono_mod: {
+                required: true,
+            },
+            estado_mod: {
+                required: true
+            },
+            municipio_mod: {
+                required: true
+            },
+            estado_civil_mod: {
+                required: true
+            },
+            discapacidad_mod: {
+                required: true
+            },
+            dia_mod: {
+                required: true
+            },
+            mes_mod: {
+                required: true
+            },
+            anio_mod: {
+                required: true,
+                maxlength: 4,
+                number: true
+            },
+            medio_entero_mod: {
+                required: true
+            },
+            motivos_eleccion_sistema_capacitacion_mod: {
+                required: true
+            },
+            ultimo_grado_estudios_mod: {
+                required: true
+            }
+        },
+        messages: {
+            nombre_alum_mod: {
+                required: 'Por favor ingrese su nombre',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+            },
+            apellido_pat_mod: {
+                required: 'Por favor ingrese su apellido',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+            },
+            sexo_mod: {
+                required: 'Por favor Elegir su genero'
+            },
+            curp_mod: {
+                required: 'Por favor Ingresé la curp',
+            },
+            telefono_mod: {
+                required: 'Por favor, ingrese telefóno',
+            },
+            estado_mod: {
+                required: 'Por favor, seleccione un estado'
+            },
+            municipio_mod: {
+                required: 'Por favor, seleccione el municipio'
+            },
+            estado_civil_mod: {
+                required: 'Por favor, seleccione su estado civil'
+            },
+            discapacidad_mod: {
+                required: 'Por favor seleccione una opción'
+            },
+            ultimo_grado_estudios_mod: {
+                required: "Agregar último grado de estudios"
+            },
+            dia_mod: {
+                required: "Por favor, seleccione el día"
+            },
+            mes_mod: {
+                required: "Por favor, seleccione el mes"
+            },
+            anio_mod: {
+                required: "Por favor, Ingrese el año",
+                maxlength: "Sólo acepta 4 digitos",
+                number: "Sólo se aceptan números"
+            },
+            medio_entero_mod: {
+                required: "Por favor, seleccione una opción"
+            },
+            motivos_eleccion_sistema_capacitacion_mod: {
+                required: "Por favor, seleccione una opción"
+            }
+        }
+    });
+
+    /** validación de formulario modificacion normal */
+    $('#sid_registro_modificacion').validate({
+        rules: {
+            nombre_alum_mod: {
+                required: true,
+                minlength: 3
+            },
+            apellido_pat_mod: {
+                required: true,
+                minlength: 2
+            },
+            sexo_mod: {
+                required: true
+            },
+            telefono_mod: {
+                required: true,
+            },
+            estado_mod: {
+                required: true
+            },
+            municipio_mod: {
+                required: true
+            },
+            estado_civil_mod: {
+                required: true
+            },
+            discapacidad_mod: {
+                required: true
+            },
+            dia_mod: {
+                required: true
+            },
+            mes_mod: {
+                required: true
+            },
+            anio_mod: {
+                required: true,
+                maxlength: 4,
+                number: true
+            },
+            medio_entero_mod: {
+                required: true
+            },
+            motivos_eleccion_sistema_capacitacion_mod: {
+                required: true
+            },
+            ultimo_grado_estudios_mod: {
+                required: true
+            }
+        },
+        messages: {
+            nombre_alum_mod: {
+                required: 'Por favor ingrese su nombre',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+            },
+            apellido_pat_mod: {
+                required: 'Por favor ingrese su apellido',
+                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+            },
+            sexo_mod: {
+                required: 'Por favor Elegir su genero'
+            },
+            telefono_mod: {
+                required: 'Por favor, ingrese telefóno',
+            },
+            estado_mod: {
+                required: 'Por favor, seleccione un estado'
+            },
+            municipio_mod: {
+                required: 'Por favor, seleccione el municipio'
+            },
+            estado_civil_mod: {
+                required: 'Por favor, seleccione su estado civil'
+            },
+            discapacidad_mod: {
+                required: 'Por favor seleccione una opción'
+            },
+            ultimo_grado_estudios_mod: {
+                required: "Agregar último grado de estudios"
+            },
+            dia_mod: {
+                required: "Por favor, seleccione el día"
+            },
+            mes_mod: {
+                required: "Por favor, seleccione el mes"
+            },
+            anio_mod: {
+                required: "Por favor, Ingrese el año",
+                maxlength: "Sólo acepta 4 digitos",
+                number: "Sólo se aceptan números"
+            },
+            medio_entero_mod: {
+                required: "Por favor, seleccione una opción"
+            },
+            motivos_eleccion_sistema_capacitacion_mod: {
+                required: "Por favor, seleccione una opción"
+            }
+        }
+    });
+
     /****
      *
      */
@@ -285,7 +491,7 @@ $(function(){
             },
             apellidoPaterno: {
                 required: true,
-                minlength: 3
+                minlength: 2
             },
             sexo: {
                 required: true
@@ -555,9 +761,10 @@ $(function(){
         $("#especialidad_sid option:selected").each( () => {
             var IdEsp = $('#especialidad_sid').val();
             var tipo = $('#tipo_curso').val();
+            var unidad = $('#tblunidades').val();
             var datos = { idEsp: IdEsp, tipo: tipo};
             var url = '/alumnos/sid/cursos';
-            console.log(datos);
+            var url2 = '/alumnos/sid/checkcursos';
 
             var request = $.ajax
             ({
@@ -576,7 +783,6 @@ $(function(){
 
             request.done(( respuesta ) =>
             {
-                console.log(respuesta);
                 if (respuesta.length < 1) {
                     $("#cursos_sid").empty();
                     $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
@@ -585,11 +791,35 @@ $(function(){
                         $("#cursos_sid").empty();
                         $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
                         $.each(respuesta, (k, v) => {
-                            $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                            idcur = v.id;
+                            var data = {unidad: unidad, idcur: idcur};
+
+                            var request = $.ajax
+                            ({
+                                url: url2,
+                                method: 'POST',
+                                data: data,
+                                dataType: 'json'
+                            });
+
+                            request.done(( resp ) =>
+                            {
+                                if(resp.chk == true)
+                                {
+                                    $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                                }
+                            });
+
+                            request.fail(( jqXHR, textStatus ) =>
+                            {
+                                jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                                console.log(jqXHR.responseText);
+                                alert( "Hubo un error: " + jsonValue );
+                            });
                         });
                         $("#cursos_sid").focus();
                     }else{
-
+                        console.log('errores');
                         //Puedes mostrar un mensaje de error en algún div del DOM
                     }
                 }
@@ -597,7 +827,9 @@ $(function(){
 
             request.fail(( jqXHR, textStatus ) =>
             {
-                alert( "Hubo un error: " + textStatus );
+                jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                console.log(jqXHR.status);
+                alert( "Hubo un error: " + jsonValue );
             });
         });
     });
@@ -905,6 +1137,9 @@ $(function(){
                   +     '<b> ESPECIALIDAD: </b> ' + response[0].especialidad
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> Curso Tipo: </b> ' + response[0].tipo_curso
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
                   +     '<b> SOLICITUD AUTORIZACION: </b> ' + '<a href="'+response[0].documento_solicitud_autorizacion+'" target="_blank">DOCUMENTO</a>'
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
@@ -1124,5 +1359,54 @@ $(function(){
 
         return true;
 
+    });
+
+
+    /**
+     * cambios select dependientes de tbl_unidades
+     */
+    $('#ubicaciones').on("change", () => {
+        $("#ubicaciones option:selected").each( () => {
+            var ubicacion = $('#ubicaciones').val();
+            var url = '/unidades/unidad_by_ubicacion/'+ ubicacion;
+
+            var request = $.ajax
+            ({
+                url: url,
+                method: 'GET',
+                dataType: 'json'
+            });
+
+            /*
+                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+            */
+
+            request.done(( respuesta ) => {
+                if (respuesta.length < 1) {
+                    $("#unidades_ubicacion").empty();
+                    $("#unidades_ubicacion").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                } else {
+                    if(!respuesta.hasOwnProperty('error')){
+                        $("#unidades_ubicacion").empty();
+                        $("#unidades_ubicacion").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        $.each(respuesta, (k, v) => {
+                            $('#unidades_ubicacion').append('<option value="' + v.unidad + '">' + v.unidad + '</option>');
+                        });
+                        $("#unidades_ubicacion").focus();
+                    }else{
+
+                        //Puedes mostrar un mensaje de error en algún div del DOM
+                    }
+                }
+            });
+
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                    alert( "Hubo un error: " + textStatus );
+            });
+        });
     });
 });

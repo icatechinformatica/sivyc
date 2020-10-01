@@ -96,14 +96,14 @@ class FolioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $curso, $matricula)
+    public function update(Request $request, $curso, $id)
     {
         //
         try {
             //code...
             $folio = new Folio();
             $folio->WHERE([
-                ['matricula', '=', $matricula],
+                ['id', '=', $id],
                 ['id_curso', '=', $curso]
             ])->update($request->all());
             return response()->json(['success' => 'Folio actualizado exitosamente'], 200);
