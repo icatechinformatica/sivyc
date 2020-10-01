@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\tbl_unidades;
+use Illuminate\Pagination\Paginator;
 
 class ContratoController extends Controller
 {
@@ -37,19 +38,18 @@ class ContratoController extends Controller
         $unidadUsuario = $unidades->WHERE('id', $usuarioUnidad)->FIRST();
 
         $querySupre = DB::TABLE('tabla_supre')
+                        ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
                         ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
                         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                        ->SELECT(
+                        ->PAGINATE(25, [
                             'tabla_supre.id','tabla_supre.no_memo',
                             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
                             'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                             'contratos.docs','contratos.id_contrato', 'tbl_cursos.termino AS fecha_termino',
                             'tbl_cursos.inicio AS fecha_inicio', DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                        )
-                        ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
-                        ->GET();
+                        ]);
 
         return view('layouts.pages.vstacontratoini', compact('querySupre'));
     }

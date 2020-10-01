@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Redirect,Response;
 use App\Http\Controllers\Controller;
 use PDF;
+use Illuminate\Support\Facades\Auth;
+use App\Models\tbl_unidades;
+use Illuminate\Pagination\Paginator;
 
 class PagoController extends Controller
 {
@@ -26,14 +29,22 @@ class PagoController extends Controller
     public function index()
     {
         $contrato = new contratos();
+        // obtener el usuario y su unidad
+        $unidadUser = Auth::user()->unidad;
+        // obtener unidades
+        $unidades = new tbl_unidades;
+        $unidadPorUsuario = $unidades->WHERE('id', $unidadUser)->FIRST();
 
-        $contratos_folios = $contrato::SELECT('contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
-        'contratos.unidad_capacitacion', 'contratos.municipio',
-        'contratos.fecha_firma', 'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre')
-        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
+        $contratos_folios = $contrato::WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
+        ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
-        ->GET();
-
+        ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+        ->PAGINATE(25, [
+            'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
+            'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
+            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre'
+        ]);
 
         return view('layouts.pages.vstapago', compact('contratos_folios'));
     }

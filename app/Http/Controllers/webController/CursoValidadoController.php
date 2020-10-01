@@ -16,6 +16,8 @@ use Redirect,Response;
 use App\Models\InstructorPerfil;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use App\Models\tbl_unidades;
 
 class CursoValidadoController extends Controller
 {
@@ -31,10 +33,19 @@ class CursoValidadoController extends Controller
 
         $tipoCursoValidad = $request->get('tipobusquedacursovalidado');
 
+        // obtener el usuario y su unidad
+        $unidadUser = Auth::user()->unidad;
+
+        // obtener unidades
+        $unidades = new tbl_unidades;
+        $unidadPorUsuario = $unidades->WHERE('id', $unidadUser)->FIRST();
+
         $data = tbl_curso::busquedacursovalidado($tipoCursoValidad, $buscarcursoValidado)
                     ->WHERE('tbl_cursos.clave', '!=', '0')
+                    ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
                     ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
                     ->LEFTJOIN('instructores','instructores.id','=','tbl_cursos.id_instructor')
+                    ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad']);
