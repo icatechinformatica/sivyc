@@ -305,4 +305,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reportes/formato_t_reporte/index', function () {
         return view('layouts.pages.reportes.formato_t_reporte');
     })->name('reportes.formatoT');
+	
+	        /*TABLERO DE CONTROL*/
+    Route::get('/tablero/', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    Route::get('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    Route::post('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    
+    Route::get('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
+    Route::post('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
+    
+    Route::get('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
+    Route::post('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
+    
 });

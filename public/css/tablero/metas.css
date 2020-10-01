@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Playfair Display', serif;
+}
+.titulo{width: 100%; color: #9d2449; font-weight: bold; font-variant: small-caps; padding: 1%;}
+.subtitulo{width: 100%; color: #621132; font-weight: bold; font-variant: small-caps; padding: 1%; text-align: center;}
+
+#tabla{
+    margin: 15px 0 15px 0;
+}
+#tabla table th, #tabla table td{    
+    padding: 10px 7px 10px 7px;
+    font-size: 12px;
+    padding: 7px 5px 7px 5px;
+}
+#tabla table th {text-align: center; }
+
+
+.table td{
+    height: auto;        
+    max-width: 400px;
+    white-space: initial;  
+    text-align: center;  
+}
+a {color: #3f4744;}
+.navbar .nav-item:hover .nav-link{ color: #fff;  }

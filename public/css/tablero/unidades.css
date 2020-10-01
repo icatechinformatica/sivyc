@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Playfair Display', serif;
+}
+.titulo{width: 100%; color: #9d2449; font-weight: bold; font-variant: small-caps; padding: 1%;}
+.subtit{color: #621132; font-weight: bold; text-align: center;}
+.head { color: white; background:#30302f;}
+
+#tabla{
+    margin: 15px 0 15px 0; 
+}
+#tabla table {    
+            
+}
+#tabla table th, #tabla table td{    
+    padding: 10px 7px 10px 7px;
+}
+#tabla table th {text-align: center; }
+
+
+.table td{
+    height: auto;        
+    max-width: 400px;
+    white-space: initial;  
+    text-align: center;  
+}
+a {color: #3f4744;}
