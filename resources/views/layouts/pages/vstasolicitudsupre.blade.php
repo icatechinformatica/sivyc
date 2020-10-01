@@ -43,7 +43,8 @@
                     <th scope="col">No. de Memorandum</th>
                     <th scope="col">Unidad de Capacitación</th>
                     <th scope="col">Fecha</th>
-                    <th scope="col">Estatus</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Ultima Modificación de Status</th>
                     <th width="180px">Accion</th>
                 </tr>
             </thead>
@@ -59,6 +60,9 @@
                             @else
                                 {{$itemData->status}}
                             @endif
+                        </td>
+                        <td>
+                            {{$itemData->fecha_status}}
                         </td>
                         <td>
                             @if ( $itemData->status == 'En_Proceso')

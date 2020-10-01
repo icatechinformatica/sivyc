@@ -15,6 +15,7 @@ use PDF;
 use Illuminate\Support\Facades\Auth;
 use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
+use Carbon\Carbon;
 
 class PagoController extends Controller
 {
@@ -72,6 +73,11 @@ class PagoController extends Controller
 
     public function verificar_pago($idfolios)
     {
+        $contrato = contratos::WHERE('id_folios', '=', $idfolios)->FIRST();
+
+        pago::where('id_contrato', '=', $contrato->id)
+        ->update(['fecha_status' => carbon::now()]);
+
         $folio = folio::findOrfail($idfolios);
         $folio->status = 'Pago_Verificado';
         $folio->save();
@@ -111,7 +117,8 @@ class PagoController extends Controller
         pago::where('id', '=', $request->id_pago)
         ->update(['no_pago' => $request->numero_pago,
                   'fecha' => $request->fecha_pago,
-                  'descripcion' => $request->concepto]);
+                  'descripcion' => $request->concepto,
+                  'fecha_status' => carbon::now()]);
 
         folio::WHERE('id_folios', '=', $request->id_folio)
         ->update(['status' => 'Finalizado']);
@@ -121,11 +128,12 @@ class PagoController extends Controller
 
     public function rechazar_pago(Request $request)
     {
-        folio::WHERE('id_folios', '=', $request->id_folio)
+        folio::WHERE('id_folios', '=', $request->idfolios)
         ->update(['status' => 'Pago_Rechazado']);
 
-        pago::where('id', '=', $request->id_pago)
-        ->update(['observacion' => $request->observaciones]);
+        pago::where('id', '=', $request->idPago)
+        ->update(['observacion' => $request->observaciones,
+                  'fecha_status' => carbon::now()]);
 
         return redirect()->route('pago-inicio');
     }

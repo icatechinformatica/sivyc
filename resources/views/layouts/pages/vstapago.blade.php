@@ -46,7 +46,8 @@
                     <th scope="col">N°. Contrato</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Unidad de Capacitación</th>
-                    <th scope="col">Estado</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Ultima Modificación de Status</th>
                     <th width="160px">Acciones</th>
                 </tr>
             </thead>
@@ -57,6 +58,7 @@
                         <td>{{$itemData->fecha_firma}}</td>
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->status}}</td>
+                        <td>{{$itemData->fecha_status}}</td>
                         <td>
                             @switch($itemData->status)
                                 @case('Verificando_Pago')

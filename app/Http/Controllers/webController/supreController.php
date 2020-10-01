@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PDF;
 use function PHPSTORM_META\type;
+use Carbon\Carbon;
 
 class supreController extends Controller
 {
@@ -66,6 +67,7 @@ class supreController extends Controller
         $supre->no_memo = strtoupper($request->memorandum);
         $supre->fecha = strtoupper($request->fecha);
         $supre->status = 'En_Proceso';
+        $supre->fecha_status = strtoupper($request->fecha);
         $supre->save();
 
        $id = $supre->id;
@@ -158,7 +160,8 @@ class supreController extends Controller
         ->update(['status' => 'En_Proceso',
                   'unidad_capacitacion' => $request->unidad,
                   'no_memo' => $request->no_memo,
-                  'fecha' => $request->fecha]);
+                  'fecha' => $request->fecha,
+                  'fecha_status' => carbon::now()]);
 
         supre_directorio::where('id', '=', $request->id_directorio)
         ->update(['supre_dest' => $request->id_destino,
@@ -214,6 +217,7 @@ class supreController extends Controller
     public function supre_rechazo(Request $request){
         $supre = supre::find($request->id);
         $supre->observacion = $request->comentario_rechazo;
+        $supre->fecha_status = carbon::now();
         $supre->status = 'Rechazado';
         //dd($supre);
         $supre->save();
@@ -226,6 +230,7 @@ class supreController extends Controller
         $supre->status = 'Validado';
         $supre->folio_validacion = $request->folio_validacion;
         $supre->fecha_validacion = $request->fecha_val;
+        $supre->fecha_status = carbon::now();
         $supre->save();
 
         supre_directorio::where('id', '=', $request->directorio_id)
@@ -432,7 +437,7 @@ class supreController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
         $pdf->setPaper('A4', 'Landscape');
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('medium.pdf');
 
         return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
     }
