@@ -244,21 +244,11 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/', function () {
-        return view('home');
-    });
-    Route::get('/home', function() {
-        return view('home');
-    })->name('home');
-
-
-    /*
-    Route::get('/', function () {
         return view('layouts.pages.home');
     });
     Route::get('/home', function() {
         return view('layouts.pages.home');
     })->name('home');
-    */
     /***
      * Desarrollado por Orlando
      */
@@ -357,13 +347,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/formato-tecnico/table', 'indicadoresController\FormatoTecnicoController@table')->name('indicadores.formato-tecnico.table');
 
 
-    Route::get('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
+   /* Route::get('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
     Route::post('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
-    Route::get('/tablero/table', 'indicadoresController\tableroController@table')->name('indicadores.tablero.table');
+    Route::get('/tablero/table', 'indicadoresController\tableroController@table')->name('indicadores.tablero.table');*/
 
     /*TABLERO DE CONTROL*/
 
-    Route::get('/tablero/', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    Route::get('/tablero', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::get('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::post('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
 
