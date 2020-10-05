@@ -59,7 +59,8 @@ class AlumnoController extends Controller
             'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
             'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO'
+            'POSTGRADO' => 'POSTGRADO',
+            'NO ESPECIFICADO' => 'NO ESPECIFICADO',
         ];
         $estado = new Estado();
         $estados = $estado->all(['id', 'nombre']);
@@ -757,7 +758,8 @@ class AlumnoController extends Controller
             'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
             'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO'
+            'POSTGRADO' => 'POSTGRADO',
+            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
         ];
         $idpre = base64_decode($id);
         $alumnos = new Alumnopre();
@@ -783,7 +785,8 @@ class AlumnoController extends Controller
             'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
             'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO'
+            'POSTGRADO' => 'POSTGRADO',
+            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
         ];
         $idpre = base64_decode($id);
         $alumnos = new Alumnopre();

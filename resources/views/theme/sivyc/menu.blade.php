@@ -63,17 +63,13 @@
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                     </div>
                 </li>
-                <li class="nav-item g-mx-5--lg dropdown">
-                    <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Reportes
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="https://datastudio.google.com/reporting/7c518e16-99ea-4cb2-8509-7064c0604e00" target="_blank">CURSOS VS OBJETIVOS</a>
-                        <a class="dropdown-item" href="https://datastudio.google.com/reporting/512e11eb-babf-4476-8827-8d4243e2c219" target="_blank">STATUS PAGO INSTRUCTORES</a>
-                        <a class="dropdown-item" href="{{route('reportes.formatoT')}}">REPORTE DE FORMATO T</a>
-                    </div>
-                </li>
-
+                @can('tablero.metas.index')
+                    <li class="nav-item g-mx-5--lg">
+                        <a class="nav-link g-color-white--hover" href="{{route('tablero.metas.index')}}">
+                            tablero de control
+                        </a>
+                    </li>
+                @endcan
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">

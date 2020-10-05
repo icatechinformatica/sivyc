@@ -62,6 +62,7 @@
                     <th scope="col">semaforo</th>
                 </tr>
             </thead>
+            @if (count($querySupre) > 0)
             <tbody>
                 @foreach ($querySupre as $itemData)
                     <tr>
@@ -86,25 +87,8 @@
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                 </a>
-                                @can('contrato.validate')
-                                    <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar Contrato" href="{{route('contrato-validar', ['id' => $itemData->id_contrato])}}">
-                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Contrato PDF" href="{{route('contrato-pdf', ['id' => $itemData->id_contrato])}}">
-                                        <i class="fa fa-file" aria-hidden="true"></i>
-                                    </a>
-                                @endcan
-                            @endif
-                            @if ($itemData->status == 'Contrato_Rechazado')
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                </a>
-                                @can('contratos.edit')
-                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Modificar" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}" >
-                                        <i class="fa fa-wrench" aria-hidden="true"></i>
-                                    </a>
-                                @endcan
-                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
+                            @can('contrato.validate')
+                                <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar Contrato" href="{{route('contrato-validar', ['id' => $itemData->id_contrato])}}">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             @endif
@@ -180,6 +164,27 @@
                     </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7">
+                        {{ $querySupre->appends(request()->query())->links() }}
+                    </td>
+                </tr>
+            </tfoot>
+            @else
+                <tbody>
+                    <tr>
+                        <td colspan="7">
+                            <h4>
+                                <center>
+                                    <b>NO HAY REGISTROS DISPONIBLES</b>
+                                </center>
+                            </h4>
+                        </td>
+                    </tr>
+                </tbody>
+            @endif
+
         </table>
         <br>
     </div>

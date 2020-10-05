@@ -1,0 +1,33 @@
+@font-face {
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Playfair Display', serif;
+}
+.titulo{width: 100%; color: #9d2449; font-weight: bold; font-variant: small-caps; padding: 1%;}
+.subtitulo{width: 100%; color: #621132; font-weight: bold; font-variant: small-caps; padding: 1%; text-align: center;}
+
+#tabla { padding: 0px 20px;  border: 10px;
+    border-color: blue; }
+#tabla table th {
+    color: white;
+    padding: 5px;
+    background:#30302f;
+}
+#tabla table td{    
+    background: #eee;
+    padding: 4px 5px 4px 5px;
+    font-size: 12px;
+    font-style: normal;    
+    color: #333333;    
+    border-color: white;
+}
+
+.table td{    
+    height: auto;        
+    max-width: 220px;
+    white-space: initial;
+          
+}
+.min-w{min-width: 100px;}
+
+a {color: #3f4744;}
+.active{color: fuchsia;}

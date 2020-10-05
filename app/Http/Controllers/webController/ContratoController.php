@@ -22,24 +22,34 @@ use App\Models\instructor;
 use PDF;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Models\tbl_unidades;
+use Illuminate\Pagination\Paginator;
 
 class ContratoController extends Controller
 {
     public function index()
     {
         $supre = new supre();
+        // obtener el usuario y su unidad
+        $usuarioUnidad = Auth::user()->unidad;
+        // obtener unidades
+        $unidades = new tbl_unidades;
+        $unidadUsuario = $unidades->WHERE('id', $usuarioUnidad)->FIRST();
+
         $querySupre = DB::TABLE('tabla_supre')
-                          ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
-                          ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
-                          ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                          ->SELECT(
+                        ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
+                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
+                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+                        ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                        ->PAGINATE(25, [
                             'tabla_supre.id','tabla_supre.no_memo',
                             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
-                            'folios.id_folios', 'folios.folio_validacion',
+                            'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                             'contratos.docs','contratos.id_contrato','contratos.fecha_status', 'tbl_cursos.termino AS fecha_termino',
                             'tbl_cursos.inicio AS fecha_inicio', DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                            )
-                          ->GET();
+                        ]);
 
         return view('layouts.pages.vstacontratoini', compact('querySupre'));
     }
