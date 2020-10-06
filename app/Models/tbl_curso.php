@@ -36,19 +36,19 @@ class tbl_curso extends Model
                 switch ($tipo) {
                     case 'clave':
                         # code...
-                        return $query->WHERE('clave', '=', $buscar);
+                        return $query->WHERE('tbl_cursos.clave', '=', $buscar);
                         break;
                     case 'nombre_curso':
                         # code...
-                        return $query->where( 'nombre', 'LIKE', "%$buscar%");
+                        return $query->WHERE( 'cursos.nombre_curso', 'LIKE', "%$buscar%");
                         break;
                     case 'instructor':
                         # code...
-                        return $query->where( \DB::raw('CONCAT(instructores.nombre, '."' '".' , instructores."apellidoPaterno", '."' '".' , instructores."apellidoMaterno")'), 'LIKE', "%$buscar%");
+                        return $query->WHERE( \DB::raw('CONCAT(instructores.nombre, '."' '".' , instructores."apellidoPaterno", '."' '".' , instructores."apellidoMaterno")'), 'LIKE', "%$buscar%");
                         break;
                     case 'unidad':
                         # retornar una consulta
-                        return $query->where( 'unidad', 'LIKE', "%$buscar%");
+                        return $query->WHERE( 'tbl_cursos.unidad', 'LIKE', "%$buscar%");
                         break;
                     default:
                         # code...
