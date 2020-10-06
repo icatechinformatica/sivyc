@@ -39,11 +39,11 @@
                     <li class="nav-item g-mx-5--lg"><a class="nav-link g-color-white--hover" href="{{route('pago-inicio')}}">Pagos</a></li>
                 @endcan
                 <!--end helper-->
-                <li class="nav-item g-mx-5--lg">
+                <!--<li class="nav-item g-mx-5--lg">
                     <a class="nav-link g-color-white--hover" >
                         Agenda Vinculador
                     </a>
-                </li>
+                </li>-->
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Catálogos
@@ -66,7 +66,7 @@
                 @can('tablero.metas.index')
                     <li class="nav-item g-mx-5--lg">
                         <a class="nav-link g-color-white--hover" href="{{route('tablero.metas.index')}}">
-                            tablero de control
+                            Tablero de control
                         </a>
                     </li>
                 @endcan
