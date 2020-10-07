@@ -106,8 +106,8 @@
                         <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
-                              <label class="form-control-label" for="inputPuestoUpdate">PUESTO</label>
-                              <input id="inputPuestoUpdate" name="inputPuestoUpdate" class="form-control" type="text">
+                              <label class="form-control-label" for="inputPuesto">PUESTO</label>
+                              <input id="inputPuesto" name="inputPuesto" class="form-control" type="text">
                             </div>
                           </div>
                           <div class="col-md-6">
@@ -165,7 +165,7 @@
                     inputNombre: {
                         required: true,
                     },
-                    inputPuestoUpdate: {
+                    inputPuesto: {
                         required: true
                     },
                     inputCategoria: {
@@ -186,7 +186,7 @@
                     inputNombre: {
                         required: 'Por favor Ingresé el nombre',
                     },
-                    inputPuestoUpdate: {
+                    inputPuesto: {
                         required: 'Por favor ingrese el puesto'
                     },
                     inputCategoria: {

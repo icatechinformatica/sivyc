@@ -50,7 +50,7 @@ class PersonalController extends Controller
         $validator =  Validator::make($request->all(), [
             'inputnumeroControl' => 'required',
             'inputNombre' => 'required',
-            'inputPuestoUpdate' => 'required',
+            'inputPuesto' => 'required',
             'inputCategoria' => 'required',
             'inputOrganoAdministrativo' => 'required',
             'inputAreaAdscripcion' => 'required',
@@ -62,13 +62,13 @@ class PersonalController extends Controller
         } else {
             // guardar registro en la base de datos
             $personal = new Personal;
-            $personal->numero_enlace = trim($request->get('inputnumeroControl'));
-            $personal->nombre = trim($request->get('inputNombre'));
-            $personal->apellidoPaterno = trim($request->get('inputApellidoPaterno'));
-            $personal->apellidoMaterno = trim($request->get('inputApellidoMaterno'));
-            $persona->puesto = trim($request->get('inputPuestoUpdate'));
-            $persona->categoria = trim($request->get('inputCategoria'));
-            $persona->area_adscripcion_id = trim($request->get('inputAreaAdscripcion'));
+            $personal->numero_enlace = trim($request->inputnumeroControl);
+            $personal->nombre = trim($request->inputNombre);
+            $personal->apellidoPaterno = trim($request->inputApellidoPaterno);
+            $personal->apellidoMaterno = trim($request->inputApellidoMaterno);
+            $persona->puesto = trim($request->inputPuesto);
+            $persona->categoria = trim($request->inputCategoria);
+            $persona->area_adscripcion_id = trim($request->inputAreaAdscripcion);
             // guardar registro
             $persona->save();
 
