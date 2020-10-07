@@ -53,6 +53,7 @@
                     <th scope="col">NOMBRE DEL CURSO</th>
                     <th scope="col">INSTRUCTOR</th>
                     <th scope="col">FECHA IMPARTIR</th>
+                    <th scope="col">Documentos</th>
                 </tr>
             </thead>
             @if (count($data) > 0)
@@ -64,6 +65,14 @@
                             <td>{{$itemData->nombrecur}}</td>
                             <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
                             <td>{{ \Carbon\Carbon::parse($itemData->inicio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($itemData->termino)->format('d/m/Y') }}</td>
+                            <td>
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Validación de clave de curso" download="{{$itemData->pdf_curso}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" download="{{$data->archivo_alta}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
