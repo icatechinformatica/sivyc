@@ -60,6 +60,7 @@ class PersonalController extends Controller
             return redirect()->back()->withErrors($validator)
                     ->withInput();
         } else {
+            dd($request->all());
             // guardar registro en la base de datos
             $personal = new Personal;
             $personal->numero_enlace = trim($request->inputnumeroControl);
