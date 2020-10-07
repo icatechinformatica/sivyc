@@ -51,6 +51,7 @@
                         <th scope="col">especialidad</th>
                         <th scope="col">duración</th>
                         <th scope="col">modalidad</th>
+                        <th scope="col">Documentos</th>
                         <th width="160px">Accion</th>
                     </tr>
                 </thead>
@@ -61,6 +62,14 @@
                             <td>{{$itemData->especialidad}}</td>
                             <td>{{$itemData->duracion}}</td>
                             <td>{{$itemData->modalidad}}</td>
+                            <td>
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Validación de clave de curso" download="{{$itemData->pdf_curso}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" download="{{$data->archivo_alta}}">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            </td>
                             <td>
                                 <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                                 {!! Form::open(['method' => 'DELETE','route' => ['usuarios'],'style'=>'display:inline']) !!}

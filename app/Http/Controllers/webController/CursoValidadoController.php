@@ -47,8 +47,8 @@ class CursoValidadoController extends Controller
                     ->LEFTJOIN('instructores','instructores.id','=','tbl_cursos.id_instructor')
                     ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
-                    'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                    'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad']);
+                    'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
+                    'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso']);
 
         return view('layouts.pages.vstacvinicio', compact('data'));
     }
