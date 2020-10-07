@@ -66,11 +66,11 @@ class PersonalController extends Controller
             $personal->nombre = trim($request->inputNombre);
             $personal->apellidoPaterno = trim($request->inputApellidoPaterno);
             $personal->apellidoMaterno = trim($request->inputApellidoMaterno);
-            $persona->puesto = trim($request->inputPuesto);
-            $persona->categoria = trim($request->inputCategoria);
-            $persona->area_adscripcion_id = trim($request->inputAreaAdscripcion);
+            $personal->puesto = trim($request->inputPuesto);
+            $personal->categoria = trim($request->inputCategoria);
+            $personal->area_adscripcion_id = trim($request->inputAreaAdscripcion);
             // guardar registro
-            $persona->save();
+            $personal->save();
 
             // redireccionamos con un mensaje de éxito
             return redirect()->route('personal.index')
