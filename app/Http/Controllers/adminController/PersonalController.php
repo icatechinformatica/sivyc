@@ -142,14 +142,14 @@ class PersonalController extends Controller
             'area_adscripcion_id' => trim($request->inputAdscripcionUpdate)
         ];
 
-        if (!empty(trim($numero_control))){
+        if (!empty(trim($numero_enlace))){
             // actualizamos los registros
             Personal::WHERE('numero_enlace', $numero_enlace)->UPDATE($array_personal_update);
 
             return redirect()->route('personal.index')
             ->with('success', sprintf('PERSONAL CON EL NÚMERO DE ENLACE  %s  ACTUALIZADO EXTIOSAMENTE!', $numero_enlace));
         } else {
-            return redirect()->back()->withErrors(['msg', sprintf('EL NÚMERO DE ENLACE %s ESTÁ VACIO', $numero_control)]);
+            return redirect()->back()->withErrors(['msg', sprintf('EL NÚMERO DE ENLACE %s ESTÁ VACIO', $numero_enlace)]);
         }
     }
 
