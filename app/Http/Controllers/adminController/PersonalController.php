@@ -144,7 +144,7 @@ class PersonalController extends Controller
 
         if (!empty(trim($numero_enlace))){
             // actualizamos los registros
-            Personal::WHERE('numero_enlace', $numero_enlace)->UPDATE($array_personal_update);
+            Personal::WHERE('id', $idDirectorio)->UPDATE($array_personal_update);
 
             return redirect()->route('personal.index')
             ->with('success', sprintf('PERSONAL CON EL NÚMERO DE ENLACE  %s  ACTUALIZADO EXTIOSAMENTE!', $numero_enlace));
