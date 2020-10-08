@@ -69,7 +69,7 @@
                                 <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Validación de clave de curso" download="{{$itemData->pdf_curso}}">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" download="{{$data->archivo_alta}}">
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" download="{{$itemData->archivo_alta}}">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             </td>
