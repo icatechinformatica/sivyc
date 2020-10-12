@@ -665,6 +665,10 @@ $(function(){
                 required: true,
                 extension: "pdf"
             },
+            liquido:{
+                required: true,
+                digits: true
+            },
             arch_asistencia:{
                 required: true,
                 extension: "pdf"
@@ -696,6 +700,10 @@ $(function(){
             arch_factura: {
                 required: 'Por favor ingrese la factura',
                 extension: "Por favor ingrese el documento con extension PDF"
+            },
+            liquido:{
+                required: 'Por favor ingrese el liquido final reflejado en la factura',
+                digits: 'Por favor ingrese solo numeros'
             },
             arch_evidencia: {
                 required: 'Por favor ingrese la evidencia',

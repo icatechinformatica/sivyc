@@ -1,13 +1,13 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Formulario de Contrato | Sivyc Icatech')
+@section('title', 'Modificación de Contrato | Sivyc Icatech')
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
         <form action="{{ route('contrato-savemod') }}" method="post" id="registercontrato"  enctype="multipart/form-data">
             @csrf
             <div style="text-align: right;width:65%">
-                <label for="titulocontrato"><h1>Formulario de Contrato</h1></label>
+                <label for="titulocontrato"><h1>Modificación de Contrato</h1></label>
             </div>
             <br><br>
             <div style="text-align: right;width:100%">

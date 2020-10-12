@@ -93,6 +93,16 @@
                                         </a>
                                     @endcan
                                 @endif
+                                @if ($itemData->status == 'Contrato_Rechazado')
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                    @can('contratos.edit')
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Contrato" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}">
+                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
+                                @endif
                                 @if ($itemData->status == 'Contratado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}"]'>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
