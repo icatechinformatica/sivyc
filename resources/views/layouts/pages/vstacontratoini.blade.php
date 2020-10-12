@@ -41,6 +41,17 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>Contratos</h2>
+                    {!! Form::open(['route' => 'contrato-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_contrato" class="form-control mr-sm-2" id="tipo_contrato">
+                            <option value="">BUSQUEDA POR TIPO</option>
+                            <option value="no_memorandum">N° MEMORANDUM</option>
+                            <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
+                            <option value="fecha">FECHA</option>
+                        </select>
+
+                        {!! Form::text('busquedaPorContrato', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
                 </div>
                 <br>
                 <div class="pull-right">
@@ -167,7 +178,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             {{ $querySupre->appends(request()->query())->links() }}
                         </td>
                     </tr>
@@ -175,7 +186,7 @@
             @else
                 <tbody>
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <h4>
                                 <center>
                                     <b>NO HAY REGISTROS DISPONIBLES</b>

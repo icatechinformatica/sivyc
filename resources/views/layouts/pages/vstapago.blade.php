@@ -30,15 +30,24 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Registro de Pagos</h2>
+                    <h2>Solicitudes de Pagos</h2>
+                    {!! Form::open(['route' => 'pago-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_pago" class="form-control mr-sm-2" id="tipo_pago">
+                            <option value="">BUSQUEDA POR TIPO</option>
+                            <option value="no_contrato">N° DE CONTRATO</option>
+                            <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
+                            <option value="fecha_firma">FECHA</option>
+                        </select>
+
+                        {!! Form::text('busquedaPorPago', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
         <div class="pull-left">
         </div>
         <hr style="border-color:dimgray">
-        <br>
-        <h2>Solicitudes de Pago</h2>
         <table  id="table-instructor" class="table table-bordered table-responsive-md Datatables">
             <caption>Lista de Contratos en Espera</caption>
             <thead>

@@ -26,6 +26,17 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>Solicitudes para Suficiencia Presupuestal</h2>
+                    {!! Form::open(['route' => 'supre-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_suficiencia" class="form-control mr-sm-2" id="tipo_suficiencia">
+                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="no_memorandum">N° MEMORANDUM</option>
+                            <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
+                            <option value="fecha">FECHA</option>
+                        </select>
+
+                        {!! Form::text('busquedaporSuficiencia', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                    {!! Form::close() !!}
                 </div>
                 <br>
                 <div class="pull-right">

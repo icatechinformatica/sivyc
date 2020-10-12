@@ -24,4 +24,58 @@ class contratos extends Model
     {
         return $this->belongsTo(InstructorPerfil::class, 'id_folios');
     }
+
+    /**
+     * scope de busqueda por contratos
+     */
+    public function scopeBusquedaPorContrato($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # se valida el tipo
+            if (!empty(trim($buscar))) {
+                # busqueda
+                switch ($tipo) {
+                    case 'no_memorandum':
+                        # busqueda por memorandum...
+                        return $query->WHERE('tabla_supre.no_memo', '=', $buscar);
+                        break;
+                    case 'unidad_capacitacion':
+                        # busqueda por unidad capacitacion...
+                        return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $buscar);
+                        break;
+                    case 'fecha':
+                        # busqueda por fecha ...
+                        return $query->WHERE('tabla_supre.fecha', '=', $buscar);
+                        break;
+                }
+            }
+        }
+    }
+
+    /**
+     * busqueda scope por pagos
+     */
+    public function scopeBusquedaPorPagos($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # se valida el tipo
+            if (!empty(trim($buscar))) {
+                # busqueda
+                switch ($tipo) {
+                    case 'no_contrato':
+                        # busqueda por número de contrato
+                        return $query->WHERE('contratos.numero_contrato', '=', $buscar);
+                        break;
+                    case 'unidad_capacitacion':
+                        # busqueda por unidad de capacitación
+                        return $query->WHERE('contratos.unidad_capacitacion', '=', $buscar);
+                        break;
+                    case 'fecha_firma':
+                        # busqueda por fechas
+                        return $query->WHERE('contratos.fecha_firma', '=', $buscar);
+                        break;
+                }
+            }
+        }
+    }
 }

@@ -28,21 +28,28 @@ use Illuminate\Pagination\Paginator;
 
 class ContratoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $supre = new supre();
+        /**
+         * parametros para iniciar la busqueda
+         */
+        $tipoContrato = $request->get('tipo_contrato');
+        $busqueda_contrato = $request->get('busquedaPorContrato');
         // obtener el usuario y su unidad
         $usuarioUnidad = Auth::user()->unidad;
         // obtener unidades
         $unidades = new tbl_unidades;
         $unidadUsuario = $unidades->WHERE('id', $usuarioUnidad)->FIRST();
+        /**
+         * contratos - contratos
+         */
+        $contratos = new contratos();
 
-        $querySupre = DB::TABLE('tabla_supre')
-                        ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
-                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
-                        ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+        $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
+                        ->LEFTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                        ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->PAGINATE(25, [
                             'tabla_supre.id','tabla_supre.no_memo',
                             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
