@@ -31,9 +31,15 @@ class supreController extends Controller
         return view('layouts.pages.vstasolicitudopc');
     }
 
-     public function solicitud_supre_inicio() {
+    public function solicitud_supre_inicio(Request $request) {
+        /**
+         * parametros de busqueda
+         */
+        $busqueda_suficiencia = $request->get('busquedaporSuficiencia');
+        $tipoSuficiencia = $request->get('tipo_suficiencia');
+
         $supre = new supre();
-        $data = $supre::where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia)->where('id', '!=', '0')->latest()->get();
 
 
 

@@ -34,4 +34,30 @@ class supre extends Model
     {
         return $this->hasMany(contratos::class, 'id_supre');
     }
+    /**
+     * creación de un scope
+     */
+    public function scopeBusquedaSupre($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # si tipo no es vacio se hace la busqueda
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'no_memorandum':
+                        # el tipo
+                        return $query->WHERE('no_memo', '=', $buscar);
+                        break;
+                    case 'unidad_capacitacion':
+                        # unidad de capacitacion
+                        return $query->WHERE('unidad_capacitacion', '=', $buscar);
+                        break;
+                    case 'fecha':
+                        # fecha
+                        return $query->WHERE('fecha', '=', $buscar);
+                        break;
+                }
+            }
+        }
+    }
 }

@@ -27,8 +27,14 @@ class PagoController extends Controller
         return response()->json($newsAll, 200);
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        /**
+         * busqueda de pago
+         */
+        $tipoPago = $request->get('tipo_pago');
+        $busqueda_pago = $request->get('busquedaPorPago');
+
         $contrato = new contratos();
         // obtener el usuario y su unidad
         $unidadUser = Auth::user()->unidad;
@@ -36,7 +42,7 @@ class PagoController extends Controller
         $unidades = new tbl_unidades;
         $unidadPorUsuario = $unidades->WHERE('id', $unidadUser)->FIRST();
 
-        $contratos_folios = $contrato::WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
+        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago)->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')

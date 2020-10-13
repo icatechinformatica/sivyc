@@ -364,3 +364,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
 
 });
+
+
+
+Route::get('dashboard/principal', function() {
+    return view('theme.principal.indice');
+});
