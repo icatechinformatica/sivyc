@@ -136,7 +136,7 @@
                         </tr>
                         <tr>
                             <td>RFC: {{$data->rfc}}</td>
-                            <td>Importe: {{$data->importe_total}}</td>
+                            <td>Importe: {{$data->liquido}}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -42,7 +42,7 @@
             </div>
             <div class="form-group col-md-2">
                 <label for="dropfecha_memo">Cantidad</label>
-            <input name="cantidad_letras1" id="cantidad_letras1" type="text" disabled value="{{$contratos->cantidad_numero}}" class="form-control">
+            <input name="cantidad_letras1" id="cantidad_letras1" type="text" disabled value="{{$datapago->liquido}}" class="form-control">
             </div>
         </div>
         <div class="form-row">
@@ -93,7 +93,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Validad Solicitud</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Validar Solicitud</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

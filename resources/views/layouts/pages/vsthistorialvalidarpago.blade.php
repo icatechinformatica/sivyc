@@ -42,7 +42,7 @@
             </div>
             <div class="form-group col-md-2">
                 <label for="dropfecha_memo">Cantidad</label>
-            <input name="cantidad_letras1" id="cantidad_letras1" type="text" disabled value="{{$contratos->cantidad_numero}}" class="form-control">
+            <input name="cantidad_letras1" id="cantidad_letras1" type="text" disabled value="{{$datapago->liquido}}" class="form-control">
             </div>
         </div>
         <div class="form-row">

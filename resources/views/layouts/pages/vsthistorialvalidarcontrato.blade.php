@@ -43,7 +43,7 @@
             @else
                 <a class="btn btn-danger" disabled>RFC/Constancia Fiscal</a><br>
             @endif
-            @if ($data->archivo_curp != NULL)
+            @if ($data->doc_validado != NULL)
                 <a class="btn btn-info" href={{$data->doc_validado}} download>Validación de Suficiencia Presupuestal</a><br>
             @else
                 <a class="btn btn-danger" disabled>Validación Suficiencia Presupuestal</a><br>
@@ -72,7 +72,7 @@
         @if ($data->arch_factura != NULL)
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <a class="btn btn-danger form-control" href={{$data->arch_factura}} download>Factura/Anexo PDF</a><br>
+                    <a class="btn btn-info form-control" href={{$data->arch_factura}} download>Factura/Anexo PDF</a><br>
                 </div>
             </div>
         @endif

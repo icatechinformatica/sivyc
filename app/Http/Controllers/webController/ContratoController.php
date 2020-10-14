@@ -51,7 +51,7 @@ class ContratoController extends Controller
                         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->PAGINATE(25, [
-                            'tabla_supre.id','tabla_supre.no_memo',
+                            'tabla_supre.id','tabla_supre.no_memo','tabla_supre.doc_validado',
                             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
                             'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                             'contratos.docs','contratos.id_contrato','contratos.fecha_status', 'tbl_cursos.termino AS fecha_termino',
@@ -324,6 +324,86 @@ class ContratoController extends Controller
 
     }
 
+    public function mod_solicitud_pago($id){
+        $X = new contratos();
+        $folio = new folio();
+        $dataf = $folio::where('id_folios', '=', $id)->first();
+        $datac = $X::where('id_folios', '=', $id)->first();
+        $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins')
+                                ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
+                                ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
+
+        $datap = pago::WHERE('id_contrato', '=', $datac->id_contrato)->FIRST();
+        $directorio = contrato_directorio::where('id_contrato', '=', $datac->id_contrato)->FIRST();
+        $elaboro = directorio::WHERE('id', '=', $directorio->solpa_elaboro)->FIRST();
+        $director = directorio::WHERE('id', '=', $directorio->contrato_iddirector)->FIRST();
+        $para = directorio::WHERE('id', '=', $directorio->solpa_para)->FIRST();
+        $ccp1 = directorio::WHERE('id', '=', $directorio->solpa_ccp1)->FIRST();
+        $ccp2 = directorio::WHERE('id', '=', $directorio->solpa_ccp2)->FIRST();
+        $ccp3 = directorio::WHERE('id', '=', $directorio->solpa_ccp3)->FIRST();
+
+        return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3'));
+    }
+
+    public function save_mod_solpa(Request $request){
+
+        $pago = pago::find($request->id_pago);
+        $pago->no_memo = $request->no_memo;
+        $pago->id_contrato = $request->id_contrato;
+        $pago->liquido = $request->liquido;
+        $pago->fecha_status = carbon::now();
+
+        if($request->arch_asistencia != NULL)
+        {
+            $file = $request->file('arch_asistencia'); # obtenemos el archivo
+            $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
+            // guardamos en la base de datos
+            $pago->arch_asistencia = trim($urldocs);
+        }
+
+        if($request->arch_evidencia != NULL)
+        {
+            $file = $request->file('arch_evidencia'); # obtenemos el archivo
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
+            // guardamos en la base de datos
+            $pago->arch_evidencia = trim($urldocs);
+        }
+
+        $pago->save();
+
+        contrato_directorio::where('id_contrato', '=', $request->id_contrato)
+        ->update(['solpa_elaboro' => $request->id_elabora,
+                  'solpa_para' => $request->id_destino,
+                  'solpa_ccp1' => $request->id_ccp1,
+                  'solpa_ccp2' => $request->id_ccp2,
+                  'solpa_ccp3' => $request->id_ccp3]);
+
+        if($request->arch_factura != NULL)
+        {
+            $file = $request->file('arch_factura'); # obtenemos el archivo
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'factura'); #invocamos el método
+            // guardamos en la base de datos
+            $contrato = contratos::find($request->id_contrato);
+            $contrato->arch_factura = trim($urldocs);
+            $contrato->save();
+        }
+
+        if ($request->file('arch_bancario') != null)
+        {
+            $banco = $request->file('arch_bancario'); # obtenemos el archivo
+            $urlbanco = $this->pdf_upload($banco, $request->id_instructor, 'banco'); # invocamos el método
+            $instructor = instructor::find($request->id_instructor);
+            $instructor->archivo_bancario = trim($urlbanco);
+            $instructor->save();
+        }
+
+        folio::where('id_folios', '=', $request->id_folio)
+        ->update(['status' => 'Verificando_Pago']);
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Solicitud de Pago Modificado');
+    }
+
     public function historial_validado($id){
         $data = contratos::SELECT('contratos.id_contrato','contratos.numero_contrato','contratos.cantidad_letras1','contratos.fecha_firma',
                                  'contratos.municipio','contratos.arch_factura','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
@@ -426,7 +506,7 @@ class ContratoController extends Controller
                               'instructores.apellidoPaterno','instructores.apellidoMaterno',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','pagos.created_at','pagos.no_memo')
+                              'contratos.id_contrato','pagos.created_at','pagos.no_memo','pagos.liquido')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')

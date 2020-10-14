@@ -36,16 +36,30 @@ $(function(){
             $('#contrato_pdf').attr("href", "/contrato/" + id['1']);
             $('#docs_pdf').attr("class", "btn btn-danger");
             $('#docs_pdf').attr("href", id['2']);
-            $('#valsupre_pdf').attr("class", "btn btn-danger");
-            $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['3']);
+            if(id['5'] != "")
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger");
+                $('#valsupre_pdf').attr("href", id['5']);
+            }
+            else
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            }
         }
         else if(id['4'] == 'Pago_Rechazado' || id['4'] == 'Validado')
         {
             $('#sol_pdf').attr("class", "btn btn-danger disabled");
             $('#contrato_pdf').attr("class", "btn btn-danger disabled");
             $('#docs_pdf').attr("class", "btn btn-danger disabled");
-            $('#valsupre_pdf').attr("class", "btn btn-danger");
-            $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['3']);
+            if(id['5'] != "")
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger");
+                $('#valsupre_pdf').attr("href", id['5']);
+            }
+            else
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            }
         }
         else if(id['4'] == 'Contratado')
         {
@@ -54,7 +68,15 @@ $(function(){
             $('#contrato_pdf').attr("href", "/contrato/" + id['1']);
             $('#docs_pdf').attr("class", "btn btn-danger disabled");
             $('#valsupre_pdf').attr("class", "btn btn-danger");
-            $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['3']);
+            if(id['5'] != "")
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger");
+                $('#valsupre_pdf').attr("href", id['5']);
+            }
+            else
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            }
         }
         else if(id['4'] == 'Validando_Contrato')
         {
@@ -62,7 +84,15 @@ $(function(){
             $('#contrato_pdf').attr("class", "btn btn-danger disabled");
             $('#docs_pdf').attr("class", "btn btn-danger disabled");
             $('#valsupre_pdf').attr("class", "btn btn-danger");
-            $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['3']);
+            if(id['5'] != "")
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger");
+                $('#valsupre_pdf').attr("href", id['5']);
+            }
+            else
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            }
         }
     });
 
