@@ -58,7 +58,7 @@
                 </div>
                 @endif
                 <div class="form-group col-md-3">
-                    <label for="inputliquido" class="control-label">Liquido en Factura</label>
+                    <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
                     <input type="text" name="liquido" id="liquido" class="form-control">
                 </div>
                 <div class="form-group col-md-3">

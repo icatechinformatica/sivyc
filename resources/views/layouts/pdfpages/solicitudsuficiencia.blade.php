@@ -93,7 +93,7 @@
                 <br>DIRECCIÓN DE PLANEACIÓN
                 <br>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO
                 <br>FORMATO DE SOLICITUD DE SUFICIENCIA PRESUPUESTAL
-                <br>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}} anexo de Memorándum No.{{$data2->no_memo}}</b> </div>
+                <br>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}} ANEXO DE MEMORÁNDUM No.{{$data2->no_memo}}</b> </div>
             </div>
             <br><br>
             <div class="form-row">

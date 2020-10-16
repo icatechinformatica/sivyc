@@ -71,25 +71,43 @@
                         <td>
                             @switch($itemData->status)
                                 @case('Verificando_Pago')
-                                    <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>PDF</a>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
                                     @can('verificar_pago.create')
-                                        <a class="btn btn-primary" href="{{route('pago.verificarpago', ['id' => $itemData->id_contrato])}}">Verificar</a>
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Verificar Pago" href="{{route('pago.verificarpago', ['id' => $itemData->id_contrato])}}">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
                                     @endcan
                                 @break
                                 @case('Pago_Verificado')
-                                    <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>PDF</a>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
                                     @can('pagos.create')
-                                        <a class="btn btn-success" href="{{route('pago-crear', ['id' => $itemData->id_contrato])}}">Confirmar Pago</a>
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Confirmar Pago" href="{{route('pago-crear', ['id' => $itemData->id_contrato])}}">
+                                            <i class="fa fa-money" aria-hidden="true"></i>
+                                        </a>
                                     @endcan
-                                    <a class="btn btn-primary" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">Historial de Validación</a>
+                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
                                 @break
                                 @case('Pago_Rechazado')
-                                    <a class="btn btn-primary" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">Historial de Validación</a>
+                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
                                 @break
                                 @case('Finalizado')
-                                    <a class="btn btn-danger" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>PDF</a>
-                                    <a class="btn btn-success" href="{{route('mostrar-pago', ['id' => $itemData->id_contrato])}}" target="_blank">Resumen de Pago</a>
-                                    <a class="btn btn-primary" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">Historial de Validación</a>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
+                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Resumen de Pago" href="{{route('mostrar-pago', ['id' => $itemData->id_contrato])}}" target="_blank">
+                                        <i class="fa fa-money" aria-hidden="true"></i>
+                                    </a>
+                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
                                 @break
                             @endswitch
                         </td>

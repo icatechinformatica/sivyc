@@ -102,7 +102,7 @@
                 <br><br><b>{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}.</b>
                 <br>{{$para->puesto}}.
                 <br>Presente.
-                <br><p class="text-justify">en virtud de haber cumplido con los requisitos de apertura de curso y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente al curso que a continuación se detalla:</p>
+                <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura de curso y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente al curso que a continuación se detalla:</p>
                 <div align=center>
                     <FONT SIZE=2><b>DATOS DEL CURSO</b></FONT>
                 </div>

@@ -91,7 +91,7 @@
                 <br>{{$getdestino->puesto}}
                 <br>Presente.
 
-                <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratacion de instructores para la imparticion de cursos de la Unidad de Capacitacion <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los numeros de folio que se indican en el cuadro analitico siguiente y acorde a lo que se describe en el formato anexo.</p>
+                <br><br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de cursos de la Unidad de Capacitación <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
                 <br><br><div align=justify> <b>Números de Folio</b></div>
 
                 <table class="table table-bordered">
@@ -113,7 +113,7 @@
                     </tbody>
                 </table>
 
-                <br><p class="text-left"><p>Sin mas por el momento, aprovecho la ocacion para enviarle un cordial saludo.</p></p>
+                <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
                 <br><p class="text-left"><p>Atentamente.</p></p>
                 <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
                 <br><b>{{$getremitente->puesto}}</b>
