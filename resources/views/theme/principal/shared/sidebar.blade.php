@@ -38,7 +38,7 @@
                     Dashboard Example 1
                 </a>
             </li>
-            <li class="app-sidebar__heading">UI Components</li>
+            <li class="app-sidebar__heading">Usuarios</li>
             <li>
                 <a href="#">
                     <i class="metismenu-icon pe-7s-diamond"></i>
@@ -177,11 +177,11 @@
                     Tables
                 </a>
             </li>
-            <li class="app-sidebar__heading">Widgets</li>
+            <li class="app-sidebar__heading">Recursos Humanos</li>
             <li>
-                <a href="dashboard-boxes.html">
+                <a href="{{ route('personal.index') }}">
                     <i class="metismenu-icon pe-7s-display2"></i>
-                    Dashboard Boxes
+                    Directorio de Empleados
                 </a>
             </li>
             <li class="app-sidebar__heading">Forms</li>
