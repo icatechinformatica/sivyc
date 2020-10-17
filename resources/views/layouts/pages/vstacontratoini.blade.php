@@ -55,6 +55,9 @@
                 </div>
                 <br>
                 <div class="pull-right">
+                    <a class="btn btn-info  m-1" title="Está a tiempo" data-toggle="modal" data-target="#mymodalSemaforo">
+                        Información sobre Semaforo
+                    </a>
                 </div>
             </div>
         </div>
@@ -214,33 +217,69 @@
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
-      <!-- Modal content-->
+        <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Archivos PDF Generables</h4>
                 </div>
-            <div class="modal-body" style="text-align:center">
-                <form action="" id="pdfForm" method="get">
-                    @csrf
-                <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="sol_pdf" name="sol_pdf" href="#" target="_blank">Solicitud de Pago</a><br>
+                <div class="modal-body" style="text-align:center">
+                    <form action="" id="pdfForm" method="get">
+                        @csrf
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="sol_pdf" name="sol_pdf" href="#" target="_blank">Solicitud de Pago</a><br>
+                        </div>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
+                        </div>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="docs_pdf" name="docs_pdf" href="#" target="_blank" download>Documentos para solicitud de pago</a>
+                        </div>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                        </div>
+                    </form>
                 </div>
-                <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                 </div>
-                <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="docs_pdf" name="docs_pdf" href="#" target="_blank" download>Documentos para solicitud de pago</a>
-                </div>
-                <div style="text-align:center" class="form-group">
-                    <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-  </div>
+    <!--Modal Ends-->
+    <!--Modal Semaforo-->
+    <div class="modal fade" id="mymodalSemaforo" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">INFORMACIÓN SOBRE EL SEMAFORO</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+
+                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="La fecha de vencimiento ha pasado por {{$itemData->fecha_dif }} días">
+                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                </a>
+                    <b>LA FECHA DEL CURSO YA HA FINALIZADO O TERMINADO</b>
+                <br>
+                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="La fecha de vencimiento está cerca faltán {{$itemData->fecha_dif }} días">
+                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                </a>
+                    <b>EL CURSO TIENE TRES DÍAS PARA FINALIZAR</b>
+                <br>
+                <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Está a tiempo">
+                    <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+                </a>
+                    <b>LAS FECHAS DE FINALIZACIÓN DEL CURSO ESTÁN EN TIEMPO Y FORMA</b>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!--Modal Semaforo Ends-->
 <br>
 @endsection
