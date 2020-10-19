@@ -46,10 +46,10 @@ class ContratoController extends Controller
         $contratos = new contratos();
 
         $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
-                        ->LEFTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                        ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                        ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                        ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                        ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                        ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                        ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->PAGINATE(25, [
                             'tabla_supre.id','tabla_supre.no_memo','tabla_supre.doc_validado',
                             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
