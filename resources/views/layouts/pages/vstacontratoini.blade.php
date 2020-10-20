@@ -233,10 +233,7 @@
                             <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
                         </div>
                         <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="docs_pdf" name="docs_pdf" href="#" target="_blank" download>Documentos para solicitud de pago</a>
-                        </div>
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                            <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal</a><br>
                         </div>
                     </form>
                 </div>
