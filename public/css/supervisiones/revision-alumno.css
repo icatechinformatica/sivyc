@@ -1,0 +1,35 @@
+/* Elaboró Romelia Pérez Nangüelú - rpnanguelu@gmail.com*/
+ul.gallery{    
+margin-left: 2vw;     
+margin-right:2vw;  
+}    
+
+.zoom {      
+-webkit-transition: all 0.35s ease-in-out;    
+-moz-transition: all 0.35s ease-in-out;    
+transition: all 0.35s ease-in-out;     
+cursor: -webkit-zoom-in;      
+cursor: -moz-zoom-in;      
+cursor: zoom-in;  
+}     
+
+.zoom:hover,  
+.zoom:active,   
+.zoom:focus {
+
+
+-ms-transform: scale(4);    
+-moz-transform: scale(4);  
+-webkit-transform: scale(4);  
+-o-transform: scale(4);  
+transform: scale(4);    
+position:relative;      
+z-index:100;  
+}
+
+@media only screen and (max-width: 768px) {   
+ul.gallery {      
+margin-left: 15vw;       
+margin-right: 15vw;
+}
+.DivName {cursor: pointer}

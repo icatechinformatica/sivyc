@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'has.role' => \Caffeinated\Shinobi\Middleware\UserHasRole::class,
         'cors' => \App\Http\Middleware\Cors::class,
+        'checktoken' => \App\Http\Middleware\CheckToken::class,
     ];
 
     /**

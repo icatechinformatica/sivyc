@@ -251,6 +251,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', function() {
         return view('layouts.pages.home');
     })->name('home');
+
+
+    /*
+    Route::get('/', function () {
+        return view('layouts.pages.home');
+    });
+    Route::get('/home', function() {
+        return view('layouts.pages.home');
+    })->name('home');
     /***
      * Desarrollado por Orlando
      */
@@ -318,43 +327,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('financiero/indice', 'webController\FinancieroController@index')
            ->name('financiero.index');
 
-    Route::get('reportes/formato_t_reporte/index', function () {
-        return view('layouts.pages.reportes.formato_t_reporte');
-    })->name('reportes.formatoT');
-
-    /* SUPERVISIONES INSTRUCTORES*/
-    Route::get('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');
-    Route::post('/supervision/instructores', 'supervisionController\SupervisionInstructorController@index')->name('supervision.instructores');
-    //Route::post('/supervision/instructor/guardar', 'webController\SupervisionInstructorController@store')->name('supervision-instructor-guardar')->middleware('can:SupervisionInstructor.store');
-
-    Route::get('/supervision/url/instructor/{id}', 'supervisionController\SupervisionInstructorController@generarUrl')->name('supervision-url-instructor');
-    Route::get('/supervision/revision/instructor/{id}', 'supervisionController\SupervisionInstructorController@revision')->name('supervision-revision-instructor');
-    Route::post('/supervision/revision/guardar', 'supervisionController\SupervisionInstructorController@update')->name('supervision.revision.guardar');
-    //Route::get('/supervision/revision/instructor/{id}', 'supervisionController\SupervisionInstructorController@revision')->name('supervision-revision-instructor');
-
-    /*SUPERVISIONES ALUMNOS*/
-    Route::get('/supervision/lst/alumno/{id}', 'supervisionController\SupervisionAlumnoController@lista')->name('supervision-lst-alumnos');
-    Route::get('/supervision/url/alumno/{id}', 'supervisionController\SupervisionAlumnoController@generarUrl')->name('supervision-url-alumno');
-    Route::get('/supervision/revision/alumno/{id}', 'supervisionController\SupervisionAlumnoController@revision')->name('supervision-revision-alumno');
-    Route::post('/supervision/revision/guardar-alumno', 'supervisionController\SupervisionAlumnoController@update')->name('supervision.revision.guardar.alumno');
-
-    /*SUPERVISION UNIDADES*/
-    Route::get('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
-    Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
-    Route::get('/supervision/unidades/detalle/{id}', 'supervisionController\UnidadesController@detalle')->name('supervision.unidades.detalle');
-    //Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');
-
-    Route::get('/formato-tecnico', 'indicadoresController\FormatoTecnicoController@index')->name('indicadores.formato-tecnico');
-    Route::post('/formato-tecnico', 'indicadoresController\FormatoTecnicoController@index')->name('indicadores.formato-tecnico');
-    Route::get('/formato-tecnico/table', 'indicadoresController\FormatoTecnicoController@table')->name('indicadores.formato-tecnico.table');
-
-
-   /* Route::get('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
-    Route::post('/tablero', 'indicadoresController\tableroController@index')->name('indicadores.tablero');
-    Route::get('/tablero/table', 'indicadoresController\tableroController@table')->name('indicadores.tablero.table');*/
-
-    /*TABLERO DE CONTROL*/
-
+        /*TABLERO DE CONTROL*/
     Route::get('/tablero', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::get('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::post('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
@@ -365,10 +338,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
     Route::post('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
 
+
+     /* SUPERVISIONES INSTRUCTORES*/
+    Route::get('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
+    Route::post('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
+
+    Route::get('/supervision/instructor/url', 'supervisionController\UrlController@generarUrl')->name('supervision.instructor.url');
+    Route::get('/supervision/instructor/revision/{id}', 'supervisionController\InstructorController@revision')->name('supervision.instructor.revision');
+    Route::post('/supervision/instructor/guardar', 'supervisionController\InstructorController@update')->name('supervision.instructor.guardar');
+
+    /*SUPERVISIONES ALUMNOS*/
+    Route::get('/supervision/alumno/lst', 'supervisionController\AlumnoController@lista')->name('supervision.alumno.lst');
+    Route::get('/supervision/alumno/url', 'supervisionController\UrlController@generarUrl')->name('supervision.alumno.url');
+
+    Route::get('/supervision/alumno/revision/{id}', 'supervisionController\AlumnoController@revision')->name('supervision.alumno.revision');
+    Route::post('/supervision/alumno/guardar', 'supervisionController\AlumnoController@update')->name('supervision.alumno.guardar');
+
+
 });
 
+Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');
+Route::post('/form/instructor-guardar', 'supervisionController\client\frmInstructorController@guardar')->middleware('checktoken');
+Route::get('/form/alumno/{url}', 'supervisionController\UrlController@form')->name('form.alumno');
+Route::post('/form/alumno-guardar', 'supervisionController\client\frmAlumnoController@guardar')->middleware('checktoken');
+Route::get('/form/msg/{id}', 'supervisionController\UrlController@msg');
 
-
-Route::get('dashboard/principal', function() {
-    return view('theme.principal.indice');
-});
