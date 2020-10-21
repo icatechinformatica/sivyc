@@ -28,7 +28,8 @@
 
                 <div class="pull-right">
                     @can('alumnos.inscripcion-paso1')
-                        <a class="btn btn-success btn-lg" href="{{route('alumnos.preinscripcion')}}">Nuevo</a>
+                        <!--<a class="btn btn-success btn-lg" href="{{route('alumnos.preinscripcion')}}">Nuevo</a>-->
+                        <a class="btn btn-success btn-lg" data-toggle="modal" data-target="#nuevaPreinscripcion">Nuevo</a>
                     @endcan
                 </div>
             </div>
@@ -113,4 +114,32 @@
         <br>
     </div>
     <br>
+    <!-- MODAL -->
+    <div class="modal fade" id="nuevaPreinscripcion" tabindex="-1" role="dialog" aria-labelledby="nuevaPreinscripcionTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ELEGIR TIPO DE ASPIRANTE</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm">
+                        <i class="fa fa-male" aria-hidden="true"></i>
+                    </a>
+                        <b>CAPTURA DE PERFIL CON ANTECEDENTES PENALES (CERESO)</b>
+                    <br>
+                    <a class="btn btn-success btn-circle m-1 btn-circle-sm">
+                        <i class="fa fa-male" aria-hidden="true"></i>
+                    </a>
+                        <b>CAPTURA DE PERFIL SIN ANTECEDENTES PENALES</b>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

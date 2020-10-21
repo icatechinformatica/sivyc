@@ -75,6 +75,7 @@ class AlumnoController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
         $curp = strtoupper($request->input('curp'));
         $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET(['curp']);
         // obtener el usuario que agrega
