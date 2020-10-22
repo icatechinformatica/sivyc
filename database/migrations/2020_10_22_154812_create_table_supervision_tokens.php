@@ -14,7 +14,7 @@ class CreateTableSupervisionTokens extends Migration
     public function up()
     {
         Schema::create('supervision_tokens', function (Blueprint $table) {
-            $table->bigIncrements('');
+            $table->bigIncrements('id');
             $table->string('url_token', 255)->nullable();
             $table->string('tmp_token', 255)->nullable();
             $table->bigInteger('ttl')->nullable();
