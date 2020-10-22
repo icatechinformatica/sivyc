@@ -14,7 +14,7 @@ class CreateTableSupervisionInstructoresTable extends Migration
     public function up()
     {
         Schema::create('supervision_instructores', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('nombre', 150)->nullable();
             $table->string('apellido_paterno', 150)->nullable();
             $table->string('apellido_materno', 150)->nullable();
