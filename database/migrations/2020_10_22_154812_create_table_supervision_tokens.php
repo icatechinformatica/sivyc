@@ -15,13 +15,13 @@ class CreateTableSupervisionTokens extends Migration
     {
         Schema::create('supervision_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('url_token', 255)->nullable(true);
-            $table->string('tmp_token', 255)->nullable(true);
-            $table->bigInteger('ttl')->nullable(true);
-            $table->bigInteger('id_supervisor')->nullable(true);
-            $table->bigInteger('id_curso')->nullable(true);
-            $table->bigInteger('id_alumno')->nullable(true);
-            $table->bigInteger('id_instructor')->nullable(true);
+            $table->string('url_token', 255)->nullable();
+            $table->string('tmp_token', 255)->nullable();
+            $table->bigInteger('ttl')->nullable();
+            $table->bigInteger('id_supervisor')->nullable();
+            $table->bigInteger('id_curso')->nullable();
+            $table->bigInteger('id_alumno')->nullable();
+            $table->bigInteger('id_instructor')->nullable();
             $table->timestamps();
         });
     }
