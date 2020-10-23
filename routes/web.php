@@ -342,13 +342,12 @@ Route::middleware(['auth'])->group(function () {
      /* SUPERVISIONES INSTRUCTORES*/
     Route::get('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
     Route::post('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
-
-    Route::get('/supervision/instructor/url', 'supervisionController\UrlController@generarUrl')->name('supervision.instructor.url');
+    Route::get('/supervisiones/instructor/urls', 'supervisionController\UrlController@generarUrl')->name('supervision.instructor.url');
     Route::get('/supervision/instructor/revision/{id}', 'supervisionController\InstructorController@revision')->name('supervision.instructor.revision');
-    Route::post('/supervision/instructor/guardar', 'supervisionController\InstructorController@update')->name('supervision.instructor.guardar');
+    Route::post('/supervision/instructores/guardar', 'supervisionController\InstructorController@update')->name('supervision.instructor.guardar');
 
     /*SUPERVISIONES ALUMNOS*/
-    Route::get('/supervision/alumno/lst', 'supervisionController\AlumnoController@lista')->name('supervision.alumno.lst');
+    Route::get('/supervisiones/alumno/lst', 'supervisionController\AlumnoController@lista')->name('supervision.alumno.lst');
     Route::get('/supervision/alumno/url', 'supervisionController\UrlController@generarUrl')->name('supervision.alumno.url');
 
     Route::get('/supervision/alumno/revision/{id}', 'supervisionController\AlumnoController@revision')->name('supervision.alumno.revision');

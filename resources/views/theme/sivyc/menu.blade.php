@@ -70,6 +70,20 @@
                         </a>
                     </li>
                 @endcan
+                <!--AGREGAR NUEVO ELEMENTO EN EL MENU-->
+                @can('supervision.escolar')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Supervisiones
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @can('supervision.escolar')
+                                <a class="dropdown-item" href="{{route('supervision.escolar')}}">Escolar</a>
+                            @endcan
+                        </div>
+                    </li>
+                @endcan
+                <!--AGREGAR NUEVO ELEMENTO EN EL MENU END-->
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">

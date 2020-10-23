@@ -40,16 +40,15 @@
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-        @yield("content_script_css")
+
+
     </head>
 
     <body>
         <!--HEADER DE  LA PAGINA-->
         @include("theme.sivyc.header")
         <!--HEADER DE LA PAGINA FIN-->
-        <!--MENU-->
-        @include("theme.sivyc.menu")
-        <!--MENU-->
+        
 
         <!-- PAGINA -->
         @yield("content")
@@ -93,9 +92,6 @@
         <script src="{{ asset("js/validate/numberTostring.js") }}"></script>
         <script src="{{ asset("js/scripts/datepicker-es.js") }}"></script>
         <script src="{{ asset("js/validate/sid-mod.js") }}"></script>
-        <!--charts-->
-        <!--Load the AJAX API-->
-        @yield('script_content_js')
     </body>
 
 </html>
