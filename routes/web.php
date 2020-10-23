@@ -351,7 +351,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supervision/alumno/url', 'supervisionController\UrlController@generarUrl')->name('supervision.alumno.url');
 
     Route::get('/supervision/alumno/revision/{id}', 'supervisionController\AlumnoController@revision')->name('supervision.alumno.revision');
-    Route::post('/supervision/alumno/guardar', 'supervisionController\AlumnoController@update')->name('supervision.alumno.guardar');
+    Route::post('/supervisiones/alumnos/guardar', 'supervisionController\AlumnoController@update')->name('supervision.alumno.guardar');
 
 
 });
