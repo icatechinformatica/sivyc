@@ -44,7 +44,7 @@
                 <div class="form-group col-md-4">
                     <label for="clavecurso" class="control-label">Area de Conocimiento del Instructor</label>
                     <select class="form-control" name="perfil_instructor" disabled id="perfil_instructor">
-                        <option value={{$perfil_sel->id}}>{{$perfil_sel->nombre}}</option>
+                        <option value={{$perfil_sel->id}}>{{$perfil_sel->nombre_especialidad}}</option>
                         @foreach ( $perfil_prof as $value )
                             <option value={{$value->id_espins}}>{{$value->nombre_especialidad}}</option>
                         @endforeach

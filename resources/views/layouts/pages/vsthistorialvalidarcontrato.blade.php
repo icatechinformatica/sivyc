@@ -69,13 +69,6 @@
                 <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->tipo_honorario}}">
             </div>
         </div>
-        @if ($data->arch_factura != NULL)
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <a class="btn btn-info form-control" href={{$data->arch_factura}} download>Factura/Anexo PDF</a><br>
-                </div>
-            </div>
-        @endif
         <hr style="border-color:dimgray">
         <h2>Datos del Curso</h2>
         <div class="form-row">

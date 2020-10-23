@@ -148,7 +148,7 @@ class ContratoController extends Controller
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
-        $perfil_sel = $especialidad::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
+        $perfil_sel = InstructorPerfil::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
 
         $perfil_prof = InstructorPerfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
                                 ->WHERE('instructor_perfil.numero_control', '=', $data->id)
