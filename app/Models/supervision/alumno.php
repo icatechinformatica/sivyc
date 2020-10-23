@@ -8,7 +8,7 @@ class alumno extends Model
 {
     protected $table = 'supervision_alumnos';
 
-    protected $fillable = ['id','nombre','apellidoPaterno','apellidoMaterno','edad',
+    protected $fillable = ['id','nombre','apellido_paterno','apellido_materno','edad',
     'escolaridad','fecha_inscripcion','documentos','curso','numero_apertura','fecha_autorizacion',
     'modalidad','fecha_inicio','fecha_termino','hinicio','hfin','tipo','total_mujeres','total_hombres',
     'monto_honorarios','lugar_curso','id_tbl_cursos','created_at'];
@@ -16,12 +16,12 @@ class alumno extends Model
     protected $hidden = [ 'updated_at'];
 
             /**
-     * método slug
+     * mï¿½todo slug
      */
     protected function getSlugAttribute($value): string {
         return Str::slug($value, '-');
     }
-    
+
     public function setFechaAttribute($value) {
        // return Carbon::parse($value)->format('Y-m-d');
     }
@@ -31,22 +31,22 @@ class alumno extends Model
     {
        // return Carbon::parse($value)->format('d-m-Y');
     }
-    
-    public function scopeFiltrar($query, $campo, $valor){        
-        if (!empty($campo) AND !empty(trim($valor))) {                     
+
+    public function scopeFiltrar($query, $campo, $valor){
+        if (!empty($campo) AND !empty(trim($valor))) {
             switch ($campo) {
-                case 'id_tbl_cursos':                      
+                case 'id_tbl_cursos':
                     $query = $query->where('id_tbl_cursos',$valor);
-                    break;                                  
-            }           
-            
+                    break;
+            }
+
             return $query->orderBy('created_at', 'DESC');
         }
     }
-    
+
     /**
      * obtener los perfiles del instructor
-     
+
     public function perfil()
     {
         return $this->hasMany(InstructorPerfil::class);

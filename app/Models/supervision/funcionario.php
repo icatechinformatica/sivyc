@@ -1,5 +1,5 @@
 <?php
-// Elaboró Romelia Pérez Nangüelú 
+// Elaborï¿½ Romelia Pï¿½rez Nangï¿½elï¿½
 // rpnanguelu@gmail.com
 namespace App\Models\supervision;
 
@@ -14,17 +14,16 @@ class funcionario extends Model
     'antiguedad_icatech','categoria','puesto','adscripcion_nominal','adscripcion_comision',
     'jefe_nominal','jefe_comision','tiempo_comision','mobiliario_equipo','reporta_actividades',
     'comision_fuera','cuantas_personas','actividades'];
-    
-    protected $hidden = [ 'created_at'];
-    protected $hidden = [ 'updated_at'];
 
-            /**
-     * método slug
+    protected $hidden = [ 'created_at', 'updated_at'];
+
+    /**
+     * mï¿½todo slug
      */
     protected function getSlugAttribute($value): string {
         return Str::slug($value, '-');
     }
-    
+
     public function setFechaAttribute($value) {
        // return Carbon::parse($value)->format('Y-m-d');
     }
@@ -34,6 +33,6 @@ class funcionario extends Model
     {
        // return Carbon::parse($value)->format('d-m-Y');
     }
-    
-    
+
+
 }
