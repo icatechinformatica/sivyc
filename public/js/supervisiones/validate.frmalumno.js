@@ -44,7 +44,7 @@
                     required: true 
             },
             cuota: { 
-                    required: true,digits: true
+                    required: true
             },            
             fecha_inicio: { 
                     required: true 

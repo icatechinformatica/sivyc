@@ -29,10 +29,19 @@ class AlumnoController extends Controller
 
     public function lista(Request $request){
        $id = $request->get("id");
-       $data = DB::table('tbl_inscripcion')->select('id','alumno')->where('id_curso',$id)->get();
+       $data = DB::table('tbl_inscripcion')->select('tbl_inscripcion.id','tbl_inscripcion.alumno','token_a.id as token_alumno');
+       $data = $data->leftJoin('supervision_tokens as token_a' ,function($join)use($id){
+                $join->on('tbl_inscripcion.id', '=', 'token_a.id_alumno'); 
+                $join->where('token_a.id_curso',$id);                
+            });
+       $data = $data->where('tbl_inscripcion.id_curso',$id)->get();
+            
        $str = "";
        foreach($data as $item){
-            $str .= "<a href='#' onclick='generarURL(".$item->id.",\"alumno\");' class='list-group-item list-group-item-action' data-toggle='modal'  data-target='#modalURL'>".$item->alumno."</a>";
+            if($item->token_alumno)
+                $str .= "<a href='#' onclick='generarURL(".$item->id.",\"alumno\");' class='list-group-item list-group-item-action bg-warning' data-toggle='modal'  data-target='#modalURL'>".$item->alumno."</a>";
+            else
+                $str .= "<a href='#' onclick='generarURL(".$item->id.",\"alumno\");' class='list-group-item list-group-item-action' data-toggle='modal'  data-target='#modalURL'>".$item->alumno."</a>";
        }
        if(!$str) $str = "NO SE ENCONTR&Oacute; REGISTROS QUE MOSTRAR";
        return $str;

@@ -26,7 +26,7 @@
                      <td>{{ $item->termino }}</td>
                      <td>{{ $item->hini }} - {{ $item->hfin }}</td>
                      <td>
-                        <button type="button" id="btnURL"  name="btnURL" onclick="generarURL({{$item->id}},'instructor');"  class="btn" data-toggle="modal">
+                        <button type="button" id="btnURL"  name="btnURL" onclick="generarURL({{$item->id}},'instructor');"  class="btn @if($item->token_instructor){{'bg-warning'}}@endif" data-toggle="modal">
                           URL
                         </button>
 
@@ -39,7 +39,7 @@
                         @endif
                      </td>
                      <td>
-                        <button type="button" id="btnURL"  name="btnURL" onclick="generarListaAlumnos({{$item->id}});"  class="btn" data-toggle="modal" data-target="#frmListaAlumnos">
+                        <button type="button" id="btnURL"  name="btnURL" onclick="generarListaAlumnos({{$item->id}});"  class="btn @if($item->token_alumno){{'bg-warning'}}@endif" data-toggle="modal" data-target="#frmListaAlumnos">
                           URL
                         </button>
 
