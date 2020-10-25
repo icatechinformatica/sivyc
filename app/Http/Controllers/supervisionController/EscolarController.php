@@ -3,10 +3,6 @@
 namespace App\Http\Controllers\supervisionController;
 
 use App\Http\Controllers\Controller;
-use App\Models\supervision\instructor;
-//use App\Models\tbl_curso;
-//use App\Models\instructor;
-//use App\Models\curso;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -32,12 +28,13 @@ class EscolarController extends Controller
         $unidades = $user->unidades;
         $id_user = $user->id;        
                  
-        if($request->get('fecha'))$fecha = $request->get('fecha');
-        else $fecha = date("Y-m-d"); 
+        if($request->get('fecha')) $fecha = $request->get('fecha');
+        else $fecha = date("d/m/Y"); 
                 
         $query = DB::table('tbl_cursos')->select('tbl_cursos.id','tbl_cursos.id_curso','tbl_cursos.id_instructor',
         'tbl_cursos.nombre','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
-        'tbl_cursos.hfin','tbl_cursos.unidad',DB::raw('COUNT(DISTINCT(i.id)) as total'),DB::raw('COUNT(DISTINCT(a.id)) as total_alumnos')
+        'tbl_cursos.hfin','tbl_cursos.unidad',DB::raw('COUNT(DISTINCT(i.id)) as total'),DB::raw('COUNT(DISTINCT(a.id)) as total_alumnos'),
+        'token_i.id as token_instructor','token_a.id_curso as token_alumno'
         
         );
         
@@ -65,6 +62,7 @@ class EscolarController extends Controller
                 $join->on('i.id_tbl_cursos', '=', 'tbl_cursos.id');                
                 $join->where('i.id_user',$id_user);
                 $join->groupBy('i.id_tbl_cursos');
+                
             });
         $query = $query->leftJoin('supervision_alumnos as a', function($join)use($id_user){
                 $join->on('a.id_tbl_cursos', '=', 'tbl_cursos.id');                
@@ -73,16 +71,29 @@ class EscolarController extends Controller
                
             });
             
-            
+        $query = $query->leftJoin('supervision_tokens as token_i' ,function($join)use($id_user){
+                $join->on('tbl_cursos.id', '=', 'token_i.id_curso'); 
+                $join->where('token_i.id_supervisor',$id_user);
+                $join->where('token_i.id_instructor','>','0');
+                
+        });
+        
+        $query = $query->leftJoin('supervision_tokens as token_a' ,function($join)use($id_user){
+                $join->on('tbl_cursos.id', '=', 'token_a.id_curso'); 
+                $join->where('token_a.id_supervisor',$id_user);
+                $join->where('token_a.id_alumno','>','0');
+        });
+          
         $query = $query->groupby('tbl_cursos.id','tbl_cursos.id_curso','tbl_cursos.id_instructor',
         'tbl_cursos.nombre','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
-        'tbl_cursos.hfin','tbl_cursos.unidad','i.id_tbl_cursos','a.id_tbl_cursos');
+        'tbl_cursos.hfin','tbl_cursos.unidad','i.id_tbl_cursos','a.id_tbl_cursos','token_i.id','token_a.id_curso');
                 
         $data =  $query->orderBy('tbl_cursos.inicio', 'DESC')->paginate(15);
         //var_dump($data);exit;
+        
+         
         return view('supervision.escolar.index', compact('data','fecha'));
     }    
     
-   
-      
+ 
 }
