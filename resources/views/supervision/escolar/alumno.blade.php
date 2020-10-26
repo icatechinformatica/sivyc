@@ -44,7 +44,7 @@
                           <tbody>
                             <tr>
                               <th scope="row">Alumno</th>
-                              <td>{{ $inscripcion->alumno}} </td>
+                              <td>{{ $item->alumno}} </td>
                               <td>{{ $item->apellidoPaterno}} {{ $item->apellidoMaterno}} {{ $item->nombre}}</td>
                               <td>
                                   <div class="custom-control custom-checkbox mb-4">
@@ -58,7 +58,7 @@
                             </tr>
                             <tr>
                               <th scope="row">Edad</th>
-                              <td>{{ $inscripcion->edad }}</td>
+                              <td>{{ $item->sivyc_edad }}</td>
                               <td>{{ $item->edad }}</td>
                               <td>
                                   <div class="custom-control custom-checkbox mb-3">
@@ -72,7 +72,7 @@
                             </tr>
                             <tr>
                               <th scope="row">Escolaridad</th>
-                              <td>{{ $inscripcion->ultimo_grado_estudios }}</td>
+                              <td>{{ $item->ultimo_grado_estudios }}</td>
                               <td>{{ $item->escolaridad }}</td>
                               <td>
                                   <div class="custom-control custom-checkbox mb-3">
@@ -102,13 +102,13 @@
                               <th scope="row">Documentos Entregados</th>
                               <td>
 
-                              @if($inscripcion->chk_acta_nacimiento) {{ 'ACTA DE NACIMIENTO, ' }} @endif
-                              @if($inscripcion->chk_curp) {{ 'CURP, ' }} @endif
-                              @if($inscripcion->comprobante_domicilio) {{ 'COMPROBANTE DE DOMICILIO, ' }} @endif
-                              @if($inscripcion->chk_fotografia) {{ 'FOTOGRAFíA, '}} @endif
-                              @if($inscripcion->chk_ine) {{ 'INE, ' }} @endif
-                              @if($inscripcion->chk_comprobante_ultimo_grado) {{ 'COMPROBANTE ULTIMO GRADO DE ESTUDIOS, ' }} @endif
-                              @if($inscripcion->chk_comprobante_calidad_migratoria) {{ 'COMPROBANTE CALIDAD MIGRATORIA' }} @endif
+                              @if($item->chk_acta_nacimiento) {{ 'ACTA DE NACIMIENTO, ' }} @endif
+                              @if($item->chk_curp) {{ 'CURP, ' }} @endif
+                              @if($item->comprobante_domicilio) {{ 'COMPROBANTE DE DOMICILIO, ' }} @endif
+                              @if($item->chk_fotografia) {{ 'FOTOGRAFíA, '}} @endif
+                              @if($item->chk_ine) {{ 'INE, ' }} @endif
+                              @if($item->chk_comprobante_ultimo_grado) {{ 'COMPROBANTE ULTIMO GRADO DE ESTUDIOS, ' }} @endif
+                              @if($item->chk_comprobante_calidad_migratoria) {{ 'COMPROBANTE CALIDAD MIGRATORIA' }} @endif
                               </td>
                               <td>{{ $item->documentos }}</td>
                               <td>
@@ -208,7 +208,7 @@
                             </tr>
                             <tr>
                               <th scope="row">Cuota de Recuperaci&oacute;n Pagada</th>
-                              <td>{{ $inscripcion->costo }}</td>
+                              <td>{{ $item->costo }}</td>
                               <td>{{ $item->cuota }}</td>
                               <td>
                                   <div class="custom-control custom-checkbox mb-3">

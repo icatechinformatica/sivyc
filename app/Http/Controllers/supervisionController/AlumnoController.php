@@ -29,7 +29,7 @@ class AlumnoController extends Controller
 
     public function lista(Request $request){
        $id = $request->get("id");
-       $data = DB::table('tbl_inscripcion')->select('tbl_inscripcion.id','tbl_inscripcion.alumno','token_a.id as token_alumno');
+       $data = DB::table('tbl_inscripcion')->select('tbl_inscripcion.id','tbl_inscripcion.alumno','token_a.id as token_alumno','token_a.ttl');
        $data = $data->leftJoin('supervision_tokens as token_a' ,function($join)use($id){
                 $join->on('tbl_inscripcion.id', '=', 'token_a.id_alumno'); 
                 $join->where('token_a.id_curso',$id);                
@@ -39,7 +39,10 @@ class AlumnoController extends Controller
        $str = "";
        foreach($data as $item){
             if($item->token_alumno)
-                $str .= "<a href='#' onclick='generarURL(".$item->id.",\"alumno\");' class='list-group-item list-group-item-action bg-warning' data-toggle='modal'  data-target='#modalURL'>".$item->alumno."</a>";
+                if(time() > $item->ttl )
+                    $str .= "<a href='#' onclick='generarURL(".$item->id.",\"alumno\");' class='list-group-item list-group-item-action bg-danger' data-toggle='modal'  data-target='#modalURL'>".$item->alumno."</a>";
+                else
+                    $str .= "<a href='#' onclick='generarURL(".$item->id.",\"alumno\");' class='list-group-item list-group-item-action bg-warning' data-toggle='modal'  data-target='#modalURL'>".$item->alumno."</a>";
             else
                 $str .= "<a href='#' onclick='generarURL(".$item->id.",\"alumno\");' class='list-group-item list-group-item-action' data-toggle='modal'  data-target='#modalURL'>".$item->alumno."</a>";
        }
@@ -50,45 +53,39 @@ class AlumnoController extends Controller
 
     public function revision($id)
     {
+        
         session_start();
         $_SESSION["id"] = $id;
         $fecha = date('d/m/Y');
-        $data = alumno::Filtrar('id_tbl_cursos',$id)
-        ->PAGINATE(5, ['id','nombre','apellido_paterno','apellido_materno','edad','escolaridad',
-    'fecha_inscripcion','documentos','curso','numero_apertura','fecha_autorizacion','modalidad',
-    'fecha_inicio','fecha_termino','hinicio','hfin','tipo','lugar','cuota',
-    'ok_nombre','ok_edad','ok_escolaridad','ok_fecha_inscripcion','ok_documentos',
-    'ok_curso','ok_numero_apertura','ok_fecha_autorizacion','ok_modalidad',
-    'ok_fecha_inicio','ok_fecha_termino','ok_horario','ok_tipo','ok_lugar','ok_cuota',
-    'obs_nombre','obs_edad','obs_escolaridad','obs_fecha_inscripcion','ok_documentos',
-    'obs_curso','obs_numero_apertura','obs_fecha_autorizacion','obs_modalidad','obs_fecha_inicio',
-    'obs_fecha_termino','obs_horario','obs_tipo','obs_lugar','obs_cuota','comentarios',
-    'id_tbl_cursos','enviado','created_at']);
-        $curso = DB::table('tbl_cursos')->where('id', $id)->first();
-
-        //alumnos_pre.id=alumnos_registros.id_pre y alumnos_registro.no_control=tbl_inscripciones.matricula
-        //$inscripcion = DB::table('tbl_inscripcion as i')->first();
-
-
-        $inscripcion = DB::table('tbl_inscripcion as insc')->select(
-            DB::raw("date_part('year',age(a_pre.fecha_nacimiento)) as edad"),'a_pre.ultimo_grado_estudios','insc.alumno','insc.costo',
+        $data = alumno::Filtrar('supervision_alumnos.id_tbl_cursos',$id)
+        ->LEFTJOIN('tbl_inscripcion as insc','insc.id','=', 'supervision_alumnos.id_alumno')
+        //->LEFTJOIN('alumnos_registro as a_reg', 'a_reg.no_control', '=', 'insc.matricula')
+        ->LEFTJOIN('alumnos_registro as a_reg', function($join){
+            $join->on('a_reg.no_control', '=', 'insc.matricula');            
+            $join->on('a_reg.id_curso','=','supervision_alumnos.id_curso');
+        })
+        ->LEFTJOIN('alumnos_pre as a_pre', 'a_pre.id', '=', 'a_reg.id_pre')        
+        ->PAGINATE(5, ['supervision_alumnos.id','supervision_alumnos.nombre','supervision_alumnos.apellido_paterno','supervision_alumnos.apellido_materno','supervision_alumnos.edad','supervision_alumnos.escolaridad',
+            'supervision_alumnos.fecha_inscripcion','supervision_alumnos.documentos','supervision_alumnos.curso','supervision_alumnos.numero_apertura','supervision_alumnos.fecha_autorizacion','supervision_alumnos.modalidad',
+            'supervision_alumnos.fecha_inicio','supervision_alumnos.fecha_termino','supervision_alumnos.hinicio','supervision_alumnos.hfin','supervision_alumnos.tipo','supervision_alumnos.lugar','supervision_alumnos.cuota',
+            'supervision_alumnos.ok_nombre','supervision_alumnos.ok_edad','supervision_alumnos.ok_escolaridad','supervision_alumnos.ok_fecha_inscripcion','supervision_alumnos.ok_documentos',
+            'supervision_alumnos.ok_curso','supervision_alumnos.ok_numero_apertura','supervision_alumnos.ok_fecha_autorizacion','supervision_alumnos.ok_modalidad',
+            'supervision_alumnos.ok_fecha_inicio','supervision_alumnos.ok_fecha_termino','supervision_alumnos.ok_horario','supervision_alumnos.ok_tipo','supervision_alumnos.ok_lugar','supervision_alumnos.ok_cuota',
+            'supervision_alumnos.obs_nombre','supervision_alumnos.obs_edad','supervision_alumnos.obs_escolaridad','supervision_alumnos.obs_fecha_inscripcion','supervision_alumnos.ok_documentos',
+            'supervision_alumnos.obs_curso','supervision_alumnos.obs_numero_apertura','supervision_alumnos.obs_fecha_autorizacion','supervision_alumnos.obs_modalidad','supervision_alumnos.obs_fecha_inicio',
+            'supervision_alumnos.obs_fecha_termino','supervision_alumnos.obs_horario','supervision_alumnos.obs_tipo','supervision_alumnos.obs_lugar','supervision_alumnos.obs_cuota','supervision_alumnos.comentarios',
+            'supervision_alumnos.id_tbl_cursos','supervision_alumnos.enviado','supervision_alumnos.created_at',
+            DB::raw("date_part('year',age(a_pre.fecha_nacimiento)) as sivyc_edad"),'a_pre.ultimo_grado_estudios as sivyc_escolaridad','insc.alumno','insc.costo',
             'a_pre.chk_acta_nacimiento','a_pre.chk_curp','a_pre.comprobante_domicilio','a_pre.chk_fotografia','a_pre.chk_ine',
-            'a_pre.chk_pasaporte_licencia','a_pre.chk_comprobante_ultimo_grado','a_pre.chk_comprobante_calidad_migratoria'
-            )
-            ->leftjoin('alumnos_registro as a_reg', 'a_reg.no_control', '=', 'insc.matricula')
-            ->leftjoin('alumnos_pre as a_pre', 'a_pre.id', '=', 'a_reg.id_pre')
-            ->where('insc.id_curso', $id)
-            ->groupby('insc.id')->groupby('a_pre.fecha_nacimiento')->groupby('a_pre.ultimo_grado_estudios')
-            ->groupby('insc.alumno')->groupby('a_pre.chk_acta_nacimiento')->groupby('a_pre.chk_curp')->groupby('a_pre.comprobante_domicilio')->groupby('a_pre.chk_fotografia')
-            ->groupby('a_pre.chk_ine')->groupby('a_pre.chk_pasaporte_licencia')->groupby('a_pre.chk_comprobante_ultimo_grado')
-            ->groupby('a_pre.chk_comprobante_calidad_migratoria')->groupby('insc.costo')
-            ->first();
-
+            'a_pre.chk_pasaporte_licencia','a_pre.chk_comprobante_ultimo_grado','a_pre.chk_comprobante_calidad_migratoria']);
+            
+        
+        $curso = DB::table('tbl_cursos')->where('id', $id)->first();
         $anio = date("Y");
         $path_dir  =  storage_path().'/app/public/supervisiones/'.$anio.'/alumnos/';
         $path_file = 'storage/supervisiones/'.$anio.'/alumnos/';
 
-        return view('supervision.escolar.alumno', compact('data','fecha','curso','inscripcion','path_dir','path_file'));
+        return view('supervision.escolar.alumno', compact('data','fecha','curso','path_dir','path_file'));
     }
 
     public function update(Request $request)

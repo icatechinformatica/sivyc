@@ -3,6 +3,7 @@
 namespace App\Models\supervision;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class alumno extends Model
 {
@@ -11,7 +12,7 @@ class alumno extends Model
     protected $fillable = ['id','nombre','apellido_paterno','apellido_materno','edad',
     'escolaridad','fecha_inscripcion','documentos','curso','numero_apertura','fecha_autorizacion',
     'modalidad','fecha_inicio','fecha_termino','hinicio','hfin','tipo','total_mujeres','total_hombres',
-    'monto_honorarios','lugar_curso','id_tbl_cursos','created_at'];
+    'monto_honorarios','lugar_curso','id_tbl_cursos','created_at','id_curso'];
 
     protected $hidden = [ 'updated_at'];
 
@@ -33,13 +34,13 @@ class alumno extends Model
     }
 
     public function scopeFiltrar($query, $campo, $valor){
+        $id_user = Auth::user()->id;
         if (!empty($campo) AND !empty(trim($valor))) {
             switch ($campo) {
                 case 'id_tbl_cursos':
-                    $query = $query->where('id_tbl_cursos',$valor);
+                    $query = $query->where('supervision_alumnos.id_tbl_cursos',$valor);
                     break;
             }
-
             return $query->orderBy('created_at', 'DESC');
         }
     }
