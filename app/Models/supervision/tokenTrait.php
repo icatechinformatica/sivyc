@@ -13,7 +13,7 @@ trait tokenTrait
     {        
           $currentTime = time();
           if(!Token::where('url_token', $urltoken)->exists()){
-                return true;
+                return false;
           }
           $token = Token::where('url_token', $urltoken)->first();
           if($token->url_token != null && $token->ttl > $currentTime) {                   

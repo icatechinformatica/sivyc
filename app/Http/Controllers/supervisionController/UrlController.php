@@ -35,7 +35,7 @@ class UrlController extends Controller
             $token = DB::table('supervision_tokens')->where('id_supervisor',$id_user)->where('id_curso',$id_curso)->where('id_alumno',$id_alumno)->value('url_token');
        }
 
-       if($this->DeleteTokenExpired($token)){
+       if(!$this->DeleteTokenExpired($token)){
             $currentTime = time();
             $t = new Token;
             $token = $t->url_token = hash('sha256', Str::random(60));
@@ -46,15 +46,16 @@ class UrlController extends Controller
             else $t->id_alumno = $id_alumno;
             $t->ttl = $currentTime + (1440 * 60); //24 horas
             $t->save();
-       }
+       }else return "ELIMINADA";
        if($token)
             $url = url("{$path}{$token}");
-       else $url = "Instrucci�n Inv�lida";
+       else $url = "Instrucción Inválida";
 
        return $url;
 
     }
-
+    
+    
     public function form($urltoken, Request $request) {
         $token = $this->generateTmpToken($urltoken, $request);
 
@@ -90,5 +91,5 @@ class UrlController extends Controller
         else $msg = " OPERACI&Oacute;N INV&Aacute;LIDA ";
         return view('supervision.client.msg', compact('msg'));
     }
-
+    
 }

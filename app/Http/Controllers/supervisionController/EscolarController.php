@@ -34,9 +34,7 @@ class EscolarController extends Controller
         $query = DB::table('tbl_cursos')->select('tbl_cursos.id','tbl_cursos.id_curso','tbl_cursos.id_instructor',
         'tbl_cursos.nombre','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
         'tbl_cursos.hfin','tbl_cursos.unidad',DB::raw('COUNT(DISTINCT(i.id)) as total'),DB::raw('COUNT(DISTINCT(a.id)) as total_alumnos'),
-        'token_i.id as token_instructor','token_a.id_curso as token_alumno'
-        
-        );
+        'token_i.id as token_instructor','token_i.ttl as ttl_instructor','token_a.id_curso as token_alumno');
         
         if($fecha)$query = $query->where('tbl_cursos.inicio','<=',$fecha)->where('tbl_cursos.termino','>=',$fecha);
         if($unidades) {
@@ -72,21 +70,19 @@ class EscolarController extends Controller
             });
             
         $query = $query->leftJoin('supervision_tokens as token_i' ,function($join)use($id_user){
-                $join->on('tbl_cursos.id', '=', 'token_i.id_curso'); 
+                $join->on('tbl_cursos.id', '=', 'token_i.id_curso');
+                $join->on('token_i.id_instructor','=','tbl_cursos.id_instructor'); 
                 $join->where('token_i.id_supervisor',$id_user);
-                $join->where('token_i.id_instructor','>','0');
-                
         });
         
         $query = $query->leftJoin('supervision_tokens as token_a' ,function($join)use($id_user){
                 $join->on('tbl_cursos.id', '=', 'token_a.id_curso'); 
-                $join->where('token_a.id_supervisor',$id_user);
-                $join->where('token_a.id_alumno','>','0');
+                $join->where('token_a.id_supervisor',$id_user);           
         });
           
         $query = $query->groupby('tbl_cursos.id','tbl_cursos.id_curso','tbl_cursos.id_instructor',
         'tbl_cursos.nombre','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
-        'tbl_cursos.hfin','tbl_cursos.unidad','i.id_tbl_cursos','a.id_tbl_cursos','token_i.id','token_a.id_curso');
+        'tbl_cursos.hfin','tbl_cursos.unidad','i.id_tbl_cursos','a.id_tbl_cursos','token_i.id','token_i.ttl','token_a.id_curso');
                 
         $data =  $query->orderBy('tbl_cursos.inicio', 'DESC')->paginate(15);
         //var_dump($data);exit;

@@ -25,7 +25,7 @@ class FuncionarioController extends Controller
      */
     
     public function __construct(){
-       session_start();  
+       //session_start();  
       
     }
      
