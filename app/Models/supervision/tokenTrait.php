@@ -9,26 +9,20 @@ use App\Models\supervision\token;
 trait tokenTrait
 {
     
-    protected function DeleteTokenExpired($urltoken)
+    protected function TokenExpired($urltoken)
     {        
-          $currentTime = time();
-          if(!Token::where('url_token', $urltoken)->exists()){
-                return false;
-          }
-          $token = Token::where('url_token', $urltoken)->first();
-          if($token->url_token != null && $token->ttl > $currentTime) {                   
-              return false;          
-          }
+          $currentTime = time();       
           $token = Token::where('url_token', $urltoken)->first();
           if($token->url_token != null && $currentTime>$token->ttl) { 
-                //ELIMINANDO TOKEN CADUCADO
-                //$token->delete();      
-                return true;
+               //ELIMINANDO TOKEN CADUCADO
+               //$token->delete();      
+               return true;
           }
     }
     
     protected function generateTmpToken($urltoken, $request)
     {
+        
           $currentTime = time();
           if(!Token::where('url_token', $urltoken)->exists()){
                 return null;

@@ -73,11 +73,13 @@ class EscolarController extends Controller
                 $join->on('tbl_cursos.id', '=', 'token_i.id_curso');
                 $join->on('token_i.id_instructor','=','tbl_cursos.id_instructor'); 
                 $join->where('token_i.id_supervisor',$id_user);
+                $join->where('token_i.id_instructor','>','0');
         });
         
         $query = $query->leftJoin('supervision_tokens as token_a' ,function($join)use($id_user){
                 $join->on('tbl_cursos.id', '=', 'token_a.id_curso'); 
-                $join->where('token_a.id_supervisor',$id_user);           
+                $join->where('token_a.id_supervisor',$id_user);     
+                $join->where('token_a.id_alumno','>','0');      
         });
           
         $query = $query->groupby('tbl_cursos.id','tbl_cursos.id_curso','tbl_cursos.id_instructor',
