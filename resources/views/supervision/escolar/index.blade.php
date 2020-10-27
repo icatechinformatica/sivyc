@@ -53,8 +53,8 @@
                         type:  'GET',
                         dataType : 'text',
                         success:  function (response) {
-                            if(response == "ELIMINADA"){
-                                alert("URL Eliminada")
+                            if(response == "CADUCADA"){
+                                alert("URL caducada")
                             }else{
                                 $('#textURL').val(response);
                                 $('#modalURL').modal('show');

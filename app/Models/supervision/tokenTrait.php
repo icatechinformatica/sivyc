@@ -22,7 +22,7 @@ trait tokenTrait
           $token = Token::where('url_token', $urltoken)->first();
           if($token->url_token != null && $currentTime>$token->ttl) { 
                 //ELIMINANDO TOKEN CADUCADO
-                $token->delete();      
+                //$token->delete();      
                 return true;
           }
     }
@@ -36,7 +36,7 @@ trait tokenTrait
           $token = Token::where('url_token', $urltoken)->first();          
           if($currentTime > $token->ttl) {
             //ELIMINANDO TOKEN CADUCADO
-              $token->delete();
+              //$token->delete();
               return null;  
           }
           if($token->tmp_token != null && $token->ttl > $currentTime) {
