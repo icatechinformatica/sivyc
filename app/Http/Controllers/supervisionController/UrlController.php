@@ -35,7 +35,10 @@ class UrlController extends Controller
             $token = DB::table('supervision_tokens')->where('id_supervisor',$id_user)->where('id_curso',$id_curso)->where('id_alumno',$id_alumno)->value('url_token');
        }
 
-       if(!$this->DeleteTokenExpired($token)){
+      
+       if($token){
+            if($this->TokenExpired($token))return "CADUCADA";
+       }else{
             $currentTime = time();
             $t = new Token;
             $token = $t->url_token = hash('sha256', Str::random(60));
@@ -45,12 +48,10 @@ class UrlController extends Controller
             if($id_instructor) $t->id_instructor = $id_instructor;
             else $t->id_alumno = $id_alumno;
             $t->ttl = $currentTime + (1440 * 60); //24 horas 1440
-            $t->save();
-       }else return "CADUCADA";
-       if($token)
-            $url = url("{$path}{$token}");
-       else $url = "Instrucción Inválida";
-
+            $t->save();        
+       }
+        
+       $url = url("{$path}{$token}");
        return $url;
 
     }
