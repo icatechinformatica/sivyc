@@ -17,7 +17,7 @@
                     required: true 
             },
             monto_honorarios: { 
-                    required: true,digits: true
+                    required: true
             },
             nombre_curso: { 
                     required: true 
@@ -85,8 +85,7 @@
                     required: 'Por favor ingrese la fecha de inscripci\u00F3n al padr\u00F3n'
             },
             monto_honorarios: { 
-                    required: 'Por favor ingrese el monto de honorarios',
-                    digits: 'S\u00F3lo se aceptan n\u00FAmeros' 
+                    required: 'Por favor ingrese el monto de honorarios'                     
             },
             nombre_curso: { 
                     required: 'Por favor ingrese el nombre del curso' 

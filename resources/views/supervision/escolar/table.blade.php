@@ -1,4 +1,4 @@
-<!--Elabor� Romelia P�rez Nang�el� - rpnanguelu@gmail.com-->
+<!--ELABORO ROMELIA PEREZ NANGUELU- rpnanguelu@gmail.com-->
 
 <div class="table-responsive">
     <table class="table ">
@@ -26,9 +26,10 @@
                      <td>{{ $item->termino }}</td>
                      <td>{{ $item->hini }} - {{ $item->hfin }}</td>
                      <td>
-                        <button type="button" id="btnURL"  name="btnURL" onclick="generarURL({{$item->id}},'instructor');"  class="btn" data-toggle="modal">
-                          URL
+                        <button type="button" onclick="generarURL({{$item->id}},'instructor');"  class="btn @if($item->token_instructor){{'bg-warning'}}@elseif(time() > $item->ttl_instructor AND $item->ttl_instructor){{'bg-danger'}}@endif" data-toggle="modal">
+                            URL
                         </button>
+                       
 
                         @if($item->total>0)
                             <a class="btn text-white" href="{{ url('/supervision/instructor/revision/'.$item->id) }}" >
@@ -39,7 +40,7 @@
                         @endif
                      </td>
                      <td>
-                        <button type="button" id="btnURL"  name="btnURL" onclick="generarListaAlumnos({{$item->id}});"  class="btn" data-toggle="modal" data-target="#frmListaAlumnos">
+                        <button type="button" onclick="generarListaAlumnos({{$item->id}});"  class="btn @if($item->token_alumno){{'bg-warning'}}@endif" data-toggle="modal" data-target="#frmListaAlumnos">
                           URL
                         </button>
 

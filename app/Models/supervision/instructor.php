@@ -3,6 +3,7 @@
 namespace App\Models\supervision;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class instructor extends Model
 {
@@ -32,14 +33,15 @@ class instructor extends Model
     }
 
     public function scopeFiltrar($query, $campo, $valor){
+        $id_user = Auth::user()->id;
         if (!empty($campo) AND !empty(trim($valor))) {
             switch ($campo) {
                 case 'id_tbl_cursos':
-                    $query = $query->where('id_tbl_cursos',$valor);
+                    $query = $query->where('supervision_instructores.id_tbl_cursos',$valor);
                     break;
             }
-
-            return $query->orderBy('created_at', 'DESC');
+            $query = $query->where('supervision_instructores.id_user',$id_user);
+            return $query->orderBy('supervision_instructores.created_at', 'DESC');
         }
     }
 

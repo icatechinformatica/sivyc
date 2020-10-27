@@ -42,23 +42,23 @@
                 }
             });
             $('#textURL').caseEnforcer('lowercase');
-            function generarURL(id, tipo) {
-                if(tipo=="instructor") {
-                    var url2 = "{{ route('supervision.instructor.url') }}";
-                } else {
-                    var url2 = "{{route('supervision.alumno.url')}}";
-                }
-
-                if(confirm("Est\u00E1 seguro de genera la url?")==true){
+            
+            
+            function generarURL(id, tipo) {  ///GENERAR URL O BORRAR URL CADUCADA              
+                if(confirm("Est\u00E1 seguro de ejecutar la acci\u00F3n?")==true){
                     var params = {id : id, tipo: tipo, _token:"{{csrf_token()}}"};
                     $.ajax({
-                        url: "{{ route('supervision.instructor.url') }}",
+                        url: "{{ route('supervision.escolar.url.generar') }}",
                         data: params,
                         type:  'GET',
                         dataType : 'text',
                         success:  function (response) {
-                            $('#textURL').val(response);
-                            $('#modalURL').modal('show');
+                            if(response == "CADUCADA"){
+                                alert("URL caducada")
+                            }else{
+                                $('#textURL').val(response);
+                                $('#modalURL').modal('show');
+                            }
                         },
                         statusCode: {
                             404: function() {
@@ -90,7 +90,7 @@
                     }
                 });
             }
-
+        
         </script>
     @endsection
 @endsection
