@@ -44,9 +44,9 @@ class UrlController extends Controller
             $t->id_supervisor = $id_user;
             if($id_instructor) $t->id_instructor = $id_instructor;
             else $t->id_alumno = $id_alumno;
-            $t->ttl = $currentTime + (1440 * 60); //24 horas
+            $t->ttl = $currentTime + (1440 * 60); //24 horas 1440
             $t->save();
-       }else return "ELIMINADA";
+       }else return "CADUCADA";
        if($token)
             $url = url("{$path}{$token}");
        else $url = "Instrucción Inválida";
