@@ -163,11 +163,11 @@
                             </td>
                             <td>
                                 @if ($itemData->fecha_dif > 0)
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="La fecha de vencimiento ha pasado por {{$itemData->fecha_dif }} días">
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" data-fecha-id="{{$itemData->fecha_dif }}" title="La fecha de vencimiento ha pasado por {{$itemData->fecha_dif }} días">
                                         <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
                                     </a>
                                 @elseif ($itemData->fecha_dif >= -3)
-                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="La fecha de vencimiento está cerca faltán {{$itemData->fecha_dif }} días">
+                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-fecha-id="{{$itemData->fecha_dif }}" title="La fecha de vencimiento está cerca faltán {{$itemData->fecha_dif }} días">
                                         <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
                                     </a>
                                 @else
@@ -249,17 +249,17 @@
             </div>
             <div class="modal-body">
 
-                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="La fecha de vencimiento ha pasado por {{$itemData->fecha_dif }} días">
+                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="LA FECHA DEL CURSO YA HA FINALIZADO O TERMINADO">
                     <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
                 </a>
                     <b>LA FECHA DEL CURSO YA HA FINALIZADO O TERMINADO</b>
                 <br>
-                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="La fecha de vencimiento está cerca faltán {{$itemData->fecha_dif }} días">
+                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="EL CURSO TIENE TRES DÍAS PARA FINALIZAR">
                     <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
                 </a>
                     <b>EL CURSO TIENE TRES DÍAS PARA FINALIZAR</b>
                 <br>
-                <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Está a tiempo">
+                <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="LAS FECHAS DE FINALIZACIÓN DEL CURSO ESTÁN EN TIEMPO Y FORMA">
                     <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
                 </a>
                     <b>LAS FECHAS DE FINALIZACIÓN DEL CURSO ESTÁN EN TIEMPO Y FORMA</b>
