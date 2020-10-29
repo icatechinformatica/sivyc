@@ -79,6 +79,9 @@
                             <h3>{{$data->nombre}}</h3>
                         </label>
                     </div>
+                    <div class="form-group col-md-8">
+                        <textarea name="abierto{{$data->id}}" id="abierto{{$data->id}}" cols="60" rows="5" class="form-control" required></textarea>
+                    </div>
                 </div>
                 @endif
                 @if($data->respuestas != NULL)
