@@ -739,7 +739,7 @@ class AlumnoController extends Controller
 
     protected function uploaded_file($file, $id, $name)
     {
-        $tamanio = $file->getClientSize(); #obtener el tamaño del archivo del cliente
+        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
