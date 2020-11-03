@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\calidad_encuestas;
 use App\Models\calidad_respuestas;
+use App\Models\calidad_respuestas_alumnos;
+use App\Models\Inscripcion;
 use App\Models\supervision\tokenEncuesta;
-use App\Models\cursoValidado;
+use App\Models\tbl_curso;
 use App\Models\supervision\tokenTraitEncuesta;
 use Carbon\Carbon;
 
@@ -114,6 +116,7 @@ class EscolarController extends Controller
         $x = $request->get('optradio');
         $keys = array_keys($x);
         $token = tokenEncuesta::WHERE('url_token' , '=', $request->token)->FIRST();
+        $id_curso = $token->id_curso;
 
 
         $RegisterExists = calidad_respuestas::WHERE('id_encuesta', '=', $request->id_encuesta)->FIRST();
@@ -137,11 +140,16 @@ class EscolarController extends Controller
             }
 
             $RegisterExists->respuestas->respuestas = $array;
+            $id_encuesta = $RegisterExists->id_encuesta;
             $RegisterExists->save();
+
+            $token->cantidad_usuarios = $token->cantidad_usuarios - 1;
+            $token->save();
+
         }
         else
         {
-            $cursoValidado = cursoValidado::WHERE('id', '=', $token->id_curso);
+            $cursoValidado = tbl_curso::WHERE('id', '=', $token->id_curso);
             $encuesta = calidad_encuestas::SELECT('id','respuestas')->WHERE('activo', '=', 'true')->WHERE('idparent', '!=', '0')->WHERE('respuestas', '!=', NULL)->GET();
 
             $save_respuestas = new calidad_respuestas;
@@ -170,8 +178,23 @@ class EscolarController extends Controller
             }
             dd($array_respuestas);
             $save_respuestas->respuestas = $array_respuestas;
+            $id_encuesta = $encuesta->id;
             $save_respuestas->save();
+
+            $token->cantidad_usuarios = $token->cantidad_usuarios - 1;
+            $token->save();
         }
+
+        $inscripcion = Inscripcion::WHERE('matricula', '=', $request->matricula)->WHERE('id_curso', '=', $token->id_curso)->FIRST();
+
+        $respuesta_alumno = new calidad_respuestas_alumnos;
+        $respuesta_alumno->id_inscripcion = $inscripcion->id;
+        $respuesta_alumno->matricula = $inscripcion->matricula;
+        $respuesta_alumno->nombre = $inscripcion->alumno;
+        $respuesta_alumno->id_tbl_cursos = $id_curso;
+        $respuesta_alumno->id_encuesta = $id_encuesta;
+        $respuesta_alumno->respuestas = $x;
+        $respuesta_alumno->save();
     }
 
     public function prueba() {
