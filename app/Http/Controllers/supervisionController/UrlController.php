@@ -49,8 +49,7 @@ class UrlController extends Controller
             else $t->id_alumno = $id_alumno;
             $t->ttl = $currentTime + (1440 * 60); //24 horas 1440
             $t->save();        
-       }
-        
+       }        
        $url = url("{$path}{$token}");
        return $url;
 

@@ -15,10 +15,12 @@ class tbl_curso extends Model
     'id','cct','unidad','nombre','curp','rfc','clave','grupo','mvalida','mod','turno','area','espe','curso',
     'inicio','termino','dia','dia2','pini','pfin','dura','hini','hfin','horas','ciclo','plantel','depen','muni',
     'sector','programa','nota','hini2','hfin2','munidad','efisico','cespecifico','mpaqueteria','mexoneracion',
-    'hombre','mujer','tipo','fcespe','cgeneral','fcgen','opcion','motivo','cp','ze','id_curso','id_instructor','pdf_curso'
+    'hombre','mujer','tipo','fcespe','cgeneral','fcgen','opcion','motivo','cp','ze','id_curso','id_instructor','pdf_curso',
+    'json_supervision'
 ];
 
     protected $hidden = ['created_at', 'updated_at'];
+    protected $casts = ['json_supervision' => 'array'];
 
     public function curso() {
         return $this->belongsTo(curso::class, 'id_curso');

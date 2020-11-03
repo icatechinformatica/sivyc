@@ -66,13 +66,13 @@ class AlumnoController extends Controller
         })
         ->LEFTJOIN('alumnos_pre as a_pre', 'a_pre.id', '=', 'a_reg.id_pre')        
         ->PAGINATE(5, ['supervision_alumnos.id','supervision_alumnos.nombre','supervision_alumnos.apellido_paterno','supervision_alumnos.apellido_materno','supervision_alumnos.edad','supervision_alumnos.escolaridad',
-            'supervision_alumnos.fecha_inscripcion','supervision_alumnos.documentos','supervision_alumnos.curso','supervision_alumnos.numero_apertura','supervision_alumnos.fecha_autorizacion','supervision_alumnos.modalidad',
+            'supervision_alumnos.fecha_inscripcion','supervision_alumnos.documentos','supervision_alumnos.curso','supervision_alumnos.fecha_autorizacion',
             'supervision_alumnos.fecha_inicio','supervision_alumnos.fecha_termino','supervision_alumnos.hinicio','supervision_alumnos.hfin','supervision_alumnos.tipo','supervision_alumnos.lugar','supervision_alumnos.cuota',
             'supervision_alumnos.ok_nombre','supervision_alumnos.ok_edad','supervision_alumnos.ok_escolaridad','supervision_alumnos.ok_fecha_inscripcion','supervision_alumnos.ok_documentos',
             'supervision_alumnos.ok_curso','supervision_alumnos.ok_numero_apertura','supervision_alumnos.ok_fecha_autorizacion','supervision_alumnos.ok_modalidad',
             'supervision_alumnos.ok_fecha_inicio','supervision_alumnos.ok_fecha_termino','supervision_alumnos.ok_horario','supervision_alumnos.ok_tipo','supervision_alumnos.ok_lugar','supervision_alumnos.ok_cuota',
             'supervision_alumnos.obs_nombre','supervision_alumnos.obs_edad','supervision_alumnos.obs_escolaridad','supervision_alumnos.obs_fecha_inscripcion','supervision_alumnos.ok_documentos',
-            'supervision_alumnos.obs_curso','supervision_alumnos.obs_numero_apertura','supervision_alumnos.obs_fecha_autorizacion','supervision_alumnos.obs_modalidad','supervision_alumnos.obs_fecha_inicio',
+            'supervision_alumnos.obs_curso','supervision_alumnos.obs_fecha_autorizacion','supervision_alumnos.obs_fecha_inicio',
             'supervision_alumnos.obs_fecha_termino','supervision_alumnos.obs_horario','supervision_alumnos.obs_tipo','supervision_alumnos.obs_lugar','supervision_alumnos.obs_cuota','supervision_alumnos.comentarios',
             'supervision_alumnos.id_tbl_cursos','supervision_alumnos.enviado','supervision_alumnos.created_at',
             DB::raw("date_part('year',age(a_pre.fecha_nacimiento)) as sivyc_edad"),'a_pre.ultimo_grado_estudios as sivyc_escolaridad','insc.alumno','insc.costo',
@@ -107,15 +107,15 @@ class AlumnoController extends Controller
             case 'enviar':
                 $fieldsOK = ['ok_nombre','ok_edad','ok_escolaridad',
                 'ok_fecha_inscripcion','ok_documentos','ok_curso',
-                'ok_numero_apertura','ok_fecha_autorizacion','ok_modalidad',
-                'ok_fecha_inicio','ok_fecha_termino','ok_horario','ok_tipo',
+                'ok_fecha_autorizacion','ok_fecha_inicio',
+                'ok_fecha_termino','ok_horario','ok_tipo',
                 'ok_lugar','ok_cuota'];
 
                 $fieldsOBS = ['obs_nombre','obs_edad',
                 'obs_escolaridad','obs_fecha_inscripcion','obs_documentos',
-                'obs_curso','obs_numero_apertura','obs_fecha_autorizacion',
-                'obs_modalidad','obs_fecha_inicio','obs_fecha_termino',
-                'obs_horario','obs_tipo','obs_lugar','obs_cuota','comentarios'];
+                'obs_curso','obs_fecha_autorizacion','obs_fecha_inicio',
+                'obs_fecha_termino', 'obs_horario','obs_tipo','obs_lugar',
+                'obs_cuota','comentarios'];
 
                 foreach ($fieldsOK as $i => $value) {
                     if($request->get($value)) $app->$value = $request->get($value);
