@@ -114,10 +114,20 @@
                 @endif
             @endforeach
             <br>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="control-label"><h3>Matricula</h3></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" name="matricula" id="matricula" class="form-control" required>
+                    </div>
+            </div>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-right">
                         <button type="submit" class="btn btn-success">Finalizar</button>
+                        <input type="text" name="token" id="token" hidden value="{urltoken}}">
+                        <input type="text" name="id_encuesta" id="id_encuesta" hidden value="{{$titulo->id}}">
                     </div>
                     <div class="pull-left">
                         <a class="btn btn-warning" href="{{URL::previous()}}">Regresar</a>

@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\calidad_encuestas;
+use App\Models\calidad_respuestas;
+use App\Models\supervision\tokenEncuesta;
+use App\Models\cursoValidado;
+use App\Models\supervision\tokenTraitEncuesta;
+use Carbon\Carbon;
 
 class EscolarController extends Controller
 {
@@ -94,29 +99,125 @@ class EscolarController extends Controller
         return view('supervision.escolar.index', compact('data','fecha'));
     }
 
-    public function encuesta()
+    public function encuesta($urltoken)
     {
+        $tokentrait = new tokenTraitEncuesta;
+        $tokenCheck = $tokentrait->generateTmpToken($urltoken);
+
         $encuesta = calidad_encuestas::where('activo', '=', 'true')->WHERE('idparent', '!=', '0')->GET();
         $titulo = calidad_encuestas::SELECT('nombre')->WHERE('activo', '=', 'true')->WHERE('idparent', '=', '0')->FIRST();
-        return view('layouts.pages.frmencuesta', compact('encuesta','titulo'));
+        return view('layouts.pages.frmencuesta', compact('encuesta','titulo','urltoken'));
     }
 
     public function encuesta_save(Request $request)
     {
         $x = $request->get('optradio');
-       /* $keys = array_keys($request->optradio);
-        $validate_array = [current($keys) => 'required'];
-        do
+        $keys = array_keys($x);
+        $token = tokenEncuesta::WHERE('url_token' , '=', $request->token)->FIRST();
+
+
+        $RegisterExists = calidad_respuestas::WHERE('id_encuesta', '=', $request->id_encuesta)->FIRST();
+
+        if($RegisterExists != NULL)
         {
-            $validate_array[current($keys)] = 'required';
-            print(current($keys));
-            next($keys);
-        } while(current($keys) != NULL);
-        $this->validate($x, $validate_array );*/
+            $array = $RegisterExists->respuestas;
+            $pointerid = array_keys($array);
+            foreach ($array as $data)
+            {
+                $keys = array_keys($data);
+                foreach($keys as $item)
+                {
+                    if($item == current($x))
+                    {
+                        $array[current($pointerid)][current($x)] = $array[current($pointerid)][current($x)] + 1;
+                    }
+                }
+                next($x);
+                next($pointerid);
+            }
 
-        dd($x);
+            $RegisterExists->respuestas->respuestas = $array;
+            $RegisterExists->save();
+        }
+        else
+        {
+            $cursoValidado = cursoValidado::WHERE('id', '=', $token->id_curso);
+            $encuesta = calidad_encuestas::SELECT('id','respuestas')->WHERE('activo', '=', 'true')->WHERE('idparent', '!=', '0')->WHERE('respuestas', '!=', NULL)->GET();
+
+            $save_respuestas = new calidad_respuestas;
+            $save_respuestas->id_encuesta = $request->id_encuesta;
+            $save_respuestas->id_tbl_cursos = $token->id_curso;
+            $save_respuestas->id_curso = $cursoValidado->id_curso;
+            $save_respuestas->id_instructor = $cursoValidado->id_instructor;
+            $save_respuestas->unidad = $cursoValidado->unidad;
+            $save_respuestas->fecha_aplicacion = Carbon::now();
+
+            foreach($encuesta as $item)
+            {
+                $key = $item->respuestas;
+                foreach ($key as $data)
+                {
+                    if($data == current($x))
+                    {
+                        $array_respuestas[$item->id][$data] = '1';
+                    }
+                    else
+                    {
+                        $array_respuestas[$item->id][$data] = '0';
+                    }
+                }
+                next($x);
+            }
+            dd($array_respuestas);
+            $save_respuestas->respuestas = $array_respuestas;
+            $save_respuestas->save();
+        }
+    }
+
+    public function prueba() {
+        /*$save_respuestas = new calidad_respuestas;
+        $save_respuestas->id_encuesta = '1';
+        $save_respuestas->id_tbl_cursos = '2';
+        $save_respuestas->id_curso = '3';
+        $save_respuestas->id_instructor = '4';
+        $save_respuestas->unidad = '5';
+        $save_respuestas->fecha_aplicacion = '12-12-2020';*/
 
 
+
+
+
+        //$prueba = calidad_encuestas::SELECT('id, 'respuestas')->WHERE('activo', '=', 'true')->WHERE('idparent', '!=', '0')->WHERE('respuestas', '!=', NULL)->GET();
+        /*$keys = array_keys($prueba);
+        foreach($prueba as $item)
+        {
+            $key = $item->respuestas;
+            foreach ($key as $data)
+            {
+                $array_respuestas[$item->id][$data] = '0';
+            }
+        }
+        $save_respuestas->respuestas = $array_respuestas;
+        $save_respuestas->save();*/
+        $pruebas = calidad_respuestas::SELECT('respuestas')->WHERE('id', '=', '5')->first();
+        $array = $pruebas->respuestas;
+        $pointerid = array_keys($array);
+        dd(current($pointerid));
+        foreach ($array as $data)
+        {
+            $keys = array_keys($data);
+            foreach($keys as $item)
+            {
+                if($item == 'Malo')
+                {
+                    $array['3'][$item] = $array['3'][$item] + 1;
+                    dd($array['3'][$item]);
+                }
+                print($item . ' ');
+            }
+
+        }
+        dd($array);
     }
 
 
