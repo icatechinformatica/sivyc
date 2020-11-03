@@ -28,10 +28,8 @@ class frmAlumnoController extends Controller
         'escolaridad'=> ['required'],
         'fecha_inscripcion'=> ['required'],
         'documentos'=> ['required'],
-        'curso'=> ['required'],
-        'numero_apertura'=> ['required'],
-        'fecha_autorizacion'=> ['required'],
-        'modalidad'=> ['required'],
+        'curso'=> ['required'],        
+        'fecha_autorizacion'=> ['required'],        
         'tipo'=> ['required'],
         'lugar'=> ['required'],
         'fecha_inicio'=> ['required'],
@@ -45,7 +43,6 @@ class frmAlumnoController extends Controller
         'file_photo.required' => 'Por favor suba su foto.',
         'file_photo.mimes'=>'Acepta archivos jpg, jpge, png',
         'file_photo.max'=>'Acepta archivos menores de 2MB',
-
         'nombre.required' => 'Por favor ingrese su Nombre.',
         'apellidoPaterno.required'=> 'Por favor ingrese su Apellido Paterno',
         'apellidoMaterno.required'=> 'Por favor ingrese su Apellido Materno',
@@ -53,10 +50,8 @@ class frmAlumnoController extends Controller
         'escolaridad.required'=> 'Por favor ingrese su escolaridad',
         'fecha_inscripcion.required'=> 'Por favor ingrese la fecha de inscripcion',
         'documentos.required'=>'Por favor ingrese que documentos proporciono',
-        'curso.required'=>'Por favor ingrese el nombre del curso',
-        'numero_apertura.required'=> 'Por favor ingrese la clave de apertura',
-        'fecha_autorizacion.required'=> 'Por favor ingrese la fecha de autorizacion',
-        'modalidad.required'=> 'Por favor ingrese la modalidad' ,
+        'curso.required'=>'Por favor ingrese el nombre del curso',        
+        'fecha_autorizacion.required'=> 'Por favor ingrese la fecha de autorizacion',        
         'tipo.required'=> 'Por favor ingrese el tipo de curso',
         'lugar.required'=> 'Por favor ingrese el lugar',
         'cuota.required'=> 'Por favor ingrese la cuota de recuperacion pagada',
@@ -122,9 +117,9 @@ class frmAlumnoController extends Controller
                     $alumno->fecha_inscripcion = $request->fecha_inscripcion;
                     $alumno->documentos = trim($request->documentos);
                     $alumno->curso = trim($request->curso);
-                    $alumno->numero_apertura = trim($request->numero_apertura);
+                    //$alumno->numero_apertura = trim($request->numero_apertura);
                     $alumno->fecha_autorizacion = $request->fecha_autorizacion;
-                    $alumno->modalidad = $request->modalidad;
+                    //$alumno->modalidad = $request->modalidad;
                     $alumno->fecha_inicio = $request->fecha_inicio;
                     $alumno->fecha_termino = $request->fecha_termino;
                     $alumno->hinicio = trim($request->hinicio);

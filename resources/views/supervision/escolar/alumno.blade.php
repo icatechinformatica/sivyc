@@ -45,7 +45,7 @@
                             <tr>
                               <th scope="row">Alumno</th>
                               <td>{{ $item->alumno}} </td>
-                              <td>{{ $item->apellidoPaterno}} {{ $item->apellidoMaterno}} {{ $item->nombre}}</td>
+                              <td>{{ $item->apellido_paterno}} {{ $item->apellido_materno}} {{ $item->nombre}}</td>
                               <td>
                                   <div class="custom-control custom-checkbox mb-4">
                                     <input type="checkbox" name="ok_nombre" value="1" class="custom-control-input  mb-1" id="check{{$item->id}}[1]" @if($item->ok_nombre) {{ 'checked'}} @endif  required/>
@@ -135,21 +135,7 @@
                                     </div>
                                   </div>
                               </td>
-                            </tr>
-                            <tr>
-                              <th scope="row">Clave de Apertura</th>
-                              <td>{{ $curso->clave }}</td>
-                              <td>{{ $item->numero_apertura }}</td>
-                              <td>
-                                  <div class="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" name="ok_numero_apertura" value="1" class="custom-control-input" id="check{{$item->id}}[7]" @if($item->ok_numero_apertura) {{ 'checked'}} @endif required/>
-                                    <label class="custom-control-label" for="check{{$item->id}}[7]"></label>
-                                    <div class="invalid-feedback">
-                                        <input type="text" name="obs_numero_apertua" value="{{$item->obs_numero_apertura}}" class="form-control" id="coment{{$item->id}}[7]" placeholder="Comentarios"  required/>
-                                    </div>
-                                  </div>
-                              </td>
-                            </tr>
+                            </tr>                           
                             <tr>
                               <th scope="row">Fecha en Autorización</th>
                               <td>{{ $curso->fecha_apertura }}</td>
@@ -163,21 +149,7 @@
                                     </div>
                                   </div>
                               </td>
-                            </tr>
-                            <tr>
-                              <th scope="row">Modalidad</th>
-                              <td>{{ $curso->mod }}</td>
-                              <td>{{ $item->modalidad}}</td>
-                              <td>
-                                  <div class="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" name="ok_modalidad" value="1" class="custom-control-input" id="check{{$item->id}}[9]" @if($item->ok_modalidad) {{ 'checked'}} @endif required/>
-                                    <label class="custom-control-label" for="check{{$item->id}}[9]"></label>
-                                    <div class="invalid-feedback">
-                                        <input type="text" name="obs_modalidad" value="{{$item->obs_modalidad}}" class="form-control" id="coment{{$item->id}}[9]" placeholder="Comentarios"  required/>
-                                    </div>
-                                  </div>
-                              </td>
-                            </tr>
+                            </tr>                           
                             <tr>
                               <th scope="row">Tipo</th>
                               <td>{{ $curso->tcapacitacion }}</td>
