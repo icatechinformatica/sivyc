@@ -19,8 +19,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "laravelcollective/html": "^6.0",
-        "revolution/laravel-google-sheets": "^5.0",
-        "spatie/laravel-cors": "^1.6"
+        "revolution/laravel-google-sheets": "^5.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

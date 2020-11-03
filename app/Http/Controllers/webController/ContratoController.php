@@ -1,6 +1,6 @@
 <?php
 //Creado por Orlando Chavez
-namespace App\Http\Controllers\WebController;
+namespace App\Http\Controllers\webController;
 
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
