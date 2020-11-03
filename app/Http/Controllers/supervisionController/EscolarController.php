@@ -144,7 +144,14 @@ class EscolarController extends Controller
             $RegisterExists->save();
 
             $token->cantidad_usuarios = $token->cantidad_usuarios - 1;
-            $token->save();
+            if ($token->cantidad_usuarios == 0 )
+            {
+                $token = tokenEncuesta::WHERE('url_token' , '=', $request->token)->DELETE();
+            }
+            else
+            {
+                $token->save();
+            }
 
         }
         else
@@ -182,7 +189,14 @@ class EscolarController extends Controller
             $save_respuestas->save();
 
             $token->cantidad_usuarios = $token->cantidad_usuarios - 1;
-            $token->save();
+            if ($token->cantidad_usuarios == 0 )
+            {
+                $token = tokenEncuesta::WHERE('url_token' , '=', $request->token)->DELETE();
+            }
+            else
+            {
+                $token->save();
+            }
         }
 
         $inscripcion = Inscripcion::WHERE('matricula', '=', $request->matricula)->WHERE('id_curso', '=', $token->id_curso)->FIRST();
