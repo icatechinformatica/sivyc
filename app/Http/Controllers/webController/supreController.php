@@ -90,7 +90,6 @@ class supreController extends Controller
         foreach ($request->addmore as $key => $value){
             $folio = new folio();
             $folio->folio_validacion = strtoupper($value['folio']);
-            $folio->numero_presupuesto = strtoupper($value['numeropresupuesto']);
             $folio->iva = $value['iva'];
             $folio->comentario = $value['comentario'];
             $clave = strtoupper($value['clavecurso']);
@@ -142,7 +141,7 @@ class supreController extends Controller
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
         $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $getsupre->unidad_capacitacion)->GET();
 
-        $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.numero_presupuesto','folios.comentario',
+        $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
                                     'folios.importe_total','folios.iva','tbl_cursos.clave')
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -186,7 +185,6 @@ class supreController extends Controller
         foreach ($request->addmore as $key => $value){
             $folio = new folio();
             $folio->folio_validacion = $value['folio'];
-            $folio->numero_presupuesto = $value['numeropresupuesto'];
             $folio->iva = $value['iva'];
             $folio->comentario = $value['comentario'];
             $clave = $value['clavecurso'];
