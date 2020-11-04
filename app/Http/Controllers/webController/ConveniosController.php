@@ -106,7 +106,7 @@ class ConveniosController extends Controller
                 # vamos a trabajar en el documento para guardarlo
                 $archivoConvenio = $request->file('archivo_convenio');
                 $extension_archivo = $archivoConvenio->getClientOriginalExtension(); # extension de archivo del cliente
-                $fileSize = $archivoConvenio->getClientSize(); # tamaño del archivo
+                $fileSize = $archivoConvenio->getSize(); # tamaño del archivo
                 # nuevo nombre del archivo
                 $fileName = "convenio".date('YmdHis')."_".$convenioId.".".$extension_archivo;
                 $request->file('archivo_convenio')->storeAs('/convenios/'.$convenioId, $fileName);
@@ -373,7 +373,7 @@ class ConveniosController extends Controller
 
     protected function uploaded_file($file, $id, $name)
     {
-        $tamanio = $file->getClientSize(); #obtener el tamaño del archivo del cliente
+        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);

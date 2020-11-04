@@ -550,7 +550,7 @@ class ContratoController extends Controller
 
     protected function pago_upload($pdf, $id)
     {
-        $tamanio = $pdf->getClientSize(); #obtener el tamaño del archivo del cliente
+        $tamanio = $pdf->getSize(); #obtener el tamaño del archivo del cliente
         $extensionPdf = $pdf->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $pdfFile = trim("docs"."_".date('YmdHis')."_".$id.".".$extensionPdf);
