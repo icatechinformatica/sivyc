@@ -46,7 +46,7 @@ class userController extends Controller
     {
         //checar que no exista un usario con el correo electrónico que se piensa introducir
         $user = User::where('email', '=', $request->get('emailInput'))->first();
-        dd($user);
+        //dd($user);
         if (!$user) {
             # usuario no encontrado
             User::create([
