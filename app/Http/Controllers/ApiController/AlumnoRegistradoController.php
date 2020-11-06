@@ -22,9 +22,9 @@ class AlumnoRegistradoController extends Controller
         $alumnos = DB::table('alumnos_registro')
                    ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                    ->SELECT(
-                       'alumnos_registro.unidad', 
-                       'alumnos_registro.no_control', 
-                       'alumnos_pre.apellido_paterno', 
+                       'alumnos_registro.unidad',
+                       'alumnos_registro.no_control',
+                       'alumnos_pre.apellido_paterno',
                        'alumnos_pre.apellido_materno',
                        'alumnos_pre.nombre AS nombrealumno',
                        'alumnos_pre.curp AS curp_alumno',
@@ -37,11 +37,14 @@ class AlumnoRegistradoController extends Controller
                        'alumnos_pre.ultimo_grado_estudios',
                        'alumnos_pre.telefono',
                        'alumnos_pre.correo',
-                       'alumnos_registro.id AS id_registro'
+                       'alumnos_registro.id AS id_registro',
+                       'alumnos_pre.discapacidad',
+                       'alumnos_registro.etnia',
+                       'alumnos_registro.indigena',
                    )
-                   ->GROUPBY('alumnos_registro.unidad', 
-                   'alumnos_registro.no_control', 
-                   'alumnos_pre.apellido_paterno', 
+                   ->GROUPBY('alumnos_registro.unidad',
+                   'alumnos_registro.no_control',
+                   'alumnos_pre.apellido_paterno',
                    'alumnos_pre.apellido_materno',
                    'nombrealumno',
                    'curp_alumno',
@@ -98,9 +101,9 @@ class AlumnoRegistradoController extends Controller
         $alumnos = DB::table('alumnos_registro')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
                 ->SELECT(
-                    'alumnos_registro.unidad', 
-                    'alumnos_registro.no_control', 
-                    'alumnos_pre.apellido_paterno', 
+                    'alumnos_registro.unidad',
+                    'alumnos_registro.no_control',
+                    'alumnos_pre.apellido_paterno',
                     'alumnos_pre.apellido_materno',
                     'alumnos_pre.nombre AS nombrealumno',
                     'alumnos_pre.curp AS curp_alumno',
