@@ -39,7 +39,7 @@ class AlumnoRegistradoController extends Controller
                        'alumnos_pre.correo',
                        'alumnos_registro.id AS id_registro'
                    )
-                   ->GROUPBY('alumnos_registro.no_control')
+                   ->GROUPBY('alumnos_registro.no_control', 'alumnos_registro.unidad')
                    ->ORDERBY('id_registro', 'desc')
                    ->GET();
 
