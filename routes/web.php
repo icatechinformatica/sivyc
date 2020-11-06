@@ -359,9 +359,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
 
     /* ENCUESTA */
-    Route::get('/encuesta/{url}', 'supervisionController\EscolarController@encuesta')->name('encuesta');
-    Route::get('/prueba', 'supervisionController\EscolarController@prueba')->name('pr');
-    Route::post('/encuesta/save', 'supervisionController\EscolarController@encuesta_save')->name('encuesta.save');
+    Route::get('/encuesta', 'supervisionController\EncuestaController@encuesta')->name('encuesta');
+    Route::post('/encuesta/save', 'supervisionController\EncuestaController@encuesta_save')->name('encuesta.save');
 
 
 });

@@ -29,6 +29,36 @@
         tr {
             height: 65px;
         }
+        #form p {
+        text-align: center;
+        }
+
+        #form label {
+        font-size: 20px;
+        }
+
+        input[type="radio"] {
+        display: none;
+        }
+
+        label.star {
+        color: grey;
+        font-size: 300%;
+        }
+
+        .clasificacion {
+        direction: rtl;
+        unicode-bidi: bidi-override;
+        }
+
+        label:hover,
+        label:hover ~ label {
+        color: orange;
+        }
+
+        input[type="radio"]:checked ~ label {
+        color: orange;
+        }
     </style>
 </head>
 @section('content')
@@ -80,7 +110,7 @@
                         </label>
                     </div>
                     <div class="form-group col-md-8">
-                        <textarea name="abierto{{$data->id}}" id="abierto{{$data->id}}" cols="60" rows="5" class="form-control" required></textarea>
+                        <textarea name="abierto" id="abierto" cols="60" rows="5" class="form-control" required></textarea>
                     </div>
                 </div>
                 @endif
@@ -115,6 +145,26 @@
             @endforeach
             <br>
             <div class="form-row">
+                <div class="form-group col-md-4">
+                    <h2>Calificación del Instructor</h2>
+                </div>
+                <div class="form-group col-md-8">
+                    <p class="clasificacion">
+                        <input id="radio1" type="radio" name="estrellas" value="5">
+                        <label for="radio1" class=star>★</label>
+                        <input id="radio2" type="radio" name="estrellas" value="4">
+                        <label for="radio2" class=star>★</label>
+                        <input id="radio3" type="radio" name="estrellas" value="3">
+                        <label for="radio3" class=star>★</label>
+                        <input id="radio4" type="radio" name="estrellas" value="2">
+                        <label for="radio4" class=star>★</label>
+                        <input id="radio5" type="radio" name="estrellas" value="1">
+                        <label for="radio5" class=star>★</label>
+                    </p>
+                </div>
+            </div>
+            <br>
+            <div class="form-row">
                     <div class="form-group col-md-4">
                         <label class="control-label"><h3>Matricula</h3></label>
                     </div>
@@ -126,7 +176,7 @@
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-right">
                         <button type="submit" class="btn btn-success">Finalizar</button>
-                        <input type="text" name="token" id="token" hidden value="{urltoken}}">
+                        <input type="text" name="token" id="token" hidden value="{{$urltoken}}">
                         <input type="text" name="id_encuesta" id="id_encuesta" hidden value="{{$titulo->id}}">
                     </div>
                     <div class="pull-left">
