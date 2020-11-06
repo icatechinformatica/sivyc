@@ -46,7 +46,26 @@ class AlumnoRegistradoController extends Controller
                        'alumnos_registro.indigena',
                        'alumnos_registro.migrante'
                    )
-                   ->GROUPBY('alumnos_registro.no_control', 'alumnos_registro.unidad')
+                   ->GROUPBY('alumnos_registro.unidad', 
+                   'alumnos_registro.no_control', 
+                   'alumnos_pre.apellido_paterno', 
+                   'alumnos_pre.apellido_materno',
+                   'alumnos_pre.nombre AS nombrealumno',
+                   'alumnos_pre.curp AS curp_alumno',
+                   'alumnos_pre.fecha_nacimiento',
+                   'alumnos_pre.sexo',
+                   'alumnos_pre.domicilio',
+                   'alumnos_pre.colonia',
+                   'alumnos_pre.municipio',
+                   'alumnos_pre.estado_civil',
+                   'alumnos_pre.ultimo_grado_estudios',
+                   'alumnos_pre.telefono',
+                   'alumnos_pre.correo',
+                   'alumnos_registro.id AS id_registro',
+                   'alumnos_pre.discapacidad',
+                   'alumnos_registro.etnia',
+                   'alumnos_registro.indigena',
+                   'alumnos_registro.migrante')
                    ->ORDERBY('id_registro', 'desc')
                    ->GET();
 
