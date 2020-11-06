@@ -40,8 +40,13 @@ class AlumnoRegistradoController extends Controller
                        'alumnos_pre.ultimo_grado_estudios',
                        'alumnos_pre.telefono',
                        'alumnos_pre.correo',
-                       'alumnos_registro.id AS id_registro'
+                       'alumnos_registro.id AS id_registro',
+                       'alumnos_pre.discapacidad',
+                       'alumnos_registro.etnia',
+                       'alumnos_registro.indigena',
+                       'alumnos_registro.migrante'
                    )
+                   ->GROUPBY('curp_alumno')
                    ->ORDERBY('id_registro', 'desc')
                    ->GET();
 
