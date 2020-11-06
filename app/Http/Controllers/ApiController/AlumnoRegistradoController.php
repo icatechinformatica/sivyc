@@ -46,7 +46,7 @@ class AlumnoRegistradoController extends Controller
                        'alumnos_registro.indigena',
                        'alumnos_registro.migrante'
                    )
-                   ->GROUPBY('curp_alumno')
+                   ->GROUPBY('alumnos_registro.no_control')
                    ->ORDERBY('id_registro', 'desc')
                    ->GET();
 
