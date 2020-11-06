@@ -44,6 +44,7 @@ class AlumnoRegistradoController extends Controller
                        'alumnos_pre.discapacidad',
                        'alumnos_registro.etnia',
                        'alumnos_registro.indigena',
+                       'alumnos_registro.migrante'
                    )
                    ->GROUPBY('alumnos_registro.unidad', 
                    'alumnos_registro.no_control', 
