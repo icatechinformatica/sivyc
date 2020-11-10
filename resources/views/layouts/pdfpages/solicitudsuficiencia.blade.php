@@ -31,7 +31,7 @@
             footer {
                 position: fixed;
                 left: 0px;
-                bottom: -10px;
+                bottom: -60px;
                 right: 0px;
                 height: 60px;
                 background-color: white;
@@ -103,40 +103,40 @@
                 <br>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}} ANEXO DE MEMORÁNDUM No.{{$data2->no_memo}}</h6></b> </div>
             </div>
             <div class="form-row">
-                <table width="700" class="table table-bordered" id="table-one">
+                <table width="700" class="table table-striped" id="table-one">
                     <thead>
                         <tr>
-                            <td scope="col"><small>No. DE SUFICIENCIA</small></td>
-                            <td scope="col" ><small>FECHA</small></td>
-                            <td scope="col" ><small>INSTRUCTOR</small></td>
-                            <td width="10px"><small>UNIDAD/ A.M. DE CAP.</small></td>
-                            <td scope="col" ><small>CURSO</small></td>
-                            <td scope="col"><small>CLAVE DEL GRUPO</small></td>
-                            <td scope="col" ><small>ZONA ECÓNOMICA</small></td>
-                            <td scope="col"><small>HSM (horas)</small></td>
-                            <td scope="col" ><small>IMPORTE POR HORA</small></td>
-                            <td scope="col"><small>IVA 16%</small></td>
-                            <td scope="col" ><small>PARTIDA/ CONCEPTO</small></td>
-                            <td scope="col"><small>IMPORTE</small></td>
-                            <td scope="col" ><small>OBSERVACION</small></td>
+                            <td scope="col"><small style="font-size: 12px;">No. DE SUFICIENCIA</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">FECHA</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">INSTRUCTOR</small></td>
+                            <td width="10px"><small style="font-size: 12px;">UNIDAD/ A.M. DE CAP.</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">CURSO</small></td>
+                            <td scope="col"><small style="font-size: 12px;">CLAVE DEL GRUPO</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">ZONA ECÓNOMICA</small></td>
+                            <td scope="col"><small style="font-size: 12px;">HSM (horas)</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">IMPORTE POR HORA</small></td>
+                            <td scope="col"><small style="font-size: 12px;">IVA 16%</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">PARTIDA/ CONCEPTO</small></td>
+                            <td scope="col"><small style="font-size: 12px;">IMPORTE</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">OBSERVACION<small></td>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $key=>$item)
                             <tr>
-                                <td scope="col" class="text-center"><small>{{$item->folio_validacion}}</small></td>
-                                <td scope="col" class="text-center"><small>{{$item->fecha}}</small></td>
-                                <td scope="col" class="text-center"><small>{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
-                                <td scope="col" class="text-center"><small>{{$item->unidad}}</small></td>
-                                <td scope="col" class="text-center"><small>{{$item->curso_nombre}}</td>
-                                <td scope="col" class="text-center"><small>{{$item->clave}}</small></td>
-                                <td scope="col" class="text-center"><small>{{$item->ze}}</small></td>
-                                <td scope="col" class="text-center"><small>{{$item->dura}}</small></td>
-                                <td scope="col" class="text-center"><small>{{$item->importe_hora}}</td>
-                                <td scope="col" class="text-center"><small>{{$item->iva}}</td>
-                                <td scope="col" class="text-center"><small>12101 Honorarios</td>
-                                <td scope="col" class="text-center"><small>{{$item->importe_total}}</td>
-                                <td scope="col" class="text-center"><small>{{$item->comentario}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->folio_validacion}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->fecha}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->unidad}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->curso_nombre}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->clave}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->ze}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->dura}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->importe_hora}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->iva}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">12101 Honorarios</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->importe_total}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
                     </tbody>
