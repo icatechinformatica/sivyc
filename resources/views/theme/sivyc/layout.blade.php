@@ -94,9 +94,6 @@
         <script src="{{ asset("js/scripts/datepicker-es.js") }}"></script>
         <script src="{{ asset("js/validate/sid-mod.js") }}"></script>
         <!--charts-->
-        <!--Load the AJAX API-->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script src="{{ asset("js/reportes/formatot.js") }}"></script>
         @yield('script_content_js')
     </body>
 

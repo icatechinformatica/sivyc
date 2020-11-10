@@ -59,12 +59,30 @@ class AlumnoController extends Controller
             'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
             'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO',
-            'NO ESPECIFICADO' => 'NO ESPECIFICADO',
+            'POSTGRADO' => 'POSTGRADO'
         ];
         $estado = new Estado();
         $estados = $estado->all(['id', 'nombre']);
         return view('layouts.pages.sid', compact('estados', 'grado_estudio'));
+    }
+
+    public function createcerss()
+    {
+        //
+        $grado_estudio = [
+            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO' => 'POSTGRADO'
+        ];
+        $estado = new Estado();
+        $estados = $estado->all(['id', 'nombre']);
+        return view('layouts.pages.sid_cerss', compact('estados', 'grado_estudio'));
     }
 
     /**

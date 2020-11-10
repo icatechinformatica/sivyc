@@ -8,6 +8,7 @@ use App\Models\api\Alumno;
 use App\Models\api\AlumnosPre;
 use Carbon\Carbon;
 use App\Models\api\Unidad;
+use Illuminate\Support\Facades\DB;
 
 class AlumnoRegistradoController extends Controller
 {
@@ -18,24 +19,55 @@ class AlumnoRegistradoController extends Controller
      */
     public function index()
     {
-        //
-        $alumnos = Alumno::LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
-                ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
-                ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
-                ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.unidad')
-                ->ORDERBY('alumnos_registro.id', 'desc')
-                ->GET([
-                    'alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
-                    'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo', 'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio',
-                    'alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control',
-                    'alumnos_registro.id', 'alumnos_pre.ultimo_grado_estudios', 'alumnos_pre.empresa_trabaja',
-                    'alumnos_pre.antiguedad', 'alumnos_pre.direccion_empresa', 'alumnos_pre.medio_entero', 'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.grupo',
-                    'alumnos_pre.acta_nacimiento', 'alumnos_pre.curp',
-                    'alumnos_pre.comprobante_domicilio', 'alumnos_pre.fotografia', 'alumnos_pre.ine', 'alumnos_pre.pasaporte_licencia_manejo',
-                    'alumnos_pre.comprobante_ultimo_grado', 'alumnos_pre.comprobante_calidad_migratoria', 'alumnos_pre.puesto_empresa', 'alumnos_pre.sistema_capacitacion_especificar',
-                    'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct',
-                    'alumnos_registro.unidad', 'alumnos_registro.etnia', 'alumnos_registro.indigena', 'alumnos_registro.migrante'
-                ]);
+        /**
+         * Modificación de la consulta alumnos registro con query builder
+         */
+        $alumnos = DB::table('alumnos_registro')
+                   ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                   ->SELECT(
+                       'alumnos_registro.unidad',
+                       'alumnos_registro.no_control',
+                       'alumnos_pre.apellido_paterno',
+                       'alumnos_pre.apellido_materno',
+                       'alumnos_pre.nombre AS nombrealumno',
+                       'alumnos_pre.curp AS curp_alumno',
+                       'alumnos_pre.fecha_nacimiento',
+                       'alumnos_pre.sexo',
+                       'alumnos_pre.domicilio',
+                       'alumnos_pre.colonia',
+                       'alumnos_pre.municipio',
+                       'alumnos_pre.estado_civil',
+                       'alumnos_pre.ultimo_grado_estudios',
+                       'alumnos_pre.telefono',
+                       'alumnos_pre.correo',
+                       'alumnos_registro.id AS id_registro',
+                       'alumnos_pre.discapacidad',
+                       'alumnos_registro.etnia',
+                       'alumnos_registro.indigena',
+                       'alumnos_registro.migrante'
+                   )
+                   ->GROUPBY('alumnos_registro.unidad',
+                   'alumnos_registro.no_control',
+                   'alumnos_pre.apellido_paterno',
+                   'alumnos_pre.apellido_materno',
+                   'nombrealumno',
+                   'curp_alumno',
+                   'alumnos_pre.fecha_nacimiento',
+                   'alumnos_pre.sexo',
+                   'alumnos_pre.domicilio',
+                   'alumnos_pre.colonia',
+                   'alumnos_pre.municipio',
+                   'alumnos_pre.estado_civil',
+                   'alumnos_pre.ultimo_grado_estudios',
+                   'alumnos_pre.telefono',
+                   'alumnos_pre.correo',
+                   'id_registro',
+                   'alumnos_pre.discapacidad',
+                   'alumnos_registro.etnia',
+                   'alumnos_registro.indigena',
+                   'alumnos_registro.migrante')
+                   ->ORDERBY('id_registro', 'desc')
+                   ->GET();
 
         return response()->json($alumnos, 200);
     }
@@ -70,24 +102,27 @@ class AlumnoRegistradoController extends Controller
     public function show($id)
     {
         //
-        $alumnos = Alumno::WHERE('alumnos_registro.no_control', '=', $id)
-                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
-                ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
+        $alumnos = DB::table('alumnos_registro')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
-                ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.unidad')
-                ->FIRST([
-                    'alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
-                    'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo', 'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio',
-                    'alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control',
-                    'alumnos_registro.id', 'alumnos_pre.ultimo_grado_estudios', 'alumnos_pre.empresa_trabaja',
-                    'alumnos_pre.antiguedad', 'alumnos_pre.direccion_empresa', 'alumnos_pre.medio_entero', 'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.grupo',
-                    'alumnos_pre.acta_nacimiento', 'alumnos_pre.curp',
-                    'alumnos_pre.comprobante_domicilio', 'alumnos_pre.fotografia', 'alumnos_pre.ine', 'alumnos_pre.pasaporte_licencia_manejo',
-                    'alumnos_pre.comprobante_ultimo_grado',
-                    'alumnos_pre.comprobante_calidad_migratoria', 'alumnos_pre.puesto_empresa', 'alumnos_pre.sistema_capacitacion_especificar',
-                    'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct', 'alumnos_registro.id AS id_registro', 'alumnos_registro.cerrs',
-                    'alumnos_registro.etnia', 'alumnos_registro.unidad', 'alumnos_registro.etnia', 'alumnos_registro.indigena', 'alumnos_registro.migrante'
-                ]);
+                ->SELECT(
+                    'alumnos_registro.unidad',
+                    'alumnos_registro.no_control',
+                    'alumnos_pre.apellido_paterno',
+                    'alumnos_pre.apellido_materno',
+                    'alumnos_pre.nombre AS nombrealumno',
+                    'alumnos_pre.curp AS curp_alumno',
+                    'alumnos_pre.fecha_nacimiento',
+                    'alumnos_pre.sexo',
+                    'alumnos_pre.domicilio',
+                    'alumnos_pre.colonia',
+                    'alumnos_pre.municipio',
+                    'alumnos_pre.estado_civil',
+                    'alumnos_pre.ultimo_grado_estudios',
+                    'alumnos_pre.telefono',
+                    'alumnos_pre.correo'
+                )
+                ->WHERE('alumnos_registro.no_control', '=', $id)
+                ->FIRST();
 
         return response()->json($alumnos, 200);
     }

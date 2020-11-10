@@ -178,6 +178,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('alumnos/sid', 'webController\AlumnoController@create')
         ->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
+    Route::get('alumnos/sid/cerss', 'webController\AlumnoController@createcerss')->name('preinscripcion.cerss');
     Route::post('/alumnos/save', 'webController\AlumnoController@store')->name('alumnos.save');
     // alumnos
     Route::get('/alumnos/preinscripcion/paso2/{id}', 'webController\AlumnoController@steptwo')->name('alumnos.preinscripcion.paso2')
