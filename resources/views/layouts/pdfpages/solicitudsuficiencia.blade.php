@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
@@ -76,26 +76,32 @@
                 width: 200px;
                 height: 60px;
             }
+            div.content
+            {
+                margin-top: 60%;
+                margin-bottom: 70%;
+                margin-right: -25%;
+                margin-left: 0%;
+            }
         </style>
     </head>
     <body>
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <br><h5>"2020, Año de Leona Vicario Benemérita Madre de la Patria"</h5>
+            <br><h6>"2020, Año de Leona Vicario Benemérita Madre de la Patria"</h6>
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
             <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
         </footer>
         <div id="wrapper">
-            <div align=center> <b>UNIDAD DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
+            <div align=center><b><h6> DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
                 <br>DIRECCIÓN DE PLANEACIÓN
                 <br>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO
                 <br>FORMATO DE SOLICITUD DE SUFICIENCIA PRESUPUESTAL
-                <br>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}} ANEXO DE MEMORÁNDUM No.{{$data2->no_memo}}</b> </div>
+                <br>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}} ANEXO DE MEMORÁNDUM No.{{$data2->no_memo}}</h6></b> </div>
             </div>
-            <br><br>
             <div class="form-row">
                 <table width="700" class="table table-bordered" id="table-one">
                     <thead>
@@ -136,13 +142,13 @@
                     </tbody>
                 </table>
                 <br><br>
-                <div align=center> <b>SOLICITA
-                    <br>
-                    <br>
-                    <br><small>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</small>
-                    <br>________________________________________
-                    <br><small>{{$getremitente->puesto}} DE {{$data2->unidad_capacitacion}}</small></b>
-                </div>
+            </div>
+            <div align=center> <b>SOLICITA
+                <br>
+                <br>
+                <br><small>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</small>
+                <br>________________________________________
+                <br><small>{{$getremitente->puesto}} DE {{$data2->unidad_capacitacion}}</small></b>
             </div>
         </div>
     </body>

@@ -30,6 +30,7 @@ class ContratoController extends Controller
 {
     public function index(Request $request)
     {
+
         /**
          * parametros para iniciar la busqueda
          */

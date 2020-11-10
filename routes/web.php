@@ -345,20 +345,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supervisiones/escolar/url/generar', 'supervisionController\UrlController@generarUrl')->name('supervision.escolar.url.generar');
     Route::get('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
     Route::post('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
-    
+
     Route::get('/supervision/instructor/revision/{id}', 'supervisionController\InstructorController@revision')->name('supervision.instructor.revision');
     Route::post('/supervision/instructores/guardar', 'supervisionController\InstructorController@update')->name('supervision.instructor.guardar');
-    
+
 
     /*SUPERVISIONES ALUMNOS*/
     Route::get('/supervisiones/alumno/lst', 'supervisionController\AlumnoController@lista')->name('supervision.alumno.lst');
     Route::get('/supervision/alumno/revision/{id}', 'supervisionController\AlumnoController@revision')->name('supervision.alumno.revision');
     Route::post('/supervisiones/alumnos/guardar', 'supervisionController\AlumnoController@update')->name('supervision.alumno.guardar');
 
-    
+
     /* SUPERVISION CONTROL DE CALIDAD*/
     Route::get('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
-    Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');    
+    Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
 });
 
 Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');

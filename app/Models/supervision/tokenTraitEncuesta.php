@@ -4,15 +4,15 @@ namespace App\Models\supervision;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use App\Models\supervision\token;
+use App\Models\supervision\tokenEncuesta;
 
-trait tokenTrait
+trait tokenTraitEncuesta
 {
 
     protected function TokenExpired($urltoken)
     {
           $currentTime = time();
-          $token = Token::where('url_token', $urltoken)->first();
+          $token = tokenEncuesta::where('url_token', $urltoken)->first();
           if($token->url_token != null && $currentTime>$token->ttl) {
                //ELIMINANDO TOKEN CADUCADO
                //$token->delete();
@@ -20,14 +20,14 @@ trait tokenTrait
           }
     }
 
-    protected function generateTmpToken($urltoken, $request)
+    protected function generateTmpToken($urltoken)
     {
 
           $currentTime = time();
-          if(!Token::where('url_token', $urltoken)->exists()){
+          if(!tokenEncuesta::where('url_token', $urltoken)->exists()){
                 return null;
           }
-          $token = Token::where('url_token', $urltoken)->first();
+          $token = tokenEncuesta::where('url_token', $urltoken)->first();
           if($currentTime > $token->ttl) {
             //ELIMINANDO TOKEN CADUCADO
               //$token->delete();
