@@ -43,22 +43,55 @@
         <form method="POST" id="form_sid_cerss" action="" enctype="multipart/form-data">
             @csrf
             <div class="form-row">
+                <!--NOMBRE CERSS-->
+                <div class="form-group col-md-4">
+                    <label for="nombre_cerss " class="control-label">NOMBRE DEL CERSS</label>
+                    <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off">
+                </div>
+                <!--NOMBRE CERSS END-->
+                <div class="form-group col-md-8">
+                    <label for="direccion_cerss " class="control-label">DIRECCIÓN DEL CERSS</label>
+                    <input type="text" class="form-control" id="direccion_cerss " name="direccion_cerss " autocomplete="off"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <!--TITULAR DEL CERSS-->
+                <div class="form-group col-md-8">
+                    <label for="titular_cerss " class="control-label">TITULAR DEL CERSS</label>
+                    <input type="text" class="form-control" id="titular_cerss " name="titular_cerss " autocomplete="off"/>
+                </div>
+                <!--TITULAR DEL CERSS END-->
+            </div>
+
+            <!--PERSONALES-->
+            <hr style="border-color:dimgray">
+            <div style="text-align: center;">
+                <h4><b>DATOS PERSONALES CERSS</b></h4>
+            </div>
+            <!--PERSONALES END-->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="numero_expediente_cerss" class="control-label">NÚMERO DE EXPEDIENTE</label>
+                    <input type="text" class="form-control" id="numero_expediente_cerss" name="numero_expediente_cerss" autocomplete="off"/>
+                </div>
+            </div>
+            <div class="form-row">
                 <!--nombre aspirante-->
                 <div class="form-group col-md-4">
-                    <label for="nombre_cerss " class="control-label">NOMBRE</label>
-                    <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off">
+                    <label for="nombre_aspirante_cerss " class="control-label">NOMBRE</label>
+                    <input type="text" class="form-control" id="nombre_aspirante_cerss" name="nombre_aspirante_cerss" autocomplete="off">
                 </div>
                 <!--nombre aspirante END-->
                 <!-- apellido paterno -->
                 <div class="form-group col-md-4">
-                    <label for="apellidoPaterno_cerss" class="control-label">APELLIDO PATERNO</label>
-                    <input type="text" class="form-control" id="apellidoPaterno_cerss" name="apellidoPaterno_cerss" autocomplete="off">
+                    <label for="apellidoPaterno_aspirante_cerss" class="control-label">APELLIDO PATERNO</label>
+                    <input type="text" class="form-control" id="apellidoPaterno_aspirante_cerss" name="apellidoPaterno_aspirante_cerss" autocomplete="off">
                 </div>
                 <!-- apellido paterno END -->
                 <!-- apellido materno-->
                 <div class="form-group col-md-4">
-                    <label for="apellidoMaterno_cerss" class="control-label">APELLIDO MATERNO</label>
-                    <input type="text" class="form-control" id="apellidoMaterno_cerss" name="apellidoMaterno_cerss" autocomplete="off">
+                    <label for="apellidoMaterno_aspirante_cerss" class="control-label">APELLIDO MATERNO</label>
+                    <input type="text" class="form-control" id="apellidoMaterno_aspirante_cerss" name="apellidoMaterno_aspirante_cerss" autocomplete="off">
                 </div>
                 <!-- apellido materno END-->
             </div>
@@ -127,51 +160,11 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="expediente_cerss" class="control-label">EXPEDIENTE</label>
-                    <input type="text" class="form-control" id="expediente_cerss" name="expediente_cerss" autocomplete="off"/>
+                <div class="form-group col-md-6">
+                    <label for="nacionalidad_cerss" class="control-label">NACIONALIDAD</label>
+                    <input type="text" class="form-control" id="nacionalidad_cerss" name="nacionalidad_cerss" placeholder="NACIONALIDAD" autocomplete="off">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="domicilio_cerss " class="control-label">DOMICILIO</label>
-                    <input type="text" class="form-control" id="domicilio_cerss " name="domicilio_cerss " autocomplete="off"/>
-                </div>
-                <div class="form-group col-md-4">
-                    <div class="custom-file">
-                        <label for="file_upload " class="control-label">FICHA IDENTIFICACIÓN CERSS</label>
-                        <input type="file" class="form-control" id="file_upload" name="file_upload">
-                    </div>
-                </div>
-            </div>
-
-            <!--PERSONALES-->
-            <hr style="border-color:dimgray">
-            <div style="text-align: center;">
-                <h4><b>DATOS PERSONALES CERSS</b></h4>
-            </div>
-            <!--PERSONALES END-->
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="pais_cerss" class="control-label">PAIS</label>
-                    <input type="text" class="form-control" id="pais_cerss" name="pais_cerss" placeholder="PAIS" autocomplete="off">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="estado_cerss" class="control-label">ESTADO</label>
-                    <select class="form-control" id="estado_cerss" name="estado_cerss" required>
-                        <option value="">--SELECCIONAR--</option>
-                        @foreach ($estados as $itemEstado)
-                            <option value="{{ $itemEstado->id }}">{{ $itemEstado->nombre }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="municipio_cerss" class="control-label">MUNICIPIO</label>
-                    <select class="form-control" id="municipio_cerss" name="municipio_cerss">
-                        <option value="">--SELECCIONAR--</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <label for="genero_cerss" class="control-label">GENERO</label>
                     <select class="form-control" id="genero_cerss" name="genero_cerss">
                         <option value="">--SELECCIONAR--</option>
@@ -179,26 +172,20 @@
                         <option value="MASCULINO">HOMBRE</option>
                     </select>
                 </div>
-                <div class="form-group col-md-4">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
                     <label for="curp_cerss" class="control-label">CURP ASPIRANTE</label>
-                    <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="Curp" autocomplete="off">
+                    <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="estado_civil_cerss" class="control-label">ESTADO CIVIL</label>
-                    <select class="form-control" id="estado_civil_cerss" name="estado_civil_cerss">
-                        <option value="">--SELECCIONAR--</option>
-                        <option value="SOLTERO (A)">SOLTERO (A)</option>
-                        <option value="CASADO (A)">CASADO (A)</option>
-                        <option value="UNIÓN LIBRE">UNIÓN LIBRE</option>
-                        <option value="DIVORCIADO (A)">DIVORCIADO (A)</option>
-                        <option value="VIUDO (A)">VIUDO (A)</option>
-                        <option value="NO ESPECIFICA">NO ESPECIFICA</option>
-                    </select>
+                <div class="form-group col-md-6">
+                    <label for="rfc_cerss" class="control-label">RFC ASPIRANTE</label>
+                    <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off">
                 </div>
             </div>
             <!---->
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-6">
                     <label for="ultimo_grado_estudios_cerss" class="control-label">ÚLTIMO GRADO DE ESTUDIOS</label>
                     <select class="form-control" id="ultimo_grado_estudios_cerss" name="ultimo_grado_estudios_cerss">
                         <option value="">--SELECCIONAR--</option>
@@ -207,13 +194,11 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="religion_cerss" class="control-label">RELIGIÓN</label>
-                    <input type="text" class="form-control" id="religion_cerss" name="religion_cerss" placeholder="RELIGIÓN" autocomplete="off">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="etnia_cerss" class="control-label">ETNIA</label>
-                    <input type="text" class="form-control" id="etnia_cerss" name="etnia_cerss" autocomplete="off">
+                <div class="form-group col-md-6">
+                    <div class="custom-file">
+                        <label for="file_upload " class="control-label">FICHA IDENTIFICACIÓN CERSS</label>
+                        <input type="file" class="form-control" id="file_upload" name="file_upload">
+                    </div>
                 </div>
             </div>
             <!--botones de enviar y retroceder-->
