@@ -27,16 +27,10 @@
             },            
             curso: { 
                     required: true 
-            },
-            numero_apertura: { 
-                    required: true 
-            },
+            },           
             fecha_autorizacion: { 
                 required: true
-            },
-            modalidad: { 
-                    required: true 
-            },
+            },           
             tipo: { 
                     required: true 
             },
@@ -44,7 +38,7 @@
                     required: true 
             },
             cuota: { 
-                    required: true
+                    required: true,digits: true
             },            
             fecha_inicio: { 
                     required: true 
@@ -96,16 +90,10 @@
             },            
             curso: { 
                     required: 'Por favor ingrese el nombre del curso' 
-            },
-            numero_apertura: { 
-                    required: 'Por favor ingrese la clave de apertura' 
-            },
+            },            
             fecha_autorizacion: { 
                     required: 'Por favor ingrese la fecha de autorizaci\u00F3n'
-            },
-            modalidad: { 
-                    required: 'Por favor ingrese la modalidad' 
-            },
+            },            
             tipo: { 
                     required: 'Por favor ingrese el tipo de curso' 
             },

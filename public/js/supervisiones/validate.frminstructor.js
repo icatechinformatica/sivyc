@@ -1,6 +1,9 @@
 ﻿$( function() {
      $('#frmInstructor').validate({
         rules: {
+            file_photo:{ 
+                    required: true,extension: "jpg|jpeg|png",filesize: 2000000 
+            },
             nombre: {
                     required: true, minlength: 3
             },
@@ -17,14 +20,11 @@
                     required: true 
             },
             monto_honorarios: { 
-                    required: true
+                    required: true,digits: true
             },
             nombre_curso: { 
                     required: true 
-            },
-            numero_apertura: { 
-                    required: true 
-            },
+            },            
             fecha_autorizacion: { 
                     required: true 
             },
@@ -68,6 +68,11 @@
             }
         },
         messages: {
+             file_photo: { 
+                    required: 'Por favor ingrese su fotograf\u00EDa', 
+                    extension: "jpg|jpeg|png|gif",
+                    filesize: "El archivo debe ser menor de 2 MB"
+            },
             nombre: { 
                     required: 'Por favor ingrese su nombre', 
                     minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios") 
@@ -85,14 +90,12 @@
                     required: 'Por favor ingrese la fecha de inscripci\u00F3n al padr\u00F3n'
             },
             monto_honorarios: { 
-                    required: 'Por favor ingrese el monto de honorarios'                     
+                    required: 'Por favor ingrese el monto de honorarios',
+                    digits: 'S\u00F3lo se aceptan n\u00FAmeros'                   
             },
             nombre_curso: { 
                     required: 'Por favor ingrese el nombre del curso' 
-            },
-            numero_apertura: { 
-                    required: 'Por favor ingrese la clave de apertura' 
-            },
+            },            
             fecha_autorizacion: { 
                     required: 'Por favor ingrese la fecha de autorizaci\u00F3n'
             },

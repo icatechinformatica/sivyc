@@ -50,7 +50,6 @@ class UrlController extends Controller
             $t->ttl = $currentTime + (1440 * 60); //24 horas 1440
             $t->save();
        }
-
        $url = url("{$path}{$token}");
        return $url;
 

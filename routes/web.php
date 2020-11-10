@@ -343,6 +343,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
     Route::post('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
     Route::get('/supervisiones/escolar/url/generar', 'supervisionController\UrlController@generarUrl')->name('supervision.escolar.url.generar');
+    Route::get('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
+    Route::post('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
 
     Route::get('/supervision/instructor/revision/{id}', 'supervisionController\InstructorController@revision')->name('supervision.instructor.revision');
     Route::post('/supervision/instructores/guardar', 'supervisionController\InstructorController@update')->name('supervision.instructor.guardar');
@@ -357,12 +359,6 @@ Route::middleware(['auth'])->group(function () {
     /* SUPERVISION CONTROL DE CALIDAD*/
     Route::get('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
     Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
-
-    /* ENCUESTA */
-    Route::get('/encuesta', 'supervisionController\EncuestaController@encuesta')->name('encuesta');
-    Route::post('/encuesta/save', 'supervisionController\EncuestaController@encuesta_save')->name('encuesta.save');
-
-
 });
 
 Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');

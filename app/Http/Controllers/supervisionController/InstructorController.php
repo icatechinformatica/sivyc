@@ -31,8 +31,9 @@ class InstructorController extends Controller
         $fecha = date('d/m/Y');
         $data = instructor::Filtrar('id_tbl_cursos',$id)
         ->PAGINATE(5, ['id', 'id_instructor','nombre','apellido_paterno','apellido_materno',
-    'fecha_padron','fecha_contrato','cct','nombre_curso','numero_apertura','fecha_autorizacion','horas_curso','inicio_curso',
-    'termino_curso','modalidad_curso','hini_curso','hfin_curso','tipo_curso','total_mujeres','total_hombres','lugar_curso','monto_honorarios',
+    'fecha_padron','fecha_contrato','cct','nombre_curso','fecha_autorizacion','horas_curso','inicio_curso',
+    'termino_curso','modalidad_curso','hini_curso','hfin_curso','tipo_curso','total_mujeres','total_hombres',
+    'lugar_curso','monto_honorarios',
     'lugar_curso','id_tbl_cursos', 'ok_nombre','obs_nombre','ok_fecha_contrato','obs_fecha_contrato','ok_fecha_padron',
     'obs_fecha_padron','ok_honorarios','obs_honorarios','ok_curso','obs_curso','ok_modalidad',
     'obs_modalidad','ok_horario','obs_horario','ok_horas_diarias','obs_horas_diarias','ok_horas_curso',
@@ -68,7 +69,6 @@ class InstructorController extends Controller
                     $mensaje = 'Operacion Exitosa!';
                 else */
                     $mensaje = 'Operacion no se ha efectuado correctamente, por favor vuelver intentar.';
-
             break;
             case 'enviar':
                 $fieldsOK = ['ok_nombre','ok_fecha_contrato','ok_fecha_padron',
@@ -76,14 +76,14 @@ class InstructorController extends Controller
                 'ok_horario','ok_horas_diarias','ok_horas_curso',
                 'ok_fecha_inicio','ok_fecha_termino',
                 'ok_mujeres','ok_hombres','ok_tipo','ok_lugar',
-                'ok_numero_apertura','ok_fecha_autorizacion'];
+                'ok_fecha_autorizacion'];
 
                 $fieldsOBS = ['obs_nombre','obs_fecha_contrato',
                 'obs_fecha_padron','obs_honorarios','obs_curso',
                 'obs_modalidad','obs_horario','obs_horas_diarias',
                 'obs_horas_curso','obs_fecha_inicio','obs_fecha_termino',
                 'obs_mujeres','obs_hombres','obs_tipo','obs_lugar',
-                'obs_numero_apertura','obs_fecha_autorizacion','comentarios'];
+                'obs_fecha_autorizacion','comentarios'];
 
                 foreach ($fieldsOK as $i => $value) {
                     if($request->get($value)) $app->$value = $request->get($value);
