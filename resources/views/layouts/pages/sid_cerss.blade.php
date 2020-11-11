@@ -40,7 +40,7 @@
         <div style="text-align: center;">
             <h4><b>DATOS GENERALES CERSS</b></h4>
         </div>
-        <form method="POST" id="form_sid_cerss" action="" enctype="multipart/form-data">
+        <form method="POST" id="form_sid_cerss" action="{{ route('preinscripcion.cerss.save') }}" enctype="multipart/form-data">
             @csrf
             <div class="form-row">
                 <!--NOMBRE CERSS-->
@@ -50,8 +50,8 @@
                 </div>
                 <!--NOMBRE CERSS END-->
                 <div class="form-group col-md-8">
-                    <label for="direccion_cerss " class="control-label">DIRECCIÓN DEL CERSS</label>
-                    <input type="text" class="form-control" id="direccion_cerss " name="direccion_cerss " autocomplete="off"/>
+                    <label for="direcciones_cerss " class="control-label">DIRECCIÓN DEL CERSS</label>
+                    <input type="text" class="form-control" id="direcciones_cerss " name="direcciones_cerss " autocomplete="off"/>
                 </div>
             </div>
             <div class="form-row">
@@ -271,11 +271,64 @@
     <script type="text/javascript">
         $(function(){
 
-            $.validator.addMethod("filesize", (value, element, arg)=> {
-                var minsize=1000; // representa a 1kb
-                if((value>minsize)&&(value<=arg)){
-                    return true;
-                }else{
+            $.validator.addMethod("CURP_CERSS", function (value, element) {
+                if (value !== '') {
+                    var patt = new RegExp("^[A-Z][A,E,I,O,U,X][A-Z]{2}[0-9]{2}[0-1][0-9][0-3][0-9][M,H][A-Z]{2}[B,C,D,F,G,H,J,K,L,M,N,Ñ,P,Q,R,S,T,V,W,X,Y,Z]{3}[0-9,A-Z][0-9]$");
+                    return patt.test(value);
+                } else {
+                    return false;
+                }
+            }, "Ingrese una CURP valida");
+
+            $.validator.addMethod("RFC_CERSS", function (value, element) {
+                if (value !== '') {
+                    var patt = new RegExp("^[A-Z,Ñ,&]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?$");
+                    return patt.test(value);
+                } else {
+                    return false;
+                }
+            }, "Ingrese un RFC valido");
+
+            $("#curp_cerss").keyup(function(){
+               if($(this).val().length > 0)
+               {
+                    $(this).addClass('CURP_CERSS');
+               } else {
+                    $(this).removeClass('CURP_CERSS');
+               }
+            });
+
+            $('#rfc_cerss').keyup(function(){
+               if($(this).val().length > 0)
+               {
+                    $(this).addClass('RFC_CERSS');
+               } else {
+                    $(this).removeClass('RFC_CERSS');
+               }
+            });
+
+            /****
+            * sólo acepta números en el texbox
+            */
+            $('#numero_expediente_cerss').keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    //display error message
+                    return false;
+                }
+            });
+            /**
+            * Validar el tamaño del archivo en 2 MB
+            */
+            $.validator.addMethod('filesize', function (value, element, param) {
+                return this.optional(element) || (element.files[0].size <= param * 1000000)
+            }, 'El tamaño del archivo debe ser menor a {0} MB');
+
+            /****
+            * sólo acepta números en el texbox
+            */
+            $('#anio_cerss').keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    //display error message
                     return false;
                 }
             });
@@ -287,26 +340,16 @@
                 rules: {
                     nombre_cerss: {
                         required: true,
-                        minlength: 3
+                        minlength: 2
                     },
-                    apellidoPaterno_cerss: {
+                    nombre_aspirante_cerss: {
                         required: true,
                         minlength: 2
                     },
-                    genero_cerss: {
-                        required: true
-                    },
-                    curp_cerss: {
+                    apellidoPaterno_aspirante_cerss: {
                         required: true,
-                        CURP: true
                     },
-                    estado_cerss: {
-                        required: true
-                    },
-                    municipio_cerss: {
-                        required: true
-                    },
-                    estado_civil_cerss: {
+                    genero_cerss: {
                         required: true
                     },
                     dia_cerss: {
@@ -323,48 +366,31 @@
                     file_upload: {
                         required: true,
                         extension: "pdf",
-                        filesize: 3000000   //max size 2mb
+                        filesize: 2 //max size 2mb
                     }
                 },
                 messages: {
-                    nombre: {
+                    nombre_cerss: {
+                        required: 'Por favor ingrese el nombre del cerss',
+                        minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
+                    },
+                    nombre_aspirante_cerss: {
                         required: 'Por favor ingrese su nombre',
                         minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
                     },
-                    apellidoPaterno: {
+                    apellidoPaterno_aspirante_cerss: {
                         required: 'Por favor ingrese su apellido'
                     },
-                    sexo: {
+                    genero_cerss: {
                         required: 'Por favor Elegir su genero'
                     },
-                    curp: {
-                        required: 'Por favor Ingresé la curp',
-                    },
-                    telefonosid: {
-                        required: 'Por favor, ingrese telefóno',
-                    },
-                    estado: {
-                        required: 'Por favor, seleccione un estado'
-                    },
-                    municipio: {
-                        required: 'Por favor, seleccione el municipio'
-                    },
-                    estado_civil_cerss: {
-                        required: 'Por favor, seleccione su estado civil'
-                    },
-                    discapacidad: {
-                        required: 'Por favor seleccione una opción'
-                    },
-                    ultimo_grado_estudios: {
-                        required: "Agregar último grado de estudios"
-                    },
-                    dia: {
+                    dia_cerss: {
                         required: "Por favor, seleccione el día"
                     },
-                    mes: {
+                    mes_cerss: {
                         required: "Por favor, seleccione el mes"
                     },
-                    anio: {
+                    anio_cerss: {
                         required: "Por favor, Ingrese el año",
                         maxlength: "Sólo acepta 4 digitos",
                         number: "Sólo se aceptan números"
@@ -374,59 +400,14 @@
                     },
                     motivos_eleccion_sistema_capacitacion: {
                         required: "Por favor, seleccione una opción"
+                    },
+                    file_upload: {
+                        required: "Por favor, Seleccione un archivo",
+                        extension: "Sólo se permiten pdf",
                     }
                 }
             });
 
-            // estado cambiar a municipio
-            $('#estado_cerss').on("change", () => {
-                var IdEst =$('#estado_cerss').val();
-                $("#estado_cerss option:selected").each( () => {
-                    var IdEst = $('#estado_cerss').val();
-                    var datos = {idEst: IdEst};
-                    var url = '/alumnos/sid/municipios';
-
-                    var request = $.ajax
-                    ({
-                        url: url,
-                        method: 'POST',
-                        data: datos,
-                        dataType: 'json'
-                    });
-
-                    /*
-                        *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                        *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                        *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                        *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-                    */
-
-
-                    request.done(( respuesta ) =>
-                    {
-                        if (respuesta.length < 1) {
-                            $("#municipio_cerss").empty();
-                            $("#municipio_cerss").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        } else {
-                            if(!respuesta.hasOwnProperty('error')){
-                                $("#municipio_cerss").empty();
-                                $("#municipio_cerss").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                                $.each(respuesta, (k, v) => {
-                                    $('#municipio_cerss').append('<option value="' + v.muni + '">' + v.muni + '</option>');
-                                });
-                                $("#municipio_cerss").focus();
-                            }else{
-
-                                //Puedes mostrar un mensaje de error en algún div del DOM
-                            }
-                        }
-                    });
-                    request.fail(( jqXHR, textStatus ) =>
-                    {
-                        alert( "Hubo un error: " + textStatus );
-                    });
-                });
-            });
         });
     </script>
 @endsection

@@ -390,6 +390,16 @@
     <script type="text/javascript">
         $(function(){
 
+            /****
+            * sólo acepta números en el texbox
+            */
+            $('#anio').keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    //display error message
+                    return false;
+                }
+            });
+
             /**
             * validación nueva del SID
             */

@@ -93,7 +93,6 @@ class AlumnoController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         $curp = strtoupper($request->input('curp'));
         $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET(['curp']);
         // obtener el usuario que agrega
@@ -166,6 +165,57 @@ class AlumnoController extends Controller
             #Mensaje
             $mensaje = "Lo sentimos, la curp ".$curp." asociada a este registro ya se encuentra en la base de datos.";
             return redirect('/alumnos/sid')->withErrors($mensaje);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storecerss(Request $request)
+    {
+
+        $rules = [
+            'nombre_cerss' => ['required', 'min:4'],
+            'nombre_aspirante_cerss' => ['required', 'min:2', ],
+            'apellidoPaterno_aspirante_cerss' => 'required',
+            'genero_cerss' => 'required',
+            'dia_cerss' => 'required',
+            'mes_cerss' => 'required',
+            'anio_cerss' => 'required',
+            'file_upload' => ['required', 'mimes:pdf', 'size:2000'],
+            'numero_expediente_cerss' => 'required',
+        ];
+
+        $messages = [
+            'nombre_cerss.required' => 'EL NOMBRE DEL CERSS ES REQUERIDO',
+            'nombre_cerss.min' => 'LA LONGITUD DEL NOMBRE DEL CERSS NO PUEDE SER MENOR A 3 CARACTERES',
+            'nombre_aspirante_cerss.required' => 'EL NOMBRE DEL ASPIRANTE ES REQUERIDO',
+            'nombre_aspirante_cerss.min' => 'LA LONGITUD DEL NOMBRE NO PUEDE SER MENOR A 2 CARACTERES',
+            'apellidoPaterno_aspirante_cerss.required' => 'EL APELLIDO PATERNO DEL ASPIRANTE ES REQUERIDO',
+            'genero_cerss.required' => 'EL GENERO ES REQUERIDO',
+            'dia_cerss.required' => 'EL DÍA ES REQUERIDO',
+            'mes_cerss.required' => 'EL MES ES REQUERIDO',
+            'anio_cerss.required' => 'EL AÑO ES REQUERIDO',
+            'file_upload.required' => 'EL ARCHIVO DE CARGA ES REQUERIDO',
+            'file_upload.mimes' => 'EL ARCHIVO NO ES UNA EXTENSION PDF',
+            'file_upload.size' => 'EL ARCHIVO NO PUEDE SER MAYOR A 2MB',
+            'numero_expediente_cerss.required' => 'EL NÚMERO DE EXPEDIENTE ES REQUERIDO',
+        ];
+
+        $validator =  $request->validate($rules, $messages);
+        if ($validator->fails()) {
+            # devolvemos un error
+            //dd($validator);
+            return redirect()->route('preinscripcion.cerss')
+                    ->withErrors($validator)
+                    ->withInput();
+        } else {
+            /**
+             * empezamos a insertar el registro
+             */
         }
     }
     /**
