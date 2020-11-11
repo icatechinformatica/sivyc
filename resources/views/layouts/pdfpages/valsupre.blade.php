@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style type="text/css">
@@ -142,7 +142,7 @@
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <br><h5>"2020, Año de Leona Vicario Benemérita Madre de la Patria"</h5>
+            <br><h6>"2020, Año de Leona Vicario Benemérita Madre de la Patria"</h6>
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
@@ -175,45 +175,45 @@
             <br><br>
         </div>
             <div class="form-row">
-                <table width="700" class="table table-bordered" id="table-one">
+                <table width="700"  class="table table-striped" id="table-one">
                     <thead>
                         <tr class="active">
-                            <td scope="col"><small>No. DE SUFICIENCIA</small></td>
-                            <td scope="col" ><small>FECHA</small></td>
-                            <td scope="col" ><small>INSTRUCTOR</small></td>
-                            <td width="10px"><small>UNIDAD/ A.M. DE CAP.</small></td>
-                            <td scope="col" ><small>CURSO</small></td>
-                            <td scope="col"><small>CLAVE DEL GRUPO</small></td>
-                            <td scope="col" ><small>ZONA ECÓNOMICA</small></td>
-                            <td scope="col"><small>HSM (horas)</small></td>
-                            <td scope="col" ><small>IMPORTE POR HORA</small></td>
-                            <td scope="col"><small>IVA 16%</small></td>
-                            <td scope="col" ><small>PARTIDA/ CONCEPTO</small></td>
-                            <td scope="col"><small>IMPORTE</small></td>
-                            <td scope="col"><small>Fuente de Financiamiento</small></td>
-                            <td scope="col" ><small>OBSERVACION</small></td>
+                            <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
+                            <td width="10px"><small style="font-size: 10px;">UNIDAD/ A.M. DE CAP.</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">CURSO</small></td>
+                            <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
+                            <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
+                            <td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
+                            <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
+                            <td scope="col"><small style="font-size: 10px;">Fuente de Financiamiento</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">OBSERVACION</small></td>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $key=>$item)
                             <tr>
-                                <td><small>{{$item->folio_validacion}}</small></td>
-                                <td><small>{{$item->fecha}}</small></td>
-                                <td><small>{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
-                                <td><small>{{$item->unidad}}</small></td>
-                                <td><small>{{$item->curso_nombre}}</small></td>
-                                <td><small>{{$item->clave}}</small></td>
-                                <td><small>{{$item->ze}}</small></td>
-                                <td><small>{{$item->dura}}</small></td>
-                                <td><small>{{$item->importe_hora}}</small></td>
-                                <td><small>{{$item->iva}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->folio_validacion}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->fecha}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->unidad}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->curso_nombre}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->clave}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->ze}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->dura}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->importe_hora}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->iva}}</small></td>
                                 <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
                                 <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                <td><small>12101 Honorarios</small></td>
-                                <td><small>{{$item->importe_total}}</small></td>
+                                <td><small style="font-size: 12px;">12101 Honorarios</small></td>
+                                <td><small style="font-size: 12px;">{{$item->importe_total}}</small></td>
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
                                 <td style="text-align: center"><small>{{$recursos[$key]}}</small></td>
-                                <td><small>{{$item->comentario}}</small></td>
+                                <td><small style="font-size: 12px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
                     </tbody>
