@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
@@ -14,7 +14,7 @@
             }
             header { position: fixed;
                 left: 0px;
-                top: -90px;
+                top: -80px;
                 right: 0px;
                 height: 60px;
                 background-color: white;
@@ -31,13 +31,12 @@
             footer {
                 position: fixed;
                 left: 0px;
-                bottom: -60px;
+                bottom: -30px;
                 right: 0px;
                 height: 60px;
                 background-color: white;
                 color: black;
                 text-align: center;
-                line-height: 35px;
             }
             footer .page:after {
                 content: counter(page);
@@ -96,7 +95,7 @@
             <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
         </footer>
         <div id="wrapper">
-            <div align=center><b><h6> DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
+            <div align=center><b><h6>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
                 <br>DIRECCIÓN DE PLANEACIÓN
                 <br>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO
                 <br>FORMATO DE SOLICITUD DE SUFICIENCIA PRESUPUESTAL
