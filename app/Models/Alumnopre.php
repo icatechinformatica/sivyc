@@ -50,7 +50,8 @@ class Alumnopre extends Model
         'puesto_empresa',
         'sistema_capacitacion_especificar',
         'realizo',
-        'tiene_documentacion'
+        'tiene_documentacion',
+        'es_cereso'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

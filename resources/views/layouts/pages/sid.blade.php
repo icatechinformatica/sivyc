@@ -24,7 +24,7 @@
         @endif
         <div class="row">
             <div class="col-lg-8 margin-tb">
-                <div style="text-align: center;">
+                <div>
                     <h3><b>Solicitud de Inscripción (SID)</b></h3>
                 </div>
             </div>
@@ -261,24 +261,6 @@
                     </div>
                 </div>
             </div>
-            <!--CERESO-->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="cereso_preregistro" class="control-label">¿SE ENCUENTRA EN EL CERESO?</label>
-                    <select class="form-control" name="cereso_preregistro" id="cereso_preregistro">
-                        <option value="">--SELECCIONAR--</option>
-                        <option value="SI">SI</option>
-                        <option value="NO">NO</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-6">
-                    <div class="constancia_reclusion_tag">
-                        <label for="constancia_reclusion" class="control-label">CONSTANCIA DE RECLUSIÓN:</label>
-                        <input type="file" class="form-control" name="constancia_reclusion" id="constancia_reclusion" data-id="constancia_reclusion_file">
-                    </div>
-                </div>
-            </div>
-            <!--CERESO END-->
             <!--DATOS DE EMPLEO-->
             <hr style="border-color: dimgray">
             <div style="text-align: center;">
@@ -309,13 +291,14 @@
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                        <a class="btn btn-danger" href="{{route('alumnos.index')}}">Regresar</a>
                     </div>
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary" >Guardar</button>
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="is_cerrs" id="is_cerrs" value="false">
         </form>
         <!-- Full Height Modal Right -->
             <div class="modal fade right" id="fullHeight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -506,32 +489,6 @@
                 }
             });
 
-            $('#cereso_preregistro').on("change", () => {
-                $("#cereso_preregistro option:selected").each( () => {
-                    var opcionCereso = $('#cereso_preregistro').val();
-                    switch(opcionCereso) {
-                        case 'SI':
-                            $("div.constancia_reclusion_tag").css("display", "block")
-                            // se activa el input
-                            $('[data-id="constancia_reclusion_file"]').removeClass('hidden').prop('disabled', false);
-                            $("input[data-id*=constancia_reclusion_file]").rules("add", {
-                                required: true,
-                                messages: {
-                                    required: "Enter something else"
-                                }
-                            });
-                        break;
-                        case 'NO':
-                            $("div.constancia_reclusion_tag").css("display", "none");
-                            $('[data-id="constancia_reclusion_file"]').addClass('hidden').prop('disabled', true).val('');
-                            $("input[data-id*=constancia_reclusion_file]").rules( "remove", "required" );
-                        break;
-                        break;
-                        default:
-                            console.log('Lo lamentamos, por el momento no disponemos de ' + opcionCereso + '.');
-                    }
-                });
-            });
         });
     </script>
 @endsection

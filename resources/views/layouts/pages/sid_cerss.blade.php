@@ -1,6 +1,6 @@
 @extends('theme.sivyc.layout')
 <!--generado por Daniel Méndez-->
-@section('title', 'Solicitud de Inscripción | Sivyc Icatech')
+@section('title', 'Solicitud de Inscripción CERRS | Sivyc Icatech')
 <!--ÁREA EXTRA DONDE SE AGREGA CSS-->
 @section('content_script_css')
     <style>
@@ -205,13 +205,14 @@
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                        <a class="btn btn-danger" href="{{route('alumnos.index')}}">Regresar</a>
                     </div>
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary" >Guardar</button>
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="is_cerrs" id="is_cerrs" value="true">
         </form>
         <!-- Full Height Modal Right -->
             <div class="modal fade right" id="fullHeight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -236,7 +237,7 @@
 
                                         <ul class="list-group z-depth-0">
                                             <li class="list-group-item justify-content-between">
-                                                <b> NOMBRE DEL ASPIRANTE - APELLIDO PATERNO </b>
+                                                <b> NOMBRE DEL CERSS - NOMBRE DEL ASPIRANTE </b>
                                             </li>
                                             <li class="list-group-item justify-content-between">
                                                 <b> DÍA - MES - AÑO </b>
@@ -251,7 +252,7 @@
                                                 <b> ESTADO - MUNICIPIO</b>
                                             </li>
                                             <li class="list-group-item justify-content-between">
-                                                <b> ÚLTIMO GRADO DE ESTUDIOS - EXPEDIENTE - DOMICILIO</b>
+                                                <b> EXPEDIENTE </b>
                                             </li>
                                         </ul>
                                     </p>
@@ -346,9 +347,6 @@
                         required: true,
                         minlength: 2
                     },
-                    apellidoPaterno_aspirante_cerss: {
-                        required: true,
-                    },
                     genero_cerss: {
                         required: true
                     },
@@ -367,6 +365,9 @@
                         required: true,
                         extension: "pdf",
                         filesize: 2 //max size 2mb
+                    },
+                    numero_expediente_cerss: {
+                        required: true
                     }
                 },
                 messages: {
@@ -377,9 +378,6 @@
                     nombre_aspirante_cerss: {
                         required: 'Por favor ingrese su nombre',
                         minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
-                    },
-                    apellidoPaterno_aspirante_cerss: {
-                        required: 'Por favor ingrese su apellido'
                     },
                     genero_cerss: {
                         required: 'Por favor Elegir su genero'
@@ -404,6 +402,9 @@
                     file_upload: {
                         required: "Por favor, Seleccione un archivo",
                         extension: "Sólo se permiten pdf",
+                    },
+                    numero_expediente_cerss: {
+                        required: "Por favor, Ingrese el número de expediente",
                     }
                 }
             });
