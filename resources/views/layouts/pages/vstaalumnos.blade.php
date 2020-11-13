@@ -28,7 +28,7 @@
 
                 <div class="pull-right">
                     @can('alumnos.inscripcion-paso1')
-                        <a class="btn btn-success btn-lg" href="{{route('alumnos.preinscripcion')}}">Nuevo</a>
+                        <a class="btn btn-success btn-lg" href="#" data-toggle="modal" data-placement="top" data-target="#nuevaPreinscripcion">Nuevo</a>
                     @endcan
                 </div>
             </div>
