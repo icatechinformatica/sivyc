@@ -382,7 +382,7 @@ class supreController extends Controller
 
 
 
-        return $pdf->download('download.pdf');
+        return $pdf->stream('download.pdf');
 
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
     }
