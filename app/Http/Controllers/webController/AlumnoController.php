@@ -37,7 +37,7 @@ class AlumnoController extends Controller
 
         $tipoaspirante = $request->get('busqueda_aspirante');
         $retrieveAlumnos = Alumnopre::busquedapor($tipoaspirante, $buscar_aspirante)
-        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp']);
+        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso']);
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
@@ -136,10 +136,11 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->antiguedad = $request->antiguedad;
                 $AlumnoPreseleccion->realizo = $usuario;
                 $AlumnoPreseleccion->tiene_documentacion = false;
+                $AlumnoPreseleccion->es_cereso = false;
                 $AlumnoPreseleccion->save();
 
                 // redireccionamos con un mensaje de éxito
-                return redirect('alumnos/indice')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
+                return redirect('alumnos/indice')->with('success', 'Nuevo Aspirante Agregado Exitosamente!');
             }
 
         } else {
@@ -148,6 +149,144 @@ class AlumnoController extends Controller
             $mensaje = "Lo sentimos, la curp ".$curp." asociada a este registro ya se encuentra en la base de datos.";
             return redirect('/alumnos/sid')->withErrors($mensaje);
         }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storecerss(Request $request)
+    {
+
+        $rules = [
+            'nombre_cerss' => ['required', 'min:4'],
+            'nombre_aspirante_cerss' => ['required', 'min:2', ],
+            'genero_cerss' => 'required',
+            'dia_cerss' => 'required',
+            'mes_cerss' => 'required',
+            'anio_cerss' => 'required',
+            'file_upload' => 'required|mimes:pdf|file:1',
+            'numero_expediente_cerss' => 'required',
+        ];
+
+        $messages = [
+            'nombre_cerss.required' => 'EL NOMBRE DEL CERSS ES REQUERIDO',
+            'nombre_cerss.min' => 'LA LONGITUD DEL NOMBRE DEL CERSS NO PUEDE SER MENOR A 3 CARACTERES',
+            'nombre_aspirante_cerss.required' => 'EL NOMBRE DEL ASPIRANTE ES REQUERIDO',
+            'nombre_aspirante_cerss.min' => 'LA LONGITUD DEL NOMBRE NO PUEDE SER MENOR A 2 CARACTERES',
+            'genero_cerss.required' => 'EL GENERO ES REQUERIDO',
+            'dia_cerss.required' => 'EL DÍA ES REQUERIDO',
+            'mes_cerss.required' => 'EL MES ES REQUERIDO',
+            'anio_cerss.required' => 'EL AÑO ES REQUERIDO',
+            'file_upload.required' => 'EL ARCHIVO DE CARGA ES REQUERIDO',
+            'file_upload.mimes' => 'EL ARCHIVO NO ES UNA EXTENSION PDF',
+            'file_upload.file' => '',
+            'numero_expediente_cerss.required' => 'EL NÚMERO DE EXPEDIENTE ES REQUERIDO',
+        ];
+
+        $validator =  Validator::make($request->all(), $rules,$messages);
+        if ($validator->fails()) {
+            # devolvemos un error
+            //dd($validator);
+            return redirect()->route('preinscripcion.cerss')
+                    ->withErrors($validator)
+                    ->withInput();
+        } else {
+            // obtener el usuario que agrega
+            $usuario_agrega = Auth::user()->name;
+            /**
+             * empezamos a insertar el registro
+             */
+            $dia = trim($request->input('dia_cerss'));
+            $mes = trim($request->input('mes_cerss'));
+            $anio = trim($request->input('anio_cerss'));
+            $fecha_nacimiento = $anio."-".$mes."-".$dia;
+
+            $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
+                'nombre' => $request->input('nombre_aspirante_cerss'),
+                'apellido_paterno' => (is_null($request->input('apellidoPaterno_aspirante_cerss')) ? '' : $request->input('apellidoPaterno_aspirante_cerss')),
+                'apellido_materno' => (is_null($request->input('apellidoMaterno_aspirante_cerss')) ? '' : $request->input('apellidoMaterno_aspirante_cerss')),
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'nacionalidad' => $request->input('nacionalidad_cerss'),
+                'sexo' => $request->input('genero_cerss'),
+                'curp' => (is_null($request->input('curp_cerss')) ? '' : $request->input('curp_cerss')),
+                'rfc_cerss' => $request->input('rfc_cerss'),
+                'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios_cerss'),
+                'tiene_documentacion' => false,
+                'realizo' => $usuario_agrega,
+                'nombre_cerss' => $request->input('nombre_cerss'),
+                'numero_expediente' => $request->input('numero_expediente_cerss'),
+                'direccion_cerss' => $request->input('direcciones_cerss'),
+                'nombre_cerss' => $request->input('nombre_cerss'),
+                'titular_cerss' => $request->input('titular_cerss'),
+                'telefono' => '',
+                'domicilio' => '',
+                'colonia' => '',
+                'estado' => '',
+                'municipio' => '',
+                'estado_civil' => '',
+                'discapacidad' => '',
+                'ultimo_grado_estudios' => '',
+                'medio_entero' => '',
+                'puesto_empresa' => '',
+                'sistema_capacitacion_especificar' => '',
+                'empresa_trabaja' => '',
+                'antiguedad' => '',
+                'es_cereso' => true,
+            ]);
+
+            # trabajamos cargando el acta de nacimiento al servidor
+            if ($request->hasFile('file_upload')) {
+
+                    // obtenemos el valor de acta_nacimiento
+                    $ficha_cerss = DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->VALUE('ficha_cerss');
+                    // checamos que no sea nulo
+                    if (!is_null($ficha_cerss)) {
+                        # si no está nulo
+                        if(!empty($ficha_cerss)){
+                            $docFichaCerss = explode("/",$ficha_cerss, 5);
+                            if (Storage::exists($docFichaCerss[4])) {
+                                # checamos si hay un documento de ser así procedemos a eliminarlo
+                                Storage::delete($docFichaCerss[4]);
+                            }
+                        }
+                    }
+
+                    $ficha_cerss = $request->file('file_upload'); # obtenemos el archivo
+                    $url_ficha_cerss = $this->uploaded_file($ficha_cerss, $id_alumnos_pre, 'ficha_cerss'); #invocamos el método
+                    $chk_ficha_cerss = true;
+                    // creamos un arreglo
+                    $arregloDocs = [
+                        'ficha_cerss' => $url_ficha_cerss,
+                        'chk_ficha_cerss' => $chk_ficha_cerss
+                    ];
+            } else {
+                $url_ficha_cerss = '';
+                $chk_ficha_cerss = false;
+            }
+
+            // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+            DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->update($arregloDocs);
+
+            // limpiamos el arreglo
+            unset($arregloDocs);
+
+            // redireccionamos con un mensaje de éxito
+            return redirect()->route('alumnos.index')->with('success', 'Nuevo Aspirante Agregado Exitosamente!');
+        }
+    }
+
+    public function showCerss($id)
+    {
+        $id_prealumno = base64_decode($id);
+        $alumnoPre_show = DB::table('alumnos_pre')->WHERE('id', $id_prealumno)->FIRST([
+            'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento' , 'nacionalidad' ,
+            'sexo' , 'curp', 'rfc_cerss', 'ultimo_grado_estudios', 'es_cereso', 'chk_ficha_cerss', 'ficha_cerss',
+            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'nombre_cerss', 'titular_cerss',
+        ]);
+        return view('layouts.pages.sid_cerss_show', compact('id_prealumno', 'alumnoPre_show'));
     }
     /**
      * formulario número 2
