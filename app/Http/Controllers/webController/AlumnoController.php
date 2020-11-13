@@ -68,7 +68,7 @@ class AlumnoController extends Controller
 
     public function createcerss()
     {
-        //
+        // nueva modificacion
         $grado_estudio = [
             'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
             'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
@@ -82,6 +82,7 @@ class AlumnoController extends Controller
         ];
         $estado = new Estado();
         $estados = $estado->all(['id', 'nombre']);
+
         return view('layouts.pages.sid_cerss', compact('estados', 'grado_estudio'));
     }
 
