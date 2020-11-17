@@ -118,7 +118,7 @@
                         <a class="btn btn-danger" href="{{route('alumnos.index')}}">Regresar</a>
                     </div>
                     <div class="pull-right">
-                        <a class="btn btn-warning" href="{{route('preinscripcion.cerss.update', ['id' => base64_encode($id_prealumno)])}}">Modificar</a>
+                        <a class="btn btn-warning" href="{{route('alumnos.cerss.update', ['id' => base64_encode($id_prealumno)])}}">Modificar</a>
                     </div>
                 </div>
             </div>

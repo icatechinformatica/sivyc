@@ -40,8 +40,9 @@
         <div style="text-align: center;">
             <h4><b>DATOS GENERALES CERSS</b></h4>
         </div>
-        <form method="POST" id="form_sid_cerss_update" action="{{ route('preinscripcion.cerss.save') }}" enctype="multipart/form-data">
+        <form method="POST" id="form_sid_cerss_update" action="{{ route('preinscripcion.cerss.modificar', ['idPreinscripcion' => base64_encode($idPrealumnoUpdate) ]) }}" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <div class="form-row">
                 <!--NOMBRE CERSS-->
                 <div class="form-group col-md-4">
@@ -51,14 +52,14 @@
                 <!--NOMBRE CERSS END-->
                 <div class="form-group col-md-8">
                     <label for="direcciones_cerss " class="control-label">DIRECCIÓN DEL CERSS</label>
-                    <input type="text" class="form-control" id="direcciones_cerss " name="direcciones_cerss " autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}"/>
+                    <input type="text" class="form-control" id="direcciones_cerss " name="direcciones_cerss " autocomplete="off" value="{{$alumnoPre_update->direccion_cerss}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--TITULAR DEL CERSS-->
                 <div class="form-group col-md-8">
                     <label for="titular_cerss " class="control-label">TITULAR DEL CERSS</label>
-                    <input type="text" class="form-control" id="titular_cerss " name="titular_cerss " autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}"/>
+                    <input type="text" class="form-control" id="titular_cerss " name="titular_cerss " autocomplete="off" value="{{$alumnoPre_update->titular_cerss}}"/>
                 </div>
                 <!--TITULAR DEL CERSS END-->
             </div>
@@ -72,26 +73,26 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="numero_expediente_cerss" class="control-label">NÚMERO DE EXPEDIENTE</label>
-                    <input type="text" class="form-control" id="numero_expediente_cerss" name="numero_expediente_cerss" autocomplete="off"/>
+                    <input type="text" class="form-control" id="numero_expediente_cerss" name="numero_expediente_cerss" autocomplete="off" value="{{$alumnoPre_update->numero_expediente}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--nombre aspirante-->
                 <div class="form-group col-md-4">
                     <label for="nombre_aspirante_cerss " class="control-label">NOMBRE</label>
-                    <input type="text" class="form-control" id="nombre_aspirante_cerss" name="nombre_aspirante_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="nombre_aspirante_cerss" name="nombre_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->nombre}}">
                 </div>
                 <!--nombre aspirante END-->
                 <!-- apellido paterno -->
                 <div class="form-group col-md-4">
                     <label for="apellidoPaterno_aspirante_cerss" class="control-label">APELLIDO PATERNO</label>
-                    <input type="text" class="form-control" id="apellidoPaterno_aspirante_cerss" name="apellidoPaterno_aspirante_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="apellidoPaterno_aspirante_cerss" name="apellidoPaterno_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->apellido_paterno}}">
                 </div>
                 <!-- apellido paterno END -->
                 <!-- apellido materno-->
                 <div class="form-group col-md-4">
                     <label for="apellidoMaterno_aspirante_cerss" class="control-label">APELLIDO MATERNO</label>
-                    <input type="text" class="form-control" id="apellidoMaterno_aspirante_cerss" name="apellidoMaterno_aspirante_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="apellidoMaterno_aspirante_cerss" name="apellidoMaterno_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->apellido_materno}}">
                 </div>
                 <!-- apellido materno END-->
             </div>
@@ -134,25 +135,25 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="nacionalidad_cerss" class="control-label">NACIONALIDAD</label>
-                    <input type="text" class="form-control" id="nacionalidad_cerss" name="nacionalidad_cerss" placeholder="NACIONALIDAD" autocomplete="off">
+                    <input type="text" class="form-control" id="nacionalidad_cerss" name="nacionalidad_cerss" placeholder="NACIONALIDAD" autocomplete="off" value="{{$alumnoPre_update->nacionalidad}}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="genero_cerss" class="control-label">GENERO</label>
                     <select class="form-control" id="genero_cerss" name="genero_cerss">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="FEMENINO">MUJER</option>
-                        <option value="MASCULINO">HOMBRE</option>
+                        <option {{ trim($alumnoPre_update->sexo) == "FEMENINO" ? "selected" : ""  }} value="FEMENINO">MUJER</option>
+                        <option {{ trim($alumnoPre_update->sexo) == "MASCULINO" ? "selected" : ""  }} value="MASCULINO">HOMBRE</option>
                     </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="curp_cerss" class="control-label">CURP ASPIRANTE</label>
-                    <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off">
+                    <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off" value="{{$alumnoPre_update->curp}}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="rfc_cerss" class="control-label">RFC ASPIRANTE</label>
-                    <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off">
+                    <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off" value="{{$alumnoPre_update->rfc_cerss}}">
                 </div>
             </div>
             <!---->
@@ -161,8 +162,8 @@
                     <label for="ultimo_grado_estudios_cerss" class="control-label">ÚLTIMO GRADO DE ESTUDIOS</label>
                     <select class="form-control" id="ultimo_grado_estudios_cerss" name="ultimo_grado_estudios_cerss">
                         <option value="">--SELECCIONAR--</option>
-                        @foreach ($grado_estudio as $itemGradoEstudio => $val)
-                            <option value="{{$val}}">{{$val}}</option>
+                        @foreach ($grado_estudio_update as $itemGradoEstudio => $val)
+                            <option {{( $alumnoPre_update->ultimo_grado_estudios == $val) ? "selected" : "" }} value="{{$val}}">{{$val}}</option>
                         @endforeach
                     </select>
                 </div>

@@ -313,19 +313,40 @@ class AlumnoController extends Controller
     /**
      * modificaciones formulario updateCerss
      */
-    protected function updateCerss($id)
+    public function updateCerss($id)
     {
         $idPrealumnoUpdate = base64_decode($id);
+        $grado_estudio_update = [
+            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO' => 'POSTGRADO',
+            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
+        ];
         $alumnoPre_update = DB::table('alumnos_pre')->WHERE('id', $idPrealumnoUpdate)->FIRST([
             'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento' , 'nacionalidad' ,
             'sexo' , 'curp', 'rfc_cerss', 'ultimo_grado_estudios', 'es_cereso', 'chk_ficha_cerss', 'ficha_cerss',
             'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'titular_cerss',
         ]);
-        $fecha_nac = explode("-", $alumnoPre_update->fecha_nacimiento);
-        $anio_nac = $fecha_nac[0];
-        $mes_nac = $fecha_nac[1];
-        $dia_nac = $fecha_nac[2];
-        return view('layouts.pages.sid_cerss_update', compact('idPrealumnoUpdate', 'alumnoPre_update', 'anio_nac_cerss', 'mes_nac_cerss', 'dia_nac_cerss'));
+
+        if (is_null($alumnoPre_update->fecha_nacimiento)) {
+            # es nulo como verdadero
+            $anio_nac_cerss = '';
+            $mes_nac_cerss = '';
+            $dia_nac_cerss= '';
+        } else {
+            $fecha_nac = explode("-", $alumnoPre_update->fecha_nacimiento);
+            $anio_nac_cerss = $fecha_nac[0];
+            $mes_nac_cerss = $fecha_nac[1];
+            $dia_nac_cerss = $fecha_nac[2];
+        }
+
+        return view('layouts.pages.sid_cerss_update', compact('idPrealumnoUpdate', 'alumnoPre_update', 'anio_nac_cerss', 'mes_nac_cerss', 'dia_nac_cerss', 'grado_estudio_update'));
     }
     /**
      * formulario número 2
