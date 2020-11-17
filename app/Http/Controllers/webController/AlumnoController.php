@@ -183,9 +183,7 @@ class AlumnoController extends Controller
             'nombre_cerss' => ['required', 'min:4'],
             'nombre_aspirante_cerss' => ['required', 'min:2', ],
             'genero_cerss' => 'required',
-            'dia_cerss' => 'required',
-            'mes_cerss' => 'required',
-            'anio_cerss' => 'required',
+            'anio_cerss' => 'max:4',
             'file_upload' => 'required|mimes:pdf|file:1',
             'numero_expediente_cerss' => 'required',
         ];
@@ -196,9 +194,7 @@ class AlumnoController extends Controller
             'nombre_aspirante_cerss.required' => 'EL NOMBRE DEL ASPIRANTE ES REQUERIDO',
             'nombre_aspirante_cerss.min' => 'LA LONGITUD DEL NOMBRE NO PUEDE SER MENOR A 2 CARACTERES',
             'genero_cerss.required' => 'EL GENERO ES REQUERIDO',
-            'dia_cerss.required' => 'EL DÍA ES REQUERIDO',
-            'mes_cerss.required' => 'EL MES ES REQUERIDO',
-            'anio_cerss.required' => 'EL AÑO ES REQUERIDO',
+            'anio_cerss.max' => 'EL AÑO NO DEBE DE TENER MAS DE 4 DIGITOS',
             'file_upload.required' => 'EL ARCHIVO DE CARGA ES REQUERIDO',
             'file_upload.mimes' => 'EL ARCHIVO NO ES UNA EXTENSION PDF',
             'file_upload.file' => '',
@@ -221,7 +217,14 @@ class AlumnoController extends Controller
             $dia = trim($request->input('dia_cerss'));
             $mes = trim($request->input('mes_cerss'));
             $anio = trim($request->input('anio_cerss'));
-            $fecha_nacimiento = $anio."-".$mes."-".$dia;
+
+            if (empty($dia) && empty($mes) && empty($anio))
+            {
+                # condición para saber si se puede armar una fecha
+                $fecha_nacimiento = NULL;
+            } else {
+                $fecha_nacimiento = $anio."-".$mes."-".$dia;
+            }
 
             $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
                 'nombre' => $request->input('nombre_aspirante_cerss'),
@@ -308,12 +311,29 @@ class AlumnoController extends Controller
         return view('layouts.pages.sid_cerss_show', compact('id_prealumno', 'alumnoPre_show'));
     }
     /**
+     * modificaciones formulario updateCerss
+     */
+    protected function updateCerss($id)
+    {
+        $idPrealumnoUpdate = base64_decode($id);
+        $alumnoPre_update = DB::table('alumnos_pre')->WHERE('id', $idPrealumnoUpdate)->FIRST([
+            'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento' , 'nacionalidad' ,
+            'sexo' , 'curp', 'rfc_cerss', 'ultimo_grado_estudios', 'es_cereso', 'chk_ficha_cerss', 'ficha_cerss',
+            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'titular_cerss',
+        ]);
+        $fecha_nac = explode("-", $alumnoPre_update->fecha_nacimiento);
+        $anio_nac = $fecha_nac[0];
+        $mes_nac = $fecha_nac[1];
+        $dia_nac = $fecha_nac[2];
+        return view('layouts.pages.sid_cerss_update', compact('idPrealumnoUpdate', 'alumnoPre_update', 'anio_nac_cerss', 'mes_nac_cerss', 'dia_nac_cerss'));
+    }
+    /**
      * formulario número 2
      */
     protected function steptwo($id)
     {
         $id_prealumno = base64_decode($id);
-        $alumnoPre = Alumnopre::WHERE('id', '=', $id_prealumno)->FIRST(['chk_acta_nacimiento', 'acta_nacimiento', 'chk_curp', 'documento_curp',
+        $alumnoPre = DB::table('alumnos_pre')->WHERE('id', '=', $id_prealumno)->FIRST(['chk_acta_nacimiento', 'acta_nacimiento', 'chk_curp', 'documento_curp',
         'chk_comprobante_domicilio', 'comprobante_domicilio', 'chk_ine', 'ine', 'chk_pasaporte_licencia', 'pasaporte_licencia_manejo', 'chk_comprobante_ultimo_grado', 'comprobante_ultimo_grado',
         'chk_fotografia', 'fotografia', 'comprobante_calidad_migratoria', 'chk_comprobante_calidad_migratoria', 'nombre', 'apellido_paterno', 'apellido_materno',
         'curp']);

@@ -40,25 +40,25 @@
         <div style="text-align: center;">
             <h4><b>DATOS GENERALES CERSS</b></h4>
         </div>
-        <form method="POST" id="form_sid_cerss" action="{{ route('preinscripcion.cerss.save') }}" enctype="multipart/form-data">
+        <form method="POST" id="form_sid_cerss_update" action="{{ route('preinscripcion.cerss.save') }}" enctype="multipart/form-data">
             @csrf
             <div class="form-row">
                 <!--NOMBRE CERSS-->
                 <div class="form-group col-md-4">
                     <label for="nombre_cerss " class="control-label">NOMBRE DEL CERSS</label>
-                    <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}">
                 </div>
                 <!--NOMBRE CERSS END-->
                 <div class="form-group col-md-8">
                     <label for="direcciones_cerss " class="control-label">DIRECCIÓN DEL CERSS</label>
-                    <input type="text" class="form-control" id="direcciones_cerss " name="direcciones_cerss " autocomplete="off"/>
+                    <input type="text" class="form-control" id="direcciones_cerss " name="direcciones_cerss " autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--TITULAR DEL CERSS-->
                 <div class="form-group col-md-8">
                     <label for="titular_cerss " class="control-label">TITULAR DEL CERSS</label>
-                    <input type="text" class="form-control" id="titular_cerss " name="titular_cerss " autocomplete="off"/>
+                    <input type="text" class="form-control" id="titular_cerss " name="titular_cerss " autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}"/>
                 </div>
                 <!--TITULAR DEL CERSS END-->
             </div>
@@ -104,7 +104,7 @@
                     <select class="form-control" id="dia_cerss" name="dia_cerss">
                         <option value="">--SELECCIONAR--</option>
                         @for ($i = 01; $i <= 31; $i++)
-                            <option value="{{$i}}">{{$i}}</option>
+                            <option {{ ($dia_nac_cerss == $i) ? "selected" : ""  }}  value="{{$i}}">{{$i}}</option>
                         @endfor
                     </select>
                 </div>
@@ -112,23 +112,23 @@
                     <label for="mes_cerss" class="control-label">MES</label>
                     <select class="form-control" id="mes_cerss" name="mes_cerss">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="01">ENERO</option>
-                        <option value="02">FEBRERO</option>
-                        <option value="03">MARZO</option>
-                        <option value="04">ABRIL</option>
-                        <option value="05">MAYO</option>
-                        <option value="06">JUNIO</option>
-                        <option value="07">JULIO</option>
-                        <option value="08">AGOSTO</option>
-                        <option value="09">SEPTIEMBRE</option>
-                        <option value="10">OCTUBRE</option>
-                        <option value="11">NOVIEMBRE</option>
-                        <option value="12">DICIEMBRE</option>
+                        <option {{ ($mes_nac_cerss == "01") ? "selected" : ""  }} value="01">ENERO</option>
+                        <option {{ ($mes_nac_cerss == "02") ? "selected" : ""  }} value="02">FEBRERO</option>
+                        <option {{ ($mes_nac_cerss == "03") ? "selected" : ""  }} value="03">MARZO</option>
+                        <option {{ ($mes_nac_cerss == "04") ? "selected" : ""  }} value="04">ABRIL</option>
+                        <option {{ ($mes_nac_cerss == "05") ? "selected" : ""  }} value="05">MAYO</option>
+                        <option {{ ($mes_nac_cerss == "06") ? "selected" : ""  }} value="06">JUNIO</option>
+                        <option {{ ($mes_nac_cerss == "07") ? "selected" : ""  }} value="07">JULIO</option>
+                        <option {{ ($mes_nac_cerss == "08") ? "selected" : ""  }} value="08">AGOSTO</option>
+                        <option {{ ($mes_nac_cerss == "09") ? "selected" : ""  }} value="09">SEPTIEMBRE</option>
+                        <option {{ ($mes_nac_cerss == "10") ? "selected" : ""  }} value="10">OCTUBRE</option>
+                        <option {{ ($mes_nac_cerss == "11") ? "selected" : ""  }} value="11">NOVIEMBRE</option>
+                        <option {{ ($mes_nac_cerss == "12") ? "selected" : ""  }} value="12">DICIEMBRE</option>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="anio_cerss" class="control-label">AÑO</label>
-                    <input type="text" class="form-control" id="anio_cerss" name="anio_cerss" placeholder="INGRESA EL AÑO EJ. 1943" autocomplete="off">
+                    <input type="text" class="form-control" id="anio_cerss" name="anio_cerss" placeholder="INGRESA EL AÑO EJ. 1943" value="{{ $anio_nac_cerss }}" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">

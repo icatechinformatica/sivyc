@@ -49,7 +49,7 @@
             <div class="form-row">
                 <!--TITULAR DEL CERSS-->
                 <div class="form-group col-md-8">
-                    <label for="titular_cerss " class="control-label">TITULAR DEL CERSS</label>: <br>
+                    <label for="titular_cerss " class="control-label">TITULAR DEL CERSS</label>: &nbsp;&nbsp;
                     <b>{{$alumnoPre_show->titular_cerss}}</b>
                 </div>
                 <!--TITULAR DEL CERSS END-->
@@ -104,7 +104,7 @@
                     <div class="custom-file">
                         <label for="file_upload " class="control-label">FICHA IDENTIFICACIÓN CERSS</label>: &nbsp;&nbsp;
                         @if ($alumnoPre_show->chk_ficha_cerss)
-                            <a href="{{ asset( $alumnoPre_show->ficha_cerss )}}" download="ficha_identificacion_cerss_{{ $id_prealumno }}.pdf" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="FICHA IDENTIFICACIÓN CERSS">
+                            <a href="{{ asset( $alumnoPre_show->ficha_cerss )}}" download="ficha_identificacion_cerss_{{ $id_prealumno }}.pdf" class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blank" data-toggle="tooltip" data-placement="top" title="FICHA IDENTIFICACIÓN CERSS">
                                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             </a>
                         @endif
@@ -118,7 +118,7 @@
                         <a class="btn btn-danger" href="{{route('alumnos.index')}}">Regresar</a>
                     </div>
                     <div class="pull-right">
-                        <a class="btn btn-warning" href="#">Modificar</a>
+                        <a class="btn btn-warning" href="{{route('preinscripcion.cerss.update', ['id' => base64_encode($id_prealumno)])}}">Modificar</a>
                     </div>
                 </div>
             </div>
