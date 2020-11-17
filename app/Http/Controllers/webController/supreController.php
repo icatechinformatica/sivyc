@@ -348,7 +348,7 @@ class supreController extends Controller
         $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
 
         $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio'));
-        return  $pdf->download('medium.pdf');
+        return  $pdf->stream('medium.pdf');
     }
 
     public function tablasupre_pdf($id){
@@ -441,7 +441,7 @@ class supreController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
         $pdf->setPaper('A4', 'Landscape');
-        return $pdf->download('medium.pdf');
+        return $pdf->stream('medium.pdf');
 
         return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
     }
