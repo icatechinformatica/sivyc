@@ -168,11 +168,11 @@
                     y a la clave de autorización de apertura de cursos y demás disposiciones normativas aplicables vigentes; le informo que una vez revisada su solicitud y la información descrita en el formato de Validación de Suficiencia Presupuestal, se otorga la Validación
                     Presupuestal, con el fin de que conforme a lo indicado en la normatividad aplicable vigente se continúe y se cumpla con los procedimientos administrativos que correspondan, observando además el contrato de prestación de servicios profesionales por honorarios en su
                     modalidad de Horas-Curso que celebran el ICATECH con el prestador de servicio.<br/></font>
-                    <font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documenta, debidamente validado presupuestalmente.<br/></font>
+                    <br><font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documental, debidamente validado presupuestalmente.<br/></font>
                     <font size=0>La presente validación presupuestal no implica ninguna autorización de pago de recursos, si no que únicamente se refiere a la verificación de la disponibilidad presupuestal, No omito manifestarle que, en estricto apego a la normatividad vigente establecida,
                     el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
                 </div>
-            <br><br>
+            <br>
         </div>
             <div class="form-row">
                 <table width="700"  class="table table-striped" id="table-one">
@@ -197,23 +197,23 @@
                     <tbody>
                         @foreach ($data as $key=>$item)
                             <tr>
-                                <td><small style="font-size: 12px;">{{$item->folio_validacion}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->fecha}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->unidad}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->curso_nombre}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->clave}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->ze}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->dura}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->importe_hora}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->iva}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->folio_validacion}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->fecha}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->unidad}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->curso_nombre}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->clave}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->ze}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->dura}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->importe_hora}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->iva}}</small></td>
                                 <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
                                 <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                <td><small style="font-size: 12px;">12101 Honorarios</small></td>
-                                <td><small style="font-size: 12px;">{{$item->importe_total}}</small></td>
+                                <td><small style="font-size: 10px;">12101 Honorarios</small></td>
+                                <td><small style="font-size: 10px;">{{$item->importe_total}}</small></td>
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
                                 <td style="text-align: center"><small>{{$recursos[$key]}}</small></td>
-                                <td><small style="font-size: 12px;">{{$item->comentario}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
                     </tbody>
