@@ -1,6 +1,15 @@
 @extends('theme.sivyc.layout')
 <!--generado por Daniel Méndez-->
 @section('title', 'Solicitud de Inscripción | Sivyc Icatech')
+<!--ÁREA EXTRA DONDE SE AGREGA CSS-->
+@section('content_script_css')
+    <style>
+        .constancia_reclusion_tag{
+            display: none;
+        }
+    </style>
+@endsection
+<!--ÁREA EXTRA DONDE SE AGREGA CSS ENDS-->
 <!--contenido-->
 @section('content')
     <div class="container g-pt-50">
@@ -31,7 +40,7 @@
         <div style="text-align: center;">
             <h4><b>DATOS PERSONALES</b></h4>
         </div>
-        <form method="POST" id="form_sid" action="{{ route('alumnos.save') }}">
+        <form method="POST" id="form_sid" action="{{ route('alumnos.save') }}" enctype="multipart/form-data">
             @csrf
             <div class="form-row">
                 <!--nombre aspirante-->
@@ -202,7 +211,7 @@
                 <h4><b>DATOS GENERALES DE CAPACITACIÓN</b></h4>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-6">
                     <label for="ultimo_grado_estudios" class="control-label">ÚLTIMO GRADO DE ESTUDIOS:</label>
                     <select class="form-control" id="ultimo_grado_estudios" name="ultimo_grado_estudios">
                         <option value="">--SELECCIONAR--</option>
@@ -292,71 +301,70 @@
             <input type="hidden" name="is_cerrs" id="is_cerrs" value="false">
         </form>
         <!-- Full Height Modal Right -->
-            <div class="modal fade right" id="fullHeight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
+            <div class="modal fade right" id="fullHeight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
-            <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
-            <div class="modal-dialog modal-full-height modal-right modal-notify modal-warning" role="document">
+                <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+                    <div class="modal-dialog modal-full-height modal-right modal-notify modal-warning" role="document">
 
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title w-100" id="myModalLabel">INFORMACIÓN ACERCA DE...</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-justify">
+                                    <p>
+                                        LA INFORMACIÓN CONTENIDA EN ÉSTE APARTADO PERMITIRÁ AL OPERADOR DEL MÓDULO PODER CONOCER DE PRIMERA MANO
+                                        LA INFORMACIÓN Y LOS CAMPOS QUE SON PUNTUALMENTE REQUERIDOS PARA OPTIMIZAR LA CARGA DE INFORMACIÓN PARA EL PROCESO DE
+                                        CAPTURA DE LOS ALUMNOS DE DIFERENTES CURSOS QUE OTORGA EL INSTITUTO.
+                                        <br><br> A CONTNUACIÓN SE ENLISTA LOS SIGUIENTES CAMPOS:
 
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title w-100" id="myModalLabel">INFORMACIÓN ACERCA DE...</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-justify">
-                        <p>
-                            LA INFORMACIÓN CONTENIDA EN ÉSTE APARTADO PERMITIRÁ AL OPERADOR DEL MÓDULO PODER CONOCER DE PRIMERA MANO
-                            LA INFORMACIÓN Y LOS CAMPOS QUE SON PUNTUALMENTE REQUERIDOS PARA OPTIMIZAR LA CARGA DE INFORMACIÓN PARA EL PROCESO DE
-                            CAPTURA DE LOS ALUMNOS DE DIFERENTES CURSOS QUE OTORGA EL INSTITUTO.
-                            <br><br> A CONTNUACIÓN SE ENLISTA LOS SIGUIENTES CAMPOS:
+                                        <ul class="list-group z-depth-0">
+                                            <li class="list-group-item justify-content-between">
+                                                <b> NOMBRE DEL ASPIRANTE - APELLIDO PATERNO </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> DÍA - MES - AÑO </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> GENERO</b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> CURP </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> TELÉFONO </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> ESTADO </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> MUNICIPIO </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> ESTADO CIVIL </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> DISCAPACIDAD </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA </b>
+                                            </li>
+                                            <li class="list-group-item justify-content-between">
+                                                <b> MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN </b>
+                                            </li>
+                                        </ul>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
+                            </div>
+                        </div>
 
-                            <ul class="list-group z-depth-0">
-                                <li class="list-group-item justify-content-between">
-                                    <b> NOMBRE DEL ASPIRANTE - APELLIDO PATERNO </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> DÍA - MES - AÑO </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> GENERO</b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> CURP </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> TELÉFONO </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> ESTADO </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> MUNICIPIO </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> ESTADO CIVIL </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> DISCAPACIDAD </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA </b>
-                                </li>
-                                <li class="list-group-item justify-content-between">
-                                    <b> MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN </b>
-                                </li>
-                            </ul>
-                        </p>
                     </div>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
-                </div>
-                </div>
-            </div>
             </div>
         <!-- Full Height Modal Right -->
     </div>
