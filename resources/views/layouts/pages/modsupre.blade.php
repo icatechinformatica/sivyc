@@ -24,7 +24,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputobservacion" class="control-label"><b>Observaciones de Rechazo</b></label>
-                <textarea cols="4" rows="4" type="text" class="form-control" disabled aria-required="true" onkeypress="return soloLetras(event)" id="observacion" name="observacion">{{ $getsupre->observacion}}</textarea>
+                <textarea cols="4" rows="4" type="text" class="form-control" readonly aria-required="true" onkeypress="return soloLetras(event)" id="observacion" name="observacion">{{ $getsupre->observacion}}</textarea>
             </div>
         </div>
         <br>
