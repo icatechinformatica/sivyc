@@ -38,7 +38,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('#textURL').caseEnforcer('lowercase');
+         //   $('#textURL').caseEnforcer('lowercase');
             
             
             function generarURL(id, tipo) {  ///GENERAR URL              
@@ -53,6 +53,7 @@
                             if(response == "CADUCADA"){
                                 alert("URL caducada")
                             }else{
+                                $("#"+id).addClass("bg-warning");
                                 $('#textURL').val(response);
                                 $('#modalURL').modal('show');
                             }
@@ -108,7 +109,10 @@
                         cache: false,
                         success: function(response) {
                            // console.log(response);                            
-                            if(response==true){                                
+                            if(response==true){
+                                $("#bn"+id_curso).text(status);
+                                $("#bn"+id_curso).addClass("btn-danger");
+                                $("#bn"+id_curso).prop('disabled', true);
                                 $('#ModalIniciado').modal('hide');
                                 alert("La informaci\u00F3n ha sido guardada correctamente!!")    
                             }else{

@@ -33,18 +33,29 @@ class EscolarController extends Controller
                
         if($request->get('fecha')) $fecha = $request->get('fecha');
         else $fecha = date("d/m/Y"); 
-                
+        if($unidades) {
+            $unidades = explode(',',$unidades);
+            $ubicacion =  DB::table('tbl_unidades as u')->whereIn('u.ubicacion',$unidades)->pluck('u.unidad');
+            //var_dump($ubicacion);exit;
+        } 
+        
         $query = DB::table('tbl_cursos')->select('tbl_cursos.id','tbl_cursos.id_curso','tbl_cursos.id_instructor',
         'tbl_cursos.nombre','tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
         'tbl_cursos.hfin','tbl_cursos.unidad',DB::raw('COUNT(DISTINCT(i.id)) as total'),DB::raw('COUNT(DISTINCT(a.id)) as total_alumnos'),
         'token_i.id as token_instructor','token_i.ttl as ttl_instructor','token_a.id_curso as token_alumno',
-        'tbl_cursos.json_supervision');
+        'tbl_cursos.json_supervision',DB::raw('COUNT(DISTINCT(ins.id)) as ins_alumnos'));
+        
+        $query = $query->where('tbl_cursos.clave', '>', '0');
         
         if($fecha)$query = $query->where('tbl_cursos.inicio','<=',$fecha)->where('tbl_cursos.termino','>=',$fecha);
         if($unidades) {
-            $unidades = explode(',',$unidades);
-            $query = $query->whereIn('tbl_cursos.unidad',$unidades);
+            $query = $query->whereIn('tbl_cursos.unidad',$ubicacion);    
         }
+        
+        $query = $query->leftJoin('tbl_inscripcion as ins', function($join)use($id_user){
+            $join->on('ins.id_curso', '=', 'tbl_cursos.id');
+            $join->groupBy('ins.id_curso');                
+        });
         if (!empty($tipo) AND !empty(trim($valor))) {                     
             switch ($tipo) {
                 case 'nombre_instructor':                        
@@ -58,8 +69,6 @@ class EscolarController extends Controller
                     break;                    
             }
         }
-        $query = $query->where('tbl_cursos.clave', '>', '0');
-        
         $query = $query->leftJoin('supervision_instructores as i', function($join)use($id_user){
                 $join->on('i.id_tbl_cursos', '=', 'tbl_cursos.id');                
                 $join->where('i.id_user',$id_user);
