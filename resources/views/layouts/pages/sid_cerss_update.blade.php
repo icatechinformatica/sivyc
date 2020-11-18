@@ -51,15 +51,15 @@
                 </div>
                 <!--NOMBRE CERSS END-->
                 <div class="form-group col-md-8">
-                    <label for="direcciones_cerss " class="control-label">DIRECCIÓN DEL CERSS</label>
-                    <input type="text" class="form-control" id="direcciones_cerss " name="direcciones_cerss " autocomplete="off" value="{{$alumnoPre_update->direccion_cerss}}"/>
+                    <label for="direcciones_cerss_update " class="control-label">DIRECCIÓN DEL CERSS</label>
+                    <input type="text" class="form-control" id="direcciones_cerss_update " name="direcciones_cerss_update " autocomplete="off" value="{{$alumnoPre_update->direccion_cerss}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--TITULAR DEL CERSS-->
                 <div class="form-group col-md-8">
-                    <label for="titular_cerss " class="control-label">TITULAR DEL CERSS</label>
-                    <input type="text" class="form-control" id="titular_cerss " name="titular_cerss " autocomplete="off" value="{{$alumnoPre_update->titular_cerss}}"/>
+                    <label for="titular_cerss_update " class="control-label">TITULAR DEL CERSS</label>
+                    <input type="text" class="form-control" id="titular_cerss_update " name="titular_cerss_update " autocomplete="off" value="{{$alumnoPre_update->titular_cerss}}"/>
                 </div>
                 <!--TITULAR DEL CERSS END-->
             </div>
@@ -178,7 +178,7 @@
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{route('alumnos.index')}}">Regresar</a>
+                        <a class="btn btn-danger" href="{{route('preinscripcion.cerss.show', ['id' => base64_encode($idPrealumnoUpdate)])}}">Regresar</a>
                     </div>
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary" >Guardar</button>
@@ -310,7 +310,7 @@
             /**
             * validación nueva del SID
             */
-            $('#form_sid_cerss').validate({
+            $('#form_sid_cerss_update').validate({
                 rules: {
                     nombre_cerss: {
                         required: true,
