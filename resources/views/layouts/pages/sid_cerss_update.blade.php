@@ -40,25 +40,26 @@
         <div style="text-align: center;">
             <h4><b>DATOS GENERALES CERSS</b></h4>
         </div>
-        <form method="POST" id="form_sid_cerss" action="{{ route('preinscripcion.cerss.save') }}" enctype="multipart/form-data">
+        <form method="POST" id="form_sid_cerss_update" action="{{ route('preinscripcion.cerss.modificar', ['idPreinscripcion' => base64_encode($idPrealumnoUpdate) ]) }}" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <div class="form-row">
                 <!--NOMBRE CERSS-->
                 <div class="form-group col-md-4">
                     <label for="nombre_cerss " class="control-label">NOMBRE DEL CERSS</label>
-                    <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}">
                 </div>
                 <!--NOMBRE CERSS END-->
                 <div class="form-group col-md-8">
-                    <label for="direcciones_cerss " class="control-label">DIRECCIÓN DEL CERSS</label>
-                    <input type="text" class="form-control" id="direcciones_cerss " name="direcciones_cerss " autocomplete="off"/>
+                    <label for="direcciones_cerss_update " class="control-label">DIRECCIÓN DEL CERSS</label>
+                    <input type="text" class="form-control" id="direcciones_cerss_update " name="direcciones_cerss_update " autocomplete="off" value="{{$alumnoPre_update->direccion_cerss}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--TITULAR DEL CERSS-->
                 <div class="form-group col-md-8">
-                    <label for="titular_cerss " class="control-label">TITULAR DEL CERSS</label>
-                    <input type="text" class="form-control" id="titular_cerss " name="titular_cerss " autocomplete="off"/>
+                    <label for="titular_cerss_update " class="control-label">TITULAR DEL CERSS</label>
+                    <input type="text" class="form-control" id="titular_cerss_update " name="titular_cerss_update " autocomplete="off" value="{{$alumnoPre_update->titular_cerss}}"/>
                 </div>
                 <!--TITULAR DEL CERSS END-->
             </div>
@@ -72,26 +73,26 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="numero_expediente_cerss" class="control-label">NÚMERO DE EXPEDIENTE</label>
-                    <input type="text" class="form-control" id="numero_expediente_cerss" name="numero_expediente_cerss" autocomplete="off"/>
+                    <input type="text" class="form-control" id="numero_expediente_cerss" name="numero_expediente_cerss" autocomplete="off" value="{{$alumnoPre_update->numero_expediente}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--nombre aspirante-->
                 <div class="form-group col-md-4">
                     <label for="nombre_aspirante_cerss " class="control-label">NOMBRE</label>
-                    <input type="text" class="form-control" id="nombre_aspirante_cerss" name="nombre_aspirante_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="nombre_aspirante_cerss" name="nombre_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->nombre}}">
                 </div>
                 <!--nombre aspirante END-->
                 <!-- apellido paterno -->
                 <div class="form-group col-md-4">
                     <label for="apellidoPaterno_aspirante_cerss" class="control-label">APELLIDO PATERNO</label>
-                    <input type="text" class="form-control" id="apellidoPaterno_aspirante_cerss" name="apellidoPaterno_aspirante_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="apellidoPaterno_aspirante_cerss" name="apellidoPaterno_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->apellido_paterno}}">
                 </div>
                 <!-- apellido paterno END -->
                 <!-- apellido materno-->
                 <div class="form-group col-md-4">
                     <label for="apellidoMaterno_aspirante_cerss" class="control-label">APELLIDO MATERNO</label>
-                    <input type="text" class="form-control" id="apellidoMaterno_aspirante_cerss" name="apellidoMaterno_aspirante_cerss" autocomplete="off">
+                    <input type="text" class="form-control" id="apellidoMaterno_aspirante_cerss" name="apellidoMaterno_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->apellido_materno}}">
                 </div>
                 <!-- apellido materno END-->
             </div>
@@ -104,7 +105,7 @@
                     <select class="form-control" id="dia_cerss" name="dia_cerss">
                         <option value="">--SELECCIONAR--</option>
                         @for ($i = 01; $i <= 31; $i++)
-                            <option value="{{$i}}">{{$i}}</option>
+                            <option {{ ($dia_nac_cerss == $i) ? "selected" : ""  }}  value="{{$i}}">{{$i}}</option>
                         @endfor
                     </select>
                 </div>
@@ -112,47 +113,47 @@
                     <label for="mes_cerss" class="control-label">MES</label>
                     <select class="form-control" id="mes_cerss" name="mes_cerss">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="01">ENERO</option>
-                        <option value="02">FEBRERO</option>
-                        <option value="03">MARZO</option>
-                        <option value="04">ABRIL</option>
-                        <option value="05">MAYO</option>
-                        <option value="06">JUNIO</option>
-                        <option value="07">JULIO</option>
-                        <option value="08">AGOSTO</option>
-                        <option value="09">SEPTIEMBRE</option>
-                        <option value="10">OCTUBRE</option>
-                        <option value="11">NOVIEMBRE</option>
-                        <option value="12">DICIEMBRE</option>
+                        <option {{ ($mes_nac_cerss == "01") ? "selected" : ""  }} value="01">ENERO</option>
+                        <option {{ ($mes_nac_cerss == "02") ? "selected" : ""  }} value="02">FEBRERO</option>
+                        <option {{ ($mes_nac_cerss == "03") ? "selected" : ""  }} value="03">MARZO</option>
+                        <option {{ ($mes_nac_cerss == "04") ? "selected" : ""  }} value="04">ABRIL</option>
+                        <option {{ ($mes_nac_cerss == "05") ? "selected" : ""  }} value="05">MAYO</option>
+                        <option {{ ($mes_nac_cerss == "06") ? "selected" : ""  }} value="06">JUNIO</option>
+                        <option {{ ($mes_nac_cerss == "07") ? "selected" : ""  }} value="07">JULIO</option>
+                        <option {{ ($mes_nac_cerss == "08") ? "selected" : ""  }} value="08">AGOSTO</option>
+                        <option {{ ($mes_nac_cerss == "09") ? "selected" : ""  }} value="09">SEPTIEMBRE</option>
+                        <option {{ ($mes_nac_cerss == "10") ? "selected" : ""  }} value="10">OCTUBRE</option>
+                        <option {{ ($mes_nac_cerss == "11") ? "selected" : ""  }} value="11">NOVIEMBRE</option>
+                        <option {{ ($mes_nac_cerss == "12") ? "selected" : ""  }} value="12">DICIEMBRE</option>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="anio_cerss" class="control-label">AÑO</label>
-                    <input type="text" class="form-control" id="anio_cerss" name="anio_cerss" placeholder="INGRESA EL AÑO EJ. 1943" autocomplete="off">
+                    <input type="text" class="form-control" id="anio_cerss" name="anio_cerss" placeholder="INGRESA EL AÑO EJ. 1943" value="{{ $anio_nac_cerss }}" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="nacionalidad_cerss" class="control-label">NACIONALIDAD</label>
-                    <input type="text" class="form-control" id="nacionalidad_cerss" name="nacionalidad_cerss" placeholder="NACIONALIDAD" autocomplete="off">
+                    <input type="text" class="form-control" id="nacionalidad_cerss" name="nacionalidad_cerss" placeholder="NACIONALIDAD" autocomplete="off" value="{{$alumnoPre_update->nacionalidad}}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="genero_cerss" class="control-label">GENERO</label>
                     <select class="form-control" id="genero_cerss" name="genero_cerss">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="FEMENINO">MUJER</option>
-                        <option value="MASCULINO">HOMBRE</option>
+                        <option {{ trim($alumnoPre_update->sexo) == "FEMENINO" ? "selected" : ""  }} value="FEMENINO">MUJER</option>
+                        <option {{ trim($alumnoPre_update->sexo) == "MASCULINO" ? "selected" : ""  }} value="MASCULINO">HOMBRE</option>
                     </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="curp_cerss" class="control-label">CURP ASPIRANTE</label>
-                    <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off">
+                    <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off" value="{{$alumnoPre_update->curp}}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="rfc_cerss" class="control-label">RFC ASPIRANTE</label>
-                    <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off">
+                    <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off" value="{{$alumnoPre_update->rfc_cerss}}">
                 </div>
             </div>
             <!---->
@@ -161,8 +162,8 @@
                     <label for="ultimo_grado_estudios_cerss" class="control-label">ÚLTIMO GRADO DE ESTUDIOS</label>
                     <select class="form-control" id="ultimo_grado_estudios_cerss" name="ultimo_grado_estudios_cerss">
                         <option value="">--SELECCIONAR--</option>
-                        @foreach ($grado_estudio as $itemGradoEstudio => $val)
-                            <option value="{{$val}}">{{$val}}</option>
+                        @foreach ($grado_estudio_update as $itemGradoEstudio => $val)
+                            <option {{( $alumnoPre_update->ultimo_grado_estudios == $val) ? "selected" : "" }} value="{{$val}}">{{$val}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -177,7 +178,7 @@
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{route('alumnos.index')}}">Regresar</a>
+                        <a class="btn btn-danger" href="{{route('preinscripcion.cerss.show', ['id' => base64_encode($idPrealumnoUpdate)])}}">Regresar</a>
                     </div>
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary" >Guardar</button>
@@ -309,7 +310,7 @@
             /**
             * validación nueva del SID
             */
-            $('#form_sid_cerss').validate({
+            $('#form_sid_cerss_update').validate({
                 rules: {
                     nombre_cerss: {
                         required: true,

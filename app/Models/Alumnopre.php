@@ -51,7 +51,8 @@ class Alumnopre extends Model
         'sistema_capacitacion_especificar',
         'realizo',
         'tiene_documentacion',
-        'es_cereso'
+        'es_cereso',
+        'titular_cerss'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
