@@ -45,7 +45,8 @@ class ContratoController extends Controller
          */
         $contratos = new contratos();
 
-        $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
+        $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                        ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
                         ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                         ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                         ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -54,8 +55,10 @@ class ContratoController extends Controller
                             'tabla_supre.id','tabla_supre.no_memo',
                             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
                             'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                            'contratos.docs','contratos.id_contrato','contratos.fecha_status', 'tbl_cursos.termino AS fecha_termino',
-                            'tbl_cursos.inicio AS fecha_inicio', DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                            'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                            'tbl_cursos.termino AS fecha_termino',
+                            'tbl_cursos.inicio AS fecha_inicio',
+                            DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                         ]);
 
         return view('layouts.pages.vstacontratoini', compact('querySupre'));
