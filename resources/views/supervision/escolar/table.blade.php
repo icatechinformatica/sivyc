@@ -13,12 +13,12 @@
                 <th scope="col" width="7%">HORARIO</th>
                 <th>ESTATUS</th>
                 <th width="15%">AL INSTRUCTOR</th>
-                <th colspan="2" width="20%">A UN ALUMNO</th>
+                <th colspan="2" width="15%">A UN ALUMNO</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($data as $item)
-                <tr>
+                <tr>                
                      <td>{{ $item->unidad }}</td>
                      <td>{{ $item->clave }}</td>
                      <td>{{ $item->curso }}</td>
@@ -40,13 +40,13 @@
                                 {{ $status_supervision  }}                            
                             </button>
                         @else
-                            <button type="button" onclick="document.getElementById('id_curso').value='{{$item->id}}'"  class="btn " data-toggle="modal" data-target="#ModalIniciado" >
+                            <button type="button" id="bn{{$item->id}}"  onclick="document.getElementById('id_curso').value='{{$item->id}}'"  class="btn " data-toggle="modal" data-target="#ModalIniciado" >
                                 &nbsp;INICIAR&nbsp;                          
                             </button>                        
                         @endif                                                
                      </td>
                      <td>
-                        <button type="button" onclick="generarURL({{$item->id}},'instructor');"  class="btn @if($item->token_instructor){{'bg-warning'}}@elseif(time() > $item->ttl_instructor AND $item->ttl_instructor){{'bg-danger'}}@endif" data-toggle="modal">
+                        <button type="button" onclick="generarURL({{$item->id}},'instructor');" id="{{$item->id}}"  class="btn @if($item->token_instructor){{'bg-warning'}}@elseif(time() > $item->ttl_instructor AND $item->ttl_instructor){{'bg-danger'}}@endif" data-toggle="modal">
                             URL
                         </button>
                         @if($item->total>0)
@@ -58,10 +58,17 @@
                         @endif
                      </td>
                      <td>
-                        <button type="button" onclick="generarListaAlumnos({{$item->id}});"  class="btn @if($item->token_alumno){{'bg-warning'}}@endif" data-toggle="modal" data-target="#frmListaAlumnos">
-                          URL
-                        </button>
-
+                        
+                        @if($item->ins_alumnos>0)
+                            <button type="button" onclick="generarListaAlumnos({{$item->id}});"  class="btn @if($item->token_alumno){{'bg-warning'}}@endif" data-toggle="modal" data-target="#frmListaAlumnos">
+                                URL ({{ $item->ins_alumnos}})
+                            </button>
+                        @else
+                            <button type="button" class="btn" disabled >
+                                &nbsp;URL ({{ $item->ins_alumnos}})
+                            </button>                            
+                        @endif
+                        
                         @if($item->total_alumnos>0)
                             <a class="btn text-white" href="{{ url('/supervision/alumno/revision/'.$item->id) }}" >
                                 REVISAR({{$item->total_alumnos}})
@@ -115,7 +122,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <textarea class="form-control" id="textURL" name="textURL" rows="3" style="text-transform: none;"></textarea>
+        <textarea class="form-control" id="textURL" name="textURL" rows="3" style="text-transform: none;" disabled></textarea>
       </div>
       <div class="modal-footer">
         <button id="btnCerrar" type="button" class="btn btn-gray-dark" data-dismiss="modal">Cerrar</button>
