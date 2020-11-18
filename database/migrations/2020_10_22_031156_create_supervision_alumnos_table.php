@@ -14,6 +14,7 @@ class CreateSupervisionAlumnosTable extends Migration
     public function up()
     {
         Schema::create('supervision_alumnos', function (Blueprint $table) {
+<<<<<<< HEAD
             $table->bigIncrements('id');
             $table->string('nombre', 255)->nullable();
             $table->string('apellido_paterno', 255)->nullable();
@@ -32,6 +33,26 @@ class CreateSupervisionAlumnosTable extends Migration
             $table->string('hfin', 10)->nullable();
             $table->string('tipo', 15)->nullable();
             $table->string('lugar', 150)->nullable();
+=======
+            $table->id();
+            $table->string('nombre', 255)->nullable(true);
+            $table->string('apellido_paterno', 255)->nullable(true);
+            $table->string('apellido_materno', 255)->nullable(true);
+            $table->smallInteger('votes')->nullable(true);
+            $table->string('escolaridad', 50)->nullable(true);
+            $table->date('fecha_inscripcion')->nullable(true);
+            $table->text('documentos')->nullable(true);
+            $table->string('curso', 150)->nullable(true);
+            $table->string('numero_apertura', 50)->nullable(true);
+            $table->date('fecha_autorizacion')->nullable(true);
+            $table->string('modalidad', 5)->nullable(true);
+            $table->date('fecha_inicio')->nullable(true);
+            $table->date('fecha_termino')->nullable(true);
+            $table->string('hinicio', 10)->nullable(true);
+            $table->string('hfin', 10)->nullable(true);
+            $table->string('tipo', 15)->nullable(true);
+            $table->string('lugar', 150)->nullable(true);
+>>>>>>> daniel_features
             $table->decimal('cuota', 10, 2);
             $table->boolean('ok_nombre');
             $table->boolean('ok_edad')->default(true);
@@ -47,6 +68,7 @@ class CreateSupervisionAlumnosTable extends Migration
             $table->boolean('ok_tipo');
             $table->boolean('ok_lugar');
             $table->boolean('ok_cuota');
+<<<<<<< HEAD
             $table->string('obs_nombre', 150)->nullable();
             $table->string('obs_edad', 150)->nullable();
             $table->string('obs_escolaridad', 150)->nullable();
@@ -71,6 +93,32 @@ class CreateSupervisionAlumnosTable extends Migration
             $table->bigInteger('id_user')->nullable();
             $table->text('comentarios');
             $table->string('unidad', 150)->nullable();
+=======
+            $table->string('obs_nombre', 150)->nullable(true);
+            $table->string('obs_edad', 150)->nullable(true);
+            $table->string('obs_escolaridad', 150)->nullable(true);
+            $table->string('obs_fecha_inscripcion', 150)->nullable(true);
+            $table->string('obs_documentos', 150)->nullable(true);
+            $table->string('obs_curso', 150)->nullable(true);
+            $table->string('obs_numero_apertura', 150)->nullable(true);
+            $table->string('obs_fecha_autorizacion', 150)->nullable(true);
+            $table->string('obs_modalidad', 150)->nullable(true);
+            $table->string('obs_fecha_inicio', 150)->nullable(true);
+            $table->string('obs_fecha_termino', 150)->nullable(true);
+            $table->string('obs_horario', 150)->nullable(true);
+            $table->string('obs_tipo', 150)->nullable(true);
+            $table->string('obs_lugar', 150)->nullable(true);
+            $table->string('obs_cuota', 150)->nullable(true);
+            $table->bigInteger('id_tbl_cursos')->nullable(true);
+            $table->bigInteger('id_curso')->nullable(true);
+            $table->bigInteger('id_alumno')->nullable(true);
+            $table->bigInteger('id_instructor')->nullable(true);
+            $table->boolean('enviado')->default(false);
+            $table->bigInteger('id_tbl_inscripcion')->nullable(true);
+            $table->bigInteger('id_user')->nullable(true);
+            $table->text('comentarios');
+            $table->string('unidad', 150)->nullable(true);
+>>>>>>> daniel_features
             $table->timestamps();
         });
     }

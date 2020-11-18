@@ -481,112 +481,6 @@ $(function(){
     });
 
     /**
-     * validación nueva del SID
-     */
-    $('#form_sid').validate({
-        rules: {
-            nombre: {
-                required: true,
-                minlength: 3
-            },
-            apellidoPaterno: {
-                required: true,
-                minlength: 2
-            },
-            sexo: {
-                required: true
-            },
-            curp: {
-                required: true,
-                CURP: true
-            },
-            telefonosid: {
-                required: true,
-                //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
-            },
-            estado: {
-                required: true
-            },
-            municipio: {
-                required: true
-            },
-            estado_civil: {
-                required: true
-            },
-            discapacidad: {
-                required: true
-            },
-            dia: {
-                required: true
-            },
-            mes: {
-                required: true
-            },
-            anio: {
-                required: true,
-                maxlength: 4,
-                number: true
-            },
-            medio_entero: {
-                required: true
-            },
-            motivos_eleccion_sistema_capacitacion: {
-                required: true
-            }
-        },
-        messages: {
-            nombre: {
-                required: 'Por favor ingrese su nombre',
-                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
-            },
-            apellidoPaterno: {
-                required: 'Por favor ingrese su apellido'
-            },
-            sexo: {
-                required: 'Por favor Elegir su genero'
-            },
-            curp: {
-                required: 'Por favor Ingresé la curp',
-            },
-            telefonosid: {
-                required: 'Por favor, ingrese telefóno',
-            },
-            estado: {
-                required: 'Por favor, seleccione un estado'
-            },
-            municipio: {
-                required: 'Por favor, seleccione el municipio'
-            },
-            estado_civil: {
-                required: 'Por favor, seleccione su estado civil'
-            },
-            discapacidad: {
-                required: 'Por favor seleccione una opción'
-            },
-            ultimo_grado_estudios: {
-                required: "Agregar último grado de estudios"
-            },
-            dia: {
-                required: "Por favor, seleccione el día"
-            },
-            mes: {
-                required: "Por favor, seleccione el mes"
-            },
-            anio: {
-                required: "Por favor, Ingrese el año",
-                maxlength: "Sólo acepta 4 digitos",
-                number: "Sólo se aceptan números"
-            },
-            medio_entero: {
-                required: "Por favor, seleccione una opción"
-            },
-            motivos_eleccion_sistema_capacitacion: {
-                required: "Por favor, seleccione una opción"
-            }
-        }
-    });
-
-    /**
      * form paso 2
      */
     $("#form-sid-paso2").validate({
@@ -1183,16 +1077,6 @@ $(function(){
             $("#documento_comprobante_migratorio").val('');
             $('#lbl_documento_comprobante_migratorio').html('COMPROBANTE MIGRATORIO');
             $('#documento_comprobante_migratorio').removeClass("{extension: 'pdf'}")
-        }
-    });
-
-    /****
-     * sólo acepta números en el texbox
-     */
-    $('#anio').keypress(function (e) {
-        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-            //display error message
-            return false;
         }
     });
 
