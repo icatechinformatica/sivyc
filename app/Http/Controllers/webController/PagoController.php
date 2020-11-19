@@ -62,7 +62,7 @@ class PagoController extends Controller
         ])
         ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado']);
 
-        switch ($variable) {
+        switch ($roles[0]->role_name) {
             case 'planeacion':
                 # code...
                 $contratos_folios = $contratos_folios;
