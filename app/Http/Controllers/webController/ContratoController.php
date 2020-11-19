@@ -47,6 +47,8 @@ class ContratoController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
+        $contratos = new contratos();
+
         //dd($roles[0]->role_name);
 
         switch ($roles[0]->role_name) {
