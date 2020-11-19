@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PagoController extends Controller
 {
