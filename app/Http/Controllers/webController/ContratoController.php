@@ -37,29 +37,95 @@ class ContratoController extends Controller
         $busqueda_contrato = $request->get('busquedaPorContrato');
         // obtener el usuario y su unidad
         $usuarioUnidad = Auth::user()->unidad;
-        // obtener unidades
-        $unidades = new tbl_unidades;
-        $unidadUsuario = $unidades->WHERE('id', $usuarioUnidad)->FIRST();
-        /**
-         * contratos - contratos
-         */
-        $contratos = new contratos();
+        // obtener el id
+        $userId = Auth::user()->id;
 
-        $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
-                        ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
-                        ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                        ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                        ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                        ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                        ->PAGINATE(25, [
-                            'tabla_supre.id','tabla_supre.no_memo',
-                            'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
-                            'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                            'contratos.docs','contratos.id_contrato','contratos.fecha_status',
-                            'tbl_cursos.termino AS fecha_termino',
-                            'tbl_cursos.inicio AS fecha_inicio',
-                            DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                        ]);
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+
+        //dd($roles[0]->role_name);
+
+        switch ($roles[0]->role_name) {
+            case 'planeacion':
+                # code...
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->PAGINATE(25, [
+                                    'tabla_supre.id','tabla_supre.no_memo',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                                    'tbl_cursos.termino AS fecha_termino',
+                                    'tbl_cursos.inicio AS fecha_inicio',
+                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                                ]);
+                break;
+            case 'financiero_verificador':
+                # code...
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->PAGINATE(25, [
+                                    'tabla_supre.id','tabla_supre.no_memo',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                                    'tbl_cursos.termino AS fecha_termino',
+                                    'tbl_cursos.inicio AS fecha_inicio',
+                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                                ]);
+                break;
+            case 'financiero_pago':
+                # code...
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->PAGINATE(25, [
+                                    'tabla_supre.id','tabla_supre.no_memo',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                                    'tbl_cursos.termino AS fecha_termino',
+                                    'tbl_cursos.inicio AS fecha_inicio',
+                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                                ]);
+                break;
+            default:
+                # code...
+                // obtener unidades
+                $unidadUsuario = DB::table('tbl_unidades')->WHERE('id', $usuarioUnidad)->FIRST();
+                /**
+                 * contratos - contratos
+                 */
+                $contratos = new contratos();
+
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                                ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
+                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->PAGINATE(25, [
+                                    'tabla_supre.id','tabla_supre.no_memo',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                                    'tbl_cursos.termino AS fecha_termino',
+                                    'tbl_cursos.inicio AS fecha_inicio',
+                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                                ]);
+                break;
+        }
 
         return view('layouts.pages.vstacontratoini', compact('querySupre'));
     }
