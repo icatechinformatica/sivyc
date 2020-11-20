@@ -96,7 +96,7 @@ class supreController extends Controller
             $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
-            $importe = $value['importe'];
+            $importe = $value['importe']/1.16;
             $X = $hora->dura;
             if ($X != NULL)
             {
@@ -107,7 +107,6 @@ class supreController extends Controller
                 } else {
                     $horas = (int) $hora->dura;
                 }
-                $importe = $importe / 1.16;
                 $importe_hora = $importe / $horas;
                 $folio->importe_hora = $importe_hora;
                 $folio->importe_total = $value['importe'];
@@ -191,7 +190,7 @@ class supreController extends Controller
             $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
-            $importe = $value['importe'];
+            $importe = $value['importe']/1.16;
             $importe_hora = $importe / $hora->dura;
             $folio->importe_hora = $importe_hora;
             $folio->importe_total = $value['importe'];

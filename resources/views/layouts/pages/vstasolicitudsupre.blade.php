@@ -107,6 +107,16 @@
                                             data-toggle="modal" data-placement="top"
                                             data-target="#DocModal"
                                             data-id='{{$itemData->id}}'
+                                            title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                    @endcan
+                                @else
+                                    @can('supre.upload_valsupre')
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#DocModal2"
+                                            data-id='{{$itemData->id}}'
                                             title="Cargar Validación de Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload"></i>
                                         </button>
@@ -192,6 +202,33 @@
                 </div>
             </div>
         <!-- END -->
+        <!-- Modal -->
+        <div class="modal fade" id="DocModal2" role="dialog">
+            <div class="modal-dialog">
+                <form method="POST" enctype="multipart/form-data" action="{{ route('doc-valsupre-guardar') }}" id="doc_valsupre">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reemplazar Validación de Suficiencia Presupuestal Firmada</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="text-align:center">
+                            <div style="text-align:center" class="form-group">
+                                <input type="file" accept="application/pdf" class="form-control" id="doc_validado" name="doc_validado" placeholder="Archivo PDF">
+                                <input id="idinsmod" name="idinsmod" hidden>
+                                <button type="submit" class="btn btn-primary" >Guardar</button>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <!-- END -->
     </div>
     <br>
 @endsection
