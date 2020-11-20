@@ -12,7 +12,7 @@
         }
 
         @page {
-            margin: 120px 40px 40px;
+            margin: 120px 40px 110px;
             }
             header { position: fixed;
             left: 0px;
@@ -33,7 +33,7 @@
             footer {
             position: fixed;
             left: 0px;
-            bottom: -10px;
+            bottom: -90px;
             right: 0px;
             height: 60px;
             background-color: white;
@@ -80,7 +80,7 @@
             }
 
         #wrappertop {
-        margin-top: 0%
+        margin-top: 0%;
         background-image: url('img/search.png');
         background-position: 5px 10px;
         background-repeat: no-repeat;
