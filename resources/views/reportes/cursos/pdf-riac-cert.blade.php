@@ -1,0 +1,159 @@
+<!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
+<html>
+<head>
+     <style>
+        body{font-family: sans-serif;}
+        @page { margin: 200px 15px 180px 15px; }
+        header { position: fixed; left: 0px; top: -190px; right: 0px; height: 190px; text-align: center; }        
+        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}       
+        header #tipo{ margin-top: 10px; text-align: center; font-size: 10px;}
+        header #curso{ margin-top: 8px; font-size: 8px; border: 1px solid gray; padding: 8px; line-height: 18px;}
+        footer { position: fixed; left: 0px; right: 0px; height: 600px; top: 0px;}
+        footer .page:after { content: counter(page, sans-serif);}
+        
+        .cuadro{ border: 1px solid black; width: 50px; padding: 10px;}
+        #curso {text-align: left; }
+        #curso b{margin-left: 10px; margin-right: 50px;}
+        .tabla { border-collapse: collapse; width: 100%;}        
+        .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
+        .tab{ margin-left: 10px; margin-right: 50px;}
+        .tab1{ margin-left: 15px; margin-right: 50px; }
+        .tab2{ margin-left: 5px; margin-right: 20px;}       
+        
+     </style>
+<body>
+     <header>
+            <img src="img/reportes/sep.png" alt='sep' width="12%" style='position:fixed; left:0; margin: -170px 0 0 20px;' />
+            <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
+            <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
+            <h6>REGISTRO DE INSCRIPCI&Oacute;N, ACREDITACI&Oacute;N Y CERTIFICACI&Oacute;N</h6>
+            <h6>(RIACD-02)</h6>        
+            <div id="tipo">
+                EXT: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="EXT"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;</span>&nbsp;
+                CAE: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="CAE"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;</span>&nbsp;
+                REG: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="REG"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>&nbsp;
+                EMP: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="EMP"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>
+            </div>
+            <div id="curso">
+                INSTITUTO DESCENTRALIZADO: <b>INSTITUTO DE CAPACITACI&Oacute;N Y VINCULACI&Oacute;N TECNOL&Oacute;GICA DEL ESTADO DE CHIAPAS</b>
+                UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">226 {{ $curso->unidad }}</span>
+                CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>
+                <br />
+                AREA: <span class="tab1">{{ $curso->area }}</span>
+                ESPECIALIDAD: <span class="tab1">{{ $curso->espe }}</span>
+                CURSO: <span class="tab1">{{ $curso->curso }}</span>
+                CLAVE: &nbsp;&nbsp;{{ $curso->clave }}
+                <br />
+                CICLO ESCOLAR: <span class="tab2">{{ $curso->ciclo }}</span>
+                PERIODO: <span class="tab2">{{ $periodo[$curso->mes_termino] }}</span>
+                FECHA INICIO: <span class="tab2"> {{ $curso->fechaini }}</span>
+                FECHA TERMINO: <span class="tab2"> {{ $curso->fechafin }}</span>
+                DURACI&Oacute;N EN HORAS: <span class="tab2">{{ $curso->dura }}</span>
+                GRUPO: <span class="tab2">{{ $curso->grupo }}</span>
+                HORARIO: &nbsp;&nbsp;{{ $curso->dia}} DE {{ $curso->hini }} A {{ $curso->hfin }}
+                <br />
+                CURP: <span class="tab1">{{ $curso->curp}}</span>
+                CONVENIO REALIZADO CON: <span class="tab1">{{ $curso->depen}}</span>                
+            </div>
+     </header>
+     <footer>
+     <!-- <p class="page">rome</p>-->     
+             
+       <table class="tabla" width="100%" >       
+            <tbody>
+                <tr>
+                    <th height="440px" colspan="2" style="border-bottom: white;">&nbsp;</th>                    
+                    <th height="440px" colspan="3" style="border-bottom: white;">&nbsp;</th>
+                </tr>
+                <tr>
+                    <th colspan="2" style="border-bottom: white;">INSCRIPCI&Oacute;N</th>                    
+                    <th colspan="3" style="border-bottom: white;">ACREDITACI&Oacute;N / CERTIFICACI&Oacute;N</th>
+                </tr>
+                <tr>
+                    <td width="300px" style=" border-right: white;">                       
+                        <br /><br /><br /><br /><br /><br />                                                
+                        C. {{ $curso->dunidad }}                                               
+                        <hr width="250px" />
+                        NOMBRE Y FIRMA DEL {{ $curso->pdunidad }}
+                        <br /><br /><br />                                                                        
+                    </td>
+                    <td width="92px"> SELLO </td>                    
+                    <td style=" border-right: white;">                        
+                        <br /><br /><br /><br /><br /><br />                        
+                        C. {{ $curso->dunidad }}
+                        <hr width="250px" />
+                        NOMBRE Y FIRMA DEL {{ $curso->pdunidad }} 
+                        <br /><br /><br />
+                    </td>
+                     <td width="50px" style=" border-right: white;"> SELLO </td>
+                     <td>                        
+                        <br /><br /><br /><br /><br /><br />                        
+                        C. {{ $curso->dgeneral }}
+                        <hr width="250px" />
+                        NOMBRE Y FIRMA DEL {{ $curso->pdgeneral }}
+                        <br /><br /><br />
+                    </td>                                                            
+                </tr>
+            </tbody>
+       </table>   
+                                             
+     </footer>
+     <div id="content">         
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th width="15px" rowspan="3">N<br/>U<br/>M</th>
+                    <th width="70px" rowspan="3">N&Uacute;MERO DE <br/>CONTROL</th>
+                    <th width="300px">NOMBRE DEL ALUMNO</th>
+                    <th colspan="6"><b>INSCRIPCI&Oacute;N</b></th>
+                    <th colspan="3"><b>ACREDITACI&Oacute;N</b></th>
+                    <th colspan="2"><b>CERTIFICACI&Oacute;N</b></th>
+                    <th></th>
+                </tr>               
+                <tr>                    
+                    <th rowspan="2">PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
+                    <th colspan="2">TIPO DE ALUMNO</th> 
+                    <th rowspan="2">TIPO DE DISCAP.</th>
+                    <th rowspan="2">SEXO</th>
+                    <th rowspan="2">EDAD</th>
+                    <th rowspan="2">ESCOLA<br/>RIDAD</th>
+                    <th rowspan="2">ACRED<br/>ITADO</th>
+                    <th rowspan="2">POR ACRED.</th>
+                    <th rowspan="2">DESER<br/>CI&Oacute;N</th>
+                    <th rowspan="2">FOLIO DE LA CONSTANCIA</th>
+                    <th rowspan="2">FECHA DE ENTREGA</th>
+                    <th rowspan="2" width="80px">FIRMA DEL CAPACITANDO</th>
+                </tr>
+                <tr>
+                    <th>INS. IND</th>
+                    <th>BECADOS</th>                    
+                </tr>
+            </thead>
+            <tbody>   
+            @foreach($alumnos as $a)         
+                <tr>
+                    <td>{{ $consec++ }}</td>
+                    <td>{{ $a->matricula }}</td>
+                    <td>{{ $a->alumno }}</td>
+                    <td>@if($a->abrinscri!="ET" AND $a->abrinscri!="EP"){{ "X" }}@endif</td>
+                    <td>@if($a->abrinscri=="ET" OR $a->abrinscri=="EP"){{ "X" }}@endif</td>
+                    <td>{{ $discapacidad[$a->discapacidad] }}</td>
+                    <td>{{ $a->sexo }}</td>
+                    <td>{{ $a->edad }}</td>
+                    <td>{{ $escolaridad[$a->ultimo_grado_estudios] }}</td>
+                    <td>@if($a->acreditado=="X"){{ $a->acreditado }}@endif</td>
+                    <td></td>
+                    <td>@if($a->acreditado!="X"){{ $a->acreditado }}@endif</td>
+                    <td>{{ $a->folio }}</td>
+                    <td>{{ $a->fecha_expedicion}}</td>
+                    <td></td>                    
+                </tr> 
+                @endforeach
+            </tbody> 
+            <tfoot>            
+            </tfoot>          
+        </table>
+       
+     </div>
+</body>
+</html>
