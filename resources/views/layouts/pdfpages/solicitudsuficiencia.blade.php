@@ -10,11 +10,11 @@
                 font-family: sans-serif;
             }
             @page {
-                margin: 120px 40px 110px;
+                margin: 110px 40px 110px;
             }
             header { position: fixed;
                 left: 0px;
-                top: -90px;
+                top: -100px;
                 right: 0px;
                 height: 60px;
                 background-color: white;
@@ -140,10 +140,9 @@
                         @endforeach
                     </tbody>
                 </table>
-                <br><br>
+                <br>
             </div>
             <div align=center> <b>SOLICITA
-                <br>
                 <br>
                 <br><small>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</small>
                 <br>________________________________________
