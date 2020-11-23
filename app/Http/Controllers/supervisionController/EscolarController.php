@@ -54,6 +54,7 @@ class EscolarController extends Controller
 
         $query = $query->leftJoin('tbl_inscripcion as ins', function($join)use($id_user){
             $join->on('ins.id_curso', '=', 'tbl_cursos.id');
+            $join->where('ins.status','INSCRITO');
             $join->groupBy('ins.id_curso');
         });
         if (!empty($tipo) AND !empty(trim($valor))) {
