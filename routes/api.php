@@ -17,8 +17,13 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => ['cors']], function(){
-	Route::apiResource('cursos', 'ApiController\CursosController');
+Route::post('login', 'ApiController\Api\PassportController@login');
+Route::post('signup', 'ApiController\Api\PassportController@signUp');
+// modificacion de api rest
+
+Route::group(['middleware' => ['cors', 'auth:api']], function () {
+
+    Route::apiResource('cursos', 'ApiController\CursosController');
     Route::apiResource('Instructores', 'ApiController\InstructoresController');
     Route::get('Instructoreshow/{nombre}/{apaterno}/{apmaterno}', 'ApiController\InstructoresController@show');
     Route::resource('catalogo-cursos', 'ApiController\CatalogoCursoController');
@@ -49,4 +54,8 @@ Route::group(['middleware' => ['cors']], function(){
     Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
     Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
     Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
+
+    Route::post('details', 'ApiController\Api\PassportController@details');
+    Route::post('logout', 'ApiController\Api\PassportController@logout');
+
 });
