@@ -21,7 +21,7 @@ Route::post('login', 'ApiController\Api\PassportController@login');
 Route::post('signup', 'ApiController\Api\PassportController@signUp');
 // modificacion de api rest
 
-Route::group(['middleware' => ['cors', 'auth:api']], function () {
+Route::group(['middleware' => 'auth:api'], function () {
 
     Route::apiResource('cursos', 'ApiController\CursosController');
     Route::apiResource('Instructores', 'ApiController\InstructoresController');

@@ -11,10 +11,11 @@ use GuzzleHttp\Client;
 use Validator;
 use Laravel\Passport\Client as OClient;
 use App\User;
-use Exception;
+use Carbon\Carbon;
 
 class PassportController extends Controller
 {
+    public $successStatus = 200;
 
     /**
      * Store a newly created resource in storage.
@@ -35,23 +36,18 @@ class PassportController extends Controller
             return response()->json(['error'=>$validator->errors()], 401);
         }
 
-        $input = $request->all();
-    	$input['passcode'] = bcrypt($request->get('passcode'));
-        $input['activo'] = $request->get('activo');
-    	$user = User::create($input);
-    	$token = $user->createToken('MyApp')->accessToken;
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
+        ]);
 
         /**
          * modificaciones
          */
-        DB::table('users')->insert([
-            'email' => $request->email,
-            'name' => $request->name,
-            'password' => bcrypt($request->password)
-        ]);
 
         return response()->json([
-            'message' => 'Successfully created user!'
+            'message' => 'usuario creado exitosamente!'
         ], 201);
     }
 
@@ -65,19 +61,31 @@ class PassportController extends Controller
     {
         // validar los campos
         $loginData = $request->validate([
-            'email' => 'email|required',
-            'password' => 'required'
+            'email' => 'email|required|string',
+            'password' => 'required|string',
+            'remember_me' => 'boolean'
         ]);
 
-        if (Auth::attempt(['email' => $request->get('email'), 'password' => $request>get('password')])) {
+        $credentials = request(['email', 'password']);
+
+        if (!Auth::attempt($credentials)) {
             # modificaciones de una condicion
+            return response()->json(['error'=>'No autorizado'], 401);
+        } else {
             $usuario_auth = Auth::user();
-            $success['token'] =  $usuario_auth->createToken('MyAppToken')->accessToken;
+            $token_result = $usuario_auth->createToken('MyAppToken');
+            $token = $token_result->token;
+            if ($request->remember_me) {
+                # agregamos una semana de expiracion del token
+                $token->expires_at = Carbon::now()->addWeeks(1);
+            }
+            $token->save();
+            $success['access_token'] =  $token_result->accessToken;
             $success['name'] = $usuario_auth->name;
             $success['email'] = $usuario_auth->email;
+            $success['token_type'] = "Bearer";
+            $success['expires_at'] = Carbon::parse($token->expires_at)->toDateTimeString();
             return response()->json(['success' => $success], $this->successStatus);
-        } else {
-            return response()->json(['error'=>'No autorizado'], 401);
         }
     }
 
