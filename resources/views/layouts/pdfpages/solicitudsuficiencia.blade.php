@@ -10,11 +10,11 @@
                 font-family: sans-serif;
             }
             @page {
-                margin: 120px 40px 80px;
+                margin: 120px 40px 110px;
             }
             header { position: fixed;
                 left: 0px;
-                top: -80px;
+                top: -90px;
                 right: 0px;
                 height: 60px;
                 background-color: white;
@@ -31,7 +31,7 @@
             footer {
                 position: fixed;
                 left: 0px;
-                bottom: -30px;
+                bottom: -90px;
                 right: 0px;
                 height: 60px;
                 background-color: white;
