@@ -380,6 +380,9 @@ class InstructorController extends Controller
 
         $modInstructor = instructor::find($request->id);
 
+        $old = $modInstructor->nombre . ' ' . $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno;
+        $new = $request->nombre . ' ' . $request->apellido_paterno . ' ' . $request->apellido_materno;
+
         $modInstructor->nombre = trim($request->nombre);
         $modInstructor->apellidoPaterno = trim($request->apellido_paterno);
         $modInstructor->apellidoMaterno = trim($request->apellido_materno);
@@ -472,6 +475,11 @@ class InstructorController extends Controller
         }
 
         $modInstructor->save();
+
+        $affecttbl_inscripcion = DB::update("UPDATE tbl_inscripcion SET instructor = REPLACE(instructor, ?, ?)", [$old, $new]);
+        $affecttbl_calificaciones = DB::update("UPDATE tbl_calificaciones SET instructor = REPLACE(instructor, ?, ?)", [$old, $new]);
+        $affecttbl_cursos = DB::update("UPDATE tbl_cursos SET nombre = REPLACE(nombre, ?, ?)", [$old, $new]);
+
 
         return redirect()->route('instructor-inicio')
                 ->with('success','Instructor Modificado');

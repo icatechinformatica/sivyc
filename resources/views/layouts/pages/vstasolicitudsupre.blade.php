@@ -162,10 +162,10 @@
                                 <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo Solicitud de Suficiencia Presupuestal</a><br>
                             </div>
                             <div style="text-align:center" class="form-group">
-                                <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                                <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Cargar validación de Suficiencia Presupuestal</a><br>
                             </div>
                             <div style="text-align:center" class="form-group">
-                                <a class="btn btn-danger" id="valsupre2_pdf" name="valsupre2_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal Autorizada</a><br>
+                                <a class="btn btn-danger" id="valsupre2_pdf" name="valsupre2_pdf" href="#" target="_blank" download>Reemplazar validación de Suficiencia Presupuestal Autorizada</a><br>
                             </div>
                         </div>
                         <div class="modal-footer">

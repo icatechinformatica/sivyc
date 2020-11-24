@@ -133,11 +133,11 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputtelefono">Numero de Telefono Personal</label>
-                        <input name="telefono" id="telefono" value="{{$datains->telefono }}" type="tel" disabled class="form-control" aria-required="true">
+                        <input name="telefono" id="telefono" value="{{$datains->telefono }}" type="tel" disabled class="form-control" aria-required="true" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputcorreo">Correo Electronico</label>
-                        <input name="correo" id="correo" value="{{$datains->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
+                        <input name="correo" id="correo" value="{{$datains->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" required>
                     </div>
                 </div>
                 <div class="form-row">
