@@ -5,17 +5,6 @@ use App\Http\Controllers\webController\InstructorController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/supervision/instructor/{token}', 'supervisionController\InstructorController@index')->name('supervision.instructor');
-Route::post('/supervision/instructor/{token}', 'supervisionController\InstructorController@index')->name('supervision.instructor');
-Route::post('/supervision/instructore/guardar', 'supervisionController\InstructorController@guardar')->name('supervision-instructore-guardar');
-
-Route::get('/supervision/alumno/{token}', 'supervisionController\AlumnoController@index')->name('supervision.alumno');
-Route::post('/supervision/alumno/{token}', 'supervisionController\AlumnoController@index')->name('supervision.alumno');
-Route::post('/supervision/alumn/guardar', 'supervisionController\AlumnoController@guardar')->name('supervision-alumno-guardar');
-
-Route::get('/supervision/funcionario/{token}', 'supervisionController\FuncionarioController@index')->name('supervision.funcionario');
-Route::post('/supervision/funcionario/{token}', 'supervisionController\FuncionarioController@index')->name('supervision.funcionario');
-Route::post('/supervision/funcionario-guardar', 'supervisionController\FuncionarioController@guardar')->name('supervision-funcionario-guardar');
 
 /*
 |--------------------------------------------------------------------------
@@ -364,6 +353,22 @@ Route::middleware(['auth'])->group(function () {
     /* SUPERVISION CONTROL DE CALIDAD*/
     Route::get('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
     Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
+
+    /*ENCUESTA*/
+    Route::get('/encuesta/generar/url', 'supervisionController\EncuestaController@generarUrl')->name('encuesta.generar.url');
+
+
+    /*SUPERVISION UNIDADES*/
+    Route::get('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
+    Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
+    Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');
+
+
+    /*REPORTES SICE */
+    Route::get('/reportes/cursos', 'reportesController\cursosController@index')->name('reportes.cursos.index');
+    Route::post('/reportes/ins/pdf', 'reportesController\cursosController@riacIns')->name('reportes.ins.pdf');
+    Route::post('/reportes/acred/pdf', 'reportesController\cursosController@riacAcred')->name('reportes.acred.pdf');
+    Route::post('/reportes/cert/pdf', 'reportesController\cursosController@riacCert')->name('reportes.cert.pdf');
 });
 
 Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');
@@ -372,3 +377,5 @@ Route::get('/form/alumno/{url}', 'supervisionController\UrlController@form')->na
 Route::post('/form/alumno-guardar', 'supervisionController\client\frmAlumnoController@guardar')->middleware('checktoken');
 Route::get('/form/msg/{id}', 'supervisionController\UrlController@msg');
 
+Route::get('/encuesta/form/{url}','supervisionController\EncuestaController@encuesta')->name('encuesta');
+Route::post('/encuesta/save','supervisionController\EncuestaController@encuesta_save')->name('encuesta.save');
