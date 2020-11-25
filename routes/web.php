@@ -365,10 +365,13 @@ Route::middleware(['auth'])->group(function () {
 
 
     /*REPORTES SICE */
-    Route::get('/reportes/cursos', 'reportesController\cursosController@index')->name('reportes.cursos.index');
+    Route::get('/reportes/cursos', 'reportesController\cursosController@index')->name('reportes.cursos.index');    
+    Route::post('/reportes/asist/pdf', 'reportesController\cursosController@asistencia')->name('reportes.asist.pdf');
+    Route::post('/reportes/calif/pdf', 'reportesController\cursosController@calificaciones')->name('reportes.calif.pdf');
     Route::post('/reportes/ins/pdf', 'reportesController\cursosController@riacIns')->name('reportes.ins.pdf');
     Route::post('/reportes/acred/pdf', 'reportesController\cursosController@riacAcred')->name('reportes.acred.pdf');
     Route::post('/reportes/cert/pdf', 'reportesController\cursosController@riacCert')->name('reportes.cert.pdf');
+    Route::post('/reportes/const/xls', 'reportesController\cursosController@xlsConst')->name('reportes.const.xls');
 });
 
 Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');

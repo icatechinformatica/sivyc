@@ -20,7 +20,7 @@
             <div class="container">
                 <div class="form-row">
                     <div class="form-group col-md-4">                                            
-                        {{ Form::text('clave', null, ['class' => 'form-control', 'placeholder' => 'CLAVE DEL CURSO', 'aria-label' => 'CLAVE DEL CURSO']) }}
+                        {{ Form::text('clave', null, ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'CLAVE DEL CURSO', 'aria-label' => 'CLAVE DEL CURSO']) }}
                                       
                     </div>
                 </div>
@@ -33,21 +33,16 @@
                       
                     </tr>
                   </thead>                                    
-                  <tbody>                    
-                    <tr>
-                      <th class="h6" scope="row"> ARC 02 </th>
-                      <th></th>
-                      <th class="text-center"><i class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
-                    </tr>
+                  <tbody>
                     <tr>
                       <th class="h6" scope="row"> LISTA DE ASISTENCIA </th>
                       <th></th>
-                      <th class="text-center"><i class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
+                      <th class="text-center"><i id="botonASIST" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
                     </tr>                                        
                     <tr>
                       <th class="h6" scope="row"> CALIFICACIONES </th>
                       <th></th>
-                      <th class="text-center"><i class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
+                      <th class="text-center"><i id="botonCALIF" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
                     </tr>
                      <tr>
                       <th class="h6" scope="row"> RIAC DE INSCRIPCI&Oacute;N </th>
@@ -65,7 +60,12 @@
                       <th></th>
                       <th class="text-center"><i id="botonRIAC-CERT" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
                     </tr> 
-                    <tr><th colspan="3"></th></tr>                   
+                    <tr>
+                      <th class="h6" scope="row">CONSTANCIAS EXCEL</th>
+                      <th></th>
+                      <th class="text-center"><i id="botonXLS-CONST" value='riac' class="fa fa-file-excel-o fa-2x fa-lg text-success cursor-pointer" ></i></th>                      
+                    </tr> 
+                    <tr><th colspan="3"></th></tr>                
                   </tbody>
                 </table>            
             </div>
@@ -74,10 +74,16 @@
     @section('script_content_js') 
         <script language="javascript">
              $(document).ready(function(){
-                $("#botonRIAC-INS" ).click(function(){ $('#frm').attr('action', "{{route('reportes.ins.pdf')}}"); $('#frm').submit(); });
-                $("#botonRIAC-ACRED" ).click(function(){ $('#frm').attr('action', "{{route('reportes.acred.pdf')}}"); $('#frm').submit(); });
-                $("#botonRIAC-CERT" ).click(function(){ $('#frm').attr('action', "{{route('reportes.cert.pdf')}}"); $('#frm').submit(); });
-                
+                /*if(!$("#clave").val()){
+                    alert("Por favor ingrese la Clave del Curso");                    
+                }else{ */
+                    $("#botonASIST" ).click(function(){ $('#frm').attr('action', "{{route('reportes.asist.pdf')}}"); $('#frm').submit(); });
+                    $("#botonCALIF" ).click(function(){ $('#frm').attr('action', "{{route('reportes.calif.pdf')}}"); $('#frm').submit(); });
+                    $("#botonRIAC-INS" ).click(function(){ $('#frm').attr('action', "{{route('reportes.ins.pdf')}}"); $('#frm').submit(); });
+                    $("#botonRIAC-ACRED" ).click(function(){ $('#frm').attr('action', "{{route('reportes.acred.pdf')}}"); $('#frm').submit(); });
+                    $("#botonRIAC-CERT" ).click(function(){ $('#frm').attr('action', "{{route('reportes.cert.pdf')}}"); $('#frm').submit(); });
+                    $("#botonXLS-CONST" ).click(function(){ $('#frm').attr('action', "{{route('reportes.const.xls')}}"); $('#frm').submit(); });
+                //}
              });
         </script>  
     @endsection
