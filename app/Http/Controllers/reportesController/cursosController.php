@@ -36,7 +36,6 @@ class cursosController extends Controller
             if(count($unidades)==0) $unidades =[$unidad];       
             $_SESSION['unidades'] = $unidades;
         }
-        
         //var_dump($_SESSION['unidades']);exit;
         return view('reportes.cursos.index');        
     }
@@ -317,7 +316,7 @@ class cursosController extends Controller
                 //var_dump($data); exit;
                 if(count($data)==0){ return "NO TIENEN FOLIOS ASIGNADOS";exit;}
                                 
-                $head = ['APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE(S)','CURP','CURSO','FECHA','HORAS','CLAVE UNIDAD','CIUDAD','ESTADO','DIRECTOR','MES','ANIO'];
+                $head = ['APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE(S)','CURP','CURSO','FECHA','HORAS','CLAVE UNIDAD','CIUDAD','ESTADO','DIRECTOR','MES',utf8_encode('AÑO')];
                 $nombreLayout = $clave.".xlsx";
 
                 if(count($data)>0){  

@@ -5,8 +5,7 @@
         body{font-family: sans-serif;}
         @page { margin: 190px 25px 170px 25px; }
         header { position: fixed; left: 0px; top: -170px; right: 0px; text-align: center;}        
-        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
-        header #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
+        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}        
         main {padding: 0; margin: 0; margin-top: 0px; }
      
         .tabla{  border-collapse: collapse; width: 100%; }        
@@ -21,8 +20,9 @@
         .tablaf { border-collapse: collapse; width: 100%;}     
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
         
+        #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
         .tab{ margin-left: 20px; margin-right: 50px;}
-        .tab1{ margin-left: 20px; margin-right: 30px; }
+        .tab1{ margin-left: 13px; margin-right: 28px; }
         .tab2{ margin-left: 10px; margin-right: 50px;} 
      </style>
 <body>
@@ -33,7 +33,7 @@
             <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
             <h6>REGISTRO DE EVALUACI&Oacute;N POR SUBOBJETIVOS</h6>
             <h6>(RESD-05)</h6> 
-            <div id="curso">                
+            <div id="curso">               
                 UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">{{$curso->plantel}} {{ $curso->unidad }}</span>
                 CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>                
                 AREA: <span class="tab">{{ $curso->area }}</span>

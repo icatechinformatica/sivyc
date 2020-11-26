@@ -73,18 +73,24 @@
     </div>
     @section('script_content_js') 
         <script language="javascript">
-             $(document).ready(function(){
-                /*if(!$("#clave").val()){
-                    alert("Por favor ingrese la Clave del Curso");                    
-                }else{ */
-                    $("#botonASIST" ).click(function(){ $('#frm').attr('action', "{{route('reportes.asist.pdf')}}"); $('#frm').submit(); });
-                    $("#botonCALIF" ).click(function(){ $('#frm').attr('action', "{{route('reportes.calif.pdf')}}"); $('#frm').submit(); });
-                    $("#botonRIAC-INS" ).click(function(){ $('#frm').attr('action', "{{route('reportes.ins.pdf')}}"); $('#frm').submit(); });
-                    $("#botonRIAC-ACRED" ).click(function(){ $('#frm').attr('action', "{{route('reportes.acred.pdf')}}"); $('#frm').submit(); });
-                    $("#botonRIAC-CERT" ).click(function(){ $('#frm').attr('action', "{{route('reportes.cert.pdf')}}"); $('#frm').submit(); });
-                    $("#botonXLS-CONST" ).click(function(){ $('#frm').attr('action', "{{route('reportes.const.xls')}}"); $('#frm').submit(); });
-                //}
-             });
+            $( function() {
+                $('#frm').validate({   
+                    rules: {
+                        clave: { required: true }
+                    },     
+                    messages: {
+                        clave: { required: 'Por favor ingrese la clave del curso' }
+                    }
+                });
+            });
+            $(document).ready(function(){                
+                $("#botonASIST" ).click(function(){ $('#frm').attr('action', "{{route('reportes.asist.pdf')}}"); $('#frm').submit(); });
+                $("#botonCALIF" ).click(function(){ $('#frm').attr('action', "{{route('reportes.calif.pdf')}}"); $('#frm').submit(); });
+                $("#botonRIAC-INS" ).click(function(){ $('#frm').attr('action', "{{route('reportes.ins.pdf')}}"); $('#frm').submit(); });
+                $("#botonRIAC-ACRED" ).click(function(){ $('#frm').attr('action', "{{route('reportes.acred.pdf')}}"); $('#frm').submit(); });
+                $("#botonRIAC-CERT" ).click(function(){ $('#frm').attr('action', "{{route('reportes.cert.pdf')}}"); $('#frm').submit(); });
+                $("#botonXLS-CONST" ).click(function(){ $('#frm').attr('action', "{{route('reportes.const.xls')}}"); $('#frm').submit(); });                
+            });
         </script>  
     @endsection
 @endsection
