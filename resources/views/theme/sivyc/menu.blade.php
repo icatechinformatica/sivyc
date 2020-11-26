@@ -84,6 +84,16 @@
                     </li>
                 @endcan
                 <!--AGREGAR NUEVO ELEMENTO EN EL MENU END-->
+                @can('reportes.cursos')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Reportes
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">CURSOS AUTORIZADOS</a>
+                        </div>
+                    </li>
+                @endcan
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">
