@@ -46,7 +46,7 @@
                         @endif                                                
                      </td>
                      <td>
-                        <button type="button" onclick="generarURL({{$item->id}},'instructor');" id="{{$item->id}}"  class="btn @if($item->token_instructor){{'bg-warning'}}@elseif(time() > $item->ttl_instructor AND $item->ttl_instructor){{'bg-danger'}}@endif" data-toggle="modal">
+                        <button type="button" onclick="generarURL({{$item->id}},'instructor');" id="{{$item->id}}"  class="btn @if(time() > $item->ttl_instructor AND $item->ttl_instructor){{'bg-danger'}}@elseif($item->token_instructor){{'bg-warning'}}@endif" data-toggle="modal">
                             URL
                         </button>
                         @if($item->total>0)
@@ -122,7 +122,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <textarea class="form-control" id="textURL" name="textURL" rows="3" style="text-transform: none;" disabled></textarea>
+        <textarea class="form-control" id="textURL" name="textURL" rows="10" style="text-transform: none;" disabled></textarea>
       </div>
       <div class="modal-footer">
         <button id="btnCerrar" type="button" class="btn btn-gray-dark" data-dismiss="modal">Cerrar</button>
@@ -150,6 +150,7 @@
                                 <option value="INICIADO" {{ old('status_supervision') == 'INICIADO' ? 'selected' : '' }}>INICIADO</option>
                                 <option value="MODIFICADO" {{ old('status_supervision') == 'MODIFICADO' ? 'selected' : '' }}>MODIFICADO</option>
                                 <option value="CANCELADO" {{ old('status_supervision') == 'CANCELADO' ? 'selected' : '' }}>CANCELADO</option>
+                                <option value="EXTRAORDINARIO" {{ old('status_supervision') == 'EXTRAORDINARIO' ? 'selected' : '' }}>EXTRAORDINARIO</option>
                             </select>                             
                         </div>
                         <div class="form-group col-md-3">
