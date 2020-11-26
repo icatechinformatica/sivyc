@@ -476,9 +476,9 @@ class InstructorController extends Controller
 
         $modInstructor->save();
 
-        $affecttbl_inscripcion = DB::update("UPDATE tbl_inscripcion SET instructor = REPLACE(instructor, ?, ?)", [$old, $new]);
-        $affecttbl_calificaciones = DB::update("UPDATE tbl_calificaciones SET instructor = REPLACE(instructor, ?, ?)", [$old, $new]);
-        $affecttbl_cursos = DB::update("UPDATE tbl_cursos SET nombre = REPLACE(nombre, ?, ?)", [$old, $new]);
+        $affecttbl_inscripcion = DB::table("tbl_inscripcion")->WHERE('instructor', $old)->update(['instructor' => $new]);
+        $affecttbl_calificaciones = DB::table("tbl_calificaciones")->WHERE('instructor', $old)->update(['instructor' => $new]);
+        $affecttbl_cursos = DB::table("tbl_cursos")->WHERE('nombre', $old)->update(['nombre' =>$new]);
 
 
         return redirect()->route('instructor-inicio')
