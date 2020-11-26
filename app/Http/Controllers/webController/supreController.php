@@ -379,8 +379,6 @@ class supreController extends Controller
         $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente'));
         $pdf->setPaper('A4', 'Landscape');
 
-
-
         return $pdf->stream('download.pdf');
 
         return view('layouts.pdfpages.solicitudsuficiencia', compact('data','data2'));
