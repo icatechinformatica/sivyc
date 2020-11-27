@@ -77,7 +77,7 @@
                         NOMBRE Y FIRMA DEL {{ $curso->pdunidad }}
                         <br /><br /><br />                                                                        
                     </td>
-                    <td width="92px"> SELLO </td>                    
+                    <td width="92px"><br /><br /><br /><br /><br /><br />SELLO </td>                    
                     <td style=" border-right: white;">                        
                         <br /><br /><br /><br /><br /><br />                        
                         C. {{ $curso->dunidad }}
@@ -85,7 +85,7 @@
                         NOMBRE Y FIRMA DEL {{ $curso->pdunidad }} 
                         <br /><br /><br />
                     </td>
-                     <td width="50px" style=" border-right: white;"> SELLO </td>
+                     <td width="50px" style=" border-right: white;"><br /><br /><br /><br /><br /><br />SELLO </td>
                      <td style=" border-right: white;">                        
                         <br /><br /><br /><br /><br /><br />                        
                         C. {{ $curso->dgeneral }}
@@ -93,7 +93,7 @@
                         NOMBRE Y FIRMA DEL {{ $curso->pdgeneral }}
                         <br /><br /><br />
                     </td>  
-                     <td width="55px"> SELLO </td>                                                            
+                     <td width="55px"><br /><br /><br /><br /><br /><br />SELLO </td>                                                            
                 </tr>
             </tbody>
        </table>   
