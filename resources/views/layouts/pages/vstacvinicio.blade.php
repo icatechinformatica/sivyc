@@ -26,7 +26,6 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>CURSOS VALIDADOS</h2>
-
                     {!! Form::open(['route' => 'cursos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipobusquedacursovalidado" class="form-control mr-sm-2" id="tipobusquedacursovalidado">
                             <option value="">BUSCAR POR TIPO</option>
