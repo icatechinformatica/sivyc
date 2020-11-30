@@ -36,7 +36,7 @@
             </div>
             <div id="curso">
                 INSTITUTO DESCENTRALIZADO: <b>INSTITUTO DE CAPACITACI&Oacute;N Y VINCULACI&Oacute;N TECNOL&Oacute;GICA DEL ESTADO DE CHIAPAS</b>
-                UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">226 {{ $curso->unidad }}</span>
+                UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">{{$curso->plantel}} {{ $curso->unidad }}</span>
                 CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>
                 <br />
                 AREA: <span class="tab1">{{ $curso->area }}</span>
@@ -57,17 +57,15 @@
             </div>
      </header>
      <footer>
-     <!-- <p class="page">rome</p>-->     
-             
-       <table class="tabla" width="100%" >       
+      <table class="tabla" width="100%" >       
             <tbody>
                 <tr>
                     <th height="440px" colspan="2" style="border-bottom: white;">&nbsp;</th>                    
-                    <th height="440px" colspan="3" style="border-bottom: white;">&nbsp;</th>
+                    <th height="440px" colspan="4" style="border-bottom: white;">&nbsp;</th>
                 </tr>
                 <tr>
                     <th colspan="2" style="border-bottom: white;">INSCRIPCI&Oacute;N</th>                    
-                    <th colspan="3" style="border-bottom: white;">ACREDITACI&Oacute;N / CERTIFICACI&Oacute;N</th>
+                    <th colspan="4" style="border-bottom: white;">ACREDITACI&Oacute;N / CERTIFICACI&Oacute;N</th>
                 </tr>
                 <tr>
                     <td width="300px" style=" border-right: white;">                       
@@ -77,22 +75,23 @@
                         NOMBRE Y FIRMA DEL {{ $curso->pdunidad }}
                         <br /><br /><br />                                                                        
                     </td>
-                    <td width="92px"> SELLO </td>                    
+                    <td width="92px"><br /><br /><br /><br /><br /><br />SELLO </td>                    
                     <td style=" border-right: white;">                        
                         <br /><br /><br /><br /><br /><br />                        
                         C. {{ $curso->dunidad }}
-                        <hr width="250px" />
+                        <hr width="220px" />
                         NOMBRE Y FIRMA DEL {{ $curso->pdunidad }} 
                         <br /><br /><br />
                     </td>
-                     <td width="50px" style=" border-right: white;"> SELLO </td>
-                     <td>                        
+                     <td width="50px" style=" border-right: white;"><br /><br /><br /><br /><br /><br />SELLO </td>
+                     <td style=" border-right: white;">                        
                         <br /><br /><br /><br /><br /><br />                        
                         C. {{ $curso->dgeneral }}
-                        <hr width="250px" />
+                        <hr width="220px" />
                         NOMBRE Y FIRMA DEL {{ $curso->pdgeneral }}
                         <br /><br /><br />
-                    </td>                                                            
+                    </td>  
+                     <td width="55px"><br /><br /><br /><br /><br /><br />SELLO </td>                                                            
                 </tr>
             </tbody>
        </table>   
@@ -141,7 +140,7 @@
                     <td>{{ $escolaridad[$a->ultimo_grado_estudios] }}</td>
                     <td>@if($a->acreditado=="X"){{ $a->acreditado }}@endif</td>
                     <td></td>
-                    <td>@if($a->acreditado!="X"){{ $a->acreditado }}@endif</td>
+                    <td>@if($a->acreditado!="X"){{ "X" }}@endif</td>
                     <td></td>
                     <td></td>                                   
                 </tr> 
