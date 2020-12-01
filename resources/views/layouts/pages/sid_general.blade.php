@@ -120,7 +120,7 @@
                         <select class="form-control" id="tipo_curso" name="tipo_curso" required>
                             <option value="">--SELECCIONAR--</option>
                             <option value="PRESENCIAL">PRESENCIAL</option>
-                            <option value="ONLINE">A DISTANCIA</option>
+                            <option value="A DISTANCIA">A DISTANCIA</option>
                         </select>
                     </div>
                 </div>
