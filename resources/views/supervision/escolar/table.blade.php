@@ -21,7 +21,7 @@
                 <tr>                
                      <td>{{ $item->unidad }}</td>
                      <td>{{ $item->clave }}</td>
-                     <td>{{ $item->curso }}</td>
+                     <td><a target="blank" href="{{ url("/supervision/curso/{$item->clave}")}}" class="text-primary" title="Ver detalles del curso.."><b>{{ $item->curso }}</b></a></td>
                      <td>{{ $item->nombre }}</td>
                      <td>{{ $item->inicio }}</td>
                      <td>{{ $item->termino }}</td>
