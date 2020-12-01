@@ -142,4 +142,32 @@ class EscolarController extends Controller
         return 0;        
     }
     
+    public function curso(Request $request, $clave){
+        $mensaje="";
+        $curso = $instructor = $alumnos = NULL;
+        $consec = 1;
+        if($clave){
+            $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),
+                DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
+                'u.plantel',DB::raw('EXTRACT(MONTH FROM inicio)  as mes_inicio'),DB::raw('EXTRACT(YEAR FROM inicio)  as anio_inicio') )
+                ->where('clave',$clave);                
+                $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')            
+                ->first();                 
+            if($curso){
+                $instructor = DB::table('instructores')->select('telefono','correo')->where('id',$curso->id_instructor)->first();
+                $alumnos = DB::table('tbl_inscripcion as i')
+                    ->select('i.matricula','i.alumno','a_pre.telefono','a_pre.correo')
+                    ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')
+                    ->Join('alumnos_registro as a_reg', function($join){                                        
+                        $join->on('a_reg.no_control', '=', 'i.matricula');                    
+                    }) 
+                    ->Join('alumnos_pre as a_pre', function($join){
+                        $join->on('a_pre.id', '=', 'a_reg.id_pre');
+                    });                
+                $alumnos = $alumnos->groupby('i.matricula','i.alumno','a_pre.telefono','a_pre.correo')->orderby('i.alumno')->get();  
+            }else $mensaje="NO EXISTE EL CURSO ESPECIFICADO";
+           
+        }else $mensaje="CLAVE INVALIDA";
+        return view('supervision.escolar.curso',compact('curso','instructor','alumnos','mensaje','consec')); 
+    }
 }
