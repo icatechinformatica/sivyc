@@ -84,7 +84,7 @@ class supreController extends Controller
        $directorio->supre_ccp1 = $request->id_ccp1;
        $directorio->supre_ccp2 = $request->id_ccp2;
        $directorio->id_supre = $id;
-
+       $directorio->save();
 
         //Guarda Folios
         foreach ($request->addmore as $key => $value){
@@ -123,7 +123,7 @@ class supreController extends Controller
                         ->with('success','Error Interno. Intentelo mas tarde.');
             }
         }
-        $directorio->save();
+
 
         return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
@@ -133,8 +133,15 @@ class supreController extends Controller
     {
         $supre = new supre();
         $folio = new folio();
+        $getdestino = null;
+        $getremitente = null;
+        $getvalida = null;
+        $getelabora = null;
+        $getccp1 = null;
+        $getccp2 = null;
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
+dd($directorio);
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
 
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
@@ -145,12 +152,36 @@ class supreController extends Controller
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
-        $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
-        $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
-        $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
-        $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
-        $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
+        if($directorio->supre_dest != NULL)
+        {
+            $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
+        }
+        if($directorio->supre_rem != NULL)
+        {
+            $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        }
+        if($directorio->supre_valida != NULL)
+        {
+            $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
+        }
+        if($directorio->supre_elabora != NULL)
+        {
+            $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
+        }
+        if($directorio->supre_supre_ccp1 != NULL)
+        {
+            $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
+        }
+        if($directorio->supre_ccp2 != NULL)
+        {
+            $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
+        }
+
+
+
+
+
+
         return view('layouts.pages.modsupre',compact('getsupre','getfolios','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio', 'unidadsel','unidadlist'));
     }
 
