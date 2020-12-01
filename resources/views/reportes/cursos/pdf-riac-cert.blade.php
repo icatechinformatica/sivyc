@@ -21,6 +21,7 @@
         .tab2{ margin-left: 5px; margin-right: 20px;}       
         
      </style>
+</head>
 <body>
      <header>
             <img src="img/reportes/sep.png" alt='sep' width="12%" style='position:fixed; left:0; margin: -170px 0 0 20px;' />
