@@ -141,7 +141,6 @@ class supreController extends Controller
         $getccp2 = null;
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-dd($directorio);
         $getsupre = $supre::WHERE('id', '=', $id)->FIRST();
 
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $getsupre->unidad_capacitacion)->FIRST();
