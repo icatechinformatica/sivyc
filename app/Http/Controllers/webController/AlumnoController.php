@@ -95,11 +95,21 @@ class AlumnoController extends Controller
     public function store(Request $request)
     {
         $curp = strtoupper($request->input('curp'));
-        $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET(['curp']);
-        // obtener el usuario que agrega
-        $usuario = Auth::user()->name;
-        if ($alumnoPre->isEmpty()) {
-            # si la consulta no está vacía hacemos la inserción
+        // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
+        $curp_formateada = trim($curp);
+        /**
+         * checamos la base de datos para saber si ya se encuentra registrada
+         */
+        $alumnoPre = DB::table('alumnos_pre')->where('curp', $curp_formateada)->select('curp')->first();
+        /**
+         * se checa si la consulta arroja un resultado o es nulo,
+         * en dado caso de ser nulo se tiene que agregar completamente
+         */
+        if (is_null($alumnoPre)) {
+            # SI ES VERDADERO ESTÁ NULA LA CONSULTA, PROCEDEMOS A INSERTAR EL REGISTRO
+            // obtener el usuario que agrega
+            $usuario = Auth::user()->name;
+            # si la consulta está vacía hacemos la inserción
             $validator =  Validator::make($request->all(), [
                 'nombre' => 'required',
                 'apellidoPaterno' => 'required',
@@ -130,14 +140,14 @@ class AlumnoController extends Controller
                 $fecha_nacimiento = $anio."-".$mes."-".$dia;
 
                 //estados
-                $nombre_estado = Estado::WHERE('id', '=', $request->estado)->FIRST(['nombre']);
+                $nombre_estado = DB::table('estados')->where('id', $request->input('estado'))->select('nombre')->first();
 
                 $AlumnoPreseleccion = new Alumnopre;
                 $AlumnoPreseleccion->nombre = $request->nombre;
                 $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
                 $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
                 $AlumnoPreseleccion->sexo = $request->sexo;
-                $AlumnoPreseleccion->curp = $request->curp;
+                $AlumnoPreseleccion->curp = $curp_formateada;
                 $AlumnoPreseleccion->fecha_nacimiento = $fecha_nacimiento;
                 $AlumnoPreseleccion->telefono = $request->telefonosid;
                 $AlumnoPreseleccion->domicilio = $request->domicilio;
@@ -159,14 +169,21 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->save();
 
                 // redireccionamos con un mensaje de éxito
-                return redirect('alumnos/indice')->with('success', 'Nuevo Aspirante Agregado Exitosamente!');
+                return redirect()->route('alumnos.index')->with('success', 'NUEVO ASPIRANTE AGREGADO EXITOSAMENTE!');
             }
-
         } else {
-            # por el contrario si no está vacía mandamos un mensaje al usuario
-            #Mensaje
-            $mensaje = "Lo sentimos, la curp ".$curp." asociada a este registro ya se encuentra en la base de datos.";
-            return redirect('/alumnos/sid')->withErrors($mensaje);
+            # ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
+            /**
+             * checamos la función básica para comparar dos cadenas a nivel binario
+             * Tiene en cuenta mayúsculas y minúsculas.
+             * Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
+             */
+            if (strcmp($curp_formateada, $alumnoPre->curp) === 0)
+            {
+                # si coinciden hay que mandar directo un mensaje de que no funciona
+                return redirect()->route('alumnos.preinscripcion')
+                    ->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
+            }
         }
     }
 
@@ -752,56 +769,96 @@ class AlumnoController extends Controller
      */
     public function update(Request $request)
     {
-        $id = $request->alumno_id;
-        $AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
+        $id = $request->get('alumno_id');
+        /**
+         * Para recuperar una sola fila por su valor de columna de id, use el método de búsqueda
+         */
+        $AlumnosPre = Alumnopre::findOrfail($id);
 
         // checamos si el usuario ya existe
-        if(!$AlumnosPre) {
-            // no se puede encontrar el alumno con el id_alumno
-        } else {
+        if(!is_null($AlumnosPre)) {
+
+            #ES VERDADERO SI NO ES NULL
             // si existe, se tiene que utilizar el mismo número de control
             // obtenemos su número de control
             // primeramente habrá que buscarlo en la tabla AlumnoSice
-            $alumnos_sice = AlumnosSice::WHERE('curp', $AlumnosPre->curp)->GET();
+            $alumnos_sice = DB::table('registro_alumnos_sice')->where('curp', $AlumnosPre->curp)->select('no_control')->first();
             // comprobamos si existe algo en la busqueda de la tabla
-            if(count($alumnos_sice) > 0){
-                // registro encontrado
-                $no_control_sice = $alumnos_sice[0]->no_control;
+            if($alumnos_sice !== null){
+                // REGISTRO ENCONTRADO
+                $no_control_sice = $alumnos_sice->no_control;
 
                 // hacemos el guardado del alumno con el curso que desea tomar
                 $usuario = Auth::user()->name;
-
                 /**
-                 * funcion alumnos
+                 * checamos si el curso ya está asignado a este usuario
                  */
-                $alumno = new Alumno([
-                    'no_control' => $no_control_sice,
-                    'id_especialidad' => $request->input('especialidad_sid'),
-                    'id_curso' => $request->input('cursos_sid'),
-                    'horario' => $request->input('horario'),
-                    'grupo' => $request->input('grupo'),
-                    'unidad' => $request->input('tblunidades'),
-                    'tipo_curso' => $request->input('tipo_curso'),
-                    'realizo' => $usuario,
-                    'cerrs' => $request->input('cerrs')
-                ]);
+                $check_alumno_registro_cursos = DB::table('alumnos_registro')->where([
+                    ['id_curso', '=', $request->input('cursos_sid')],
+                    ['no_control', '=', $no_control_sice],
+                ])->first();
+                /**
+                 * CHECAMOS SI HAY ALGÚN REGISTRO DATO EN check_alumno_registro_cursos
+                 * SI NO PROCEDEMOS A INSERTAR EL REGISTRO, DE NO SER ASÍ MANDAMOS UN MENSAJE AL
+                 * USUARIO QUE NO SE PUEDE CARGAR EL POR QUE EL CURSO YA SE ENCUENTRA REGISTRADO
+                 */
+                if(is_null($check_alumno_registro_cursos)){
+                    // VERDADERO PROCEDEMOS A CARGAR EL REGISTRO
 
-                $AlumnosPre->alumnos()->save($alumno);
+                     /**
+                     * funcion alumnos
+                     */
+                    $alumno = new Alumno([
+                        'no_control' => $no_control_sice,
+                        'id_especialidad' => $request->input('especialidad_sid'),
+                        'id_curso' => $request->input('cursos_sid'),
+                        'horario' => $request->input('horario'),
+                        'grupo' => $request->input('grupo'),
+                        'unidad' => $request->input('tblunidades'),
+                        'tipo_curso' => $request->input('tipo_curso'),
+                        'realizo' => $usuario,
+                        'cerrs' => $request->input('cerrs')
+                    ]);
 
-                return redirect('alumnos/registrados')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control_sice));
+                    $AlumnosPre->alumnos()->save($alumno);
+
+                    return redirect()->route('alumnos.inscritos')
+                        ->with('success', sprintf('¡EL CURSO ASOCIADO CON EL N° DE CONTROL %s REGISTRADO EXITOSAMENTE!', $no_control_sice));
+                } else {
+                    // FALSO PROCEDEMOS A ENVIAR UN MENSAJE DE RESTRICCIÓN AL USUARIO
+                    return redirect()->route('alumnos.presincripcion-paso2', ['id' => base64_encode($id)])
+                    ->withErrors(sprintf('LO SENTIMOS, EL CURSO ASOCIADO CON EL N° DE CONTROL %s YA FUE REGISTRADO', $no_control_sice));
+                }
+
 
             } else {
-                // no encontrado
+
+                $chk_curso_duplicado = DB::table('alumnos_registro')->where([ ['id_curso', '=', $request->input('cursos_sid')], ['id_pre', '=', $id] ])->first();
+                // CHECAMOS ANTES DE GENERAR EL NÚMERO DE CONTROL QUE EL CURSO AL QUE DESEA ESTÁR VINCULADO NO SE ENCUENTRE OCUPADO
+                if (!is_null($chk_curso_duplicado)) {
+                    $cursos_duplicados = DB::table('cursos')->where('id', $request->input('cursos_sid'))->select('nombre_curso')->first();
+                    $curso_nombre = $cursos_duplicados->nombre_curso;
+                    //dd($curso_nombre);
+                    /**
+                     * OBTENER EL CURSO ASOCIADO AL REGISTRO
+                     */
+                    # SI HAY UN REGISTRO VAMOS A ENVIAR UN MENSAJE AL USUARIO PARA QUE SE AVISE DE LA DUPLICIDAD DEL REGISTRO EN LA BASE DE DATOS
+                    return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL CURSO: %s YA SE ENCUENTRA REGISTRADO', $curso_nombre));
+                }
+
+                /**
+                 * NO ENCONTRADO NO HAY REGISTROS ASOCIADOS A ESE NÚMERO DE CONTROL EN LA BASE DE DATOS registro_alumnos_sice
+                 * SE PROCEDE A BUSCAR UNA COINCIDENCÍA EN LA TABLA alumnos_registro
+                 */
 
                 $unidadesTbl_ = $request->input('tblunidades');
 
-                $Alumno_ = new Alumno();
-                $Alumnos_ = $Alumno_->WHERE([
+                //$Alumno_ = new Alumno();
+                $Alumnos_ = DB::table('alumnos_registro')->WHERE([
                     ['id_pre', '=', $id]
-                ])
-                ->SKIP(0)->TAKE(1)->GET();
+                ])->skip(0)->take(1)->get();
                 // aquí veré que obtenemos
-                if(count($Alumnos_)) {
+                if(count($Alumnos_) > 0) {
                     // si hay datos obtenemos el número de control
                     $no_control = $Alumnos_[0]->no_control;
                 } else {
@@ -820,8 +877,8 @@ class AlumnoController extends Controller
                     /**
                      * obtenemos el valor de un campo de trabajo
                      */
-                    $unidades = new Unidad();
-                    $cct_unidades = $unidades->SELECT('cct')
+                    //$unidades = new Unidad();
+                    $cct_unidades = DB::table('tbl_unidades')->SELECT('cct')
                                     ->WHERE('unidad', '=', $unidadesTbl_)
                                     ->GET();
 
@@ -857,7 +914,7 @@ class AlumnoController extends Controller
 
                 $AlumnosPre->alumnos()->save($alumno);
 
-                return redirect('alumnos/registrados')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control));
+                return redirect()->route('alumnos.inscritos')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control));
 
             }
 
@@ -871,9 +928,8 @@ class AlumnoController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad = $request->idEsp;
             $tipo_curso = $request->tipo;
-            $Curso = new curso();
-            $Cursos = $Curso->WHERE('id_especialidad', '=', $idEspecialidad)
-                            ->WHERE('tipo_curso', '=', $tipo_curso)->GET();
+            //$Curso = new curso();
+            $Cursos = DB::table('cursos')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad]])->GET();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);

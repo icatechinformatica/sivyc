@@ -677,6 +677,7 @@ $(function(){
 
             request.done(( respuesta ) =>
             {
+                console.log(respuesta);
                 if (respuesta.length < 1) {
                     $("#cursos_sid").empty();
                     $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');

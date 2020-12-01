@@ -142,16 +142,6 @@
                         <input type="text" name="grupo" id="grupo" class="form-control" autocomplete="off">
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="cerrs" class="control-label">¿SE ENCUENTRA EN EL CERESO?</label>
-                        <select class="form-control" id="cerrs" name="cerrs" required>
-                            <option value="">--SELECCIONAR--</option>
-                            <option value="true">SI</option>
-                            <option value="false">NO</option>
-                        </select>
-                    </div>
-                </div>
                 <!--botones de enviar y retroceder-->
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
