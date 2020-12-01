@@ -25,6 +25,7 @@
         .tab1{ margin-left: 13px; margin-right: 28px; }
         .tab2{ margin-left: 10px; margin-right: 50px;} 
      </style>
+</head>
 <body>
 
      <header>
