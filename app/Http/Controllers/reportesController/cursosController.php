@@ -26,18 +26,20 @@ class cursosController extends Controller
     
     public function index(Request $request){
         $id_user = Auth::user()->id;
-        $role_id= DB::table('role_user')->where('user_id',$id_user)->value('role_id');
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
+            ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', '=', 'unidad')
+            ->value('roles.slug');        
         $_SESSION['unidades']=NULL;
-        if($role_id>1)
-        {        
+        //var_dump($rol);exit;
+        if($rol=='unidad'){ 
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad');        
             if(count($unidades)==0) $unidades =[$unidad];       
-            $_SESSION['unidades'] = $unidades;
+            $_SESSION['unidades'] = $unidades;              
         }
         //var_dump($_SESSION['unidades']);exit;
-        return view('reportes.cursos.index');        
+        return view('reportes.cursos.index');     
     }
     
     public function asistencia(Request $request){ //PRUEBA 2B-20-OPAU-CAE-0022

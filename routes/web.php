@@ -316,7 +316,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('financiero/indice', 'webController\FinancieroController@index')
            ->name('financiero.index');
 
-        /*TABLERO DE CONTROL*/
+        /*TABLERO DE CONTROL RPN*/
     Route::get('/tablero', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::get('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::post('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
@@ -328,47 +328,57 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
 
 
-     /* SUPERVISIONES INSTRUCTORES*/
+     /* SUPERVISIONES ESCOLAR RPN*/
     Route::get('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
     Route::post('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
+    Route::post('/supervision/curso', 'supervisionController\EscolarController@curso')->name('supervision.curso');
+    Route::get('/supervision/curso/{id}', 'supervisionController\EscolarController@curso')->name('supervision.curso');
+    
     Route::get('/supervisiones/escolar/url/generar', 'supervisionController\UrlController@generarUrl')->name('supervision.escolar.url.generar');
     Route::get('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
     Route::post('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
     
+     /* SUPERVISIONES INSTRUCTORES RPN*/
     Route::get('/supervision/instructor/revision/{id}', 'supervisionController\InstructorController@revision')->name('supervision.instructor.revision');
     Route::post('/supervision/instructores/guardar', 'supervisionController\InstructorController@update')->name('supervision.instructor.guardar');
     
 
-    /*SUPERVISIONES ALUMNOS*/
+    /*SUPERVISIONES ALUMNOS RPN*/
     Route::get('/supervisiones/alumno/lst', 'supervisionController\AlumnoController@lista')->name('supervision.alumno.lst');
     Route::get('/supervision/alumno/revision/{id}', 'supervisionController\AlumnoController@revision')->name('supervision.alumno.revision');
     Route::post('/supervisiones/alumnos/guardar', 'supervisionController\AlumnoController@update')->name('supervision.alumno.guardar');
 
     
-    /* SUPERVISION CONTROL DE CALIDAD*/
+    /* SUPERVISION CONTROL DE CALIDAD RPN*/
     Route::get('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
     Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
     
-    /*ENCUESTA*/
+    /*ENCUESTA
     Route::get('/encuesta/generar/url', 'supervisionController\EncuestaController@generarUrl')->name('encuesta.generar.url');   
+    */
     
-    
-    /*SUPERVISION UNIDADES*/
+    /*SUPERVISION UNIDADES RPN*/
     Route::get('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
     Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
     Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');
     
-    
-    /*REPORTES SICE */
-    Route::get('/reportes/cursos', 'reportesController\cursosController@index')->name('reportes.cursos.index');    
+    /*REPORTES SICE RPN*/
+    Route::get('/reportes/cursos', 'reportesController\cursosController@index')->name('reportes.cursos.index')->middleware('can:reportes.cursos');   
     Route::post('/reportes/asist/pdf', 'reportesController\cursosController@asistencia')->name('reportes.asist.pdf');
     Route::post('/reportes/calif/pdf', 'reportesController\cursosController@calificaciones')->name('reportes.calif.pdf');
     Route::post('/reportes/ins/pdf', 'reportesController\cursosController@riacIns')->name('reportes.ins.pdf');
     Route::post('/reportes/acred/pdf', 'reportesController\cursosController@riacAcred')->name('reportes.acred.pdf');     
     Route::post('/reportes/cert/pdf', 'reportesController\cursosController@riacCert')->name('reportes.cert.pdf');
     Route::post('/reportes/const/xls', 'reportesController\cursosController@xlsConst')->name('reportes.const.xls');
+    
+    /*INSCRIPCION ALUMNOS RPN
+    Route::get('/inscripcion/grupo', 'InscripcionController\grupoController@index')->name('inscripcion.grupo');
+    Route::get('/inscripcion/grupos', 'InscripcionController\grupoController@show')->name('inscripcion.grupos');
+    */
+    
 });
 
+/*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
 Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');
 Route::post('/form/instructor-guardar', 'supervisionController\client\frmInstructorController@guardar')->middleware('checktoken');
 Route::get('/form/alumno/{url}', 'supervisionController\UrlController@form')->name('form.alumno');
