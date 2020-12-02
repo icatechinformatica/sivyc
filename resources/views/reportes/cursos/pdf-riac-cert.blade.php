@@ -3,7 +3,7 @@
 <head>
      <style>
         body{font-family: sans-serif;}
-        @page { margin: 200px 15px 180px 15px; }
+        @page { margin: 200px 25px 180px 25px; }
         header { position: fixed; left: 0px; top: -190px; right: 0px; height: 190px; text-align: center; }        
         header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}       
         header #tipo{ margin-top: 10px; text-align: center; font-size: 10px;}
@@ -17,8 +17,8 @@
         .tabla { border-collapse: collapse; width: 100%;}        
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         .tab{ margin-left: 10px; margin-right: 50px;}
-        .tab1{ margin-left: 15px; margin-right: 50px; }
-        .tab2{ margin-left: 5px; margin-right: 20px;}       
+        .tab1{ margin-left: 15px; margin-right: 40px; }
+        .tab2{ margin-left: 3px; margin-right: 12px;}       
         
      </style>
 </head>
