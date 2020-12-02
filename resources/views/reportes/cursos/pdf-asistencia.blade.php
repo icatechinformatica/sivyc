@@ -21,8 +21,8 @@
         .tablaf { border-collapse: collapse; width: 100%;}     
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
         
-        .tab{ margin-left: 20px; margin-right: 60px;}
-        .tab1{ margin-left: 20px; margin-right: 40px; }
+        .tab{ margin-left: 20px; margin-right: 50px;}
+        .tab1{ margin-left: 10px; margin-right: 40px; }
         .tab2{ margin-left: 10px; margin-right: 60px;} 
      </style>
 </head>
@@ -40,17 +40,17 @@
                 CICLO ESCOLAR: <span class="tab">{{ $curso->ciclo }}</span>
                 GRUPO: <span class="tab">{{ $curso->grupo }}</span>              
                 MES: <span class="tab">{{ $mes[$curso->mes_inicio ] }}</span>
-                A&Ntilde;O: <span class="tab">{{ $curso->anio_inicio }}</span>
+                A&Ntilde;O: &nbsp;&nbsp;{{ $curso->anio_inicio }}
                 <br />
                 AREA: <span class="tab1">{{ $curso->area }}</span>                
                 ESPECIALIDAD: <span class="tab1">{{ $curso->espe }}</span>                                
                 CURSO: <span class="tab1"> {{ $curso->curso }}</span>
-                CLAVE: <span class="tab1"> {{ $curso->clave }}</span>                
+                CLAVE: &nbsp;&nbsp; {{ $curso->clave }}                
                 <br />
                 FECHA INICIO: <span class="tab1"> {{ $curso->fechaini }}</span>
                 FECHA TERMINO: <span class="tab1"> {{ $curso->fechafin }}</span>
                 HORARIO: <span class="tab2"> {{ $curso->dia}} DE {{ $curso->hini }} A {{ $curso->hfin }}</span>                
-                CURP: <span class="tab2">{{ $curso->curp}}</span>                    
+                CURP: &nbsp;&nbsp;{{ $curso->curp}}                    
             </div>
      </header>
 

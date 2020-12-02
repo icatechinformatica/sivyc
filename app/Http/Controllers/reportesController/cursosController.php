@@ -68,7 +68,7 @@ class cursosController extends Controller
                 $consec = 1;               
                 
                 $pdf = PDF::loadView('reportes.cursos.pdf-asistencia',compact('curso','alumnos','mes','consec'));        
-                $pdf->setPaper('A4', 'landscape');
+                $pdf->setPaper('Letter', 'landscape');
                 return $pdf->stream($file);
             } else return "Curso no v&aacute;lido para esta Unidad";
         }
@@ -102,7 +102,7 @@ class cursosController extends Controller
                 $consec = 1;               
                 
                 $pdf = PDF::loadView('reportes.cursos.pdf-calificaciones',compact('curso','alumnos','consec'));        
-                $pdf->setPaper('A4', 'landscape');
+                $pdf->setPaper('Letter', 'landscape');
                 return $pdf->stream($file);
             } else return "Curso no v&aacute;lido para esta Unidad";
         }
@@ -150,7 +150,7 @@ class cursosController extends Controller
                 $consec = 1;               
                 
                 $pdf = PDF::loadView('reportes.cursos.pdf-riac-ins',compact('curso','alumnos','discapacidad','escolaridad','periodo','consec'));        
-                $pdf->setPaper('A4', 'landscape');
+                $pdf->setPaper('Letter', 'landscape');
                 return $pdf->stream($file);
             } else return "Curso no v&aacute;lido para esta Unidad";
         }
