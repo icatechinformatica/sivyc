@@ -5,7 +5,8 @@
         body{font-family: sans-serif;}
         @page { margin: 190px 25px 170px 25px; }
         header { position: fixed; left: 0px; top: -170px; right: 0px; text-align: center;}        
-        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}        
+        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
+        header #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}        
         main {padding: 0; margin: 0; margin-top: 0px; }
      
         .tabla{  border-collapse: collapse; width: 100%; }        
@@ -20,10 +21,9 @@
         .tablaf { border-collapse: collapse; width: 100%;}     
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
         
-        #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
         .tab{ margin-left: 20px; margin-right: 50px;}
-        .tab1{ margin-left: 13px; margin-right: 28px; }
-        .tab2{ margin-left: 10px; margin-right: 50px;} 
+        .tab1{ margin-left: 3px; margin-right: 18px; }
+        .tab2{ margin-left: 10px; margin-right: 60px;}
      </style>
 </head>
 <body>
@@ -38,17 +38,17 @@
                 UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">{{$curso->plantel}} {{ $curso->unidad }}</span>
                 CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>                
                 AREA: <span class="tab">{{ $curso->area }}</span>
-                ESPECIALIDAD: <span class="tab">{{ $curso->espe }}</span>
+                ESPECIALIDAD: &nbsp;&nbsp;{{ $curso->espe }}
                 <br />
                 CURSO: <span class="tab1">{{ $curso->curso }}</span>
                 CLAVE: <span class="tab1">{{ $curso->clave }}</span>                
                 CICLO ESCOLAR: <span class="tab1">{{ $curso->ciclo }}</span>                
                 FECHA INICIO: <span class="tab1"> {{ $curso->fechaini }}</span>
-                FECHA TERMINO: <span class="tab1"> {{ $curso->fechafin }}</span>
+                FECHA TERMINO: &nbsp;&nbsp; {{ $curso->fechafin }}
                 <br />
                 GRUPO: <span class="tab2">{{ $curso->grupo }}</span>
                 HORARIO: <span class="tab2"> {{ $curso->dia}} DE {{ $curso->hini }} A {{ $curso->hfin }}</span>                
-                CURP: <span class="tab2">{{ $curso->curp}}</span>                    
+                CURP: &nbsp;&nbsp;{{ $curso->curp}}                   
             </div>
      </header>
 
@@ -81,9 +81,9 @@
             <thead>
                 <tr>
                     <th width="15px" rowspan="2">N<br/>U<br/>M</th>
-                    <th width="100px" rowspan="2">N&Uacute;MERO DE <br/>CONTROL</th>
-                    <th width="320px">NOMBRE DEL ALUMNO</th>
-                    <th colspan="17" width="400"><b>CLAVE DE CADA SUBOBJETIVO</b></th>
+                    <th width="90px" rowspan="2">N&Uacute;MERO DE <br/>CONTROL</th>
+                    <th width="300px">NOMBRE DEL ALUMNO</th>
+                    <th colspan="17" width="380"><b>CLAVE DE CADA SUBOBJETIVO</b></th>
                     <th rowspan="2"><b>RESULTADO FINAL</b></th>
                                         
                 </tr>               
