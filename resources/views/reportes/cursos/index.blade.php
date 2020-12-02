@@ -3,6 +3,9 @@
 @section('title', 'Rerpote RIAC | SIVyC Icatech')
 @section('content')
     <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+    <style>         
+        table tr th .nav-link {padding: 0; margin: 0;}
+    </style>
     <div class="card-header">
         Reportes de Cursos Autorizados
         
@@ -29,41 +32,59 @@
                     <tr>
                       <th class="h4" scope="col">Reportes</th>
                       <th class="h4" scope="col"></th>
-                      <th class="h4 text-center" scope="col">Opciones</th>
-                      
+                      <th class="h4 text-center" scope="col">Seleccionar</th>                      
                     </tr>
                   </thead>                                    
                   <tbody>
                     <tr>
                       <th class="h6" scope="row"> LISTA DE ASISTENCIA </th>
                       <th></th>
-                      <th class="text-center"><i id="botonASIST" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
+                      <th class="text-center">                       
+                           <a id="botonASIST" class="nav-link" >
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                           </a>                          
+                      </th>                      
                     </tr>                                        
                     <tr>
                       <th class="h6" scope="row"> CALIFICACIONES </th>
                       <th></th>
-                      <th class="text-center"><i id="botonCALIF" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
+                      <th class="text-center">
+                           <a id="botonCALIF" class="nav-link" >
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                           </a>                                            
                     </tr>
                      <tr>
                       <th class="h6" scope="row"> RIAC DE INSCRIPCI&Oacute;N </th>
                       <th></th>
-                      <th class="text-center"><i id="botonRIAC-INS" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
+                      <th class="text-center">
+                           <a id="botonRIAC-INS" class="nav-link" >
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                           </a>                                              
                     </tr>
                      <tr>
                       <th class="h6" scope="row"> RIAC DE ACREDITACI&Oacute;N</th>
                       <th></th>
-                      <th class="text-center"><i id="botonRIAC-ACRED" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
+                      <th class="text-center">
+                           <a id="botonRIAC-ACRED" class="nav-link" >
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                           </a>                                              
                     </tr>
                     
                     <tr>
                       <th class="h6" scope="row"> RIAC DE CERTIFICACI&Oacute;N</th>
                       <th></th>
-                      <th class="text-center"><i id="botonRIAC-CERT" value='riac' class="fa fa-file-pdf-o fa-2x fa-lg text-danger cursor-pointer" ></i></th>                      
+                      <th class="text-center">
+                           <a id="botonRIAC-CERT" class="nav-link" >
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                           </a>                                              
                     </tr> 
                     <tr>
                       <th class="h6" scope="row">CONSTANCIAS EXCEL</th>
                       <th></th>
-                      <th class="text-center"><i id="botonXLS-CONST" value='riac' class="fa fa-file-excel-o fa-2x fa-lg text-success cursor-pointer" ></i></th>                      
+                      <th class="text-center">
+                           <a id="botonXLS-CONST" class="nav-link" >
+                                <i  class="fa fa-file-excel-o fa-2x fa-lg text-success"></i>
+                           </a>                                              
                     </tr> 
                     <tr><th colspan="3"></th></tr>                
                   </tbody>
@@ -73,6 +94,18 @@
     </div>
     @section('script_content_js') 
         <script language="javascript">
+            $("input").keydown(function (e){                   
+                   var keyCode= e.which;                   
+                   if (keyCode == 13){                     
+                     event.preventDefault();
+                     if($('#clave').val()!="")
+                        alert("Seleccione un reporte para generar un PDF.")
+                     else                     
+                        alert("Ingrese la clave de apertura.")
+                     return false;
+                   }
+            });
+            
             $( function() {
                 $('#frm').validate({   
                     rules: {
