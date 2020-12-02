@@ -167,7 +167,7 @@ class supreController extends Controller
         {
             $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         }
-        if($directorio->supre_supre_ccp1 != NULL)
+        if($directorio->supre_ccp1 != NULL)
         {
             $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
         }
