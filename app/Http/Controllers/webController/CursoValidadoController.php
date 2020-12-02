@@ -50,6 +50,28 @@ class CursoValidadoController extends Controller
         $unidadPorUsuario = $unidades->WHERE('id', $unidadUser)->FIRST();
 
         switch ($roles[0]->role_name) {
+            case 'dta_certificacion_control':
+                # code...
+                $data = tbl_curso::busquedacursovalidado($tipoCursoValidad, $buscarcursoValidado)
+                    ->WHERE('tbl_cursos.clave', '!=', '0')
+                    ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
+                    ->LEFTJOIN('instructores','instructores.id','=','tbl_cursos.id_instructor')
+                    ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                    ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
+                    'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
+                    'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso']);
+            break;
+            case 'depto_academico':
+                # code...
+                $data = tbl_curso::busquedacursovalidado($tipoCursoValidad, $buscarcursoValidado)
+                    ->WHERE('tbl_cursos.clave', '!=', '0')
+                    ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
+                    ->LEFTJOIN('instructores','instructores.id','=','tbl_cursos.id_instructor')
+                    ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                    ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
+                    'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
+                    'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso']);
+            break;
             case 'unidad.ejecutiva':
                 # code...
                 $data = tbl_curso::busquedacursovalidado($tipoCursoValidad, $buscarcursoValidado)
