@@ -5,7 +5,8 @@
         body{font-family: sans-serif;}
         @page { margin: 190px 25px 170px 25px; }
         header { position: fixed; left: 0px; top: -170px; right: 0px; text-align: center;}        
-        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}        
+        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
+        header #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}        
         main {padding: 0; margin: 0; margin-top: 0px; }
      
         .tabla{  border-collapse: collapse; width: 100%; }        
@@ -20,10 +21,9 @@
         .tablaf { border-collapse: collapse; width: 100%;}     
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
         
-        #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
         .tab{ margin-left: 20px; margin-right: 50px;}
-        .tab1{ margin-left: 13px; margin-right: 30px; }
-        .tab2{ margin-left: 13px; margin-right: 50px;} 
+        .tab1{ margin-left: 3px; margin-right: 18px; }
+        .tab2{ margin-left: 10px; margin-right: 60px;}
      </style>
 </head>
 <body>

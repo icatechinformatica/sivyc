@@ -22,7 +22,7 @@
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
         
         .tab{ margin-left: 20px; margin-right: 50px;}
-        .tab1{ margin-left: 10px; margin-right: 40px; }
+        .tab1{ margin-left: 10px; margin-right: 20px; }
         .tab2{ margin-left: 10px; margin-right: 60px;} 
      </style>
 </head>
