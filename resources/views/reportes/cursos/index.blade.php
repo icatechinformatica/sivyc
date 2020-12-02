@@ -1,6 +1,6 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
-@section('title', 'Rerpote RIAC | SIVyC Icatech')
+@section('title', 'Reportes | SIVyC Icatech')
 @section('content')
     <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
     <style>         
