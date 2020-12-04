@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
 use Validator;
 use Laravel\Passport\Client as OClient;
-use App\User;
+//use App\User;
+use App\Models\api\UsuarioSice;
 use Carbon\Carbon;
 
 class PassportController extends Controller
@@ -18,10 +19,9 @@ class PassportController extends Controller
     public $successStatus = 200;
 
     /**
-     * Store a newly created resource in storage.
+     * Register a User.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function signUp(Request $request)
     {
@@ -36,8 +36,8 @@ class PassportController extends Controller
             return response()->json(['error'=>$validator->errors()], 401);
         }
 
-        User::create([
-            'name' => $request->name,
+        UsuarioSice::create([
+            'user' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
@@ -59,6 +59,7 @@ class PassportController extends Controller
      */
     public function login(Request $request)
     {
+        //dd(Auth::guard('api-sice')->check());
         // validar los campos
         $loginData = $request->validate([
             'email' => 'email|required|string',
@@ -66,13 +67,14 @@ class PassportController extends Controller
             'remember_me' => 'boolean'
         ]);
 
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only('email', 'password');
 
-        if (!Auth::attempt($credentials)) {
+
+        if (!Auth::guard('api-sice')->attempt($credentials)) {
             # modificaciones de una condicion
             return response()->json(['error'=>'No autorizado'], 401);
         } else {
-            $usuario_auth = Auth::user();
+            $usuario_auth = Auth::guard('api-sice')->user();
             $token_result = $usuario_auth->createToken('MyAppToken');
             $token = $token_result->token;
             if ($request->remember_me) {
@@ -81,7 +83,7 @@ class PassportController extends Controller
             }
             $token->save();
             $success['access_token'] =  $token_result->accessToken;
-            $success['name'] = $usuario_auth->name;
+            $success['name'] = $usuario_auth->user;
             $success['email'] = $usuario_auth->email;
             $success['token_type'] = "Bearer";
             $success['expires_at'] = Carbon::parse($token->expires_at)->toDateTimeString();
@@ -92,19 +94,19 @@ class PassportController extends Controller
     // detalles del usuario con token
     public function details(Request $request)
     {
-        $usuarioDetalles = Auth::user();
+        $usuarioDetalles = $request->user();
         return response()->json(['success' => $usuarioDetalles], $this->successStatus);
     }
 
     // salir del sistema de tokens
-    public function logout()
+    public function logout(Request $request)
     {
-        $value = $request->bearerToken();
-        $id = (new Parser())->parse($value)->getHeader('jti');
-        $token = $request->user()->tokens->find($id);
+        //$value = $request->bearerToken();
+        //$id = (new Parser())->parse($value)->getHeader('jti');
+        $token = $request->user()->token();
         $token->revoke();
         $response = 'Has sido desconectado';
-        return response()->json(['success' => response], 200);
+        return response()->json(['success' => $response], 200);
     }
 
 }
