@@ -52,6 +52,23 @@ class ContratoController extends Controller
         //dd($roles[0]->role_name);
 
         switch ($roles[0]->role_name) {
+            case 'admin':
+                # code...
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->PAGINATE(25, [
+                                    'tabla_supre.id','tabla_supre.no_memo',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                                    'tbl_cursos.termino AS fecha_termino',
+                                    'tbl_cursos.inicio AS fecha_inicio',
+                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                                ]);
+            break;
             case 'unidad.ejecutiva':
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
@@ -541,6 +558,26 @@ class ContratoController extends Controller
         $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         return view('layouts.pages.vsthistorialvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3','cupo'));
+    }
+
+    public function delete($id)
+    {
+        $id_supre = folio::SELECT('id_supre')->WHERE('id_folios', '=', $id)->FIRST();
+        $list = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id_supre->id_supre)->GET();
+        foreach($list as $item)
+        {
+            $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $item->id_folios)->FIRST();
+            if($idcontrato != NULL)
+            {
+                contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
+                contratos::where('id_folios', '=', $item->id_folios)->DELETE();
+            }
+            $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $item->id_folios)->update(['status' => 'eliminado']);
+        }
+        DB::table('tabla_supre')->WHERE('id', $id_supre->id_supre)->UPDATE(['status' => 'Rechazado']);
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Solicitud de Contrato Eliminado');
     }
 
     public function get_directorio(Request $request){
