@@ -52,6 +52,40 @@ class ContratoController extends Controller
         //dd($roles[0]->role_name);
 
         switch ($roles[0]->role_name) {
+            case 'unidad.ejecutiva':
+                # code...
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->PAGINATE(25, [
+                                    'tabla_supre.id','tabla_supre.no_memo',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                                    'tbl_cursos.termino AS fecha_termino',
+                                    'tbl_cursos.inicio AS fecha_inicio',
+                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                                ]);
+            break;
+            case 'direccion.general':
+                # code...
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->PAGINATE(25, [
+                                    'tabla_supre.id','tabla_supre.no_memo',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status',
+                                    'tbl_cursos.termino AS fecha_termino',
+                                    'tbl_cursos.inicio AS fecha_inicio',
+                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
+                                ]);
+            break;
             case 'planeacion':
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
@@ -68,7 +102,7 @@ class ContratoController extends Controller
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
-                break;
+            break;
             case 'financiero_verificador':
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
@@ -85,7 +119,7 @@ class ContratoController extends Controller
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
-                break;
+            break;
             case 'financiero_pago':
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
@@ -102,7 +136,7 @@ class ContratoController extends Controller
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
-                break;
+            break;
             default:
                 # code...
                 // obtener unidades
@@ -127,7 +161,7 @@ class ContratoController extends Controller
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
-                break;
+            break;
         }
 
         return view('layouts.pages.vstacontratoini', compact('querySupre'));
