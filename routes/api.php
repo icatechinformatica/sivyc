@@ -17,8 +17,13 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => ['cors']], function(){
-	Route::apiResource('cursos', 'ApiController\CursosController');
+// Route::post('login', 'ApiController\Api\PassportController@login');
+// Route::get('signup', 'ApiController\Api\PassportController@registerData');
+// // modificacion de api rest
+
+Route::group(['middleware' => 'auth:api'], function () {
+
+    Route::apiResource('cursos', 'ApiController\CursosController');
     Route::apiResource('Instructores', 'ApiController\InstructoresController');
     Route::get('Instructoreshow/{nombre}/{apaterno}/{apmaterno}', 'ApiController\InstructoresController@show');
     Route::resource('catalogo-cursos', 'ApiController\CatalogoCursoController');
@@ -43,10 +48,30 @@ Route::group(['middleware' => ['cors']], function(){
     Route::apiResource('calificacion', 'ApiController\CalificacionController');
     Route::post('calificacion/{idcurso}/{matricula}', 'ApiController\CalificacionController@update');
     Route::post('updateCatalogoCurso/{id}', 'ApiController\CatalogoCursoController@update');
-    Route::apiResource('afolios', 'ApiController\AfoliosController');
+    //Route::apiResource('afolios', 'ApiController\AfoliosController');
     Route::post('afolios/{id}', 'ApiController\AfoliosController@update');
     Route::apiResource('folios', 'ApiController\FolioController');
     Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
     Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
     Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
+
+    Route::post('details', 'ApiController\Api\PassportController@details');
+    Route::get('logout', 'ApiController\Api\PassportController@logout');
+
+});
+
+
+Route::group([
+    'prefix' => 'auth'
+], function () {
+    Route::post('login', 'ApiController\Api\PassportController@login');
+    Route::post('register', 'ApiController\Api\PassportController@signUp');
+
+    Route::group([
+      'middleware' => 'auth:api'
+    ], function() {
+        Route::post('details', 'ApiController\Api\PassportController@details');
+        Route::apiResource('afolios', 'ApiController\AfoliosController');
+        Route::post('logout', 'ApiController\Api\PassportController@logout');
+    });
 });
