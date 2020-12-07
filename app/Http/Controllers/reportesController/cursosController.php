@@ -47,7 +47,7 @@ class cursosController extends Controller
         
         $file = "LISTA_ASISTENCIA_$clave.PDF";
         if($clave){
-            $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),
+            $curso = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw('right(clave,4) as grupo'),'inicio','termino',
             DB::raw("to_char(inicio, 'DD/MM/YYYY') as fechaini"),DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
             'u.plantel',DB::raw('EXTRACT(MONTH FROM inicio)  as mes_inicio'),DB::raw('EXTRACT(YEAR FROM inicio)  as anio_inicio') )
             ->where('clave',$clave);
@@ -65,14 +65,32 @@ class cursosController extends Controller
                //var_dump($alumnos); exit;       
                 if(!$alumnos) return "NO HAY ALUMNOS INSCRITOS";
                 $mes = $this->mes;
-                $consec = 1;               
-                
-                $pdf = PDF::loadView('reportes.cursos.pdf-asistencia',compact('curso','alumnos','mes','consec'));        
+                $consec = 1;
+                if($curso->inicio AND $curso->termino)               
+                    $Ym = $this->generateDates($curso->inicio, $curso->termino);
+                else  return "El Curso no tiene registrado la fecha de inicio y de termino";
+                //$Ym = NULL;
+//var_dump($Ym);exit;
+                $pdf = PDF::loadView('reportes.cursos.pdf-asistencia',compact('curso','alumnos','mes','consec','Ym'));        
                 $pdf->setPaper('Letter', 'landscape');
                 return $pdf->stream($file);
             } else return "Curso no v&aacute;lido para esta Unidad";
         }
         return "Clave no v&aacute;lida";
+    }
+    
+    function generateDates(string $since, string $until = null) {
+        $Ym = [];    
+        if (! $until) $until = date('Y-m-d');        
+        $since = strtotime(date('Y-m', strtotime($since)));
+        $until = strtotime(date('Y-m', strtotime($until)));        
+        do {
+            $anio = date('Y', $since);
+            $mes = date('m', $since)*1;
+            $Ym[]= $anio."-".$mes;
+            $since = strtotime("+ 1 month", $since);                      
+        } while($since <= $until);
+        return $Ym;
     }
     
     public function calificaciones(Request $request){
