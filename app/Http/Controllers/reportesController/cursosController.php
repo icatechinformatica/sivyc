@@ -239,7 +239,8 @@ class cursosController extends Controller
                     })
                     ->Join('tbl_folios as f', function($join){
                         $join->on('f.id_curso', '=', 'i.id_curso');                
-                        $join->on('f.matricula', '=', 'i.matricula');                
+                        $join->on('f.matricula', '=', 'i.matricula');
+                        $join->where('f.movimiento','<>', 'CANCELADO');                 
                     })
                     ->Join('alumnos_registro as a_reg', function($join)use($consec_curso){
                         //$join->on('a_r.id_curso', '=', $consec_curso);                
