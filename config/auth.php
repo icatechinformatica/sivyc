@@ -43,12 +43,12 @@ return [
 
         'api' => [
             'driver' => 'passport',
-            'provider' => 'user_sice',
+            'provider' => 'users',
             'hash' => false,
         ],
 
         'api-sice' => [
-            'driver' => 'session',
+            'driver' => 'passport',
             'provider' => 'user_sice',
             'hash' => false,
         ],

@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.0",
         "barryvdh/laravel-dompdf": "^0.8.6",
         "caffeinated/shinobi": "^5.0",
         "doctrine/dbal": "^2.10",
@@ -16,11 +16,13 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
+        "laravel/passport": "^9.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "2.0",
         "laravelcollective/html": "^6.0",
+        "maatwebsite/excel": "^3.1",
         "revolution/laravel-google-sheets": "^5.0",
-        "maatwebsite/excel": "^3.1"
+        "lcobucci/jwt": "3.3.3"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

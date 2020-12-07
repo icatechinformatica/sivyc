@@ -21,7 +21,7 @@ use Illuminate\Http\Request;
 // Route::get('signup', 'ApiController\Api\PassportController@registerData');
 // // modificacion de api rest
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => 'api'], function () {
 
     Route::apiResource('cursos', 'ApiController\CursosController');
     Route::apiResource('Instructores', 'ApiController\InstructoresController');

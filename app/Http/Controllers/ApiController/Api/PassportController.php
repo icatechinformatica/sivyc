@@ -87,7 +87,7 @@ class PassportController extends Controller
             $success['email'] = $usuario_auth->email;
             $success['token_type'] = "Bearer";
             $success['expires_at'] = Carbon::parse($token->expires_at)->toDateTimeString();
-            return response()->json(['success' => $success], $this->successStatus);
+            return response()->json($success, $this->successStatus);
         }
     }
 
