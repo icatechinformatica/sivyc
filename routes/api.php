@@ -48,7 +48,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::apiResource('calificacion', 'ApiController\CalificacionController');
     Route::post('calificacion/{idcurso}/{matricula}', 'ApiController\CalificacionController@update');
     Route::post('updateCatalogoCurso/{id}', 'ApiController\CatalogoCursoController@update');
-    //Route::apiResource('afolios', 'ApiController\AfoliosController');
+    Route::apiResource('afolios', 'ApiController\AfoliosController');
     Route::post('afolios/{id}', 'ApiController\AfoliosController@update');
     Route::apiResource('folios', 'ApiController\FolioController');
     Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
@@ -71,7 +71,7 @@ Route::group([
       'middleware' => 'auth:api'
     ], function() {
         Route::post('details', 'ApiController\Api\PassportController@details');
-        Route::apiResource('afolios', 'ApiController\AfoliosController');
+        //Route::apiResource('afolios', 'ApiController\AfoliosController');
         Route::post('logout', 'ApiController\Api\PassportController@logout');
     });
 });
