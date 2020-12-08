@@ -16,13 +16,13 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
-        "laravel/passport": "^9.0",
+        "laravel/passport": "9.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "2.0",
         "laravelcollective/html": "^6.0",
+        "lcobucci/jwt": "3.3.3",
         "maatwebsite/excel": "^3.1",
-        "revolution/laravel-google-sheets": "^5.0",
-        "lcobucci/jwt": "3.3.3"
+        "revolution/laravel-google-sheets": "^5.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

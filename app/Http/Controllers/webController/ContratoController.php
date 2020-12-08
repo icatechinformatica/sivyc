@@ -436,6 +436,9 @@ class ContratoController extends Controller
             $urlbanco = $this->pdf_upload($banco, $request->id_instructor, 'banco'); # invocamos el método
             $instructor = instructor::find($request->id_instructor);
             $instructor->archivo_bancario = trim($urlbanco);
+            $instructor->banco = $request->nombre_banco;
+            $instructor->no_cuenta = $request->numero_cuenta;
+            $instructor->interbancaria = $request->clabe;
             $instructor->save();
         }
 
@@ -517,6 +520,9 @@ class ContratoController extends Controller
             $urlbanco = $this->pdf_upload($banco, $request->id_instructor, 'banco'); # invocamos el método
             $instructor = instructor::find($request->id_instructor);
             $instructor->archivo_bancario = trim($urlbanco);
+            $instructor->banco = $request->nombre_banco;
+            $instructor->no_cuenta = $request->numero_cuenta;
+            $instructor->interbancaria = $request->clabe;
             $instructor->save();
         }
 

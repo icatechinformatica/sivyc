@@ -79,7 +79,21 @@
                     </label></h6>
                 </div>
             </div>
-            <h2>Vista de Datos Bancarios</h2>
+            <hr style="border-color:dimgray">
+            <div class="form-row">
+                <div class="form-group col-md-9">
+                    <h2>Vista de Datos Bancarios</h2>
+                </div>
+                <div class="pull-right">
+                    <button type="button" id="mod-datosBancarios" class="btn btn-warning btn-primary" >Modificar Datos Bancarios</button>
+                </div>
+            </div>
+            <small>
+                Esta sección es opcional, favor de confirmar que el documento de dato bancario sea el correcto, de lo contrario,
+                proceda a seleccionar el botón de modificación para subir el archivo correcto y corregir los campos
+                "nombre de banco", "número de cuenta" y "clabe interbancaria"
+            </small>
+            <br>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label></label>
@@ -88,7 +102,21 @@
                 <div class="form-group col-md-2"></div>
                 <div class="form-group col-md-4">
                     <label for="inputarch_bancario" class="control-label">Modificar Archivo de Datos Bancarios</label>
-                    <input type="file" accept="application/pdf" name="arch_bancario" id="arch_bancario" class="form-control">
+                    <input type="file" accept="application/pdf" name="arch_bancario" id="arch_bancario" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputnombre_banco" class="control-label">Nombre de Banco</label>
+                    <input type="text" name="nombre_banco" id="nombre_banco" class="form-control" disabled>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputnumero_cuenta" class="control-label">Número de Cuenta</label>
+                    <input type="text" name="numero_cuenta" id="numero_cuenta" class="form-control" disabled>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputclabe" class="control-label">Clabe Interbancaria</label>
+                    <input type="text" name="clabe" id="clabe" class="form-control" disabled>
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -146,3 +174,30 @@
         <br>
     </div>
 @endsection
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(function(){
+
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $("#mod-datosBancarios").click(function(e){
+            e.preventDefault();
+            $.ajax({
+                success: function(){
+                    $('#arch_bancario').prop("disabled", false)
+                    $('#arch_bancario').prop("required", true)
+                    $('#nombre_banco').prop("disabled", false)
+                    $('#nombre_banco').prop("required", true)
+                    $('#numero_cuenta').prop("disabled", false)
+                    $('#numero_cuenta').prop("required", true)
+                    $('#clabe').prop("disabled", false)
+                    $('#clabe').prop("required", true)
+                }
+            });
+        });
+    });
+</script>

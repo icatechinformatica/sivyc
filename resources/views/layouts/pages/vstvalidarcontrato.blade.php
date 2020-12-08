@@ -70,6 +70,13 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
+        <h2>Previsualización de Contrato</h2>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="/contrato/{{$data->id_contrato}}" target="_blank">Contrato de Instructor</a>
+            </div>
+        </div>
+        <hr style="border-color:dimgray">
         <h2>Datos del Curso</h2>
         <div class="form-row">
             @if ($data->pdf_curso != NULL)
