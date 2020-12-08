@@ -166,8 +166,8 @@ class CursosController extends Controller
     {
         // actualizando
         try {
-            return response()->json($request->all(), 200);
-            exit;
+            //return response()->json($request->all(), 200);
+            //exit;
             $Cursos= new Curso();
             $cursosArray = [
                 'cct' => trim($request->cct),
