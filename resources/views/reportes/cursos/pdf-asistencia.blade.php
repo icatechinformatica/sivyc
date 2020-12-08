@@ -65,7 +65,8 @@
      @if(isset($Ym))         
          @for($n=0;$n<count($Ym);$n++) 
             <?php  
-              $m = explode("-",$Ym[$n]);                
+              $m = explode("-",$Ym[$n]);  
+              $consec=1;              
             ?>
             
             <table class="tabla">
