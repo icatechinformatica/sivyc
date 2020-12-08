@@ -166,7 +166,7 @@ class CursosController extends Controller
     {
         // actualizando
         try {
-            return response()->json($request->file('pdf_curso'), 200);
+            return response()->json($request->all(), 200);
             exit;
             $Cursos= new Curso();
             $cursosArray = [
