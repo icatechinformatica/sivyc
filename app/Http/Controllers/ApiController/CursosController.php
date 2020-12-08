@@ -166,6 +166,8 @@ class CursosController extends Controller
     {
         // actualizando
         try {
+            //return response()->json($request->all(), 200);
+            //exit;
             $Cursos= new Curso();
             $cursosArray = [
                 'cct' => trim($request->cct),
@@ -311,7 +313,7 @@ class CursosController extends Controller
      * funcion para subir un archivo al servidor
      */
     protected function uploaded_file($file, $id, $name){
-        $tamanio = $file->getClientSize(); #obtener el tamaño del archivo del cliente
+        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
