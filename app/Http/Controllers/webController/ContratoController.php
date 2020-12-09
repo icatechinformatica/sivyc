@@ -263,6 +263,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $especialidad = new especialidad();
+        $perfil = new InstructorPerfil();
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
         $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
@@ -271,11 +272,19 @@ class ContratoController extends Controller
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
-        $perfil_sel = InstructorPerfil::WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
 
-        $perfil_prof = InstructorPerfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
+        $perfil_sel = contratos::SELECT('especialidades.nombre AS nombre_especialidad', 'contratos.instructor_perfilid AS id_espins')
+                                ->WHERE('id_contrato', '=', $id)
+                                ->LEFTJOIN('especialidad_instructores','especialidad_instructores.id','=','contratos.instructor_perfilid')
+                                ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+                                ->FIRST();
+
+
+        $insPer = especialidad_instructor::SELECT('perfilprof_id')->WHERE('id', '=', $datacon->instructor_perfilid)->FIRST();
+
+        $perfil_prof = $perfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
                                 ->WHERE('instructor_perfil.numero_control', '=', $data->id)
-                                ->WHERE('especialidad_instructores.especialidad_id', '!=', $datacon->instructor_perfilid)
+                                ->WHERE('especialidad_instructores.id', '!=', $perfil_sel->id_espins)
                                 ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
