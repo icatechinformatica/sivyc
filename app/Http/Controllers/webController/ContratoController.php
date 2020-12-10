@@ -301,7 +301,10 @@ class ContratoController extends Controller
     public function save_mod(Request $request){
         $contrato = contratos::find($request->id_contrato);
         $contrato->numero_contrato = $request->numero_contrato;
-        $contrato->instructor_perfilid = $request->perfil_instructor;
+        if($request->perfilinstructor != NULL)
+        {
+            $contrato->instructor_perfilid = $request->perfilinstructor;
+        }
         $contrato->cantidad_numero = $request->cantidad_numero;
         $contrato->cantidad_letras1 = $request->cantidad_letras;
         $contrato->municipio = $request->lugar_expedicion;
