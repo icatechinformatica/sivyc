@@ -15,7 +15,9 @@ class UsuarioSice extends Authenticatable
     //
     use HasApiTokens, Notifiable;
 
+    protected $guard = 'api_sice';
     protected $table = 'user_sice';
+    protected $primarykey ='id';
 
     /**
      * The attributes that are mass assignable.

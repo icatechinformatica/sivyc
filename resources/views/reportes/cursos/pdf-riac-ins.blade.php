@@ -46,7 +46,7 @@
                 CLAVE: &nbsp;&nbsp;{{ $curso->clave }}
                 <br />
                 CICLO ESCOLAR: <span class="tab2">{{ $curso->ciclo }}</span>
-                PERIODO: <span class="tab2">{{ $periodo[$curso->mes_termino] }}</span>
+                PERIODO: <span class="tab2">@if(isset($periodo[$curso->mes_termino])){{ $periodo[$curso->mes_termino] }}@endif</span>
                 FECHA INICIO: <span class="tab2"> {{ $curso->fechaini }}</span>
                 FECHA TERMINO: <span class="tab2"> {{ $curso->fechafin }}</span>
                 DURACI&Oacute;N EN HORAS: <span class="tab2">{{ $curso->dura }}</span>
@@ -135,10 +135,12 @@
                     <td>{{ $a->alumno }}</td>
                     <td>@if($a->abrinscri!="ET" AND $a->abrinscri!="EP"){{ "X" }}@endif</td>
                     <td>@if($a->abrinscri=="ET" OR $a->abrinscri=="EP"){{ "X" }}@endif</td>
-                    <td>{{ $discapacidad[$a->discapacidad] }}</td>
+                    @if(isset($discapacidad[$a->discapacidad]))<td>{{ $discapacidad[$a->discapacidad] }}</td>
+                    @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
                     <td>{{ $a->sexo }}</td>
                     <td>{{ $a->edad }}</td>
-                    <td>{{ $escolaridad[$a->ultimo_grado_estudios] }}</td>
+                    @if(isset($escolaridad[$a->ultimo_grado_estudios]))<td> {{ $escolaridad[$a->ultimo_grado_estudios] }}</td>
+                    @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
                     <td></td>
                     <td></td>
                     <td></td>

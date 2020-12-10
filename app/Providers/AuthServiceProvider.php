@@ -32,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         //Passport::refreshTokensExpireIn(Carbon::now()->addDays(10));
         Passport::tokensCan([
             'api' => 'User Type',
-            'api-sice' => 'sice User type',
+            'api_sice' => 'sice User type',
         ]);
     }
 }

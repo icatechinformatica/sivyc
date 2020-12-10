@@ -47,7 +47,7 @@ return [
             'hash' => false,
         ],
 
-        'api-sice' => [
+        'api_sice' => [
             'driver' => 'passport',
             'provider' => 'user_sice',
             'hash' => false,
@@ -109,6 +109,12 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'user_sice' => [
+            'provider' => 'user_sice',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ]
     ],
 
     /*
