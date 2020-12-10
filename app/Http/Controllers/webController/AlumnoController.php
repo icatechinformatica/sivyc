@@ -793,19 +793,44 @@ class AlumnoController extends Controller
                 /**
                  * checamos si el curso ya está asignado a este usuario
                  */
-                $check_alumno_registro_cursos = DB::table('alumnos_registro')->where([
-                    ['id_curso', '=', $request->input('cursos_sid')],
-                    ['no_control', '=', $no_control_sice],
-                ])->first();
+                // $check_alumno_registro_cursos = DB::table('alumnos_registro')->where([
+                //     ['id_curso', '=', $request->input('cursos_sid')],
+                //     ['no_control', '=', $no_control_sice],
+                // ])->first();
                 /**
                  * CHECAMOS SI HAY ALGÚN REGISTRO DATO EN check_alumno_registro_cursos
                  * SI NO PROCEDEMOS A INSERTAR EL REGISTRO, DE NO SER ASÍ MANDAMOS UN MENSAJE AL
                  * USUARIO QUE NO SE PUEDE CARGAR EL POR QUE EL CURSO YA SE ENCUENTRA REGISTRADO
                  */
-                if(is_null($check_alumno_registro_cursos)){
-                    // VERDADERO PROCEDEMOS A CARGAR EL REGISTRO
+                // if(is_null($check_alumno_registro_cursos)){
+                //     // VERDADERO PROCEDEMOS A CARGAR EL REGISTRO
 
-                     /**
+                //      /**
+                //      * funcion alumnos
+                //      */
+                //     $alumno = new Alumno([
+                //         'no_control' => $no_control_sice,
+                //         'id_especialidad' => $request->input('especialidad_sid'),
+                //         'id_curso' => $request->input('cursos_sid'),
+                //         'horario' => $request->input('horario'),
+                //         'grupo' => $request->input('grupo'),
+                //         'unidad' => $request->input('tblunidades'),
+                //         'tipo_curso' => $request->input('tipo_curso'),
+                //         'realizo' => $usuario,
+                //         'cerrs' => $request->input('cerrs')
+                //     ]);
+
+                //     $AlumnosPre->alumnos()->save($alumno);
+
+                //     return redirect()->route('alumnos.inscritos')
+                //         ->with('success', sprintf('¡EL CURSO ASOCIADO CON EL N° DE CONTROL %s REGISTRADO EXITOSAMENTE!', $no_control_sice));
+                // } else {
+                //     // FALSO PROCEDEMOS A ENVIAR UN MENSAJE DE RESTRICCIÓN AL USUARIO
+                //     return redirect()->route('alumnos.presincripcion-paso2', ['id' => base64_encode($id)])
+                //     ->withErrors(sprintf('LO SENTIMOS, EL CURSO ASOCIADO CON EL N° DE CONTROL %s YA FUE REGISTRADO', $no_control_sice));
+                // }
+
+                    /**
                      * funcion alumnos
                      */
                     $alumno = new Alumno([
@@ -824,27 +849,22 @@ class AlumnoController extends Controller
 
                     return redirect()->route('alumnos.inscritos')
                         ->with('success', sprintf('¡EL CURSO ASOCIADO CON EL N° DE CONTROL %s REGISTRADO EXITOSAMENTE!', $no_control_sice));
-                } else {
-                    // FALSO PROCEDEMOS A ENVIAR UN MENSAJE DE RESTRICCIÓN AL USUARIO
-                    return redirect()->route('alumnos.presincripcion-paso2', ['id' => base64_encode($id)])
-                    ->withErrors(sprintf('LO SENTIMOS, EL CURSO ASOCIADO CON EL N° DE CONTROL %s YA FUE REGISTRADO', $no_control_sice));
-                }
 
 
             } else {
 
-                $chk_curso_duplicado = DB::table('alumnos_registro')->where([ ['id_curso', '=', $request->input('cursos_sid')], ['id_pre', '=', $id] ])->first();
-                // CHECAMOS ANTES DE GENERAR EL NÚMERO DE CONTROL QUE EL CURSO AL QUE DESEA ESTÁR VINCULADO NO SE ENCUENTRE OCUPADO
-                if (!is_null($chk_curso_duplicado)) {
-                    $cursos_duplicados = DB::table('cursos')->where('id', $request->input('cursos_sid'))->select('nombre_curso')->first();
-                    $curso_nombre = $cursos_duplicados->nombre_curso;
-                    //dd($curso_nombre);
-                    /**
-                     * OBTENER EL CURSO ASOCIADO AL REGISTRO
-                     */
-                    # SI HAY UN REGISTRO VAMOS A ENVIAR UN MENSAJE AL USUARIO PARA QUE SE AVISE DE LA DUPLICIDAD DEL REGISTRO EN LA BASE DE DATOS
-                    return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL CURSO: %s YA SE ENCUENTRA REGISTRADO', $curso_nombre));
-                }
+                // $chk_curso_duplicado = DB::table('alumnos_registro')->where([ ['id_curso', '=', $request->input('cursos_sid')], ['id_pre', '=', $id] ])->first();
+                // // CHECAMOS ANTES DE GENERAR EL NÚMERO DE CONTROL QUE EL CURSO AL QUE DESEA ESTÁR VINCULADO NO SE ENCUENTRE OCUPADO
+                // if (!is_null($chk_curso_duplicado)) {
+                //     $cursos_duplicados = DB::table('cursos')->where('id', $request->input('cursos_sid'))->select('nombre_curso')->first();
+                //     $curso_nombre = $cursos_duplicados->nombre_curso;
+                //     //dd($curso_nombre);
+                //     /**
+                //      * OBTENER EL CURSO ASOCIADO AL REGISTRO
+                //      */
+                //     # SI HAY UN REGISTRO VAMOS A ENVIAR UN MENSAJE AL USUARIO PARA QUE SE AVISE DE LA DUPLICIDAD DEL REGISTRO EN LA BASE DE DATOS
+                //     return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL CURSO: %s YA SE ENCUENTRA REGISTRADO', $curso_nombre));
+                // }
 
                 /**
                  * NO ENCONTRADO NO HAY REGISTROS ASOCIADOS A ESE NÚMERO DE CONTROL EN LA BASE DE DATOS registro_alumnos_sice
