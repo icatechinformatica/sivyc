@@ -109,6 +109,12 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'user_sice' => [
+            'provider' => 'user_sice',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ]
     ],
 
     /*
