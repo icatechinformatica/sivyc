@@ -78,7 +78,7 @@
                                 CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>
                                 CICLO ESCOLAR: <span class="tab">{{ $curso->ciclo }}</span>
                                 GRUPO: <span class="tab">{{ $curso->grupo }}</span>              
-                                MES: <span class="tab">{{ $mes[$m[1]] }}</span>
+                                MES: <span class="tab">@if(isset($mes[$m[1]])){{ $mes[$m[1]] }}@endif</span>
                                 A&Ntilde;O: &nbsp;&nbsp;{{ $m[0] }}
                                 <br />
                                 AREA: <span class="tab1">{{ $curso->area }}</span>                
