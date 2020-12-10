@@ -47,7 +47,7 @@ return [
             'hash' => false,
         ],
 
-        'api-sice' => [
+        'api_sice' => [
             'driver' => 'passport',
             'provider' => 'user_sice',
             'hash' => false,

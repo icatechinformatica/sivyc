@@ -61,20 +61,29 @@ class PassportController extends Controller
     {
         //dd(Auth::guard('api-sice')->check());
         // validar los campos
-        $loginData = $request->validate([
+
+        $loginData = Validator::make($request->all(), [
             'email' => 'email|required|string',
             'password' => 'required|string',
             'remember_me' => 'boolean'
         ]);
 
-        $credentials = $request->only('email', 'password');
+        if ($loginData->fails()) {
+            # code...
+            return response()->json(['errors'=>$validator->errors()->all()], 422);
+        }
+
+        $credentials = [
+            'username'=> $request->username,
+            'password'=> $request->password
+        ];
 
 
-        if (!Auth::guard('api-sice')->attempt($credentials)) {
+        if (!Auth::guard('api_sice')->attempt($credentials)) {
             # modificaciones de una condicion
-            return response()->json(['error'=>'No autorizado'], 401);
+            return response()->json(['error'=>'No autorizado'], 422);
         } else {
-            $usuario_auth = Auth::guard('api-sice')->user();
+            $usuario_auth = Auth::guard('api_sice')->user();
             $token_result = $usuario_auth->createToken('MyAppToken');
             $token = $token_result->token;
             if ($request->remember_me) {
