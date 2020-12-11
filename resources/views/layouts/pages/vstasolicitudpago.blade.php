@@ -59,7 +59,7 @@
                 @endif
                 <div class="form-group col-md-3">
                     <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
-                    <input type="text" name="liquido" id="liquido" class="form-control">
+                    <input type="text" name="liquid" id="liquid" class="form-control" required>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
@@ -95,10 +95,14 @@
             </small>
             <br>
             <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label></label>
-                    <a class="btn btn-info form-control" href={{$bancario->archivo_bancario}} download>Datos Bancarios</a><br>
-                </div>
+                @if ($bancario->archivo_bancario != NULL)
+                    <div class="form-group col-md-4">
+                        <label></label>
+                        <a class="btn btn-info form-control" href={{$bancario->archivo_bancario}} download>Datos Bancarios</a><br>
+                    </div>
+                @else
+                    <a class="btn btn-danger form-control" disabled>Datos Bancarios</a><br>
+                @endif
                 <div class="form-group col-md-2"></div>
                 <div class="form-group col-md-4">
                     <label for="inputarch_bancario" class="control-label">Modificar Archivo de Datos Bancarios</label>
