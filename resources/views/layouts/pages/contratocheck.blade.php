@@ -20,7 +20,7 @@
                     <a class="btn btn-warning" href="{{route('contrato-mod', ['id' => $idc])}}">Modificar</a>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" href="/contrato/inicio">Confirmar Validación</a><br>
+                    <a class="btn btn-success" href="/contrato/inicio">Confirmar Solicitud de Contrato</a><br>
                 </div>
             </div>
         </div>
