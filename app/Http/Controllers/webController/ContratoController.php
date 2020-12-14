@@ -620,6 +620,44 @@ class ContratoController extends Controller
         }
     }
 
+    public function pre_contratoPDF($id)
+    {
+
+        $contrato = new contratos();
+
+        $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
+        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
+                                  'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
+                                  'instructores.domicilio')
+                          ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
+                          ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                          ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                          ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                          ->FIRST();
+                          //nomes especialidad
+        $especialidad = especialidad_instructor::SELECT('especialidades.nombre')
+                                                ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
+                                                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                                                ->FIRST();
+        $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        $date = strtotime($data_contrato->fecha_firma);
+        $D = date('d', $date);
+        $M = $this->toMonth(date('m', $date));
+        $Y = date("Y", $date);
+
+        $monto = explode(".",strval($data_contrato->cantidad_numero));
+
+        $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad'));
+
+        return $pdf->stream('Contrato Instructor.pdf');
+    }
 
     public function contrato_pdf($id)
     {
