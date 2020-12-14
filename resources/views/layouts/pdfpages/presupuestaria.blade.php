@@ -91,12 +91,12 @@
                 </thead>
                 <tbody>
                     @foreach ($data_folio as $key=>$value )
-                        @if ($key == 0 || $key == 3 || $key == 6 || $key == 9 || $key == 12 || $key == 15)
+                        @if ($key == 0 || $key == 3 || $key == 6 || $key == 9 || $key == 12 || $key == 15 || $key == 18 || $key == 21)
                         <tr><td>{{$value->folio_validacion}}</td>
                         @else
                         <td>{{$value->folio_validacion}}</td>
                         @endif
-                        @if ($key == 2 || $key == 5 || $key == 8 || $key == 11 || $key == 14)
+                        @if ($key == 2 || $key == 5 || $key == 8 || $key == 11 || $key == 14 || $key == 17 || $key == 20)
                         </tr>
                         @endif
                     @endforeach
