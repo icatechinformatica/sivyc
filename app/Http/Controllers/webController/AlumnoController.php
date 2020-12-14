@@ -1175,7 +1175,6 @@ class AlumnoController extends Controller
                 'rfc_cerss' => $request->get('rfc_cerss'),
                 'ultimo_grado_estudios' => $request->get('ultimo_grado_estudios_cerss'),
                 'tiene_documentacion' => false,
-                'realizo' => $usuario_agrega,
                 'nombre_cerss' => $request->get('nombre_cerss'),
                 'numero_expediente' => $request->get('numero_expediente_cerss'),
                 'direccion_cerss' => $request->get('direcciones_cerss_update_'),
