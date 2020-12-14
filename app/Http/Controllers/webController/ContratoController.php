@@ -255,8 +255,9 @@ class ContratoController extends Controller
         folio::where('id_folios', '=', $request->id_folio)
         ->update(['status' => 'Validando_Contrato']);
 
-        return redirect()->route('contrato-inicio')
-                    ->with('success','Suficiencia Presupuestal Validado');
+        $idc = $id_contrato->id_contrato;
+
+        return view('layouts.pages.contratocheck', compact('idc'));
     }
 
     public function modificar($id)
@@ -333,9 +334,8 @@ class ContratoController extends Controller
         $directorio->contrato_idtestigo3 = $request->id_testigo3;
         $directorio->save();
 
-
-        return redirect()->route('contrato-inicio')
-                        ->with('success','Contrato Modificado');
+        $idc = $request->id_contrato;
+        return view('layouts.pages.contratocheck', compact('idc'));
     }
 
     public function validar_contrato($id){
@@ -742,10 +742,6 @@ class ContratoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
-    }
 
     protected function pago_upload($pdf, $id)
     {
