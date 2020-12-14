@@ -124,6 +124,9 @@
                                             <i class="fa fa-file-text" aria-hidden="true"></i>
                                         </a>
                                     @endcan
+                                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Previsualización de Contrato" target="_blank" href="{{route('pre_contrato', ['id' => $itemData->id_contrato])}}">
+                                        <i class="fa fa-address-book" aria-hidden="true"></i>
+                                    </a>
                                 @endif
                                 @if ($itemData->status == 'Contratado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
