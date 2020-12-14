@@ -148,7 +148,6 @@ class AlumnoRegistradoController extends Controller
     public function update(Request $request, $idregistrado)
     {
         $Alumno = new Alumno();
-        $usuario = Auth::user()->name;
         //
         $array_solicitud = [
             'id_especialidad' => $request->input('especialidad_sid_mod'),
@@ -156,7 +155,6 @@ class AlumnoRegistradoController extends Controller
             'horario' => trim($request->input('horario_mod')),
             'grupo' => trim($request->input('grupo_mod')),
             'tipo_curso' => trim($request->input('tipo_curso_mod')),
-            'realizo' => trim($usuario),
             'cerrs' => $request->input('cerrs_mod')
         ];
         $alumnoId = base64_decode($idregistrado);
