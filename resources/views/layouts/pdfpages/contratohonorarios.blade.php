@@ -180,7 +180,7 @@
                     <br/>
                     <br>________________________________________
                     <br><small>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</small>
-                    <br><small>{{$testigo3->puesto}} DE LA DELEGACIÓN ADMINISTRATIVO (A)</small></b>
+                    <br><small>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}} </small></b>
                 </div>
                 <br><br>
                 <div align=justify>
