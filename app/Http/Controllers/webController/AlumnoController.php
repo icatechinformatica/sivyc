@@ -1239,16 +1239,13 @@ class AlumnoController extends Controller
                     'ficha_cerss' => $url_ficha_cerss,
                     'chk_ficha_cerss' => $chk_ficha_cerss
                 ];
-        } else {
-            $url_ficha_cerss = '';
-            $chk_ficha_cerss = false;
-        }
 
-        // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
-        DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->update($arregloDocs);
+                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+                DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->update($arregloDocs);
 
-        // limpiamos el arreglo
-        unset($arregloDocs);
+                // limpiamos el arreglo
+                unset($arregloDocs);
+            }
 
             $numeroExpediente = $request->input('numero_expediente_cerss');
             return redirect()->route('alumnos.index')

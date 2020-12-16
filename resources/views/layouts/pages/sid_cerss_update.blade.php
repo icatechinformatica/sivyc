@@ -328,7 +328,6 @@
                         number: true
                     },
                     file_upload: {
-                        required: true,
                         extension: "pdf",
                         filesize: 2 //max size 2mb
                     },
@@ -366,7 +365,6 @@
                         required: "Por favor, seleccione una opción"
                     },
                     file_upload: {
-                        required: "Por favor, Seleccione un archivo",
                         extension: "Sólo se permiten pdf",
                     },
                     numero_expediente_cerss: {
