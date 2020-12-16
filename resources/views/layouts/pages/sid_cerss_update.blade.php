@@ -46,20 +46,20 @@
             <div class="form-row">
                 <!--NOMBRE CERSS-->
                 <div class="form-group col-md-4">
-                    <label for="nombre_cerss " class="control-label">NOMBRE DEL CERSS</label>
+                    <label for="nombre_cerss" class="control-label">NOMBRE DEL CERSS</label>
                     <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}">
                 </div>
                 <!--NOMBRE CERSS END-->
                 <div class="form-group col-md-8">
-                    <label for="direcciones_cerss_update " class="control-label">DIRECCIÓN DEL CERSS</label>
-                    <input type="text" class="form-control" id="direcciones_cerss_update " name="direcciones_cerss_update " autocomplete="off" value="{{$alumnoPre_update->direccion_cerss}}"/>
+                    <label for="direcciones_cerss_update_" class="control-label">DIRECCIÓN DEL CERSS</label>
+                    <input type="text" class="form-control" id="direcciones_cerss_update_" name="direcciones_cerss_update_" autocomplete="off" value="{{$alumnoPre_update->direccion_cerss}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--TITULAR DEL CERSS-->
                 <div class="form-group col-md-8">
-                    <label for="titular_cerss_update " class="control-label">TITULAR DEL CERSS</label>
-                    <input type="text" class="form-control" id="titular_cerss_update " name="titular_cerss_update " autocomplete="off" value="{{$alumnoPre_update->titular_cerss}}"/>
+                    <label for="titular_cerss_update_ " class="control-label">TITULAR DEL CERSS</label>
+                    <input type="text" class="form-control" id="titular_cerss_update_" name="titular_cerss_update_" autocomplete="off" value="{{$alumnoPre_update->titular_cerss}}"/>
                 </div>
                 <!--TITULAR DEL CERSS END-->
             </div>

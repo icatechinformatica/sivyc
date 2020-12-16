@@ -226,94 +226,108 @@ class AlumnoController extends Controller
                     ->withErrors($validator)
                     ->withInput();
         } else {
-            // obtener el usuario que agrega
-            $usuario_agrega = Auth::user()->name;
             /**
-             * empezamos a insertar el registro
+             * checamos si el número de expediente ya se encuentra registrado en la tabla
              */
-            $dia = trim($request->input('dia_cerss'));
-            $mes = trim($request->input('mes_cerss'));
-            $anio = trim($request->input('anio_cerss'));
-
-            if (empty($dia) && empty($mes) && empty($anio))
-            {
-                # condición para saber si se puede armar una fecha
-                $fecha_nacimiento = NULL;
+            $numeroExpediente = trim($request->input('numero_expediente_cerss'));
+            $chkNumeroExp = DB::table('alumnos_pre')->where('numero_expediente', $numeroExpediente)->count();
+            if ($chkNumeroExp > 0) {
+                # se encontro un aspirante con ese número de expediente
+                return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL NÚMERO DE EXPEDIENTE: %s YA SE ENCUENTRA REGISTRADO', $numeroExpediente));
             } else {
-                $fecha_nacimiento = $anio."-".$mes."-".$dia;
-            }
+                // obtener el usuario que agrega
+                $usuario_agrega = Auth::user()->name;
+                /**
+                 * obtener el nombre del estado
+                 */
+                //obtener el estado
+                $estado_mod_cerss = DB::table('estados')->where('id', $request->input('cerss_estado'))->get();
+                /**
+                 * empezamos a insertar el registro
+                 */
+                $dia = trim($request->input('dia_cerss'));
+                $mes = trim($request->input('mes_cerss'));
+                $anio = trim($request->input('anio_cerss'));
 
-            $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
-                'nombre' => $request->input('nombre_aspirante_cerss'),
-                'apellido_paterno' => (is_null($request->input('apellidoPaterno_aspirante_cerss')) ? '' : $request->input('apellidoPaterno_aspirante_cerss')),
-                'apellido_materno' => (is_null($request->input('apellidoMaterno_aspirante_cerss')) ? '' : $request->input('apellidoMaterno_aspirante_cerss')),
-                'fecha_nacimiento' => $fecha_nacimiento,
-                'nacionalidad' => $request->input('nacionalidad_cerss'),
-                'sexo' => $request->input('genero_cerss'),
-                'curp' => (is_null($request->input('curp_cerss')) ? '' : $request->input('curp_cerss')),
-                'rfc_cerss' => $request->input('rfc_cerss'),
-                'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios_cerss'),
-                'tiene_documentacion' => false,
-                'realizo' => $usuario_agrega,
-                'nombre_cerss' => $request->input('nombre_cerss'),
-                'numero_expediente' => $request->input('numero_expediente_cerss'),
-                'direccion_cerss' => $request->input('direcciones_cerss'),
-                'nombre_cerss' => $request->input('nombre_cerss'),
-                'titular_cerss' => $request->input('titular_cerss'),
-                'telefono' => '',
-                'domicilio' => '',
-                'colonia' => '',
-                'estado' => '',
-                'municipio' => '',
-                'estado_civil' => '',
-                'discapacidad' => '',
-                'ultimo_grado_estudios' => '',
-                'medio_entero' => '',
-                'puesto_empresa' => '',
-                'sistema_capacitacion_especificar' => '',
-                'empresa_trabaja' => '',
-                'antiguedad' => '',
-                'es_cereso' => true,
-            ]);
+                if (empty($dia) && empty($mes) && empty($anio))
+                {
+                    # condición para saber si se puede armar una fecha
+                    $fecha_nacimiento = NULL;
+                } else {
+                    $fecha_nacimiento = $anio."-".$mes."-".$dia;
+                }
 
-            # trabajamos cargando el acta de nacimiento al servidor
-            if ($request->hasFile('file_upload')) {
+                $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
+                    'nombre' => $request->input('nombre_aspirante_cerss'),
+                    'apellido_paterno' => (is_null($request->input('apellidoPaterno_aspirante_cerss')) ? '' : $request->input('apellidoPaterno_aspirante_cerss')),
+                    'apellido_materno' => (is_null($request->input('apellidoMaterno_aspirante_cerss')) ? '' : $request->input('apellidoMaterno_aspirante_cerss')),
+                    'fecha_nacimiento' => $fecha_nacimiento,
+                    'nacionalidad' => $request->input('nacionalidad_cerss'),
+                    'sexo' => $request->input('genero_cerss'),
+                    'curp' => (is_null($request->input('curp_cerss')) ? '' : $request->input('curp_cerss')),
+                    'rfc_cerss' => $request->input('rfc_cerss'),
+                    'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios_cerss'),
+                    'tiene_documentacion' => false,
+                    'realizo' => $usuario_agrega,
+                    'nombre_cerss' => $request->input('nombre_cerss'),
+                    'numero_expediente' => $request->input('numero_expediente_cerss'),
+                    'direccion_cerss' => $request->input('direcciones_cerss'),
+                    'titular_cerss' => $request->input('titular_cerss'),
+                    'telefono' => '',
+                    'domicilio' => '',
+                    'colonia' => '',
+                    'estado' => (is_null($estado_mod_cerss[0]->nombre) ? '' : $estado_mod_cerss[0]->nombre),
+                    'municipio' => (is_null($request->input('cerss_municipio')) ? '' : $request->input('cerss_municipio')),
+                    'estado_civil' => '',
+                    'discapacidad' => (is_null($request->input('discapacidad_cerss')) ? '' : $request->input('discapacidad_cerss')),
+                    'ultimo_grado_estudios' => '',
+                    'medio_entero' => '',
+                    'puesto_empresa' => '',
+                    'sistema_capacitacion_especificar' => '',
+                    'empresa_trabaja' => '',
+                    'antiguedad' => '',
+                    'es_cereso' => true,
+                ]);
 
-                    // obtenemos el valor de acta_nacimiento
-                    $ficha_cerss = DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->VALUE('ficha_cerss');
-                    // checamos que no sea nulo
-                    if (!is_null($ficha_cerss)) {
-                        # si no está nulo
-                        if(!empty($ficha_cerss)){
-                            $docFichaCerss = explode("/",$ficha_cerss, 5);
-                            if (Storage::exists($docFichaCerss[4])) {
-                                # checamos si hay un documento de ser así procedemos a eliminarlo
-                                Storage::delete($docFichaCerss[4]);
+                # trabajamos cargando el acta de nacimiento al servidor
+                if ($request->hasFile('file_upload')) {
+
+                        // obtenemos el valor de acta_nacimiento
+                        $ficha_cerss = DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->VALUE('ficha_cerss');
+                        // checamos que no sea nulo
+                        if (!is_null($ficha_cerss)) {
+                            # si no está nulo
+                            if(!empty($ficha_cerss)){
+                                $docFichaCerss = explode("/",$ficha_cerss, 5);
+                                if (Storage::exists($docFichaCerss[4])) {
+                                    # checamos si hay un documento de ser así procedemos a eliminarlo
+                                    Storage::delete($docFichaCerss[4]);
+                                }
                             }
                         }
-                    }
 
-                    $ficha_cerss = $request->file('file_upload'); # obtenemos el archivo
-                    $url_ficha_cerss = $this->uploaded_file($ficha_cerss, $id_alumnos_pre, 'ficha_cerss'); #invocamos el método
-                    $chk_ficha_cerss = true;
-                    // creamos un arreglo
-                    $arregloDocs = [
-                        'ficha_cerss' => $url_ficha_cerss,
-                        'chk_ficha_cerss' => $chk_ficha_cerss
-                    ];
-            } else {
-                $url_ficha_cerss = '';
-                $chk_ficha_cerss = false;
+                        $ficha_cerss = $request->file('file_upload'); # obtenemos el archivo
+                        $url_ficha_cerss = $this->uploaded_file($ficha_cerss, $id_alumnos_pre, 'ficha_cerss'); #invocamos el método
+                        $chk_ficha_cerss = true;
+                        // creamos un arreglo
+                        $arregloDocs = [
+                            'ficha_cerss' => $url_ficha_cerss,
+                            'chk_ficha_cerss' => $chk_ficha_cerss
+                        ];
+                } else {
+                    $url_ficha_cerss = '';
+                    $chk_ficha_cerss = false;
+                }
+
+                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+                DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->update($arregloDocs);
+
+                // limpiamos el arreglo
+                unset($arregloDocs);
+
+                // redireccionamos con un mensaje de éxito
+                return redirect()->route('alumnos.index')->with('success', 'Nuevo Aspirante Agregado Exitosamente!');
             }
-
-            // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
-            DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->update($arregloDocs);
-
-            // limpiamos el arreglo
-            unset($arregloDocs);
-
-            // redireccionamos con un mensaje de éxito
-            return redirect()->route('alumnos.index')->with('success', 'Nuevo Aspirante Agregado Exitosamente!');
         }
     }
 
@@ -323,7 +337,7 @@ class AlumnoController extends Controller
         $alumnoPre_show = DB::table('alumnos_pre')->WHERE('id', $id_prealumno)->FIRST([
             'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento' , 'nacionalidad' ,
             'sexo' , 'curp', 'rfc_cerss', 'ultimo_grado_estudios', 'es_cereso', 'chk_ficha_cerss', 'ficha_cerss',
-            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'nombre_cerss', 'titular_cerss',
+            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'titular_cerss', 'municipio', 'estado'
         ]);
         return view('layouts.pages.sid_cerss_show', compact('id_prealumno', 'alumnoPre_show'));
     }
@@ -1337,5 +1351,17 @@ class AlumnoController extends Controller
 
             return $control_number = $anioDivision . $cli_value . $value_control;
         }
+    }
+
+    /**
+     * funciones
+     */
+    protected function getNumeroExpediente(Request $request){
+        $num_exp = DB::table('alumnos_pre')->select(
+            DB::raw('MAX(numero_expediente) as num_expediente')
+        )->limit(1)->get();
+
+        $json=json_encode($num_exp);
+        return $json;
     }
 }
