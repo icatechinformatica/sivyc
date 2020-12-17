@@ -352,7 +352,6 @@ class supreController extends Controller
             $supre = supre::find($request->idinsmod);
             $doc = $request->file('doc_validado'); # obtenemos el archivo
             $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
-            dd($request->idinsmod);
             $supre->doc_validado = $urldoc; # guardamos el path
             $supre->save();
             return redirect()->route('supre-inicio')
