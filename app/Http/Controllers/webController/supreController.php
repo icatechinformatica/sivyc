@@ -352,6 +352,7 @@ class supreController extends Controller
             $supre = supre::find($request->idinsmod);
             $doc = $request->file('doc_validado'); # obtenemos el archivo
             $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
+            dd($urldoc);
             $supre->doc_validado = $urldoc; # guardamos el path
             $supre->save();
             return redirect()->route('supre-inicio')
@@ -535,7 +536,6 @@ class supreController extends Controller
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
         $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
         $pdfUrl = Storage::url('/uploadFiles/supre/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
-        dd($pdfUrl);
         return $pdfUrl;
     }
 }
