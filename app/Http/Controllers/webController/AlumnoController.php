@@ -229,12 +229,12 @@ class AlumnoController extends Controller
             /**
              * checamos si el número de expediente ya se encuentra registrado en la tabla
              */
-            $numeroExpediente = trim($request->input('numero_expediente_cerss'));
-            $chkNumeroExp = DB::table('alumnos_pre')->where('numero_expediente', $numeroExpediente)->count();
-            if ($chkNumeroExp > 0) {
+            //$numeroExpediente = trim($request->input('numero_expediente_cerss'));
+            //$chkNumeroExp = DB::table('alumnos_pre')->where('numero_expediente', $numeroExpediente)->count();
+            //if ($chkNumeroExp > 0) {
                 # se encontro un aspirante con ese número de expediente
-                return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL NÚMERO DE EXPEDIENTE: %s YA SE ENCUENTRA REGISTRADO', $numeroExpediente));
-            } else {
+                //return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL NÚMERO DE EXPEDIENTE: %s YA SE ENCUENTRA REGISTRADO', $numeroExpediente));
+            //} else {
                 // obtener el usuario que agrega
                 $usuario_agrega = Auth::user()->name;
                 /**
@@ -327,7 +327,7 @@ class AlumnoController extends Controller
 
                 // redireccionamos con un mensaje de éxito
                 return redirect()->route('alumnos.index')->with('success', 'Nuevo Aspirante Agregado Exitosamente!');
-            }
+            //}
         }
     }
 
