@@ -1180,38 +1180,38 @@ class AlumnoController extends Controller
             }
 
             //obtener el estado
-            $nombre_estado_cerss_mod = DB::table('estados')->where('id', $request->get('cerss_estado_update'))->first();
+            $nombre_estado_cerss_mod = DB::table('estados')->where('id', $request->input('cerss_estado_update'))->first();
 
         # arreglo de datos
             $array_update_cerss = [
 
-                'nombre' => $request->get('nombre_aspirante_cerss'),
-                'apellido_paterno' => (is_null($request->get('apellidoPaterno_aspirante_cerss')) ? '' : $request->get('apellidoPaterno_aspirante_cerss')),
-                'apellido_materno' => (is_null($request->get('apellidoMaterno_aspirante_cerss')) ? '' : $request->get('apellidoMaterno_aspirante_cerss')),
+                'nombre' => $request->input('nombre_aspirante_cerss_update'),
+                'apellido_paterno' => (is_null($request->input('apellidoPaterno_aspirante_cerss_update')) ? '' : $request->input('apellidoPaterno_aspirante_cerss_update')),
+                'apellido_materno' => (is_null($request->input('apellidoMaterno_aspirante_cerss_update')) ? '' : $request->input('apellidoMaterno_aspirante_cerss_update')),
                 'fecha_nacimiento' => $fecha_nacimiento,
-                'nacionalidad' => $request->get('nacionalidad_cerss'),
-                'sexo' => $request->get('genero_cerss'),
-                'curp' => (is_null($request->get('curp_cerss')) ? '' : $request->get('curp_cerss')),
-                'rfc_cerss' => $request->get('rfc_cerss'),
-                'ultimo_grado_estudios' => $request->get('ultimo_grado_estudios_cerss'),
+                'nacionalidad' => $request->input('nacionalidad_cerss_update'),
+                'sexo' => $request->input('genero_cerss_update'),
+                'curp' => (is_null($request->input('curp_cerss_update')) ? '' : $request->input('curp_cerss_update')),
+                'rfc_cerss' => $request->input('rfc_cerss_update'),
+                'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios_cerss_update'),
                 'tiene_documentacion' => false,
-                'nombre_cerss' => $request->get('nombre_cerss_update'),
-                'numero_expediente' => $request->get('numero_expediente_cerss'),
-                'direccion_cerss' => $request->get('direcciones_cerss_update_'),
-                'titular_cerss' => $request->get('titular_cerss_update_'),
+                'nombre_cerss' => $request->input('nombre_cerss_update'),
+                'numero_expediente' => $request->input('numero_expediente_cerss_update'),
+                'direccion_cerss' => $request->input('direcciones_cerss_update_'),
+                'titular_cerss' => $request->input('titular_cerss_update_'),
                 'telefono' => '',
                 'domicilio' => '',
                 'colonia' => '',
                 'estado' => trim($nombre_estado_cerss_mod->nombre),
-                'municipio' => trim($request->get('cerss_municipio_update')),
+                'municipio' => trim($request->input('cerss_municipio_update')),
                 'estado_civil' => '',
-                'discapacidad' => trim($request->get('discapacidad_cerss_update')),
+                'discapacidad' => trim($request->input('discapacidad_cerss_update')),
                 'medio_entero' => '',
                 'puesto_empresa' => '',
                 'sistema_capacitacion_especificar' => '',
                 'empresa_trabaja' => '',
                 'antiguedad' => '',
-                'es_cereso' => $request->get('is_cerrs'),
+                'es_cereso' => $request->input('is_cerrs_update'),
             ];
 
             $idPreInscripcion = base64_decode($idPreinscripcion);

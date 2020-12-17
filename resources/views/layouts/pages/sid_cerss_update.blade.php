@@ -72,27 +72,27 @@
             <!--PERSONALES END-->
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="numero_expediente_cerss" class="control-label">NÚMERO DE EXPEDIENTE</label>
-                    <input type="text" class="form-control" id="numero_expediente_cerss" name="numero_expediente_cerss" autocomplete="off" value="{{$alumnoPre_update->numero_expediente}}"/>
+                    <label for="numero_expediente_cerss_update" class="control-label">NÚMERO DE EXPEDIENTE</label>
+                    <input type="text" class="form-control" id="numero_expediente_cerss_update" name="numero_expediente_cerss_update" autocomplete="off" value="{{$alumnoPre_update->numero_expediente}}"/>
                 </div>
             </div>
             <div class="form-row">
                 <!--nombre aspirante-->
                 <div class="form-group col-md-4">
-                    <label for="nombre_aspirante_cerss " class="control-label">NOMBRE</label>
-                    <input type="text" class="form-control" id="nombre_aspirante_cerss" name="nombre_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->nombre}}">
+                    <label for="nombre_aspirante_cerss_update " class="control-label">NOMBRE</label>
+                    <input type="text" class="form-control" id="nombre_aspirante_cerss_update" name="nombre_aspirante_cerss_update" autocomplete="off" value="{{$alumnoPre_update->nombre}}">
                 </div>
                 <!--nombre aspirante END-->
                 <!-- apellido paterno -->
                 <div class="form-group col-md-4">
-                    <label for="apellidoPaterno_aspirante_cerss" class="control-label">APELLIDO PATERNO</label>
-                    <input type="text" class="form-control" id="apellidoPaterno_aspirante_cerss" name="apellidoPaterno_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->apellido_paterno}}">
+                    <label for="apellidoPaterno_aspirante_cerss_update" class="control-label">APELLIDO PATERNO</label>
+                    <input type="text" class="form-control" id="apellidoPaterno_aspirante_cerss_update" name="apellidoPaterno_aspirante_cerss_update" autocomplete="off" value="{{$alumnoPre_update->apellido_paterno}}">
                 </div>
                 <!-- apellido paterno END -->
                 <!-- apellido materno-->
                 <div class="form-group col-md-4">
-                    <label for="apellidoMaterno_aspirante_cerss" class="control-label">APELLIDO MATERNO</label>
-                    <input type="text" class="form-control" id="apellidoMaterno_aspirante_cerss" name="apellidoMaterno_aspirante_cerss" autocomplete="off" value="{{$alumnoPre_update->apellido_materno}}">
+                    <label for="apellidoMaterno_aspirante_cerss_update" class="control-label">APELLIDO MATERNO</label>
+                    <input type="text" class="form-control" id="apellidoMaterno_aspirante_cerss_update" name="apellidoMaterno_aspirante_cerss_update" autocomplete="off" value="{{$alumnoPre_update->apellido_materno}}">
                 </div>
                 <!-- apellido materno END-->
             </div>
@@ -134,12 +134,12 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="nacionalidad_cerss" class="control-label">NACIONALIDAD</label>
-                    <input type="text" class="form-control" id="nacionalidad_cerss" name="nacionalidad_cerss" placeholder="NACIONALIDAD" autocomplete="off" value="{{$alumnoPre_update->nacionalidad}}">
+                    <label for="nacionalidad_cerss_update" class="control-label">NACIONALIDAD</label>
+                    <input type="text" class="form-control" id="nacionalidad_cerss_update" name="nacionalidad_cerss_update" placeholder="NACIONALIDAD" autocomplete="off" value="{{$alumnoPre_update->nacionalidad}}">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="genero_cerss" class="control-label">GENERO</label>
-                    <select class="form-control" id="genero_cerss" name="genero_cerss">
+                    <label for="genero_cerss_update" class="control-label">GENERO</label>
+                    <select class="form-control" id="genero_cerss_update" name="genero_cerss_update">
                         <option value="">--SELECCIONAR--</option>
                         <option {{ trim($alumnoPre_update->sexo) == "FEMENINO" ? "selected" : ""  }} value="FEMENINO">MUJER</option>
                         <option {{ trim($alumnoPre_update->sexo) == "MASCULINO" ? "selected" : ""  }} value="MASCULINO">HOMBRE</option>
@@ -168,12 +168,12 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="curp_cerss" class="control-label">CURP ASPIRANTE</label>
-                    <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off" value="{{$alumnoPre_update->curp}}">
+                    <label for="curp_cerss_update" class="control-label">CURP ASPIRANTE</label>
+                    <input type="text" class="form-control" id="curp_cerss_update" name="curp_cerss_update" placeholder="CURP" autocomplete="off" value="{{$alumnoPre_update->curp}}">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="rfc_cerss" class="control-label">RFC ASPIRANTE</label>
-                    <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off" value="{{$alumnoPre_update->rfc_cerss}}">
+                    <label for="rfc_cerss_update" class="control-label">RFC ASPIRANTE</label>
+                    <input type="text" class="form-control" id="rfc_cerss_update" name="rfc_cerss_update" placeholder="RFC" autocomplete="off" value="{{$alumnoPre_update->rfc_cerss}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="discapacidad_cerss_update" class="control-label">Discapacidad que presenta</label>
@@ -191,8 +191,8 @@
             <!---->
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="ultimo_grado_estudios_cerss" class="control-label">ÚLTIMO GRADO DE ESTUDIOS</label>
-                    <select class="form-control" id="ultimo_grado_estudios_cerss" name="ultimo_grado_estudios_cerss">
+                    <label for="ultimo_grado_estudios_cerss_update" class="control-label">ÚLTIMO GRADO DE ESTUDIOS</label>
+                    <select class="form-control" id="ultimo_grado_estudios_cerss_update" name="ultimo_grado_estudios_cerss_update">
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($grado_estudio_update as $itemGradoEstudio => $val)
                             <option {{( $alumnoPre_update->ultimo_grado_estudios == $val) ? "selected" : "" }} value="{{$val}}">{{$val}}</option>
@@ -217,7 +217,7 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" name="is_cerrs" id="is_cerrs" value="true">
+            <input type="hidden" name="is_cerrs_update" id="is_cerrs_update" value="true">
         </form>
         <!-- Full Height Modal Right -->
             <div class="modal fade right" id="fullHeight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -295,7 +295,7 @@
                 }
             }, "Ingrese un RFC valido");
 
-            $("#curp_cerss").keyup(function(){
+            $("#curp_cerss_update").keyup(function(){
                if($(this).val().length > 0)
                {
                     $(this).addClass('CURP_CERSS');
@@ -304,7 +304,7 @@
                }
             });
 
-            $('#rfc_cerss').keyup(function(){
+            $('#rfc_cerss_update').keyup(function(){
                if($(this).val().length > 0)
                {
                     $(this).addClass('RFC_CERSS');
@@ -316,7 +316,7 @@
             /****
             * sólo acepta números en el texbox
             */
-            $('#numero_expediente_cerss').keypress(function (e) {
+            $('#numero_expediente_cerss_update').keypress(function (e) {
                 if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
                     //display error message
                     return false;
@@ -348,11 +348,11 @@
                         required: true,
                         minlength: 2
                     },
-                    nombre_aspirante_cerss: {
+                    nombre_aspirante_cerss_update: {
                         required: true,
                         minlength: 2
                     },
-                    genero_cerss: {
+                    genero_cerss_update: {
                         required: true
                     },
                     anio_cerss: {
@@ -363,7 +363,7 @@
                         extension: "pdf",
                         filesize: 2 //max size 2mb
                     },
-                    numero_expediente_cerss: {
+                    numero_expediente_cerss_update: {
                         required: true
                     }
                 },
@@ -372,11 +372,11 @@
                         required: 'Por favor ingrese el nombre del cerss',
                         minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
                     },
-                    nombre_aspirante_cerss: {
+                    nombre_aspirante_cerss_update: {
                         required: 'Por favor ingrese su nombre',
                         minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
                     },
-                    genero_cerss: {
+                    genero_cerss_update: {
                         required: 'Por favor Elegir su genero'
                     },
                     dia_cerss: {
@@ -399,7 +399,7 @@
                     file_upload: {
                         extension: "Sólo se permiten pdf",
                     },
-                    numero_expediente_cerss: {
+                    numero_expediente_cerss_update: {
                         required: "Por favor, Ingrese el número de expediente",
                     }
                 }
