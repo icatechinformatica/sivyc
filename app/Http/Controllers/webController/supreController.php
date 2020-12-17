@@ -348,13 +348,15 @@ class supreController extends Controller
 
     public function doc_valsupre_upload(Request $request)
     {
-        $supre = supre::find($request->idinsmod);
-        $doc = $request->file('doc_validado'); # obtenemos el archivo
-        $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
-        $supre->doc_validado = $urldoc; # guardamos el path
-        $supre->save();
-        return redirect()->route('supre-inicio')
+        if ($request->hasFile('doc_validado')) {
+            $supre = supre::find($request->idinsmod);
+            $doc = $request->file('doc_validado'); # obtenemos el archivo
+            $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
+            $supre->doc_validado = $urldoc; # guardamos el path
+            $supre->save();
+            return redirect()->route('supre-inicio')
                     ->with('success','Validación de Suficiencia Presupuestal Firmada ha sido cargada con Extio');
+        }
     }
 
     public function supre_pdf($id){
@@ -529,6 +531,7 @@ class supreController extends Controller
 
     protected function pdf_upload($pdf, $id, $nom)
     {
+        dd($pdf);
         # nuevo nombre del archivo
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
         $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
@@ -536,3 +539,34 @@ class supreController extends Controller
         return $pdfUrl;
     }
 }
+/*if ($request->hasFile('file_upload')) {
+
+                // obtenemos el valor de acta_nacimiento
+                $ficha_cerss = DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->VALUE('ficha_cerss');
+                // checamos que no sea nulo
+                if (!is_null($ficha_cerss)) {
+                    # si no está nulo
+                    if(!empty($ficha_cerss)){
+                        $docFichaCerss = explode("/",$ficha_cerss, 5);
+                        if (Storage::exists($docFichaCerss[4])) {
+                            # checamos si hay un documento de ser así procedemos a eliminarlo
+                            Storage::delete($docFichaCerss[4]);
+                        }
+                    }
+                }
+
+                $ficha_cerss = $request->file('file_upload'); # obtenemos el archivo
+                $url_ficha_cerss = $this->uploaded_file($ficha_cerss, $idPreInscripcion, 'ficha_cerss'); #invocamos el método
+                $chk_ficha_cerss = true;
+                // creamos un arreglo
+                $arregloDocs = [
+                    'ficha_cerss' => $url_ficha_cerss,
+                    'chk_ficha_cerss' => $chk_ficha_cerss
+                ];
+
+                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+                DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->update($arregloDocs);
+
+                // limpiamos el arreglo
+                unset($arregloDocs);
+            } */

@@ -65,11 +65,29 @@ class CursosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function prueba()
+    {
+        $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+            'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'PALENQUE'];
+        $cursos = new curso;
+        $cursos->unidades_disponible = $unidades;
+        dd($cursos->unidades_disponible);
+    }
     public function store(Request $request)
     {
         //
         try {
             //validación de archivos
+            $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+            'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'PALENQUE'];
 
             $cursos = new curso;
             $cursos->nombre_curso = trim($request->nombrecurso);
@@ -95,6 +113,7 @@ class CursosController extends Controller
             $cursos->tipo_curso = trim($request->tipo_curso);
             $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
             $cursos->rango_criterio_pago_maximo = trim($request->criterio_pago_maximo);
+            $cursos->unidades_disponible = $unidades;
             $cursos->save();
 
             # ==================================
@@ -136,46 +155,12 @@ class CursosController extends Controller
             }
 
             //Guardado en cursos_available
-                $cur_available = new cursoAvailable();
-                $cur_available->curso_id = $cursosId;
-                $cur_available->CHK_TUXTLA = TRUE;
-                $cur_available->CHK_TAPACHULA = TRUE;
-                $cur_available->CHK_COMITAN = TRUE;
-                $cur_available->CHK_REFORMA = TRUE;
-                $cur_available->CHK_TONALA = TRUE;
-                $cur_available->CHK_VILLAFLORES = TRUE;
-                $cur_available->CHK_JIQUIPILAS = TRUE;
-                $cur_available->CHK_CATAZAJA = TRUE;
-                $cur_available->CHK_YAJALON = TRUE;
-                $cur_available->CHK_SAN_CRISTOBAL = TRUE;
-                $cur_available->CHK_CHIAPA_DE_CORZO = TRUE;
-                $cur_available->CHK_MOTOZINTLA = TRUE;
-                $cur_available->CHK_BERRIOZABAL = TRUE;
-                $cur_available->CHK_PIJIJIAPAN = TRUE;
-                $cur_available->CHK_JITOTOL = TRUE;
-                $cur_available->CHK_LA_CONCORDIA = TRUE;
-                $cur_available->CHK_VENUSTIANO_CARRANZA = TRUE;
-                $cur_available->CHK_TILA = TRUE;
-                $cur_available->CHK_TEOPISCA = TRUE;
-                $cur_available->CHK_OCOSINGO = TRUE;
-                $cur_available->CHK_CINTALAPA = TRUE;
-                $cur_available->CHK_COPAINALA = TRUE;
-                $cur_available->CHK_SOYALO = TRUE;
-                $cur_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
-                $cur_available->CHK_ARRIAGA = TRUE;
-                $cur_available->CHK_PICHUCALCO = TRUE;
-                $cur_available->CHK_JUAREZ = TRUE;
-                $cur_available->CHK_SIMOJOVEL = TRUE;
-                $cur_available->CHK_MAPASTEPEC = TRUE;
-                $cur_available->CHK_VILLA_CORZO = TRUE;
-                $cur_available->CHK_CACAHOATAN = TRUE;
-                $cur_available->CHK_ONCE_DE_ABRIL = TRUE;
-                $cur_available->CHK_TUXTLA_CHICO = TRUE;
-                $cur_available->CHK_OXCHUC = TRUE;
-                $cur_available->CHK_CHAMULA = TRUE;
-                $cur_available->CHK_OSTUACAN = TRUE;
-                $cur_available->CHK_PALENQUE = TRUE;
-                $cur_available->save();
+            /*  ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+                 'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+                 'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+                 'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+                 'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+                 'PALENQUE']  */
             //END
 
             return redirect()->route('curso-inicio')->with('success', 'Nuevo Curso Agregado!');
