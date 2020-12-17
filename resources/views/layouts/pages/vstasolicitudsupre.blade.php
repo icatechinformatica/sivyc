@@ -132,6 +132,11 @@
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                     </a>
                                 @endcan
+                                @can('supre.delete')
+                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Eliminar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                        <i class="fa fa-wrench" aria-hidden="true"></i>
+                                    </a>
+                                @endcan
                             @endif
                         </td>
                     </tr>
