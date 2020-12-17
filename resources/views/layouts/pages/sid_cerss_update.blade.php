@@ -46,8 +46,8 @@
             <div class="form-row">
                 <!--NOMBRE CERSS-->
                 <div class="form-group col-md-4">
-                    <label for="nombre_cerss" class="control-label">NOMBRE DEL CERSS</label>
-                    <input type="text" class="form-control" id="nombre_cerss" name="nombre_cerss" autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}">
+                    <label for="nombre_cerss_update" class="control-label">NOMBRE DEL CERSS</label>
+                    <input type="text" class="form-control" id="nombre_cerss_update" name="nombre_cerss_update" autocomplete="off" value="{{$alumnoPre_update->nombre_cerss}}">
                 </div>
                 <!--NOMBRE CERSS END-->
                 <div class="form-group col-md-8">

@@ -1195,10 +1195,9 @@ class AlumnoController extends Controller
                 'rfc_cerss' => $request->get('rfc_cerss'),
                 'ultimo_grado_estudios' => $request->get('ultimo_grado_estudios_cerss'),
                 'tiene_documentacion' => false,
-                'nombre_cerss' => $request->get('nombre_cerss'),
+                'nombre_cerss' => $request->get('nombre_cerss_update'),
                 'numero_expediente' => $request->get('numero_expediente_cerss'),
                 'direccion_cerss' => $request->get('direcciones_cerss_update_'),
-                'nombre_cerss' => $request->get('nombre_cerss'),
                 'titular_cerss' => $request->get('titular_cerss_update_'),
                 'telefono' => '',
                 'domicilio' => '',
@@ -1214,7 +1213,6 @@ class AlumnoController extends Controller
                 'antiguedad' => '',
                 'es_cereso' => $request->get('is_cerrs'),
             ];
-            //dd($array_update_cerss);
 
             $idPreInscripcion = base64_decode($idPreinscripcion);
 
