@@ -68,6 +68,14 @@
             <div style="text-align: center;">
                 <h4><b>DATOS PERSONALES CERSS</b></h4>
             </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <a class="btn btn-info btn-circle m-1 btn-circle-sm" href="javascript:;" id="generarExpediente"  title="GENERAR NÚMERO DE EXPEDIENTE">
+                        <i class="fa fa-info" aria-hidden="true"></i>
+                    </a>
+                    <b>GENERAR NÚMERO DE EXPEDIENTE</b>
+                </div>
+            </div>
             <!--PERSONALES END-->
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -147,12 +155,41 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
+                    <label for="cerss_estado" class="control-label">Estado</label>
+                    <select class="form-control" id="cerss_estado" name="cerss_estado" required>
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($estados as $itemEstado)
+                            <option value="{{ $itemEstado->id }}">{{ $itemEstado->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="cerss_municipio" class="control-label">Municipio</label>
+                    <select class="form-control" id="cerss_municipio" name="cerss_municipio">
+                        <option value="">--SELECCIONAR--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
                     <label for="curp_cerss" class="control-label">CURP ASPIRANTE</label>
                     <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off">
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="rfc_cerss" class="control-label">RFC ASPIRANTE</label>
                     <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="discapacidad_cerss" class="control-label">Discapacidad que presenta</label>
+                    <select class="form-control" id="discapacidad_cerss" name="discapacidad_cerss">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="VISUAL">VISUAL</option>
+                        <option value="AUDITIVA">AUDITIVA</option>
+                        <option value="DE COMUNICACIÓN">DE COMUNICACIÓN</option>
+                        <option value="MOTRIZ">MOTRIZ</option>
+                        <option value="INTELECTUAL">INTELECTUAL</option>
+                        <option value="NINGUNA">NINGUNA</option>
+                    </select>
                 </div>
             </div>
             <!---->
@@ -372,6 +409,98 @@
                         required: "Por favor, Ingrese el número de expediente",
                     }
                 }
+            });
+
+            // generar expediente
+            $("#generarExpediente").click(function(){
+                var date = new Date();
+                var mes = date.getMonth()+1;
+                let dia = date.getDate();
+                var anio = date.getFullYear();
+                var diaString = dia.toString();
+                var concatenarFecha = diaString.concat(mes, anio)
+
+                $.ajax({
+                    url: "{{ route('alumnos.sid.cerss.consecutivos') }}",
+                    type:  'POST',
+                    dataType : 'json',
+                    success:  function (response) {
+                        var str = response[0]['num_expediente'];
+                        var strsub = str.toString();
+                        var num_exp = strsub.substr(strsub.length - 4);
+                        var num_int = parseInt(num_exp);
+                        num_exp_sum = num_int + 1;
+                        var numeroExpedienteConsecutivo = concatenarFecha.concat(num_exp_sum);
+                        $('#numero_expediente_cerss').val(numeroExpedienteConsecutivo)
+                    },
+                    statusCode: {
+                        404: function() {
+                           console.log('Página no encontrada');
+                        }
+                    },
+                    error:function(x,xs,xt){
+                        //window.open(JSON.stringify(x));
+                        alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
+                    }
+                });
+            });
+
+            //llamarlo cuando la tecla es presionado en textbox
+            $("#numero_expediente_cerss").keypress(function (e) {
+                //si la letra no es digito entonces no se pueda escribir
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+            });
+
+
+            $('#cerss_estado').on("change", () => {
+                var IdEst =$('#cerss_estado').val();
+                $("#cerss_estado option:selected").each( () => {
+                    var IdEst = $('#cerss_estado').val();
+                    var datos = {idEst: IdEst};
+                    var url = '/alumnos/sid/municipios';
+
+                    var request = $.ajax
+                    ({
+                        url: url,
+                        method: 'POST',
+                        data: datos,
+                        dataType: 'json'
+                    });
+
+                    /*
+                        *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                        *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                        *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                        *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                    */
+
+
+                    request.done(( respuesta ) =>
+                    {
+                        if (respuesta.length < 1) {
+                            $("#cerss_municipio").empty();
+                            $("#cerss_municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        } else {
+                            if(!respuesta.hasOwnProperty('error')){
+                                $("#cerss_municipio").empty();
+                                $("#cerss_municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                $.each(respuesta, (k, v) => {
+                                    $('#cerss_municipio').append('<option value="' + v.muni + '">' + v.muni + '</option>');
+                                });
+                                $("#cerss_municipio").focus();
+                            }else{
+
+                                //Puedes mostrar un mensaje de error en algún div del DOM
+                            }
+                        }
+                    });
+                    request.fail(( jqXHR, textStatus ) =>
+                    {
+                        alert( "Hubo un error: " + textStatus );
+                    });
+                });
             });
 
         });
