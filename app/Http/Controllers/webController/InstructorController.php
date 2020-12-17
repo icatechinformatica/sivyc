@@ -183,6 +183,13 @@ class InstructorController extends Controller
 
     public function validado_save(Request $request)
     {
+        $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+        'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+        'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+        'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+        'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+        'PALENQUE'];
+
         $instructor = instructor::find($request->id);
 
         $instructor->rfc = trim($request->rfc);
@@ -198,6 +205,7 @@ class InstructorController extends Controller
         $instructor->tipo_honorario = trim($request->honorario);
         $instructor->clave_unidad = trim($request->unidad_registra);
         $instructor->status = "Validado";
+        $instructor->unidades_disponible = $unidades;
 
         //Creacion de el numero de control
         $uni = substr($request->unidad_registra, -2);
@@ -207,50 +215,6 @@ class InstructorController extends Controller
         $numero_control = $uni.$year.$rfcpart;
         $instructor->numero_control = trim($numero_control);
         $instructor->save();
-
-        //Guardado de instructor_available
-            $ins_available = new instructorAvailable();
-            $ins_available->instructor_id = $request->id;
-            $ins_available->CHK_TUXTLA = TRUE;
-            $ins_available->CHK_TAPACHULA = TRUE;
-            $ins_available->CHK_COMITAN = TRUE;
-            $ins_available->CHK_REFORMA = TRUE;
-            $ins_available->CHK_TONALA = TRUE;
-            $ins_available->CHK_VILLAFLORES = TRUE;
-            $ins_available->CHK_JIQUIPILAS = TRUE;
-            $ins_available->CHK_CATAZAJA = TRUE;
-            $ins_available->CHK_YAJALON = TRUE;
-            $ins_available->CHK_SAN_CRISTOBAL = TRUE;
-            $ins_available->CHK_CHIAPA_DE_CORZO = TRUE;
-            $ins_available->CHK_MOTOZINTLA = TRUE;
-            $ins_available->CHK_BERRIOZABAL = TRUE;
-            $ins_available->CHK_PIJIJIAPAN = TRUE;
-            $ins_available->CHK_JITOTOL = TRUE;
-            $ins_available->CHK_LA_CONCORDIA = TRUE;
-            $ins_available->CHK_VENUSTIANO_CARRANZA = TRUE;
-            $ins_available->CHK_TILA = TRUE;
-            $ins_available->CHK_TEOPISCA = TRUE;
-            $ins_available->CHK_OCOSINGO = TRUE;
-            $ins_available->CHK_CINTALAPA = TRUE;
-            $ins_available->CHK_COPAINALA = TRUE;
-            $ins_available->CHK_SOYALO = TRUE;
-            $ins_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
-            $ins_available->CHK_ARRIAGA = TRUE;
-            $ins_available->CHK_PICHUCALCO = TRUE;
-            $ins_available->CHK_JUAREZ = TRUE;
-            $ins_available->CHK_SIMOJOVEL = TRUE;
-            $ins_available->CHK_MAPASTEPEC = TRUE;
-            $ins_available->CHK_VILLA_CORZO = TRUE;
-            $ins_available->CHK_CACAHOATAN = TRUE;
-            $ins_available->CHK_ONCE_DE_ABRIL = TRUE;
-            $ins_available->CHK_TUXTLA_CHICO = TRUE;
-            $ins_available->CHK_OXCHUC = TRUE;
-            $ins_available->CHK_CHAMULA = TRUE;
-            $ins_available->CHK_OSTUACAN = TRUE;
-            $ins_available->CHK_PALENQUE = TRUE;
-            $ins_available->save();
-        //END
-
 
             return redirect()->route('instructor-inicio')
             ->with('success','Instructor Validado');
