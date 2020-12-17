@@ -148,12 +148,44 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
+                    <label for="cerss_estado_update" class="control-label">Estado</label>
+                    <select class="form-control" id="cerss_estado_update" name="cerss_estado_update" required>
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($estados as $itemEstado)
+                        <option {{ (trim($alumnoPre_update->estado) == trim($itemEstado->nombre)) ? "selected" : "" }} value="{{$itemEstado->id}}">{{ $itemEstado->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="cerss_municipio_update" class="control-label">Municipio</label>
+                    <select class="form-control" id="cerss_municipio_update" name="cerss_municipio_update">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($municipios as $itemMunicipio)
+                            <option {{ ($alumnoPre_update->municipio == $itemMunicipio->muni) ? "selected" : ""  }} value="{{$itemMunicipio->muni}}">{{ $itemMunicipio->muni }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
                     <label for="curp_cerss" class="control-label">CURP ASPIRANTE</label>
                     <input type="text" class="form-control" id="curp_cerss" name="curp_cerss" placeholder="CURP" autocomplete="off" value="{{$alumnoPre_update->curp}}">
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="rfc_cerss" class="control-label">RFC ASPIRANTE</label>
                     <input type="text" class="form-control" id="rfc_cerss" name="rfc_cerss" placeholder="RFC" autocomplete="off" value="{{$alumnoPre_update->rfc_cerss}}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="discapacidad_cerss_update" class="control-label">Discapacidad que presenta</label>
+                    <select class="form-control" id="discapacidad_cerss_update" name="discapacidad_cerss_update">
+                        <option value="">--SELECCIONAR--</option>
+                        <option {{( $alumnoPre_update->discapacidad == "VISUAL") ? "selected" : "" }} value="VISUAL">VISUAL</option>
+                        <option {{( $alumnoPre_update->discapacidad == "AUDITIVA") ? "selected" : "" }} value="AUDITIVA">AUDITIVA</option>
+                        <option {{( $alumnoPre_update->discapacidad == "DE COMUNICACIÓN") ? "selected" : "" }} value="DE COMUNICACIÓN">DE COMUNICACIÓN</option>
+                        <option {{( $alumnoPre_update->discapacidad == "MOTRIZ") ? "selected" : "" }} value="MOTRIZ">MOTRIZ</option>
+                        <option {{( $alumnoPre_update->discapacidad == "INTELECTUAL") ? "selected" : "" }} value="INTELECTUAL">INTELECTUAL</option>
+                        <option {{( $alumnoPre_update->discapacidad == "NINGUNA") ? "selected" : "" }} value="NINGUNA">NINGUNA</option>
+                    </select>
                 </div>
             </div>
             <!---->
@@ -371,6 +403,55 @@
                         required: "Por favor, Ingrese el número de expediente",
                     }
                 }
+            });
+
+            $('#cerss_estado_update').on("change", () => {
+                var IdEst =$('#cerss_estado_update').val();
+                $("#cerss_estado_update option:selected").each( () => {
+                    var IdEst = $('#cerss_estado_update').val();
+                    var datos = {idEst: IdEst};
+                    var url = '/alumnos/sid/municipios';
+
+                    var request = $.ajax
+                    ({
+                        url: url,
+                        method: 'POST',
+                        data: datos,
+                        dataType: 'json'
+                    });
+
+                    /*
+                        *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                        *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                        *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                        *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                    */
+
+
+                    request.done(( respuesta ) =>
+                    {
+                        if (respuesta.length < 1) {
+                            $("#cerss_municipio_update").empty();
+                            $("#cerss_municipio_update").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        } else {
+                            if(!respuesta.hasOwnProperty('error')){
+                                $("#cerss_municipio_update").empty();
+                                $("#cerss_municipio_update").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                $.each(respuesta, (k, v) => {
+                                    $('#cerss_municipio_update').append('<option value="' + v.muni + '">' + v.muni + '</option>');
+                                });
+                                $("#cerss_municipio_update").focus();
+                            }else{
+
+                                //Puedes mostrar un mensaje de error en algún div del DOM
+                            }
+                        }
+                    });
+                    request.fail(( jqXHR, textStatus ) =>
+                    {
+                        alert( "Hubo un error: " + textStatus );
+                    });
+                });
             });
 
         });

@@ -362,8 +362,11 @@ class AlumnoController extends Controller
         $alumnoPre_update = DB::table('alumnos_pre')->WHERE('id', $idPrealumnoUpdate)->FIRST([
             'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento' , 'nacionalidad' ,
             'sexo' , 'curp', 'rfc_cerss', 'ultimo_grado_estudios', 'es_cereso', 'chk_ficha_cerss', 'ficha_cerss',
-            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'titular_cerss',
+            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'titular_cerss', 'estado', 'municipio', 'discapacidad'
         ]);
+
+        $estados = DB::table('estados')->get();
+        $municipios = DB::table('tbl_municipios')->get();
 
         if (is_null($alumnoPre_update->fecha_nacimiento)) {
             # es nulo como verdadero
@@ -377,7 +380,7 @@ class AlumnoController extends Controller
             $dia_nac_cerss = $fecha_nac[2];
         }
 
-        return view('layouts.pages.sid_cerss_update', compact('idPrealumnoUpdate', 'alumnoPre_update', 'anio_nac_cerss', 'mes_nac_cerss', 'dia_nac_cerss', 'grado_estudio_update'));
+        return view('layouts.pages.sid_cerss_update', compact('idPrealumnoUpdate', 'alumnoPre_update', 'anio_nac_cerss', 'mes_nac_cerss', 'dia_nac_cerss', 'grado_estudio_update', 'estados', 'municipios'));
     }
     /**
      * formulario número 2
@@ -1176,6 +1179,9 @@ class AlumnoController extends Controller
                 $fecha_nacimiento = $anio."-".$mes."-".$dia;
             }
 
+            //obtener el estado
+            $nombre_estado_cerss_mod = DB::table('estados')->where('id', $request->get('cerss_estado_update'))->first();
+
         # arreglo de datos
             $array_update_cerss = [
 
@@ -1197,10 +1203,10 @@ class AlumnoController extends Controller
                 'telefono' => '',
                 'domicilio' => '',
                 'colonia' => '',
-                'estado' => '',
-                'municipio' => '',
+                'estado' => trim($nombre_estado_cerss_mod->nombre),
+                'municipio' => trim($request->get('cerss_municipio_update')),
                 'estado_civil' => '',
-                'discapacidad' => '',
+                'discapacidad' => trim($request->get('discapacidad_cerss_update')),
                 'medio_entero' => '',
                 'puesto_empresa' => '',
                 'sistema_capacitacion_especificar' => '',
