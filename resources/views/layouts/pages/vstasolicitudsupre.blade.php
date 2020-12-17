@@ -107,7 +107,7 @@
                                             data-toggle="modal" data-placement="top"
                                             data-target="#DocModal"
                                             data-id='{{$itemData->id}}'
-                                            title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
+                                            title="Cargar Validación de Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     @endcan
@@ -117,7 +117,7 @@
                                             data-toggle="modal" data-placement="top"
                                             data-target="#DocModal2"
                                             data-id='{{$itemData->id}}'
-                                            title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                            title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     @endcan

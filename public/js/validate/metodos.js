@@ -20,6 +20,15 @@ $(function(){
    $('#DocModal').on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
     var id = button.data('id');
+    console.log(id);
+    $('#idinsmod').val(id);
+    });
+
+    //Modal Reemplazar Valsupre Firmado
+   $('#DocModal2').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id = button.data('id');
+    console.log(id);
     $('#idinsmod').val(id);
     });
 
