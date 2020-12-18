@@ -20,7 +20,6 @@ $(function(){
    $('#DocModal').on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
     var id = button.data('id');
-    console.log(id);
     $('#idinsmod').val(id);
     });
 
@@ -28,9 +27,8 @@ $(function(){
    $('#DocModal2').on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
     var id = button.data('id');
-    console.log(id);
-    console.log('hola');
-    $('#idinsmod').val(id);
+    document.getElementById('idinsmod2').value = id;
+    //$('idinsmod').val(id);
     });
 
    //Modal en Contratos

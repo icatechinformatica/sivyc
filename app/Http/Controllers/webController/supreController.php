@@ -349,6 +349,7 @@ class supreController extends Controller
     public function doc_valsupre_upload(Request $request)
     {
         if ($request->hasFile('doc_validado')) {
+            dd($request->idinsmod);
             $supre = supre::find($request->idinsmod);
             $doc = $request->file('doc_validado'); # obtenemos el archivo
             $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
