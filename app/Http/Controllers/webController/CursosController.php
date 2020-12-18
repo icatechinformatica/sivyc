@@ -400,52 +400,25 @@ class CursosController extends Controller
 
     public function alta_baja($id)
     {
-        $available = cursoAvailable::WHERE('curso_id', '=', $id)->FIRST();
-        if($available == NULL)
+        $av = curso::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
+        if($av == NULL)
         {
-            $ins_available = new cursoAvailable();
-            $ins_available->curso_id = $id;
-            $ins_available->CHK_TUXTLA = TRUE;
-            $ins_available->CHK_TAPACHULA = TRUE;
-            $ins_available->CHK_COMITAN = TRUE;
-            $ins_available->CHK_REFORMA = TRUE;
-            $ins_available->CHK_TONALA = TRUE;
-            $ins_available->CHK_VILLAFLORES = TRUE;
-            $ins_available->CHK_JIQUIPILAS = TRUE;
-            $ins_available->CHK_CATAZAJA = TRUE;
-            $ins_available->CHK_YAJALON = TRUE;
-            $ins_available->CHK_SAN_CRISTOBAL = TRUE;
-            $ins_available->CHK_CHIAPA_DE_CORZO = TRUE;
-            $ins_available->CHK_MOTOZINTLA = TRUE;
-            $ins_available->CHK_BERRIOZABAL = TRUE;
-            $ins_available->CHK_PIJIJIAPAN = TRUE;
-            $ins_available->CHK_JITOTOL = TRUE;
-            $ins_available->CHK_LA_CONCORDIA = TRUE;
-            $ins_available->CHK_VENUSTIANO_CARRANZA = TRUE;
-            $ins_available->CHK_TILA = TRUE;
-            $ins_available->CHK_TEOPISCA = TRUE;
-            $ins_available->CHK_OCOSINGO = TRUE;
-            $ins_available->CHK_CINTALAPA = TRUE;
-            $ins_available->CHK_COPAINALA = TRUE;
-            $ins_available->CHK_SOYALO = TRUE;
-            $ins_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
-            $ins_available->CHK_ARRIAGA = TRUE;
-            $ins_available->CHK_PICHUCALCO = TRUE;
-            $ins_available->CHK_JUAREZ = TRUE;
-            $ins_available->CHK_SIMOJOVEL = TRUE;
-            $ins_available->CHK_MAPASTEPEC = TRUE;
-            $ins_available->CHK_VILLA_CORZO = TRUE;
-            $ins_available->CHK_CACAHOATAN = TRUE;
-            $ins_available->CHK_ONCE_DE_ABRIL = TRUE;
-            $ins_available->CHK_TUXTLA_CHICO = TRUE;
-            $ins_available->CHK_OXCHUC = TRUE;
-            $ins_available->CHK_CHAMULA = TRUE;
-            $ins_available->CHK_OSTUACAN = TRUE;
-            $ins_available->CHK_PALENQUE = TRUE;
-            $ins_available->save();
+            $reform = curso::find($id);
+            $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+            'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'PALENQUE'];
 
-            $available = cursoAvailable::WHERE('curso_id', '=', $id)->FIRST();
+            $reform->unidades_disponible = $unidades;
+            $reform->save();
+
+            $av = curso::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
         }
+
+        $available = $av->unidades_disponible;
+
         return view('layouts.pages.vstaltabajacur', compact('id','available'));
     }
 
