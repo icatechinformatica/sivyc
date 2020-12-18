@@ -222,7 +222,7 @@
                         <div class="modal-body" style="text-align:center">
                             <div style="text-align:center" class="form-group">
                                 <input type="file" accept="application/pdf" class="form-control" id="doc_validado" name="doc_validado" placeholder="Archivo PDF">
-                                <input id="idinsmod" name="idinsmod" hidden>
+                                <input id="idinsmod2" name="idinsmod2" hidden>
                                 <button type="submit" class="btn btn-primary" >Guardar</button>
                             </div>
                         </div>
