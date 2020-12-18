@@ -29,6 +29,7 @@ $(function(){
     var button = $(event.relatedTarget);
     var id = button.data('id');
     console.log(id);
+    console.log('hola');
     $('#idinsmod').val(id);
     });
 
