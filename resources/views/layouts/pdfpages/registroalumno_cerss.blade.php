@@ -137,10 +137,10 @@
                 </tr>
             </tbody>
         </table>
-        @if ($alumnos->chk_fotografia == TRUE)
-            <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
-        @else
+        @if ($alumnos->chk_fotografia == false || empty($alumnos->chk_fotografia))
             <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
+        @else
+            <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
         @endif
         <table class="table td">
             <colgroup>
