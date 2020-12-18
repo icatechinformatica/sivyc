@@ -234,8 +234,8 @@ class AlumnoRegistradoController extends Controller
         $edad = Carbon::parse($alumnos->fecha_nacimiento)->age;
         $date = carbon::now()->toDateString();
         // DOMPDF según el tipo de documento a imprimir o la cantidad puede ser muy exigente así que aumentamos la memoria disponible
-        ini_set("memory_limit", "128MB");
-        //set_time_limit(300);
+        //ini_set("memory_limit", "128MB");
+        set_time_limit(300);
 
         // Descomentar este pathimg si se trabajara con el archivo de forma local
         // $pathimg = substr($alumnos[0]->fotografia,22);
@@ -244,7 +244,6 @@ class AlumnoRegistradoController extends Controller
         $pathimg = substr($alumnos->fotografia ,33);
 
         return PDF::loadView('layouts.pdfpages.registroalumno_cerss', compact('alumnos', 'edad','date','pathimg'))
-                ->setPaper('A4', 'portrait')
-                ->stream('documento_sid_cerrs'.$alumnos->no_control.'.pdf');
+                ->setPaper('A4', 'portrait')->download('documento_sid_cerrs'.$alumnos->no_control.'.pdf');
     }
 }

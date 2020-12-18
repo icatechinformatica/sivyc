@@ -17,7 +17,7 @@
         .tabla { border-collapse: collapse; width: 100%;}        
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         .tab{ margin-left: 10px; margin-right: 50px;}
-        .tab1{ margin-left: 15px; margin-right: 40px; }
+        .tab1{ margin-left: 10px; margin-right:28px; }
         .tab2{ margin-left: 3px; margin-right: 12px;}       
         
      </style>

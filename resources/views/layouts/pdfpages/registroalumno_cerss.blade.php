@@ -137,10 +137,10 @@
                 </tr>
             </tbody>
         </table>
-        @if ($alumnos->chk_fotografia == TRUE)
-            <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
-        @else
+        @if ($alumnos->chk_fotografia == false || empty($alumnos->chk_fotografia))
             <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
+        @else
+            <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
         @endif
         <table class="table td">
             <colgroup>
@@ -318,10 +318,16 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style='border-right:none; border-top:none;'>
+                    <td colspan="2" style='border-right:none; border-top:none;'>
                         <small>
                             <b>NACIONALIDAD: &nbsp;&nbsp;</b>
                             <se>{{ $alumnos->nacionalidad }}</se>
+                        </small>
+                    </td>
+                    <td colspan="2" style='border-left:none; border-top:none;'>
+                        <small>
+                            <b>DISCAPACIDAD: &nbsp;&nbsp;</b>
+                            <se>{{ $alumnos->discapacidad }}</se>
                         </small>
                     </td>
                 </tr>

@@ -12,12 +12,12 @@
         footer .page:after { content: counter(page, sans-serif);}
         
         .cuadro{ border: 1px solid black; width: 50px; padding: 10px;}
-        #curso {text-align: left; }
+        #curso { text-align :  justify; }
         #curso b{margin-left: 10px; margin-right: 50px;}
         .tabla { border-collapse: collapse; width: 100%;}        
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         .tab{ margin-left: 10px; margin-right: 50px;}
-        .tab1{ margin-left: 15px; margin-right: 40px; }
+        .tab1{ margin-left: 10px; margin-right:28px; }
         .tab2{ margin-left: 3px; margin-right: 12px;}       
         
      </style>
@@ -35,7 +35,7 @@
                 REG: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="REG"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>&nbsp;
                 EMP: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="EMP"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>
             </div>
-            <div id="curso">
+            <div id="curso" style="text-align: justify;">
                 INSTITUTO DESCENTRALIZADO: <b>INSTITUTO DE CAPACITACI&Oacute;N Y VINCULACI&Oacute;N TECNOL&Oacute;GICA DEL ESTADO DE CHIAPAS</b>
                 UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">{{$curso->plantel}} {{ $curso->unidad }}</span>
                 CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>
