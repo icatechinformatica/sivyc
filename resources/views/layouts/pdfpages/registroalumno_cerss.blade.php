@@ -318,10 +318,16 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style='border-right:none; border-top:none;'>
+                    <td colspan="2" style='border-right:none; border-top:none;'>
                         <small>
                             <b>NACIONALIDAD: &nbsp;&nbsp;</b>
                             <se>{{ $alumnos->nacionalidad }}</se>
+                        </small>
+                    </td>
+                    <td colspan="2" style="border-right:none; border-top:nome;">
+                        <small>
+                            <b>DISCAPACIDAD: &nbsp;&nbsp;</b>
+                            <se>{{ $alumnos->discapacidad }}</se>
                         </small>
                     </td>
                 </tr>
