@@ -349,11 +349,22 @@ class supreController extends Controller
     public function doc_valsupre_upload(Request $request)
     {
         if ($request->hasFile('doc_validado')) {
-            dd($request->idinsmod);
-            $supre = supre::find($request->idinsmod);
-            $doc = $request->file('doc_validado'); # obtenemos el archivo
-            $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
-            $supre->doc_validado = $urldoc; # guardamos el path
+
+            if($request->idinsmod != NULL)
+            {
+                $supre = supre::find($request->idinsmod);
+                $doc = $request->file('doc_validado'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idinsmod, 'valsupre_firmado'); # invocamos el método
+                $supre->doc_validado = $urldoc; # guardamos el path
+            }
+            else
+            {
+                $supre = supre::find($request->idinsmod2);
+                $doc = $request->file('doc_validado'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idinsmod2, 'valsupre_firmado'); # invocamos el método
+                $supre->doc_validado = $urldoc; # guardamos el path
+            }
+
             $supre->save();
             return redirect()->route('supre-inicio')
                     ->with('success','Validación de Suficiencia Presupuestal Firmada ha sido cargada con Extio');
