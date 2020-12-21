@@ -146,7 +146,7 @@
                 <br>
                 <br><small>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</small>
                 <br>________________________________________
-                <br><small>{{$getremitente->puesto}} DE {{$data2->unidad_capacitacion}}</small></b>
+                <br><small>{{$getremitente->puesto}} DE {{$getremitente->area}}</small></b>
             </div>
         </div>
     </body>

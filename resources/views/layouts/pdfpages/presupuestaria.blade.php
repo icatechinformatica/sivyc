@@ -105,7 +105,7 @@
             <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
-            <br><b>{{$getremitente->puesto}}</b>
+            <br><b>{{$getremitente->puesto}} {{$getremitente->area}}</b>
             <br><b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}.</b>
             <br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
             <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
