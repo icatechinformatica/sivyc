@@ -384,7 +384,11 @@ class supreController extends Controller
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
+                                    'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
+                                    ->WHERE('directorio.id', '=', $directorio->supre_rem)
+                                    ->LEFTJOIN('area_adscripcion', 'area_adscripcion.id', '=', 'directorio.area_adscripcion_id')
+                                    ->FIRST();
         $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
         $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
@@ -408,7 +412,11 @@ class supreController extends Controller
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
+                                    'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
+                                    ->WHERE('directorio.id', '=', $directorio->supre_rem)
+                                    ->LEFTJOIN('area_adscripcion', 'area_adscripcion.id', '=', 'directorio.area_adscripcion_id')
+                                    ->FIRST();
 
         $date = strtotime($data2->fecha);
         $D = date('d', $date);
