@@ -14,7 +14,11 @@ class instructor extends Model
     'rfc','curp','sexo','estado_civil','fecha_nacimiento','entidad','municipio','asentamiento','domicilio','telefono',
     'correo','banco','no_cuenta','interbancaria','folio_ine','status','rechazo','clave_unidad','archivo_ine',
     'archivo_domicilio','archivo_curp', 'archivo_alta','archivo_bancario','archivo_fotografia','archivo_estudios',
-    'archivo_otraid','id_especialidad','archivo_rfc', 'unidades_disponible'];
+    'archivo_otraid','id_especialidad','archivo_rfc'];
+
+    protected $casts = [
+        'unidades_disponible' => 'array'
+    ];
 
     protected $hidden = ['created_at', 'updated_at'];
 

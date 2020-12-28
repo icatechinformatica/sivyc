@@ -3,12 +3,9 @@
 @section('title', 'Alta/Baja de Instructor | Sivyc Icatech')
 <head>
     <script type="text/javascript">
-        function determinador(variable, constante, checkbox)
+        function determinador(checkbox)
         {
-            if (variable == constante)
-            {
                 document.getElementById(checkbox).checked = true;
-            }
         }
     </script>
     <style>
@@ -69,17 +66,20 @@
                             <input type="checkbox" class="custom-control-input" id="chk_tuxtla" name='chk_tuxtla'>
                             <label class="custom-control-label" for="chk_tuxtla"></label>
                         </td>
-                        @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "TUXTLA", "chk_tuxtla");</script>
+                        @foreach ($available as $data)
+                            @if ($data == 'TUXTLA')
+                                <script type="text/javascript">determinador("chk_tuxtla");</script>
+                            @endif
                         @endforeach
-
                         <td style="vertical-align:bottom;"><strong>Tapachula</strong></td>
                         <td class="custom-checkbox checkbox-xl" id='choice-td'>
                             <input type="checkbox" class="custom-control-input" id="chk_tapachula" name='chk_tapachula'>
                             <label class="custom-control-label" for="chk_tapachula"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "TAPACHULA", "chk_tapachula");</script>
+                            @if ($data == 'TAPACHULA')
+                                <script type="text/javascript">determinador("chk_tapachula");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Comitán</strong></td>
@@ -88,7 +88,9 @@
                             <label class="custom-control-label" for="chk_comitan"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "COMITAN", "chk_comitan");</script>
+                            @if ($data == 'COMITAN')
+                                <script type="text/javascript">determinador("chk_comitan");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Reforma</strong></td>
@@ -97,7 +99,9 @@
                             <label class="custom-control-label" for="chk_reforma"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "REFORMA", "chk_reforma");</script>
+                            @if ($data == 'REFORMA')
+                                <script type="text/javascript">determinador("chk_reforma");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -107,7 +111,9 @@
                             <label class="custom-control-label" for="chk_tonala"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "TONALA", "chk_tonala");</script>
+                            @if ($data == 'TONALA')
+                                <script type="text/javascript">determinador("chk_tonala");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Villaflores</strong></td>
@@ -116,7 +122,9 @@
                             <label class="custom-control-label" for="chk_villaflores"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "VILLAFLORES", "chk_villaflores");</script>
+                            @if ($data == 'VILLAFLORES')
+                                <script type="text/javascript">determinador("chk_villaflores");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Jiquipilas</strong></td>
@@ -125,7 +133,9 @@
                             <label class="custom-control-label" for="chk_jiquipilas"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "JIQUIPILAS", "chk_jiquipilas");</script>
+                            @if ($data == 'JIQUIPILAS')
+                                <script type="text/javascript">determinador("chk_jiquipilas");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Catazajá</strong></td>
@@ -134,7 +144,9 @@
                             <label class="custom-control-label" for="chk_catazaja"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "CATAZAJA", "chk_catazaja");</script>
+                            @if ($data == 'CATAZAJA')
+                                <script type="text/javascript">determinador("chk_catazaja");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -144,7 +156,9 @@
                             <label class="custom-control-label" for="chk_yajalon"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "YAJALON", "chk_yajalon");</script>
+                            @if ($data == 'YAJALON')
+                                <script type="text/javascript">determinador("chk_yajalon");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>San Cristóbal</strong></td>
@@ -153,7 +167,9 @@
                             <label class="custom-control-label" for="chk_san_cristobal"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "SAN_CRISTOBAL", "chk_san_cristobal");</script>
+                            @if ($data == 'SAN_CRISTOBAL')
+                                <script type="text/javascript">determinador("chk_san_cristobal");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Chiapa de Corzo</strong></td>
@@ -162,7 +178,9 @@
                             <label class="custom-control-label" for="chk_chiapa_de_corzo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "CHIAPA_DE_CORZO", "chk_chiapa_de_corzo");</script>
+                            @if ($data == 'CHIAPA_DE_CORZO')
+                                <script type="text/javascript">determinador("chk_chiapa_de_corzo");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Motozintla</strong></td>
@@ -171,7 +189,9 @@
                             <label class="custom-control-label" for="chk_motozintla"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "MOTOZINTLA", "chk_motozintla");</script>
+                            @if ($data == 'MOTOZINTLA')
+                                <script type="text/javascript">determinador("chk_motozintla");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -181,7 +201,9 @@
                             <label class="custom-control-label" for="chk_berriozabal"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "BERRIOZABAL", "chk_berriozabal");</script>
+                            @if ($data == 'BERRIOZABAL')
+                                <script type="text/javascript">determinador("chk_berriozabal");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Pijijiapan</strong></td>
@@ -190,7 +212,9 @@
                             <label class="custom-control-label" for="chk_pijijiapan"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "PIJIJIAPAN", "chk_pijijiapan");</script>
+                            @if ($data == 'PIJIJIAPAN')
+                                <script type="text/javascript">determinador("chk_pijijiapan");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Jitotol</strong></td>
@@ -199,7 +223,9 @@
                             <label class="custom-control-label" for="chk_jitotol"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "JITOTOL", "chk_jitotol");</script>
+                            @if ($data == 'JITOTOL')
+                                <script type="text/javascript">determinador("chk_jitotol");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>La Concordia</strong></td>
@@ -208,7 +234,9 @@
                             <label class="custom-control-label" for="chk_la_concordia"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "LA_CONCORDIA", "chk_la_concordia");</script>
+                        @if ($data == 'LA_CONCORDIA')
+                        <script type="text/javascript">determinador("chk_la_concordia");</script>
+                    @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -218,7 +246,9 @@
                             <label class="custom-control-label" for="chk_venustiano_carranza"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "VENUSTIANO_CARRANZA", "chk_venustiano_carranza");</script>
+                            @if ($data == 'VENUSTIANO_CARRANZA')
+                                <script type="text/javascript">determinador("chk_venustiano_carranza");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Tila</strong></td>
@@ -227,7 +257,9 @@
                             <label class="custom-control-label" for="chk_tila"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "TILA", "chk_tila");</script>
+                            @if ($data == 'TILA')
+                                <script type="text/javascript">determinador("chk_tila");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Teopisca</strong></td>
@@ -236,7 +268,9 @@
                             <label class="custom-control-label" for="chk_teopisca"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "TEOPISCA", "chk_teopisca");</script>
+                            @if ($data == 'TEOPISCA')
+                                <script type="text/javascript">determinador("chk_teopisca");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Ocosingo</strong></td>
@@ -245,7 +279,9 @@
                             <label class="custom-control-label" for="chk_ocosingo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "OCOSINGO", "chk_ocosingo");</script>
+                            @if ($data == 'OCOSINGO')
+                                <script type="text/javascript">determinador("chk_ocosingo");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -255,7 +291,9 @@
                             <label class="custom-control-label" for="chk_cintalapa"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "CINTALAPA", "chk_cintalapa");</script>
+                            @if ($data == 'CINTALAPA')
+                                <script type="text/javascript">determinador("chk_cintalapa");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Copainalá</strong></td>
@@ -264,7 +302,9 @@
                             <label class="custom-control-label" for="chk_copainala"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "COPAINALA", "chk_copainala");</script>
+                            @if ($data == 'COPAINALA')
+                                <script type="text/javascript">determinador("chk_copainala");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Soyaló</strong></td>
@@ -273,7 +313,9 @@
                             <label class="custom-control-label" for="chk_soyalo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "SOYALO", "chk_soyalo");</script>
+                            @if ($data == 'SOYALO')
+                                <script type="text/javascript">determinador("chk_soyalo");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Ángel Albino Corzo</strong></td>
@@ -282,7 +324,9 @@
                             <label class="custom-control-label" for="chk_angel_albino_corzo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "ANGEL_ALBINO_CORZO", "chk_angel_albino_corzo");</script>
+                            @if ($data == 'ANGEL_ALBINO_CORZO')
+                                <script type="text/javascript">determinador("chk_angel_albino_corzo");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -292,7 +336,9 @@
                             <label class="custom-control-label" for="chk_arriaga"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "ARRIAGA", "chk_arriaga");</script>
+                            @if ($data == 'ARRIAGA')
+                                <script type="text/javascript">determinador("chk_arriaga");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Juárez</strong></td>
@@ -301,7 +347,9 @@
                             <label class="custom-control-label" for="chk_juarez"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "JUAREZ", "chk_juarez");</script>
+                            @if ($data == 'JUAREZ')
+                                <script type="text/javascript">determinador("chk_juarez");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Pichucalco</strong></td>
@@ -310,7 +358,9 @@
                             <label class="custom-control-label" for="chk_pichucalco"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "PICHUCALCO", "chk_pichucalco");</script>
+                            @if ($data == 'PICHUCALCO')
+                                <script type="text/javascript">determinador("chk_pichucalco");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Simojovel</strong></td>
@@ -319,7 +369,9 @@
                             <label class="custom-control-label" for="chk_simojovel"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "SIMOJOVEL", "chk_simojovel");</script>
+                            @if ($data == 'SIMOJOVEL')
+                                <script type="text/javascript">determinador("chk_simojovel");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -329,7 +381,9 @@
                             <label class="custom-control-label" for="chk_mapastepec"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "MAPASTEPEC", "chk_mapastepec");</script>
+                            @if ($data == 'MAPASTEPEC')
+                                <script type="text/javascript">determinador("chk_mapastepec");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Villa Corzo</strong></td>
@@ -338,7 +392,9 @@
                             <label class="custom-control-label" for="chk_villa_corzo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "VILLA_CORZO", "chk_villa_corzo");</script>
+                            @if ($data == 'VILLA_CORZO')
+                                <script type="text/javascript">determinador("chk_villa_corzo");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Cacahoatán</strong></td>
@@ -347,7 +403,9 @@
                             <label class="custom-control-label" for="chk_cacahoatan"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "CACAHOATAN", "chk_cacahoatan");</script>
+                            @if ($data == 'CACAHOATAN')
+                                <script type="text/javascript">determinador("chk_cacahoatan");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Once de Abril</strong></td>
@@ -356,7 +414,9 @@
                             <label class="custom-control-label" for="chk_once_de_abril"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "ONCE_DE_ABRIL", "chk_once_de_abril");</script>
+                            @if ($data == 'ONCE_DE_ABRIL')
+                                <script type="text/javascript">determinador("chk_once_de_abril");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -366,7 +426,9 @@
                             <label class="custom-control-label" for="chk_tuxtla_chico"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "TUXTLA_CHICO", "chk_tuxtla_chico");</script>
+                            @if ($data == 'TUXTLA_CHICO')
+                                <script type="text/javascript">determinador("chk_tuxtla_chico");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Oxchuc</strong></td>
@@ -375,7 +437,9 @@
                             <label class="custom-control-label" for="chk_oxchuc"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "OXCHUC", "chk_oxchuc");</script>
+                            @if ($data == 'OXCHUC')
+                                <script type="text/javascript">determinador("chk_oxchuc");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Chamula</strong></td>
@@ -384,7 +448,9 @@
                             <label class="custom-control-label" for="chk_chamula"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "CHAMULA", "chk_chamula");</script>
+                            @if ($data == 'CHAMULA')
+                                <script type="text/javascript">determinador("chk_chamula");</script>
+                            @endif
                         @endforeach
 
                         <td style="vertical-align:bottom;"><strong>Ostuacán</strong></td>
@@ -393,7 +459,9 @@
                             <label class="custom-control-label" for="chk_ostuacan"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "OSTUACAN", "chk_ostuacan");</script>
+                            @if ($data == 'OSTUACAN')
+                                <script type="text/javascript">determinador("chk_ostuacan");</script>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
@@ -403,7 +471,9 @@
                             <label class="custom-control-label" for="chk_palenque"></label>
                         </td>
                         @foreach ( $available as $data)
-                            <script type="text/javascript">determinador($data, "PALENQUE", "chk_palenque");</script>
+                            @if ($data == 'PALENQUE')
+                                <script type="text/javascript">determinador("chk_palenque");</script>
+                            @endif
                         @endforeach
                     </tr>
                 </tbody>
