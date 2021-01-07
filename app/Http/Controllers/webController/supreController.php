@@ -371,6 +371,107 @@ class supreController extends Controller
         }
     }
 
+    public function planeacion_reporte()
+    {
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.vstareporteplaneacion', compact('unidades'));
+    }
+
+    public function planeacion_reportepdf(Request $request)
+    {
+        $i = 0;
+
+        if ($request->filtro == "general")
+        {
+            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
+                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
+                           'tbl_cursos.mujer')
+                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->GET();
+        }
+        else if ($request->filtro == 'curso')
+        {
+            dd('entro');
+            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
+                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
+                           'tbl_cursos.mujer')
+                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                           ->WHERE('tbl_cursos.id', '=', $request->id_curso)
+                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->GET();
+        }
+        else if ($request->filtro == 'unidad')
+        {
+            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
+                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
+                           'tbl_cursos.mujer')
+                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                           ->WHERE('tabla_supre.unidad_capacitacion', '=', $request->unidad)
+                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->GET();
+        }
+        else if ($request->filtro == 'instructor')
+        {
+            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
+                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
+                           'tbl_cursos.mujer')
+                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                           ->WHERE('instructores.id', '=', $request->id_instructor)
+                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->GET();
+        }
+
+        foreach($data as $cadwell)
+        {
+            $risr[$i] = $cadwell->importe_total * 0.10;
+            $riva[$i] = $cadwell->importe_total * 0.1066;
+
+            $hm = $cadwell->hombre+$cadwell->mujer;
+            if ($hm < 10)
+            {
+                $recursos[$i] = "Estatal";
+            }
+            else
+            {
+                $recursos[$i] = "Federal";
+            }
+            $i++;
+        }
+
+        //dd($data);
+
+        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva'));
+        $pdf->setPaper('legal', 'Landscape');
+        return $pdf->stream('medium.pdf');
+
+    }
+
     public function supre_pdf($id){
         $supre = new supre();
         $folio = new folio();
@@ -558,35 +659,48 @@ class supreController extends Controller
         $pdfUrl = Storage::url('/uploadFiles/supre/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
     }
+
+    public function get_curso(Request $request){
+
+        $search = $request->search;
+
+        if (isset($search)) {
+            # si la variable está inicializada
+            if($search == ''){
+                $curso = tbl_curso::orderby('curso','asc')->select('id','curso')->limit(5)->get();
+            }else{
+                $curso = tbl_curso::orderby('curso','asc')->select('id','curso')->where('curso', 'like', '%' .$search . '%')->limit(5)->get();
+            }
+
+            $response = array();
+            foreach($curso as $dir){
+                $response[] = array("value"=>$dir->id,"label"=>$dir->curso);
+            }
+
+            echo json_encode($response);
+            exit;
+        }
+    }
+
+    public function get_ins(Request $request){
+
+        $search = $request->search;
+
+        if (isset($search)) {
+            # si la variable está inicializada
+            if($search == ''){
+                $instructor = instructor::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno')->limit(10)->get();
+            }else{
+                $instructor = instructor::orderby('nombre','asc')->select('id','nombre','apellidoPaterno','apellidoMaterno')->where('nombre', 'like', '%' .$search . '%')->limit(10)->get();
+            }
+
+            $response = array();
+            foreach($instructor as $dir){
+                $response[] = array("value"=>$dir->id,"label"=>$dir->nombre . " " .$dir->apellidoPaterno . " " . $dir->apellidoMaterno);
+            }
+
+            echo json_encode($response);
+            exit;
+        }
+    }
 }
-/*if ($request->hasFile('file_upload')) {
-
-                // obtenemos el valor de acta_nacimiento
-                $ficha_cerss = DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->VALUE('ficha_cerss');
-                // checamos que no sea nulo
-                if (!is_null($ficha_cerss)) {
-                    # si no está nulo
-                    if(!empty($ficha_cerss)){
-                        $docFichaCerss = explode("/",$ficha_cerss, 5);
-                        if (Storage::exists($docFichaCerss[4])) {
-                            # checamos si hay un documento de ser así procedemos a eliminarlo
-                            Storage::delete($docFichaCerss[4]);
-                        }
-                    }
-                }
-
-                $ficha_cerss = $request->file('file_upload'); # obtenemos el archivo
-                $url_ficha_cerss = $this->uploaded_file($ficha_cerss, $idPreInscripcion, 'ficha_cerss'); #invocamos el método
-                $chk_ficha_cerss = true;
-                // creamos un arreglo
-                $arregloDocs = [
-                    'ficha_cerss' => $url_ficha_cerss,
-                    'chk_ficha_cerss' => $chk_ficha_cerss
-                ];
-
-                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
-                DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->update($arregloDocs);
-
-                // limpiamos el arreglo
-                unset($arregloDocs);
-            } */
