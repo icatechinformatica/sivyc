@@ -274,6 +274,29 @@ $(function(){
         $('#savemodbuttonins').prop("disabled", false)
     });
 
+    $( document ).on('input', function(){
+        if (document.getElementById('curso').checked) {
+            $('#div_curso').prop("class", "form-row")
+            $('#div_instructor').prop("class", "form-row d-none d-print-none")
+            $('#div_unidad').prop("class", "form-row d-none d-print-none")
+        }
+        else if (document.getElementById('instructor').checked) {
+            $('#div_curso').prop("class", "form-row d-none d-print-none")
+            $('#div_instructor').prop("class", "form-row")
+            $('#div_unidad').prop("class", "form-row d-none d-print-none")
+        }
+        else if (document.getElementById('general').checked) {
+            $('#div_curso').prop("class", "form-row d-none d-print-none")
+            $('#div_instructor').prop("class", "form-row d-none d-print-none")
+            $('#div_unidad').prop("class", "form-row d-none d-print-none")
+        }
+        else if (document.getElementById('unidad').checked) {
+            $('#div_curso').prop("class", "form-row d-none d-print-none")
+            $('#div_instructor').prop("class", "form-row d-none d-print-none")
+            $('#div_unidad').prop("class", "form-row")
+        }
+    });
+
     //autocomplete
     $( "#nombre_director" ).autocomplete({
     source: function( request, response ) {
@@ -633,6 +656,52 @@ $(function(){
             $('#ccp4').val(ui.item.label); // display the selected text
             $('#ccpa4').val(ui.item.charge);
            $('#id_ccp4').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#cursoaut" ).autocomplete({
+        source: function( request, response ) {
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getcurso",
+            type: 'post',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#cursoaut').val(ui.item.label); // display the selected text
+           $('#id_curso').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
+
+    $( "#instructoraut" ).autocomplete({
+        source: function( request, response ) {
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getins",
+            type: 'post',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#instructoraut').val(ui.item.label); // display the selected text
+           $('#id_instructor').val(ui.item.value); // save selected id to input
             return false;
         }
     });

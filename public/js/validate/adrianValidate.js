@@ -22,7 +22,6 @@ $(function(){
                 x = id.substring(8,9);
                 console.log('enntro');
             }
-            console.log(x);
             if (id == 'addmore['+x+'][clavecurso]') {
                 var valor = (document.getElementById(id).value).toUpperCase();
                 var datos = {valor: valor};
