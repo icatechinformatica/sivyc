@@ -403,3 +403,11 @@ Route::get('/planeacion/reporte', 'webController\supreController@planeacion_repo
 Route::post('/planeacion/reporte/pdf','webController\supreController@planeacion_reportepdf')->name('planeacion.reportepdf');
 Route::post('/directorio/getcurso','webController\supreController@get_curso')->name('get-curso');
 Route::post('/directorio/getins','webController\supreController@get_ins')->name('get-ins');
+
+/* Modulo CERSS 11012021 */
+Route::get('/cerss/inicio', 'webController\CerssController@index')->name('cerss.inicio');
+Route::get('/cerss/formulario', 'webController\CerssController@create')->name('cerss.frm');
+Route::get('/cerss/modificar/{id}', 'webController\CerssController@update')->name('cerss.update');
+Route::post('/cerss/formulario/save', 'webController\CerssController@save')->name('cerss.save');
+Route::post('/cerss/modificar/save', 'webController\CerssController@update_save')->name('cerss.save-update');
+

@@ -725,4 +725,23 @@ $(function(){
         }
     });
 
+    // Registro CERSS
+    $('#registercerss').validate({
+        rules: {
+            municipio:{
+                valueNotEquals: "sin especificar"
+            },
+            unidad:{
+                valueNotEquals: "sin especificar"
+            },
+        },
+        messages: {
+            municipio:{
+                valueNotEquals: "Seleccione una Opcion Valida"
+            },
+            unidad:{
+                valueNotEquals: "Seleccione una Opcion Valida"
+            },
+        }
+    });
 });
