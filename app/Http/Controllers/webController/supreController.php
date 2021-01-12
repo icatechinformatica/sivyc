@@ -27,10 +27,6 @@ class supreController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    Public function opcion(){
-        return view('layouts.pages.vstasolicitudopc');
-    }
-
     public function solicitud_supre_inicio(Request $request) {
         /**
          * parametros de busqueda
@@ -41,20 +37,7 @@ class supreController extends Controller
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia)->where('id', '!=', '0')->latest()->get();
 
-
-
         return view('layouts.pages.vstasolicitudsupre', compact('data'));
-    }
-
-    public function solicitud_folios(){
-        $supre = new supre();
-        $data2 = $supre::SELECT('tabla_supre.id','tabla_supre.no_memo','tabla_supre.unidad_capacitacion','tabla_supre.fecha','folios.status','folios.id_folios',
-        'folios.folio_validacion')
-                        ->where('folios.status', '!=', 'x')
-                        ->LEFTJOIN('folios', 'tabla_supre.id', '=', 'folios.id_supre')
-                        ->get();
-
-        return view('layouts.pages.vstasolicitudfolio', compact('data2'));
     }
 
     public function frm_formulario() {
