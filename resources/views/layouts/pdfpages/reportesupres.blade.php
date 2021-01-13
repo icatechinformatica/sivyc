@@ -1,5 +1,7 @@
 <!DOCTYPE HTML>
     <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <style>
             body{
                 font-family: sans-serif;
