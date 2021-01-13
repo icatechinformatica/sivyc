@@ -61,6 +61,7 @@
                             <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
+                        <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
                     </div>
                 </li>
                 @can('tablero.metas.index')

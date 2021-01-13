@@ -451,7 +451,7 @@ class supreController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva'));
         $pdf->setPaper('legal', 'Landscape');
-        return $pdf->stream('medium.pdf');
+        return $pdf->download('reporteSupre.pdf');
 
     }
 
