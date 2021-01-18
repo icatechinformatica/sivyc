@@ -364,6 +364,7 @@ class supreController extends Controller
     public function planeacion_reportepdf(Request $request)
     {
         $i = 0;
+        set_time_limit(0);
 
         if ($request->filtro == "general")
         {
