@@ -46,6 +46,7 @@ class ContratoController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
+            //hola
 
         $contratos = new contratos();
 
