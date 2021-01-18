@@ -111,7 +111,7 @@
                         <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                     </div>
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                        <button type="submit" class="btn btn-primary" >Generar</button>
                     </div>
                 </div>
             </div>
