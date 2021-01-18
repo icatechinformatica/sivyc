@@ -581,63 +581,7 @@ $(function(){
 
     });
 
-    /***
-     * validacion SID registro
-     */
-    $('#form_sid_registro').validate({
-        rules: {
-            especialidad_sid: {
-                required: true,
-            },
-            cursos_sid: {
-                required: true,
-            },
-            grupo: {
-                required: true
-            },
-            tipo_curso: {
-                required: true
-            },
-            horario: {
-                required: true
-            },
-            cerrs: {
-                required: true
-            },
-            tblubicacion: {
-                required: true
-            },
-            tblunidades: {
-                required: true
-            }
-        },
-        messages: {
-            especialidad_sid: {
-                required: "Por favor, Seleccione la especialidad"
-            },
-            cursos_sid: {
-                required: "Por favor, Seleccione el curso"
-            },
-            grupo: {
-                required: "Agregar el grupo"
-            },
-            tipo_curso: {
-                required: "Por favor, Seleccione tipo de curso"
-            },
-            horario: {
-                required: "Agregar Horario"
-            },
-            cerrs: {
-                required: "Por favor, Seleccione una opción"
-            },
-            tblubicacion: {
-                required: "Por favor, Seleccione una opción"
-            },
-            tblunidades: {
-                required: "Por favor, Seleccione una opción"
-            }
-        }
-    });
+    
 
     // hacemos que los input sean mayusculos
     $('input[type=text]').val (function () {
@@ -649,85 +593,7 @@ $(function(){
     })
 
 
-    // escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar los cursos de esa especialidad
-    $('#especialidad_sid' && '#tipo_curso').on("change", () => {
-
-        $("#especialidad_sid option:selected").each( () => {
-            var IdEsp = $('#especialidad_sid').val();
-            var tipo = $('#tipo_curso').val();
-            var unidad = $('#tblunidades').val();
-            var datos = { idEsp: IdEsp, tipo: tipo};
-            var url = '/alumnos/sid/cursos';
-            var url2 = '/alumnos/sid/checkcursos';
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-            request.done(( respuesta ) =>
-            {
-                console.log(respuesta);
-                if (respuesta.length < 1) {
-                    $("#cursos_sid").empty();
-                    $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#cursos_sid").empty();
-                        $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            idcur = v.id;
-                            var data = {unidad: unidad, idcur: idcur};
-
-                            var request = $.ajax
-                            ({
-                                url: url2,
-                                method: 'POST',
-                                data: data,
-                                dataType: 'json'
-                            });
-
-                            request.done(( resp ) =>
-                            {
-                                if(resp.chk == true)
-                                {
-                                    $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
-                                }
-                            });
-
-                            request.fail(( jqXHR, textStatus ) =>
-                            {
-                                jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                                console.log(jqXHR.responseText);
-                                alert( "Hubo un error: " + jsonValue );
-                            });
-                        });
-                        $("#cursos_sid").focus();
-                    }else{
-                        console.log('errores');
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                console.log(jqXHR.status);
-                alert( "Hubo un error: " + jsonValue );
-            });
-        });
-    });
+    
 
     $('#estado').on("change", () => {
         var IdEst =$('#estado').val();

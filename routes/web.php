@@ -28,8 +28,8 @@ Route::get('/prueba', 'webController\InstructorController@prueba');
 
 //Ruta Manual
 Route::get('/user/manuales', 'webController\manualController@index')->name('manuales');
-
-Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcursos');
+// checar cursos
+Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcursos')->name('alumnos.sid.checkcursos');
 
 //ruta Pago
 Route::post('/pago/rechazar_pago', 'webController\PagoController@rechazar_pago')->name('pago-rechazo');
@@ -208,7 +208,7 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@export_pdf')->name('presupuestaria');
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@propa')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
-    Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
+    Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos')->name('alumnos.sid.cursos');
     Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
     Route::post('/alumnos/sid/cursos_update', 'webController\AlumnoController@getcursos_update');
 
