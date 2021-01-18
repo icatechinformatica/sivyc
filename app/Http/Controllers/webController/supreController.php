@@ -431,6 +431,7 @@ class supreController extends Controller
                            ->GET();
         }
 
+
         foreach($data as $cadwell)
         {
             $risr[$i] = $cadwell->importe_total * 0.10;
@@ -448,11 +449,10 @@ class supreController extends Controller
             $i++;
         }
 
-        //dd($data);
 
         $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva'));
         $pdf->setPaper('legal', 'Landscape');
-        return $pdf->download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+        return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
 
     }
 
