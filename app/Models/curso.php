@@ -79,6 +79,9 @@ class curso extends Model
                     case 'clasificacion':
                         return $query->where( 'cursos.clasificacion', 'LIKE', "%$buscar%");
                         break;
+                    case 'anio':
+                        return $query->where(\DB::raw("date_part('year' , fecha_validacion )"), '=', "$buscar");
+                        break;
                     default:
                         # code...
                         break;
