@@ -242,6 +242,54 @@
                 }
             }
         });
+
+        /**
+        * cambios select dependientes de tbl_unidades
+        */
+        $('#tblubicacion').on("change", () => {
+            $("#tblubicacion option:selected").each( () => {
+                var ubicacion = $('#tblubicacion').val();
+                var url = '/unidades/unidades_by_ubicacion/'+ ubicacion;
+
+                var request = $.ajax
+                ({
+                    url: url,
+                    method: 'GET',
+                    dataType: 'json'
+                });
+
+                /*
+                    *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                    *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                    *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                    *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                */
+
+                request.done(( respuesta ) => {
+                    if (respuesta.length < 1) {
+                        $("#tblunidades").empty();
+                        $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                    } else {
+                        if(!respuesta.hasOwnProperty('error')){
+                            $("#tblunidades").empty();
+                            $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                            $.each(respuesta, (k, v) => {
+                                $('#tblunidades').append('<option value="' + v.unidad + '">' + v.unidad + '</option>');
+                            });
+                            $("#tblunidades").focus();
+                        }else{
+
+                            //Puedes mostrar un mensaje de error en algún div del DOM
+                        }
+                    }
+                });
+
+                request.fail(( jqXHR, textStatus ) =>
+                {
+                        alert( "Hubo un error: " + textStatus );
+                });
+            });
+        });
         
         /***
          * escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar 
