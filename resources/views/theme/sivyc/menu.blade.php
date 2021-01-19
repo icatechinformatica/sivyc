@@ -16,7 +16,7 @@
         @else
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link g-mx-5--lg" href="{{ route('cursos.index') }}">
+                    <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">
                         Cursos Validados
                     </a>
                 </li>
