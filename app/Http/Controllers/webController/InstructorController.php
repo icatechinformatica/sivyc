@@ -16,8 +16,10 @@ use App\Models\especialidad;
 use App\Models\estado_civil;
 use App\Models\status;
 use App\Models\especialidad_instructor;
-use App\Models\instructorAvailable;
 use App\Models\criterio_pago;
+use App\Models\Inscripcion;
+use App\Models\Calificacion;
+use App\Models\tbl_curso;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -54,188 +56,6 @@ class InstructorController extends Controller
     public function crear_instructor()
     {
         return view('layouts.pages.frminstructor');
-    }
-
-    public function prueba()
-    {
-        $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-            'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-            'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-            'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-            'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
-            'PALENQUE'];
-
-        $cursos = instructor::SELECT('id', 'unidades_disponible')->WHERE('id', '!=', '0')->GET();
-        foreach($cursos as $data)
-        {
-            if($data->unidades_disponible == NULL)
-            {
-                $old = instructorAvailable::WHERE('instructor_id', '=', $data->id)->FIRST();
-                if($old != NULL)
-                {
-                    $new = [];
-                    if($old->CHK_TUXTLA == TRUE)
-                    {
-                        array_push($new, 'TUXTLA');
-                    }
-                    if($old->CHK_TAPACHULA == TRUE)
-                    {
-                        array_push($new, 'TAPACHULA');
-                    }
-                    if($old->CHK_COMITAN == TRUE)
-                    {
-                        array_push($new, 'COMITAN');
-                    }
-                    if($old->CHK_REFORMA == TRUE)
-                    {
-                        array_push($new, 'REFORMA');
-                    }
-                    if($old->CHK_TONALA == TRUE)
-                    {
-                        array_push($new, 'TONALA');
-                    }
-                    if($old->CHK_VILLAFLORES == TRUE)
-                    {
-                        array_push($new, 'VILLAFLORES');
-                    }
-                    if($old->CHK_JIQUIPILAS == TRUE)
-                    {
-                        array_push($new, 'JIQUIPILAS');
-                    }
-                    if($old->CHK_CATAZAJA == TRUE)
-                    {
-                        array_push($new, 'CATAZAJA');
-                    }
-                    if($old->CHK_YAJALON == TRUE)
-                    {
-                        array_push($new, 'YAJALON');
-                    }
-                    if($old->CHK_SAN_CRISTOBAL == TRUE)
-                    {
-                        array_push($new, 'SAN_CRISTOBAL');
-                    }
-                    if($old->CHK_CHIAPA_DE_CORZO == TRUE)
-                    {
-                        array_push($new, 'CHIAPA_DE_CORZO');
-                    }
-                    if($old->CHK_MOTOZINTLA == TRUE)
-                    {
-                        array_push($new, 'MOTOZINTLA');
-                    }
-                    if($old->CHK_BERRIOZABAL == TRUE)
-                    {
-                        array_push($new, 'BERRIOZABAL');
-                    }
-                    if($old->CHK_PIJIJIAPAN == TRUE)
-                    {
-                        array_push($new, 'PIJIJIAPAN');
-                    }
-                    if($old->CHK_JITOTOL == TRUE)
-                    {
-                        array_push($new, 'JITOTOL');
-                    }
-                    if($old->CHK_LA_CONCORDIA == TRUE)
-                    {
-                        array_push($new, 'LA_CONCORDIA');
-                    }
-                    if($old->CHK_VENUSTIANO_CARRANZA == TRUE)
-                    {
-                        array_push($new, 'VENUSTIANO_CARRANZA');
-                    }
-                    if($old->CHK_TILA == TRUE)
-                    {
-                        array_push($new, 'TILA');
-                    }
-                    if($old->CHK_TEOPISCA == TRUE)
-                    {
-                        array_push($new, 'TEOPISCA');
-                    }
-                    if($old->CHK_OCOSINGO == TRUE)
-                    {
-                        array_push($new, 'OCOSINGO');
-                    }
-                    if($old->CHK_CINTALAPA == TRUE)
-                    {
-                        array_push($new, 'CINTALAPA');
-                    }
-                    if($old->CHK_COPAINALA == TRUE)
-                    {
-                        array_push($new, 'COPAINALA');
-                    }
-                    if($old->CHK_SOYALO == TRUE)
-                    {
-                        array_push($new, 'SOYALO');
-                    }
-                    if($old->CHK_ANGEL_ALBINO_CORZO == TRUE)
-                    {
-                        array_push($new, 'ANGEL_ALBINO_CORZO');
-                    }
-                    if($old->CHK_ARRIAGA == TRUE)
-                    {
-                        array_push($new, 'ARRIAGA');
-                    }
-                    if($old->CHK_PICHUCALCO == TRUE)
-                    {
-                        array_push($new, 'PICHUCALCO');
-                    }
-                    if($old->CHK_JUAREZ == TRUE)
-                    {
-                        array_push($new, 'JUAREZ');
-                    }
-                    if($old->CHK_SIMOJOVEL == TRUE)
-                    {
-                        array_push($new, 'SIMOJOVEL');
-                    }
-                    if($old->CHK_MAPASTEPEC == TRUE)
-                    {
-                        array_push($new, 'MAPASTEPEC');
-                    }
-                    if($old->CHK_VILLA_CORZO == TRUE)
-                    {
-                        array_push($new, 'VILLA_CORZO');
-                    }
-                    if($old->CHK_CACAHOATAN == TRUE)
-                    {
-                        array_push($new, 'CACAHOATAN');
-                    }
-                    if($old->CHK_ONCE_DE_ABRIL == TRUE)
-                    {
-                        array_push($new, 'ONCE_DE_ABRIL');
-                    }
-                    if($old->CHK_TUXTLA_CHICO == TRUE)
-                    {
-                        array_push($new, 'TUXTLA_CHICO');
-                    }
-                    if($old->CHK_OXCHUC == TRUE)
-                    {
-                        array_push($new, 'OXCHUC');
-                    }
-                    if($old->CHK_CHAMULA == TRUE)
-                    {
-                        array_push($new, 'CHAMULA');
-                    }
-                    if($old->CHK_OSTUACAN == TRUE)
-                    {
-                        array_push($new, 'OSTUACAN');
-                    }
-                    if($old->CHK_PALENQUE == TRUE)
-                    {
-                        array_push($new, 'PALENQUE');
-                    }
-
-                    $reform = instructor::find($data->id);
-                    $reform->unidades_disponible = $new;
-                    $reform->save();
-                }
-                else
-                {
-                    $reform = instructor::find($data->id);
-                    $reform->unidades_disponible = $unidades;
-                    $reform->save();
-                }
-            }
-        }
-        dd('listo');
     }
 
     #----- instructor/guardar -----#
@@ -622,9 +442,13 @@ class InstructorController extends Controller
 
         $modInstructor->save();
 
-        $affecttbl_inscripcion = DB::table("tbl_inscripcion")->WHERE('instructor', $old)->update(['instructor' => $new]);
-        $affecttbl_calificaciones = DB::table("tbl_calificaciones")->WHERE('instructor', $old)->update(['instructor' => $new]);
-        $affecttbl_cursos = DB::table("tbl_cursos")->WHERE('nombre', $old)->update(['nombre' =>$new]);
+        //$affecttbl_inscripcion = DB::table("tbl_inscripcion")->WHERE('instructor', $old)->update(['instructor' => $new]);
+        //$affecttbl_calificaciones = DB::table("tbl_calificaciones")->WHERE('instructor', $old)->update(['instructor' => $new]);
+        //$affecttbl_cursos = DB::table("tbl_cursos")->WHERE('nombre', $old)->update(['nombre' =>$new]);
+
+        Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
+        Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
+        tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
 
 
         return redirect()->route('instructor-inicio')
