@@ -30,13 +30,15 @@
             </thead>
 
             <tbody>
-                @foreach ($areas as $key => $area)
+
+                {{-- {{$areas}} --}}
+                @foreach ($areas as $area)
                     <tr>
                         <td>{{ $area->formacion_profesional }}</td>
                         <td>{{ $area->created_at }}</td>
                         <td>{{ $area->updated_at }}</td>
-                        <td>{{ $created_names[$key]['name'] }}</td>
-                        <td>{{ $updated_names[$key]['name'] }}</td>
+                        <td>{{ $area->nameCreated }}</td>
+                        <td>{{ $area->nameUpdated }}</td>
                         @if ($area->activo == 'true')
                             <td>Activo</td>
                         @else
@@ -53,12 +55,16 @@
                                 </div>
 
                                 <div class="col">
-                                    <form action="{{ route('areas.destroy', $area) }}" method="POST">
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Eliminar"
+                                        href="{{ route('areas.destroy', ['id' => $area->id]) }}">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                    {{-- <form action="{{ route('areas.destroy', ['id' => $area->id]) }}" method="POST">
                                         @csrf
                                         @method('delete')
                                         <button class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Eliminar"
                                             type="submit"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                    </form>
+                                    </form> --}}
                                 </div>
                             </div>
                         </td>

@@ -8,20 +8,29 @@ use App\User;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AreasController extends Controller
 {
     public function index() {
 
-        $i = 0;
-        $areas = Area::where('id', '!=', '0')->latest('created_at')->get();
-        foreach ($areas as $user) {
-            $created_names[$i] = User::select('name')->where('id', '=', $user->iduser_created)->first();
-            $updated_names[$i] = User::select('name')->where('id', '=', $user->iduser_updated)->first();
-            $i++;
-        }
+        // $i = 0;
+        // $areas = Area::where('id', '!=', '0')->latest('created_at')->get();
+        // foreach ($areas as $user) {
+        //     $created_names[$i] = User::select('name')->where('id', '=', $user->iduser_created)->first();
+        //     $updated_names[$i] = User::select('name')->where('id', '=', $user->iduser_updated)->first();
+        //     $i++;
+        // }
+        // $areas = AreaDB::select('area.formacio_profesional', 'users.name')->join('users', 'iduser_created')
+        $areas = DB::table('area')
+            ->leftjoin('users', 'area.iduser_created', '=', 'users.id')
+            ->leftjoin('users  AS usuarios', 'area.iduser_updated', '=', 'usuarios.id')
+            ->select('area.*', 'users.name AS nameCreated', 'usuarios.name AS nameUpdated')
+            ->orderByDesc('area.created_at')
+            ->get();
 
-        return view('layouts.pages.vstainicioareas', compact('areas', 'created_names', 'updated_names'));
+        // return view('layouts.pages.vstainicioareas', compact('areas', 'created_names', 'updated_names'));
+        return view('layouts.pages.vstainicioareas', compact('areas'));
     }
 
     public function create() {
@@ -63,8 +72,9 @@ class AreasController extends Controller
         return redirect()->route('areas.inicio')->with('success', 'Área actualizada');
     }
 
-    public function destroy(Area $area) {
-        $area->delete();
+    public function destroy($id) {
+        // $area->delete();
+        Area::destroy($id);
 
         return redirect()->route('areas.inicio')->with('success', 'Área eliminada');
     }
