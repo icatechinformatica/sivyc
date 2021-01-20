@@ -417,4 +417,4 @@ Route::get('/areas/agregar', 'webController\AreasController@create')->name('area
 Route::get('/areas/modificar/{id}', 'webController\AreasController@update')->name('areas.modificar');
 Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas.guardar');
 Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save');
-Route::delete('/areas/{area}', 'webController\AreasController@destroy')->name('areas.destroy');
+Route::get('/areas/{id}', 'webController\AreasController@destroy')->name('areas.destroy');
