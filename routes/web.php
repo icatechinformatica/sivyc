@@ -411,3 +411,10 @@ Route::get('/cerss/modificar/{id}', 'webController\CerssController@update')->nam
 Route::post('/cerss/formulario/save', 'webController\CerssController@save')->name('cerss.save');
 Route::post('/cerss/modificar/save', 'webController\CerssController@update_save')->name('cerss.save-update');
 
+/* Modulo áreas */
+Route::get('/areas/inicio', 'webController\AreasController@index')->name('areas.inicio');
+Route::get('/areas/agregar', 'webController\AreasController@create')->name('areas.agregar');
+Route::get('/areas/modificar/{id}', 'webController\AreasController@update')->name('areas.modificar');
+Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas.guardar');
+Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save');
+Route::delete('/areas/{area}', 'webController\AreasController@destroy')->name('areas.destroy');
