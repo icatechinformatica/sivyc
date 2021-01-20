@@ -25,7 +25,7 @@
                     <th scope="col">Creado por</th>
                     <th scope="col">Actualizado por</th>
                     <th width="180px">Estado</th>
-                    <th width="180px">Opciones</th>
+                    <th width="180px">Modificar</th>
                 </tr>
             </thead>
 
@@ -47,25 +47,19 @@
 
                         <td>
                             <div class="row">
-                                <div class="col">
+                                <div class="col d-flex justify-content-center">
                                     <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Editar"
                                         href="{{ route('areas.modificar', ['id' => $area->id]) }}">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     </a>
                                 </div>
 
-                                <div class="col">
+                                {{-- <div class="col">
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Eliminar"
                                         href="{{ route('areas.destroy', ['id' => $area->id]) }}">
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
-                                    {{-- <form action="{{ route('areas.destroy', ['id' => $area->id]) }}" method="POST">
-                                        @csrf
-                                        @method('delete')
-                                        <button class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Eliminar"
-                                            type="submit"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                    </form> --}}
-                                </div>
+                                </div> --}}
                             </div>
                         </td>
                     </tr>
