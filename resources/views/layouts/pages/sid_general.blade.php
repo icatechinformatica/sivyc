@@ -3,6 +3,38 @@
 @section('title', 'Inscripción Alumno | Sivyc Icatech')
 <!--contenido-->
 @section('content')
+    <style>
+        .modal
+        {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            -moz-opacity: 0.8;
+        }
+        .center
+        {
+            z-index: 1000;
+            margin: 300px auto;
+            padding: 10px;
+            width: 150px;
+            background-color: White;
+            border-radius: 10px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            -moz-opacity: 1;
+        }
+        .center img
+        {
+            height: 128px;
+            width: 128px;
+        }
+    </style>
     <div class="container g-pt-50">
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -180,6 +212,12 @@
                 </div>
                 <input type="hidden" name="alumno_id" id="alumno_id" value="{{ $Alumno->id }}">
             </form>
+            <!--display modal-->
+            <div class="modal">
+                <div class="center">
+                    <img alt="" src="{{URL::asset('/img/cargando.gif')}}" />
+                </div>
+            </div>
     </div>
 @endsection
 @section('script_content_js')
@@ -251,42 +289,40 @@
                 var ubicacion = $('#tblubicacion').val();
                 var url = '/unidades/unidades_by_ubicacion/'+ ubicacion;
 
-                var request = $.ajax
+                $.ajax
                 ({
                     url: url,
                     method: 'GET',
-                    dataType: 'json'
-                });
-
-                /*
-                    *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                    *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                    *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                    *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-                */
-
-                request.done(( respuesta ) => {
-                    if (respuesta.length < 1) {
-                        $("#tblunidades").empty();
-                        $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                    } else {
-                        if(!respuesta.hasOwnProperty('error')){
+                    dataType: 'json',
+                    beforeSend: function(){
+                        $(".modal").show();
+                    },
+                    success: function(respuesta)
+                    {
+                        if (respuesta.length < 1) {
                             $("#tblunidades").empty();
                             $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                            $.each(respuesta, (k, v) => {
-                                $('#tblunidades').append('<option value="' + v.unidad + '">' + v.unidad + '</option>');
-                            });
-                            $("#tblunidades").focus();
-                        }else{
+                        } else {
+                            if(!respuesta.hasOwnProperty('error')){
+                                $("#tblunidades").empty();
+                                $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                $.each(respuesta, (k, v) => {
+                                    $('#tblunidades').append('<option value="' + v.unidad + '">' + v.unidad + '</option>');
+                                });
+                                $("#tblunidades").focus();
+                            }else{
 
-                            //Puedes mostrar un mensaje de error en algún div del DOM
+                                //Puedes mostrar un mensaje de error en algún div del DOM
+                            }
                         }
-                    }
-                });
-
-                request.fail(( jqXHR, textStatus ) =>
-                {
+                    },
+                    complete:function(data){
+                        // escondemos el modal
+                        $(".modal").hide();
+                    },
+                    error: function(jqXHR, textStatus){
                         alert( "Hubo un error: " + textStatus );
+                    }
                 });
             });
         });
@@ -304,44 +340,52 @@
                 var datos = { idEsp: IdEsp, tipo: tipo, unidad: unidad};
                 var url = "{{route('alumnos.sid.cursos')}}";
 
-                var request = $.ajax
+                var solicitud = $.ajax
                 ({
                     url: url,
                     method: 'POST',
                     data: datos,
-                    dataType: 'json'
-                });
-
-                /*
-                    *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                    *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                    *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                    *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-                */
-
-                request.done(( respuesta ) =>
-                {
-                    if (respuesta.length < 1) {
-                        $("#cursos_sid").empty();
-                        $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                    } else {
-                        if(!respuesta.hasOwnProperty('error')){
+                    dataType: 'json',
+                    beforeSend: function(){
+                        $(".modal").show();
+                    },
+                    success: function(response){
+                        /*
+                            *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                            *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                            *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                            *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                        */
+                        if (response.length < 1) {
                             $("#cursos_sid").empty();
                             $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                            $.each(respuesta, (k ,v) => {
-                                $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
-                            });
-                            
-                            $("#cursos_sid").focus();
+                        } else {
+                            if(!response.hasOwnProperty('error')){
+                                $("#cursos_sid").empty();
+                                $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                $.each(response, (k ,v) => {
+                                    $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                                });
+                                
+                                $("#cursos_sid").focus();
+                            }
                         }
+                    },
+                    complete:function(data){
+                        // escondemos el modal
+                        $(".modal").hide();
+                    },
+                    error: function(jqXHR, textStatus){
+                        jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                        console.log(jqXHR.status);
+                        alert( "Hubo un error: " + jsonValue );
                     }
                 });
 
-                request.fail(( jqXHR, textStatus ) =>
-                {
-                    jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                    console.log(jqXHR.status);
-                    alert( "Hubo un error: " + jsonValue );
+                $.when(solicitud).then(function(data, textStatus, jqXHR ){
+                    if (jqXHR.status === 200) {
+                        $(".modal").hide();
+                    }
                 });
             });
         });
