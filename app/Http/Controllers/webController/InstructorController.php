@@ -346,8 +346,8 @@ class InstructorController extends Controller
 
         $modInstructor = instructor::find($request->id);
 
-        $old = $modInstructor->nombre . ' ' . $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno;
-        $new = $request->nombre . ' ' . $request->apellido_paterno . ' ' . $request->apellido_materno;
+        $old = $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno . ' ' . $modInstructor->nombre;
+        $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
 
         $modInstructor->nombre = trim($request->nombre);
         $modInstructor->apellidoPaterno = trim($request->apellido_paterno);
