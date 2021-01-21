@@ -182,3 +182,169 @@
             </form>
     </div>
 @endsection
+@section('script_content_js')
+<script type="text/javascript">
+    $(function(){
+        /***
+         * validacion SID registro
+        */
+        $('#form_sid_registro').validate({
+            rules: {
+                especialidad_sid: {
+                    required: true,
+                },
+                cursos_sid: {
+                    required: true,
+                },
+                grupo: {
+                    required: true
+                },
+                tipo_curso: {
+                    required: true
+                },
+                horario: {
+                    required: true
+                },
+                cerrs: {
+                    required: true
+                },
+                tblubicacion: {
+                    required: true
+                },
+                tblunidades: {
+                    required: true
+                }
+            },
+            messages: {
+                especialidad_sid: {
+                    required: "Por favor, Seleccione la especialidad"
+                },
+                cursos_sid: {
+                    required: "Por favor, Seleccione el curso"
+                },
+                grupo: {
+                    required: "Agregar el grupo"
+                },
+                tipo_curso: {
+                    required: "Por favor, Seleccione tipo de curso"
+                },
+                horario: {
+                    required: "Agregar Horario"
+                },
+                cerrs: {
+                    required: "Por favor, Seleccione una opción"
+                },
+                tblubicacion: {
+                    required: "Por favor, Seleccione una opción"
+                },
+                tblunidades: {
+                    required: "Por favor, Seleccione una opción"
+                }
+            }
+        });
+
+        /**
+        * cambios select dependientes de tbl_unidades
+        */
+        $('#tblubicacion').on("change", () => {
+            $("#tblubicacion option:selected").each( () => {
+                var ubicacion = $('#tblubicacion').val();
+                var url = '/unidades/unidades_by_ubicacion/'+ ubicacion;
+
+                var request = $.ajax
+                ({
+                    url: url,
+                    method: 'GET',
+                    dataType: 'json'
+                });
+
+                /*
+                    *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                    *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                    *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                    *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                */
+
+                request.done(( respuesta ) => {
+                    if (respuesta.length < 1) {
+                        $("#tblunidades").empty();
+                        $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                    } else {
+                        if(!respuesta.hasOwnProperty('error')){
+                            $("#tblunidades").empty();
+                            $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                            $.each(respuesta, (k, v) => {
+                                $('#tblunidades').append('<option value="' + v.unidad + '">' + v.unidad + '</option>');
+                            });
+                            $("#tblunidades").focus();
+                        }else{
+
+                            //Puedes mostrar un mensaje de error en algún div del DOM
+                        }
+                    }
+                });
+
+                request.fail(( jqXHR, textStatus ) =>
+                {
+                        alert( "Hubo un error: " + textStatus );
+                });
+            });
+        });
+        
+        /***
+         * escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar 
+         * los cursos de esa especialidad
+        */
+        $('#especialidad_sid' && '#tipo_curso').on("change", () => {
+
+            $("#especialidad_sid option:selected").each( () => {
+                var IdEsp = $('#especialidad_sid').val();
+                var tipo = $('#tipo_curso').val();
+                var unidad = $('#tblunidades').val();
+                var datos = { idEsp: IdEsp, tipo: tipo, unidad: unidad};
+                var url = "{{route('alumnos.sid.cursos')}}";
+
+                var request = $.ajax
+                ({
+                    url: url,
+                    method: 'POST',
+                    data: datos,
+                    dataType: 'json'
+                });
+
+                /*
+                    *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                    *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                    *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                    *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                */
+
+                request.done(( respuesta ) =>
+                {
+                    if (respuesta.length < 1) {
+                        $("#cursos_sid").empty();
+                        $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                    } else {
+                        if(!respuesta.hasOwnProperty('error')){
+                            $("#cursos_sid").empty();
+                            $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                            $.each(respuesta, (k ,v) => {
+                                $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                            });
+                            
+                            $("#cursos_sid").focus();
+                        }
+                    }
+                });
+
+                request.fail(( jqXHR, textStatus ) =>
+                {
+                    jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                    console.log(jqXHR.status);
+                    alert( "Hubo un error: " + jsonValue );
+                });
+            });
+        });
+    });
+</script>
+@endsection
