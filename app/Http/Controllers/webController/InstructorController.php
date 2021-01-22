@@ -186,10 +186,10 @@ class InstructorController extends Controller
     public function validado_save(Request $request)
     {
         $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-        'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-        'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-        'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-        'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+        'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+        'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+        'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+        'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
         'PALENQUE'];
 
         $instructor = instructor::find($request->id);
@@ -661,10 +661,10 @@ class InstructorController extends Controller
         {
             $reform = instructor::find($id);
             $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-            'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-            'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-            'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-            'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
             'PALENQUE'];
 
             $reform->unidades_disponible = $unidades;
@@ -717,11 +717,11 @@ class InstructorController extends Controller
         }
         if($this->checkComparator($request->chk_san_cristobal) == TRUE)
         {
-            array_push($unidades, 'SAN_CRISTOBAL');
+            array_push($unidades, 'SAN CRISTOBAL');
         }
         if($this->checkComparator($request->chk_chiapa_de_corzo) == TRUE)
         {
-            array_push($unidades, 'CHIAPA_DE_CORZO');
+            array_push($unidades, 'CHIAPA DE CORZO');
         }
         if($this->checkComparator($request->chk_motozintla) == TRUE)
         {
@@ -741,11 +741,11 @@ class InstructorController extends Controller
         }
         if($this->checkComparator($request->chk_la_concordia) == TRUE)
         {
-            array_push($unidades, 'LA_CONCORDIA');
+            array_push($unidades, 'LA CONCORDIA');
         }
         if($this->checkComparator($request->chk_venustiano_carranza) == TRUE)
         {
-            array_push($unidades, 'VENUSTIANO_CARRANZA');
+            array_push($unidades, 'VENUSTIANO CARRANZA');
         }
         if($this->checkComparator($request->chk_tila) == TRUE)
         {
@@ -773,7 +773,7 @@ class InstructorController extends Controller
         }
         if($this->checkComparator($request->chk_angel_albino_corzo) == TRUE)
         {
-            array_push($unidades, 'ANGEL_ALBINO_CORZO');
+            array_push($unidades, 'ANGEL ALBINO CORZO');
         }
         if($this->checkComparator($request->chk_arriaga) == TRUE)
         {
@@ -797,7 +797,7 @@ class InstructorController extends Controller
         }
         if($this->checkComparator($request->chk_villa_corzo) == TRUE)
         {
-            array_push($unidades, 'VILLA_CORZO');
+            array_push($unidades, 'VILLA CORZO');
         }
         if($this->checkComparator($request->chk_cacahoatan) == TRUE)
         {
@@ -805,11 +805,11 @@ class InstructorController extends Controller
         }
         if($this->checkComparator($request->chk_once_de_abril) == TRUE)
         {
-            array_push($unidades, 'ONCE_DE_ABRIL');
+            array_push($unidades, 'ONCE DE ABRIL');
         }
         if($this->checkComparator($request->chk_tuxtla_chico) == TRUE)
         {
-            array_push($unidades, 'TUXTLA_CHICO');
+            array_push($unidades, 'TUXTLA CHICO');
         }
         if($this->checkComparator($request->chk_oxchuc) == TRUE)
         {
