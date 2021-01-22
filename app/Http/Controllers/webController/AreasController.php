@@ -12,13 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class AreasController extends Controller
 {
-    public function index() {
-        $areas = DB::table('area')
+    public function index(Request $request) {
+
+        $areas = Area::Busqueda($request->get('busqueda'), $request->get('busqueda_aspirantepor'))
             ->leftjoin('users', 'area.iduser_created', '=', 'users.id')
             ->leftjoin('users  AS usuarios', 'area.iduser_updated', '=', 'usuarios.id')
             ->select('area.*', 'users.name AS nameCreated', 'usuarios.name AS nameUpdated')
             ->orderByDesc('area.id')
-            ->get();
+            ->paginate(15, ['area.*', 'users.name AS nameCreated', 'usuarios.name AS nameUpdated']);
+
+        /* $areas = DB::table('area')
+            ->leftjoin('users', 'area.iduser_created', '=', 'users.id')
+            ->leftjoin('users  AS usuarios', 'area.iduser_updated', '=', 'usuarios.id')
+            ->select('area.*', 'users.name AS nameCreated', 'usuarios.name AS nameUpdated')
+            ->orderByDesc('area.id')
+            ->paginate(10); */
+            // ->get();
 
         return view('layouts.pages.vstainicioareas', compact('areas'));
     }
