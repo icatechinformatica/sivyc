@@ -10,8 +10,27 @@ class Especialidad extends Model
     protected $table = 'especialidades';
 
     protected $fillable = [
-        'id','clave','id_areas','nombre'
+        'id', 'clave', 'id_areas', 'nombre'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    public function scopeBusqueda($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            if (!empty(trim($buscar))) {
+                switch ($tipo) {
+                    case 'clave':
+                        return $query->where('especialidades.clave', '=', $buscar);
+                        break;
+                    case 'nombre':
+                        return $query->where('especialidades.nombre', '=', $buscar);
+                        break;
+                    case 'prefijo':
+                        return $query->where('especialidades.prefijo', '=', $buscar);
+                        break;
+                }
+            }
+        }
+    }
 }
