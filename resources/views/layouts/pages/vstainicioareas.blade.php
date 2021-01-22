@@ -9,6 +9,24 @@
             <div class="col">
                 <h1>ÁREAS</h1>
             </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                {!! Form::open(['route' => 'areas.inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
+                        <option value="">BUSCAR POR TIPO</option>
+                        <option value="formacion_profesional">FORMACIÓN PROFESIONAL</option>
+                        {{-- <option value="nombre">NOMBRE</option> --}}
+                        {{-- <option value="prefijo">PREFIJO</option> --}}
+                    </select>
+
+                    {!! Form::text('busqueda_aspirantepor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                    {{-- <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button> --}}
+                    <button type="submit" class="btn btn-outline-primary">BUSCAR</button>
+                {!! Form::close() !!}
+            </div>
+
             <div class="col">
                 <div class="pull-right">
                     <a class="btn btn-success btn-lg" href="{{ route('areas.agregar') }}">Agregar</a>
@@ -66,6 +84,14 @@
                 @endforeach
             </tbody>
         </table>
+
+
+        <div class="row py-4">
+            <div class="col d-flex justify-content-center">
+                {{ $areas->links() }}
+            </div>
+        </div>
+
     </div>
 
     {{-- @if (session('success'))

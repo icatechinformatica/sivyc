@@ -418,3 +418,11 @@ Route::get('/areas/modificar/{id}', 'webController\AreasController@update')->nam
 Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas.guardar');
 Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save');
 Route::get('/areas/{id}', 'webController\AreasController@destroy')->name('areas.destroy');
+
+/* Modulo especialidades */
+Route::get('/especialidades/inicio', 'webController\EspecialidadesController@index')->name('especialidades.inicio');
+Route::get('/especialidades/agregar', 'webController\EspecialidadesController@create')->name('especialidades.agregar');
+Route::post('/especialidades/guardar', 'webController\EspecialidadesController@store')->name('especialidades.guardar');
+Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar');
+Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update');
+Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destroy')->name('especialidades.destroy');
