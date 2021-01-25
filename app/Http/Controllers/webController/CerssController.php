@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
 use App\Models\cerss;
 use App\Models\Municipio;
 use App\Models\Unidad;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CerssController extends Controller
 {
@@ -17,15 +19,52 @@ class CerssController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $i = 0;
-        $data = cerss::WHERE('id', '!=', '0')->GET();
+        $muni = null;
+        $cerss = new cerss;
 
-        foreach ($data as $cadwell)
+        $busqueda_cerss = $request->get('busquedaporCerss');
+        $tipoCerss = $request->get('tipo_cerss');
+
+        // obtener el usuario y su unidad
+        $usuarioUnidad = Auth::user()->unidad;
+        // obtener el id
+        $userId = Auth::user()->id;
+
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+            //hola
+
+            switch ($roles[0]->role_name) {
+                case 'admin':
+
+                        $data = $cerss::BusquedaCerss($tipoCerss, $busqueda_cerss)
+                            ->WHERE('unidad', '=', $unidadUsuario->id)
+                            ->WHERE('id', '!=', '0')
+                            ->GET();
+                break;
+                default:
+                    $unidadUsuario = DB::table('tbl_unidades')->WHERE('id', $usuarioUnidad)->FIRST();
+
+                    $data = $cerss::BusquedaCerss($tipoCerss, $busqueda_cerss)
+                                    ->WHERE('unidad', '=', $unidadUsuario->id)
+                                    ->WHERE('id', '!=', '0')
+                                    ->GET();
+                break;
+            }
+
+        if($data != NULL)
         {
-            $muni[$i] = Municipio::SELECT('muni')->WHERE('id', '=', $cadwell->id_municipio)->FIRST();
-            $i++;
+            foreach ($data as $cadwell)
+            {
+                $muni[$i] = Municipio::SELECT('muni')->WHERE('id', '=', $cadwell->id_municipio)->FIRST();
+                $i++;
+            }
         }
         return view('layouts.pages.vstainiciocerss', compact('data','muni'));
     }
