@@ -154,8 +154,7 @@ class AlumnoRegistradoController extends Controller
             'id_curso' => $request->input('curso_sid_mod'),
             'horario' => trim($request->input('horario_mod')),
             'grupo' => trim($request->input('grupo_mod')),
-            'tipo_curso' => trim($request->input('tipo_curso_mod')),
-            'cerrs' => $request->input('cerrs_mod')
+            'tipo_curso' => trim($request->input('tipo_curso_mod'))
         ];
         $alumnoId = base64_decode($idregistrado);
 
