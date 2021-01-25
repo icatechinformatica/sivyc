@@ -171,7 +171,7 @@
                         </select>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="horario" class="control-label">TIPO DE CURSO</label>
+                        <label for="tipo_curso" class="control-label">TIPO DE CURSO</label>
                         <select class="form-control" id="tipo_curso" name="tipo_curso" required>
                             <option value="">--SELECCIONAR--</option>
                             <option value="PRESENCIAL">PRESENCIAL</option>
