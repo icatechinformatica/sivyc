@@ -386,6 +386,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inscripcion/grupos', 'InscripcionController\grupoController@show')->name('inscripcion.grupos');
     */
 
+    Route::get('reportes/formato_t_reporte/index', function () {
+        return view('layouts.pages.reportes.formato_t_reporte');
+    })->name('reportes.formatoT');
+    
+    //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
+    Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
+    Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+    Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+    Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc');
+    Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
+    Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
+    Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
 });
 
 /*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
