@@ -38,9 +38,11 @@
                     {!! Form::close() !!}
                 </div>
                 <br>
-                <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('cerss.frm')}}">Nuevo</a>
-                </div>
+                @can('cerss.create')
+                    <div class="pull-right">
+                        <a class="btn btn-success btn-lg" href="{{route('cerss.frm')}}">Nuevo</a>
+                    </div>
+                @endcan
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -69,9 +71,11 @@
                             <td>Inactivo</td>
                         @endif
                         <td>
-                            <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('cerss.update', ['id' => $itemData->id])}}">
-                                <i class="fa fa-wrench" aria-hidden="true"></i>
-                            </a>
+                            @can('cerss.update')
+                                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('cerss.update', ['id' => $itemData->id])}}">
+                                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                                </a>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach
