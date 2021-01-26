@@ -426,3 +426,8 @@ Route::post('/especialidades/guardar', 'webController\EspecialidadesController@s
 Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar');
 Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update');
 Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destroy')->name('especialidades.destroy');
+
+
+/* Modulo instituto*/
+Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio');
+Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar');
