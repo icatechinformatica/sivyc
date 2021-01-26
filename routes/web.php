@@ -422,6 +422,7 @@ Route::get('/cerss/formulario', 'webController\CerssController@create')->name('c
 Route::get('/cerss/modificar/{id}', 'webController\CerssController@update')->name('cerss.update');
 Route::post('/cerss/formulario/save', 'webController\CerssController@save')->name('cerss.save');
 Route::post('/cerss/modificar/save', 'webController\CerssController@update_save')->name('cerss.save-update');
+Route::post('/cerss/modificar/save-titular', 'webController\CerssController@updateTitular_save')->name('cerss.savetitular-update');
 
 /* Modulo áreas */
 Route::get('/areas/inicio', 'webController\AreasController@index')->name('areas.inicio');
