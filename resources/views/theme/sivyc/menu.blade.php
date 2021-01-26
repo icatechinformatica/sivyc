@@ -62,6 +62,9 @@
                         @endcan
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                         <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
+                        <a class="dropdown-item" href="{{route('areas.inicio')}}">Áreas</a>
+                        <a class="dropdown-item" href="{{route('especialidades.inicio')}}">Especialidades</a>
+                        <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
                     </div>
                 </li>
                 @can('tablero.metas.index')
