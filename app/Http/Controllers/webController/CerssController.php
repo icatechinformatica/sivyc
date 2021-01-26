@@ -42,11 +42,10 @@ class CerssController extends Controller
 
             switch ($roles[0]->role_name) {
                 case 'admin':
-
                         $data = $cerss::BusquedaCerss($tipoCerss, $busqueda_cerss)
-                            ->WHERE('unidad', '=', $unidadUsuario->id)
                             ->WHERE('id', '!=', '0')
                             ->GET();
+
                 break;
                 default:
                     $unidadUsuario = DB::table('tbl_unidades')->WHERE('id', $usuarioUnidad)->FIRST();
@@ -106,7 +105,21 @@ class CerssController extends Controller
         $unidadsel = Unidad::SELECT('id','unidad')->WHERE('id', '=', $data->id_unidad)->FIRST();
         $unidad = Unidad::SELECT('id','unidad')->WHERE('id', '!=', $data->id_unidad)->GET();
 
-        return view('layouts.pages.frmcerssupdate', compact('data','munisel','muni','unidadsel','unidad'));
+        $userId = Auth::user()->id;
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+
+        if($roles[0]->role_name == 'admin')
+        {
+            return view('layouts.pages.frmcerssupdate', compact('data','munisel','muni','unidadsel','unidad'));
+        }
+        else
+        {
+            return view('layouts.pages.cerssupdatetitular', compact('data','munisel','muni','unidadsel','unidad'));
+        }
     }
 
     public function update_save(Request $request)
@@ -129,6 +142,17 @@ class CerssController extends Controller
         $mod->telefono = $request->telefono;
         $mod->telefono2 = $request->telefono2;
         $mod->id_unidad = $request->unidad;
+        $mod->iduser_update = auth()->user()->id;
+        $mod->save();
+
+        return redirect()->route('cerss.inicio')
+                ->with('success','CERSS Modificado');
+    }
+
+    public function updateTitular_save(Request $request)
+    {
+        $mod = cerss::find($request->idcerss);
+        $mod->titular = $request->titular;
         $mod->iduser_update = auth()->user()->id;
         $mod->save();
 
