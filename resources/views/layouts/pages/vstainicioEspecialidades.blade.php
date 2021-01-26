@@ -14,16 +14,18 @@
 
         <div class="row">
             <div class="col">
-                {!! Form::open(['route' => 'especialidades.inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                    <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
-                        <option value="">BUSCAR POR TIPO</option>
-                        <option value="clave">CLAVE</option>
-                        <option value="nombre">NOMBRE</option>
-                        <option value="prefijo">PREFIJO</option>
-                    </select>
+                {!! Form::open(['route' => 'especialidades.inicio', 'method' => 'GET', 'class' => 'form-inline']) !!}
+                <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
+                    <option value="">BUSCAR POR TIPO</option>
+                    <option value="clave">CLAVE</option>
+                    <option value="nombre">NOMBRE</option>
+                    <option value="prefijo">PREFIJO</option>
+                    <option value="area">ÁREA</option>
+                </select>
 
-                    {!! Form::text('busqueda_aspirantepor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
-                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                {!! Form::text('busqueda_aspirantepor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
+                'aria-label' => 'BUSCAR']) !!}
+                <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                 {!! Form::close() !!}
             </div>
 
@@ -55,8 +57,8 @@
                     <tr>
                         <td>{{ $especialidad->clave }}</td>
                         <td>{{ $especialidad->nombre }}</td>
-                        <td>{{ $especialidad->created_at }}</td>
-                        <td>{{ $especialidad->updated_at }}</td>
+                        <td>{{ $especialidad->created_at !=null ? $especialidad->created_at->format('d-m-y') : '' }}</td>
+                        <td>{{ $especialidad->updated_at != null ? $especialidad->updated_at->format('d-m-y') : '' }}</td>
                         <td>{{ $especialidad->nameArea }}</td>
                         <td>{{ $especialidad->nameCreated }}</td>
                         <td>{{ $especialidad->nameUpdated }}</td>
@@ -67,12 +69,15 @@
                         @endif
                         <td>{{ $especialidad->prefijo }}</td>
                         <td>
-                            <div class="col d-flex justify-content-center">
-                                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Editar"
+                            {{-- <div class="col d-flex justify-content-center">
+                                --}}
+                                <a class="d-flex justify-content-center align-items-center btn btn-warning btn-circle m-1 btn-circle-sm"
+                                    title="Editar"
                                     href="{{ route('especialidades.modificar', ['id' => $especialidad->id]) }}">
-                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
                                 </a>
-                            </div>
+                                {{--
+                            </div> --}}
 
                             {{-- <div class="col">
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Eliminar"

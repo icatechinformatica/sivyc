@@ -3,6 +3,7 @@
 namespace App\Models\api;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Especialidad extends Model
 {
@@ -28,6 +29,10 @@ class Especialidad extends Model
                         break;
                     case 'prefijo':
                         return $query->where('especialidades.prefijo', '=', $buscar);
+                        break;
+                    case 'area':
+                        $idArea = DB::table('area')->where('area.formacion_profesional', '=', $buscar)->select('id')->first();
+                        return $query->where('especialidades.id_areas', '=', $idArea->id);
                         break;
                 }
             }
