@@ -13,17 +13,21 @@
 
         <div class="row">
             <div class="col">
-                {!! Form::open(['route' => 'areas.inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                    <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
-                        <option value="">BUSCAR POR TIPO</option>
-                        <option value="formacion_profesional">FORMACIÓN PROFESIONAL</option>
-                        {{-- <option value="nombre">NOMBRE</option> --}}
-                        {{-- <option value="prefijo">PREFIJO</option> --}}
-                    </select>
+                {!! Form::open(['route' => 'areas.inicio', 'method' => 'GET', 'class' => 'form-inline']) !!}
+                <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
+                    <option value="">BUSCAR POR TIPO</option>
+                    <option value="formacion_profesional">FORMACIÓN PROFESIONAL</option>
+                    {{-- <option value="nombre">NOMBRE</option>
+                    --}}
+                    {{-- <option value="prefijo">PREFIJO</option>
+                    --}}
+                </select>
 
-                    {!! Form::text('busqueda_aspirantepor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
-                    {{-- <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button> --}}
-                    <button type="submit" class="btn btn-outline-primary">BUSCAR</button>
+                {!! Form::text('busqueda_aspirantepor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
+                'aria-label' => 'BUSCAR']) !!}
+                {{-- <button class="btn btn-outline-info my-2 my-sm-0"
+                    type="submit">BUSCAR</button> --}}
+                <button type="submit" class="btn btn-outline-primary">BUSCAR</button>
                 {!! Form::close() !!}
             </div>
 
@@ -42,19 +46,19 @@
                     <th scope="col">Actualizado</th>
                     <th scope="col">Creado por</th>
                     <th scope="col">Actualizado por</th>
-                    <th width="180px">Estado</th>
-                    <th width="180px">Modificar</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Modificar</th>
                 </tr>
             </thead>
 
             <tbody>
 
-                {{-- {{$areas}} --}}
+                {{-- {{ $areas }} --}}
                 @foreach ($areas as $area)
                     <tr>
                         <td>{{ $area->formacion_profesional }}</td>
-                        <td>{{ $area->created_at }}</td>
-                        <td>{{ $area->updated_at }}</td>
+                        <td>{{ $area->created_at != null ? $area->created_at->format('d-m-y') : '' }}</td>
+                        <td>{{ $area->updated_at != null ? $area->updated_at->format('d-m-y') : '' }}</td>
                         <td>{{ $area->nameCreated }}</td>
                         <td>{{ $area->nameUpdated }}</td>
                         @if ($area->activo == 'true')
@@ -64,13 +68,11 @@
                         @endif
 
                         <td>
-                            <div class="row">
-                                <div class="col d-flex justify-content-center">
-                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Editar"
-                                        href="{{ route('areas.modificar', ['id' => $area->id]) }}">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                    </a>
-                                </div>
+                            <a class="col d-flex justify-content-center align-items-center btn btn-warning btn-circle m-1 btn-circle-sm"
+                                title="Editar" href="{{ route('areas.modificar', ['id' => $area->id]) }}">
+                                <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                            </a>
+                            {{-- <div class="col"> --}}
 
                                 {{-- <div class="col">
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Eliminar"
@@ -78,7 +80,7 @@
                                         <i class="fa fa-trash" aria-hidden="true"></i>
                                     </a>
                                 </div> --}}
-                            </div>
+                                {{-- </div> --}}
                         </td>
                     </tr>
                 @endforeach
@@ -96,7 +98,8 @@
 
     {{-- @if (session('success'))
         <script>
-            alert("{{session('success')}}");
+            alert("{{ session('success') }}");
+
         </script>
     @endif --}}
 @endsection
