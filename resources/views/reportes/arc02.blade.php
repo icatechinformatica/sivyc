@@ -44,7 +44,7 @@
                     <font size=1><b>UNIDAD DE CAPACITACION {{ $reg_unidad->unidad }}<br/>
                     <font size=1>DEPARTAMENTO ACADEMICO</font><br/>
                     <font size=1>SOLICITUD DE REPROGRAMACION O CANCELACION DE CURSO</font><br/>
-                    <font size=1>"2021,AÑO DE LA INDEPENDENCIA"</font><br/>                                              
+                    <font size=1>"2021, AÑO DE LA INDEPENDENCIA"</font><br/>                                              
                 </div><br>
             </div>
             <table class="tablag">
