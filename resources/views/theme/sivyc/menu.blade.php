@@ -97,6 +97,7 @@
                             <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">CURSOS AUTORIZADOS</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Planeación</a>
+                        <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">Apertura</a>
                     </div>
                 </li>
             </ul>
