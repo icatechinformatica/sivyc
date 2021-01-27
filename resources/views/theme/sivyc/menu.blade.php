@@ -61,7 +61,9 @@
                             <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
-                        <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
+                        @can('cerss.entrar')
+                            <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
+                        @endcan
                         <a class="dropdown-item" href="{{route('areas.inicio')}}">Áreas</a>
                         <a class="dropdown-item" href="{{route('especialidades.inicio')}}">Especialidades</a>
                         <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
