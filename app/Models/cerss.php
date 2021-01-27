@@ -17,4 +17,25 @@ class cerss extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    public function scopeBusquedaCerss($query, $tipo, $buscar)
+    {
+        $x = 'no entro';
+        if (!empty($tipo)) {
+            # si tipo no es vacio se hace la busqueda
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'nombre':
+                        # el tipo
+                        return $query->WHERE('nombre', '=', $buscar);
+                        break;
+                    case 'titular':
+                        # unidad de capacitacion
+                        return $query->WHERE('titular', 'LIKE', $buscar);
+                        break;
+                }
+            }
+        }
+    }
+
 }

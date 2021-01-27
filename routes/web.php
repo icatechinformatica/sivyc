@@ -386,6 +386,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inscripcion/grupos', 'InscripcionController\grupoController@show')->name('inscripcion.grupos');
     */
 
+    Route::get('reportes/formato_t_reporte/index', function () {
+        return view('layouts.pages.reportes.formato_t_reporte');
+    })->name('reportes.formatoT');
+    
+    //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
+    Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
+    Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+    Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+    Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc');
+    Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
+    Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
+    Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
 });
 
 /*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
@@ -410,4 +422,25 @@ Route::get('/cerss/formulario', 'webController\CerssController@create')->name('c
 Route::get('/cerss/modificar/{id}', 'webController\CerssController@update')->name('cerss.update');
 Route::post('/cerss/formulario/save', 'webController\CerssController@save')->name('cerss.save');
 Route::post('/cerss/modificar/save', 'webController\CerssController@update_save')->name('cerss.save-update');
+Route::post('/cerss/modificar/save-titular', 'webController\CerssController@updateTitular_save')->name('cerss.savetitular-update');
 
+/* Modulo áreas */
+Route::get('/areas/inicio', 'webController\AreasController@index')->name('areas.inicio');
+Route::get('/areas/agregar', 'webController\AreasController@create')->name('areas.agregar');
+Route::get('/areas/modificar/{id}', 'webController\AreasController@update')->name('areas.modificar');
+Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas.guardar');
+Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save');
+Route::get('/areas/{id}', 'webController\AreasController@destroy')->name('areas.destroy');
+
+/* Modulo especialidades */
+Route::get('/especialidades/inicio', 'webController\EspecialidadesController@index')->name('especialidades.inicio');
+Route::get('/especialidades/agregar', 'webController\EspecialidadesController@create')->name('especialidades.agregar');
+Route::post('/especialidades/guardar', 'webController\EspecialidadesController@store')->name('especialidades.guardar');
+Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar');
+Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update');
+Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destroy')->name('especialidades.destroy');
+
+
+/* Modulo instituto*/
+Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio');
+Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar');
