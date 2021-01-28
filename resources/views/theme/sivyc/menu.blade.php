@@ -96,7 +96,9 @@
                         @can('reportes.cursos')
                             <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">CURSOS AUTORIZADOS</a>
                         @endcan
-                        <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Planeación</a>
+                        @can('planeacion.reporte')
+                            <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Planeación</a>
+                        @endcan
                         <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">Apertura</a>
                     </div>
                 </li>

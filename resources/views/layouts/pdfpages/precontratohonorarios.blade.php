@@ -188,7 +188,7 @@
                 <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓ DE CONTRATO</b></div>
                 <br><br>
                 <div align=justify>
-                    <small>Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas cursos No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} (a) de la Unidad de Capacitación {{$data_contrato->unidad_capacitacion}}, y el C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}.</small>
+                    <small style="font-size: 12px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas cursos No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} (a) de la Unidad de Capacitación {{$data_contrato->unidad_capacitacion}}, y el C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}.</small>
                 </div>
             </div>
         </div>
