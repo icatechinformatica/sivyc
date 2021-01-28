@@ -52,22 +52,27 @@ class PagoController extends Controller
         //dd($roles[0]->role_name);
 
         $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago)
+        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+        ->orderBy('folios.id_folios', 'desc')
         ->PAGINATE(25, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
             'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre'
-        ])
-        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado']);
-
+        ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
                 # code...
                 $contratos_folios = $contratos_folios;
                 break;
+            case 'admin':
+                # code...
+                $contratos_folios = $contratos_folios;
+
+            break;
             case 'direccion.general':
                 # code...
                 $contratos_folios = $contratos_folios;
