@@ -797,7 +797,7 @@ class InstructorController extends Controller
         }
         if($this->checkComparator($request->chk_villa_corzo) == TRUE)
         {
-            array_push($unidades, 'VILLA_CORZO');
+            array_push($unidades, 'VILLA CORZO');
         }
         if($this->checkComparator($request->chk_cacahoatan) == TRUE)
         {
