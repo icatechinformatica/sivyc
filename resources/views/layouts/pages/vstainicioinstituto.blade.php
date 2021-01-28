@@ -54,7 +54,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label for="email" class="control-label">Email del instituto</label>
-                        <input type="text" class="form-control" id="email" name="email" placeholder="Email del instituto"
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email del instituto"
                             value="{{ $instituto != null ? $instituto->correo : '' }}" required>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            
+
             {{-- actualizado y fechas --}}
             <hr>
             <div class="row">

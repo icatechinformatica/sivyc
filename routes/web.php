@@ -2,6 +2,7 @@
 //Rutas Orlando
 
 use App\Http\Controllers\webController\InstructorController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -413,22 +414,22 @@ Route::post('/cerss/modificar/save', 'webController\CerssController@update_save'
 Route::post('/cerss/modificar/save-titular', 'webController\CerssController@updateTitular_save')->name('cerss.savetitular-update');
 
 /* Modulo áreas */
-Route::get('/areas/inicio', 'webController\AreasController@index')->name('areas.inicio');
-Route::get('/areas/agregar', 'webController\AreasController@create')->name('areas.agregar');
-Route::get('/areas/modificar/{id}', 'webController\AreasController@update')->name('areas.modificar');
-Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas.guardar');
-Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save');
+Route::get('/areas/inicio', 'webController\AreasController@index')->name('areas.inicio')->middleware('can:areas.inicio');
+Route::get('/areas/agregar', 'webController\AreasController@create')->name('areas.agregar')->middleware('can:areas.formulario-creacion');
+Route::get('/areas/modificar/{id}', 'webController\AreasController@update')->name('areas.modificar')->middleware('can:areas.formulario-actualizar');
+Route::post('/areas/guardar', 'webController\AreasController@save')->name('areas.guardar')->middleware('can:areas.guardar-nueva-area');
+Route::post('/areas/modificar/save', 'webController\AreasController@update_save')->name('areas.update_save')->middleware('can:areas.guardar-modificacion');
 Route::get('/areas/{id}', 'webController\AreasController@destroy')->name('areas.destroy');
 
 /* Modulo especialidades */
-Route::get('/especialidades/inicio', 'webController\EspecialidadesController@index')->name('especialidades.inicio');
-Route::get('/especialidades/agregar', 'webController\EspecialidadesController@create')->name('especialidades.agregar');
-Route::post('/especialidades/guardar', 'webController\EspecialidadesController@store')->name('especialidades.guardar');
-Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar');
-Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update');
+Route::get('/especialidades/inicio', 'webController\EspecialidadesController@index')->name('especialidades.inicio')->middleware('can:especialidades.inicio');
+Route::get('/especialidades/agregar', 'webController\EspecialidadesController@create')->name('especialidades.agregar')->middleware('can:especialidades.formulario-creacion');
+Route::post('/especialidades/guardar', 'webController\EspecialidadesController@store')->name('especialidades.guardar')->middleware('can:especialidades.guardar-nueva-especialidad');
+Route::get('/especialidades/modificar/{id}', 'webController\EspecialidadesController@edit')->name('especialidades.modificar')->middleware('can:especialidades.formulario-actualizar');
+Route::post('/especialidades/modificar/save/{id}', 'webController\EspecialidadesController@update')->name('especialidades.update')->Middleware('can:especialidades.guardar-modificacion');
 Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destroy')->name('especialidades.destroy');
 
 
 /* Modulo instituto*/
-Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio');
-Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar');
+Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio')->middleware('can:instituto.inicio');
+Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar')->middleware('can:instituto.guardar-modificacion');
