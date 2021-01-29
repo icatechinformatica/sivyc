@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Models\Municipio;
 use App\Models\convenioAvailable;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class ConveniosController extends Controller
@@ -36,7 +37,8 @@ class ConveniosController extends Controller
     public function create()
     {
         // mostrar formulario de convenio
-        return view('layouts.pages.frmconvenio');
+        $municipios = DB::table('tbl_municipios')->get();
+        return view('layouts.pages.frmconvenio', compact('municipios'));
     }
 
     /**
@@ -371,14 +373,29 @@ class ConveniosController extends Controller
         return $stat;
     }
 
+    // protected function uploaded_file($file, $id, $name)
+    // {
+    //     $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
+    //     $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
+    //     # nuevo nombre del archivo
+    //     $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
+    //     $file->storeAs('/convenios/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+    //     $documentUrl = Storage::url('/convenios/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+    //     return $documentUrl;
+    // }
+
     protected function uploaded_file($file, $id, $name)
     {
         $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
-        $file->storeAs('/convenios/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
-        $documentUrl = Storage::url('/convenios/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        //$path = $file->storeAs('/filesUpload/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+        //$documentUrl = $documentFile;
+        $path = 'convenios/'.$id.'/'.$documentFile;
+        Storage::disk('mydisk')->put($path, file_get_contents($file));
+        //$path = storage_path('app/filesUpload/alumnos/'.$id.'/'.$documentFile);
+        $documentUrl = Storage::disk('mydisk')->url('/uploadFiles/convenios/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
 }
