@@ -207,6 +207,7 @@ class InstructorController extends Controller
         $instructor->tipo_honorario = trim($request->honorario);
         $instructor->clave_unidad = trim($request->unidad_registra);
         $instructor->status = "Validado";
+        $instructor->estado = TRUE;
         $instructor->unidades_disponible = $unidades;
 
         //Creacion de el numero de control
@@ -365,6 +366,14 @@ class InstructorController extends Controller
         $modInstructor->correo = trim($request->correo);
         $modInstructor->tipo_honorario = trim($request->honorario);
         $modInstructor->clave_unidad = trim($request->unidad_registra);
+        if($request->estado != NULL)
+        {
+            $modInstructor->estado = TRUE;
+        }
+        else
+        {
+            $modInstructor->estado = FALSE;
+        }
 
         $uni = substr($request->unidad_registra, -2);
         $nuco = substr($modInstructor->numero_control, -12);
