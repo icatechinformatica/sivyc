@@ -24,7 +24,7 @@ Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@histor
 Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
-Route::get('/prueba', 'webController\CursosController@prueba');
+Route::get('/prueba', 'webController\InstructorController@prueba');
 
 //Ruta Manual
 Route::get('/user/manuales', 'webController\manualController@index')->name('manuales');
@@ -389,7 +389,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reportes/formato_t_reporte/index', function () {
         return view('layouts.pages.reportes.formato_t_reporte');
     })->name('reportes.formatoT');
-    
+
     //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
     Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
     Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');

@@ -24,22 +24,6 @@ class CursosController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function prueba()
-    {
-        $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-        'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-        'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-        'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-        'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
-        'PALENQUE'];
-        $cursos = curso::SELECT('id')->WHERE('id', '!=', '0')->GET();
-        foreach($cursos as $cadwell)
-        {
-            curso::where('id', '=', $cadwell->id)->update(['unidades_disponible' => $unidades]);
-        }
-        dd('ya quedo');
-    }
-
     public function index(Request $request)
     {
         /**
