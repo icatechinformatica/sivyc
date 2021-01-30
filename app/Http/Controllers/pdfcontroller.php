@@ -54,7 +54,7 @@ class pdfcontroller extends Controller
             if(count($unidades)==0) 
             {
                 $unidades =[$unidad];
-                $_SESSION['unidades'] = $unidades;
+                $_SESSION['unidad'] = $unidades;
             }
             else
             {
@@ -63,7 +63,7 @@ class pdfcontroller extends Controller
         }
         //var_dump($_SESSION['unidades']);exit;
         $fecha_memo=date('d-m-yy',strtotime($fecha_termino));
-        $reg_cursos = DB::table('tbl_cursos')->SELECT('id','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
+        $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
         DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
         'motivo','cp','ze','tcapacitacion');
         if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
@@ -78,7 +78,7 @@ class pdfcontroller extends Controller
         }
         else
         {
-            $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
+            $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
             'pvinculacion')->where('unidad',$_SESSION['unidad'])->first();
             //dd($reg_unidad);
             $pdf = PDF::loadView('reportes.arc01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura'));

@@ -395,7 +395,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
     Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
     Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
-    Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc');
+    Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc')->Middleware('can:academicos.arc');
     Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
     Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
     Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
