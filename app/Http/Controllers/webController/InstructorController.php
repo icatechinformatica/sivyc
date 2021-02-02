@@ -34,15 +34,7 @@ class InstructorController extends Controller
      */
 
      #----- instructor/inicio -----#
-     public function prueba()
-     {
-         $instructor = instructor::SELECT('id')->WHERE('id', '!=', '0')->GET();
-         foreach($instructor as $cadwell)
-         {
-             instructor::WHERE('id', '=', $cadwell->id)->update(['estado' => TRUE]);
-         }
-         dd('ya quedo');
-     }
+
 
     public function index(Request $request)
     {

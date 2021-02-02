@@ -24,6 +24,16 @@ class CursosController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function prueba()
+    {
+        $curso = curso::SELECT('id')->WHERE('id', '!=', '0')->GET();
+        foreach($curso as $cadwell)
+        {
+            curso::WHERE('id', '=', $cadwell->id)->update(['estado' => TRUE]);
+        }
+        dd('ya quedo');
+    }
+
     public function index(Request $request)
     {
         /**
@@ -173,7 +183,7 @@ class CursosController extends Controller
 
             $idCurso = base64_decode($id);
             $curso = new curso();
-            $cursos = $curso::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+            $cursos = $curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
                     'cursos.costo','cursos.duracion','cursos.tipo_curso',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
@@ -262,6 +272,14 @@ class CursosController extends Controller
         if (isset($id)) {
             $cursos = new curso();
             # code...
+            if($request->estado != NULL)
+            {
+                $estado = TRUE;
+            }
+            else
+            {
+                $estado = FALSE;
+            }
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -286,6 +304,7 @@ class CursosController extends Controller
                 'tipo_curso' => trim($request->tipo_curso),
                 'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
                 'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
+                'estado' => $estado,
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
