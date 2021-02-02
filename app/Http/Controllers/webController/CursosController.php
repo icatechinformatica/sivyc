@@ -267,18 +267,9 @@ class CursosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $cursos = new curso();
         // modificacion de un recurso guardado
         if (isset($id)) {
-            $cursos = new curso();
-            # code...
-            if($request->estado != NULL)
-            {
-                $estado = TRUE;
-            }
-            else
-            {
-                $estado = FALSE;
-            }
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -307,6 +298,15 @@ class CursosController extends Controller
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
+            if($request->estado != NULL)
+            {
+                $cursos->WHERE('id', '=', $id)->UPDATE(['estado' => TRUE]);
+            }
+            else
+            {
+                $cursos->WHERE('id', '=', $id)->UPDATE(['estado' => FALSE]);
+            }
+
             # ==================================
             # Aquí modificamos el curso con id
             # ==================================
