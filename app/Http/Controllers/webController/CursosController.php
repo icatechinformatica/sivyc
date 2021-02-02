@@ -168,7 +168,6 @@ class CursosController extends Controller
      */
     public function show($id)
     {
-        //
         try {
             //consulta sql
             $area = new Area();

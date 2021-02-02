@@ -301,7 +301,7 @@
         <hr style="border-color:dimgray">
         <label><h2>Estado General del Curso</h2></label>
         <div class="form-group col-md-4">
-            @if ($cursos->estado == true)
+            @if ($cursos[0]->estado == true)
                 <label class="switch">
                     <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
                     <span class="slider round"></span>
