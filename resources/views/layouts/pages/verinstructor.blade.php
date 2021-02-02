@@ -403,7 +403,7 @@
                         </div>
                     </div>
                 </div>
-                @can('instructor.alta_baja')
+                @can('instructor.altabaja')
                     <hr style="border-color:dimgray">
                     <label><h2>Estado General del Instructor</h2></label>
                     <div class="form-group col-md-4">
