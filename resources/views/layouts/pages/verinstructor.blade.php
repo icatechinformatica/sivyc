@@ -407,7 +407,11 @@
                     <hr style="border-color:dimgray">
                     <label><h2>Estado General del Instructor</h2></label>
                     <div class="form-group col-md-4">
+<<<<<<< HEAD
                         @if ($datains->estado == TRUE || $datains->estado == NULL)
+=======
+                        @if ($datains->estado == true)
+>>>>>>> 9be69d309a7e5e58733fbfea5e7f706d9f997692
                             <label class="switch">
                                 <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
                                 <span class="slider round"></span>
