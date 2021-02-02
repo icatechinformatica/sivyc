@@ -293,18 +293,22 @@ class CursosController extends Controller
                 'nivel_estudio' => trim($request->nivel_estudio),
                 'categoria' => trim($request->categoria),
                 'tipo_curso' => trim($request->tipo_curso),
-                'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
-                'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
             if($request->estado != NULL)
             {
-                $cursos->WHERE('id', '=', $id)->UPDATE(['estado' => TRUE]);
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => TRUE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
             }
             else
             {
-                $cursos->WHERE('id', '=', $id)->UPDATE(['estado' => FALSE]);
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => FALSE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
             }
 
             # ==================================
