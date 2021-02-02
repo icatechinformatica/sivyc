@@ -114,6 +114,7 @@ class CursosController extends Controller
             $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
             $cursos->rango_criterio_pago_maximo = trim($request->criterio_pago_maximo);
             $cursos->unidades_disponible = $unidades;
+            $cursos->estado = TRUE;
             $cursos->save();
 
             # ==================================
