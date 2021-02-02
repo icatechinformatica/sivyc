@@ -303,7 +303,7 @@ class CursosController extends Controller
                 'tipo_curso' => trim($request->tipo_curso),
                 'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
                 'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
-                'estado' => $estado,
+                'estado' => (isset($request->estado)) ? $request->estado : false,
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
