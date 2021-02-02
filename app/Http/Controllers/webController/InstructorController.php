@@ -34,6 +34,8 @@ class InstructorController extends Controller
      */
 
      #----- instructor/inicio -----#
+
+
     public function index(Request $request)
     {
         $busquedaInstructor = $request->get('busquedaPorInstructor');
