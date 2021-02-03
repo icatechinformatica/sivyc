@@ -5,18 +5,10 @@ namespace App\Http\Controllers\webController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Convenio;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-// use Illuminate\Support\Facades\File;
-use App\Models\Municipio;
 use App\Models\convenioAvailable;
 use Carbon\Carbon;
-use Maatwebsite\Excel\Concerns\ToArray;
-use PhpParser\Node\Stmt\Foreach_;
-use SebastianBergmann\Environment\Console;
-
-use function Complex\add;
 
 class ConveniosController extends Controller
 {
