@@ -160,6 +160,11 @@ Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre
 Route::get('/supre/pdf/{id}', 'webController\supreController@supre_pdf')->name('supre-pdf');
 
 /**
+ * Ruta que muestra los archivos protegidos con un middleware de auth
+ */
+Route::get('/storage/uploadFiles/{folder}/{id}/{slug}', 'webController\DocumentoController@show')->middleware('auth')->name('documentos.show');
+
+/**
  * Middleware con permisos de los usuarios de autenticacion
  */
 Route::middleware(['auth'])->group(function () {
