@@ -162,7 +162,7 @@ Route::get('/supre/pdf/{id}', 'webController\supreController@supre_pdf')->name('
 /**
  * Ruta que muestra los archivos protegidos con un middleware de auth
  */
-Route::get('/storage/{slugpath}/alumnos/{alumnos_id}/{slug}', 'webController\DocumentoController@show')->middleware('auth')->name('documentos.show');
+Route::get('/storage/uploadFiles/{folder}/{id}/{slug}', 'webController\DocumentoController@show')->middleware('auth')->name('documentos.show');
 
 /**
  * Middleware con permisos de los usuarios de autenticacion

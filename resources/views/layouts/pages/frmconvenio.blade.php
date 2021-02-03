@@ -20,7 +20,7 @@
             </div><br />
         @endif
 
-        <form method="POST" action="{{ route('convenios.store') }}" id="frmConvenios" enctype="multipart/form-data"
+        <form method="POST" action="{{ route('convenios.store') }}" id="frmConvenio" enctype="multipart/form-data"
             autocomplete="off">
             @csrf
 
@@ -74,10 +74,6 @@
 
                 <!--municipio-->
                 <div class="form-group col-md-4">
-                    {{-- <label for="municipio" class="control-label">MUNICIPIO</label>
-                    --}}
-                    {{-- <input type='text' id="municipio" name="municipio"
-                        class="form-control" /> --}}
                     <label for="area" class="control-label">MUNICIPIO</label>
                     <select name="municipio" id="municipio" class="custom-select">
                         <option value="">--SELECCIONAR--</option>
@@ -94,7 +90,11 @@
                 <!--tipo convenio-->
                 <div class="form-group col">
                     <label for="tipo_convenio" class="control-label">TIPO DE CONVENIO</label>
-                    <input type='text' id="tipo_convenio" name="tipo_convenio" class="form-control" />
+                    <select name="tipo_convenio" id="tipo_convenio" class="custom-select">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="ESPECIFICO">ESPECIFICO</option>
+                    </select>
                 </div>
                 <!-- NOMBRE DE FIRMA -->
                 <div class="form-group col">
@@ -148,36 +148,51 @@
                     <label for="sector">SECTOR</label>
                     <select class="form-control" id="sector" name="sector">
                         <option value="">--SELECCIONAR--</option>
-                        <option value="S">S</option>
-                        <option value="E">E</option>
-                        <option value="G">G</option>
+                        <option value="PUBLICO">PUBLICO</option>
+                        <option value="PRIVADO">PRIVADO</option>
+                        <option value="SOCIAL">SOCIAL</option>
                     </select>
                 </div>
-                <!-- Fin Sector-->
-                <div class="form-group col">
-                    <label for="status">ESTATUS</label>
-                    <select class="form-control" id="status" name="status">
-                        <option value="">--SELECCIONAR--</option>
-                        <option value="true">ACTIVO</option>
-                        <option value="false">TERMINADO</option>
-                    </select>
+                {{-- btn publicar --}}
+                <div class="col text-center pt-4">
+                    <label for="publicar">PUBLICAR</label>
+                    <input type="checkbox" id="publicar" name="publicar" checked data-toggle="toggle" data-on="Si"
+                        data-off="No" data-onstyle="success" data-offstyle="danger" data-width="100" data-height="30">
                 </div>
             </div>
 
-            <div class="row mt-3">
+            <hr>
+            <div class="row">
                 <div class="col d-flex justify-content-center">
-                    <input type="checkbox" checked data-toggle="toggle" data-on="Publicar" data-off="No publicar"
-                        data-onstyle="success" data-offstyle="danger" data-width="150" data-height="40">
+                    <h1>Unidades</h1>
+                    <div class="col d-flex justify-content-end">
+                        <button id="btnMarcar" type="button" class="btn btn-link check-all">Marcar todos</button>
+                    </div>
                 </div>
-
             </div>
 
+            <div class="row">
+                @foreach ($unidades as $unidad)
+                    <div class="col-4">
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" value="{{ $unidad->unidad }}" class="custom-control-input settings"
+                                    name="unidades[]" id="check + {{ $unidad->id }}">
+                                <label class="custom-control-label"
+                                    for="check + {{ $unidad->id }}">{{ $unidad->unidad }}</label>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
 
             <!--botones de enviar y retroceder-->
             <div class="row mt-5">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
+                        {{-- <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a> --}}
+                        <a class="btn btn-danger" id="tbn">Regresar</a>
+
                     </div>
                     @can('convenios.store')
                         <div class="pull-right">
@@ -202,7 +217,7 @@
             }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
 
             // validaciones
-            $('#frmConvenios').validate({
+            $('#frmConvenio').validate({
                 rules: {
                     no_convenio: {
                         required: true
@@ -246,10 +261,12 @@
                     municipio: {
                         required: true
                     },
+                    status: {
+                        required: true
+                    },
                     archivo_convenio: {
                         extension: "pdf",
-                        filesize: 2000000,   //max size 2mb
-                        required: true
+                        filesize: 2000000, //max size 2mb
                     }
                 },
                 messages: {
@@ -301,7 +318,6 @@
                     archivo_convenio: {
                         accept: "Sólo se permiten pdf",
                         filesize: "El archivo debe ser menor de 2 MB",
-                        required: "Documento requerido"
                     }
                 }
             });
@@ -341,7 +357,22 @@
             // switch
             $('#chkToggle2').bootstrapToggle();
 
+            // checksBox
+            var checked = true;
+            $('.settings').prop('checked', true);
+            $('#btnMarcar').html('Desmarcar todos');
 
+            $('.check-all').on('click', function() {
+                if (checked == false) {
+                    $('.settings').prop('checked', true);
+                    checked = true;
+                    $('#btnMarcar').html('Desmarcar todos');
+                } else {
+                    $('.settings').prop('checked', false);
+                    checked = false;
+                    $('#btnMarcar').html('Marcar todos');
+                }
+            });
         });
 
     </script>

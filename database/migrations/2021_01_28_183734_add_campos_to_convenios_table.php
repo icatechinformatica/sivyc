@@ -20,6 +20,7 @@ class AddCamposToConveniosTable extends Migration
             $table->string('telefono_enlace')->nullable();
             $table->string('activo')->nullable();
             $table->string('sector')->nullable();
+            $table->jsonb('unidades')->nullable();
 
             $table->foreign('id_municipio')->references('id')->on('tbl_municipios');
         });
@@ -39,6 +40,7 @@ class AddCamposToConveniosTable extends Migration
             $table->dropColumn('telefono_enlace');
             $table->dropColumn('activo');
             $table->dropColumn('sector');
+            $table->dropColumn('unidades');
         });
     }
 }
