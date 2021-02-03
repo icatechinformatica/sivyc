@@ -34,8 +34,8 @@ class ConveniosController extends Controller
      */
     public function create() {
         // mostrar formulario de convenio
-        $municipios = DB::table('tbl_municipios')->get();
-        $unidades = DB::table('tbl_unidades')->get();
+        $municipios = \DB::table('tbl_municipios')->get();
+        $unidades = \DB::table('tbl_unidades')->get();
         return view('layouts.pages.frmconvenio', compact('municipios', 'unidades'));
     }
 
@@ -108,7 +108,7 @@ class ConveniosController extends Controller
         if ($request->hasFile('archivo_convenio')) {
 
             // obtenemos el valor de acta_nacimiento
-            $doc_convenio = DB::table('convenios')->WHERE('id', $convenioId)->VALUE('archivo_convenio');
+            $doc_convenio = \DB::table('convenios')->WHERE('id', $convenioId)->VALUE('archivo_convenio');
             // checamos que no sea nulo
             if (!is_null($doc_convenio)) {
                 # si no está nulo
@@ -129,7 +129,7 @@ class ConveniosController extends Controller
             ];
 
             // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
-            DB::table('convenios')->WHERE('id', $convenioId)->update($arregloConvenio);
+            \DB::table('convenios')->WHERE('id', $convenioId)->update($arregloConvenio);
 
             // limpiamos el arreglo
             unset($arregloConvenio);
@@ -170,8 +170,8 @@ class ConveniosController extends Controller
         //
         $idConvenio = base64_decode($id);
         $convenios = Convenio::findOrfail($idConvenio);
-        $municipios = DB::table('tbl_municipios')->get();
-        $unidades = DB::table('tbl_unidades')->get();
+        $municipios = \DB::table('tbl_municipios')->get();
+        $unidades = \DB::table('tbl_unidades')->get();
         return view('layouts.pages.editconvenio', ['convenios' => $convenios, 'municipios' => $municipios, 'unidades' => $unidades]);
     }
 
