@@ -3,6 +3,79 @@
 <!--llamar a la plantilla -->
 @section('title', 'Editar Cursos | Sivyc Icatech')
 <!--seccion-->
+<head>
+    <style>
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 90px;
+          height: 34px;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(50px);
+          -ms-transform: translateX(50px);
+          transform: translateX(50px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+    </style>
+</head>
 @section('content')
 <div class="container g-pt-50">
     @if ($errors->any())
@@ -226,6 +299,22 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
+        <label><h2>Estado General del Curso</h2></label>
+        <div class="form-group col-md-4">
+            @if ($cursos[0]->estado == true)
+                <label class="switch">
+                    <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
+                    <span class="slider round"></span>
+                </label>
+                <h5><p id="text1">Curso Activo</p><p id="text2" style="display:none">Curso Inactivo</p></h5>
+            @else
+                <label class="switch">
+                    <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
+                    <span class="slider round"></span>
+                </label>
+                <h5><p id="text1" style="display:none">Curso Activo</p><p id="text2">Curso Inactivo</p></h5>
+            @endif
+        </div>
         <label><h2>Alta/Baja al Curso</h2></label>
         <div class="form-group col-md-8">
             <a class="btn btn-danger" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Alta/Baja</a>
@@ -246,4 +335,18 @@
     </form>
     <br>
 </div>
+<script>
+    function leyenda() {
+      var checkBox = document.getElementById("estado");
+      var text1 = document.getElementById("text1");
+      var text2 = document.getElementById("text2");
+      if (checkBox.checked == true){
+        text1.style.display = "block";
+        text2.style.display = "none";
+      } else {
+         text1.style.display = "none";
+         text2.style.display = "block";
+      }
+    }
+</script>
 @endsection

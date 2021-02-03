@@ -390,7 +390,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reportes/formato_t_reporte/index', function () {
         return view('layouts.pages.reportes.formato_t_reporte');
     })->name('reportes.formatoT');
-    
+
     //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
     Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
     Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');

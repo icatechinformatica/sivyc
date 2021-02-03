@@ -26,16 +26,10 @@ class CursosController extends Controller
 
     public function prueba()
     {
-        $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-        'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-        'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-        'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-        'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
-        'PALENQUE'];
-        $cursos = curso::SELECT('id')->WHERE('id', '!=', '0')->GET();
-        foreach($cursos as $cadwell)
+        $curso = curso::SELECT('id')->WHERE('id', '!=', '0')->GET();
+        foreach($curso as $cadwell)
         {
-            curso::where('id', '=', $cadwell->id)->update(['unidades_disponible' => $unidades]);
+            curso::WHERE('id', '=', $cadwell->id)->update(['estado' => TRUE]);
         }
         dd('ya quedo');
     }
@@ -120,6 +114,7 @@ class CursosController extends Controller
             $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
             $cursos->rango_criterio_pago_maximo = trim($request->criterio_pago_maximo);
             $cursos->unidades_disponible = $unidades;
+            $cursos->estado = TRUE;
             $cursos->save();
 
             # ==================================
@@ -174,7 +169,6 @@ class CursosController extends Controller
      */
     public function show($id)
     {
-        //
         try {
             //consulta sql
             $area = new Area();
@@ -189,7 +183,7 @@ class CursosController extends Controller
 
             $idCurso = base64_decode($id);
             $curso = new curso();
-            $cursos = $curso::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+            $cursos = $curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
                     'cursos.costo','cursos.duracion','cursos.tipo_curso',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
@@ -274,10 +268,9 @@ class CursosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $cursos = new curso();
         // modificacion de un recurso guardado
         if (isset($id)) {
-            $cursos = new curso();
-            # code...
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -300,11 +293,24 @@ class CursosController extends Controller
                 'nivel_estudio' => trim($request->nivel_estudio),
                 'categoria' => trim($request->categoria),
                 'tipo_curso' => trim($request->tipo_curso),
-                'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
-                'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
+            if($request->estado != NULL)
+            {
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => TRUE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
+            }
+            else
+            {
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => FALSE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
+            }
+
             # ==================================
             # Aquí modificamos el curso con id
             # ==================================
