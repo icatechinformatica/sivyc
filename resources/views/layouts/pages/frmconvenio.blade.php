@@ -187,7 +187,9 @@
             <div class="row mt-5">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
+                        {{-- <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a> --}}
+                        <a class="btn btn-danger" id="tbn">Regresar</a>
+
                     </div>
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary">Guardar</button>
