@@ -12,7 +12,8 @@
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div><br />
+            </div>
+            <br />
         @endif
 
         <form method="POST" action="{{ route('convenios.store') }}" id="frmConvenio" enctype="multipart/form-data"
@@ -25,33 +26,39 @@
                     <h1>NUEVO CONVENIO</h1>
                 </label>
             </div>
-            <!-- Organismo -->
-            <div class="form-group col-md-6">
-                <label for="institucion" class="control-label">INSTITUCIÓN</label>
-                <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución">
-            </div>
-            <!--Organismo Fin-->
-        </div>
-        <div class="form-row">
-            <!-- Telefono -->
-            <div class="form-group col-md-4">
-                <label for="telefono" class="control-label">TELÉFONO</label>
-                <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono" name="telefono" placeholder="telefono">
+
+            <div class="form-row">
+                {{-- no convenio --}}
+                <div class="form-group col-md-6">
+                    <label for="no_convenio" class="control-label">N° CONVENIO</label>
+                    <input type="text" class="form-control" id="no_convenio" name="no_convenio" placeholder="N° Convenio">
+                </div>
+                <!-- Organismo -->
+                <div class="form-group col-md-6">
+                    <label for="institucion" class="control-label">INSTITUCIÓN</label>
+                    <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución">
+                </div>
             </div>
             <div class="form-row">
+                <!--nombre_titular-->
+                <div class="form-group col">
+                    <label for="nombre_titular" class="control-label">NOMBRE DEL TITULAR</label>
+                    <input type='text' id="nombre_titular" name="nombre_titular" class="form-control"
+                        placeholder="nombre del titular">
+                </div>
+                <!-- Telefono -->
+                <div class="form-group col">
+                    <label for="telefono" class="control-label">TELÉFONO</label>
+                    <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono"
+                        name="telefono" placeholder="telefono">
+                </div>
+            </div>
+            <div class="form-row">
+                {{-- direccion --}}
                 <div class="form-group col">
                     <label for="direccion" class="control-label">DIRECCIÓN</label>
-                    {{-- <textarea name="direccion" class="form-control"
-                        id="direccion"></textarea> --}}
                     <input type="text" class="form-control" name="direccion" id="direccion" placeholder="dirección">
                 </div>
-
-                <!--poblacion-->
-                <div class="form-group col">
-                    <label for="poblacion" class="control-label">POBLACIÓN</label>
-                    <input type='text' id="poblacion" name="poblacion" class="form-control" />
-                </div>
-
                 <!--municipio-->
                 <div class="form-group col-md-4">
                     <label for="area" class="control-label">MUNICIPIO</label>
@@ -61,6 +68,11 @@
                             <option value="{{ $municipio->id }}">{{ $municipio->muni }}</option>
                         @endforeach
                     </select>
+                </div>
+                <!--localidad-->
+                <div class="form-group col">
+                    <label for="poblacion" class="control-label">LOCALIDAD</label>
+                    <input type='text' id="poblacion" name="poblacion" class="form-control">
                 </div>
             </div>
 
@@ -79,9 +91,10 @@
                 <!-- NOMBRE DE FIRMA -->
                 <div class="form-group col">
                     <label for="nombre_firma" class="control-label">NOMBRE DE FIRMA</label>
-                    <input type='text' id="nombre_firma" name="nombre_firma" class="form-control" />
+                    <input type='text' id="nombre_firma" name="nombre_firma" class="form-control">
                 </div>
             </div>
+<<<<<<< HEAD
         </div>
         <div class="form-row">
             <!-- fecha inicial -->
@@ -94,6 +107,34 @@
             <div class="form-group col-md-4">
                 <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
                 <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly" name="fecha_termino" class="form-control datepicker" />
+=======
+            <div class="form-row">
+                <!-- fecha inicial -->
+                <div class="form-group col">
+                    <label for="fecha_firma" class="control-label">FECHA DE LA FIRMA</label>
+                    <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly" name="fecha_firma"
+                        class="form-control datepicker">
+                </div>
+                <!-- Fecha conclusion -->
+                <div class="form-group col">
+                    <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
+                    <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly" name="fecha_termino"
+                        class="form-control datepicker">
+                </div>
+            </div>
+            <div class="form-row">
+                <!--nombre_enlace-->
+                <div class="form-group col">
+                    <label for="nombre_enlace" class="control-label">NOMBRE DEL ENLACE</label>
+                    <input type='text' id="nombre_enlace" name="nombre_enlace" class="form-control">
+                </div>
+
+                <!--telefono del enlace-->
+                <div class="form-group col">
+                    <label for="telefono_enlace" class="control-label">TELEFONO DEL ENLACE</label>
+                    <input type='text' id="telefono_enlace" name="telefono_enlace" class="form-control">
+                </div>
+>>>>>>> 4aee2b3... Se realizan correcciones al controlador y vista de convenios
             </div>
 
             <hr>
