@@ -188,11 +188,9 @@
                     <div class="pull-left">
                         <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
                     </div>
-                    @can('convenios.store')
-                        <div class="pull-right">
-                            <button type="submit" class="btn btn-primary">Guardar</button>
-                        </div>
-                    @endcan
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
                 </div>
             </div>
         </form>
