@@ -23,11 +23,11 @@ use Illuminate\Support\Facades\DB;
 class UnidadesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource.com
      *
      * @return \Illuminate\Http\Response
      */
-
+    // comentario para prueba
     public function index(Request $request) {
 
         $busqueda_unidad = $request->get('busquedaporUnidad');

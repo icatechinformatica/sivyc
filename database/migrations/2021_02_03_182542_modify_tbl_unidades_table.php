@@ -8,7 +8,7 @@ class ModifyTblUnidadesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     *comentario
      * @return void
      */
     public function up()
