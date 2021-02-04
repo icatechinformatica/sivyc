@@ -85,9 +85,6 @@
                                 value="{{ $municipio->id }}">{{ $municipio->muni }}</option>
                         @endforeach
                     </select>
-                    {{-- <label for="municipio" class="control-label">MUNICIPIO</label> --}}
-                    {{-- <input type='text' id="municipio" name="municipio" class="form-control" --}}
-                    {{-- value="{{ $convenios->municipio }}" /> --}}
                 </div>
             </div>
 
@@ -253,11 +250,9 @@
                     <div class="pull-left">
                         <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
                     </div>
-                    @can('convenios.update')
-                        <div class="pull-right">
-                            <button type="submit" class="btn btn-primary">Modificar</button>
-                        </div>
-                    @endcan
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">Modificar</button>
+                    </div>
                 </div>
             </div>
         </form>
