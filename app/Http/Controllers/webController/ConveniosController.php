@@ -36,7 +36,9 @@ class ConveniosController extends Controller
     public function create()
     {
         // mostrar formulario de convenio
-        return view('layouts.pages.frmconvenio');
+        $municipios = \DB::table('tbl_municipios')->get();
+        $unidades = \DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
+        return view('layouts.pages.frmconvenio', compact('municipios', 'unidades'));
     }
 
     /**
@@ -154,7 +156,9 @@ class ConveniosController extends Controller
         //
         $idConvenio = base64_decode($id);
         $convenios = Convenio::findOrfail($idConvenio);
-        return view('layouts.pages.editconvenio',['convenios'=> $convenios]);
+        $municipios = \DB::table('tbl_municipios')->get();
+        $unidades = \DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
+        return view('layouts.pages.editconvenio', ['convenios' => $convenios, 'municipios' => $municipios, 'unidades' => $unidades]);
     }
 
     /**

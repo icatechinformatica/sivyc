@@ -3,74 +3,123 @@
 @section('title', 'Formulario de Convenio | Sivyc Icatech')
 
 @section('content')
- <!--empieza aquí-->
 
- <div class="container g-pt-50">
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div><br />
-    @endif
-    <form method="POST" action="{{ route('convenios.store') }}" id="conveniosFrm" enctype="multipart/form-data" autocomplete="off">
-        @csrf
-        <div style="text-align: center">
-            <label for="tituloagregar_convenio"><h1>NUEVO CONVENIO</h1></label>
-         </div>
-         <hr style="border-color:dimgray">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="no_convenio" class="control-label">N° CONVENIO</label>
-                <input type="text" class="form-control" id="no_convenio" name="no_convenio" placeholder="N° Convenio">
+    <div class="container g-pt-10">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            <!-- Organismo -->
-            <div class="form-group col-md-6">
-                <label for="institucion" class="control-label">INSTITUCIÓN</label>
-                <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución">
+            <br />
+        @endif
+
+        <form method="POST" action="{{ route('convenios.store') }}" id="frmConvenio" enctype="multipart/form-data"
+            autocomplete="off">
+            @csrf
+
+            {{-- titulo --}}
+            <div style="text-align: center">
+                <label for="tituloagregar_convenio">
+                    <h1>NUEVO CONVENIO</h1>
+                </label>
             </div>
-            <!--Organismo Fin-->
-        </div>
-        <div class="form-row">
-            <!-- Telefono -->
-            <div class="form-group col-md-4">
-                <label for="telefono" class="control-label">TELÉFONO</label>
-                <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono" name="telefono" placeholder="telefono">
+
+            <div class="form-row">
+                {{-- no convenio --}}
+                <div class="form-group col-md-6">
+                    <label for="no_convenio" class="control-label">N° CONVENIO</label>
+                    <input type="text" class="form-control" id="no_convenio" name="no_convenio" placeholder="N° Convenio">
+                </div>
+                <!-- Organismo -->
+                <div class="form-group col-md-6">
+                    <label for="institucion" class="control-label">INSTITUCIÓN</label>
+                    <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución">
+                </div>
             </div>
-            <!--Telefono Fin-->
-            <!-- Tipo de sector -->
-            <div class="form-group col-md-4">
-                <label for="sector">SECTOR</label>
-                <select class="form-control" id="sector" name="sector">
-                    <option value="">--SELECCIONAR--</option>
-                    <option value="S">S</option>
-                    <option value="E">E</option>
-                    <option value="G">G</option>
-                </select>
+            <div class="form-row">
+                <!--nombre_titular-->
+                <div class="form-group col">
+                    <label for="nombre_titular" class="control-label">NOMBRE DEL TITULAR</label>
+                    <input type='text' id="nombre_titular" name="nombre_titular" class="form-control"
+                        placeholder="nombre del titular">
+                </div>
+                <!-- Telefono -->
+                <div class="form-group col">
+                    <label for="telefono" class="control-label">TELÉFONO</label>
+                    <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono"
+                        name="telefono" placeholder="telefono">
+                </div>
             </div>
-            <!-- Fin Sector-->
-            <div class="form-group col-md-4">
-                <label for="status">ESTATUS</label>
-                <select class="form-control" id="status" name="status">
-                    <option value="">--SELECCIONAR--</option>
-                    <option value="true">ACTIVO</option>
-                    <option value="false">TERMINADO</option>
-                </select>
+            <div class="form-row">
+                {{-- direccion --}}
+                <div class="form-group col">
+                    <label for="direccion" class="control-label">DIRECCIÓN</label>
+                    <input type="text" class="form-control" name="direccion" id="direccion" placeholder="dirección">
+                </div>
+                <!--municipio-->
+                <div class="form-group col-md-4">
+                    <label for="area" class="control-label">MUNICIPIO</label>
+                    <select name="municipio" id="municipio" class="custom-select">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($municipios as $municipio)
+                            <option value="{{ $municipio->id }}">{{ $municipio->muni }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <!--localidad-->
+                <div class="form-group col">
+                    <label for="poblacion" class="control-label">LOCALIDAD</label>
+                    <input type='text' id="poblacion" name="poblacion" class="form-control">
+                </div>
             </div>
-        </div>
-        <div class="form-row">
-            <!-- fecha inicial -->
-            <div class="form-group col-md-4">
-                <label for="fecha_firma" class="control-label">FECHA DE LA FIRMA</label>
-                <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly" name="fecha_firma" class="form-control datepicker" />
+
+            <hr>
+
+            <div class="form-row">
+                <!--tipo convenio-->
+                <div class="form-group col">
+                    <label for="tipo_convenio" class="control-label">TIPO DE CONVENIO</label>
+                    <select name="tipo_convenio" id="tipo_convenio" class="custom-select">
+                        <option value="">--SELECCIONAR--</option>
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="ESPECIFICO">ESPECIFICO</option>
+                    </select>
+                </div>
+                <!-- NOMBRE DE FIRMA -->
+                <div class="form-group col">
+                    <label for="nombre_firma" class="control-label">NOMBRE DE FIRMA</label>
+                    <input type='text' id="nombre_firma" name="nombre_firma" class="form-control">
+                </div>
             </div>
-            <!--Fecha inicial END-->
-            <!-- Fecha conclusion -->
-            <div class="form-group col-md-4">
-                <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
-                <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly" name="fecha_termino" class="form-control datepicker" />
+            <div class="form-row">
+                <!-- fecha inicial -->
+                <div class="form-group col">
+                    <label for="fecha_firma" class="control-label">FECHA DE LA FIRMA</label>
+                    <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly" name="fecha_firma"
+                        class="form-control datepicker">
+                </div>
+                <!-- Fecha conclusion -->
+                <div class="form-group col">
+                    <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
+                    <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly" name="fecha_termino"
+                        class="form-control datepicker">
+                </div>
+            </div>
+            <div class="form-row">
+                <!--nombre_enlace-->
+                <div class="form-group col">
+                    <label for="nombre_enlace" class="control-label">NOMBRE DEL ENLACE</label>
+                    <input type='text' id="nombre_enlace" name="nombre_enlace" class="form-control">
+                </div>
+
+                <!--telefono del enlace-->
+                <div class="form-group col">
+                    <label for="telefono_enlace" class="control-label">TELEFONO DEL ENLACE</label>
+                    <input type='text' id="telefono_enlace" name="telefono_enlace" class="form-control">
+                </div>
             </div>
             <!-- Fecha conclusion END-->
             <!--poblacion-->
