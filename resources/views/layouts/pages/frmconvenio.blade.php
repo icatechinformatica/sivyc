@@ -94,20 +94,6 @@
                     <input type='text' id="nombre_firma" name="nombre_firma" class="form-control">
                 </div>
             </div>
-<<<<<<< HEAD
-        </div>
-        <div class="form-row">
-            <!-- fecha inicial -->
-            <div class="form-group col-md-4">
-                <label for="fecha_firma" class="control-label">FECHA DE LA FIRMA</label>
-                <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly" name="fecha_firma" class="form-control datepicker" />
-            </div>
-            <!--Fecha inicial END-->
-            <!-- Fecha conclusion -->
-            <div class="form-group col-md-4">
-                <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
-                <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly" name="fecha_termino" class="form-control datepicker" />
-=======
             <div class="form-row">
                 <!-- fecha inicial -->
                 <div class="form-group col">
@@ -134,7 +120,6 @@
                     <label for="telefono_enlace" class="control-label">TELEFONO DEL ENLACE</label>
                     <input type='text' id="telefono_enlace" name="telefono_enlace" class="form-control">
                 </div>
->>>>>>> 4aee2b3... Se realizan correcciones al controlador y vista de convenios
             </div>
 
             <hr>
@@ -221,7 +206,14 @@
                     <div class="pull-left">
                         <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
                     </div>
+<<<<<<< HEAD
                 @endcan
+=======
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+>>>>>>> c64f669... Modificaciones a la vista de agregar convenio
             </div>
         </form>
         <br>
