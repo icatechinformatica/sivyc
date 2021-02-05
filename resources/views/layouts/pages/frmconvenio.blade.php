@@ -2,6 +2,12 @@
 <!--llamar la plantilla -->
 @section('title', 'Formulario de Convenio | Sivyc Icatech')
 
+@section('content_script_css')
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+@endsection
+
+{{-- contenido --}}
 @section('content')
 
     <div class="container g-pt-10">
