@@ -76,7 +76,7 @@
 </head>
 @section('content')
     <div class="container g-pt-50">
-        <form action="{{ route('cerss.save-update') }}" method="post" id="registercerss">
+        <form action="{{ route('cerss.savetitular-update') }}" method="post" id="registercerss">
             @csrf
             <div style="text-align: right;width:65%">
                 <label for="tituloCERSS"><h1>Edición de CERSS</h1></label>
@@ -85,13 +85,13 @@
             <h2>Status</h2>
             @if ($data->activo == true)
                 <label class="switch">
-                    <input id="status" name="status" type="checkbox" checked onclick="leyenda()">
+                    <input id="status" name="status" type="checkbox" checked onclick="leyenda()" disabled>
                     <span class="slider round"></span>
                 </label>
                 <h5><p id="text1">CERSS Activo</p><p id="text2" style="display:none">CERSS Inactivo</p></h5>
             @else
                 <label class="switch">
-                    <input id="status" name="status" type="checkbox" onclick="leyenda()">
+                    <input id="status" name="status" type="checkbox" onclick="leyenda()" disabled>
                     <span class="slider round"></span>
                 </label>
                 <h5><p id="text1" style="display:none">CERSS Activo</p><p id="text2">CERSS Inactivo</p></h5>
@@ -113,7 +113,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="unidad" class="control-label">Unidad de Capacitación Asignada</label>
-                    <select name="unidad" id="unidad" class="form-control" required>
+                    <select name="unidad" id="unidad" class="form-control" required disabled>
                         <option value={{$unidadsel->id}}>{{$unidadsel->unidad}}</option>
                         @foreach ($unidad as $cadwell )
                             <option value="{{$cadwell->id}}">{{$cadwell->unidad}}</option>
@@ -128,17 +128,17 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="direccion" class="control-label">Dirección</label>
-                    <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" value="{{$data->direccion}}" required>
+                    <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" value="{{$data->direccion}}" required readonly>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="telefono" class="control-label">Telefono</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Telefono" value="{{$data->telefono}}" required>
+                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Telefono" value="{{$data->telefono}}" required readonly>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                    <label for="telefono2" class="control-label">Telefono Adicional (opcional)</label>
-                   <input type="text" class="form-control" id="telefono2" name="telefono2" placeholder="Telefono"  value="{{$data->telefono2}}">
+                   <input type="text" class="form-control" id="telefono2" name="telefono2" placeholder="Telefono"  value="{{$data->telefono2}}" readonly>
                 </div>
             </div>
             <br>

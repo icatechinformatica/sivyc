@@ -23,6 +23,17 @@ class CursosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function prueba()
+    {
+        $curso = curso::SELECT('id')->WHERE('id', '!=', '0')->GET();
+        foreach($curso as $cadwell)
+        {
+            curso::WHERE('id', '=', $cadwell->id)->update(['estado' => TRUE]);
+        }
+        dd('ya quedo');
+    }
+
     public function index(Request $request)
     {
         /**
@@ -72,10 +83,10 @@ class CursosController extends Controller
         try {
             //validación de archivos
             $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-            'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-            'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-            'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-            'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
             'PALENQUE'];
 
             $cursos = new curso;
@@ -157,7 +168,6 @@ class CursosController extends Controller
      */
     public function show($id)
     {
-        //
         try {
             //consulta sql
             $area = new Area();
@@ -172,7 +182,7 @@ class CursosController extends Controller
 
             $idCurso = base64_decode($id);
             $curso = new curso();
-            $cursos = $curso::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+            $cursos = $curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
                     'cursos.costo','cursos.duracion','cursos.tipo_curso',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
@@ -261,6 +271,14 @@ class CursosController extends Controller
         if (isset($id)) {
             $cursos = new curso();
             # code...
+            if($request->estado != NULL)
+            {
+                $estado = TRUE;
+            }
+            else
+            {
+                $estado = FALSE;
+            }
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -285,6 +303,7 @@ class CursosController extends Controller
                 'tipo_curso' => trim($request->tipo_curso),
                 'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
                 'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
+                'estado' => $estado,
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
@@ -385,10 +404,10 @@ class CursosController extends Controller
         {
             $reform = curso::find($id);
             $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-            'YAJALON', 'SAN_CRISTOBAL', 'CHIAPA_DE_CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-            'LA_CONCORDIA', 'VENUSTIANO_CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-            'SOYALO', 'ANGEL_ALBINO_CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-            'VILLA_CORZO', 'CACAHOATAN', 'ONCE_DE_ABRIL', 'TUXTLA_CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
             'PALENQUE'];
 
             $reform->unidades_disponible = $unidades;
@@ -443,11 +462,11 @@ class CursosController extends Controller
         }
         if($this->checkComparator($request->chk_san_cristobal) == TRUE)
         {
-            array_push($unidades, 'SAN_CRISTOBAL');
+            array_push($unidades, 'SAN CRISTOBAL');
         }
         if($this->checkComparator($request->chk_chiapa_de_corzo) == TRUE)
         {
-            array_push($unidades, 'CHIAPA_DE_CORZO');
+            array_push($unidades, 'CHIAPA DE CORZO');
         }
         if($this->checkComparator($request->chk_motozintla) == TRUE)
         {
@@ -467,11 +486,11 @@ class CursosController extends Controller
         }
         if($this->checkComparator($request->chk_la_concordia) == TRUE)
         {
-            array_push($unidades, 'LA_CONCORDIA');
+            array_push($unidades, 'LA CONCORDIA');
         }
         if($this->checkComparator($request->chk_venustiano_carranza) == TRUE)
         {
-            array_push($unidades, 'VENUSTIANO_CARRANZA');
+            array_push($unidades, 'VENUSTIANO CARRANZA');
         }
         if($this->checkComparator($request->chk_tila) == TRUE)
         {
@@ -499,7 +518,7 @@ class CursosController extends Controller
         }
         if($this->checkComparator($request->chk_angel_albino_corzo) == TRUE)
         {
-            array_push($unidades, 'ANGEL_ALBINO_CORZO');
+            array_push($unidades, 'ANGEL ALBINO CORZO');
         }
         if($this->checkComparator($request->chk_arriaga) == TRUE)
         {
@@ -523,7 +542,7 @@ class CursosController extends Controller
         }
         if($this->checkComparator($request->chk_villa_corzo) == TRUE)
         {
-            array_push($unidades, 'VILLA_CORZO');
+            array_push($unidades, 'VILLA CORZO');
         }
         if($this->checkComparator($request->chk_cacahoatan) == TRUE)
         {
@@ -531,11 +550,11 @@ class CursosController extends Controller
         }
         if($this->checkComparator($request->chk_once_de_abril) == TRUE)
         {
-            array_push($unidades, 'ONCE_DE_ABRIL');
+            array_push($unidades, 'ONCE DE ABRIL');
         }
         if($this->checkComparator($request->chk_tuxtla_chico) == TRUE)
         {
-            array_push($unidades, 'TUXTLA_CHICO');
+            array_push($unidades, 'TUXTLA CHICO');
         }
         if($this->checkComparator($request->chk_oxchuc) == TRUE)
         {

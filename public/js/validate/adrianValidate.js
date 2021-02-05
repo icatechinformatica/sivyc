@@ -11,7 +11,6 @@ $(function(){
     $(document).on('click', '.remove-tr', function(){
          $(this).parents('tr').remove();
     });
-
     $( document ).on('input', function(){
         $('input').on('input', function(event){
             id = this.id;
@@ -20,8 +19,8 @@ $(function(){
             if(comp == ']')
             {
                 x = id.substring(8,9);
-                console.log('enntro');
             }
+            console.log('hola');
             if (id == 'addmore['+x+'][clavecurso]') {
                 var valor = (document.getElementById(id).value).toUpperCase();
                 var datos = {valor: valor};
@@ -72,4 +71,5 @@ $(function(){
             }
         });
     });
+
 });

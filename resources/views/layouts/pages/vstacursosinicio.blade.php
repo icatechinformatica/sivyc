@@ -40,6 +40,7 @@
                             <option value="duracion">DURACIÓN</option>
                             <option value="modalidad">MODALIDAD</option>
                             <option value="clasificacion">CLASIFICACIÓN</option>
+                            <option value="anio">AÑO</option>
                         </select>
 
                         {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}

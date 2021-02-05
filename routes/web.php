@@ -25,12 +25,12 @@ Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@histor
 Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
-Route::get('/prueba', 'webController\InstructorController@prueba');
+Route::get('/prueba', 'webController\CursosController@prueba');
 
 //Ruta Manual
 Route::get('/user/manuales', 'webController\manualController@index')->name('manuales');
-
-Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcursos');
+// checar cursos
+Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcursos')->name('alumnos.sid.checkcursos');
 
 //ruta Pago
 Route::post('/pago/rechazar_pago', 'webController\PagoController@rechazar_pago')->name('pago-rechazo');
@@ -214,7 +214,7 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/exportarpdf/presupuestaria', 'webController\presupuestariaController@export_pdf')->name('presupuestaria');
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@propa')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
-    Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos');
+    Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos')->name('alumnos.sid.cursos');
     Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
     Route::post('/alumnos/sid/cursos_update', 'webController\AlumnoController@getcursos_update');
 
@@ -304,7 +304,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
     // Validar Cursos
-    Route::get('/cursos/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos.index');
+    Route::get('/cursos_validados/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos_validados.index');
     Route::post('/cursos/fill1', 'webController\CursoValidadoController@fill1');
     Route::post("/cursos/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
 
@@ -416,6 +416,7 @@ Route::get('/cerss/formulario', 'webController\CerssController@create')->name('c
 Route::get('/cerss/modificar/{id}', 'webController\CerssController@update')->name('cerss.update');
 Route::post('/cerss/formulario/save', 'webController\CerssController@save')->name('cerss.save');
 Route::post('/cerss/modificar/save', 'webController\CerssController@update_save')->name('cerss.save-update');
+Route::post('/cerss/modificar/save-titular', 'webController\CerssController@updateTitular_save')->name('cerss.savetitular-update');
 
 /* Modulo áreas */
 Route::get('/areas/inicio', 'webController\AreasController@index')->name('areas.inicio')->middleware('can:areas.inicio');
@@ -437,3 +438,8 @@ Route::get('/especialidades/{id}', 'webController\EspecialidadesController@destr
 /* Modulo instituto*/
 Route::get('/instituto/inicio', 'webController\InstitutoController@index')->name('instituto.inicio')->middleware('can:instituto.inicio');
 Route::post('/instituto/guardar', 'webController\InstitutoController@store')->name('instituto.guardar')->middleware('can:instituto.guardar-modificacion');
+
+/*c Modulo tbl_unidades 0302021*/
+Route::get('/unidades/inicio', 'webController\UnidadesController@index')->name('unidades.inicio')->middleware('can:unidades.index');
+Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar')->name('unidades.editar')->middleware('can:unidades.editar');
+Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');

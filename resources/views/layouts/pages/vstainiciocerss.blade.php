@@ -26,22 +26,23 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>Lista de CERSS</h2>
-                    {!! Form::open(['route' => 'supre-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                        <select name="tipo_suficiencia" class="form-control mr-sm-2" id="tipo_suficiencia">
+                    {!! Form::open(['route' => 'cerss.inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="tipo_cerss" class="form-control mr-sm-2" id="tipo_suficiencia">
                             <option value="">BUSCAR POR TIPO</option>
-                            <option value="no_memorandum">NOMBRE</option>
-                            <option value="unidad_capacitacion">MUNICIPIO</option>
-                            <option value="fecha">TITULAR</option>
+                            <option value="nombre">NOMBRE</option>
+                            <option value="titular">TITULAR</option>
                         </select>
 
-                        {!! Form::text('busquedaporSuficiencia', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        {!! Form::text('busquedaporCerss', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
                 </div>
                 <br>
-                <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{route('cerss.frm')}}">Nuevo</a>
-                </div>
+                @can('cerss.create')
+                    <div class="pull-right">
+                        <a class="btn btn-success btn-lg" href="{{route('cerss.frm')}}">Nuevo</a>
+                    </div>
+                @endcan
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -70,9 +71,11 @@
                             <td>Inactivo</td>
                         @endif
                         <td>
-                            <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('cerss.update', ['id' => $itemData->id])}}">
-                                <i class="fa fa-wrench" aria-hidden="true"></i>
-                            </a>
+                            @can('cerss.update')
+                                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('cerss.update', ['id' => $itemData->id])}}">
+                                    <i class="fa fa-wrench" aria-hidden="true"></i>
+                                </a>
+                            @endcan
                         </td>
                     </tr>
                 @endforeach

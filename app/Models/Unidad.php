@@ -7,7 +7,7 @@ use App\User;
 
 class Unidad extends Model
 {
-    //
+    //com
     protected $table = 'tbl_unidades';
 
     protected $fillable = [

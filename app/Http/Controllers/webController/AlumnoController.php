@@ -965,8 +965,9 @@ class AlumnoController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad = $request->idEsp;
             $tipo_curso = $request->tipo;
+            $unidad_seleccionada = '["'.$request->unidad.'"]';
             //$Curso = new curso();
-            $Cursos = DB::table('cursos')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad]])->GET();
+            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['unidades_disponible', '@>', $unidad_seleccionada]])->get();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);
@@ -981,8 +982,10 @@ class AlumnoController extends Controller
     {
         if (isset($request->unidad)){
             $idcurso = $request->idcur;
-            $unidad = 'CHK_' . str_replace(' ', '_', $request->unidad) . ' AS chk';
-            $check = cursoAvailable::SELECT($unidad, 'curso_id')->WHERE('curso_id', '=', $idcurso)->FIRST();
+            $unidad_seleccionada = '["'.$request->unidad.'"]';
+            $check = DB::table('cursos')->select('id','nombre_curso')->where('unidades_disponible', '@>', $unidad_seleccionada)->get();
+            //$unidad = 'CHK_' . str_replace(' ', '_', $request->unidad) . ' AS chk';
+            //$check = cursoAvailable::SELECT($unidad, 'curso_id')->WHERE('curso_id', '=', $idcurso)->FIRST();
             $json=json_encode($check);
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));

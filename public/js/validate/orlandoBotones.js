@@ -275,6 +275,8 @@ $(function(){
     });
 
     $( document ).on('input', function(){
+        if(document.getElementById('curso') != null && document.getElementById('instructor') != null && document.getElementById('general') != null && document.getElementById('unidad') != null)
+        {
         if (document.getElementById('curso').checked) {
             $('#div_curso').prop("class", "form-row")
             $('#div_instructor').prop("class", "form-row d-none d-print-none")
@@ -295,6 +297,7 @@ $(function(){
             $('#div_instructor').prop("class", "form-row d-none d-print-none")
             $('#div_unidad').prop("class", "form-row")
         }
+    }
     });
 
     //autocomplete
