@@ -39,9 +39,18 @@
         <div id="content">
         <img class="izquierda" src='img/logohorizontalica1.png'>
         <img class="derecha" src='img/chiapas.png'>
+        @if($reg_cursos[0]->unidad=="COMITAN" || $reg_cursos[0]->unidad=="OCOSINGO" || $reg_cursos[0]->unidad=="SAN CRISTOBAL" || $reg_cursos[0]->unidad=="TUXTLA" || $reg_cursos[0]->unidad=="CATAZAJA" || $reg_cursos[0]->unidad=="YAJALON" || $reg_cursos[0]->unidad=="JIQUIPILAS" || $reg_cursos[0]->unidad=="REFORMA" || $reg_cursos[0]->unidad=="TAPACHULA" || $reg_cursos[0]->unidad=="TONALA" || $reg_cursos[0]->unidad=="VILLAFLORES")
+            @php
+                $nombre_unidad= "UNIDAD DE CAPACITACION"
+            @endphp
+        @else
+            @php
+                $nombre_unidad= "ACCION MOVIL"
+            @endphp
+        @endif  
             <div id="wrappertop">
                 <div align=center><br> 
-                    <font size=1><b>UNIDAD DE CAPACITACION {{ $reg_unidad->unidad }}<br/>
+                    <font size=1><b>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
                     <font size=1>DEPARTAMENTO ACADEMICO</font><br/>
                     <font size=1>SOLICITUD DE REPROGRAMACION O CANCELACION DE CURSO</font><br/>
                     <font size=1>"2021, AÑO DE LA INDEPENDENCIA"</font><br/>                                              
@@ -53,7 +62,7 @@
                         <td><b>PARA: {{ $reg_unidad->dacademico }}</b></td>
                         <td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td>
                         <td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td ALIGN="right"><b>UNIDAD DE CAPACITACION {{ $reg_unidad->unidad }}</b></td>
+                        <td ALIGN="right"><b>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}</b></td>
                     </tr> 
                     <tr>
                         <td><b>DE: {{ $reg_unidad->dunidad }}</b></td>

@@ -7,6 +7,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class ftcontroller extends Controller
@@ -18,13 +19,11 @@ class ftcontroller extends Controller
 
     public function cursos(Request $request)
     {
-        
-        return $this->memodta();
-        //$año=$request->get("año");
-        //if ($año)
-        //{ 
-        //    return $this->busqueda($año);
-        //}
+        $año=$request->get("año");
+        if ($año)
+        { 
+            return $this->busqueda($año);
+        }
     }
     public function busqueda($año)
     {
@@ -114,8 +113,6 @@ class ftcontroller extends Controller
     public function memodta()
     {
         $pdf = PDF::loadView('reportes.memodta');
-                //return view('reportes.arc01');
-                //var_dump($pdf);exit;
                 $pdf->setpaper('letter');
                 return $pdf->stream('memo.pdf');
     }
