@@ -21,7 +21,7 @@
         @endif
 
         <form method="POST" action="{{ route('convenios.update', ['id' => base64_encode($convenios->id)]) }}"
-            id="conveniosFrm" enctype="multipart/form-data" autocomplete="off">
+            id="conveniosForm" enctype="multipart/form-data" autocomplete="off">
             @csrf
             @method('PUT')
 
@@ -318,7 +318,7 @@
             });
 
 
-            $('#conveniosFrm').validate({
+            $('#conveniosForm').validate({
                 rules: {
                     no_convenio: {
                         required: true
