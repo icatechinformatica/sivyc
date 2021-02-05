@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToArray;
 use PhpParser\Node\Stmt\Foreach_;
 use SebastianBergmann\Environment\Console;
+use Illuminate\Support\Facades\DB;
 
 use function Complex\add;
 

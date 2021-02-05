@@ -193,7 +193,6 @@
                         <a class="btn btn-danger" id="tbn">Regresar</a>
 
                     </div>
-                @endcan
             </div>
         </form>
         <br>
