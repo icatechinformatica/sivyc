@@ -135,7 +135,7 @@
                                     </div>
                                   </div>
                               </td>
-                            </tr>                           
+                            </tr>
                             <tr>
                               <th scope="row">Fecha en Autorización</th>
                               <td>{{ $curso->fecha_apertura }}</td>
@@ -149,7 +149,7 @@
                                     </div>
                                   </div>
                               </td>
-                            </tr>                           
+                            </tr>
                             <tr>
                               <th scope="row">Tipo</th>
                               <td>{{ $curso->tcapacitacion }}</td>

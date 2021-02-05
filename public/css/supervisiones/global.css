@@ -1,30 +1,30 @@
-/* Elaboró Romelia Pérez Nangüelú - rpnanguelu@gmail.com*/
+/* Elaborï¿½ Romelia Pï¿½rez Nangï¿½elï¿½ - rpnanguelu@gmail.com*/
 body { background-color: #E6E6E6; }
 input[type=text], select, textarea {
     text-transform: none;
 }
 
 /*.design{
-    
+
     -webkit-box-shadow: 0 8px 6px -6px #999;
     -moz-box-shadow: 0 8px 6px -6px #999;
-    box-shadow: 0 8px 6px -6px #999;    
+    box-shadow: 0 8px 6px -6px #999;
     height: 60px;
 }
 .design-menu{
-    
+
     background-color: #dddddd;
     border-color: #B09A5B;
-    height: 6%;    
+    height: 6%;
     margin-top: -10px;
     padding-left: 4.2%;
      -webkit-box-shadow: 0 8px 6px -6px #999;
     -moz-box-shadow: 0 8px 6px -6px #999;
-    box-shadow: 0 8px 6px -6px #999;    
+    box-shadow: 0 8px 6px -6px #999;
 }
 .design-menu a{ color: #2E2E2E;}
 .design-menu a:hover{ color: black;}
-    
+
 .design_menu .navbar {
     background-color: #C8B689;
     border-color: #B09A5B;
@@ -35,8 +35,8 @@ input[type=text], select, textarea {
     background-color: #621132;
     color: white;
     margin: 1.7% 1.7% 1% 1.7%;
-    padding: 1.3% 39px 1.3% 39px;    
-    font-style: normal;    
+    padding: 1.3% 39px 1.3% 39px;
+    font-style: normal;
     font-size: 20px;
 }
 .card-body{

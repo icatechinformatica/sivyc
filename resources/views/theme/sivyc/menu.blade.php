@@ -68,9 +68,12 @@
                         @can('especialidades.inicio')
                             <a class="dropdown-item" href="{{route('especialidades.inicio')}}">Especialidades</a>
                         @endcan
+                        @can('unidades.index')
+                            <a class="dropdown-item" href="{{route('unidades.inicio')}}">Unidades</a>
+                        @endcan
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
-                        @endcan  
+                        @endcan
                     </div>
                 </li>
                 @can('tablero.metas.index')

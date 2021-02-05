@@ -11,6 +11,8 @@ use App\ProductoStock;
 use App\Models\cursoValidado;
 use App\Models\supre_directorio;
 use App\Models\directorio;
+use App\Models\contratos;
+use App\Models\contrato_directorio;
 use App\Models\criterio_pago;
 use App\Models\tbl_unidades;
 use Illuminate\Http\Request;
@@ -21,6 +23,31 @@ use Carbon\Carbon;
 
 class supreController extends Controller
 {
+
+    public function prueba()
+    {
+        $contratos = contratos::SELECT('id_contrato')
+                            ->whereDate('created_at', '>=', '01-01-2020')
+                            ->whereDate('created_at', '<=', '31-12-2020')
+                            ->GET();
+
+        $supre = supre::SELECT('id')
+                            ->whereDate('created_at', '>=', '01-01-2020')
+                            ->whereDate('created_at', '<=', '31-12-2020')
+                            ->GET();
+        foreach($contratos as $cadwell)
+        {
+            contrato_directorio::WHERE('id_contrato', '=', $cadwell->id_contrato)->delete();
+            contratos::WHERE('id_contrato', '=', $cadwell->id_contrato)->delete();
+        }
+        foreach($supre as $data)
+        {
+            supre_directorio::WHERE('id_supre', '=', $data->id)->DELETE();
+            folio::where('id_supre', '=', $data->id)->delete();
+            supre::where('id', '=', $data->id)->delete();
+        }
+        dd('ya quedo');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -636,6 +663,7 @@ class supreController extends Controller
 
     protected function pdf_upload($pdf, $id, $nom)
     {
+        dd($pdf);
         # nuevo nombre del archivo
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
         $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage

@@ -24,16 +24,6 @@ class CursosController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function prueba()
-    {
-        $curso = curso::SELECT('id')->WHERE('id', '!=', '0')->GET();
-        foreach($curso as $cadwell)
-        {
-            curso::WHERE('id', '=', $cadwell->id)->update(['estado' => TRUE]);
-        }
-        dd('ya quedo');
-    }
-
     public function index(Request $request)
     {
         /**
