@@ -7,6 +7,7 @@
         rel="stylesheet">
 @endsection
 
+{{-- contenido --}}
 @section('content')
 
     <div class="container g-pt-10">
