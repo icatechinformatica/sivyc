@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PagoController extends Controller
 {
@@ -38,21 +39,64 @@ class PagoController extends Controller
         $contrato = new contratos();
         // obtener el usuario y su unidad
         $unidadUser = Auth::user()->unidad;
-        // obtener unidades
-        $unidades = new tbl_unidades;
-        $unidadPorUsuario = $unidades->WHERE('id', $unidadUser)->FIRST();
 
-        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago)->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
-        ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
+        // obtener el id
+        $userId = Auth::user()->id;
+
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+
+        //dd($roles[0]->role_name);
+
+        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago)
+        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+        ->orderBy('folios.id_folios', 'desc')
         ->PAGINATE(25, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
-            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','tabla_supre.doc_validado',
+            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre'
         ]);
+        switch ($roles[0]->role_name) {
+            case 'unidad.ejecutiva':
+                # code...
+                $contratos_folios = $contratos_folios;
+                break;
+            case 'admin':
+                # code...
+                $contratos_folios = $contratos_folios;
+
+            break;
+            case 'direccion.general':
+                # code...
+                $contratos_folios = $contratos_folios;
+                break;
+            case 'planeacion':
+                # code...
+                $contratos_folios = $contratos_folios;
+                break;
+            case 'financiero_verificador':
+                # code...
+                $contratos_folios = $contratos_folios;
+                break;
+            case 'financiero_pago':
+                # code...
+                $contratos_folios = $contratos_folios;
+                break;
+            default:
+                # code...
+                // obtener unidades
+                $unidadPorUsuario = DB::table('tbl_unidades')->WHERE('id', $unidadUser)->FIRST();
+
+                $contratos_folios = $contratos_folios->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion);
+                break;
+        }
 
         return view('layouts.pages.vstapago', compact('contratos_folios'));
     }

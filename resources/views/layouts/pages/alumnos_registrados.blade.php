@@ -5,15 +5,15 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
-        @if ($message = Session::get('success'))
+        @if (Session::has('success'))
             <div class="alert alert-success">
-                <p>{{ $message }}</p>
+                {{ Session::get('success') }}
             </div>
         @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Alumnos Matriculados</h2>
+                    <h2>ALUMNOS MATRICULADOS</h2>
                 </div>
 
                 <div class="pull-right">
@@ -70,9 +70,15 @@
                             @endcan
 
                             <td>
-                                <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" download="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                </a>
+                                @if ($itemData->es_cereso == true)
+                                    <a href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" download="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID DE CERSS" targer="_blank">
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" download="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                @endif
                             </td>
 
                         </tr>

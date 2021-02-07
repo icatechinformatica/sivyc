@@ -16,7 +16,7 @@
         @else
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link g-mx-5--lg" href="{{ route('cursos.index') }}">
+                    <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">
                         Cursos Validados
                     </a>
                 </li>
@@ -61,6 +61,19 @@
                             <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
+                        <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
+                        @can('areas.inicio')
+                            <a class="dropdown-item" href="{{route('areas.inicio')}}">Áreas</a>
+                        @endcan
+                        @can('especialidades.inicio')
+                            <a class="dropdown-item" href="{{route('especialidades.inicio')}}">Especialidades</a>
+                        @endcan
+                        @can('unidades.index')
+                            <a class="dropdown-item" href="{{route('unidades.inicio')}}">Unidades</a>
+                        @endcan
+                        @can('instituto.inicio')
+                            <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
+                        @endcan
                     </div>
                 </li>
                 @can('tablero.metas.index')
@@ -84,6 +97,26 @@
                     </li>
                 @endcan
                 <!--AGREGAR NUEVO ELEMENTO EN EL MENU END-->
+                <li class="nav-item g-mx-5--lg dropdown">
+                    <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Reportes
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        {{-- <a class="dropdown-item" href="https://datastudio.google.com/reporting/7c518e16-99ea-4cb2-8509-7064c0604e00" target="_blank">CURSOS VS OBJETIVOS</a>
+                        <a class="dropdown-item" href="https://datastudio.google.com/reporting/512e11eb-babf-4476-8827-8d4243e2c219" target="_blank">STATUS PAGO INSTRUCTORES</a> --}}
+                        {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">REPORTE DE FORMATO T</a>                         --}}
+                        @can('academicos.arc')
+                            <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">APERTURA</a>
+                        @endcan
+                        @can('reportes.cursos')
+                            <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">CURSOS AUTORIZADOS</a>
+                        @endcan
+                        @can('planeacion.reporte')
+                            <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Planeación</a>
+                        @endcan
+                        {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">FORMATOT</a> --}}
+                    </div>
+                </li>
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">

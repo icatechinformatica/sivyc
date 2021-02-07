@@ -64,16 +64,6 @@
                     <input type="text" name="grupo_mod" id="grupo_mod" value="{{$alumnos->grupo}}" class="form-control" autocomplete="off">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-8">
-                    <label for="cerrs_mod" class="control-label">¿SE ENCUENTRA EN EL CERESO?</label>
-                    <select class="form-control" id="cerrs_mod" name="cerrs_mod" required>
-                        <option value="">--SELECCIONAR--</option>
-                        <option {{ ($alumnos->cerrs == true) ? "selected" : "" }} value="true">SI</option>
-                        <option {{ ($alumnos->cerrs == false) ? "selected" : "" }} value="false">NO</option>
-                    </select>
-                </div>
-            </div>
             <!--botones de enviar y retroceder-->
             <div class="row">
                 <div class="col-lg-12 margin-tb">

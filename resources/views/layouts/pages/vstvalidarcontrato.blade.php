@@ -33,7 +33,7 @@
             @else
                 <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
             @endif
-            @if ($data->archivo_alta != NULL)
+            @if ($data->archivo_factura != NULL)
                 <a class="btn btn-info" href={{$data->arch_factura}} download>Factura</a><br>
             @else
                 <a class="btn btn-danger" disabled>Factura</a><br>
@@ -67,6 +67,13 @@
             <div class="form-group col-md-3">
                 <label for="clavecurso" class="control-label">Tipo Honorario</label>
                 <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->tipo_honorario}}">
+            </div>
+        </div>
+        <hr style="border-color:dimgray">
+        <h2>Previsualización de Contrato</h2>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="/contrato/{{$data->id_contrato}}" target="_blank">Contrato de Instructor</a>
             </div>
         </div>
         <hr style="border-color:dimgray">

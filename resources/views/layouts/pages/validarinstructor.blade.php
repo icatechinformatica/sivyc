@@ -130,11 +130,11 @@
             <div id="div4" class="form-row d-none d-print-none">
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono Personal</label>
-                    <input name="telefono" id="telefono" type="tel" class="form-control" aria-required="true">
+                    <input name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputcorreo">Correo Electronico</label>
-                    <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
+                    <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" required>
                 </div>
             </div>
             <div id="div5" class="form-row d-none d-print-none">

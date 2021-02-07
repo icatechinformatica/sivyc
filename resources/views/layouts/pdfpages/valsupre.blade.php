@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style type="text/css">
@@ -12,7 +12,7 @@
         }
 
         @page {
-            margin: 120px 40px 40px;
+            margin: 120px 40px 110px;
             }
             header { position: fixed;
             left: 0px;
@@ -33,7 +33,7 @@
             footer {
             position: fixed;
             left: 0px;
-            bottom: -10px;
+            bottom: -90px;
             right: 0px;
             height: 60px;
             background-color: white;
@@ -80,7 +80,7 @@
             }
 
         #wrappertop {
-        margin-top: 0%
+        margin-top: 0%;
         background-image: url('img/search.png');
         background-position: 5px 10px;
         background-repeat: no-repeat;
@@ -142,7 +142,7 @@
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <br><h5>"2020, Año de Leona Vicario Benemérita Madre de la Patria"</h5>
+            <br><h6>"2021, Año de la Independencia"</h6>
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
@@ -163,57 +163,57 @@
                 <FONT SIZE=0><b>{{$getremitente->puesto}}</b></FONT><br/>
                 <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                 <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
-                    <font size=0>La Secretaria de hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2020, en ese sentido, con Fundamento en el Art. 17 Fracción V, VI y 26
-                    del decreto de presupuesto de egresos del estado de Chiapas para el Ejercicio Fiscal 2020 y en pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de capacitación, al Padrón de Instructores del ICATECH
+                    <font size=0>La Secretaria de hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2021, en ese sentido, con Fundamento en el Art. 13 del decreto de presupuesto
+                    de egresos del estado de Chiapas para el Ejercicio Fiscal 2021 y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de capacitación, al Padrón de Instructores del ICATECH
                     y a la clave de autorización de apertura de cursos y demás disposiciones normativas aplicables vigentes; le informo que una vez revisada su solicitud y la información descrita en el formato de Validación de Suficiencia Presupuestal, se otorga la Validación
                     Presupuestal, con el fin de que conforme a lo indicado en la normatividad aplicable vigente se continúe y se cumpla con los procedimientos administrativos que correspondan, observando además el contrato de prestación de servicios profesionales por honorarios en su
                     modalidad de Horas-Curso que celebran el ICATECH con el prestador de servicio.<br/></font>
-                    <font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documenta, debidamente validado presupuestalmente.<br/></font>
+                    <br><font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documental, debidamente validado presupuestalmente.<br/></font>
                     <font size=0>La presente validación presupuestal no implica ninguna autorización de pago de recursos, si no que únicamente se refiere a la verificación de la disponibilidad presupuestal, No omito manifestarle que, en estricto apego a la normatividad vigente establecida,
                     el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
                 </div>
-            <br><br>
+            <br>
         </div>
             <div class="form-row">
-                <table width="700" class="table table-bordered" id="table-one">
+                <table width="700"  class="table table-striped" id="table-one">
                     <thead>
                         <tr class="active">
-                            <td scope="col"><small>No. DE SUFICIENCIA</small></td>
-                            <td scope="col" ><small>FECHA</small></td>
-                            <td scope="col" ><small>INSTRUCTOR</small></td>
-                            <td width="10px"><small>UNIDAD/ A.M. DE CAP.</small></td>
-                            <td scope="col" ><small>CURSO</small></td>
-                            <td scope="col"><small>CLAVE DEL GRUPO</small></td>
-                            <td scope="col" ><small>ZONA ECÓNOMICA</small></td>
-                            <td scope="col"><small>HSM (horas)</small></td>
-                            <td scope="col" ><small>IMPORTE POR HORA</small></td>
-                            <td scope="col"><small>IVA 16%</small></td>
-                            <td scope="col" ><small>PARTIDA/ CONCEPTO</small></td>
-                            <td scope="col"><small>IMPORTE</small></td>
-                            <td scope="col"><small>Fuente de Financiamiento</small></td>
-                            <td scope="col" ><small>OBSERVACION</small></td>
+                            <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
+                            <td width="10px"><small style="font-size: 10px;">UNIDAD/ A.M. DE CAP.</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">CURSO</small></td>
+                            <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
+                            <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
+                            <td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
+                            <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
+                            <td scope="col"><small style="font-size: 10px;">Fuente de Financiamiento</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">OBSERVACION</small></td>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $key=>$item)
                             <tr>
-                                <td><small>{{$item->folio_validacion}}</small></td>
-                                <td><small>{{$item->fecha}}</small></td>
-                                <td><small>{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
-                                <td><small>{{$item->unidad}}</small></td>
-                                <td><small>{{$item->curso_nombre}}</small></td>
-                                <td><small>{{$item->clave}}</small></td>
-                                <td><small>{{$item->ze}}</small></td>
-                                <td><small>{{$item->dura}}</small></td>
-                                <td><small>{{$item->importe_hora}}</small></td>
-                                <td><small>{{$item->iva}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->folio_validacion}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->fecha}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->unidad}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->curso_nombre}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->clave}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->ze}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->dura}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->importe_hora}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->iva}}</small></td>
                                 <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
                                 <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                <td><small>12101 Honorarios</small></td>
-                                <td><small>{{$item->importe_total}}</small></td>
+                                <td><small style="font-size: 10px;">12101 Honorarios</small></td>
+                                <td><small style="font-size: 10px;">{{$item->importe_total}}</small></td>
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
                                 <td style="text-align: center"><small>{{$recursos[$key]}}</small></td>
-                                <td><small>{{$item->comentario}}</small></td>
+                                <td><small style="font-size: 10px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
                     </tbody>

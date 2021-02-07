@@ -23,6 +23,14 @@ $(function(){
     $('#idinsmod').val(id);
     });
 
+    //Modal Reemplazar Valsupre Firmado
+   $('#DocModal2').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id = button.data('id');
+    document.getElementById('idinsmod2').value = id;
+    //$('idinsmod').val(id);
+    });
+
    //Modal en Contratos
    $('#myModal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);

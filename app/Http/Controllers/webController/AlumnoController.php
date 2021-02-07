@@ -37,7 +37,7 @@ class AlumnoController extends Controller
 
         $tipoaspirante = $request->get('busqueda_aspirante');
         $retrieveAlumnos = Alumnopre::busquedapor($tipoaspirante, $buscar_aspirante)
-        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp']);
+        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso']);
         $contador = $retrieveAlumnos->count();
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
@@ -59,12 +59,31 @@ class AlumnoController extends Controller
             'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
             'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO',
-            'NO ESPECIFICADO' => 'NO ESPECIFICADO',
+            'POSTGRADO' => 'POSTGRADO'
         ];
         $estado = new Estado();
         $estados = $estado->all(['id', 'nombre']);
         return view('layouts.pages.sid', compact('estados', 'grado_estudio'));
+    }
+
+    public function createcerss()
+    {
+        // nueva modificacion
+        $grado_estudio = [
+            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO' => 'POSTGRADO'
+        ];
+        $estado = new Estado();
+        $estados = $estado->all(['id', 'nombre']);
+
+        return view('layouts.pages.sid_cerss', compact('estados', 'grado_estudio'));
     }
 
     /**
@@ -76,11 +95,21 @@ class AlumnoController extends Controller
     public function store(Request $request)
     {
         $curp = strtoupper($request->input('curp'));
-        $alumnoPre = Alumnopre::WHERE('curp', '=', $curp)->GET(['curp']);
-        // obtener el usuario que agrega
-        $usuario = Auth::user()->name;
-        if ($alumnoPre->isEmpty()) {
-            # si la consulta no está vacía hacemos la inserción
+        // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
+        $curp_formateada = trim($curp);
+        /**
+         * checamos la base de datos para saber si ya se encuentra registrada
+         */
+        $alumnoPre = DB::table('alumnos_pre')->where('curp', $curp_formateada)->select('curp')->first();
+        /**
+         * se checa si la consulta arroja un resultado o es nulo,
+         * en dado caso de ser nulo se tiene que agregar completamente
+         */
+        if (is_null($alumnoPre)) {
+            # SI ES VERDADERO ESTÁ NULA LA CONSULTA, PROCEDEMOS A INSERTAR EL REGISTRO
+            // obtener el usuario que agrega
+            $usuario = Auth::user()->name;
+            # si la consulta está vacía hacemos la inserción
             $validator =  Validator::make($request->all(), [
                 'nombre' => 'required',
                 'apellidoPaterno' => 'required',
@@ -111,14 +140,14 @@ class AlumnoController extends Controller
                 $fecha_nacimiento = $anio."-".$mes."-".$dia;
 
                 //estados
-                $nombre_estado = Estado::WHERE('id', '=', $request->estado)->FIRST(['nombre']);
+                $nombre_estado = DB::table('estados')->where('id', $request->input('estado'))->select('nombre')->first();
 
                 $AlumnoPreseleccion = new Alumnopre;
                 $AlumnoPreseleccion->nombre = $request->nombre;
                 $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
                 $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
                 $AlumnoPreseleccion->sexo = $request->sexo;
-                $AlumnoPreseleccion->curp = $request->curp;
+                $AlumnoPreseleccion->curp = $curp_formateada;
                 $AlumnoPreseleccion->fecha_nacimiento = $fecha_nacimiento;
                 $AlumnoPreseleccion->telefono = $request->telefonosid;
                 $AlumnoPreseleccion->domicilio = $request->domicilio;
@@ -134,20 +163,225 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->sistema_capacitacion_especificar = ($request->input('motivos_eleccion_sistema_capacitacion') === "0") ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion');
                 $AlumnoPreseleccion->empresa_trabaja = $request->empresa;
                 $AlumnoPreseleccion->antiguedad = $request->antiguedad;
+                $AlumnoPreseleccion->direccion_empresa = $request->direccion_empresa;
                 $AlumnoPreseleccion->realizo = $usuario;
                 $AlumnoPreseleccion->tiene_documentacion = false;
+                $AlumnoPreseleccion->es_cereso = false;
                 $AlumnoPreseleccion->save();
 
                 // redireccionamos con un mensaje de éxito
-                return redirect('alumnos/indice')->with('success', 'Nuevo Alumno Agregado Exitosamente!');
+                return redirect()->route('alumnos.index')->with('success', 'NUEVO ASPIRANTE AGREGADO EXITOSAMENTE!');
             }
-
         } else {
-            # por el contrario si no está vacía mandamos un mensaje al usuario
-            #Mensaje
-            $mensaje = "Lo sentimos, la curp ".$curp." asociada a este registro ya se encuentra en la base de datos.";
-            return redirect('/alumnos/sid')->withErrors($mensaje);
+            # ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
+            /**
+             * checamos la función básica para comparar dos cadenas a nivel binario
+             * Tiene en cuenta mayúsculas y minúsculas.
+             * Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
+             */
+            if (strcmp($curp_formateada, $alumnoPre->curp) === 0)
+            {
+                # si coinciden hay que mandar directo un mensaje de que no funciona
+                return redirect()->route('alumnos.preinscripcion')
+                    ->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
+            }
         }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storecerss(Request $request)
+    {
+
+        $rules = [
+            'nombre_cerss' => ['required', 'min:4'],
+            'nombre_aspirante_cerss' => ['required', 'min:2', ],
+            'genero_cerss' => 'required',
+            'anio_cerss' => 'max:4',
+            'file_upload' => 'required|mimes:pdf|file:1',
+            'numero_expediente_cerss' => 'required',
+        ];
+
+        $messages = [
+            'nombre_cerss.required' => 'EL NOMBRE DEL CERSS ES REQUERIDO',
+            'nombre_cerss.min' => 'LA LONGITUD DEL NOMBRE DEL CERSS NO PUEDE SER MENOR A 3 CARACTERES',
+            'nombre_aspirante_cerss.required' => 'EL NOMBRE DEL ASPIRANTE ES REQUERIDO',
+            'nombre_aspirante_cerss.min' => 'LA LONGITUD DEL NOMBRE NO PUEDE SER MENOR A 2 CARACTERES',
+            'genero_cerss.required' => 'EL GENERO ES REQUERIDO',
+            'anio_cerss.max' => 'EL AÑO NO DEBE DE TENER MAS DE 4 DIGITOS',
+            'file_upload.required' => 'EL ARCHIVO DE CARGA ES REQUERIDO',
+            'file_upload.mimes' => 'EL ARCHIVO NO ES UNA EXTENSION PDF',
+            'file_upload.file' => '',
+            'numero_expediente_cerss.required' => 'EL NÚMERO DE EXPEDIENTE ES REQUERIDO',
+        ];
+
+        $validator =  Validator::make($request->all(), $rules,$messages);
+        if ($validator->fails()) {
+            # devolvemos un error
+            //dd($validator);
+            return redirect()->route('preinscripcion.cerss')
+                    ->withErrors($validator)
+                    ->withInput();
+        } else {
+            /**
+             * checamos si el número de expediente ya se encuentra registrado en la tabla
+             */
+            //$numeroExpediente = trim($request->input('numero_expediente_cerss'));
+            //$chkNumeroExp = DB::table('alumnos_pre')->where('numero_expediente', $numeroExpediente)->count();
+            //if ($chkNumeroExp > 0) {
+                # se encontro un aspirante con ese número de expediente
+                //return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL NÚMERO DE EXPEDIENTE: %s YA SE ENCUENTRA REGISTRADO', $numeroExpediente));
+            //} else {
+                // obtener el usuario que agrega
+                $usuario_agrega = Auth::user()->name;
+                /**
+                 * obtener el nombre del estado
+                 */
+                //obtener el estado
+                $estado_mod_cerss = DB::table('estados')->where('id', $request->input('cerss_estado'))->get();
+                /**
+                 * empezamos a insertar el registro
+                 */
+                $dia = trim($request->input('dia_cerss'));
+                $mes = trim($request->input('mes_cerss'));
+                $anio = trim($request->input('anio_cerss'));
+
+                if (empty($dia) && empty($mes) && empty($anio))
+                {
+                    # condición para saber si se puede armar una fecha
+                    $fecha_nacimiento = NULL;
+                } else {
+                    $fecha_nacimiento = $anio."-".$mes."-".$dia;
+                }
+
+                $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
+                    'nombre' => $request->input('nombre_aspirante_cerss'),
+                    'apellido_paterno' => (is_null($request->input('apellidoPaterno_aspirante_cerss')) ? '' : $request->input('apellidoPaterno_aspirante_cerss')),
+                    'apellido_materno' => (is_null($request->input('apellidoMaterno_aspirante_cerss')) ? '' : $request->input('apellidoMaterno_aspirante_cerss')),
+                    'fecha_nacimiento' => $fecha_nacimiento,
+                    'nacionalidad' => $request->input('nacionalidad_cerss'),
+                    'sexo' => $request->input('genero_cerss'),
+                    'curp' => (is_null($request->input('curp_cerss')) ? '' : $request->input('curp_cerss')),
+                    'rfc_cerss' => $request->input('rfc_cerss'),
+                    'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios_cerss'),
+                    'tiene_documentacion' => false,
+                    'realizo' => $usuario_agrega,
+                    'nombre_cerss' => $request->input('nombre_cerss'),
+                    'numero_expediente' => $request->input('numero_expediente_cerss'),
+                    'direccion_cerss' => $request->input('direcciones_cerss'),
+                    'titular_cerss' => $request->input('titular_cerss'),
+                    'telefono' => '',
+                    'domicilio' => '',
+                    'colonia' => '',
+                    'estado' => (is_null($estado_mod_cerss[0]->nombre) ? '' : $estado_mod_cerss[0]->nombre),
+                    'municipio' => (is_null($request->input('cerss_municipio')) ? '' : $request->input('cerss_municipio')),
+                    'estado_civil' => '',
+                    'discapacidad' => (is_null($request->input('discapacidad_cerss')) ? '' : $request->input('discapacidad_cerss')),
+                    'ultimo_grado_estudios' => '',
+                    'medio_entero' => '',
+                    'puesto_empresa' => '',
+                    'sistema_capacitacion_especificar' => '',
+                    'empresa_trabaja' => '',
+                    'antiguedad' => '',
+                    'es_cereso' => true,
+                ]);
+
+                # trabajamos cargando el acta de nacimiento al servidor
+                if ($request->hasFile('file_upload')) {
+
+                        // obtenemos el valor de acta_nacimiento
+                        $ficha_cerss = DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->VALUE('ficha_cerss');
+                        // checamos que no sea nulo
+                        if (!is_null($ficha_cerss)) {
+                            # si no está nulo
+                            if(!empty($ficha_cerss)){
+                                $docFichaCerss = explode("/",$ficha_cerss, 5);
+                                if (Storage::exists($docFichaCerss[4])) {
+                                    # checamos si hay un documento de ser así procedemos a eliminarlo
+                                    Storage::delete($docFichaCerss[4]);
+                                }
+                            }
+                        }
+
+                        $ficha_cerss = $request->file('file_upload'); # obtenemos el archivo
+                        $url_ficha_cerss = $this->uploaded_file($ficha_cerss, $id_alumnos_pre, 'ficha_cerss'); #invocamos el método
+                        $chk_ficha_cerss = true;
+                        // creamos un arreglo
+                        $arregloDocs = [
+                            'ficha_cerss' => $url_ficha_cerss,
+                            'chk_ficha_cerss' => $chk_ficha_cerss
+                        ];
+                } else {
+                    $url_ficha_cerss = '';
+                    $chk_ficha_cerss = false;
+                }
+
+                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+                DB::table('alumnos_pre')->WHERE('id', $id_alumnos_pre)->update($arregloDocs);
+
+                // limpiamos el arreglo
+                unset($arregloDocs);
+
+                // redireccionamos con un mensaje de éxito
+                return redirect()->route('alumnos.index')->with('success', 'Nuevo Aspirante Agregado Exitosamente!');
+            //}
+        }
+    }
+
+    public function showCerss($id)
+    {
+        $id_prealumno = base64_decode($id);
+        $alumnoPre_show = DB::table('alumnos_pre')->WHERE('id', $id_prealumno)->FIRST([
+            'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento' , 'nacionalidad' ,
+            'sexo' , 'curp', 'rfc_cerss', 'ultimo_grado_estudios', 'es_cereso', 'chk_ficha_cerss', 'ficha_cerss',
+            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'titular_cerss', 'municipio', 'estado', 'discapacidad'
+        ]);
+        return view('layouts.pages.sid_cerss_show', compact('id_prealumno', 'alumnoPre_show'));
+    }
+    /**
+     * modificaciones formulario updateCerss
+     */
+    public function updateCerss($id)
+    {
+        $idPrealumnoUpdate = base64_decode($id);
+        $grado_estudio_update = [
+            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO' => 'POSTGRADO',
+            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
+        ];
+        $alumnoPre_update = DB::table('alumnos_pre')->WHERE('id', $idPrealumnoUpdate)->FIRST([
+            'nombre', 'apellido_paterno', 'apellido_materno', 'fecha_nacimiento' , 'nacionalidad' ,
+            'sexo' , 'curp', 'rfc_cerss', 'ultimo_grado_estudios', 'es_cereso', 'chk_ficha_cerss', 'ficha_cerss',
+            'nombre_cerss', 'numero_expediente', 'direccion_cerss', 'titular_cerss', 'estado', 'municipio', 'discapacidad'
+        ]);
+
+        $estados = DB::table('estados')->get();
+        $municipios = DB::table('tbl_municipios')->get();
+
+        if (is_null($alumnoPre_update->fecha_nacimiento)) {
+            # es nulo como verdadero
+            $anio_nac_cerss = '';
+            $mes_nac_cerss = '';
+            $dia_nac_cerss= '';
+        } else {
+            $fecha_nac = explode("-", $alumnoPre_update->fecha_nacimiento);
+            $anio_nac_cerss = $fecha_nac[0];
+            $mes_nac_cerss = $fecha_nac[1];
+            $dia_nac_cerss = $fecha_nac[2];
+        }
+
+        return view('layouts.pages.sid_cerss_update', compact('idPrealumnoUpdate', 'alumnoPre_update', 'anio_nac_cerss', 'mes_nac_cerss', 'dia_nac_cerss', 'grado_estudio_update', 'estados', 'municipios'));
     }
     /**
      * formulario número 2
@@ -155,7 +389,7 @@ class AlumnoController extends Controller
     protected function steptwo($id)
     {
         $id_prealumno = base64_decode($id);
-        $alumnoPre = Alumnopre::WHERE('id', '=', $id_prealumno)->FIRST(['chk_acta_nacimiento', 'acta_nacimiento', 'chk_curp', 'documento_curp',
+        $alumnoPre = DB::table('alumnos_pre')->WHERE('id', '=', $id_prealumno)->FIRST(['chk_acta_nacimiento', 'acta_nacimiento', 'chk_curp', 'documento_curp',
         'chk_comprobante_domicilio', 'comprobante_domicilio', 'chk_ine', 'ine', 'chk_pasaporte_licencia', 'pasaporte_licencia_manejo', 'chk_comprobante_ultimo_grado', 'comprobante_ultimo_grado',
         'chk_fotografia', 'fotografia', 'comprobante_calidad_migratoria', 'chk_comprobante_calidad_migratoria', 'nombre', 'apellido_paterno', 'apellido_materno',
         'curp']);
@@ -553,56 +787,115 @@ class AlumnoController extends Controller
      */
     public function update(Request $request)
     {
-        $id = $request->alumno_id;
-        $AlumnosPre = Alumnopre::findOrfail($id); // encontrar el registro
+        $id = $request->get('alumno_id');
+        /**
+         * Para recuperar una sola fila por su valor de columna de id, use el método de búsqueda
+         */
+        $AlumnosPre = Alumnopre::findOrfail($id);
 
         // checamos si el usuario ya existe
-        if(!$AlumnosPre) {
-            // no se puede encontrar el alumno con el id_alumno
-        } else {
+        if(!is_null($AlumnosPre)) {
+
+            #ES VERDADERO SI NO ES NULL
             // si existe, se tiene que utilizar el mismo número de control
             // obtenemos su número de control
             // primeramente habrá que buscarlo en la tabla AlumnoSice
-            $alumnos_sice = AlumnosSice::WHERE('curp', $AlumnosPre->curp)->GET();
+            $alumnos_sice = DB::table('registro_alumnos_sice')->where('curp', $AlumnosPre->curp)->select('no_control')->first();
             // comprobamos si existe algo en la busqueda de la tabla
-            if(count($alumnos_sice) > 0){
-                // registro encontrado
-                $no_control_sice = $alumnos_sice[0]->no_control;
+            if($alumnos_sice !== null){
+                // REGISTRO ENCONTRADO
+                $no_control_sice = $alumnos_sice->no_control;
 
                 // hacemos el guardado del alumno con el curso que desea tomar
                 $usuario = Auth::user()->name;
-
                 /**
-                 * funcion alumnos
+                 * checamos si el curso ya está asignado a este usuario
                  */
-                $alumno = new Alumno([
-                    'no_control' => $no_control_sice,
-                    'id_especialidad' => $request->input('especialidad_sid'),
-                    'id_curso' => $request->input('cursos_sid'),
-                    'horario' => $request->input('horario'),
-                    'grupo' => $request->input('grupo'),
-                    'unidad' => $request->input('tblunidades'),
-                    'tipo_curso' => $request->input('tipo_curso'),
-                    'realizo' => $usuario,
-                    'cerrs' => $request->input('cerrs')
-                ]);
+                // $check_alumno_registro_cursos = DB::table('alumnos_registro')->where([
+                //     ['id_curso', '=', $request->input('cursos_sid')],
+                //     ['no_control', '=', $no_control_sice],
+                // ])->first();
+                /**
+                 * CHECAMOS SI HAY ALGÚN REGISTRO DATO EN check_alumno_registro_cursos
+                 * SI NO PROCEDEMOS A INSERTAR EL REGISTRO, DE NO SER ASÍ MANDAMOS UN MENSAJE AL
+                 * USUARIO QUE NO SE PUEDE CARGAR EL POR QUE EL CURSO YA SE ENCUENTRA REGISTRADO
+                 */
+                // if(is_null($check_alumno_registro_cursos)){
+                //     // VERDADERO PROCEDEMOS A CARGAR EL REGISTRO
 
-                $AlumnosPre->alumnos()->save($alumno);
+                //      /**
+                //      * funcion alumnos
+                //      */
+                //     $alumno = new Alumno([
+                //         'no_control' => $no_control_sice,
+                //         'id_especialidad' => $request->input('especialidad_sid'),
+                //         'id_curso' => $request->input('cursos_sid'),
+                //         'horario' => $request->input('horario'),
+                //         'grupo' => $request->input('grupo'),
+                //         'unidad' => $request->input('tblunidades'),
+                //         'tipo_curso' => $request->input('tipo_curso'),
+                //         'realizo' => $usuario,
+                //         'cerrs' => $request->input('cerrs')
+                //     ]);
 
-                return redirect('alumnos/registrados')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control_sice));
+                //     $AlumnosPre->alumnos()->save($alumno);
+
+                //     return redirect()->route('alumnos.inscritos')
+                //         ->with('success', sprintf('¡EL CURSO ASOCIADO CON EL N° DE CONTROL %s REGISTRADO EXITOSAMENTE!', $no_control_sice));
+                // } else {
+                //     // FALSO PROCEDEMOS A ENVIAR UN MENSAJE DE RESTRICCIÓN AL USUARIO
+                //     return redirect()->route('alumnos.presincripcion-paso2', ['id' => base64_encode($id)])
+                //     ->withErrors(sprintf('LO SENTIMOS, EL CURSO ASOCIADO CON EL N° DE CONTROL %s YA FUE REGISTRADO', $no_control_sice));
+                // }
+
+                    /**
+                     * funcion alumnos
+                     */
+                    $alumno = new Alumno([
+                        'no_control' => $no_control_sice,
+                        'id_especialidad' => $request->input('especialidad_sid'),
+                        'id_curso' => $request->input('cursos_sid'),
+                        'horario' => $request->input('horario'),
+                        'grupo' => $request->input('grupo'),
+                        'unidad' => $request->input('tblunidades'),
+                        'tipo_curso' => $request->input('tipo_curso'),
+                        'realizo' => $usuario
+                    ]);
+
+                    $AlumnosPre->alumnos()->save($alumno);
+
+                    return redirect()->route('alumnos.inscritos')
+                        ->with('success', sprintf('¡EL CURSO ASOCIADO CON EL N° DE CONTROL %s REGISTRADO EXITOSAMENTE!', $no_control_sice));
+
 
             } else {
-                // no encontrado
+
+                // $chk_curso_duplicado = DB::table('alumnos_registro')->where([ ['id_curso', '=', $request->input('cursos_sid')], ['id_pre', '=', $id] ])->first();
+                // // CHECAMOS ANTES DE GENERAR EL NÚMERO DE CONTROL QUE EL CURSO AL QUE DESEA ESTÁR VINCULADO NO SE ENCUENTRE OCUPADO
+                // if (!is_null($chk_curso_duplicado)) {
+                //     $cursos_duplicados = DB::table('cursos')->where('id', $request->input('cursos_sid'))->select('nombre_curso')->first();
+                //     $curso_nombre = $cursos_duplicados->nombre_curso;
+                //     //dd($curso_nombre);
+                //     /**
+                //      * OBTENER EL CURSO ASOCIADO AL REGISTRO
+                //      */
+                //     # SI HAY UN REGISTRO VAMOS A ENVIAR UN MENSAJE AL USUARIO PARA QUE SE AVISE DE LA DUPLICIDAD DEL REGISTRO EN LA BASE DE DATOS
+                //     return redirect()->back()->withErrors(sprintf('LO SENTIMOS, EL CURSO: %s YA SE ENCUENTRA REGISTRADO', $curso_nombre));
+                // }
+
+                /**
+                 * NO ENCONTRADO NO HAY REGISTROS ASOCIADOS A ESE NÚMERO DE CONTROL EN LA BASE DE DATOS registro_alumnos_sice
+                 * SE PROCEDE A BUSCAR UNA COINCIDENCÍA EN LA TABLA alumnos_registro
+                 */
 
                 $unidadesTbl_ = $request->input('tblunidades');
 
-                $Alumno_ = new Alumno();
-                $Alumnos_ = $Alumno_->WHERE([
+                //$Alumno_ = new Alumno();
+                $Alumnos_ = DB::table('alumnos_registro')->WHERE([
                     ['id_pre', '=', $id]
-                ])
-                ->SKIP(0)->TAKE(1)->GET();
+                ])->skip(0)->take(1)->get();
                 // aquí veré que obtenemos
-                if(count($Alumnos_)) {
+                if(count($Alumnos_) > 0) {
                     // si hay datos obtenemos el número de control
                     $no_control = $Alumnos_[0]->no_control;
                 } else {
@@ -621,8 +914,8 @@ class AlumnoController extends Controller
                     /**
                      * obtenemos el valor de un campo de trabajo
                      */
-                    $unidades = new Unidad();
-                    $cct_unidades = $unidades->SELECT('cct')
+                    //$unidades = new Unidad();
+                    $cct_unidades = DB::table('tbl_unidades')->SELECT('cct')
                                     ->WHERE('unidad', '=', $unidadesTbl_)
                                     ->GET();
 
@@ -658,7 +951,7 @@ class AlumnoController extends Controller
 
                 $AlumnosPre->alumnos()->save($alumno);
 
-                return redirect('alumnos/registrados')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control));
+                return redirect()->route('alumnos.inscritos')->with('success', sprintf('ASPIRANTE VINCULADO EXITOSAMENTE A CURSO CON N° CONTROL %s', $no_control));
 
             }
 
@@ -672,9 +965,9 @@ class AlumnoController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad = $request->idEsp;
             $tipo_curso = $request->tipo;
-            $Curso = new curso();
-            $Cursos = $Curso->WHERE('id_especialidad', '=', $idEspecialidad)
-                            ->WHERE('tipo_curso', '=', $tipo_curso)->GET();
+            $unidad_seleccionada = '["'.$request->unidad.'"]';
+            //$Curso = new curso();
+            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['unidades_disponible', '@>', $unidad_seleccionada]])->get();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);
@@ -689,8 +982,10 @@ class AlumnoController extends Controller
     {
         if (isset($request->unidad)){
             $idcurso = $request->idcur;
-            $unidad = 'CHK_' . str_replace(' ', '_', $request->unidad) . ' AS chk';
-            $check = cursoAvailable::SELECT($unidad, 'curso_id')->WHERE('curso_id', '=', $idcurso)->FIRST();
+            $unidad_seleccionada = '["'.$request->unidad.'"]';
+            $check = DB::table('cursos')->select('id','nombre_curso')->where('unidades_disponible', '@>', $unidad_seleccionada)->get();
+            //$unidad = 'CHK_' . str_replace(' ', '_', $request->unidad) . ' AS chk';
+            //$check = cursoAvailable::SELECT($unidad, 'curso_id')->WHERE('curso_id', '=', $idcurso)->FIRST();
             $json=json_encode($check);
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
@@ -857,6 +1152,114 @@ class AlumnoController extends Controller
             }
     }
 
+    /**
+     * Actualización preinscripcion cerss.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function updatedCerssNew(Request $request, $idPreinscripcion) {
+        if (isset($idPreinscripcion)) {
+            //dd($request);
+
+            // obtener el usuario que agrega
+            $usuario_agrega = Auth::user()->name;
+
+            /**
+             * empezamos a insertar el registro
+             */
+            $dia = trim($request->input('dia_cerss'));
+            $mes = trim($request->input('mes_cerss'));
+            $anio = trim($request->input('anio_cerss'));
+
+            if (empty($dia) && empty($mes) && empty($anio))
+            {
+                # condición para saber si se puede armar una fecha
+                $fecha_nacimiento = NULL;
+            } else {
+                $fecha_nacimiento = $anio."-".$mes."-".$dia;
+            }
+
+            //obtener el estado
+            $nombre_estado_cerss_mod = DB::table('estados')->where('id', $request->input('cerss_estado_update'))->first();
+
+        # arreglo de datos
+            $array_update_cerss = [
+
+                'nombre' => $request->input('nombre_aspirante_cerss_update'),
+                'apellido_paterno' => (is_null($request->input('apellidoPaterno_aspirante_cerss_update')) ? '' : $request->input('apellidoPaterno_aspirante_cerss_update')),
+                'apellido_materno' => (is_null($request->input('apellidoMaterno_aspirante_cerss_update')) ? '' : $request->input('apellidoMaterno_aspirante_cerss_update')),
+                'fecha_nacimiento' => $fecha_nacimiento,
+                'nacionalidad' => $request->input('nacionalidad_cerss_update'),
+                'sexo' => $request->input('genero_cerss_update'),
+                'curp' => (is_null($request->input('curp_cerss_update')) ? '' : $request->input('curp_cerss_update')),
+                'rfc_cerss' => $request->input('rfc_cerss_update'),
+                'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios_cerss_update'),
+                'tiene_documentacion' => false,
+                'nombre_cerss' => $request->input('nombre_cerss_update'),
+                'numero_expediente' => $request->input('numero_expediente_cerss_update'),
+                'direccion_cerss' => $request->input('direcciones_cerss_update_'),
+                'titular_cerss' => $request->input('titular_cerss_update_'),
+                'telefono' => '',
+                'domicilio' => '',
+                'colonia' => '',
+                'estado' => trim($nombre_estado_cerss_mod->nombre),
+                'municipio' => trim($request->input('cerss_municipio_update')),
+                'estado_civil' => '',
+                'discapacidad' => trim($request->input('discapacidad_cerss_update')),
+                'medio_entero' => '',
+                'puesto_empresa' => '',
+                'sistema_capacitacion_especificar' => '',
+                'empresa_trabaja' => '',
+                'antiguedad' => '',
+                'es_cereso' => $request->input('is_cerrs_update'),
+            ];
+
+            $idPreInscripcion = base64_decode($idPreinscripcion);
+
+            DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->UPDATE($array_update_cerss);
+
+            # trabajamos cargando el acta de nacimiento al servidor
+            if ($request->hasFile('file_upload')) {
+
+                // obtenemos el valor de acta_nacimiento
+                $ficha_cerss = DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->VALUE('ficha_cerss');
+                // checamos que no sea nulo
+                if (!is_null($ficha_cerss)) {
+                    # si no está nulo
+                    if(!empty($ficha_cerss)){
+                        $docFichaCerss = explode("/",$ficha_cerss, 5);
+                        if (Storage::exists($docFichaCerss[4])) {
+                            # checamos si hay un documento de ser así procedemos a eliminarlo
+                            Storage::delete($docFichaCerss[4]);
+                        }
+                    }
+                }
+
+                $ficha_cerss = $request->file('file_upload'); # obtenemos el archivo
+                $url_ficha_cerss = $this->uploaded_file($ficha_cerss, $idPreInscripcion, 'ficha_cerss'); #invocamos el método
+                $chk_ficha_cerss = true;
+                // creamos un arreglo
+                $arregloDocs = [
+                    'ficha_cerss' => $url_ficha_cerss,
+                    'chk_ficha_cerss' => $chk_ficha_cerss
+                ];
+
+                // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
+                DB::table('alumnos_pre')->WHERE('id', $idPreInscripcion)->update($arregloDocs);
+
+                // limpiamos el arreglo
+                unset($arregloDocs);
+            }
+
+            $numeroExpediente = $request->input('numero_expediente_cerss');
+            return redirect()->route('alumnos.index')
+                ->with('success', sprintf('ASPIRANTE CON EXPEDIENTE %s  MODIFICADO EXTIOSAMENTE!', $numeroExpediente));
+        }
+    }
+
     public function updateSidJefeUnidad(Request $request, $idAspirante){
         if (isset($idAspirante)) {
             # code...
@@ -952,5 +1355,17 @@ class AlumnoController extends Controller
 
             return $control_number = $anioDivision . $cli_value . $value_control;
         }
+    }
+
+    /**
+     * funciones
+     */
+    protected function getNumeroExpediente(Request $request){
+        $num_exp = DB::table('alumnos_pre')->select(
+            DB::raw('MAX(numero_expediente) as num_expediente')
+        )->limit(1)->get();
+
+        $json=json_encode($num_exp);
+        return $json;
     }
 }

@@ -94,7 +94,6 @@
         <script src="{{ asset("js/scripts/datepicker-es.js") }}"></script>
         <script src="{{ asset("js/validate/sid-mod.js") }}"></script>
         <!--charts-->
-        <!--Load the AJAX API-->
         @yield('script_content_js')
     </body>
 

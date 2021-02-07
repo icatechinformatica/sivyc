@@ -1,6 +1,79 @@
 <!-- Creado por Orlando Chávez -->
 @extends('theme.sivyc.layout')
 @section('title', 'Instructor | Sivyc Icatech')
+<head>
+    <style>
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 90px;
+          height: 34px;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(50px);
+          -ms-transform: translateX(50px);
+          transform: translateX(50px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+    </style>
+</head>
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
         @if ($message = Session::get('success'))
@@ -133,11 +206,11 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputtelefono">Numero de Telefono Personal</label>
-                        <input name="telefono" id="telefono" value="{{$datains->telefono }}" type="tel" disabled class="form-control" aria-required="true">
+                        <input name="telefono" id="telefono" value="{{$datains->telefono }}" type="tel" disabled class="form-control" aria-required="true" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputcorreo">Correo Electronico</label>
-                        <input name="correo" id="correo" value="{{$datains->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true">
+                        <input name="correo" id="correo" value="{{$datains->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -330,12 +403,31 @@
                         </div>
                     </div>
                 </div>
+                @can('instructor.altabaja')
+                    <hr style="border-color:dimgray">
+                    <label><h2>Estado General del Instructor</h2></label>
+                    <div class="form-group col-md-4">
+                        @if ($datains->estado == true)
+                            <label class="switch">
+                                <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
+                                <span class="slider round"></span>
+                            </label>
+                            <h5><p id="text1">Instructor Activo</p><p id="text2" style="display:none">Instructor Inactivo</p></h5>
+                        @else
+                            <label class="switch">
+                                <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
+                                <span class="slider round"></span>
+                            </label>
+                            <h5><p id="text1" style="display:none">Instructor Activo</p><p id="text2">Instructor Inactivo</p></h5>
+                        @endif
+                    </div>
+                    <label><h2>Alta/Baja al Instructor</h2></label>
+                    <div class="form-group col-md-8">
+                        <a class="btn btn-danger" href="{{ route('instructor-alta_baja', ['id' => $datains->id]) }}" >Alta/Baja</a>
+                        <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
+                    </div>
+                @endcan
                 <hr style="border-color:dimgray">
-                <label><h2>Alta/Baja al Instructor</h2></label>
-                <div class="form-group col-md-8">
-                    <a class="btn btn-danger" href="{{ route('instructor-alta_baja', ['id' => $datains->id]) }}" >Alta/Baja</a>
-                    <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
-                </div>
                 <br>
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
@@ -373,6 +465,20 @@
                 </div>
             </div>
         </div>
+        <script>
+            function leyenda() {
+              var checkBox = document.getElementById("estado");
+              var text1 = document.getElementById("text1");
+              var text2 = document.getElementById("text2");
+              if (checkBox.checked == true){
+                text1.style.display = "block";
+                text2.style.display = "none";
+              } else {
+                 text1.style.display = "none";
+                 text2.style.display = "block";
+              }
+            }
+        </script>
     </section>
 @stop
 

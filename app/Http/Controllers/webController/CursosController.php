@@ -23,6 +23,7 @@ class CursosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index(Request $request)
     {
         /**
@@ -65,11 +66,18 @@ class CursosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         //
         try {
             //validación de archivos
+            $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+            'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'PALENQUE'];
 
             $cursos = new curso;
             $cursos->nombre_curso = trim($request->nombrecurso);
@@ -95,6 +103,8 @@ class CursosController extends Controller
             $cursos->tipo_curso = trim($request->tipo_curso);
             $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
             $cursos->rango_criterio_pago_maximo = trim($request->criterio_pago_maximo);
+            $cursos->unidades_disponible = $unidades;
+            $cursos->estado = TRUE;
             $cursos->save();
 
             # ==================================
@@ -135,49 +145,6 @@ class CursosController extends Controller
                 $cursoU->save();
             }
 
-            //Guardado en cursos_available
-                $cur_available = new cursoAvailable();
-                $cur_available->curso_id = $cursosId;
-                $cur_available->CHK_TUXTLA = TRUE;
-                $cur_available->CHK_TAPACHULA = TRUE;
-                $cur_available->CHK_COMITAN = TRUE;
-                $cur_available->CHK_REFORMA = TRUE;
-                $cur_available->CHK_TONALA = TRUE;
-                $cur_available->CHK_VILLAFLORES = TRUE;
-                $cur_available->CHK_JIQUIPILAS = TRUE;
-                $cur_available->CHK_CATAZAJA = TRUE;
-                $cur_available->CHK_YAJALON = TRUE;
-                $cur_available->CHK_SAN_CRISTOBAL = TRUE;
-                $cur_available->CHK_CHIAPA_DE_CORZO = TRUE;
-                $cur_available->CHK_MOTOZINTLA = TRUE;
-                $cur_available->CHK_BERRIOZABAL = TRUE;
-                $cur_available->CHK_PIJIJIAPAN = TRUE;
-                $cur_available->CHK_JITOTOL = TRUE;
-                $cur_available->CHK_LA_CONCORDIA = TRUE;
-                $cur_available->CHK_VENUSTIANO_CARRANZA = TRUE;
-                $cur_available->CHK_TILA = TRUE;
-                $cur_available->CHK_TEOPISCA = TRUE;
-                $cur_available->CHK_OCOSINGO = TRUE;
-                $cur_available->CHK_CINTALAPA = TRUE;
-                $cur_available->CHK_COPAINALA = TRUE;
-                $cur_available->CHK_SOYALO = TRUE;
-                $cur_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
-                $cur_available->CHK_ARRIAGA = TRUE;
-                $cur_available->CHK_PICHUCALCO = TRUE;
-                $cur_available->CHK_JUAREZ = TRUE;
-                $cur_available->CHK_SIMOJOVEL = TRUE;
-                $cur_available->CHK_MAPASTEPEC = TRUE;
-                $cur_available->CHK_VILLA_CORZO = TRUE;
-                $cur_available->CHK_CACAHOATAN = TRUE;
-                $cur_available->CHK_ONCE_DE_ABRIL = TRUE;
-                $cur_available->CHK_TUXTLA_CHICO = TRUE;
-                $cur_available->CHK_OXCHUC = TRUE;
-                $cur_available->CHK_CHAMULA = TRUE;
-                $cur_available->CHK_OSTUACAN = TRUE;
-                $cur_available->CHK_PALENQUE = TRUE;
-                $cur_available->save();
-            //END
-
             return redirect()->route('curso-inicio')->with('success', 'Nuevo Curso Agregado!');
         } catch (Exception $e) {
             return Redirect::back()->withErrors($e->getMessage());
@@ -192,7 +159,6 @@ class CursosController extends Controller
      */
     public function show($id)
     {
-        //
         try {
             //consulta sql
             $area = new Area();
@@ -207,7 +173,7 @@ class CursosController extends Controller
 
             $idCurso = base64_decode($id);
             $curso = new curso();
-            $cursos = $curso::SELECT('cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+            $cursos = $curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
                     'cursos.costo','cursos.duracion','cursos.tipo_curso',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
@@ -292,10 +258,9 @@ class CursosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $cursos = new curso();
         // modificacion de un recurso guardado
         if (isset($id)) {
-            $cursos = new curso();
-            # code...
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -318,11 +283,24 @@ class CursosController extends Controller
                 'nivel_estudio' => trim($request->nivel_estudio),
                 'categoria' => trim($request->categoria),
                 'tipo_curso' => trim($request->tipo_curso),
-                'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
-                'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
+            if($request->estado != NULL)
+            {
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => TRUE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
+            }
+            else
+            {
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => FALSE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
+            }
+
             # ==================================
             # Aquí modificamos el curso con id
             # ==================================
@@ -415,133 +393,183 @@ class CursosController extends Controller
 
     public function alta_baja($id)
     {
-        $available = cursoAvailable::WHERE('curso_id', '=', $id)->FIRST();
-        if($available == NULL)
+        $av = curso::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
+        if($av == NULL)
         {
-            $ins_available = new cursoAvailable();
-            $ins_available->curso_id = $id;
-            $ins_available->CHK_TUXTLA = TRUE;
-            $ins_available->CHK_TAPACHULA = TRUE;
-            $ins_available->CHK_COMITAN = TRUE;
-            $ins_available->CHK_REFORMA = TRUE;
-            $ins_available->CHK_TONALA = TRUE;
-            $ins_available->CHK_VILLAFLORES = TRUE;
-            $ins_available->CHK_JIQUIPILAS = TRUE;
-            $ins_available->CHK_CATAZAJA = TRUE;
-            $ins_available->CHK_YAJALON = TRUE;
-            $ins_available->CHK_SAN_CRISTOBAL = TRUE;
-            $ins_available->CHK_CHIAPA_DE_CORZO = TRUE;
-            $ins_available->CHK_MOTOZINTLA = TRUE;
-            $ins_available->CHK_BERRIOZABAL = TRUE;
-            $ins_available->CHK_PIJIJIAPAN = TRUE;
-            $ins_available->CHK_JITOTOL = TRUE;
-            $ins_available->CHK_LA_CONCORDIA = TRUE;
-            $ins_available->CHK_VENUSTIANO_CARRANZA = TRUE;
-            $ins_available->CHK_TILA = TRUE;
-            $ins_available->CHK_TEOPISCA = TRUE;
-            $ins_available->CHK_OCOSINGO = TRUE;
-            $ins_available->CHK_CINTALAPA = TRUE;
-            $ins_available->CHK_COPAINALA = TRUE;
-            $ins_available->CHK_SOYALO = TRUE;
-            $ins_available->CHK_ANGEL_ALBINO_CORZO = TRUE;
-            $ins_available->CHK_ARRIAGA = TRUE;
-            $ins_available->CHK_PICHUCALCO = TRUE;
-            $ins_available->CHK_JUAREZ = TRUE;
-            $ins_available->CHK_SIMOJOVEL = TRUE;
-            $ins_available->CHK_MAPASTEPEC = TRUE;
-            $ins_available->CHK_VILLA_CORZO = TRUE;
-            $ins_available->CHK_CACAHOATAN = TRUE;
-            $ins_available->CHK_ONCE_DE_ABRIL = TRUE;
-            $ins_available->CHK_TUXTLA_CHICO = TRUE;
-            $ins_available->CHK_OXCHUC = TRUE;
-            $ins_available->CHK_CHAMULA = TRUE;
-            $ins_available->CHK_OSTUACAN = TRUE;
-            $ins_available->CHK_PALENQUE = TRUE;
-            $ins_available->save();
+            $reform = curso::find($id);
+            $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+            'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+            'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+            'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+            'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+            'PALENQUE'];
 
-            $available = cursoAvailable::WHERE('curso_id', '=', $id)->FIRST();
+            $reform->unidades_disponible = $unidades;
+            $reform->save();
+
+            $av = curso::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
         }
+
+        $available = $av->unidades_disponible;
+
         return view('layouts.pages.vstaltabajacur', compact('id','available'));
     }
 
     public function alta_baja_save(Request $request)
     {
-        $av_mod = cursoAvailable::find($request->id_available);
-        $answer = $this->checkComparator($request->chk_tuxtla);
-        $av_mod->CHK_TUXTLA = $answer;
-        $answer = $this->checkComparator($request->chk_tapachula);
-        $av_mod->CHK_TAPACHULA = $answer;
-        $answer = $this->checkComparator($request->chk_comitan);
-        $av_mod->CHK_COMITAN = $answer;
-        $answer = $this->checkComparator($request->chk_reforma);
-        $av_mod->CHK_REFORMA = $answer;
-        $answer = $this->checkComparator($request->chk_tonala);
-        $av_mod->CHK_TONALA = $answer;
-        $answer = $this->checkComparator($request->chk_villaflores);
-        $av_mod->CHK_VILLAFLORES = $answer;
-        $answer = $this->checkComparator($request->chk_jiquipilas);
-        $av_mod->CHK_JIQUIPILAS = $answer;
-        $answer = $this->checkComparator($request->chk_catazaja);
-        $av_mod->CHK_CATAZAJA = $answer;
-        $answer = $this->checkComparator($request->chk_yajalon);
-        $av_mod->CHK_YAJALON = $answer;
-        $answer = $this->checkComparator($request->chk_san_cristobal);
-        $av_mod->CHK_SAN_CRISTOBAL = $answer;
-        $answer = $this->checkComparator($request->chk_chiapa_de_corzo);
-        $av_mod->CHK_CHIAPA_DE_CORZO = $answer;
-        $answer = $this->checkComparator($request->chk_motozintla);
-        $av_mod->CHK_MOTOZINTLA = $answer;
-        $answer = $this->checkComparator($request->chk_berriozabal);
-        $av_mod->CHK_BERRIOZABAL = $answer;
-        $answer = $this->checkComparator($request->chk_pijijiapan);
-        $av_mod->CHK_PIJIJIAPAN = $answer;
-        $answer = $this->checkComparator($request->chk_jitotol);
-        $av_mod->CHK_JITOTOL = $answer;
-        $answer = $this->checkComparator($request->chk_la_concordia);
-        $av_mod->CHK_LA_CONCORDIA = $answer;
-        $answer = $this->checkComparator($request->chk_venustiano_carranza);
-        $av_mod->CHK_VENUSTIANO_CARRANZA = $answer;
-        $answer = $this->checkComparator($request->chk_tila);
-        $av_mod->CHK_TILA = $answer;
-        $answer = $this->checkComparator($request->chk_teopisca);
-        $av_mod->CHK_TEOPISCA = $answer;
-        $answer = $this->checkComparator($request->chk_ocosingo);
-        $av_mod->CHK_OCOSINGO = $answer;
-        $answer = $this->checkComparator($request->chk_cintalapa);
-        $av_mod->CHK_CINTALAPA = $answer;
-        $answer = $this->checkComparator($request->chk_copainala);
-        $av_mod->CHK_COPAINALA = $answer;
-        $answer = $this->checkComparator($request->chk_soyalo);
-        $av_mod->CHK_SOYALO = $answer;
-        $answer = $this->checkComparator($request->chk_angel_albino_corzo);
-        $av_mod->CHK_ANGEL_ALBINO_CORZO = $answer;
-        $answer = $this->checkComparator($request->chk_arriaga);
-        $av_mod->CHK_ARRIAGA = $answer;
-        $answer = $this->checkComparator($request->chk_pichucalco);
-        $av_mod->CHK_PICHUCALCO = $answer;
-        $answer = $this->checkComparator($request->chk_juarez);
-        $av_mod->CHK_JUAREZ = $answer;
-        $answer = $this->checkComparator($request->chk_simojovel);
-        $av_mod->CHK_SIMOJOVEL = $answer;
-        $answer = $this->checkComparator($request->chk_mapastepec);
-        $av_mod->CHK_MAPASTEPEC = $answer;
-        $answer = $this->checkComparator($request->chk_villa_corzo);
-        $av_mod->CHK_VILLA_CORZO = $answer;
-        $answer = $this->checkComparator($request->chk_cacahoatan);
-        $av_mod->CHK_CACAHOATAN = $answer;
-        $answer = $this->checkComparator($request->chk_once_de_abril);
-        $av_mod->CHK_ONCE_DE_ABRIL = $answer;
-        $answer = $this->checkComparator($request->chk_tuxtla_chico);
-        $av_mod->CHK_TUXTLA_CHICO = $answer;
-        $answer = $this->checkComparator($request->chk_oxchuc);
-        $av_mod->CHK_OXCHUC = $answer;
-        $answer = $this->checkComparator($request->chk_chamula);
-        $av_mod->CHK_CHAMULA = $answer;
-        $answer = $this->checkComparator($request->chk_ostuacan);
-        $av_mod->CHK_OSTUACAN = $answer;
-        $answer = $this->checkComparator($request->chk_palenque);
-        $av_mod->CHK_PALENQUE = $answer;
-        $av_mod->save();
+        $unidades = [];
+        if($this->checkComparator($request->chk_tuxtla) == TRUE)
+        {
+            array_push($unidades, 'TUXTLA');
+        }
+        if($this->checkComparator($request->chk_tapachula) == TRUE)
+        {
+            array_push($unidades, 'TAPACHULA');
+        }
+        if($this->checkComparator($request->chk_comitan) == TRUE)
+        {
+            array_push($unidades, 'COMITAN');
+        }
+        if($this->checkComparator($request->chk_reforma) == TRUE)
+        {
+            array_push($unidades, 'REFORMA');
+        }
+        if($this->checkComparator($request->chk_tonala) == TRUE)
+        {
+            array_push($unidades, 'TONALA');
+        }
+        if($this->checkComparator($request->chk_villaflores) == TRUE)
+        {
+            array_push($unidades, 'VILLAFLORES');
+        }
+        if($this->checkComparator($request->chk_jiquipilas) == TRUE)
+        {
+            array_push($unidades, 'JIQUIPILAS');
+        }
+        if($this->checkComparator($request->chk_catazaja) == TRUE)
+        {
+            array_push($unidades, 'CATAZAJA');
+        }
+        if($this->checkComparator($request->chk_yajalon) == TRUE)
+        {
+            array_push($unidades, 'YAJALON');
+        }
+        if($this->checkComparator($request->chk_san_cristobal) == TRUE)
+        {
+            array_push($unidades, 'SAN CRISTOBAL');
+        }
+        if($this->checkComparator($request->chk_chiapa_de_corzo) == TRUE)
+        {
+            array_push($unidades, 'CHIAPA DE CORZO');
+        }
+        if($this->checkComparator($request->chk_motozintla) == TRUE)
+        {
+            array_push($unidades, 'MOTOZINTLA');
+        }
+        if($this->checkComparator($request->chk_berriozabal) == TRUE)
+        {
+            array_push($unidades, 'BERRIOZABAL');
+        }
+        if($this->checkComparator($request->chk_pijijiapan) == TRUE)
+        {
+            array_push($unidades, 'PIJIJIAPAN');
+        }
+        if($this->checkComparator($request->chk_jitotol) == TRUE)
+        {
+            array_push($unidades, 'JITOTOL');
+        }
+        if($this->checkComparator($request->chk_la_concordia) == TRUE)
+        {
+            array_push($unidades, 'LA CONCORDIA');
+        }
+        if($this->checkComparator($request->chk_venustiano_carranza) == TRUE)
+        {
+            array_push($unidades, 'VENUSTIANO CARRANZA');
+        }
+        if($this->checkComparator($request->chk_tila) == TRUE)
+        {
+            array_push($unidades, 'TILA');
+        }
+        if($this->checkComparator($request->chk_teopisca) == TRUE)
+        {
+            array_push($unidades, 'TEOPISCA');
+        }
+        if($this->checkComparator($request->chk_ocosingo) == TRUE)
+        {
+            array_push($unidades, 'OCOSINGO');
+        }
+        if($this->checkComparator($request->chk_cintalapa) == TRUE)
+        {
+            array_push($unidades, 'CINTALAPA');
+        }
+        if($this->checkComparator($request->chk_copainala) == TRUE)
+        {
+            array_push($unidades, 'COPAINALA');
+        }
+        if($this->checkComparator($request->chk_soyalo) == TRUE)
+        {
+            array_push($unidades, 'SOYALO');
+        }
+        if($this->checkComparator($request->chk_angel_albino_corzo) == TRUE)
+        {
+            array_push($unidades, 'ANGEL ALBINO CORZO');
+        }
+        if($this->checkComparator($request->chk_arriaga) == TRUE)
+        {
+            array_push($unidades, 'ARRIAGA');
+        }
+        if($this->checkComparator($request->chk_pichucalco) == TRUE)
+        {
+            array_push($unidades, 'PICHUCALCO');
+        }
+        if($this->checkComparator($request->chk_juarez) == TRUE)
+        {
+            array_push($unidades, 'JUAREZ');
+        }
+        if($this->checkComparator($request->chk_simojovel) == TRUE)
+        {
+            array_push($unidades, 'SIMOJOVEL');
+        }
+        if($this->checkComparator($request->chk_mapastepec) == TRUE)
+        {
+            array_push($unidades, 'MAPASTEPEC');
+        }
+        if($this->checkComparator($request->chk_villa_corzo) == TRUE)
+        {
+            array_push($unidades, 'VILLA CORZO');
+        }
+        if($this->checkComparator($request->chk_cacahoatan) == TRUE)
+        {
+            array_push($unidades, 'CACAHOATAN');
+        }
+        if($this->checkComparator($request->chk_once_de_abril) == TRUE)
+        {
+            array_push($unidades, 'ONCE DE ABRIL');
+        }
+        if($this->checkComparator($request->chk_tuxtla_chico) == TRUE)
+        {
+            array_push($unidades, 'TUXTLA CHICO');
+        }
+        if($this->checkComparator($request->chk_oxchuc) == TRUE)
+        {
+            array_push($unidades, 'OXCHUC');
+        }
+        if($this->checkComparator($request->chk_chamula) == TRUE)
+        {
+            array_push($unidades, 'CHAMULA');
+        }
+        if($this->checkComparator($request->chk_ostuacan) == TRUE)
+        {
+            array_push($unidades, 'OSTUACAN');
+        }
+        if($this->checkComparator($request->chk_palenque) == TRUE)
+        {
+            array_push($unidades, 'PALENQUE');
+        }
+
+        $reform = curso::find($request->id_available);
+        $reform->unidades_disponible = $unidades;
+        $reform->save();
 
         return redirect()->route('curso-inicio')
                 ->with('success','Curso Modificado');

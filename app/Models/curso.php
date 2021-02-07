@@ -15,7 +15,12 @@ class curso extends Model
             'id','nombre_curso','modalidad','clasificacion','costo','duracion',
             'objetivo','perfil','solicitud_autorizacion','fecha_validacion','memo_validacion',
             'memo_actualizacion','fecha_actualizacion','unidad_amovil','descripcion','no_convenio','id_especialidad',
-            'area', 'cambios_especialidad', 'nivel_estudio', 'categoria','tipo_curso', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo'
+            'area', 'cambios_especialidad', 'nivel_estudio', 'categoria','tipo_curso', 'rango_criterio_pago_minimo',
+            'rango_criterio_pago_maximo','estado'
+    ];
+
+    protected $casts = [
+        'unidades_disponible' => 'array'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -73,6 +78,9 @@ class curso extends Model
                         break;
                     case 'clasificacion':
                         return $query->where( 'cursos.clasificacion', 'LIKE', "%$buscar%");
+                        break;
+                    case 'anio':
+                        return $query->where(\DB::raw("date_part('year' , fecha_validacion )"), '=', "$buscar");
                         break;
                     default:
                         # code...

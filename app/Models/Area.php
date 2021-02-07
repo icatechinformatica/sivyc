@@ -17,4 +17,17 @@ class Area extends Model
     {
         return $this->hasMany(curso::class, 'area');
     }
+
+    public function scopeBusqueda($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            if (!empty(trim($buscar))) {
+                switch ($tipo) {
+                    case 'formacion_profesional':
+                        return $query->where('area.formacion_profesional', '=', $buscar);
+                        break;
+                }
+            }
+        }
+    }
 }
