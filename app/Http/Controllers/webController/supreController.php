@@ -23,31 +23,6 @@ use Carbon\Carbon;
 
 class supreController extends Controller
 {
-
-    public function prueba()
-    {
-        $contratos = contratos::SELECT('id_contrato')
-                            ->whereDate('created_at', '>=', '01-01-2020')
-                            ->whereDate('created_at', '<=', '31-12-2020')
-                            ->GET();
-
-        $supre = supre::SELECT('id')
-                            ->whereDate('created_at', '>=', '01-01-2020')
-                            ->whereDate('created_at', '<=', '31-12-2020')
-                            ->GET();
-        foreach($contratos as $cadwell)
-        {
-            contrato_directorio::WHERE('id_contrato', '=', $cadwell->id_contrato)->delete();
-            contratos::WHERE('id_contrato', '=', $cadwell->id_contrato)->delete();
-        }
-        foreach($supre as $data)
-        {
-            supre_directorio::WHERE('id_supre', '=', $data->id)->DELETE();
-            folio::where('id_supre', '=', $data->id)->delete();
-            supre::where('id', '=', $data->id)->delete();
-        }
-        dd('ya quedo');
-    }
     /**
      * Display a listing of the resource.
      *

@@ -28,6 +28,12 @@ use Illuminate\Pagination\Paginator;
 
 class ContratoController extends Controller
 {
+    public function prueba()
+    {
+        $numero = '4770.30';
+        dd($numero);
+        dd('ya quedo');
+    }
     public function index(Request $request)
     {
 
@@ -659,9 +665,10 @@ class ContratoController extends Controller
         $M = $this->toMonth(date('m', $date));
         $Y = date("Y", $date);
 
+        $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
 
-        $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad'));
+        $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
 
         return $pdf->stream('Contrato Instructor.pdf');
     }
@@ -698,9 +705,10 @@ class ContratoController extends Controller
         $M = $this->toMonth(date('m', $date));
         $Y = date("Y", $date);
 
+        $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
 
-        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad'));
+        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
 
         return $pdf->stream('Contrato Instructor.pdf');
     }
@@ -811,5 +819,13 @@ class ContratoController extends Controller
 
 
         }
+    }
+
+    protected function numberFormat($numero)
+    {
+        $part = explode(".", $numero);
+        $part[0] = number_format($part['0']);
+        $cadwell = implode(".", $part);
+        return ($cadwell);
     }
 }
