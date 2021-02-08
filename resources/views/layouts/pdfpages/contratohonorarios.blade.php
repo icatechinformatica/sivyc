@@ -61,7 +61,7 @@
         <footer>
             <div class="page-number"></div>
         </footer>
-        <div class= "container g-pt-30" style="font-size: 15px;">
+        <div class= "container g-pt-30" style="font-size: 13px;">
             <div id="content">
                 <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}.</b> </div>
                 <br><div align="justify"><b>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR EL (LA) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, EN SU CARÁCTER DE {{$director->puesto}} DE LA UNIDAD DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA (EL) (LA) C. {{$nomins}}, EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “EL ICATECH” Y “EL PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
