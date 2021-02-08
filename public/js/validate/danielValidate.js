@@ -554,32 +554,7 @@ $(function(){
         }
     });
 
-    /**
-     * validar formulario paso2UploadFiles
-     */
-    $("#paso2UploadFiles").validate({
-        rules: {
-            customFile: {
-                extension: "pdf|png|jpg|jpeg",
-                filesize: 2000000,   //max size 2mb
-                required: true
-            },
-            tipoDocumento:{
-                required: true
-            }
-        },
-        messages: {
-            customFile: {
-                extension: "Sólo se permiten pdf, png, jpg, jpege",
-                filesize:"El archivo debe ser menor de 2 MB",
-                required: "Anexar el documento"
-            },
-            tipoDocumento: {
-                required: 'Por favor, seleccione el tipo de documento',
-            }
-        }
-
-    });
+    
 
     
 
@@ -1054,15 +1029,6 @@ $(function(){
                 alert( "Hubo un error: " + textStatus );
             });
         });
-    });
-
-    // disabled button while submit
-    $("#paso2UploadFiles").submit(function (e) {
-
-        $("#submitDocs").attr("disabled", true);
-
-        return true;
-
     });
 
 
