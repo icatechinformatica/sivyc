@@ -61,7 +61,7 @@
         <footer>
             <div class="page-number"></div>
         </footer>
-        <div class= "container g-pt-30" style="font-size: 15px;">
+        <div class= "container g-pt-30" style="font-size: 13px;">
             <div id="content">
                 <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓ DE CONTRATO</b></div>
                 <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}.</b> </div>
