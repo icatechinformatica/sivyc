@@ -554,32 +554,7 @@ $(function(){
         }
     });
 
-    /**
-     * validar formulario paso2UploadFiles
-     */
-    $("#paso2UploadFiles").validate({
-        rules: {
-            customFile: {
-                extension: "pdf|png|jpg|jpeg",
-                filesize: 2000000,   //max size 2mb
-                required: true
-            },
-            tipoDocumento:{
-                required: true
-            }
-        },
-        messages: {
-            customFile: {
-                extension: "Sólo se permiten pdf, png, jpg, jpege",
-                filesize:"El archivo debe ser menor de 2 MB",
-                required: "Anexar el documento"
-            },
-            tipoDocumento: {
-                required: 'Por favor, seleccione el tipo de documento',
-            }
-        }
-
-    });
+    
 
     
 
@@ -755,90 +730,6 @@ $(function(){
           .replace(/(?<=\.\d\d).*/g, "")
           .replace(/\B(?=(\d{3})+(?!\d))/g, "");
         });
-    });
-
-    /**
-     * Modificacion de cursos, validación
-     */
-    $('#frmcursoscatalogo').validate({
-        rules: {
-            nombrecurso: {
-                required: true
-            },
-            modalidad: {
-                required: true
-            },
-            clasificacion: {
-                required: true
-            },
-            documento_solicitud_autorizacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            documento_memo_actualizacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            documento_memo_validacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            fecha_validacion: {
-                required: true
-            },
-            areaCursos: {
-                required: true
-            },
-            especialidadCurso: {
-                required: true
-            },
-            duracion: {
-                number: true
-            },
-            tipo_curso: {
-                    required: true,
-                    valueNotEquals: "default"
-            }
-        },
-        messages: {
-            nombrecurso: {
-                required: "Por favor, Escriba nombre del curso"
-            },
-            modalidad: {
-                required: "Por favor, Seleccione la modalidad"
-            },
-            clasificacion: {
-                required: "Por favor, Seleccione la clasificación"
-            },
-            documento_solicitud_autorizacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            documento_memo_actualizacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            documento_memo_validacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            fecha_validacion: {
-                required: "la fecha de validación es requerido"
-            },
-            especialidadCurso: {
-                required: "Por favor, Seleccione la especialidad"
-            },
-            areaCursos: {
-                required: "Por favor, Seleccione el campo"
-            },
-            duracion: {
-                number: 'Acepta sólo números'
-            },
-            tipo_curso: {
-                required: "Por favor ingrese el tipo de curso",
-                valueNotEquals: "Por favor ingrese el tipo de curso"
-        }
-        }
     });
 
     /***
@@ -1054,15 +945,6 @@ $(function(){
                 alert( "Hubo un error: " + textStatus );
             });
         });
-    });
-
-    // disabled button while submit
-    $("#paso2UploadFiles").submit(function (e) {
-
-        $("#submitDocs").attr("disabled", true);
-
-        return true;
-
     });
 
 
