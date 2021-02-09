@@ -69,9 +69,10 @@
                     <th scope="col">NO. DE CONVENIO</th>
                     <th scope="col">INSTITUCIÓN</th>
                     <th width="150px">FECHA DE FIRMA</th>
-                    <th width="150px">FECHA DE VIGENCIA</th>
+                    <th width="150px">FECHA DE TERMINO</th>
                     <th width="150px">TIPO DE CONVENIO</th>
                     <th width="150px">SECTOR</th>
+                    <th scope="col">ARCHIVO CONVENIO</th>
                     @can('convenios.edit')
                         <th scope="col">MODIFICAR</th>
                     @endcan
@@ -86,7 +87,19 @@
                         <td>{{ $itemData->fecha_vigencia }}</td>
                         <td>{{ $itemData->tipo_convenio }}</td>
                         <td>{{ $itemData->sector }}</td>
-
+                        <td>
+                            <div class="custom-file">
+                                @if (isset($itemData->archivo_convenio))
+                                    <a href="{{ $itemData->archivo_convenio }}" target="_blank"
+                                        rel="{{ $itemData->archivo_convenio }}">
+                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
+                                            height="50px">
+                                    </a>
+                                @else
+                                    NO ADJUNTADO
+                                @endif
+                            </div>
+                        </td>
                         @can('convenios.edit')
                             <td>
                                 <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
