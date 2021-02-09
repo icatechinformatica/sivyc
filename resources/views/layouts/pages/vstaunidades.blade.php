@@ -1,7 +1,7 @@
 <!--Creado por Orlando Chavez c-->
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'SUPRE | SIVyC Icatech')
+@section('title', 'UNIDADES | SIVyC Icatech')
 <!--seccion-->
 @section('content')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
