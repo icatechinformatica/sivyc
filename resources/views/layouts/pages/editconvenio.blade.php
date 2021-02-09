@@ -180,7 +180,7 @@
                             @if (isset($convenios->archivo_convenio))
                                 <a href="{{ $convenios->archivo_convenio }}" target="_blank"
                                     rel="{{ $convenios->archivo_convenio }}">
-                                    <img src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
+                                    <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
                                         height="50px">
                                 </a>
                             @else
