@@ -506,3 +506,15 @@ Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesControl
 /*Reporte Financieros 03032021*/
 Route::get('/financieros/reporte', 'webController\PagoController@financieros_reporte')->name('financieros.reporte')->middleware('can:financieros.reporte');
 Route::post('/financieros/reporte/pdf','webController\PagoController@financieros_reportepdf')->name('financieros.reportepdf');
+//Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
+Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
+Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc');
+Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
+Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
+Route::post('/reportes/vista_ft/savetodta', 'ftcontroller@store')->name('formatot.send.dta');
+Route::get('/formato/ft/paso2', 'ftcontroller@paso2')->name('formatot.seguimiento.paso2');
+Route::get('/validacion/cursos/index', 'Validacion\validacionDtaController@index')->name('validacion.cursos.enviados.dta');
+// nueva modificación
+Route::post('/validacion/cursos/', 'Validacion\validacionDtaController@store')->name('enviar.cursos.validacion.dta');
