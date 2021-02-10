@@ -425,7 +425,8 @@ $(function(){
                 date: true
             },
             unidad:{
-                required: true
+                required: true,
+                valueNotEquals: "default"
             },
             destino_puesto:{
                 required: true
@@ -455,7 +456,8 @@ $(function(){
                 date: "Por favor ingrese la fecha correcta"
             },
             unidad:{
-                required: "Por favor ingrese la unidad"
+                required: "Por favor ingrese la unidad",
+                valueNotEquals: "Por favor seleccione una unidad"
             },
             destino_puesto:{
                 required: "Por favor ingrese el destinatario"

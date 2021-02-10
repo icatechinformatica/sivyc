@@ -640,7 +640,6 @@ class supreController extends Controller
 
     protected function pdf_upload($pdf, $id, $nom)
     {
-        dd($pdf);
         # nuevo nombre del archivo
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
         $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
