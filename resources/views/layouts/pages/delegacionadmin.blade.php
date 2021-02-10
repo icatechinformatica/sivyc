@@ -22,7 +22,7 @@
             <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
                 <select name="unidad" id="unidad" class="form-control">
-                    <option value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
+                    <option value="sin especificar">SIN ESPECIFICAR</option>
                     @foreach ($unidades as $data )
                         <option value="{{$data->unidad}}">{{$data->unidad}}</option>
                     @endforeach
