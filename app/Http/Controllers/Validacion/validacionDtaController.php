@@ -138,7 +138,7 @@ class validacionDtaController extends Controller
                                     ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($memos_unidad)."'::jsonb)"), 'status' => 'NO REPORTADO', 'observaciones_formato_t' => $observaciones]);
                             }
                             return redirect()->route('validacion.cursos.enviados.dta')
-                                ->with('success', sprintf('CURSOS REGRESADOS A UNIDAD CON COMENTARIOS PARA REVISIÓN!'));;
+                                ->with('success', sprintf('CURSOS REGRESADOS A UNIDAD CON COMENTARIOS PARA REVISIÓN!'));
                         }
                     break;
                 case 'EnviarPlaneacion':
