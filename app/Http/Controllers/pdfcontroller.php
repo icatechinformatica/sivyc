@@ -62,7 +62,7 @@ class pdfcontroller extends Controller
             }
         }
         //var_dump($_SESSION['unidades']);exit;
-        $fecha_memo=date('d-m-yy',strtotime($fecha_termino));
+        $fecha_memo=date('d-m-Y',strtotime($fecha_termino));
         $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
         DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
         'motivo','cp','ze','tcapacitacion');
@@ -105,8 +105,9 @@ class pdfcontroller extends Controller
                     $_SESSION['unidades'] = $unidades; 
                 $_SESSION['unidad'] = $unidad;             
             }
-            $fecha_memo=date('d-m-yy',strtotime($fecha_termino));
-            $reg_cursos = DB::table('tbl_cursos')->SELECT('id','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
+            $fecha_memo=date('d-m-Y',strtotime($fecha_termino));
+            //var_dump($fecha_memo);exit;
+            $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
             'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion');
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
                 $reg_cursos=$reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
