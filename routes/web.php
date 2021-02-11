@@ -326,6 +326,7 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:convenios.update');
     Route::get('/convenios/mostrar/{id}', 'webController\ConveniosController@show')->name('convenios.show')
     ->middleware('can:convenios.show');
+    Route::post('/convenios/sid/municipios', 'webController\ConveniosController@getmunicipios');
     /**
      * agregando financiero rutas -- DMC
      */
