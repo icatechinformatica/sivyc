@@ -13,7 +13,7 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="{{asset("vendor/fontawesome/css/all.css") }}">
         <!-- Google Fonts Roboto -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+        <link rel="stylesheet" href="{{asset("css/roboto.css") }}">
 
         <!-- CSS Global Compulsory -->
         <link rel="stylesheet" href="{{asset("vendor/bootstrap/bootstrap.min.css") }}">
