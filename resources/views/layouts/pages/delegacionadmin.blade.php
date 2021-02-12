@@ -147,7 +147,6 @@
         <br>
     </form>
  </div>
-
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script type="text/javascript">
 
@@ -184,6 +183,8 @@
        }
    }
  </script>
-
-@stop
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/supre.js") }}"></script>
+@endsection
 
