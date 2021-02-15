@@ -39,7 +39,7 @@
         <link rel="stylesheet" href="{{asset("css/mdb.min.css") }}">
         <link rel="stylesheet" href="{{asset("css/jquery-ui.css") }}">
 
-        <link rel="stylesheet" type="text/css" href={{ asset("js/components/jquery.dataTables.js") }}>
+        <link rel="stylesheet" type="text/css" href={{ asset("css/jquery.dataTables.min.css") }}>
         @yield("content_script_css")
     </head>
 
