@@ -51,7 +51,7 @@ class InstructorController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
-        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'rolando')
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico')
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
             ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
