@@ -81,7 +81,7 @@ class validacionDtaController extends Controller
         })
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
         ->WHERE('u.ubicacion', '=', $unidades)
-        ->WHERE('c.status', '=', 'ENVIADO_DTA')                
+        ->WHERE('c.status', '=', 'TURNADO_DTA')                
         ->WHERE(DB::raw("extract(year from c.termino)"), '=', '2021')
         ->WHERE('c.turnado', '=', 'DTA')
         ->groupby('c.unidad','c.nombre','c.clave','c.mod','c.espe','c.curso','c.inicio','c.termino','c.dia','c.dura','c.hini','c.hfin','c.horas','c.plantel','c.programa','c.muni','c.depen','c.cgeneral','c.mvalida','c.efisico','c.cespecifico','c.sector','c.mpaqueteria','c.mexoneracion','c.nota','i.sexo','ei.memorandum_validacion','ip.grado_profesional','ip.estatus','ins.costo','c.observaciones'
@@ -127,26 +127,53 @@ class validacionDtaController extends Controller
                     //dd($memos_unidad);
                     # code...
                         if (!empty($request->get('chkcursos'))) {
-                            # checamos lo que hay
-                            foreach ($_POST['chkcursos'] as $key => $value) {
-                                $observaciones = [
-                                    'OBSERVACION_RETORNO' =>  $_POST['comentarios'][$key]
-                                ];
-                                # hacemos un loop
-                                \DB::table('tbl_cursos')
-                                    ->where('id', $value)
-                                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($memos_unidad)."'::jsonb)"), 'status' => 'NO REPORTADO', 'observaciones_formato_t' => $observaciones]);
+                            # también tenemos que checar que los comentarios no se encuentren varios
+                            // remueve vacios
+                           $filter =  array_filter($_POST['comentarios']);
+                            if (!empty($filter)) {
+                                # entramos a realizar las acciones en esta parte del código
+                                 # checamos lo que hay
+                                foreach ($_POST['chkcursos'] as $key => $value) {
+                                    $observaciones = [
+                                        'OBSERVACION_RETORNO' =>  $_POST['comentarios'][$key]
+                                    ];
+                                    # hacemos un loop - status RETORNO_UNIDAD
+                                    \DB::table('tbl_cursos')
+                                        ->where('id', $value)
+                                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($memos_unidad)."'::jsonb)"), 'status' => 'RETORNO_UNIDAD', 'observaciones_formato_t' => $observaciones]);
+                                }
+                                return redirect()->route('validacion.cursos.enviados.dta')
+                                    ->with('success', sprintf('CURSOS REGRESADOS A UNIDAD CON COMENTARIOS PARA REVISIÓN!'));
+                            } else {
+                                # regresamos y mandamos el mensaje de erro en base a los comentarios
+                                return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN ENVIADO COMENTARIOS DE LOS CURSOS QUE SE REGRESAN A LA UNIDAD!']);
                             }
-                            return redirect()->route('validacion.cursos.enviados.dta')
-                                ->with('success', sprintf('CURSOS REGRESADOS A UNIDAD CON COMENTARIOS PARA REVISIÓN!'));
+                        } else {
+                            # regresamos y mandamos un mensaje de error
+                            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
                         }
                     break;
                 case 'EnviarPlaneacion':
-                    # code...
+                    # en esta parte del código tenemos que envíar a planeación
+                    // TURNADO_PLANEACION[“NUMERO”:”XXXXXX”,FECHA:”XXXX-XX-XX”]
+                    $turnado_planeacion = [
+                        'FECHA' => $date
+                    ];
+                    if (!empty($request->get('chkcursos'))) {
+                        # checamos que la variable no se encuentre vacia
+                        foreach ($_POST['chkcursos'] as $key => $value) {
+                            # entremos en el loop
+                            \DB::table('tbl_cursos')
+                                    ->where('id', $value)
+                                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}','".json_encode($turnado_planeacion)."'::jsonb)"), 'status' => 'TURNADO_PLANEACION']);
+                        }
+                        return redirect()->route('validacion.cursos.enviados.dta')
+                                ->with('success', sprintf('CURSOS ENVIADOS A PLANEACIÓN PARA REVISIÓN!'));
+                    }
                     break;
                 
                 default:
-                    # code...
+                    # break
                     break;
             }
         }

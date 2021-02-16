@@ -514,7 +514,7 @@ Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_ar
 Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
 Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
 Route::post('/reportes/vista_ft/savetodta', 'ftcontroller@store')->name('formatot.send.dta');
-Route::get('/formato/ft/paso2', 'ftcontroller@paso2')->name('formatot.seguimiento.paso2');
+Route::post('/formato/ft/paso2', 'ftcontroller@paso2')->name('formatot.seguimiento.paso2');
 Route::get('/validacion/cursos/index', 'Validacion\validacionDtaController@index')->name('validacion.cursos.enviados.dta');
 // nueva modificación
 Route::post('/validacion/cursos/', 'Validacion\validacionDtaController@store')->name('enviar.cursos.validacion.dta');

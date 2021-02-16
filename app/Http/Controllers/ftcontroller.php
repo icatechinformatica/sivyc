@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\QueryException;
 
 class ftcontroller extends Controller
 {
@@ -33,6 +37,9 @@ class ftcontroller extends Controller
         ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', '=', 'unidad')
         ->value('roles.slug');        
         $_SESSION['unidades']=NULL;
+        $meses = array(1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 7 => 'Julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'diciembre');
+        $enFirma = DB::table('tbl_cursos')->where('status', '=', 'EN_FIRMA')->get();
+        $retornoUnidad = DB::table('tbl_cursos')->where('status', 'RETORNO_UNIDAD')->get();
         //var_dump($rol);exit;
         if($rol=='unidad')
         { 
@@ -103,8 +110,8 @@ class ftcontroller extends Controller
                 })
                 ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
                 ->WHERE('u.ubicacion', '=', $_SESSION['unidad'])
-                ->WHERE('c.status', '=', 'NO REPORTADO')                
-                ->WHERE(DB::raw("extract(year from c.termino)"), '=', $años)
+                ->WHEREIN('c.status', ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'])
+                ->WHERE(DB::raw("extract(year from c.termino)"), '=', $anios)
                 ->groupby('c.unidad','c.nombre','c.clave','c.mod','c.espe','c.curso','c.inicio','c.termino','c.dia','c.dura','c.hini','c.hfin','c.horas','c.plantel','c.programa','c.muni','c.depen','c.cgeneral','c.mvalida','c.efisico','c.cespecifico','c.sector','c.mpaqueteria','c.mexoneracion','c.nota','i.sexo','ei.memorandum_validacion','ip.grado_profesional','ip.estatus','ins.costo','c.observaciones'
                          ,'ins.abrinscri','c.arc')
                 ->distinct()->get();
@@ -115,71 +122,81 @@ class ftcontroller extends Controller
         }
             //var_dump($_SESSION['unidades']);exit;
 
-        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma'));
+        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad'));
                 
     }
 
     public function paso2(Request $request)
     {
+        $numero_memo = $request->get('numero_memo'); // número de memo
+        $cursoschk = $request->get('check_cursos_dta');
         /**
          * vamos al cargar el archivo que se sube
          */
-        if ($request->hasFile('memorandum_validacion')) {
+        if ($request->hasFile('cargar_archivo_formato_t')) {
             // obtenemos el valor del archivo memo
 
             $validator = Validator::make($request->all(), [
-                'memorandum_validacion' => 'mimes:pdf|max:2048'
+                'cargar_archivo_formato_t' => 'mimes:pdf|max:2048'
             ]);
 
             if ($validator->fails()) {
                 # mandar un mensaje de error
                 return json_encode($validator);
             } else {
+                $memo = str_replace('/', '_', $numero_memo);
                 /**
                  * aquí vamos a verificar que el archivo no se encuentre guardado
                  * previamente en el sistema de archivos del sistema de ser así se 
                  * remplazará el archivo porel que se subirá a continuación
                  */
                 // construcción del archivo
-                $archivo_memo = 'uploadFiles/memoValidacion/'.$numero_memo.'/'.$numero_memo.'.pdf';
+                $archivo_memo = 'uploadFiles/memoValidacion/'.$memo.'/'.$memo.'.pdf';
                 if (Storage::exists($archivo_memo)) {
                     #checamos si hay algún documento, de ser así, procedemos a eliminarlo
                     Storage::delete($archivo_memo);
                 }
 
-                $archivo_memo_to_dta = $request->file('memorandum_validacion'); # obtenemos el archivo
-                $url_archivo_memo = $this->uploaded_memo_validacion_file($archivo_memo_to_dta, $numero_memo); #invocamos el método
+                $archivo_memo_to_dta = $request->file('cargar_archivo_formato_t'); # obtenemos el archivo
+                $url_archivo_memo = $this->uploaded_memo_validacion_file($archivo_memo_to_dta, $memo); #invocamos el método
             }
         } else {
             $url_archivo_memo = null;
         }
 
-        if (!empty($_POST['check_cursos_dta'])) {
+        if (!empty($cursoschk)) {
             # vamos a checar sólo a los checkbox checados como propiedad
-            if (!empty($_POST['check_cursos_dta'])) {
+            if (!empty($cursoschk)) {
                 $fecha_ahora = Carbon::now();
                 $date = $fecha_ahora->format('Y-m-d'); // fecha
                 $numero_memo = $request->get('numero_memo'); // número de memo
 
                 $memos_DTA = [
-                    'NUMERO' => $numero_memo,
-                    'FECHA' => $date
+                    'FECHA' => $date,
+                    'MEMORANDUM' => $url_archivo_memo
                 ];
+                /**
+                 * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
+                 */
                 # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
-                foreach($_POST['check_cursos_dta'] as $key => $value){
+                $data = explode(",", $cursoschk);
+                foreach($data as $key){
                     \DB::table('tbl_cursos')
-                        ->where('id', $value)
+                        ->where('id', $key)
                         ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 'status' => 'TURNADO_DTA', 'turnado' => 'DTA']);
                 }
 
                 /**
                  * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
                  */
-                return redirect()->route('formatot.send.dta')
-                        ->with('success', sprintf('GENERACIÓN DE DOCUMENTO MEMORANDUM PARA ESPERA DE FIRMA!'));
+                // return redirect()->route('formatot.send.dta')
+                //         ->with('success', sprintf('GENERACIÓN DE DOCUMENTO MEMORANDUM PARA ESPERA DE FIRMA!'));
 
             }
         }
+
+        $json = json_encode(1);
+        return $json;
         /**
          * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”],
          */
@@ -281,34 +298,44 @@ class ftcontroller extends Controller
      */
     public function store(Request $request)
     {
-
+        
         if (isset($_POST['generarMemoAFirma'])) 
         {
+            
             # vamos a checar sólo a los checkbox checados como propiedad
             if (!empty($_POST['chkcursos_list'])) {
-                $fecha_ahora = Carbon::now();
-                $date = $fecha_ahora->format('Y-m-d'); // fecha
-                $numero_memo = $request->get('numero_memo'); // número de memo
 
-                $memos = [
-                    'TURNADO_EN_FIRMA' => [
-                        'NUMERO' => $numero_memo,
-                        'FECHA' => $date
-                    ]
-                ];
-                # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
-                foreach($_POST['chkcursos_list'] as $key => $value){
-                    \DB::table('tbl_cursos')
-                        ->where('id', $value)
-                        ->update(['memos' => $memos, 'status' => 'EN_FIRMA']);
+                try {
+                    //aqui generamos las consultas pertinentes
+                    $fecha_ahora = Carbon::now();
+                    $date = $fecha_ahora->format('Y-m-d'); // fecha
+                    $numero_memo = $request->get('numero_memo'); // número de memo
+
+                    $memos = [
+                        'TURNADO_EN_FIRMA' => [
+                            'NUMERO' => $numero_memo,
+                            'FECHA' => $date
+                        ]
+                    ];
+                    # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
+                    foreach($_POST['chkcursos_list'] as $key => $value){
+                        \DB::table('tbl_cursos')
+                            ->where('id', $value)
+                            ->update(['memos' => $memos, 'status' => 'EN_FIRMA']);
+                    }
+
+                    /**
+                     * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
+                     */
+                    return redirect()->route('vista_formatot')
+                            ->with('success', sprintf('GENERACIÓN DE DOCUMENTO MEMORANDUM PARA ESPERA DE FIRMA!'));
+                } catch (QueryException  $th) {
+                    //throw $th;
+                    return back()->withErrors(['msgError', $ex->getMessage()]);
                 }
 
-                /**
-                 * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
-                 */
-                return redirect()->route('formatot.send.dta')
-                        ->with('success', sprintf('GENERACIÓN DE DOCUMENTO MEMORANDUM PARA ESPERA DE FIRMA!'));
-
+            } else {
+                return back()->withInput()->withErrors(['ERROR AL MOMENTO DE GUARDAR LOS REGISTROS, SE DEBE DE ESTAR SELECCIONADOS LOS CHECKBOX CORRESPONDIENTES']);
             }
         }
 
@@ -322,9 +349,14 @@ class ftcontroller extends Controller
     }
     public function memodta()
     {
-        $pdf = PDF::loadView('reportes.memodta');
-                $pdf->setpaper('letter');
-                return $pdf->stream('memo.pdf');
+        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
+        $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
+        # nuevo nombre del archivo
+        $documentFile = trim($memo.".".$extensionFile);
+        $path = '/memoValidacion/'.$memo.'/'.$documentFile;
+        Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
+        $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/memoValidacion/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $documentUrl;
     }
     
 }

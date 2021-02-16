@@ -59,6 +59,11 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
+        @if($errors->any())
+            <div class="alert alert-danger">
+                {{$errors->first()}}
+            </div>
+        @endif
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
@@ -91,18 +96,19 @@
             <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}">
                 @csrf
                 <div class="form-row">
-                    <div class="form-group mb-2">
-                        <button input type="submit" id="validarEnDta" name="validarEnDta" value="RegresarUnidad"  class="btn btn-danger">
-                            <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
-                            REGRESAR A LA UNIDAD
-                        </button>
-                    </div>
                     <div class="form-group mx-sm-3 mb-2">
                         <button input type="submit" id="validarEnDta" name="validarEnDta" value="EnviarPlaneacion"  class="btn btn-success">
                             <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>&nbsp;
                             ENVIAR A PLANEACIÓN
                         </button> 
                     </div>
+                    <div class="form-group mb-2">
+                        <button input type="submit" id="validarEnDta" name="validarEnDta" value="RegresarUnidad"  class="btn btn-danger">
+                            <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
+                            REGRESAR A LA UNIDAD
+                        </button>
+                    </div>
+                    
                 </div>        
             
                 <div class="table-responsive container-fluid">
@@ -240,7 +246,7 @@
                         <tbody style="height: 300px; overflow-y: auto">
                             @foreach ($cursos_validar as $datas)
                                 <tr align="center">
-                                    <td><input type="checkbox" id="cb1" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}"/></td></td>
+                                    <td><input type="checkbox" id="{{ $datas->id_tbl_cursos }}" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}"/></td></td>
                                     <td>{{ $datas->unidad }}</td>
                                     <td>{{ $datas->plantel }}</td>
                                     <td>{{ $datas->espe }}</td>
@@ -362,7 +368,7 @@
                                     <td>{{ $datas->naesm9 }}</td>
                                     <td>{{ $datas->naesh9 }}</td>
                                     <td><div style = "width:900px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
-                                    <td><textarea name="comentarios[]" id="" cols="45" rows="3"></textarea></td>                
+                                    <td><textarea name="comentarios[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea></td>                
                                 </tr>
                             @endforeach
                         </tbody>
@@ -438,6 +444,22 @@
         $("#selectAll").click(function() {
             $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
         });
+
+        // var checkChecked = function() {
+        //     $("input:checkbox").each(function() {
+        //         if ($(this).is(":checked")) {
+
+        //             $('#comentario_'+$(this).attr("id")).prop('disabled', true);
+        //             console.log($(this).attr("id"));
+        //         } else {
+        //             $('#comentario_'+$(this).attr("id")).prop("disabled", false);
+        //         }
+        //     });
+        //     // var n = $( "input:checked" ).length;
+        //     // alert( n + (n === 1 ? " is" : " are") + " checked!" );
+        // }
+
+        // $( "input[type=checkbox]" ).on( "click", checkChecked );
     });
 </script>
 @endsection

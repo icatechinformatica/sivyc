@@ -2,9 +2,49 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
 @section('title', 'APERTURAS | SIVyC Icatech')
+@section('content_script_css')
+    <style>
+        #spinner:not([hidden]) {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #spinner::after {
+        content: "";
+        width: 80px;
+        height: 80px;
+        border: 2px solid #f3f3f3;
+        border-top: 3px solid #f25a41;
+        border-radius: 100%;
+        will-change: transform;
+        animation: spin 1s infinite linear
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+@endsection
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
+        <div class="alert"></div>
+        @if($errors->any())
+            <div class="alert alert-danger">
+                {{$errors->first()}}
+            </div>
+        @endif
         @if ($message = Session::get('success'))
             <div class="alert alert-warning">
                 <p>{{ $message }}</p>
@@ -41,7 +81,7 @@
             @if (is_null($var_cursos))
             <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
             @else 
-                <form id="dtaformGetDocument" method="POST" enctype="multipart/form-data" action="{{ route('formatot.send.dta') }}">
+                <form id="dtaformGetDocument" method="POST" action="{{ route('formatot.send.dta') }}" target="_blank">
                     @csrf
                     <div class="form-row">
                         <div class="form-group col-md-3">
@@ -60,7 +100,7 @@
                             </button> 
                         </div>
                         <div class="form-group col-md-3">
-                            <button type="button" id="mod_format" name="mod_format" style="{{ $enFirma->isEmpty() ? 'display: none' : '' }}"  class="btn btn-warning my-2 my-sm-0 waves-effect waves-light">
+                            <button type="button" id="mod_format" name="mod_format" style="{{ $retornoUnidad->isEmpty() ? 'display: none' : '' }}"  class="btn btn-warning my-2 my-sm-0 waves-effect waves-light">
                                 <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
                                 Modificar Campos
                             </button>
@@ -73,7 +113,7 @@
                                     <th scope="col">
                                         <div style = "width:100px; word-wrap: break-word">
                                             SELECCIONAR/QUITAR
-                                            <input type="checkbox" id="selectAll" checked {{ $enFirma->isEmpty() ? '' : 'disabled'  }}/>
+                                            <input type="checkbox" id="selectAll" checked {{ $retornoUnidad->isEmpty() ? '' : 'disabled'  }}/>
                                         </div>
                                     </th>
                                     <th scope="col">UNIDAD</th>
@@ -202,7 +242,7 @@
                             <tbody style="height: 300px; overflow-y: auto">
                                 @foreach ($var_cursos as $datas)
                                     <tr align="center">
-                                        <td><input type="checkbox" id="cb1" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" checked {{ $datas->estadocurso == 'EN_FIRMA' ? 'disabled' : '' }}/></td></td>
+                                        <td><input type="checkbox" id="cb1" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" checked {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}/></td></td>
                                         <td>{{ $datas->unidad }}</td>
                                         <td>{{ $datas->plantel }}</td>
                                         <td>{{ $datas->espe }}</td>
@@ -340,7 +380,7 @@
     <!--MODAL ENDS-->
     <!--MODAL FORMULARIO-->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-info" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y ENVIAR A VALIDACIÓN DTA</b></h5>
@@ -470,12 +510,15 @@
                     $('input[name="chkcursos_list[]"]:checked').each(function() {
                         check_cursos.push(this.value);
                     });
+
+                    var numero_memo = $('#numero_memo').val();
                     /***
                     * cargar_archivo_formato_t
                     */
                     var formData = new FormData(form);
                     formData.append("check_cursos_dta", check_cursos);
-                    var _url = "{{route('formatot.send.dta')}}";
+                    formData.append("numero_memo", numero_memo);
+                    var _url = "{{route('formatot.seguimiento.paso2')}}";
                     var requested = $.ajax
                     ({
                         url: _url,
@@ -492,8 +535,12 @@
                         success: function(response){
                             if (response === 1) {
                                 $("#dtaform").trigger("reset");
-                                $( ".alert" ).addClass( "alert-success");
-                                $(".alert").append( "<b>CURSOS VALIDADOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA</b>" )
+                                $( ".alert" ).addClass("alert-success");
+                                $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
+                                // redireccionar después de 5 segundos
+                                setTimeout(function(){ 
+                                    window.location.href = "{{ route('vista_formatot')}}";
+                                 }, 3000);
                             }
                         },
                         complete:function(data){
