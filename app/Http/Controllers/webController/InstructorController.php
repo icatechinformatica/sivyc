@@ -24,6 +24,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class InstructorController extends Controller
 {
@@ -39,12 +40,28 @@ class InstructorController extends Controller
     public function index(Request $request)
     {
         $busquedaInstructor = $request->get('busquedaPorInstructor');
-
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
 
-        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->where('id', '!=', '0')->PAGINATE(25, [
-            'nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id'
-        ]);
+        $unidadUser = Auth::user()->unidad;
+
+        $userId = Auth::user()->id;
+
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'rolando')
+        {
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+        }
+        else
+        {
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            ->WHERE('estado' ,'=', true)
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+        }
         return view('layouts.pages.initinstructor', compact('data'));
     }
 
