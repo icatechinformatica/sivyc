@@ -15,6 +15,8 @@ use App\Models\especialidad;
 use App\Models\Area;
 use App\Models\tbl_unidades;
 use App\Models\criterio_pago;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CursosController extends Controller
 {
@@ -30,14 +32,37 @@ class CursosController extends Controller
          *
          */
         $buscar_curso = $request->get('busquedaPorCurso');
-
         $tipoCurso = $request->get('tipo_curso');
 
+        $unidadUser = Auth::user()->unidad;
+
+        $userId = Auth::user()->id;
+
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico')
+        {
         $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
-        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')->PAGINATE(25, [
-            'cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion', 'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
-        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion', 'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre'
-        ]);
+        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
+        ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
+                   'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
+                   'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
+                   'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre']);
+        }
+        else
+        {
+            $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
+            ->WHERE('cursos.estado', '=', true)
+            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
+            ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
+                       'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
+                       'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
+                       'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre']);
+        }
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
 
