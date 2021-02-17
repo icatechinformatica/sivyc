@@ -96,19 +96,29 @@
             <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}">
                 @csrf
                 <div class="form-row">
-                    <div class="form-group mx-sm-3 mb-2">
+                    <div class="form-group col-md-8 mb-2">
+                        <input type="text" name="filterClaveCurso" id="filterClaveCurso" class="form-control" placeholder="BUSQUEDA POR CLAVE DE CURSO">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group mb-2">
                         <button input type="submit" id="validarEnDta" name="validarEnDta" value="EnviarPlaneacion"  class="btn btn-success">
                             <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>&nbsp;
                             ENVIAR A PLANEACIÓN
                         </button> 
                     </div>
                     <div class="form-group mb-2">
-                        <button input type="submit" id="validarEnDta" name="validarEnDta" value="RegresarUnidad"  class="btn btn-danger">
+                        <button input type="submit" id="validarEnDta" name="validarEnDta" value="RegresarUnidad"  class="btn btn-warning">
                             <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
                             REGRESAR A LA UNIDAD
                         </button>
                     </div>
-                    
+                    <div class="form-group mb-2">
+                        <a href="{{ $memorandum->memorandum }}" target="_blank" class="btn btn-danger" title="DESCARGAR ARCHIVO">
+                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            MEMORANDUM {{ $memorandum->num_memo }}
+                        </a>
+                    </div>
                 </div>        
             
                 <div class="table-responsive container-fluid">
@@ -460,6 +470,16 @@
         // }
 
         // $( "input[type=checkbox]" ).on( "click", checkChecked );
+
+        /*
+        * modificaciones de datos en filtro
+        */
+        $("#filterClaveCurso").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#table-instructor tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
     });
 </script>
 @endsection

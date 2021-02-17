@@ -321,7 +321,7 @@ class ftcontroller extends Controller
                     foreach($_POST['chkcursos_list'] as $key => $value){
                         \DB::table('tbl_cursos')
                             ->where('id', $value)
-                            ->update(['memos' => $memos, 'status' => 'EN_FIRMA']);
+                            ->update(['memos' => $memos, 'status' => 'EN_FIRMA', 'turnado' => 'UNIDAD']);
                     }
 
                     /**
@@ -331,7 +331,7 @@ class ftcontroller extends Controller
                             ->with('success', sprintf('GENERACIÓN DE DOCUMENTO MEMORANDUM PARA ESPERA DE FIRMA!'));
                 } catch (QueryException  $th) {
                     //throw $th;
-                    return back()->withErrors(['msgError', $ex->getMessage()]);
+                    return back()->withErrors([$ex->getMessage()]);
                 }
 
             } else {

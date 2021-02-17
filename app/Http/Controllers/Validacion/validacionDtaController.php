@@ -88,10 +88,18 @@ class validacionDtaController extends Controller
                  ,'ins.abrinscri','c.arc', 'c.id')
         ->distinct()->get();
 
+        $memorandum = DB::table('tbl_cursos')
+                      ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo"))
+                      ->leftjoin('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                      ->where('turnado', '=', 'DTA')
+                      ->where('tbl_unidades.ubicacion', '=', $unidades)
+                      ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM', memos->'TURNADO_EN_FIRMA'->>'NUMERO'"))
+                      ->first();
+
         $unidades = DB::table('tbl_unidades')->select('unidad', 'ubicacion')->get();
 
         //dd($cursos_validar);
-        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades')); 
+        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum')); 
     }
 
     /**
@@ -140,7 +148,7 @@ class validacionDtaController extends Controller
                                     # hacemos un loop - status RETORNO_UNIDAD
                                     \DB::table('tbl_cursos')
                                         ->where('id', $value)
-                                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($memos_unidad)."'::jsonb)"), 'status' => 'RETORNO_UNIDAD', 'observaciones_formato_t' => $observaciones]);
+                                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($memos_unidad)."'::jsonb)"), 'status' => 'RETORNO_UNIDAD', 'observaciones_formato_t' => $observaciones, 'turnado' => 'UNIDAD']);
                                 }
                                 return redirect()->route('validacion.cursos.enviados.dta')
                                     ->with('success', sprintf('CURSOS REGRESADOS A UNIDAD CON COMENTARIOS PARA REVISIÓN!'));
@@ -165,7 +173,7 @@ class validacionDtaController extends Controller
                             # entremos en el loop
                             \DB::table('tbl_cursos')
                                     ->where('id', $value)
-                                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}','".json_encode($turnado_planeacion)."'::jsonb)"), 'status' => 'TURNADO_PLANEACION']);
+                                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}','".json_encode($turnado_planeacion)."'::jsonb)"), 'status' => 'TURNADO_PLANEACION', 'turnado' => 'PLANEACION']);
                         }
                         return redirect()->route('validacion.cursos.enviados.dta')
                                 ->with('success', sprintf('CURSOS ENVIADOS A PLANEACIÓN PARA REVISIÓN!'));
