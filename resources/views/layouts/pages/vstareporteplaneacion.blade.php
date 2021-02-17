@@ -154,30 +154,7 @@
         </div>
     </section>
 @endsection
-<!--section('script_content_js')
-    <script type="text/javascript">
-        $(function(){
-           /* $('#submit').click(function(){
-                var state = document.readyState
-                $(".modal").show();
-                console.log(state);
-                document.onreadystatechange = function () {
-                    var state = document.readyState
-                    if (state == 'interactive') {
-                    } else if (state == 'complete') {
-                        setTimeout(function(){
-                            $(".modal").hide();
-                        },1000);
-                    }
-                }
-            });*/
-            $('#registercontrato').submit(function() {
-            $('.modal').show();
-            $.post('/planeacion/reporte/pdf', function() {
-                $('.modal').hide();
-            });
-            return false;
-            });
-        });
-    </script>
-endsection-->
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+@endsection

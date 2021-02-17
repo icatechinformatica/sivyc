@@ -178,6 +178,9 @@
         <br>
     </div>
 @endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+@endsection
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
     $(function(){

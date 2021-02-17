@@ -291,3 +291,6 @@
     <!--Modal Semaforo Ends-->
 <br>
 @endsection
+@section('script_content_js')
+    <script src="{{ asset("js/validate/modals.js") }}"></script>
+@endsection
