@@ -24,13 +24,13 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="telefono" class="control-label">Telefono</label>
-                    <input type="number" id="telefono" name="telefono" class="form-control" value="{{$data->telefono}}" required>
+                    <input type="number" id="telefono" name="telefono" class="form-control" value="{{$data->telefono}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="direccion" class="control-label">Dirección</label>
-                    <input type="text" id="direccion" name="direccion" class="form-control" value="{{$data->direccion}}" required>
+                    <input type="text" id="direccion" name="direccion" class="form-control" value="{{$data->direccion}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="ubicacion" class="control-label">Ubicación</label>
@@ -38,13 +38,17 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="coordenadas" class="control-label">Coordenadas</label>
-                    <input type="text" id="coordenadas" name="coordenadas" class="form-control" value="{{$data->coordenadas}}" required>
+                    <input type="text" id="coordenadas" name="coordenadas" class="form-control" value="{{$data->coordenadas}}">
                 </div>
             </div>
             <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="codigo_postal" class="control-label">Codigo Postal</label>
+                    <input type="text" id="codigo_postal" name="codigo_postal" class="form-control" value="{{$data->codigo_postal}}">
+                </div>
                 <div class="form-group col-md-4">
                     <label for="correo" class="control-label">Correo E-mail</label>
-                    <input type="text" id="correo" name="correo" class="form-control" value="{{$data->correo}}" required>
+                    <input type="text" id="correo" name="correo" class="form-control" value="{{$data->correo}}">
                 </div>
             </div>
             <div class="form-row">

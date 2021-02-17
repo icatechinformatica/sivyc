@@ -70,7 +70,8 @@ class UnidadesController extends Controller
                   'direccion' => $request->direccion,
                   'telefono' => $request->telefono,
                   'correo' => $request->correo,
-                  'coordenadas' => $request->coordenadas]);
+                  'coordenadas' => $request->coordenadas,
+                  'codigo_postal' => $request->codigo_postal]);
 
         return redirect()->route('unidades.inicio')
                ->with('success','Modificaión de Unidad Guardada');
