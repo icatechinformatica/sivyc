@@ -78,9 +78,7 @@
         <script src="{{ asset("js/components/filter-table.js") }}"></script>
         <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
         <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
-        <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
         <script src="{{ asset("js/components/additional-methods.js") }}"></script>
-        <script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
         <script src="{{ asset("js/validate/validateConvenio.js") }}"></script>
         <script src="{{ asset("js/validate/metodos.js") }}"></script>
         <script src="{{ asset("js/mdb.min.js") }}"></script>

@@ -186,5 +186,7 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/supre.js") }}"></script>
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
 @endsection
 
