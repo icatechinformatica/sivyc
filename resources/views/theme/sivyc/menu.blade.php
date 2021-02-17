@@ -71,6 +71,7 @@
                         @can('unidades.index')
                             <a class="dropdown-item" href="{{route('unidades.inicio')}}">Unidades</a>
                         @endcan
+                        <a class="dropdown-item" href="{{route('exoneraciones.inicio')}}">Exoneraciones</a>
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
                         @endcan
