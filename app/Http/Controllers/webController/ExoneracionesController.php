@@ -79,7 +79,7 @@ class ExoneracionesController extends Controller {
             unset($arregloExoneracion);
         }
 
-        return redirect()->route('exoneraciones.inicio');
+        return redirect()->route('exoneraciones.inicio')->with('success', 'Exoneracion agregada exitosamente');
     }
 
     /**
@@ -154,7 +154,8 @@ class ExoneracionesController extends Controller {
             unset($arregloExoneracion);
         }
 
-        return redirect()->route('exoneraciones.inicio');
+        $no_memo = $request->no_memorandum;
+        return redirect()->route('exoneraciones.inicio')->with('success', sprintf('CONVENIO %s ACTUALIZADO EXITOSAMENTE', $no_memo));
     }
 
     /**
