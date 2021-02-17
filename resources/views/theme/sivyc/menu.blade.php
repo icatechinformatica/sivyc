@@ -69,6 +69,7 @@
                         @can('especialidades.inicio')
                             <a class="dropdown-item" href="{{route('especialidades.inicio')}}">Especialidades</a>
                         @endcan
+                        <a class="dropdown-item" href="{{route('exoneraciones.inicio')}}">Exoneraciones</a>
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
                         @endcan  

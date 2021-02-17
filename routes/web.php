@@ -444,3 +444,16 @@ Route::post('/instituto/guardar', 'webController\InstitutoController@store')->na
 Route::get('/unidades/inicio', 'webController\UnidadesController@index')->name('unidades.inicio')->middleware('can:unidades.index');
 Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar')->name('unidades.editar')->middleware('can:unidades.editar');
 Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
+
+/* Modulo exoneraciones */
+
+Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio');
+Route::get('/exoneraciones/agregar', 'webController\ExoneracionesController@create')->name('exoneraciones.agregar')
+    ->middleware('can:exoneraciones.create');
+Route::post('/exoneraciones/guardar', 'webController\ExoneracionesController@store')->name('exoneraciones.guardar')
+    ->middleware('can:exoneraciones.store');
+Route::get('/exoneraciones/edit/{id}', 'webController\ExoneracionesController@edit')->name('exoneraciones.edit')
+    ->middleware('can:exoneraciones.edit');
+Route::put('/exoneraciones/modificar/{id}', 'webController\ExoneracionesController@update')->name('exoneraciones.update')
+    ->middleware('can:exoneraciones.update');
+Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesController@getmunicipios');
