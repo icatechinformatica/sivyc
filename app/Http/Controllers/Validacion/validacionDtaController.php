@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class validacionDtaController extends Controller
 {
@@ -237,7 +239,9 @@ class validacionDtaController extends Controller
         // variables y creación de la fecha de retorno
         $fecha_actual = Carbon::now();
         $date = $fecha_actual->format('Y-m-d'); // fecha
+        $fecha_nueva=$fecha_actual->format('d-m-Y');
         //dd($request->num_memo);
+        //dd($request->all());
         $validacion = $request->get('validarEnDta');
         if (isset($validacion)) {
             # hacemos un switch
@@ -249,7 +253,6 @@ class validacionDtaController extends Controller
                     $turnado_revision_dta = [
                         'FECHA' => $date
                     ];
-
                     if (!empty($_POST['chkcursos'])) {
                         # entramos al loop
                         foreach ($_POST['chkcursos'] as $key => $value) {
@@ -277,27 +280,22 @@ class validacionDtaController extends Controller
                      if (!empty($_POST['chkcursos'])) {
                          # si no están vacios enviamos a un loop
                          foreach ($_POST['chkcursos'] as $key => $value) { 
+                             
                             # aqui vas a generar el documento pdf Julio del memorandum de devolución para las unidades
                              //dd($value);
                          }
-                        $total=count($_POST['chkcursos_list']);                
-                        $id_user = Auth::user()->id;
-                        $rol = DB::table('role_user')->select('roles.slug')->leftjoin('roles', 'roles.id', '=', 'role_user.role_id') 
-                        ->where([['role_user.user_id', '=', $id_user], ['roles.slug', '=', 'unidad']])->get();
-                        if($rol[0]->slug=='unidad')
-                        { 
-                        $unidad = Auth::user()->unidad;
-                        $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
-                        $_SESSION['unidad'] = $unidad;
-                        }
-                        $mes=date("m");
-                        $reg_cursos=DB::table('tbl_cursos')->select(db::raw("sum(case when extract(month from termino) = ".$mes." then 1 else 0 end) as tota"),'unidad','curso','mod','inicio','termino',db::raw("sum(hombre + mujer) as cupo"),'nombre','clave','ciclo',
-                                    'memos->TURNADO_EN_FIRMA->FECHA as fecha')
-                        ->where('memos->TURNADO_EN_FIRMA->NUMERO',$numero_memo)
-                        ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA')->get();
+                        $nume_memo=$request->num_memo_devolucion;
+                        $total=count($_POST['chkcursos']);                
+                        $mes='1';
+                        $reg_cursos=DB::table('tbl_cursos')->select(DB::raw("case when EXTRACT( Month FROM termino) = '1' then 'ENERO' when EXTRACT( Month FROM termino) = '2' then 'FEBRERO' when EXTRACT( Month FROM termino) = '3' then 'MARZO' else 'ABRIL' end as mes")
+                                    ,'unidad','espe','curso','clave')
+                        ->where('memos->TURNADO_EN_FIRMA->NUMERO',$request->num_memo)
+                        ->where('turnado',"DTA")
+                        ->groupby('unidad','espe','curso','clave','termino')
+                        ->orderby('mes')->get();
                         $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
-                        'pvinculacion','jcyc','pjcyc')->where('unidad',$_SESSION['unidad'])->first();
-                        $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva'));
+                        'pvinculacion','jcyc','pjcyc')->where('unidad','TUXTLA')->first();
+                        $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva'));
                         return $pdf->stream('Memo_Unidad.pdf');
                      } else {
                          # hay cursos vacios, regresamos y mandamos un mensaje de error

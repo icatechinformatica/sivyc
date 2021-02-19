@@ -73,47 +73,28 @@
     </footer>
     <div class= "contenedor">
         <div align=right style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></div>
-        <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $numero_memo }}</b></div>                        
-        <div align=right style="font-size:11px;"><b>{{ $reg_unidad->unidad }}, CHIAPAS; {{ $fecha_nueva }}</b></div>                        
+        <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $nume_memo }}</b></div>                        
+        <div align=right style="font-size:11px;"><b>TUXTLA GUTIERREZ, CHIAPAS; {{ $fecha_nueva }}</b></div>                        
         <br><br>
-            <table class="tablag">
-                <body>
-                    <tr>
-                        <td align="right" style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></td>
-                    </tr> 
-                    <tr>
-                        <td align="right" style="font-size:11px;"><b>MEMORANDUM NO. ICATECH/600/0020/2021</b></td>                        
-                    </tr>
-                    <tr>
-                        <td align="right" style="font-size:11px;"><b>TUXTLA GUTIERREZ,CHIAPAS; 28 DE ENERO DE 2021</b></td>                        
-                    </tr>                                                
-                </body>                
-            </table>
-            <br><br>
-            <table class="tablag">
-                <body>
-                    <tr>
-                        <td style="font-size:12px;"><b>LIC. MARIA DEL ROSARIO URIBE BARRAGAN.<br> DIRECTOR(A) DE LA UNIDAD DE CAPACITACION TAPACHULA</b></td>
-                    </tr> 
-                    <tr>
-                        <td style="font-size:11px;"><b>PRESENTE.</b></td>                        
-                    </tr>                                               
-                </body>                
-            </table>
-            <br><br>
+        <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}</b></div>
+        <div align=left style="font-size:11px;"><b>PRESENTE.</b></div>
+        <br><br>
             <div align="justify" style="font-size:11px;">
                 En seguimiento a la integración del Formato T del mes de Agosto del presente 
                 año de su Unidad de Capacitación, recibido el pasado 27 de agosto al correo electronico 
                 clavestapachula.dta@hotmail.com, le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                 RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
-                digitalizados con firmas y sellos de 4 cursos pertencientes a la Unidad TAPACHULA. De lo anterior,
+                digitalizados con firmas y sellos de {{ $total }} cursos pertencientes a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
                 hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
-                de Planeación de este Instituto 2 cursos y 2 no se reportaron de acuerdo a las siguientes observaciones
+                de Planeación de este Instituto 0 cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
             </div>
             <br>
+            @php
+                $num=1;
+            @endphp
             <div class="table-responsive-sm">
                 <table class="tablas">
-                    <tbody>                       
+                    <thead>                       
                         <tr>      	  
                             <th>No.</th>     
                             <th>MES</th>     
@@ -123,15 +104,20 @@
                             <th>CLAVE</th>
                             <th>ESTATUS</th>
                         </tr>
-                        <tr>      
-                            <th>1</th>       
-                            <th>FEBRERO</th>     
-                            <th>TAPACHULA</th>               
-                            <th>OFIMATICA</th>                                   
-                            <th>HOJA DE CALCULO</th>  
-                            <th>1C-20-OFIM-EXT-0001</th>
-                            <th>REPORTADO</th>
+                    </thead>
+                    <tbody>
+                        @foreach($reg_cursos as $a)
+                        <tr>                           	  
+                            <th>{{ $num }}</th>     
+                            <th>{{ $a->mes }}</th>               
+                            <th>{{ $a->unidad }}</th>                                   
+                            <th>{{ $a->espe }}</th>  
+                            <th>{{ $a->curso }}</th>
+                            <th>{{ $a->clave }}</th>
+                            <th>NO REPORTADO</th>
                         </tr>
+                        @php $num=$num+1; @endphp
+                        @endforeach
                     </tbody>                                               
                 </table>
                 <br>
@@ -149,13 +135,11 @@
                 <div style="font-size:11px;"> <b>DIRECTOR(A) TECNICO ACADEMICO</b> </div>
                 <br><br><br>
                 <div style="font-size:11px;"> <b>C.c.p Mtra. Fabiola Lizbeth Astudillo Reyes ,Directora General del ICATECH. Para su conocimiento. - Ciudad</b> </div>
-                <div style="font-size:11px;"> <b>Lic. YESENIA FUZIKO KOMUKAI HORITA. Jefe del Departamento Académico.</b> </div>
+                <div style="font-size:11px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
                 <div style="font-size:11px;"> <b>Archivo / Minutario.</b> </div>
-                <div style="font-size:11px;"> <b>Validó: ING. MARIA TERESA JIMENEZ FONSECA. Jefe del Departamento De Certificación y Control.</b> </div>
-                <div style="font-size:11px;"> <b>Elaboró: ING. JULIO CESAR ALCARAZ SANCHEZ. ANALISTA TECNICO B.</b> </div>
+                <div style="font-size:11px;"> <b>Validó: {{ $reg_unidad->jcyc }}. {{ $reg_unidad->pjcyc }}.</b> </div>
+                <div style="font-size:11px;"> <b>Elaboró: {{ $reg_unidad->jcyc }}. {{ $reg_unidad->pjcyc }}.</b> </div>
             </div><br><br>
-            <div class="ex1" style="font-size:8px;float:left;"><br>Dirección<br>Col. XXXX. XXX, Chiapas. C.P. 29000<br>Correo electronico: academicoXXXXX@hotmail.com<br></div>
-            <img class="derecha" src='img/icatech-imagen.png'>
     </div>
 </body>
 </html>
