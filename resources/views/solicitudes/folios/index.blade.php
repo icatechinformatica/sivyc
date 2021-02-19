@@ -7,7 +7,7 @@
 @endsection
 @section('content')   
     <div class="card-header">
-        Registro de Lote de Folios       
+        Solicitudes DTA / Registro de Lote de Folios       
     </div>
     <div class="card card-body" style=" min-height:450px;">
         @if ($message)
