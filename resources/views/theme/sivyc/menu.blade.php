@@ -107,6 +107,20 @@
                         <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Planeación</a>
                     </div>
                 </li>
+                <!--PESTAÑA SOLICITUDES DA-->
+                @can('supervision.escolar')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Solicitudes DA
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            {{-- @can('supervision.escolar') --}}
+                            <a class="dropdown-item" href="{{route('solicitudesDA.inicio')}}">Modificación de cursos</a>
+                            {{-- @endcan --}}
+                            <a class="dropdown-item" href="{{route('supervision.escolar')}}">Solicitud de apoyo</a>
+                        </div>
+                    </li>
+                @endcan
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">

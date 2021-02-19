@@ -446,7 +446,6 @@ Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar'
 Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
 
 /* Modulo exoneraciones */
-
 Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio');
 Route::get('/exoneraciones/agregar', 'webController\ExoneracionesController@create')->name('exoneraciones.agregar')
     ->middleware('can:exoneraciones.create');
@@ -457,3 +456,7 @@ Route::get('/exoneraciones/edit/{id}', 'webController\ExoneracionesController@ed
 Route::put('/exoneraciones/modificar/{id}', 'webController\ExoneracionesController@update')->name('exoneraciones.update')
     ->middleware('can:exoneraciones.update');
 Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesController@getmunicipios');
+
+/*Modulo solicitudes DA --Modificación de cursos--*/
+Route::get('/solicitudesDA/inicio', 'SolicitudesDA\tbl_SolicitudesController@index')->name('solicitudesDA.inicio');
+// Route::post('/solicitudesDA/guardar', 'webController\ExoneracionesController@store')->name('exoneraciones.guardar')
