@@ -73,7 +73,7 @@ class asignarfoliosController extends Controller
                 
                 );
                 if($a->calificacion != "NP"){
-                    if($result) DB::table('tbl_afolios')->where('unidad',$curso->unidad)->increment('contador');                
+                    if($result) DB::table('tbl_afolios')->where('id',$acta->id)->increment('contador');                
                     $num_folio++;
                 }
             }
@@ -91,7 +91,7 @@ class asignarfoliosController extends Controller
                 $curso = $curso->first();
             if($curso){
                 ///ACTA CON FOLIOS DISPONIBLES
-                $acta =  DB::table('tbl_afolios')->where('unidad',$curso->unidad)->where('activo',true)->whereColumn('contador','<','num_fin')->first();
+                $acta =  DB::table('tbl_afolios')->where('unidad',$curso->unidad)->where('mod',$curso->mod)->where('activo',true)->whereColumn('contador','<','num_fin')->first();
                 if(!$acta)$message = "No hay Acta con Folios disponibles. ";
                 ///NO DEBE TENER FOLIOS ASIGNADOS
                 $folios =  DB::table('tbl_folios')->where('id_curso',$curso->id)->where('movimiento','<>','CANCELADO')->where('folio','>','0')->first();

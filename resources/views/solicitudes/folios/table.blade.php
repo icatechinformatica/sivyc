@@ -27,7 +27,7 @@
                      <td>{{ $item->finicial }}</td>
                      <td>{{ $item->ffinal }}</td>
                      <td>{{ $item->total }}</td>
-                     <td class="text-center">@if($item->contador>0 AND $item->total-$item->contador==0 ){{ $item->total-$item->contador }}@else {{ '*' }} @endif</td>
+                     <td class="text-center">{{ $item->contador }}</td>
                      <td>{{ $item->num_acta }}</td>
                      <td>{{ $item->facta }}</td>                 
                      <td> @if($item->activo==true){{ 'SI' }}@else {{ 'NO' }} @endif</td> 
