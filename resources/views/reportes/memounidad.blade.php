@@ -35,7 +35,7 @@
 </head>
 <body>
 <header>
-            <img class="izquierda" src='img/logohorizontalica1.png'>
+            <img class="izquierda" src="{{ public_path('img/logohorizontalica1.jpg') }}">
             <img class="derecha" src='img/chiapas.png'>
             <br>
             <h6>"2021, AÑO DE LA INDEPENDENCIA"</h6>
