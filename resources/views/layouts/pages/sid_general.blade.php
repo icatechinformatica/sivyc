@@ -337,7 +337,7 @@
                 var IdEsp = $('#especialidad_sid').val();
                 var tipo = $('#tipo_curso').val();
                 var unidad = $('#tblunidades').val();
-                var datos = { idEsp: IdEsp, tipo: tipo, unidad: unidad};
+                var datos = { idEsp: IdEsp, tipo: tipo, unidad: unidad, _token: "{{ csrf_token() }}"};
                 var url = "{{route('alumnos.sid.cursos')}}";
 
                 var solicitud = $.ajax
