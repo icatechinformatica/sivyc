@@ -347,7 +347,7 @@
                 var IdEst =$('#cerss_estado').val();
                 $("#cerss_estado option:selected").each( () => {
                     var IdEst = $('#cerss_estado').val();
-                    var datos = {idEst: IdEst};
+                    var datos = {idEst: IdEst,  _token: "{{ csrf_token() }}"};
                     var url = "{{route('alumnos.sid.municipios')}}";
 
                     var request = $.ajax
@@ -471,6 +471,7 @@
 
                 $.ajax({
                     url: "{{ route('alumnos.sid.cerss.consecutivos') }}",
+                    data: {_token: "{{ csrf_token() }}"},
                     type:  'POST',
                     dataType : 'json',
                     success:  function (response) {
