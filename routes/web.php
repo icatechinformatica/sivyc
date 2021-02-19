@@ -215,7 +215,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportarpdf/contratohonorarios', 'webController\presupuestariaController@propa')->name('contratohonorarios');
     Route::get('/exportarpdf/solicitudsuficiencia/{id}', 'webController\presupuestariaController@export_pdf')->name('solicitudsuficiencia');
     Route::post('/alumnos/sid/cursos', 'webController\AlumnoController@getcursos')->name('alumnos.sid.cursos');
-    Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
+    //Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios');
     Route::post('/alumnos/sid/cursos_update', 'webController\AlumnoController@getcursos_update');
 
     /**

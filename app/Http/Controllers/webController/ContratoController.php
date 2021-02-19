@@ -725,11 +725,12 @@ class ContratoController extends Controller
 
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio',
                               'tbl_cursos.termino','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
-                              'instructores.apellidoPaterno','instructores.apellidoMaterno',
+                              'instructores.apellidoPaterno','instructores.apellidoMaterno','tabla_supre.folio_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
                               'contratos.id_contrato','pagos.created_at','pagos.no_memo','pagos.liquido')
                         ->WHERE('folios.id_folios', '=', $id)
+                        ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
@@ -748,7 +749,7 @@ class ContratoController extends Controller
         $ccp1 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp1)->FIRST();
         $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp3)->FIRST();
-
+        //dd($data);
         $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director'));
 
         return $pdf->stream('solicitud de pago.pdf');

@@ -554,9 +554,9 @@ $(function(){
         }
     });
 
-    
 
-    
+
+
 
     // hacemos que los input sean mayusculos
     $('input[type=text]').val (function () {
@@ -568,7 +568,7 @@ $(function(){
     })
 
 
-    
+
 
     $('#estado').on("change", () => {
         var IdEst =$('#estado').val();
@@ -576,7 +576,6 @@ $(function(){
             var IdEst = $('#estado').val();
             var datos = {idEst: IdEst};
             var url = '/alumnos/sid/municipios';
-
             var request = $.ajax
             ({
                 url: url,

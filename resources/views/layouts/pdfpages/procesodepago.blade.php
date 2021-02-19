@@ -132,7 +132,7 @@
                         </tr>
                         <tr>
                             <td>Registro STPS:</td>
-                            <td>Memorándum de Validación: {{$data->memoramdum_validacion}}</td>
+                            <td>Memorándum de Validación: {{$data->folio_validacion}}</td>
                         </tr>
                         <tr>
                             <td>RFC: {{$data->rfc}}</td>

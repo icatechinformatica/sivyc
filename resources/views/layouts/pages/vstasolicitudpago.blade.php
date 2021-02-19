@@ -59,7 +59,7 @@
                 @endif
                 <div class="form-group col-md-3">
                     <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
-                    <input type="text" name="liquid" id="liquid" class="form-control" required>
+                    <input type="text" name="liquido" id="liquido" class="form-control" required>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
@@ -181,30 +181,3 @@
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
 @endsection
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script>
-    $(function(){
-
-        $.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $("#mod-datosBancarios").click(function(e){
-            e.preventDefault();
-            $.ajax({
-                success: function(){
-                    $('#arch_bancario').prop("disabled", false)
-                    $('#arch_bancario').prop("required", true)
-                    $('#nombre_banco').prop("disabled", false)
-                    $('#nombre_banco').prop("required", true)
-                    $('#numero_cuenta').prop("disabled", false)
-                    $('#numero_cuenta').prop("required", true)
-                    $('#clabe').prop("disabled", false)
-                    $('#clabe').prop("required", true)
-                }
-            });
-        });
-    });
-</script>
