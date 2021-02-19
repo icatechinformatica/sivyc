@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Validacion;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -238,7 +237,7 @@ class validacionDtaController extends Controller
         // variables y creación de la fecha de retorno
         $fecha_actual = Carbon::now();
         $date = $fecha_actual->format('Y-m-d'); // fecha
-        //dd($_POST['comentarios']);
+        //dd($request->num_memo);
         $validacion = $request->get('validarEnDta');
         if (isset($validacion)) {
             # hacemos un switch
@@ -277,10 +276,29 @@ class validacionDtaController extends Controller
                      # entramos a un loop y antes checamos que se haya seleccionado cursos para realizar esta operacion
                      if (!empty($_POST['chkcursos'])) {
                          # si no están vacios enviamos a un loop
-                         foreach ($_POST['chkcursos'] as $key => $value) {
-                             # aqui vas a generar el documento pdf Julio del memorandum de devolución para las unidades
-                             dd($value);
+                         foreach ($_POST['chkcursos'] as $key => $value) { 
+                            # aqui vas a generar el documento pdf Julio del memorandum de devolución para las unidades
+                             //dd($value);
                          }
+                        $total=count($_POST['chkcursos_list']);                
+                        $id_user = Auth::user()->id;
+                        $rol = DB::table('role_user')->select('roles.slug')->leftjoin('roles', 'roles.id', '=', 'role_user.role_id') 
+                        ->where([['role_user.user_id', '=', $id_user], ['roles.slug', '=', 'unidad']])->get();
+                        if($rol[0]->slug=='unidad')
+                        { 
+                        $unidad = Auth::user()->unidad;
+                        $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
+                        $_SESSION['unidad'] = $unidad;
+                        }
+                        $mes=date("m");
+                        $reg_cursos=DB::table('tbl_cursos')->select(db::raw("sum(case when extract(month from termino) = ".$mes." then 1 else 0 end) as tota"),'unidad','curso','mod','inicio','termino',db::raw("sum(hombre + mujer) as cupo"),'nombre','clave','ciclo',
+                                    'memos->TURNADO_EN_FIRMA->FECHA as fecha')
+                        ->where('memos->TURNADO_EN_FIRMA->NUMERO',$numero_memo)
+                        ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA')->get();
+                        $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
+                        'pvinculacion','jcyc','pjcyc')->where('unidad',$_SESSION['unidad'])->first();
+                        $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva'));
+                        return $pdf->stream('Memo_Unidad.pdf');
                      } else {
                          # hay cursos vacios, regresamos y mandamos un mensaje de error
                          return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);

@@ -14,7 +14,6 @@
             justify-content: center;
             align-items: center;
         }
-
         #spinner::after {
         content: "";
         width: 80px;
@@ -25,7 +24,6 @@
         will-change: transform;
         animation: spin 1s infinite linear
         }
-
         @keyframes spin {
             from {
                 transform: rotate(0deg);
@@ -438,17 +436,13 @@
 <script type="text/javascript">
     $(function(){
         //$('input[type=checkbox]').attr('disabled', 'disabled'); //disable
-
         $('#mod_format').on('click', function name() {
             $('input[type=checkbox]').removeAttr('disabled');
         });
-
         document.querySelector('#spinner').setAttribute('hidden', '');
-
         $.validator.addMethod('filesize', function (value, element, param) {
             return this.optional(element) || (element.files[0].size <= param)
         }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
-
         $('#generarMemoAFirma').click(function(){
             $('#dtaformGetDocument').validate({
                 rules: {
@@ -473,7 +467,6 @@
                 //     var formData = new FormData(forms);
                 //     formData.append("check_cursos_dta", check_cursos);
                 //     var _url = "{{route('formatot.send.dta')}}";
-
                 //     var requested = $.ajax
                 //     ({
                 //         url: _url,
@@ -508,7 +501,6 @@
                 //             alert( "Hubo un error: " + jqXHR.status );
                 //         }
                 //     });
-
                 //     $.when(requested).then(function(data, textStatus, jqXHR ){
                 //         if (jqXHR.status === 200) {
                 //             document.querySelector('#spinner').setAttribute('hidden', '');
@@ -541,11 +533,9 @@
                     $('input[name="chkcursos_list[]"]:checked').each(function() {
                         check_cursos.push(this.value);
                     });
-
                     $('textarea[name="comentarios_unidad[]"]').each(function(){
                         comentario_unidad.push(this.value);
                     });
-
                     var numero_memo = $('#numero_memo').val();
                     /***
                     * cargar_archivo_formato_t
@@ -590,7 +580,6 @@
                             alert( "Hubo un error: " + jqXHR.status );
                         }
                     });
-
                     $.when(requested).then(function(data, textStatus, jqXHR ){
                         if (jqXHR.status === 200) {
                             document.querySelector('#spinner').setAttribute('hidden', '');
@@ -599,15 +588,12 @@
                 }
             }); // configurar el validador
         });
-
         $('#enviarDTA').click(function(){
             $("#exampleModalCenter").modal("show");
         });
-
         $('#close_btn_modal_send_dta').click(function(){
             $("#exampleModalCenter").modal("hide");
         });
-
         $("#selectAll").click(function() {
             $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
         });

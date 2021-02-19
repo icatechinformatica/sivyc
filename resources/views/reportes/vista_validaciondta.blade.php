@@ -14,7 +14,6 @@
             justify-content: center;
             align-items: center;
         }
-
         #spinner::after {
         content: "";
         width: 80px;
@@ -25,11 +24,9 @@
         will-change: transform;
         animation: spin 1s infinite linear
         }
-
         table tr td {
             border: 1px solid #ccc;
         }
-
         @keyframes spin {
             from {
                 transform: rotate(0deg);
@@ -38,7 +35,6 @@
                 transform: rotate(360deg);
             }
         }
-
         @media all and (max-width:500px){
             table{
                 width:100%;
@@ -452,23 +448,18 @@
 <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
 <script type="text/javascript">
     $(function(){
-
         document.querySelector('#spinner').setAttribute('hidden', '');
-
         $.validator.addMethod('filesize', function (value, element, param) {
             return this.optional(element) || (element.files[0].size <= param)
         }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
-
         $('#enviardta').click(function(){
             $("#exampleModalCenter").modal("show");
         });
-
         $('#close_btn_modal_send_dta').click(function(){
             $("#numero_memo").rules('remove', 'required', 'extension', 'filesize');
             $("input[id*=numero_memo]").removeClass("error"); // workaround
             $("#exampleModalCenter").modal("hide");
         });
-
         $("#selectAll").click(function() {
             $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
         });
@@ -509,11 +500,9 @@
                     $('input[name="chkcursos[]"]:checked').each(function() {
                         check_cursos.push(this.value);
                     });
-
                     $('textarea[name="comentarios_enlaces[]"]').each(function(){
                         comentario_retorno.push(this.value);
                     });
-
                     var numero_memo = $('#num_memo').val();
                     var num_memo_devolucion = $('#num_memo_devolucion').val();
                     /***
@@ -561,7 +550,6 @@
                             alert( "Hubo un error: " + jqXHR.status );
                         }
                     });
-
                     $.when(requested).then(function(data, textStatus, jqXHR ){
                         if (jqXHR.status === 200) {
                             document.querySelector('#spinner').setAttribute('hidden', '');
@@ -570,11 +558,13 @@
                 }
             }); // configurar el validador
         });
+<<<<<<< HEAD
 
+=======
+>>>>>>> b8602b88... memo_unidad
         // var checkChecked = function() {
         //     $("input:checkbox").each(function() {
         //         if ($(this).is(":checked")) {
-
         //             $('#comentario_'+$(this).attr("id")).prop('disabled', true);
         //             console.log($(this).attr("id"));
         //         } else {
@@ -584,9 +574,11 @@
         //     // var n = $( "input:checked" ).length;
         //     // alert( n + (n === 1 ? " is" : " are") + " checked!" );
         // }
-
         // $( "input[type=checkbox]" ).on( "click", checkChecked );
+<<<<<<< HEAD
 
+=======
+>>>>>>> b8602b88... memo_unidad
         /*
         * modificaciones de datos en filtro
         */
