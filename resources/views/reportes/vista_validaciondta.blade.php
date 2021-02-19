@@ -127,7 +127,7 @@
                             </div>
                         @endif
                     @endcan
-
+                    {{-- cambios en la vista de validaciondta --}}
                     @can('envio.revision.dta')
                         @if ($regresar_unidad->count() > 0)
                             <div class="form-group mb-2">
