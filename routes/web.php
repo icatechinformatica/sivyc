@@ -516,5 +516,8 @@ Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos')
 Route::post('/reportes/vista_ft/savetodta', 'ftcontroller@store')->name('formatot.send.dta');
 Route::post('/formato/ft/paso2', 'ftcontroller@paso2')->name('formatot.seguimiento.paso2');
 Route::get('/validacion/cursos/index', 'Validacion\validacionDtaController@index')->name('validacion.cursos.enviados.dta');
+Route::get('/validacion/dta/revision/cursos/index', 'Validacion\validacionDtaController@indexRevision')->name('validacion.dta.revision.cursos.indice');
+Route::post('/reportes/dta/savetounity', 'Validacion\validacionDtaController@storedtafile')->name('dta.send.unity');
 // nueva modificación
 Route::post('/validacion/cursos/', 'Validacion\validacionDtaController@store')->name('enviar.cursos.validacion.dta');
+Route::any('/validacion/cursos/dta/envio', 'Validacion\validacionDtaController@storetodta')->name('validar.cursos.direccion.dta');

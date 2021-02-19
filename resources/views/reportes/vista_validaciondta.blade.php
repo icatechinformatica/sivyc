@@ -72,7 +72,7 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>VALIDACIÓN DE CURSOS PARA DIRECCIÓN TÉCNICA ACADÉMICA</h2>
+                    <h2>VALIDACIÓN DE CURSOS PARA DIRECCIÓN TÉCNICA ACADÉMICA <strong>(ENLACES)</strong> </h2> 
 
                     {!! Form::open(['route' => 'validacion.cursos.enviados.dta', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
@@ -82,7 +82,7 @@
                             @endforeach
                         </select>
                         
-                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">FILTRAR</button>
                     {!! Form::close() !!}
                 </div>
 
@@ -99,26 +99,46 @@
                     <div class="form-group col-md-8 mb-2">
                         <input type="text" name="filterClaveCurso" id="filterClaveCurso" class="form-control" placeholder="BUSQUEDA POR CLAVE DE CURSO">
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group mb-2">
-                        <button input type="submit" id="validarEnDta" name="validarEnDta" value="EnviarPlaneacion"  class="btn btn-success">
-                            <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>&nbsp;
-                            ENVIAR A PLANEACIÓN
-                        </button> 
-                    </div>
-                    <div class="form-group mb-2">
-                        <button input type="submit" id="validarEnDta" name="validarEnDta" value="RegresarUnidad"  class="btn btn-warning">
-                            <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
-                            REGRESAR A LA UNIDAD
-                        </button>
-                    </div>
-                    <div class="form-group mb-2">
-                        <a href="{{ $memorandum->memorandum }}" target="_blank" class="btn btn-danger" title="DESCARGAR ARCHIVO">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
+                    <div class="form-group col-md-2 mb-2">
+                        <a href="{{ $memorandum->memorandum }}" target="_blank" class="btn btn-info btn-circle m-1 btn-circle-sm" title="DESCARGAR MEMORANDUM N° {{ $memorandum->num_memo }}">
+                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
                             MEMORANDUM {{ $memorandum->num_memo }}
                         </a>
                     </div>
+                </div>
+                <div class="form-row">
+
+                    @can('envio.revision.dta')
+                        <div class="form-group mb-2">
+                            <button input type="submit" id="validarEnDta" name="validarEnDta" value="EnviarJefaDta"  class="btn btn-success">
+                                <i class="fa fa-paper-plane-o fa-2x" aria-hidden="true"></i>&nbsp;
+                                ENVIAR A VALIDACIÓN JEFE DE DTA
+                            </button> 
+                        </div>
+                    @endcan
+
+                    @can('envio.revision.dta')
+                        @if ($regresar_unidad->count() > 0)
+                            <div class="form-group mb-2">
+                                <button input type="submit" id="validarEnDta" name="validarEnDta" value="GenerarMemorandum"  class="btn btn-danger">
+                                    <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
+                                    GENERAR MEMORANDUM DE DEVOLUCIÓN
+                                </button>
+                            </div>
+                        @endif
+                    @endcan
+
+                    @can('envio.revision.dta')
+                        @if ($regresar_unidad->count() > 0)
+                            <div class="form-group mb-2">
+                                <button input type="button" id="enviardta" name="enviardta" value="RegresarUnidad"  class="btn btn-warning">
+                                    <i class="fa fa-upload fa-2x" aria-hidden="true"></i>&nbsp;
+                                    ENVIAR A UNIDAD
+                                </button>
+                            </div>
+                        @endif
+                    @endcan
+                    
                 </div>        
             
                 <div class="table-responsive container-fluid">
@@ -250,6 +270,7 @@
                                 <th scope="col">NAESCOLM9</th>
                                 <th scope="col">NAESCOLH9</th>
                                 <th scope="col" style="width:50%">OBSERVACIONES</th>
+                                <th scope="col" style="width: 50%">OBSERVACIONES UNIDAD</th>
                                 <th scope="col" style="width: 50%">COMENTARIOS</th>                                    
                             </tr>
                         </thead>
@@ -378,19 +399,14 @@
                                     <td>{{ $datas->naesm9 }}</td>
                                     <td>{{ $datas->naesh9 }}</td>
                                     <td><div style = "width:900px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
-                                    <td><textarea name="comentarios[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea></td>                
+                                    <td><div style="width: 300px; word-wrap: break-word">{{ $datas->observaciones_unidad }}</div></td>
+                                    <td><textarea name="comentarios_enlaces[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea></td>                
                                 </tr>
                             @endforeach
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="123">
-                                
-                                </td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
+                <input type="hidden" name="num_memo" id="num_memo" value="{{ $memorandum->num_memo }}">
             </form> 
         @else
             <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
@@ -404,23 +420,16 @@
     <!--MODAL ENDS-->
     <!--MODAL FORMULARIO-->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-info" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="enviar_cursos_dta"><b>ENVIAR  CURSOS VALIDADOS A DTA</b></h5>
+              <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y REGRESAR A UNIDAD </b></h5>
             </div>
-            <form id="dtaform" enctype="multipart/form-data" method="POST">
+            <form id="formSendUnity" enctype="multipart/form-data" method="POST">
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="numero_memo">NÚMERO DE MEMORANDUM</label>
-                            <input type="text" class="form-control" name="numero_memo" id="numero_memo" placeholder="NÚMERO DE MEMORANDUM">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="memorandum_validacion">ENVIAR MEMO DE VALIDACIÓN</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="memorandum_validacion" name="memorandum_validacion" placeholder="ENVIAR MEMO DE VALIDACIÓN">
+                            <input type="file" name="memorandum_regreso_unidad" id="memorandum_regreso_unidad" class="form-control">
                         </div>
                     </div>
                 </div>
@@ -441,6 +450,10 @@
 
         document.querySelector('#spinner').setAttribute('hidden', '');
 
+        $.validator.addMethod('filesize', function (value, element, param) {
+            return this.optional(element) || (element.files[0].size <= param)
+        }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
+
         $('#enviardta').click(function(){
             $("#exampleModalCenter").modal("show");
         });
@@ -453,6 +466,88 @@
 
         $("#selectAll").click(function() {
             $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
+        });
+
+        $('#send_to_dta').click(function(){
+            $('#formSendUnity').validate({
+                rules: {
+                    "cargar_archivo_formato_t": {
+                        required: true, 
+                        extension: "pdf", 
+                        filesize: 2000000
+                    }
+                },
+                messages: {
+                    "cargar_archivo_formato_t": {
+                        required: "ARCHIVO REQUERIDO",
+                        accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
+                    }
+                },
+                submitHandler: function(form, event){
+                    event.preventDefault();
+                    var check_cursos = new Array();
+                    var comentario_retorno = new Array();
+                    $('input[name="chkcursos[]"]:checked').each(function() {
+                        check_cursos.push(this.value);
+                    });
+
+                    $('textarea[name="comentarios_enlaces[]"]').each(function(){
+                        comentario_retorno.push(this.value);
+                    });
+
+                    var numero_memo = $('#num_memo').val();
+                    /***
+                    * cargar_archivo_formato_t
+                    */
+                    var formData = new FormData(form);
+                    formData.append("check_cursos_dta", check_cursos);
+                    formData.append("numero_memo", numero_memo);
+                    formData.append("comentarios_enlaces", comentario_retorno);
+                    var _url = "{{route('dta.send.unity')}}";
+                    var requested = $.ajax
+                    ({
+                        url: _url,
+                        method: 'POST',
+                        data: formData,
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function(){
+                            $("#exampleModalCenter").modal("hide");
+                            document.querySelector("#spinner").removeAttribute('hidden');
+                        },
+                        success: function(response){
+                            console.log(response);
+                            if (response === 'DONE') {
+                                $("#dtaform").trigger("reset");
+                                $( ".alert" ).addClass("alert-success");
+                                $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
+                                // redireccionar después de 5 segundos
+                                setTimeout(function(){ 
+                                    window.location.href = "{{ route('validacion.cursos.enviados.dta')}}";
+                                 }, 2000);
+                            }
+                        },
+                        complete:function(data){
+                            // escondemos el modales
+                            document.querySelector('#spinner').setAttribute('hidden', '');
+                        },
+                        error: function(jqXHR, textStatus){
+                            //jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                            //document.querySelector('#spinner').setAttribute('hidden', '');
+                            console.log(jqXHR.responseText);
+                            alert( "Hubo un error: " + jqXHR.status );
+                        }
+                    });
+
+                    $.when(requested).then(function(data, textStatus, jqXHR ){
+                        if (jqXHR.status === 200) {
+                            document.querySelector('#spinner').setAttribute('hidden', '');
+                        }
+                    });
+                }
+            }); // configurar el validador
         });
 
         // var checkChecked = function() {

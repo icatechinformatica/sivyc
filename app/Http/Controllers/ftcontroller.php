@@ -86,7 +86,8 @@ class ftcontroller extends Controller
                 db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm7"),db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh7"),
                 db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm8"),db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh8"),
                 db::raw("sum(case when ap.ultimo_grado_estudios='POSTRADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm9"),db::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
-                DB::raw("case when arc='01' then nota else observaciones end as tnota")
+                DB::raw("case when arc='01' then nota else observaciones end as tnota"),
+                DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD'->>'OBSERVACION_RETORNO' AS observaciones_enlaces")
                 )
                 ->JOIN('tbl_calificaciones as ca','c.id', '=', 'ca.idcurso')
                 ->JOIN('instructores as i','c.id_instructor', '=', 'i.id')
@@ -180,10 +181,17 @@ class ftcontroller extends Controller
                  */
                 # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
                 $data = explode(",", $cursoschk);
-                foreach($data as $key){
+                $comentario_unidad = explode(",", $_POST['comentarios_unidad']); // obtenemos los comentarios
+                foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
+                    $comentarios_envio_dta = [
+                        'OBSERVACION_UNIDAD' =>  $comentariosUnidad
+                    ];
                     \DB::table('tbl_cursos')
                         ->where('id', $key)
-                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 'status' => 'TURNADO_DTA', 'turnado' => 'DTA']);
+                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
+                        'status' => 'TURNADO_DTA', 
+                        'turnado' => 'DTA',
+                        'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)")]);
                 }
 
                 /**
