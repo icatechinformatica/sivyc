@@ -349,43 +349,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
     Route::post('/supervision/curso', 'supervisionController\EscolarController@curso')->name('supervision.curso');
     Route::get('/supervision/curso/{id}', 'supervisionController\EscolarController@curso')->name('supervision.curso');
-<<<<<<< HEAD
-    
-    Route::get('/supervisiones/escolar/url/generar', 'supervisionController\UrlController@generarUrl')->name('supervision.escolar.url.generar');
-    Route::get('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
-    Route::post('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
-    
-=======
 
     Route::get('/supervisiones/escolar/url/generar', 'supervisionController\UrlController@generarUrl')->name('supervision.escolar.url.generar');
     Route::get('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
     Route::post('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
 
->>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
      /* SUPERVISIONES INSTRUCTORES RPN*/
     Route::get('/supervision/instructor/revision/{id}', 'supervisionController\InstructorController@revision')->name('supervision.instructor.revision');
     Route::post('/supervision/instructores/guardar', 'supervisionController\InstructorController@update')->name('supervision.instructor.guardar');
 
-<<<<<<< HEAD
-=======
-
->>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
     /*SUPERVISIONES ALUMNOS RPN*/
     Route::get('/supervisiones/alumno/lst', 'supervisionController\AlumnoController@lista')->name('supervision.alumno.lst');
     Route::get('/supervision/alumno/revision/{id}', 'supervisionController\AlumnoController@revision')->name('supervision.alumno.revision');
     Route::post('/supervisiones/alumnos/guardar', 'supervisionController\AlumnoController@update')->name('supervision.alumno.guardar');
 
-<<<<<<< HEAD
-    
-    /* SUPERVISION CONTROL DE CALIDAD RPN*/
-    Route::get('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
-    Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
-    
-    /*ENCUESTA
-    Route::get('/encuesta/generar/url', 'supervisionController\EncuestaController@generarUrl')->name('encuesta.generar.url');   
-    */
-    
-=======
 
     /* SUPERVISION CONTROL DE CALIDAD RPN*/
     Route::get('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
@@ -395,23 +372,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/encuesta/generar/url', 'supervisionController\EncuestaController@generarUrl')->name('encuesta.generar.url');
     */
 
->>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
     /*SUPERVISION UNIDADES RPN*/
     Route::get('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
     Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
     Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');
-<<<<<<< HEAD
-    
-    /*REPORTES SICE RPN*/
-    Route::get('/reportes/cursos', 'reportesController\cursosController@index')->name('reportes.cursos.index')->middleware('can:reportes.cursos');   
-    Route::post('/reportes/asist/pdf', 'reportesController\cursosController@asistencia')->name('reportes.asist.pdf');
-    Route::post('/reportes/calif/pdf', 'reportesController\cursosController@calificaciones')->name('reportes.calif.pdf');
-    Route::post('/reportes/ins/pdf', 'reportesController\cursosController@riacIns')->name('reportes.ins.pdf');
-    Route::post('/reportes/acred/pdf', 'reportesController\cursosController@riacAcred')->name('reportes.acred.pdf');     
-    Route::post('/reportes/cert/pdf', 'reportesController\cursosController@riacCert')->name('reportes.cert.pdf');
-    Route::post('/reportes/const/xls', 'reportesController\cursosController@xlsConst')->name('reportes.const.xls');
-    
-=======
 
     /*REPORTES SICE RPN*/
     Route::get('/reportes/cursos', 'reportesController\cursosController@index')->name('reportes.cursos.index')->middleware('can:reportes.cursos');
@@ -421,15 +385,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reportes/acred/pdf', 'reportesController\cursosController@riacAcred')->name('reportes.acred.pdf');
     Route::post('/reportes/cert/pdf', 'reportesController\cursosController@riacCert')->name('reportes.cert.pdf');
     Route::post('/reportes/const/xls', 'reportesController\cursosController@xlsConst')->name('reportes.const.xls');
-
->>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
-    /*INSCRIPCION ALUMNOS RPN
-    Route::get('/inscripcion/grupo', 'InscripcionController\grupoController@index')->name('inscripcion.grupo');
-    Route::get('/inscripcion/grupos', 'InscripcionController\grupoController@show')->name('inscripcion.grupos');
-    */
-<<<<<<< HEAD
-    
-=======
 
     Route::get('reportes/formato_t_reporte/index', function () {
         return view('layouts.pages.reportes.formato_t_reporte');
@@ -443,7 +398,37 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
     Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
     Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
->>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
+    
+    /*Grupos RPN*/
+    //Calificaciones
+    Route::get('/grupos/calificaciones', 'Grupos\calificacionesController@index')->name('grupos.calificaciones')->middleware('can:grupos.calificaciones');
+    Route::post('/grupos/calificaciones/buscar', 'Grupos\calificacionesController@search')->name('grupos.calificaciones.buscar')->middleware('can:grupos.calificaciones.buscar');
+    Route::get('/grupos/calificaciones/buscar', 'Grupos\calificacionesController@search')->name('grupos.calificaciones.buscar')->middleware('can:grupos.calificaciones.buscar');
+    Route::post('/grupos/calificaciones/guardar', 'Grupos\calificacionesController@update')->name('grupos.calificaciones.guardar')->middleware('can:grupos.calificaciones.guardar');
+    Route::get('/grupos/calificaciones/guardar', 'Grupos\calificacionesController@update')->name('grupos.calificaciones.guardar')->middleware('can:grupos.calificaciones.guardar');
+    //Asignacion de Folio
+    Route::get('/grupos/asignarfolios', 'Grupos\asignarfoliosController@index')->name('grupos.asignarfolios')->middleware('can:grupos.asignarfolios');
+    Route::post('/grupos/asignarfolios', 'Grupos\asignarfoliosController@index')->name('grupos.asignarfolios')->middleware('can:grupos.asignarfolios');
+    Route::post('/grupos/asignarfolios/guardar', 'Grupos\asignarfoliosController@store')->name('grupos.asignarfolios.guardar')->middleware('can:grupos.asignarfolios.guardar');
+    Route::get('/grupos/asignarfolios/guardar', 'Grupos\asignarfoliosController@store')->name('grupos.asignarfolios.guardar')->middleware('can:grupos.asignarfolios.guardar');
+    /*Consultas*/
+    Route::get('/grupos/consultas', 'Grupos\consultasController@index')->name('grupos.consultas')->middleware('can:grupos.consultas');
+    Route::post('/grupos/consultas', 'Grupos\consultasController@index')->name('grupos.consultas')->middleware('can:grupos.consultas');
+    Route::post('/grupos/consultas/calificaciones', 'Grupos\consultasController@calificaciones')->name('grupos.consultas.calificaciones')->middleware('can:grupos.consultas.calificaciones');
+    Route::post('/grupos/consultas/folios', 'Grupos\consultasController@asignarfolios')->name('grupos.consultas.folios')->middleware('can:grupos.consultas.folios');
+
+    /*Solicitudes(DTA) RPN*/
+    //Folios
+    Route::get('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
+    Route::post('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
+    Route::post('/solicitudes/folios/guardar', 'Solicitudes\foliosController@store')->name('solicitudes.folios.guardar')->middleware('can:solicitudes.folios.guardar');
+    Route::get('/solicitudes/folios/guardar', 'Solicitudes\foliosController@store')->name('solicitudes.folios.guardar')->middleware('can:solicitudes.folios.guardar');
+    //Cancelación de Folios
+    Route::get('/solicitudes/cancelacionfolios', 'Solicitudes\cancelacionfoliosController@index')->name('solicitudes.cancelacionfolios')->middleware('can:solicitudes.cancelacionfolios');
+    Route::post('/solicitudes/cancelacionfolios', 'Solicitudes\cancelacionfoliosController@index')->name('solicitudes.cancelacionfolios')->middleware('can:solicitudes.cancelacionfolios');
+    Route::post('/solicitudes/cancelacionfolios/guardar', 'Solicitudes\cancelacionfoliosController@store')->name('solicitudes.cancelacionfolios.guardar')->middleware('can:solicitudes.cancelacionfolios.guardar');
+    Route::get('/solicitudes/cancelacionfolios/guardar', 'Solicitudes\cancelacionfoliosController@store')->name('solicitudes.cancelacionfolios.guardar')->middleware('can:solicitudes.cancelacionfolios.guardar');
+
 });
 
 /*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
@@ -453,10 +438,6 @@ Route::get('/form/alumno/{url}', 'supervisionController\UrlController@form')->na
 Route::post('/form/alumno-guardar', 'supervisionController\client\frmAlumnoController@guardar')->middleware('checktoken');
 Route::get('/form/msg/{id}', 'supervisionController\UrlController@msg');
 
-<<<<<<< HEAD
-Route::get('/encuesta/form/{url}','supervisionController\EncuestaController@encuesta')->name('encuesta');        
-Route::post('/encuesta/save','supervisionController\EncuestaController@encuesta_save')->name('encuesta.save');
-=======
 Route::get('/encuesta/form/{url}','supervisionController\EncuestaController@encuesta')->name('encuesta');
 Route::post('/encuesta/save','supervisionController\EncuestaController@encuesta_save')->name('encuesta.save');
 
@@ -499,4 +480,4 @@ Route::post('/instituto/guardar', 'webController\InstitutoController@store')->na
 Route::get('/unidades/inicio', 'webController\UnidadesController@index')->name('unidades.inicio')->middleware('can:unidades.index');
 Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar')->name('unidades.editar')->middleware('can:unidades.editar');
 Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
->>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
+
