@@ -89,7 +89,7 @@
         </div>
         <hr style="border-color:dimgray">
         @if(count($cursos_validar) > 0)
-            <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}">
+            <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}" target="_blank">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-2">
@@ -558,10 +558,6 @@
                 }
             }); // configurar el validador
         });
-<<<<<<< HEAD
-
-=======
->>>>>>> b8602b88... memo_unidad
         // var checkChecked = function() {
         //     $("input:checkbox").each(function() {
         //         if ($(this).is(":checked")) {
@@ -575,10 +571,6 @@
         //     // alert( n + (n === 1 ? " is" : " are") + " checked!" );
         // }
         // $( "input[type=checkbox]" ).on( "click", checkChecked );
-<<<<<<< HEAD
-
-=======
->>>>>>> b8602b88... memo_unidad
         /*
         * modificaciones de datos en filtro
         */
