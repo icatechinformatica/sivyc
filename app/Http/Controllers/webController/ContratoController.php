@@ -725,16 +725,16 @@ class ContratoController extends Controller
 
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio',
                               'tbl_cursos.termino','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
-                              'instructores.apellidoPaterno','instructores.apellidoMaterno','tabla_supre.folio_validacion',
+                              'instructores.apellidoPaterno','instructores.apellidoMaterno', 'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
                               'contratos.id_contrato','pagos.created_at','pagos.no_memo','pagos.liquido')
                         ->WHERE('folios.id_folios', '=', $id)
-                        ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->LEFTJOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
                         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+                        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
                         ->FIRST();
 
         $date = strtotime($data->created_at);

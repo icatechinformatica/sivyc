@@ -131,8 +131,8 @@
                             <td colspan="2">Nombre del Instructor: {{$data->nombre}} {{$data->apellidoPaterno}} {{$data->apellidoMaterno}}</td>
                         </tr>
                         <tr>
-                            <td>Registro STPS:</td>
-                            <td>Memorándum de Validación: {{$data->folio_validacion}}</td>
+                            <td>Registro STPS: NO APLICA</td>
+                            <td>Memorándum de Validación: {{$data->memorandum_validacion}}</td>
                         </tr>
                         <tr>
                             <td>RFC: {{$data->rfc}}</td>
