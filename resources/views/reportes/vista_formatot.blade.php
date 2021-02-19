@@ -76,6 +76,26 @@
                 {!! Form::close() !!}
             </div> 
         </div>
+
+        {{ Form::open(['route' => 'vista_formatot', 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <select name="" id="" class="form-control">
+                        <option value="">--SELECCIONAR MES--</option>
+                        @foreach ($meses as $mun => $month)
+                            <option value="{{ $mun }}">{{ $month }}</option>
+                        @endforeach 
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    {{ Form::text('anio', null , ['class' => 'form-control  mr-sm-1', 'placeholder' => 'AÑO A REPORTAR']) }}
+                </div>
+                <div class="form-group col-md-4">
+                    {!! Form::submit( 'FILTRAR', ['id'=>'formatot', 'class' => 'btn btn-outline-info my-2 my-sm-0 waves-effect waves-light', 'name' => 'submitbutton'])!!}
+                </div>
+            </div>
+        {!! Form::close() !!}
+            
         <hr style="border-color:dimgray">
         @if (count($var_cursos) > 0)
             <form id="dtaformGetDocument" method="POST" action="{{ route('formatot.send.dta') }}" target="_blank">
