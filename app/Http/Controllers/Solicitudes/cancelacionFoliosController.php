@@ -36,24 +36,33 @@ class cancelacionfoliosController extends Controller
             $unidades = DB::table('tbl_unidades')->orderby('unidad','ASC')->pluck('unidad','id');
             $_SESSION['unidades'] = $unidades;  
         }
-
-        if($request->clave){
+        if(session('clave')) $clave = session('clave');
+        else{
+             $clave = $request->clave;
+             $_SESSION['num_acta'] = NULL;
+        }
+        if($clave){
             $data = DB::table('tbl_folios as f')
-                ->select('f.id as id_folio','f.matricula','f.nombre as alumnos','f.folio','f.movimiento','f.motivo','c.*')
+                ->select('f.id as id_folio','f.matricula','f.nombre as alumnos','f.folio','f.movimiento','f.motivo as motivof','f.num_solicitud','c.*')
                 ->LEFTJOIN('tbl_cursos as c', 'c.id', '=', 'f.id_curso')
-                ->where('c.clave',$request->clave);
+                ->where('c.clave',$clave);
                 if($request->matricula) $data = $data->where('f.matricula',$request->matricula);
-                if($request->num_acta) $data = $data->whereOR('f.num_acta',$request->num_acta);
+                if(isset($_SESSION['num_acta']) ) $data = $data->where('f.num_solicitud',$_SESSION['num_acta'] );
                 $data =$data->orderby('f.id','DESC')->get();
+                
+            if(!$data) $message= "No hay folios asignados.";
+            else $_SESSION['clave'] = $clave;  
         } //else $message = "Clave del curso requerido para la cancelación";
 
         $motivo = $this->motivo;
-        return view('solicitudes.cancelacionfolios.index', compact('message','data', 'unidades', 'motivo'));
+        return view('solicitudes.cancelacionfolios.index', compact('message','data', 'unidades', 'motivo', 'clave'));
     }  
     
    
     public function store(Request $request){
-        
+        $clave = $_SESSION['clave'];
+        $_SESSION['num_acta'] = $request->num_acta;
+        //echo $request->motivo; exit;
         /*$unidades = json_decode(json_encode($_SESSION['unidades']), true);
         $unidades = array_flip($unidades);
         $unidad = array_search($request->id_unidad, $unidades);
@@ -62,11 +71,14 @@ class cancelacionfoliosController extends Controller
         */
         
         $folios = $request->folios; 
-        $result = DB::table('tbl_folios')->wherein('id',$folios)->update(
-            ['movimiento' => 'CANCELADO', 'motivo' => $request->$motivo,'iduser_updated' => Auth::user()->id ]
-        );
-        if($result) $message = "Operación exitosa!! el registro ha sido guardado correctamente.";
-        else $message = "Operación inválida, no existe folio que cancelar.";
-        return redirect('/solicitudes/cancelacionfolios')->with(['message'=>$message]);
+        $message = "Operación inválida, no existe folio que cancelar.";
+        if($folios){
+            $result = DB::table('tbl_folios')->wherein('id',$folios)->update(
+                ['num_solicitud'=> $request->num_acta,'fecha_solicitud'=> $request->fecha_acta,'movimiento' => 'CANCELADO', 'motivo' => $request->motivo,'iduser_updated' => Auth::user()->id ]
+            );
+            if($result) $message = "Operación exitosa!! el registro ha sido guardado correctamente.";            
+        }
+        
+        return redirect('/solicitudes/cancelacionfolios')->with(['message'=>$message, 'clave'=>$clave]);
     }
 }

@@ -26,7 +26,7 @@
             <h5>BÚSQUEDA POR MATRÍCULA DEL ALUMNO O CLAVE DEL CURSO</h5>
             <hr/>
             <div class="row form-inline">           
-                {{ Form::text('clave', NULL, ['id'=>'buscar', 'class' => 'form-control mr-sm-2 mt-3', 'placeholder' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 30]) }}
+                {{ Form::text('clave', $clave, ['id'=>'buscar', 'class' => 'form-control mr-sm-2 mt-3', 'placeholder' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 30]) }}
                 {{ Form::text('matricula', NULL, ['id'=>'buscar', 'class' => 'form-control mr-sm-2 mt-3', 'placeholder' => 'MATRICULA', 'size' => 20]) }}
                 {{ Form::button('BUSCAR', ['class' => 'form-control mr-sm-2 mt-3 btn', 'type' => 'submit']) }}                
             </div>
