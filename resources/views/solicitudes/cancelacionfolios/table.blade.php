@@ -28,14 +28,14 @@
                      <td>{{ $item->curso }}</td>                     
                      <td>{{ $item->folio }}</td>
                      <td>{{ $item->movimiento }}</td>
-                     <td>{{ $item->motivo }}</td>
+                     <td>{{ $item->motivof }}</td>
                      <td class='text-center'>    
                         @if( $item->movimiento!="CANCELADO")                 
                             <div class="form-check">
                                 <input class="form-check-input custom-checkbox checkbox-lg" type="checkbox" value="{{$item->id_folio}}"  name="folios[]" id="check + {{ $item->id_folio }}" checked>
                             </div>
                         @else 
-                            {{'CANCELADO'}}
+                            {{'SOLICITUD'}} {{$item->num_solicitud}}
                         @endif
                      </td>
                 </tr>

@@ -34,7 +34,7 @@ class asignarfoliosController extends Controller
         /** BÚSQUEDA **/        
         if(session('clave')) $clave = session('clave');
         else $clave = $request->clave;
-
+        if($clave) $_SESSION['clave'] = $clave;
         $data = $this->validaCurso($clave);
         list($curso, $acta, $alumnos, $message) = $data; 
 
@@ -91,16 +91,17 @@ class asignarfoliosController extends Controller
                 $curso = $curso->first();
             if($curso){
                 ///ACTA CON FOLIOS DISPONIBLES
-                $acta =  DB::table('tbl_afolios')->where('unidad',$curso->unidad)->where('activo',true)->where('contador','>','0')->first();
+                $acta =  DB::table('tbl_afolios')->where('unidad',$curso->unidad)->where('activo',true)->whereColumn('contador','<','num_fin')->first();
                 if(!$acta)$message = "No hay Acta con Folios disponibles. ";
                 ///NO DEBE TENER FOLIOS ASIGNADOS
-                $folios =  DB::table('tbl_folios')->where('id_curso',$curso->id)->where('folio','>','0')->first();
+                $folios =  DB::table('tbl_folios')->where('id_curso',$curso->id)->where('movimiento','<>','CANCELADO')->where('folio','>','0')->first();
                 if($folios)$message = "Curso con folios asignados. ";
                 ///ALUMNOS REGISTRADOS
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','f.folio','f.fecha_expedicion','f.motivo')
                     ->leftjoin('tbl_folios as f', function ($join) {                        
                         $join->on('f.id_curso','=','i.id_curso')
-                        ->on('f.matricula','=','i.matricula');
+                        ->on('f.matricula','=','i.matricula')
+                        ->where('f.movimiento','<>','CANCELADO');
                     })->where('i.id_curso',$curso->id)->orderby('i.alumno')->get();                  
                
                 if(count($alumnos)==0) $message = "El curso no tiene alumnos registrados. ";
