@@ -423,10 +423,12 @@ class validacionDtaController extends Controller
                 $fecha_ahora = Carbon::now();
                 $date = $fecha_ahora->format('Y-m-d'); // fecha
                 $numero_memo = $request->get('numero_memo'); // número de memo
+                $num_memo_devolucion = $request->get('numero_memo_devolucion');
 
                 $turnado_unidad = [
                     'FECHA' => $date,
-                    'MEMORANDUM' => $url_archivo_memo
+                    'MEMORANDUM' => $url_archivo_memo,
+                    'NUMERO' => $num_memo_devolucion
                 ];
                 /**
                  * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
