@@ -112,15 +112,15 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre_banco" class="control-label">Nombre de Banco</label>
-                    <input type="text" name="nombre_banco" id="nombre_banco" class="form-control" disabled>
+                    <input type="text" name="nombre_banco" id="nombre_banco" class="form-control" value="{{$bancario->banco}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputnumero_cuenta" class="control-label">Número de Cuenta</label>
-                    <input type="text" name="numero_cuenta" id="numero_cuenta" class="form-control" disabled>
+                    <input type="text" name="numero_cuenta" id="numero_cuenta" class="form-control" value="{{$bancario->no_cuenta}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe" class="control-label">Clabe Interbancaria</label>
-                    <input type="text" name="clabe" id="clabe" class="form-control" disabled>
+                    <input type="text" name="clabe" id="clabe" class="form-control" value="{{$bancario->interbancaria}}" disabled>
                 </div>
             </div>
             <hr style="border-color:dimgray">
