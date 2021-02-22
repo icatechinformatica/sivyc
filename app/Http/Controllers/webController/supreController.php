@@ -471,6 +471,11 @@ class supreController extends Controller
         $M = $this->monthToString(date('m',$date));
         $Y = date("Y",$date);
 
+        $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion')
+                                ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
+                                ->FIRST();
+        $unidad->cct = substr($unidad->cct, 0, 4);
+
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
         $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
@@ -483,7 +488,7 @@ class supreController extends Controller
         $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
         $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio'));
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio','unidad'));
         return  $pdf->stream('medium.pdf');
     }
 

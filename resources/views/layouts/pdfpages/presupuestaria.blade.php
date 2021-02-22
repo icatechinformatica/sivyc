@@ -75,7 +75,7 @@
             <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
         </footer>
         <div class= "container g-pt-30">
-            <div align=right> <b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}</b> </div>
+            <div align=right> <b>Unidad de Capacitación {{$unidad->ubicacion}}</b> </div>
             <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
             <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
@@ -83,7 +83,13 @@
             <br>{{$getdestino->puesto}}
             <br><br>Presente.
 
-            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de cursos de la Unidad de Capacitación <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
+            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de cursos de la
+                @if ($unidad->cct == '07EI' || $unidad->cct == '07XU')
+                    Unidad de Capacitación <b>{{$unidad->ubicacion}}</b>,
+                @else
+                    Acción Movil <b>{{$data_supre->unidad_capacitacion}}</b>,
+                @endif
+                 de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
             <br><div align=justify><b>Números de Folio</b></div>
 
             <table class="table table-bordered">
@@ -106,7 +112,11 @@
             <br><p class="text-left"><p>Atentamente.</p></p>
             <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
             <br><b>{{$getremitente->puesto}} {{$getremitente->area}}</b>
-            <br><b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}.</b>
+            <br><b>Unidad de Capacitación {{$unidad->ubicacion}}.</b>
+            @if ($unidad->cct == '07EI' || $unidad->cct == '07XU')
+            @else
+                <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
+            @endif
             <br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
             <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo/Minutario<b></small></h6>
