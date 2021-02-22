@@ -67,7 +67,7 @@ class ContratoController extends Controller
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -86,7 +86,7 @@ class ContratoController extends Controller
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -105,7 +105,7 @@ class ContratoController extends Controller
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -124,7 +124,7 @@ class ContratoController extends Controller
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -143,7 +143,7 @@ class ContratoController extends Controller
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -162,7 +162,7 @@ class ContratoController extends Controller
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -189,6 +189,7 @@ class ContratoController extends Controller
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
