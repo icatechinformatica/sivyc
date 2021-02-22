@@ -669,7 +669,6 @@ $(function(){
             },
             liquido:{
                 required: true,
-                digits: true
             },
             arch_asistencia:{
                 required: true,
@@ -705,7 +704,6 @@ $(function(){
             },
             liquido:{
                 required: 'Por favor ingrese el liquido final reflejado en la factura',
-                digits: 'Por favor ingrese solo numeros'
             },
             arch_evidencia: {
                 required: 'Por favor ingrese la evidencia',
