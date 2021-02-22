@@ -84,7 +84,7 @@
             <br><br>Presente.
 
             <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de cursos de la
-                @if ($unidad->cct == '07EI' || $unidad->cct == '07XU')
+                @if ($unidad->cct == '07EI')
                     Unidad de Capacitación <b>{{$unidad->ubicacion}}</b>,
                 @else
                     Acción Movil <b>{{$data_supre->unidad_capacitacion}}</b>,
@@ -113,9 +113,9 @@
             <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
             <br><b>{{$getremitente->puesto}} {{$getremitente->area}}</b>
             <br><b>Unidad de Capacitación {{$unidad->ubicacion}}.</b>
-            @if ($unidad->cct == '07EI' || $unidad->cct == '07XU')
-            @else
+            @if ($unidad->cct != '07EI')
                 <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
+            @else
             @endif
             <br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
             <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
