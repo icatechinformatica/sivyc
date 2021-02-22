@@ -1,18 +1,22 @@
 <!DOCTYPE HTML>
     <head>
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-wfSDFE50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <style>
             body{
                 font-family: sans-serif;
+                font-size: 1.3em;
+                margin: 10px;
             }
             @page {
-                margin: 120px 40px 80px;
+                margin: 110px 40px 80px;
             }
             header { position: fixed;
                 left: 0px;
-                top: -90px;
+                top: -80px;
                 right: 0px;
                 height: 60px;
                 background-color: white;
@@ -29,7 +33,7 @@
                 background-color: white;
                 color: black;
                 text-align: center;
-                line-height: 35px;
+                line-height: 60px;
             }
             img.izquierda {
                 float: left;
@@ -89,7 +93,7 @@
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
             <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
         </footer>
-        <div class= "container g-pt-20">
+        <div class= "container g-pt-30">
             <div id="content">
                 <div align=right>
                     <b>Unidad de Capacitación {{$data->unidad_capacitacion}}.</b>
@@ -107,7 +111,7 @@
                 <div align=center>
                     <FONT SIZE=2><b>DATOS DEL CURSO</b></FONT>
                 </div>
-                <table class="table table-responsive table-bordered">
+                <table>
                     <tbody>
                         <tr>
                             <td>Nombre del Curso: {{$data->curso}}</td>
@@ -171,7 +175,7 @@
                     </tr>
                     <tr>
                         <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
-                        <td colspan="2"><div align="center">Mtro. Walter Dominguez Camacho</td></div>
+                        <td colspan="2"><div align="center">Mtro. Walter Domínguez Camacho</td></div>
                     </tr>
                     <tr>
                         <td colspan="2"><div align="center">Director de la Unidad de Capacitación {{$data->unidad_capacitacion}}</td></div>
