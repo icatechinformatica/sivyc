@@ -44,7 +44,7 @@ class PagoController extends Controller
         // obtener el id
         $userId = Auth::user()->id;
 
-      /*  $roles = DB::table('role_user')
+        $roles = DB::table('role_user')
             ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
@@ -100,7 +100,7 @@ class PagoController extends Controller
         }
 
         return view('layouts.pages.vstapago', compact('contratos_folios'));
-    }*/
+    }
 
     public function crear_pago($id)
     {

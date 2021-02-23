@@ -28,7 +28,7 @@ class contratos extends Model
     /**
      * scope de busqueda por contratos
      */
-   /* public function scopeBusquedaPorContrato($query, $tipo, $buscar, $tipo_status)
+    public function scopeBusquedaPorContrato($query, $tipo, $buscar, $tipo_status)
     {
         if (!empty($tipo)) {
             # se valida el tipo
@@ -77,7 +77,7 @@ class contratos extends Model
     /**
      * busqueda scope por pagos
      */
-   /* public function scopeBusquedaPorPagos($query, $tipo, $buscar, $tipo_status)
+    public function scopeBusquedaPorPagos($query, $tipo, $buscar, $tipo_status)
     {
         if (!empty($tipo)) {
             # se valida el tipo
