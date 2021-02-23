@@ -37,7 +37,7 @@ class supre extends Model
     /**
      * creación de un scope
      */
-    public function scopeBusquedaSupre($query, $tipo, $buscar, $tipo_status)
+   /* public function scopeBusquedaSupre($query, $tipo, $buscar, $tipo_status)
     {
         if (!empty($tipo)) {
             # si tipo no es vacio se hace la busqueda
@@ -71,6 +71,6 @@ class supre extends Model
         }
         if (!empty($tipo_status)) {
             return $query->WHERE('tabla_supre.status', '=', $tipo_status);
-        }
+        }*/
     }
 }

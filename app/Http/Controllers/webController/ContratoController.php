@@ -34,12 +34,12 @@ class ContratoController extends Controller
         dd($numero);
         dd('ya quedo');
     }
-    public function index(Request $request)
+    /*public function index(Request $request)
     {
         /**
          * parametros para iniciar la busqueda
          */
-        $tipoContrato = $request->get('tipo_contrato');
+       /* $tipoContrato = $request->get('tipo_contrato');
         $busqueda_contrato = $request->get('busquedaPorContrato');
         $tipoStatus = $request->get('tipo_status');
         // obtener el usuario y su unidad
@@ -192,7 +192,7 @@ class ContratoController extends Controller
                 /**
                  * contratos - contratos
                  */
-                $contratos = new contratos();
+              /*  $contratos = new contratos();
 
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
@@ -217,7 +217,7 @@ class ContratoController extends Controller
         }
 
         return view('layouts.pages.vstacontratoini', compact('querySupre'));
-    }
+    }*/
 
     /**
      * Show the form for creating a new resourc.
