@@ -107,23 +107,37 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    {{-- @can('enviar.dta.planeacion') --}}
-                        <div class="form-group mb-2">
-                            <button input type="submit" id="validarDireccionDta" name="validarDireccionDta" value="EnviarPlaneacion"  class="btn btn-success">
-                                <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>&nbsp;
-                                ENVIAR A PLANEACIÓN
-                            </button> 
-                        </div>
-                    {{-- @endcan --}}
+                    <div class="form-group col-md-8 mb-3">
+                        <input type="text" class="form-control mr-sm-1" name="num_memo_devolucion" id="num_memo_devolucion" placeholder="NÚMERO DE MEMORANDUM PARA ENVÍO A PLANEACIÓN">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group mb-2">
+                        <button type="submit" class="btn btn-danger my-2 my-sm-0 waves-effect waves-light">
+                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
+                            MEMORANDUM PLANEACIÓN
+                        </button>
+                    </div>
+
+                {{-- @can('enviar.dta.planeacion') --}}
+                    <div class="form-group mb-2">
+                        <button input type="button" id="validarDireccionDta" name="validarDireccionDta" 
+                            value="EnviarPlaneacion"  
+                            class="btn btn-success my-2 my-sm-0 waves-effect waves-light" data-toggle="modal" data-target="#exampleModalCenter">
+                            <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>&nbsp;
+                            ENVIAR A PLANEACIÓN
+                        </button> 
+                    </div>
+                {{-- @endcan --}}
                     
-                    @if ($regresar_unidad->count() > 0)
-                        <div class="form-group mb-2">
-                            <button input type="submit" id="validarDireccionDta" name="validarDireccionDta" value="RegresarEnlaceDta"  class="btn btn-warning">
-                                <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
-                                REGRESAR A LOS ENLACES
-                            </button>
-                        </div>  
-                    @endif
+                @if ($regresar_unidad->count() > 0)
+                    <div class="form-group mb-2">
+                        <button input type="submit" id="validarDireccionDta" name="validarDireccionDta" value="RegresarEnlaceDta"  class="btn btn-warning my-2 my-sm-0 waves-effect waves-light">
+                            <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
+                            REGRESAR A LOS ENLACES
+                        </button>
+                    </div>  
+                @endif
                     
                 </div>        
             
@@ -408,7 +422,7 @@
         <div class="modal-dialog modal-dialog-centered modal-info" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y REGRESAR A UNIDAD </b></h5>
+              <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y ENVIAR A PLANEACIÓN </b></h5>
             </div>
             <form id="formSendDta" enctype="multipart/form-data" method="POST" action="{{ route('formatot.send.dta') }}">
                 <div class="modal-body">
