@@ -40,6 +40,15 @@
                         </select>
 
                         {!! Form::text('busquedaPorPago', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <Div id="divstat" name="divstat">
+                            <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
+                                <option value="">BUSQUEDA POR STATUS</option>
+                                <option value="Verificando_Pago">VERIFICANDO PAGO</option>
+                                <option value="Pago_Verificado">PAGO VERIFICADO</option>
+                                <option value="Pago_Rechazado">PAGO RECHAZADO</option>
+                                <option value="Finalizado">FINALIZADO</option>
+                            </select>
+                        </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
                 </div>
@@ -156,4 +165,28 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/modals.js") }}"></script>
+<script>
+    $(function(){
+    //metodo
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+      document.getElementById('tipo_pago').onchange = function() {
+        var index = this.selectedIndex;
+        var inputText = this.children[index].innerHTML.trim();
+        if(inputText == 'N° DE CONTRATO')
+        {
+            $('#divstat').prop("class", "form-row d-none d-print-none")
+        }
+        else
+        {
+            $('#divstat').prop("class", "")
+        }
+      }
+
+});
+</script>
 @endsection

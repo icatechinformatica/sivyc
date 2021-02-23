@@ -33,8 +33,16 @@
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha">FECHA</option>
                         </select>
-
                         {!! Form::text('busquedaporSuficiencia', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <Div id="divstat" name="divstat">
+                            <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
+                                <option value="">BUSQUEDA POR STATUS</option>
+                                <option value="En_Proceso">EN PROCESO</option>
+                                <option value="Validado">VALIDADO</option>
+                                <option value="Contratado">CONTRATADO</option>
+                                <option value="Rechazado">RECHAZADO</option>
+                            </select>
+                        </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
                 </div>
@@ -239,4 +247,5 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/modals.js") }}"></script>
+<script src="{{ asset("js/validate/filtersupre.js") }}"></script>
 @endsection

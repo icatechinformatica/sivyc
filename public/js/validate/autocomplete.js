@@ -21,7 +21,6 @@ $(function(){
             }
         });
     });
-
     //autocomplete
     $( "#nombre_director" ).autocomplete({
     source: function( request, response ) {
