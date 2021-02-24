@@ -33,7 +33,7 @@
             footer {
             position: fixed;
             left: 0px;
-            bottom: -40px;
+            bottom: -10px;
             right: 0px;
             height: 60px;
             text-align: center;

@@ -35,6 +35,7 @@ class PagoController extends Controller
          */
         $tipoPago = $request->get('tipo_pago');
         $busqueda_pago = $request->get('busquedaPorPago');
+        $tipoStatus = $request->get('tipo_status');
 
         $contrato = new contratos();
         // obtener el usuario y su unidad
@@ -51,13 +52,13 @@ class PagoController extends Controller
 
         //dd($roles[0]->role_name);
 
-        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago)
+        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus)
         ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-        ->orderBy('folios.id_folios', 'desc')
+        ->orderBy('contratos.fecha_firma', 'desc')
         ->PAGINATE(25, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',

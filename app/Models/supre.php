@@ -37,7 +37,7 @@ class supre extends Model
     /**
      * creación de un scope
      */
-    public function scopeBusquedaSupre($query, $tipo, $buscar)
+    public function scopeBusquedaSupre($query, $tipo, $buscar, $tipo_status)
     {
         if (!empty($tipo)) {
             # si tipo no es vacio se hace la busqueda
@@ -50,14 +50,27 @@ class supre extends Model
                         break;
                     case 'unidad_capacitacion':
                         # unidad de capacitacion
-                        return $query->WHERE('unidad_capacitacion', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('unidad_capacitacion', '=', $buscar)->WHERE('tabla_supre.status', '=', $tipo_status);
+                        }
+                        else {
+                            return $query->WHERE('unidad_capacitacion', '=', $buscar);
+                        }
                         break;
                     case 'fecha':
                         # fecha
-                        return $query->WHERE('fecha', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('fecha', '=', $buscar)->WHERE('tabla_supre.status', '=', $tipo_status);
+                        }
+                        else {
+                            return $query->WHERE('fecha', '=', $buscar);
+                        }
                         break;
                 }
             }
+        }
+        if (!empty($tipo_status)) {
+            return $query->WHERE('tabla_supre.status', '=', $tipo_status);
         }
     }
 }

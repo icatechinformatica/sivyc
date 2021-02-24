@@ -35,9 +35,10 @@ class supreController extends Controller
          */
         $busqueda_suficiencia = $request->get('busquedaporSuficiencia');
         $tipoSuficiencia = $request->get('tipo_suficiencia');
+        $tipoStatus = $request->get('tipo_status');
 
         $supre = new supre();
-        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia)->where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus)->where('id', '!=', '0')->latest()->get();
 
         return view('layouts.pages.vstasolicitudsupre', compact('data'));
     }

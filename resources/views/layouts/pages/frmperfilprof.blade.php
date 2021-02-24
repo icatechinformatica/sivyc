@@ -107,7 +107,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputcursos_recibidos">Cursos Recibidos ICATECH</label>
-                        <select name="rescibidos_icatech" id="recibidos_icatech" class="form-control">
+                        <select name="recibidos_icatech" id="recibidos_icatech" class="form-control">
                             <option value="sin especificar">SIN ESPECIFICAR</option>
                             <option value="SI">SI</option>
                             <option value="NO">NO</option>
@@ -146,4 +146,7 @@
         </form>
     </section>
 @stop
+@section('script_content_js')
+    <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
+@endsection
 

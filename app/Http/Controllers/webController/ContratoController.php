@@ -36,12 +36,12 @@ class ContratoController extends Controller
     }
     public function index(Request $request)
     {
-
         /**
          * parametros para iniciar la busqueda
          */
         $tipoContrato = $request->get('tipo_contrato');
         $busqueda_contrato = $request->get('busquedaPorContrato');
+        $tipoStatus = $request->get('tipo_status');
         // obtener el usuario y su unidad
         $usuarioUnidad = Auth::user()->unidad;
         // obtener el id
@@ -61,13 +61,15 @@ class ContratoController extends Controller
         switch ($roles[0]->role_name) {
             case 'admin':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -82,11 +84,13 @@ class ContratoController extends Controller
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -99,13 +103,15 @@ class ContratoController extends Controller
             break;
             case 'direccion.general':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
                                  ->WHERE('folios.status', '!=', 'En_Proceso')
+                                 ->WHERE('folios.status', '!=', 'Finalizado')
+                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -118,13 +124,15 @@ class ContratoController extends Controller
             break;
             case 'planeacion':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -137,13 +145,15 @@ class ContratoController extends Controller
             break;
             case 'financiero_verificador':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -156,13 +166,15 @@ class ContratoController extends Controller
             break;
             case 'financiero_pago':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('folios.id_folios', 'desc')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
@@ -182,13 +194,16 @@ class ContratoController extends Controller
                  */
                 $contratos = new contratos();
 
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
                                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                 ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                ->orderBy('tabla_supre.fecha', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
