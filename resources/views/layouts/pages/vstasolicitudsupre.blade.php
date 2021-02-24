@@ -130,6 +130,15 @@
                                         </button>
                                     @endcan
                                 @endif
+                                @can('supre.restart')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#restartModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Reiniciar Suficiencia Presupuestal">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
@@ -242,6 +251,30 @@
             </div>
         </div>
     <!-- END -->
+    <!-- Modal -->
+    <div class="modal fade" id="restartModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <a class="btn btn-success" id="confirm_restart" name="confirm_restart" href="#">Aceptar</a>
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- END -->
     </div>
     <br>
 @endsection

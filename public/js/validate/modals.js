@@ -129,4 +129,11 @@ $(function(){
             }
         }
     });
+
+    //Modal de reincio de supre en supre
+    $('#restartModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#confirm_restart').attr("href","/supre/reiniciar/" + id);
+        });
 });
