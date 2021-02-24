@@ -417,19 +417,15 @@ class ConveniosController extends Controller
         return $stat;
     }
 
-    protected function uploaded_file($file, $id, $name) {
-        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
-        $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
-        # nuevo nombre del archivo
+    /* protected function uploaded_file($file, $id, $name) {
+        $tamanio = $file->getSize(); 
+        $extensionFile = $file->getClientOriginalExtension();
         $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
-        //$path = $file->storeAs('/filesUpload/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
-        //$documentUrl = $documentFile;
         $path = 'convenios/' . $id . '/' . $documentFile;
         Storage::disk('mydisk')->put($path, file_get_contents($file));
-        //$path = storage_path('app/filesUpload/alumnos/'.$id.'/'.$documentFile);
-        $documentUrl = Storage::disk('mydisk')->url('/uploadFiles/convenios/' . $id . "/" . $documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $documentUrl = Storage::disk('mydisk')->url('/uploadFiles/convenios/' . $id . "/" . $documentFile);
         return $documentUrl;
-    }
+    } */
 
     protected function getmunicipios(Request $request) {
         if (isset($request->idEst)){
@@ -444,5 +440,15 @@ class ConveniosController extends Controller
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
         }
         return $json;
+    }
+
+    protected function uploaded_file($file, $id, $name) {
+        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
+        $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
+        # nuevo nombre del archivo
+        $documentFile = trim($name."".date('YmdHis')."".$id.".".$extensionFile);
+        $file->storeAs('/uploadFiles/convenios/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+        $documentUrl = Storage::url('/uploadFiles/convenios/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $documentUrl;
     }
 }
