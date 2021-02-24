@@ -7,14 +7,13 @@ use App\Models\supre;
 use App\Models\folio;
 use App\Models\tbl_curso;
 use Illuminate\Support\Facades\Storage;
-use App\ProductoStock;
-use App\Models\cursoValidado;
+use Illuminate\Support\Facades\DB;
 use App\Models\supre_directorio;
 use App\Models\directorio;
-use App\Models\contratos;
-use App\Models\contrato_directorio;
 use App\Models\criterio_pago;
 use App\Models\tbl_unidades;
+use App\Models\contratos;
+use App\Models\contrato_directorio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PDF;
@@ -288,6 +287,26 @@ class supreController extends Controller
 
         return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Eliminada');
+    }
+
+    public function restartSupre($id)
+    {
+        $list = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id)->GET();
+        foreach($list as $item)
+        {
+            $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $item->id_folios)->FIRST();
+            if($idcontrato != NULL)
+            {
+                contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
+                contratos::where('id_folios', '=', $item->id_folios)->DELETE();
+            }
+            $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $item->id_folios)->update(['status' => 'Rechazado']);
+        }
+
+        DB::table('tabla_supre')->WHERE('id', $id)->UPDATE(['status' => 'Rechazado', 'doc_validado' => '']);
+
+        return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Reiniciada');
     }
 
     protected function getcursostats(Request $request)
