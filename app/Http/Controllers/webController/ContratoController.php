@@ -36,12 +36,12 @@ class ContratoController extends Controller
     }
     public function index(Request $request)
     {
-
         /**
          * parametros para iniciar la busqueda
          */
         $tipoContrato = $request->get('tipo_contrato');
         $busqueda_contrato = $request->get('busquedaPorContrato');
+        $tipoStatus = $request->get('tipo_status');
         // obtener el usuario y su unidad
         $usuarioUnidad = Auth::user()->unidad;
         // obtener el id
@@ -61,8 +61,10 @@ class ContratoController extends Controller
         switch ($roles[0]->role_name) {
             case 'admin':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -82,6 +84,8 @@ class ContratoController extends Controller
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -101,6 +105,8 @@ class ContratoController extends Controller
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                  ->WHERE('folios.status', '!=', 'En_Proceso')
+                                 ->WHERE('folios.status', '!=', 'Finalizado')
+                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -120,6 +126,8 @@ class ContratoController extends Controller
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -139,6 +147,8 @@ class ContratoController extends Controller
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -158,6 +168,8 @@ class ContratoController extends Controller
                 # code...
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -185,6 +197,8 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
                                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
+                                ->WHERE('folios.status', '!=', 'Finalizado')
+                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                                 ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                                 ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')

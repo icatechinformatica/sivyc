@@ -28,7 +28,7 @@ class contratos extends Model
     /**
      * scope de busqueda por contratos
      */
-    public function scopeBusquedaPorContrato($query, $tipo, $buscar)
+    public function scopeBusquedaPorContrato($query, $tipo, $buscar, $tipo_status)
     {
         if (!empty($tipo)) {
             # se valida el tipo
@@ -37,25 +37,47 @@ class contratos extends Model
                 switch ($tipo) {
                     case 'no_memorandum':
                         # busqueda por memorandum...
-                        return $query->WHERE('tabla_supre.no_memo', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('tabla_supre.no_memo', '=', $buscar)->WHERE('folios.status', '=', $tipo_status);
+                        }
+                        else {
+                            return $query->WHERE('tabla_supre.no_memo', '=', $buscar);
+                        }
                         break;
                     case 'unidad_capacitacion':
                         # busqueda por unidad capacitacion...
-                        return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $buscar)->WHERE('folios.status', '=', $tipo_status);
+                        }
+                        else {
+                            return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $buscar);
+                        }
                         break;
                     case 'fecha':
                         # busqueda por fecha ...
-                        return $query->WHERE('tabla_supre.fecha', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('tabla_supre.fecha', '=', $buscar)->WHERE('folios.status', '=', $tipo_status);
+                        }
+                        else {
+                            return $query->WHERE('tabla_supre.fecha', '=', $buscar);
+                        }
+                        break;
+                    case 'folio_validacion':
+                        # busqueda por folio de validacion
+                        return $query->WHERE('folios.folio_validacion', '=', $buscar);
                         break;
                 }
             }
+        }
+        if (!empty($tipo_status)) {
+            return $query->WHERE('folios.status', '=', $tipo_status);
         }
     }
 
     /**
      * busqueda scope por pagos
      */
-    public function scopeBusquedaPorPagos($query, $tipo, $buscar)
+    public function scopeBusquedaPorPagos($query, $tipo, $buscar, $tipo_status)
     {
         if (!empty($tipo)) {
             # se valida el tipo
@@ -68,14 +90,27 @@ class contratos extends Model
                         break;
                     case 'unidad_capacitacion':
                         # busqueda por unidad de capacitación
-                        return $query->WHERE('contratos.unidad_capacitacion', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('contratos.unidad_capacitacion', '=', $buscar)->WHERE('folios.status', '=', $tipo_status);;
+                        }
+                        else {
+                            return $query->WHERE('contratos.unidad_capacitacion', '=', $buscar);
+                        }
                         break;
                     case 'fecha_firma':
                         # busqueda por fechas
-                        return $query->WHERE('contratos.fecha_firma', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('contratos.fecha_firma', '=', $buscar)->WHERE('folios.status', '=', $tipo_status);;
+                        }
+                        else {
+                            return $query->WHERE('contratos.fecha_firma', '=', $buscar);
+                        }
                         break;
                 }
             }
+        }
+        if (!empty($tipo_status)) {
+            return $query->WHERE('folios.status', '=', $tipo_status);
         }
     }
 }

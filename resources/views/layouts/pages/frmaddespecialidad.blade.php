@@ -97,7 +97,7 @@
                         <select class="form-control" name="valido_perfil" id="valido_perfil">
                             <option value="sin especificar">SIN ESPECIFICAR</option>
                             @foreach ($perfil as $item)
-                                <option value="{{$item->id}}">{{$item->grado_profesional}}</option>
+                                <option value="{{$item->id}}">{{$item->grado_profesional}} {{$item->area_carrera}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -124,11 +124,11 @@
 
                     <div class="form-group col-md-4">
                         <label for="inputmemorandum">MEMORANDUM DE VALIDACIÓN</label>
-                        <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true">
+                        <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputfecha_validacion">FECHA DE VALIDACIÓN</label>
-                        <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true">
+                        <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputmemoranum_modificacion">MEMORANDUM DE REVALIDACIÓN</label>
@@ -224,4 +224,5 @@
 @stop
 @section('script_content_js')
     <script src="{{ asset("js/scripts/bootstrap-toggle.js") }}"></script>
+    <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 @endsection
