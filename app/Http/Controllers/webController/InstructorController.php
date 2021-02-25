@@ -487,6 +487,7 @@ class InstructorController extends Controller
         Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
         Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
         tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
+        tbl_curso::where('id_instructor', '=', $request->id)->update(['curp' => $request->curp]);
 
 
         return redirect()->route('instructor-inicio')
