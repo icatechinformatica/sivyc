@@ -54,8 +54,9 @@
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
                                 <option value="Validado">VALIDADO</option>
-                                <option value="Validando_Contrato">VALIDANDO CONTRATO</option>
-                                <option value="Contratado">CONTRATADO</option>
+                                <option value="Validando_Contrato">CONTRATO EN REVISION</option>
+                                <option value="Contratado">CONTRATO VALIDADO</option>
+                                <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
                                 <option value="Verificando_Pago">VERIFICANDO PAGO</option>
                                 <option value="Pago_Rechazado">PAGO RECHAZADO</option>
                             </select>
@@ -93,7 +94,19 @@
                             <th scope="row">{{$itemData->no_memo}}</th>
                             <td>{{$itemData->unidad_capacitacion}}</td>
                             <td>{{$itemData->fecha}}</td>
-                            <td>{{$itemData->status}}</td>
+                            <td>
+                                @switch($itemData->status)
+                                    @case('Contratado')
+                                        Contrato Validado
+                                        @break
+                                    @case('Validando_Contrato')
+                                        Contrato en Revision
+                                        @break
+                                    @default
+                                    {{$itemData->status}}
+                                        @break
+                                @endswitch
+                            </td>
                             <td>{{$itemData->fecha_status}}</td>
                             <td>{{$itemData->folio_validacion}}</td>
                             <td>
