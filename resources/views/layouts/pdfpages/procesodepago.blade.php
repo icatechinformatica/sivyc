@@ -175,7 +175,7 @@
                     </tr>
                     <tr>
                         <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
-                        <td colspan="2"><div align="center">Mtro. Walter Dominguez Camacho</td></div>
+                        <td colspan="2"><div align="center">Mtro. Walter Domínguez Camacho</td></div>
                     </tr>
                     <tr>
                         <td colspan="2"><div align="center">Director de la Unidad de Capacitación {{$data->unidad_capacitacion}}</td></div>
