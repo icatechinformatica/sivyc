@@ -135,5 +135,12 @@ $(function(){
         var button = $(event.relatedTarget);
         var id = button.data('id');
         $('#confirm_restart').attr("href","/supre/reiniciar/" + id);
-        });
+    });
+
+    //Modal de reincio de Contrato
+    $('#restartModalContrato').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#confirm_restart').attr("href","/contrato/reiniciar/" + id);
+    });
 });

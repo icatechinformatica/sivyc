@@ -641,6 +641,14 @@ class ContratoController extends Controller
                         ->with('success','Solicitud de Contrato Eliminado');
     }
 
+    public function contractRestart($id)
+    {
+        $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $id)->update(['status' => 'Contrato_Rechazado']);
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Solicitud de Contrato Reiniciado');
+    }
+
     public function get_directorio(Request $request){
 
         $search = $request->search;

@@ -53,7 +53,7 @@
                         <Div id="divstat" name="divstat">
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
-                                <option value="Validado">VALIDADO</option>
+                                <option value="Validado">SUFICIENCIA VALIDADA</option>
                                 <option value="Validando_Contrato">CONTRATO EN REVISION</option>
                                 <option value="Contratado">CONTRATO VALIDADO</option>
                                 <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
@@ -96,6 +96,9 @@
                             <td>{{$itemData->fecha}}</td>
                             <td>
                                 @switch($itemData->status)
+                                    @case('Validado')
+                                        Suficiencia Validada
+                                        @break
                                     @case('Contratado')
                                         Contrato Validado
                                         @break
@@ -163,6 +166,15 @@
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
+                                    @can('contrato.restart')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#restartModalContrato"
+                                            data-id='{{$itemData->id_folios}}'
+                                            title="Reiniciar Contrato">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
                                 @endif
                                 @if ($itemData->status == 'Pago_Rechazado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">
@@ -312,6 +324,30 @@
         </div>
     </div>
     <!--Modal Semaforo Ends-->
+    <!-- Modal -->
+    <div class="modal fade" id="restartModalContrato" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <a class="btn btn-success" id="confirm_restart" name="confirm_restart" href="#">Aceptar</a>
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- END -->
 <br>
 @endsection
 @section('script_content_js')
