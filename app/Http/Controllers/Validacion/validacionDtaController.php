@@ -529,4 +529,15 @@ class validacionDtaController extends Controller
         $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/memoRegresoUnidad/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
+
+    protected function entrega_planeacion(Request $request)
+    {
+        // fecha actual
+        $fecha_ahora = Carbon::now();
+        
+        // arreglo de meses
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion');
+        return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
+    }
 }

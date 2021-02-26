@@ -486,11 +486,5 @@ class ftcontroller extends Controller
         $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/memoValidacion/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
-
-    protected function entrega_planeacion(Request $request)
-    {
-        $pdf = PDF::loadView('reportes.formatot_entrega_planeacion');
-        return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
-    }
     
 }

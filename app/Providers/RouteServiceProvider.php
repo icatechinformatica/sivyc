@@ -61,8 +61,8 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(function(){
-                 require base_path('routes/web.php');
-                 require base_path('routes/web/reportes.php');
+                require base_path('routes/web.php');
+                require base_path('routes/dta/dtaroutes.php');
              });
     }
 
