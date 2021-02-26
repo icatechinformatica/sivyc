@@ -131,14 +131,14 @@
                                     @endcan
                                 @endif
                                 @can('supre.restart')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#restartModal"
-                                            data-id='{{$itemData->id}}'
-                                            title="Reiniciar Suficiencia Presupuestal">
-                                            <i class="fa fa-history"></i>
-                                        </button>
-                                    @endcan
+                                    <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        data-toggle="modal" data-placement="top"
+                                        data-target="#restartModal"
+                                        data-id='{{$itemData->id}}'
+                                        title="Reiniciar Suficiencia Presupuestal">
+                                        <i class="fa fa-history"></i>
+                                    </button>
+                                @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>

@@ -61,9 +61,9 @@
         <footer>
             <div class="page-number"></div>
         </footer>
-        <div class= "container g-pt-30" style="font-size: 13px;">
+        <div class= "container g-pt-30" style="font-size: 12px;">
             <div id="content">
-                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓ DE CONTRATO</b></div>
+                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <div align=right> <b>Contrato No.{{$data_contrato->numero_contrato}}.</b> </div>
                 <br><div align="justify"><b>PREVISUALIZACIÓN DE CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES POR HONORARIOS EN SU MODALIDAD DE HORAS CURSO, QUE CELEBRAN POR UNA PARTE, EL INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS, REPRESENTADO POR EL (LA) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, EN SU CARÁCTER DE {{$director->puesto}} DE LA UNIDAD DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}} Y POR LA OTRA (EL) (LA) C. {{$nomins}}, EN SU CARÁCTER DE INSTRUCTOR EXTERNO; A QUIENES EN LO SUCESIVO SE LES DENOMINARÁ “EL ICATECH” Y “EL PRESTADOR DE SERVICIOS” RESPECTIVAMENTE; MISMO QUE SE FORMALIZA AL TENOR DE LAS DECLARACIONES Y CLÁUSULAS SIGUIENTES:</b></div>
                 <br><div align="center"> DECLARACIONES</div>
@@ -90,7 +90,7 @@
                         <br><dd>II.7 Para los efectos del presente contrato, señala como su domicilio legal el ubicado en {{$data->domicilio}}.</dd>
                     </dl>
                 </div>
-                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓ DE CONTRATO</b></div>
+                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <div align="justify">Con base en las declaraciones antes expuestas, declaran las partes que es su voluntad celebrar el presente contrato, sujetándose a las siguientes:</div>
                 <br>
                 <div align="center"><strong> CLAUSULAS </strong></div>
@@ -129,7 +129,7 @@
                     <li>Si se comprueba que la protesta a que se refiere la Declaración II.2 de <b>“EL PRESTADOR DE SERVICIOS”</b> se realizó con falsedad.</li>
                     <li>Por no otorgar los cursos en el tiempo establecido (horas del curso). </li>
                 </ol>
-                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓ DE CONTRATO</b></div>
+                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <div align="justify"><dd>Asimismo, en caso de tener evidencias de que el curso no fue impartido, se procederá a dar por rescindido el contrato, y se actuará conforme a lo dispuesto por la Ley de Responsabilidad Administrativa para el Estado de Chiapas.</dd>
                     <br><dd><b>“EL PRESTADOR DE SERVICIOS”</b> podrá dar por rescindido de forma anticipada el presente contrato, previo aviso que realice por escrito con un mínimo de 10 días hábiles a <b>“EL ICATECH”</b>.</dd>
                     <br><dd><b>“EL ICATECH”</b> se reservará el derecho de aceptar la terminación anticipada del contrato, sin que ello implique la renuncia a deducir las acciones legales que en su caso procedan.</dd>
@@ -150,7 +150,7 @@
                     <br><dd>Leído que fue el presente contrato a las partes que en él intervienen y una vez enterados de su contenido y alcance legales, son conformes con los términos del mismo y para constancia lo firman y ratifican ante la presencia de los testigos que al final suscriben; en el municipio de {{$data_contrato->municipio}}, Chiapas; el día {{$D}} de {{$M}} del año {{$Y}}, en dos tantos originales.</dd>
                 </div>
                 <br><br>
-                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓ DE CONTRATO</b></div>
+                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <table>
                     <tr>
                         <td colspan="2"><p align="center">"EL ICATECH"</p></td>
@@ -193,7 +193,7 @@
                     <br><small>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</small>
                     <br><small>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}}</small></b>
                 </div>
-                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓ DE CONTRATO</b></div>
+                <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <br><br>
                 <div align=justify>
                     <small style="font-size: 12px;">Las Firmas que anteceden corresponden al Contrato de prestación de servicios profesionales por honorarios en su modalidad de horas curso No. {{$data_contrato->numero_contrato}}, que celebran por una parte el Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, representado por el (la) C. {{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}, {{$director->puesto}} (a) DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}, y el (la) C. {{$nomins}}, en el Municipio de {{$data_contrato->municipio}}, a {{$D}} de {{$M}} del año {{$Y}}.</small>
