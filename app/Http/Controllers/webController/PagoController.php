@@ -198,6 +198,14 @@ class PagoController extends Controller
         return redirect()->route('pago-inicio')->with('info', 'El pago ha sido verificado exitosamente.');
     }
 
+    public function pagoRestart($id)
+    {
+        $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $id)->update(['status' => 'Pago_Rechazado']);
+
+        return redirect()->route('pago-inicio')
+                        ->with('success','Solicitud de Pago Reiniciado');
+    }
+
     public function historial_validacion($id)
     {
         //

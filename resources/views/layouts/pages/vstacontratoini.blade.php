@@ -177,10 +177,7 @@
                                     @endcan
                                 @endif
                                 @if ($itemData->status == 'Pago_Rechazado')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación" href="{{route('valsupre-pdf', ['id' => $itemData->id])}}" target="_blank">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                    </a>
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     @can('contratos.edit')
