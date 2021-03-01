@@ -46,7 +46,24 @@ $(function(){
                 $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
             }
         }
-        else if(id['4'] == 'Pago_Rechazado' || id['4'] == 'Validado')
+        else if(id['4'] == 'Pago_Rechazado')
+        {
+            $('#sol_pdf').attr("class", "btn btn-danger disabled");
+            $('#contrato_pdf').attr("class", "btn btn-danger");
+            $('#contrato_pdf').attr("href", "/contrato/" + id['1']);
+            $('#docs_pdf').attr("class", "btn btn-danger");
+            $('#docs_pdf').attr("href", id['2']);
+            if(id['5'] != "")
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger");
+                $('#valsupre_pdf').attr("href", id['5']);
+            }
+            else
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            }
+        }
+        else if(id['4'] == 'Validado')
         {
             $('#sol_pdf').attr("class", "btn btn-danger disabled");
             $('#contrato_pdf').attr("class", "btn btn-danger disabled");
@@ -142,5 +159,12 @@ $(function(){
         var button = $(event.relatedTarget);
         var id = button.data('id');
         $('#confirm_restart').attr("href","/contrato/reiniciar/" + id);
+    });
+
+    //Modal de reincio de Pago
+    $('#restartModalPago').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#confirm_restart').attr("href","/pago/reiniciar/" + id);
     });
 });

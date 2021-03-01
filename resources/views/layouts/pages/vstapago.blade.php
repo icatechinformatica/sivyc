@@ -101,6 +101,15 @@
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
+                                    @can('pago.restart')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#restartModalPago"
+                                            data-id='{{$itemData->id_folios}}'
+                                            title="Reiniciar Solicitud de Pago">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
                                 @break
                                 @case('Pago_Rechazado')
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
@@ -141,26 +150,50 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            <div class="modal-body" style="text-align:center">
-                <form action="" id="pdfForm" method="get">
+                <div class="modal-body" style="text-align:center">
+                    <form action="" id="pdfForm" method="get">
                     @csrf
-                    <div style="text-align:center" class="form-group">
-                        <a class="btn btn-danger" id="sol_pdf" name="sol_pdf" href="#" target="_blank">Solicitud de Pago</a><br>
-                    </div>
-                    <div style="text-align:center" class="form-group">
-                        <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
-                    </div>
-                    <div style="text-align:center" class="form-group">
-                        <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal</a><br>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerar</button>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="sol_pdf" name="sol_pdf" href="#" target="_blank">Solicitud de Pago</a><br>
+                        </div>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
+                        </div>
+                        <div style="text-align:center" class="form-group">
+                            <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal</a><br>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerar</button>
+                </div>
             </div>
         </div>
     </div>
-  </div>
+    <!-- Modal -->
+    <div class="modal fade" id="restartModalPago" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <a class="btn btn-success" id="confirm_restart" name="confirm_restart" href="#">Aceptar</a>
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- END -->
     <br>
 @endsection
 @section('script_content_js')
