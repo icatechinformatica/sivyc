@@ -173,13 +173,9 @@ class ExoneracionesController extends Controller {
         $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
-        $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
-        //$path = $file->storeAs('/filesUpload/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
-        //$documentUrl = $documentFile;
-        $path = 'exoneraciones/' . $id . '/' . $documentFile;
-        Storage::disk('mydisk')->put($path, file_get_contents($file));
-        //$path = storage_path('app/filesUpload/alumnos/'.$id.'/'.$documentFile);
-        $documentUrl = Storage::disk('mydisk')->url('/uploadFiles/exoneraciones/' . $id . "/" . $documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $documentFile = trim($name."".date('YmdHis')."".$id.".".$extensionFile);
+        $file->storeAs('/uploadFiles/exoneraciones/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+        $documentUrl = Storage::url('/uploadFiles/exoneraciones/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
 
