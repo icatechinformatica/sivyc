@@ -78,6 +78,22 @@ $(function(){
                 $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
             }
         }
+        else if(id['4'] == 'Contrato_Rechazado')
+        {
+            $('#sol_pdf').attr("class", "btn btn-danger disabled");
+            $('#contrato_pdf').attr("class", "btn btn-danger disabled");
+            $('#docs_pdf').attr("class", "btn btn-danger disabled");
+            $('#valsupre_pdf').attr("class", "btn btn-danger");
+            if(id['5'] != "")
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger");
+                $('#valsupre_pdf').attr("href", id['5']);
+            }
+            else
+            {
+                $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            }
+        }
         else if(id['4'] == 'Contratado')
         {
             $('#sol_pdf').attr("class", "btn btn-danger disabled");
