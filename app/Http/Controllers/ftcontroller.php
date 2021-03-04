@@ -260,7 +260,7 @@ class ftcontroller extends Controller
                 }
 
                 $archivo_memo_to_dta = $request->file('cargar_archivo_formato_t'); # obtenemos el archivo
-                $url_archivo_memo = $this->uploaded_memo_validacion_file($archivo_memo_to_dta, $memo); #invocamos el método
+                $url_archivo_memo = $this->uploaded_memo_validacion_file($archivo_memo_to_dta, $memo, 'memoValidacion'); #invocamos el método
             }
         } else {
             $url_archivo_memo = null;
@@ -475,15 +475,97 @@ class ftcontroller extends Controller
              * TUNADO_UNIDAD:[“NUMERO”:”XXXXXX”,FECHA:”XXXX-XX-XX”]}
              */
     }
-    public function memodta()
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendToPlaneacion(Request $request)
+    {
+        // checamos si hay cursos si no regresamos con un mensaje de error
+        if (!empty($_POST['checkedCursos'])) {
+            try {
+                //iniciamos el código verdadero
+                $fecha_ahora = Carbon::now();
+                $date = $fecha_ahora->format('Y-m-d'); // fecha
+                $fecha_nueva=$fecha_ahora->format('d-m-Y');
+                $numero_memo = $request->get('numeroMemo'); // número de memo
+                /**
+                * vamos al cargar el archivo que se sube
+                */
+                if ($request->hasFile('cargar_memorandum_to_planeacion')) {
+                    # optener el valor del archivo
+                    $validator = Validator::make($request->all(), [
+                        'cargar_memorandum_to_planeacion' => 'mimes:pdf|max:2048'
+                    ]);
+                    if ($validator->fails()) {
+                        # enviamos mensaje de error si la validacion falla
+                        return back()->withErrors([$validator]);
+                    } else {
+                        # de lo contrario proseguimos con nuestra información
+                        $memo = str_replace('/', '_', $numero_memo);
+                        /**
+                        * aquí vamos a verificar que el archivo no se encuentre guardado
+                        * previamente en el sistema de archivos del sistema de ser así se 
+                        * remplazará el archivo porel que se subirá a continuación
+                        */
+                        // construcción del archivo
+                        $archivo_memo = 'uploadFiles/memoTurnadoPlaneacion/'.$memo.'/'.$memo.'.pdf';
+                        if (Storage::exists($archivo_memo)) {
+                            #checamos si hay algún documento, de ser así, procedemos a eliminarlo
+                            Storage::delete($archivo_memo);
+                        }
+
+                        $archivo_memo_send_to_planeacion = $request->file('cargar_memorandum_to_planeacion'); # obtenemos el archivo
+                        $url_memo_turnado_planeacion = $this->uploaded_memo_validacion_file($archivo_memo_send_to_planeacion, $memo, 'memoTurnadoPlaneacion'); #invocamos el método
+                    }
+                    
+                } else {
+                    $url_memo_turnado_planeacion = null;
+                }
+                
+                // empezamos a turnar a planeacion
+                $memo_turnado_planeacion = [
+                    'PLANEACION' => [
+                        'NUMERO' => $numero_memo,
+                        'FECHA' => $date,
+                        'MEMORANDUM' => $url_memo_turnado_planeacion
+                    ]
+                ];
+
+                $data = explode(",", $_POST['checkedCursos']);
+                foreach ($data as $key => $value) {
+                    # entramos en el ciclo para guardar cada registro
+                    \DB::table('tbl_cursos')
+                        ->where('id', $value)
+                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}','".json_encode($memo_turnado_planeacion)."'::jsonb)"), 
+                            'status' => 'TURNADO_PLANEACION', 
+                            'turnado' => 'PLANEACION']);
+                }
+                // enviar  a la página de inicio del módulo si el proceso fue satisfactorio
+                return redirect()->route('validacion.dta.revision.cursos.indice')
+                        ->with('success', sprintf('CURSOS TURNADOS A PLANEACIÓN SATISFACTORIAMENTE!'));
+
+            } catch (QueryException $th) {
+                //excepción de consulta
+                return back()->withErrors([$th->getMessage()]);
+            }
+        } else {
+            return back()->withInput()->withErrors(['ERROR AL MOMENTO DE GUARDAR LOS REGISTROS, SE DEBE DE ESTAR SELECCIONADOS LOS CURSOS CORRESPONDIENTES']);
+        }
+    }
+
+    protected function uploaded_memo_validacion_file($file, $memo, $subpath)
     {
         $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($memo.".".$extensionFile);
-        $path = '/memoValidacion/'.$memo.'/'.$documentFile;
+        $path = '/'.$subpath.'/'.$memo.'/'.$documentFile;
         Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
-        $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/memoValidacion/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/'.$subpath.'/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
     

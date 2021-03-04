@@ -93,7 +93,7 @@
         </div>
         <hr style="border-color:dimgray">
         @if(count($cursos_validar) > 0)
-            <form id="formSendDtaTo" method="POST" action="{{ route('validacion.dta.cursos.envio.planeacion') }}">
+            <form id="formSendDtaTo" method="POST" action="{{ route('validacion.dta.cursos.envio.planeacion') }}" target="_blank">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-2">
@@ -121,7 +121,7 @@
 
                 {{-- @can('enviar.dta.planeacion') --}}
                     <div class="form-group mb-2">
-                        <button input type="button" id="validarDireccionDta" name="validarDireccionDta" 
+                        <button input type="button" id="btnEnviarPlaneacion" name="btnEnviarPlaneacion" 
                             value="EnviarPlaneacion"  
                             class="btn btn-success my-2 my-sm-0 waves-effect waves-light" data-toggle="modal" data-target="#exampleModalCenter">
                             <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>&nbsp;
@@ -406,6 +406,7 @@
                         </tbody>
                     </table>
                 </div>
+                <input type="hidden" name="unidad_busqueda" id="unidad_busqueda" value="{{ $unidades_busqueda }}">
             </form> 
         @else
             <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
@@ -424,16 +425,19 @@
             <div class="modal-header">
               <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y ENVIAR A PLANEACIÓN </b></h5>
             </div>
-            <form id="formSendDta" enctype="multipart/form-data" method="POST" action="{{ route('formatot.send.dta') }}">
+            <form id="formSendPlaneacion" enctype="multipart/form-data" method="POST" action="{{ route('formatot.send.planeacion') }}">
+                @csrf
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <input type="file" name="cargar_archivo_formato_t" id="cargar_archivo_formato_t" class="form-control">
+                            <input type="file" name="cargar_memorandum_to_planeacion" id="cargar_memorandum_to_planeacion" class="form-control">
                         </div>
                     </div>
+                    <input type="hidden" name="checkedCursos" id="checkedCursos" value="">
+                    <input type="hidden" name="numeroMemo" id="numeroMemo" value="">
                 </div>
                 <div class="modal-footer">
-                <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
+                <button type="submit" class="btn btn-success" id="send_to_planeacion">ENVIAR</button>
                 <button type="button" id="close_btn_modal_send_dta" class="btn btn-danger">CERRAR</button>
                 </div>
             </form>
@@ -446,6 +450,10 @@
 <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
 <script type="text/javascript">
     $(function(){
+
+        $.validator.addMethod('filesize', function (value, element, param) {
+            return this.optional(element) || (element.files[0].size <= param)
+        }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
 
         document.querySelector('#spinner').setAttribute('hidden', '');
 
@@ -471,6 +479,36 @@
             $("#table-instructor tr").filter(function() {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
+        });
+        // evento de la funcion click
+        $('#send_to_planeacion').click(function(){
+            $('#formSendPlaneacion').validate({
+                rules: {
+                    "cargar_memorandum_to_planeacion": {
+                        required: true, 
+                        extension: "pdf", 
+                        filesize: 2000000
+                    }
+                },
+                messages: {
+                    "cargar_memorandum_to_planeacion": {
+                        required: "ARCHIVO REQUERIDO",
+                        accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
+                    }
+                }
+            });
+        });
+        // abrir el modal
+        $('#btnEnviarPlaneacion').click(function(){
+            var checkedCursos = new Array();
+            var numero_memo = $('#num_memo_devolucion').val();
+            $('input[name="chkcursos[]"]:checked').each(function() {
+                checkedCursos.push(this.value);
+            });
+            console.log(checkedCursos);
+            $('.modal-body #numeroMemo').val(numero_memo);
+            $('.modal-body #checkedCursos').val(checkedCursos);
+            $("#exampleModalCenter").modal("show");
         });
     });
 </script>

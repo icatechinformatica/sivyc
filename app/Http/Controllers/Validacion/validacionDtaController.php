@@ -122,7 +122,7 @@ class validacionDtaController extends Controller
      */
     public function indexRevision(Request $request)
     {
-        $unidades = $request->get('busqueda_unidad');
+        $unidades_busqueda = $request->get('busqueda_unidad');
 
         $cursos_validar = DB::table('tbl_cursos as c')
         ->select('c.id AS id_tbl_cursos', 'c.unidad','c.plantel','c.espe','c.curso','c.clave','c.mod','c.dura',DB::raw("case when extract(hour from to_timestamp(c.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
@@ -186,7 +186,7 @@ class validacionDtaController extends Controller
             $join->on('ca.matricula','=','ins.matricula');
         })
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
-        ->WHERE('u.ubicacion', '=', $unidades)
+        ->WHERE('u.ubicacion', '=', $unidades_busqueda)
         ->WHERE('c.status', '=', 'REVISION_DTA')                
         ->WHERE(DB::raw("extract(year from c.termino)"), '=', '2021')
         ->WHERE('c.turnado', '=', 'REVISION_DTA')
@@ -200,7 +200,7 @@ class validacionDtaController extends Controller
                       ->leftjoin('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                       ->where('turnado', '=', 'REVISION_DTA')
                       ->where('status', '=', 'REVISION_DTA')
-                      ->where('tbl_unidades.ubicacion', '=', $unidades)
+                      ->where('tbl_unidades.ubicacion', '=', $unidades_busqueda)
                       ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM', memos->'TURNADO_EN_FIRMA'->>'NUMERO'"))
                       ->first();
         /**
@@ -210,12 +210,12 @@ class validacionDtaController extends Controller
                                ->leftjoin('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                                ->where('turnado', '=', 'REVISION_DTA')
                                ->where('status', '=', 'REVISION_DTA')
-                               ->where('tbl_unidades.ubicacion', '=', $unidades)
+                               ->where('tbl_unidades.ubicacion', '=', $unidades_busqueda)
                                ->get();
 
         $unidades = DB::table('tbl_unidades')->select('unidad', 'ubicacion')->get();
 
-        return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad')); 
+        return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'unidades_busqueda')); 
     }
 
     /**
@@ -532,12 +532,25 @@ class validacionDtaController extends Controller
 
     protected function entrega_planeacion(Request $request)
     {
+        $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
+        $jefdepto = 'JEFE DE DEPARTAMENTO DE CERTIFICACION Y CONTROL';
+        $unidadB = $request->get('unidad_busqueda');
+        $num_memo_planeacion = $request->get('num_memo_devolucion');
         // fecha actual
         $fecha_ahora = Carbon::now();
-        
+        $fecha = $fecha_ahora->format('Y-m-d'); // fecha
         // arreglo de meses
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-        $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion');
+        $fechaFormato = Carbon::parse($fecha);
+        $mes = $meses[($fechaFormato->format('n')) - 1];
+        $fecha_ahora_espaniol = $fechaFormato->format('d') . ' de ' . $mes . ' de ' . $fechaFormato->format('Y');
+        // registro de las unidades
+        $reg_unidad = DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
+                        'pvinculacion','jcyc','pjcyc', 'dgeneral', 'pdgeneral')->where('unidad', $unidadB)->first();
+        $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
+        $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
+        $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
+        $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion'));
         return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
     }
 }
