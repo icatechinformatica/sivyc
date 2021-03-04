@@ -155,7 +155,7 @@ class ExoneracionesController extends Controller {
         }
 
         $no_memo = $request->no_memorandum;
-        return redirect()->route('exoneraciones.inicio')->with('success', sprintf('CONVENIO %s ACTUALIZADO EXITOSAMENTE', $no_memo));
+        return redirect()->route('exoneraciones.inicio')->with('success', sprintf('EXONERACIÓN %s ACTUALIZADO EXITOSAMENTE', $no_memo));
     }
 
     /**
