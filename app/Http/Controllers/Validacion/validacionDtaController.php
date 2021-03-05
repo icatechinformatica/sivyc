@@ -532,25 +532,86 @@ class validacionDtaController extends Controller
 
     protected function entrega_planeacion(Request $request)
     {
-        $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
-        $jefdepto = 'JEFE DE DEPARTAMENTO DE CERTIFICACION Y CONTROL';
-        $unidadB = $request->get('unidad_busqueda');
-        $num_memo_planeacion = $request->get('num_memo_devolucion');
-        // fecha actual
-        $fecha_ahora = Carbon::now();
-        $fecha = $fecha_ahora->format('Y-m-d'); // fecha
-        // arreglo de meses
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-        $fechaFormato = Carbon::parse($fecha);
-        $mes = $meses[($fechaFormato->format('n')) - 1];
-        $fecha_ahora_espaniol = $fechaFormato->format('d') . ' de ' . $mes . ' de ' . $fechaFormato->format('Y');
-        // registro de las unidades
-        $reg_unidad = DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
-                        'pvinculacion','jcyc','pjcyc', 'dgeneral', 'pdgeneral')->where('unidad', $unidadB)->first();
-        $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
-        $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
-        $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-        $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion'));
-        return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
+        $valor = $request->get('validarDireccionDta');
+        if (isset($valor)) {
+            # si la variable está inicializada procedemos a meterlo en el switch
+            switch ($valor) {
+                case 'generarMemoPlaneacion':
+                    /**
+                     * GENERAR MEMORANDUM
+                     */
+                    # generamos el memo de entrega a planeacion.
+                    $unidadBusqueda = $request->get('unidad_busqueda');
+                    $numMemo = $request->get('num_memo_devolucion');
+                    return $this->generarMemorandumPlaneacion($unidadBusqueda, $numMemo);
+                    break;
+                case 'RegresarEnlaceDta':
+                    /**
+                     * TURNADO_RETORNO_ENLACES
+                     */
+                    # regresamos el paquete a los enlaces que no está bien
+                    $cursoschk = $request->get('chkcursos');
+                    if (!empty($cursoschk)) {
+                        # generamos el código para enviar de regreso a los enlaces los cursos que no han sido satisfactorios
+                        $numMemorandum = $request->get('num_memo_devolucion');
+                        $turnado_retorno_unidad = [
+                            'FECHA' => $date,
+                            'MEMORANDUM' => $numMemorandum
+                        ];
+
+                        foreach ($_POST['chkcursos'] as $key => $value) {
+                            # recorremos el bucle para vaciar nuestro contenido en la consulta
+                            $observaciones_retorno_enlace = [
+                                'OBSERVACION_PARA_ENLACES_DTA' =>  $_POST['comentarios'][$key]
+                            ];
+                            # modificaciones
+                            \DB::table('tbl_cursos')->where('id', $value)
+                                ->update(['memos' => 
+                                    DB::raw("jsonb_set(memos, '{TURNADO_RETORNO_ENLACES}','".json_encode($turnado_retorno_unidad)."'::jsonb)"), 
+                                    'status' => 'TURNADO_DTA', 
+                                    'turnado' => 'DTA',
+                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_RETORNO_ENLACES}', '".json_encode($observaciones_retorno_enlace)."'::jsonb)")]);
+                        }
+                    } else {
+                        # enviamos un mensaje de que no se pudo generar debido a que no hay registros
+                        return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
+                    }
+                    
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
+        
+    }
+
+    private function generarMemorandumPlaneacion($unidadB, $num_memo_planeacion)
+    {
+        if (isset($num_memo_planeacion)) {
+            # GENERAMOS EL DOCUMENTO EN PDF
+            $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
+            $jefdepto = 'JEFE DE DEPARTAMENTO DE CERTIFICACION Y CONTROL';
+            // fecha actual
+            $fecha_ahora = Carbon::now();
+            $fecha = $fecha_ahora->format('Y-m-d'); // fecha
+            // arreglo de meses
+            $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+            $fechaFormato = Carbon::parse($fecha);
+            $mes = $meses[($fechaFormato->format('n')) - 1];
+            $fecha_ahora_espaniol = $fechaFormato->format('d') . ' de ' . $mes . ' de ' . $fechaFormato->format('Y');
+            // registro de las unidades
+            $reg_unidad = DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
+                            'pvinculacion','jcyc','pjcyc', 'dgeneral', 'pdgeneral')->where('unidad', $unidadB)->first();
+            $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
+            $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
+            $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion'));
+            return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
+        } else {
+            # enviamos mensaje de error o direccionamos para enviarlo con el mensaje de error
+            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, SE NECESITA EL NÚMERO DE MEMORANDUM']);
+        }
+        
     }
 }

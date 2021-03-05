@@ -93,7 +93,7 @@
         </div>
         <hr style="border-color:dimgray">
         @if(count($cursos_validar) > 0)
-            <form id="formSendDtaTo" method="POST" action="{{ route('validacion.dta.cursos.envio.planeacion') }}" target="_blank">
+            <form id="formSendDtaTo" method="POST" action="{{ route('validacion.dta.cursos.envio.planeacion') }}">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-2">
@@ -113,7 +113,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group mb-2">
-                        <button type="submit" class="btn btn-danger my-2 my-sm-0 waves-effect waves-light">
+                        <button type="submit" class="btn btn-danger my-2 my-sm-0 waves-effect waves-light" id="validarDireccionDta" name="validarDireccionDta" value="generarMemoPlaneacion">
                             <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
                             MEMORANDUM PLANEACIÓN
                         </button>
