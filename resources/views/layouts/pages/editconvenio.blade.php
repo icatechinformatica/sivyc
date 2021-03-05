@@ -442,7 +442,7 @@
             $('#estadoG').on("change", () => {
                 var IdEstado = $('#estadoG').val();
                 $('#estadoG option:selected').each(() => {
-                    var datos = {idEst: IdEstado};
+                    var datos = {idEst: IdEstado, _token: "{{ csrf_token() }}"};
                     var url = '/convenios/sid/municipios';
 
                     var request = $.ajax
