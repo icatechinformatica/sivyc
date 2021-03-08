@@ -22,6 +22,7 @@
                 {!! Form::open(['route' => 'exoneraciones.inicio', 'method' => 'GET', 'class' => 'form-inline']) !!}
                 <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
                     <option value="">BUSCAR POR TIPO</option>
+                    <option value="id_unidad_capacitacion">UNIDAD DE CAPACITACIÓN</option>
                     <option value="no_memorandum">NÚMERO MEMORANDUM</option>
                     <option value="no_convenio">NÚMERO DE CONVENIO</option>
                     <option value="tipo_exoneracion">TIPO DE EXONERACION</option>

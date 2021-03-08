@@ -112,24 +112,10 @@
 
             <div class="form-group row">
                 <div class="form-group col">
-                    <label for="grupo_beneficiado" class="control-label">GRUPO BENEFICIADO</label>
-                    <input type="text" class="form-control" id="grupo_beneficiado" name="grupo_beneficiado"
-                        placeholder="GRUPO BENEFICIADO" value="{{$exoneracion->grupo_beneficiado}}">
-                </div>
-                <div class="form-group col">
                     <label for="numero_convenio" class="control-label">NÚMERO DE CONVENIO</label>
                     <input type="text" class="form-control" id="numero_convenio" name="numero_convenio"
                         placeholder="NÚMERO DE CONVENIO" value="{{$exoneracion->no_convenio}}">
                 </div>
-                {{-- archivo --}}
-                {{-- <div class="form-group col">
-                    <label for="status">MEMORANDUM SOPORTE</label>
-                    <div class="custom-file">
-                        <input type="file" id="memo_soporte" name="memo_soporte" accept="application/pdf"
-                            class="custom-file-input">
-                        <label for="memo_soporte" class="custom-file-label"></label>
-                    </div>
-                </div> --}}
                 {{-- archivo --}}
                 <div class="col">
                     <div class="form-group col">
@@ -155,8 +141,25 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <div class="form-group row">
+                <div class="form-group col">
+                    <label for="status" class="control-label">ESTADO DE LA EXONERACIÓN</label>
+                    <select name="status" id="status" class="custom-select">
+                        <option value="">--SELECCIONE--</option>
+                        <option {{$exoneracion->status == 'EN PROCESO' ? 'selected' : ''}} value="EN PROCESO">EN PROCESO</option>
+                        <option {{$exoneracion->status == 'AUTORIZADO' ? 'selected' : ''}} value="AUTORIZADO">AUTORIZADO</option>
+                    </select>
+                </div>
 
+                {{-- publlicar --}}
+                <div class="form-group col text-center pt-4">
+                    <label for="activo">PUBLICAR</label>
+                    <input type="checkbox" id="activo" name="activo"
+                        {{ $exoneracion->activo == 'true' ? 'checked' : '' }} data-toggle="toggle" data-on="Si"
+                        data-off="No" data-onstyle="success" data-offstyle="danger" data-width="100" data-height="30">
+                </div>
             </div>
 
             <div class="row mt-5">
@@ -257,7 +260,7 @@
         $('#estadoEx').on("change", () => {
             var IdEstado = $('#estadoEx').val();
             $('#estadoEx option:selected').each(() => {
-                var datos = {idEst: IdEstado};
+                var datos = {idEst: IdEstado, _token: "{{ csrf_token() }}"};
                 var url = '/exoneraciones/sid/municipios';
 
                 var request = $.ajax({

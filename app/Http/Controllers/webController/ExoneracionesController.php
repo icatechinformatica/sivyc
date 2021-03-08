@@ -53,9 +53,14 @@ class ExoneracionesController extends Controller {
         $exoneracion->tipo_exoneracion = $request->tipo_exoneracion;
         $exoneracion->porcentaje = $request->porcentaje;
         $exoneracion->razon_exoneracion = $request->razon_exoneracion;
-        $exoneracion->grupo_beneficiado = $request->grupo_beneficiado;
         $exoneracion->observaciones = $request->observaciones;
         $exoneracion->no_convenio = $request->numero_convenio;
+        $exoneracion->status = $request->status;
+        $activo = 'false';
+        if ($request->input('activo') != null) {
+            $activo = 'true';
+        }
+        $exoneracion->activo = $activo;
         $exoneracion->iduser_created = Auth::user()->id;
         $exoneracion->save();
 
@@ -128,9 +133,14 @@ class ExoneracionesController extends Controller {
         $exoneracion->tipo_exoneracion = $request->tipo_exoneracion;
         $exoneracion->porcentaje = $request->porcentaje;
         $exoneracion->razon_exoneracion = $request->razon_exoneracion;
-        $exoneracion->grupo_beneficiado = $request->grupo_beneficiado;
         $exoneracion->observaciones = $request->observaciones;
         $exoneracion->no_convenio = $request->numero_convenio;
+        $exoneracion->status = $request->status;
+        $activo = 'false';
+        if ($request->input('activo') != null) {
+            $activo = 'true';
+        }
+        $exoneracion->activo = $activo;
         $exoneracion->iduser_updated = Auth::user()->id;
         $exoneracion->save();
 
