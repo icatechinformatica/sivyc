@@ -397,8 +397,34 @@ class validacionDtaController extends Controller
         //     return $json;
         // exit;
 
-        $numero_memo = $request->get('numero_memo'); // número de memo
+        $numero_memo = $request->get('numero_memo_devolucion'); // número de memo
         $cursoschk = $request->get('check_cursos_dta');
+        /***
+         * vamos a checar el curso de dta
+         */
+        if (!empty($cursoschk)) {
+            # si entramos en esta parte es que hay registros de cursos
+            if ($request->hasFile('memorandum_regreso_unidad')) {
+                # obtenemos el valor del archivo memo
+                $validator = validator::make($request->all(), [
+                    'memorandum_regreso_unidad' => 'mimes:pdf|max:2048'
+                ]);
+                if ($validator->fails()) {
+                    # mandar mensaje de error si falla el cargado del archivo
+                    return back()->withInput()->withErrors([$validator]);
+                } else {
+                    # code...
+                }
+                
+            } else {
+                # code...
+            }
+            
+        } else {
+            # no hay cursos (están vacios) se tiene que cargar un mensaje de error
+            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
+        }
+        
         /**
          * vamos al cargar el archivo que se sube
          */

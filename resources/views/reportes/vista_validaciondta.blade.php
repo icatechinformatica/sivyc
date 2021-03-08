@@ -426,13 +426,17 @@
             <div class="modal-header">
               <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y REGRESAR A UNIDAD </b></h5>
             </div>
-            <form id="formSendUnity" enctype="multipart/form-data" method="POST">
+            <form id="formSendUnity" enctype="multipart/form-data" method="POST" action="{{ route('dta.send.unity') }}">
+                @csrf
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <input type="file" name="memorandum_regreso_unidad" id="memorandum_regreso_unidad" class="form-control">
                         </div>
                     </div>
+                    <input type="hidden" name="check_cursos_dta" id="check_cursos_dta" value="">
+                    <input type="hidden" name="numero_memo_devolucion" id="numero_memo_devolucion" value="">
+                    <input type="hidden" name="comentarios_enlaces" id="comentarios_enlaces" value="">
                 </div>
                 <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
@@ -453,6 +457,19 @@
             return this.optional(element) || (element.files[0].size <= param)
         }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
         $('#enviardta').click(function(){
+            var cursosChecked = new Array();
+            var comentario_retorno = new Array();
+            var numMemo = $('#num_memo_devolucion').val();
+            $('input[name="chkcursos[]"]:checked').each(function() {
+                checkedCursos.push(this.value);
+            });
+            // se cargan los textarea en el arreglo
+            $('textarea[name="comentarios_enlaces[]"]').each(function(){
+               comentario_retorno.push(this.value);
+            });
+            $('.modal-body #numero_memo_devolucion').val(numMemo);
+            $('.modal-body #check_cursos_dta').val(checkedCursos);
+            $('.modal-body #comentarios_enlaces').val(comentario_retorno);
             $("#exampleModalCenter").modal("show");
         });
         $('#close_btn_modal_send_dta').click(function(){
@@ -492,85 +509,12 @@
                         required: "ARCHIVO REQUERIDO",
                         accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
                     }
-                },
-                submitHandler: function(form, event){
-                    event.preventDefault();
-                    var check_cursos = new Array();
-                    var comentario_retorno = new Array();
-                    $('input[name="chkcursos[]"]:checked').each(function() {
-                        check_cursos.push(this.value);
-                    });
-                    $('textarea[name="comentarios_enlaces[]"]').each(function(){
-                        comentario_retorno.push(this.value);
-                    });
-                    var numero_memo = $('#num_memo').val();
-                    var num_memo_devolucion = $('#num_memo_devolucion').val();
-                    /***
-                    * cargar_archivo_formato_t
-                    */
-                    var formData = new FormData(form);
-                    formData.append("check_cursos_dta", check_cursos);
-                    formData.append("numero_memo", numero_memo);
-                    formData.append("comentarios_enlaces", comentario_retorno);
-                    formData.append("numero_memo_devolucion", num_memo_devolucion);
-                    var _url = "{{route('dta.send.unity')}}";
-                    var requested = $.ajax
-                    ({
-                        url: _url,
-                        method: 'POST',
-                        data: formData,
-                        dataType: 'json',
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        beforeSend: function(){
-                            $("#exampleModalCenter").modal("hide");
-                            document.querySelector("#spinner").removeAttribute('hidden');
-                        },
-                        success: function(response){
-                            console.log(response);
-                            if (response === 'DONE') {
-                                $("#dtaform").trigger("reset");
-                                $( ".alert" ).addClass("alert-success");
-                                $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
-                                // redireccionar después de 5 segundos
-                                setTimeout(function(){ 
-                                    window.location.href = "{{ route('validacion.cursos.enviados.dta')}}";
-                                 }, 2000);
-                            }
-                        },
-                        complete:function(data){
-                            // escondemos el modales
-                            document.querySelector('#spinner').setAttribute('hidden', '');
-                        },
-                        error: function(jqXHR, textStatus){
-                            //jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                            //document.querySelector('#spinner').setAttribute('hidden', '');
-                            console.log(jqXHR.responseText);
-                            alert( "Hubo un error: " + jqXHR.status );
-                        }
-                    });
-                    $.when(requested).then(function(data, textStatus, jqXHR ){
-                        if (jqXHR.status === 200) {
-                            document.querySelector('#spinner').setAttribute('hidden', '');
-                        }
-                    });
                 }
             }); // configurar el validador
         });
-        // var checkChecked = function() {
-        //     $("input:checkbox").each(function() {
-        //         if ($(this).is(":checked")) {
-        //             $('#comentario_'+$(this).attr("id")).prop('disabled', true);
-        //             console.log($(this).attr("id"));
-        //         } else {
-        //             $('#comentario_'+$(this).attr("id")).prop("disabled", false);
-        //         }
-        //     });
-        //     // var n = $( "input:checked" ).length;
-        //     // alert( n + (n === 1 ? " is" : " are") + " checked!" );
-        // }
-        // $( "input[type=checkbox]" ).on( "click", checkChecked );
+        /**
+        * Abrir el modal
+        **/
         /*
         * modificaciones de datos en filtro
         */
