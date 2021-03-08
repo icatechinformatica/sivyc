@@ -89,7 +89,7 @@
         </div>
         <hr style="border-color:dimgray">
         @if(count($cursos_validar) > 0)
-            <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}" target="_blank">
+            <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-2">

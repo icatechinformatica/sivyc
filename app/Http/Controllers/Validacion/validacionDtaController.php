@@ -279,11 +279,11 @@ class validacionDtaController extends Controller
                      # entramos a un loop y antes checamos que se haya seleccionado cursos para realizar esta operacion
                      if (!empty($_POST['chkcursos'])) {
                          # si no están vacios enviamos a un loop
-                         foreach ($_POST['chkcursos'] as $key => $value) { 
+                        //  foreach ($_POST['chkcursos'] as $key => $value) { 
                              
-                            # aqui vas a generar el documento pdf Julio del memorandum de devolución para las unidades
-                             //dd($value);
-                         }
+                        //     # aqui vas a generar el documento pdf Julio del memorandum de devolución para las unidades
+                        //      //dd($value);
+                        //  }
                         $nume_memo=$request->num_memo_devolucion;
                         $total=count($_POST['chkcursos']);                
                         $mes='1';
@@ -296,7 +296,7 @@ class validacionDtaController extends Controller
                         $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
                         'pvinculacion','jcyc','pjcyc')->where('unidad','TUXTLA')->first();
                         $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva'));
-                        return $pdf->stream('Memo_Unidad.pdf');
+                        return $pdf->download('Memo_Unidad.pdf');
                      } else {
                          # hay cursos vacios, regresamos y mandamos un mensaje de error
                          return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
@@ -552,6 +552,8 @@ class validacionDtaController extends Controller
                     # regresamos el paquete a los enlaces que no está bien
                     $cursoschk = $request->get('chkcursos');
                     if (!empty($cursoschk)) {
+                        $fecha_ahora = Carbon::now();
+                        $date = $fecha_ahora->format('Y-m-d'); // fecha
                         # generamos el código para enviar de regreso a los enlaces los cursos que no han sido satisfactorios
                         $numMemorandum = $request->get('num_memo_devolucion');
                         $turnado_retorno_unidad = [
@@ -572,6 +574,8 @@ class validacionDtaController extends Controller
                                     'turnado' => 'DTA',
                                     'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_RETORNO_ENLACES}', '".json_encode($observaciones_retorno_enlace)."'::jsonb)")]);
                         }
+                        return redirect()->route('validacion.dta.revision.cursos.indice')
+                                ->with('success', sprintf('CURSOS ENVIADOS DE REGRESO PARA LOS ENLACES DTA!'));
                     } else {
                         # enviamos un mensaje de que no se pudo generar debido a que no hay registros
                         return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
@@ -607,7 +611,8 @@ class validacionDtaController extends Controller
             $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
             $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
             $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion'));
-            return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
+            // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
+            return $pdf->download('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {
             # enviamos mensaje de error o direccionamos para enviarlo con el mensaje de error
             return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, SE NECESITA EL NÚMERO DE MEMORANDUM']);
