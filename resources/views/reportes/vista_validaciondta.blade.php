@@ -461,14 +461,14 @@
             var comentario_retorno = new Array();
             var numMemo = $('#num_memo_devolucion').val();
             $('input[name="chkcursos[]"]:checked').each(function() {
-                checkedCursos.push(this.value);
+                cursosChecked.push(this.value);
             });
             // se cargan los textarea en el arreglo
             $('textarea[name="comentarios_enlaces[]"]').each(function(){
                comentario_retorno.push(this.value);
             });
             $('.modal-body #numero_memo_devolucion').val(numMemo);
-            $('.modal-body #check_cursos_dta').val(checkedCursos);
+            $('.modal-body #check_cursos_dta').val(cursosChecked);
             $('.modal-body #comentarios_enlaces').val(comentario_retorno);
             $("#exampleModalCenter").modal("show");
         });

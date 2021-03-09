@@ -393,9 +393,6 @@ class validacionDtaController extends Controller
 
     public function storedtafile(Request $request)
     {
-        // $json = json_encode($request->all());
-        //     return $json;
-        // exit;
 
         $numero_memo = $request->get('numero_memo_devolucion'); // número de memo
         $cursoschk = $request->get('check_cursos_dta');
@@ -413,89 +410,61 @@ class validacionDtaController extends Controller
                     # mandar mensaje de error si falla el cargado del archivo
                     return back()->withInput()->withErrors([$validator]);
                 } else {
-                    # code...
+                    # si la validación no falla es hora de subir el archivo
+                    $memo = str_replace('/', '_', $numero_memo);
+                    /**
+                    * aquí vamos a verificar que el archivo no se encuentre guardado
+                    * previamente en el sistema de archivos del sistema de ser así se 
+                    * remplazará el archivo porel que se subirá a continuación
+                    */
+                    // construcción del archivo
+                    $archivo_memo = 'uploadFiles/memoRegresoUnidad/'.$memo.'/memorandum_regreso_unidad.pdf';
+                    if (Storage::exists($archivo_memo)) {
+                        #checamos si hay algún documento, de ser así, procedemos a eliminarlo
+                        Storage::delete($archivo_memo);
+                    }
+                    $archivo_memo_to_dta = $request->file('memorandum_regreso_unidad'); # obtenemos el archivo
+                    $url_archivo_memo = $this->uploaded_memo_retorno_unidad_file($archivo_memo_to_dta, $memo, 'memoRegresoUnidad'); #invocamos el método
                 }
                 
             } else {
-                # code...
+                # si está vacio sólo cargamos la url
+                $url_archivo_memo = null;
             }
-            
+            $fecha_ahora = Carbon::now();
+            $date = $fecha_ahora->format('Y-m-d'); // fecha
+            /**
+             * aquí vamos a vaciar el arreglo en un ciclo que vamos a iterar para obtener los valores y hacer multiples
+             * actualizaciones de los registros para enviar la información
+             */
+            $turnado_unidad = [
+                'FECHA' => $date,
+                'MEMORANDUM' => $url_archivo_memo,
+                'NUMERO' => $numero_memo
+            ];
+            /**
+            * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
+            */
+            # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
+            $data = explode(",", $cursoschk);
+            $comentario = explode(",", $_POST['comentarios_enlaces']);
+            foreach(array_combine($data, $comentario) as $key => $comentarios){
+                $comentarios_regreso_unidad = [
+                    'OBSERVACION_RETORNO' =>  $comentarios
+                ];
+                \DB::table('tbl_cursos')
+                    ->where('id', $key)
+                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($turnado_unidad)."'::jsonb)"), 
+                    'status' => 'RETORNO_UNIDAD', 
+                    'turnado' => 'UNIDAD',
+                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_RETORNO_UNIDAD}', '".json_encode($comentarios_regreso_unidad)."'::jsonb)")]);
+            }
+            // enviar  a la página de inicio del módulo si el proceso fue satisfactorio
+            return redirect()->route('validacion.cursos.enviados.dta')
+            ->with('success', sprintf('CURSOS TURNADO A LA UNIDAD CORRESPONDIENTE!'));
         } else {
             # no hay cursos (están vacios) se tiene que cargar un mensaje de error
             return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
-        }
-        
-        /**
-         * vamos al cargar el archivo que se sube
-         */
-        if ($request->hasFile('memorandum_regreso_unidad')) {
-            // obtenemos el valor del archivo memo
-
-            $validator = Validator::make($request->all(), [
-                'memorandum_regreso_unidad' => 'mimes:pdf|max:2048'
-            ]);
-
-            if ($validator->fails()) {
-                # mandar un mensaje de error
-                return json_encode($validator);
-            } else {
-                $memo = str_replace('/', '_', $numero_memo);
-                /**
-                 * aquí vamos a verificar que el archivo no se encuentre guardado
-                 * previamente en el sistema de archivos del sistema de ser así se 
-                 * remplazará el archivo porel que se subirá a continuación
-                 */
-                // construcción del archivo
-                $archivo_memo = 'uploadFiles/memoRegresoUnidad/'.$memo.'/memorandum_regreso_unidad.pdf';
-                if (Storage::exists($archivo_memo)) {
-                    #checamos si hay algún documento, de ser así, procedemos a eliminarlo
-                    Storage::delete($archivo_memo);
-                }
-
-                $archivo_memo_to_dta = $request->file('memorandum_regreso_unidad'); # obtenemos el archivo
-                $url_archivo_memo = $this->uploaded_memo_retorno_unidad_file($archivo_memo_to_dta, $memo); #invocamos el método
-            }
-        } else {
-            $url_archivo_memo = null;
-        }
-
-        if (!empty($cursoschk)) {
-            # vamos a checar sólo a los checkbox checados como propiedad
-            if (!empty($cursoschk)) {
-                $fecha_ahora = Carbon::now();
-                $date = $fecha_ahora->format('Y-m-d'); // fecha
-                $numero_memo = $request->get('numero_memo'); // número de memo
-                $num_memo_devolucion = $request->get('numero_memo_devolucion');
-
-                $turnado_unidad = [
-                    'FECHA' => $date,
-                    'MEMORANDUM' => $url_archivo_memo,
-                    'NUMERO' => $num_memo_devolucion
-                ];
-                /**
-                 * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
-                 */
-                # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
-                $data = explode(",", $cursoschk);
-                $comentario = explode(",", $_POST['comentarios_enlaces']);
-                foreach(array_combine($data, $comentario) as $key => $comentarios){
-                    $comentarios_regreso_unidad = [
-                        'OBSERVACION_RETORNO' =>  $comentarios
-                    ];
-                    \DB::table('tbl_cursos')
-                        ->where('id', $key)
-                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($turnado_unidad)."'::jsonb)"), 
-                        'status' => 'RETORNO_UNIDAD', 
-                        'turnado' => 'UNIDAD',
-                        'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_RETORNO_UNIDAD}', '".json_encode($comentarios_regreso_unidad)."'::jsonb)")]);
-                }
-
-
-
-            }
-
-            $json = json_encode('DONE');
-            return $json;
         }
     }
 
@@ -544,15 +513,15 @@ class validacionDtaController extends Controller
         //
     }
 
-    protected function uploaded_memo_retorno_unidad_file($file, $memo)
+    protected function uploaded_memo_retorno_unidad_file($file, $memo, $subpath)
     {
         $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim("memorandum_regreso_unidad.".$extensionFile);
-        $path = '/memoRegresoUnidad/'.$memo.'/'.$documentFile;
+        $path = '/'.$subpath.'/'.$memo.'/'.$documentFile;
         Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
-        $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/memoRegresoUnidad/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/'.$subpath.'/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
 
