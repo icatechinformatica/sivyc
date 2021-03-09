@@ -247,4 +247,51 @@ class PagoController extends Controller
 
         return $pdf->download('medium.pdf');
     }
+
+    public function financieros_reporte()
+    {
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.vstareportefinancieros', compact('unidades'));
+    }
+
+    public function financieros_reportepdf(Request $request)
+    {
+        $i = 0;
+        set_time_limit(0);
+        $count = 0;
+
+        $data = folio::SELECT('folios.folio_validacion as suf','folios.status','tabla_supre.fecha','tabla_supre.no_memo',
+                                  'tabla_supre.unidad_capacitacion','tbl_cursos.curso','tbl_cursos.clave',
+                                  'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                                  'instructores.numero_control')
+                                  ->WHERE('folios.status', '!=', 'En_Proceso')
+                                  ->WHERE('folios.status', '!=', 'Rechazado')
+                                  ->WHERE('folios.status', '!=', 'Validado')
+                                  ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                                  ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                                  ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                  ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                                  ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                                  //->OrderByRaw('FIELD(folios.status, ' . implode(', ', $x) . ') ASC')
+                                  ->GET();
+
+        if ($request->filtro == 'curso')
+        {
+            $data = $data->WHERE('tbl_cursos.id', '=', $request->id_curso);
+        }
+        else if ($request->filtro == 'unidad')
+        {
+            $data = $data->WHERE('tabla_supre.unidad_capacitacion', '=', $request->unidad);
+        }
+
+        $data = $data->sortBy(function($item){
+            return array_search($item->status, ['Validando_Contrato', 'Contrato_Rechazado', 'Contratado', 'Verificando_Pago', 'Pago_Rechazado', 'Pago_Verificado', 'Finalizado']);
+        });
+
+        $pdf = PDF::loadView('layouts.pdfpages.reportefinancieros', compact('data','count'));
+        $pdf->setPaper('legal', 'Landscape');
+        return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+
+    }
 }
