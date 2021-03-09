@@ -30,9 +30,12 @@ class ContratoController extends Controller
 {
     public function prueba()
     {
-        $numero = '4770.30';
-        dd($numero);
-        dd('ya quedo');
+        $hola = instructor::SELECT('instructores.numero_control','instructores.nombre','instructores.apellidoPaterno',
+                           'instructores.apellido Materno', 'especialidades.nombre', 'especialidades.id')
+                           ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=','instructores.id')
+                           ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id','=','instructor_perfil.id' )
+                           ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')->GET();
+                           dd($hola);
     }
     public function index(Request $request)
     {

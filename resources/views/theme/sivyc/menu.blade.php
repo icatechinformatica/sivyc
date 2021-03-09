@@ -115,14 +115,17 @@
                         @can('planeacion.reporte')
                             <a class="dropdown-item" href="{{route('planeacion.reporte')}}">PLANEACIÓN</a>
                         @endcan
+                        @can('financieros.reporte')
+                            <a class="dropdown-item" href="{{route('financieros.reporte')}}">ESTADO DE CONTRATOS Y PAGOS</a>
+                        @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">FORMATOT</a> --}}
                     </div>
                 </li>
-                
+
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Grupos (Depto. Acad&eacute;mico)
-                    </a>                    
+                    </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         @can('grupos.calificaciones')
                             <a class="dropdown-item" href="{{route('grupos.calificaciones')}}">Registrar Calificaciones</a>
@@ -130,16 +133,16 @@
                         @can('grupos.asignarfolios')
                             <a class="dropdown-item" href="{{route('grupos.asignarfolios')}}">Asignar Folios</a>
                         @endcan
-                        @can('grupos.consultas')                        
-                            <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>                        
+                        @can('grupos.consultas')
+                            <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>
                         @endcan
                     </div>
-                     
-                </li> 
+
+                </li>
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Solicitudes(DTA)
-                    </a>                     
+                    </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         @can('solicitudes.folios')
                             <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
@@ -148,7 +151,7 @@
                             <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n de Folios</a>
                         @endcan
                     </div>
-                     
+
                 </li>
 
             </ul>

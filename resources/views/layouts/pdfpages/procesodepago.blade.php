@@ -106,7 +106,7 @@
                 </div>
                 <br><br><b>{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}.</b>
                 <br>{{$para->puesto}}.
-                <br>Presente.
+                <br><br>Presente.
                 <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura de curso y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente al curso que a continuación se detalla:</p>
                 <div align=center>
                     <FONT SIZE=2><b>DATOS DEL CURSO</b></FONT>
@@ -127,6 +127,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <br>
                 <div align=center>
                     <FONT SIZE=2> <b>DATOS DEL INSTRUCTOR</b></FONT>
                 </div>
@@ -145,6 +146,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <br>
                 <div align=center>
                     <FONT SIZE=2> <b>DATOS DE LA CUENTA PARA DEPOSITO O TRANSFERENCIA INTERBANCARIA</b></FONT>
                 </div>
@@ -182,11 +184,11 @@
                         <td colspan="2"><div align="center">Director Administrativo</td></div>
                     </tr>
                 </table>
-                <br><br><br><p><FONT SIZE=1><b><C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento<br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>Archivo/ Minutario</FONT><br/>
-                <FONT SIZE=1><b><C.c.p.</C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}</FONT></p>
+                <br><br><br><p><FONT SIZE=1><b>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento<br/>
+                <FONT SIZE=1><b>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin</FONT><br/>
+                <FONT SIZE=1><b>C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-Mismo fin</FONT><br/>
+                <FONT SIZE=1><b>C.c.p.</C></b>Archivo/ Minutario</FONT><br/>
+                <FONT SIZE=1><b>C.c.p.</C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}</FONT></p>
             </div>
         </div>
     </body>

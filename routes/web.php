@@ -496,3 +496,7 @@ Route::get('/exoneraciones/edit/{id}', 'webController\ExoneracionesController@ed
 Route::put('/exoneraciones/modificar/{id}', 'webController\ExoneracionesController@update')->name('exoneraciones.update')
     ->middleware('can:exoneraciones.update');
 Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesController@getmunicipios');
+
+/*Reporte Financieros 03032021*/
+Route::get('/financieros/reporte', 'webController\PagoController@financieros_reporte')->name('financieros.reporte')->middleware('can:financieros.reporte');
+Route::post('/financieros/reporte/pdf','webController\PagoController@financieros_reportepdf')->name('financieros.reportepdf');
