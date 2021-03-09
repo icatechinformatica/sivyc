@@ -282,7 +282,7 @@
                     },
                     archivo_convenio: {
                         extension: "pdf",
-                        filesize: 2000000, //max size 2mb
+                        filesize: 3000000, //max size 2mb
                     },
                     estadoG: {
                         required: true
@@ -333,7 +333,7 @@
                     },
                     archivo_convenio: {
                         accept: "Sólo se permiten pdf",
-                        filesize: "El archivo debe ser menor de 2 MB",
+                        filesize: "El archivo debe ser menor de 3 MB",
                     },
                     estadoG: {
                         required: "Campo requerido"
