@@ -100,11 +100,6 @@
 
             <div class="form-group row">
                 <div class="form-group col">
-                    <label for="grupo_beneficiado" class="control-label">GRUPO BENEFICIADO</label>
-                    <input type="text" class="form-control" id="grupo_beneficiado" name="grupo_beneficiado"
-                        placeholder="GRUPO BENEFICIADO">
-                </div>
-                <div class="form-group col">
                     <label for="numero_convenio" class="control-label">NÚMERO DE CONVENIO</label>
                     <input type="text" class="form-control" id="numero_convenio" name="numero_convenio"
                         placeholder="NÚMERO DE CONVENIO">
@@ -117,6 +112,25 @@
                             class="custom-file-input">
                         <label for="memo_soporte" class="custom-file-label"></label>
                     </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="form-group col">
+                    <label for="status" class="control-label">ESTADO DE LA EXONERACIÓN</label>
+                    <select name="status" id="status" class="custom-select">
+                        <option value="">--SELECCIONE--</option>
+                        <option value="EN PROCESO">EN PROCESO</option>
+                        <option value="AUTORIZADO">AUTORIZADO</option>
+                    </select>
+                </div>
+
+                {{-- publlicar --}}
+                <div class="form-group col text-center pt-4">
+                    <label for="activo">PUBLICAR</label>
+                    <input type="checkbox" id="activo" name="activo"
+                         data-toggle="toggle" data-on="Si"
+                        data-off="No" data-onstyle="success" data-offstyle="danger" data-width="100" data-height="30">
                 </div>
             </div>
 
@@ -171,10 +185,10 @@
                 razon_exoneracion: {
                     required: true
                 },
-                grupo_beneficiado: {
+                numero_convenio: {
                     required: true
                 },
-                numero_convenio: {
+                status: {
                     required: true
                 }
             },
@@ -206,11 +220,11 @@
                 razon_exoneracion: {
                     required: 'La razon de la exoneración es requerida'
                 },
-                grupo_beneficiado: {
-                    required: 'El grupo beneficiado es requerido'
-                },
                 numero_convenio: {
-                    required: 'El número de convenio es requerido'
+                    required: 'El número de exoneración es requerido'
+                },
+                status: {
+                    required: 'El status de exoneración es requerido'
                 }
             }
         });
@@ -218,7 +232,7 @@
         $('#estadoE').on("change", () => {
             var IdEstado = $('#estadoE').val();
             $('#estadoE option:selected').each(() => {
-                var datos = {idEst: IdEstado};
+                var datos = {idEst: IdEstado, _token: "{{ csrf_token() }}"};
                 var url = '/exoneraciones/sid/municipios';
 
                 var request = $.ajax({
