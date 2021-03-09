@@ -95,7 +95,19 @@ class PagoController extends Controller
                 // obtener unidades
                 $unidadPorUsuario = DB::table('tbl_unidades')->WHERE('id', $unidadUser)->FIRST();
 
-                $contratos_folios = $contratos_folios->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion);
+                $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus)
+                ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
+                ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
+                ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+                ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                ->orderBy('contratos.fecha_firma', 'desc')
+                ->PAGINATE(25, [
+                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
+                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
+                    'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre'
+                ]);
                 break;
         }
 
