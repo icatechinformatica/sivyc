@@ -153,7 +153,8 @@
                     </div>
 
                 </li>
-
+                {{-- modificaciones en el curso del menu --}}
+                
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">
