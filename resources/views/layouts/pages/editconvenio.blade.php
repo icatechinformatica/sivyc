@@ -365,7 +365,7 @@
                     },
                     archivo_convenio: {
                         extension: "pdf",
-                        filesize: 2000000
+                        filesize: 3000000
                     },
                     tipo_convenio: {
                         required: true
@@ -404,7 +404,7 @@
                     },
                     archivo_convenio: {
                         accept: "No es una extensión valida, son aceptado pdf.",
-                        filesize: "El tamaño del archivo debe de ser menor a 2 Mb."
+                        filesize: "El tamaño del archivo debe de ser menor a 3 Mb."
                     },
                     tipo_convenio: {
                         required: 'El tipo de convenio es requerido'

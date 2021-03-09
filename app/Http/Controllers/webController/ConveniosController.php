@@ -257,7 +257,7 @@ class ConveniosController extends Controller
                 }
 
                 $archivo_convenio = $request->file('archivo_convenio'); # obtenemos el archivo
-                $url_archivo_convenio = $this->uploaded_file($archivo_convenio, $idConvenio, 'arcivo_convenio'); #invocamos el método
+                $url_archivo_convenio = $this->uploaded_file($archivo_convenio, $idConvenio, 'archivo_convenio'); #invocamos el método
                 // guardamos en la base de datos
                 $convenioUpdate = Convenio::findOrfail($idConvenio);
                 $convenioUpdate->update([
