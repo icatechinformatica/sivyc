@@ -28,10 +28,22 @@ class contratos extends Model
     /**
      * scope de busqueda por contratos
      */
-    public function scopeBusquedaPorContrato($query, $tipo, $buscar, $tipo_status)
+    public function scopeBusquedaPorContrato($query, $tipo, $buscar, $tipo_status, $unidad)
     {
         if (!empty($tipo)) {
             # se valida el tipo
+            if($tipo == 'unidad_capacitacion')
+            {
+                # busqueda por unidad capacitacion...
+                if (!empty($tipo_status))
+                {
+                    return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)->WHERE('folios.status', '=', $tipo_status);
+                }
+                else
+                {
+                    return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
+                }
+            }
             if (!empty(trim($buscar))) {
                 # busqueda
                 switch ($tipo) {
@@ -42,15 +54,6 @@ class contratos extends Model
                         }
                         else {
                             return $query->WHERE('tabla_supre.no_memo', '=', $buscar);
-                        }
-                        break;
-                    case 'unidad_capacitacion':
-                        # busqueda por unidad capacitacion...
-                        if (!empty($tipo_status)) {
-                            return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $buscar)->WHERE('folios.status', '=', $tipo_status);
-                        }
-                        else {
-                            return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $buscar);
                         }
                         break;
                     case 'fecha':
@@ -77,25 +80,28 @@ class contratos extends Model
     /**
      * busqueda scope por pagos
      */
-    public function scopeBusquedaPorPagos($query, $tipo, $buscar, $tipo_status)
+    public function scopeBusquedaPorPagos($query, $tipo, $buscar, $tipo_status, $unidad)
     {
         if (!empty($tipo)) {
             # se valida el tipo
+            if($tipo == 'unidad_capacitacion')
+            {
+                # busqueda por unidad capacitacion...
+                if (!empty($tipo_status))
+                {
+                    return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad)->WHERE('folios.status', '=', $tipo_status);
+                }
+                else
+                {
+                    return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad);
+                }
+            }
             if (!empty(trim($buscar))) {
                 # busqueda
                 switch ($tipo) {
                     case 'no_contrato':
                         # busqueda por número de contrato
                         return $query->WHERE('contratos.numero_contrato', '=', $buscar);
-                        break;
-                    case 'unidad_capacitacion':
-                        # busqueda por unidad de capacitación
-                        if (!empty($tipo_status)) {
-                            return $query->WHERE('contratos.unidad_capacitacion', '=', $buscar)->WHERE('folios.status', '=', $tipo_status);;
-                        }
-                        else {
-                            return $query->WHERE('contratos.unidad_capacitacion', '=', $buscar);
-                        }
                         break;
                     case 'fecha_firma':
                         # busqueda por fechas

@@ -134,7 +134,8 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td colspan="2">Nombre del Instructor: {{$data->nombre}} {{$data->apellidoPaterno}} {{$data->apellidoMaterno}}</td>
+                            <td >Nombre del Instructor: {{$data->nombre}} {{$data->apellidoPaterno}} {{$data->apellidoMaterno}}</td>
+                            <td>Número de Contrato: {{$data->numero_contrato}}</td>
                         </tr>
                         <tr>
                             <td>Registro STPS: NO APLICA</td>

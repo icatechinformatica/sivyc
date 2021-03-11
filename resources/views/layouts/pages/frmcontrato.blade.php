@@ -69,7 +69,12 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
-                    <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion">
+                    <select name="unidad_capacitacion" class="form-control mr-sm-2" id="unidad_capacitacion">
+                        <option value="">SELECCIONE UNIDAD</option>
+                        @foreach ($unidades as $cadwell)
+                            <option value="{{$cadwell->unidad}}">{{$cadwell->unidad}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="form-row">

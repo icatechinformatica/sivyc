@@ -33,7 +33,17 @@
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha">FECHA</option>
                         </select>
-                        {!! Form::text('busquedaporSuficiencia', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <Div id="divunidades" name="divunidades" class="d-none d-print-none">
+                            <select name="unidad" class="form-control mr-sm-2" id="unidad">
+                                <option value="">SELECCIONE UNIDAD</option>
+                                @foreach ($unidades as $cadwell)
+                                    <option value="{{$cadwell->unidad}}">{{$cadwell->unidad}}</option>
+                                @endforeach
+                            </select>
+                        </Div>
+                        <div id="divcampo" name="divcampo">
+                            {!! Form::text('busquedaporSuficiencia', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        </div>
                         <Div id="divstat" name="divstat">
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>

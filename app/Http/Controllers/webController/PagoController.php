@@ -36,6 +36,7 @@ class PagoController extends Controller
         $tipoPago = $request->get('tipo_pago');
         $busqueda_pago = $request->get('busquedaPorPago');
         $tipoStatus = $request->get('tipo_status');
+        $unidad = $request->get('unidad');
 
         $contrato = new contratos();
         // obtener el usuario y su unidad
@@ -50,9 +51,11 @@ class PagoController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
         //dd($roles[0]->role_name);
 
-        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus)
+        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad)
         ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
@@ -95,7 +98,7 @@ class PagoController extends Controller
                 // obtener unidades
                 $unidadPorUsuario = DB::table('tbl_unidades')->WHERE('id', $unidadUser)->FIRST();
 
-                $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus)
+                $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad)
                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
                 ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
                 ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
@@ -111,7 +114,7 @@ class PagoController extends Controller
                 break;
         }
 
-        return view('layouts.pages.vstapago', compact('contratos_folios'));
+        return view('layouts.pages.vstapago', compact('contratos_folios','unidades'));
     }
 
     public function crear_pago($id)
