@@ -76,7 +76,16 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
-                    <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion" value="{{$datacon->unidad_capacitacion}}" >
+                    <select class="form-control" name="unidad_capacitacion"  id="unidad_capacitacion">
+                        @if ($unidadsel != null)
+                            <option value="{{$unidadsel->unidad}}">{{$unidadsel->unidad}}</option>
+                        @else
+                            <option value="">SELECCIONE UNIDAD</option>
+                        @endif
+                        @foreach ( $unidadlist as $cadwell )
+                            <option value="{{$cadwell->unidad}}">{{$cadwell->unidad}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>

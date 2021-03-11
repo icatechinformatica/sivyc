@@ -18,6 +18,16 @@ $(function(){
         {
             $('#divstat').prop("class", "")
         }
+        if(inputText == 'UNIDAD CAPACITACIÓN')
+        {
+            $('#divunidades').prop("class", "")
+            $('#divcampo').prop("class", "form-row d-none d-print-none")
+        }
+        else
+        {
+            $('#divcampo').prop("class", "")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+        }
       }
 
 });

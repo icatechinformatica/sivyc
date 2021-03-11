@@ -35,11 +35,13 @@ class supreController extends Controller
         $busqueda_suficiencia = $request->get('busquedaporSuficiencia');
         $tipoSuficiencia = $request->get('tipo_suficiencia');
         $tipoStatus = $request->get('tipo_status');
+        $unidad = $request->get('unidad');
 
         $supre = new supre();
-        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus)->where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)->where('id', '!=', '0')->latest()->get();
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
-        return view('layouts.pages.vstasolicitudsupre', compact('data'));
+        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));
     }
 
     public function frm_formulario() {

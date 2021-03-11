@@ -30,12 +30,14 @@ class ContratoController extends Controller
 {
     public function prueba()
     {
-        $hola = instructor::SELECT('instructores.numero_control','instructores.nombre','instructores.apellidoPaterno',
-                           'instructores.apellido Materno', 'especialidades.nombre', 'especialidades.id')
-                           ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=','instructores.id')
-                           ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id','=','instructor_perfil.id' )
-                           ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')->GET();
-                           dd($hola);
+        $it = contratos::SELECT('id_contrato')->WHERE('unidad_capacitacion', '=', 'SAN CRISTÓBAL')->GET();
+        foreach ($it as $cadwell)
+        {
+            $change = contratos::find($cadwell->id_contrato);
+            $change->unidad_capacitacion = 'SAN CRISTOBAL';
+            $change->save();
+        }
+        dd('listo');
     }
     public function index(Request $request)
     {
@@ -45,6 +47,7 @@ class ContratoController extends Controller
         $tipoContrato = $request->get('tipo_contrato');
         $busqueda_contrato = $request->get('busquedaPorContrato');
         $tipoStatus = $request->get('tipo_status');
+        $unidad = $request->get('unidad');
         // obtener el usuario y su unidad
         $usuarioUnidad = Auth::user()->unidad;
         // obtener el id
@@ -56,15 +59,15 @@ class ContratoController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
             //hola
-
         $contratos = new contratos();
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
         //dd($roles[0]->role_name);
 
         switch ($roles[0]->role_name) {
             case 'admin':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
@@ -86,7 +89,7 @@ class ContratoController extends Controller
             break;
             case 'unidad.ejecutiva':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $unidad)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
@@ -108,7 +111,7 @@ class ContratoController extends Controller
             break;
             case 'direccion.general':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad)
                                  ->WHERE('folios.status', '!=', 'En_Proceso')
                                  ->WHERE('folios.status', '!=', 'Finalizado')
                                  ->WHERE('folios.status', '!=', 'Pago_Verificado')
@@ -130,7 +133,7 @@ class ContratoController extends Controller
             break;
             case 'planeacion':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
@@ -152,7 +155,7 @@ class ContratoController extends Controller
             break;
             case 'financiero_verificador':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
@@ -174,7 +177,7 @@ class ContratoController extends Controller
             break;
             case 'financiero_pago':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
@@ -203,7 +206,7 @@ class ContratoController extends Controller
                  */
                 $contratos = new contratos();
 
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad)
                                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
@@ -226,7 +229,7 @@ class ContratoController extends Controller
             break;
         }
 
-        return view('layouts.pages.vstacontratoini', compact('querySupre'));
+        return view('layouts.pages.vstacontratoini', compact('querySupre','unidades'));
     }
 
     /**
@@ -265,7 +268,9 @@ class ContratoController extends Controller
             $term = FALSE;
         }
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term'));
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades'));
     }
 
     public function contrato_save(Request $request)
@@ -340,8 +345,11 @@ class ContratoController extends Controller
         $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
+        $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $datacon->unidad_capacitacion)->FIRST();
+        $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $datacon->unidad_capacitacion)->GET();
+
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio'));
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist'));
     }
 
     public function save_mod(Request $request){
@@ -761,7 +769,7 @@ class ContratoController extends Controller
                               'instructores.apellidoPaterno','instructores.apellidoMaterno', 'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','pagos.created_at','pagos.no_memo','pagos.liquido')
+                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.no_memo','pagos.liquido')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
