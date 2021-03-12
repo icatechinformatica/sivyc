@@ -398,4 +398,11 @@ class PlaneacionController extends Controller
         $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/'.$sub."/".$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
+
+    protected function chkDateToDeliver()
+    {
+        $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+        $fecha = Carbon::parse(Carbon::now());
+        return json_encode($fecha);
+    }
 }

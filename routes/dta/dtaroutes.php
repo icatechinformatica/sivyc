@@ -7,3 +7,5 @@ Route::get('/planeacion/formatot/index', 'validacion\planeacionController@index'
 Route::post('/planeacion/generar/memorandum', 'Validacion\planeacionController@generarMemorandum')->name('planeacion.generate.memo');
 Route::post('/planeacion/enviar/dta', 'Validacion\planeacionController@sendtodta')->name('planeacion.send.to.dta');
 Route::post('/planeacion/finalizar/proceso', 'Validacion\planeacionController@finishPlaneacion')->name('planeacion.finish');
+// ruta para una función ajax --- 
+Route::get('/reportes/formato/checkToDeliver', 'ftcontroller@chkDateToDeliver')->name('formato.check.to.deliver');

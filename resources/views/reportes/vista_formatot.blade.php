@@ -37,6 +37,11 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
+        {{-- información sobre la entrega del formato t para unidades --}}
+        <div class="alert alert-info" role="alert">
+            <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL <strong>{{ $fechaEntregaFormatoT }}</strong></b>
+        </div>
+        {{-- información sobre la entrega del formato t para unidades END --}}
         <div class="alert"></div>
         @if($errors->any())
             <div class="alert alert-danger">
@@ -48,6 +53,7 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
+        
         <div class="row">
             <h4>Reporte Formato T</h4>  
         </div>
@@ -430,11 +436,58 @@
         </div>
     </div>
     <!--MODAL FORMULARIO ENDS-->
+    {{-- MODAL DE MENSAJE --}}
+    <div class="modal fade" id="mensajeFechaLimite" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"><b>INFORMACIÓN ACERCA DEL CALENDARIO DE FECHAS DE ENTREGA</b></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <b>
+                  <strong>
+                    SE HACE UN ATENTO AVISO PARA ENVIAR LA INFORMACIÓN MENSUAL DEL FORMATO T A LA DIRECCIÓN DE PLANEACIÓN
+                    PARA EL CUMPLIMIENTO CON LA NORMA.
+                  </strong>
+              </b>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    {{-- MODAL DE MENSAJE DE TIEMPO DE ENTREGA --}}
+    
 @endsection
 @section('script_content_js')
 <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
 <script type="text/javascript">
     $(function(){
+        // funcion en el onload del jquery
+        $.ajax({
+            url: "{{route('formato.check.to.deliver')}}",
+            type: 'GET',
+            success: function(response)
+            {
+                console.log(response);
+                if (response >= 20) {
+                    $('#mensajeFechaLimite').modal();
+                }
+                // if (response === 'true') {
+                //     console.log(response);
+                //     $('#mensajeFechaLimite').modal();
+                // } else {
+                    
+                // }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+            }
+        });
         //$('input[type=checkbox]').attr('disabled', 'disabled'); //disable
         $('#mod_format').on('click', function name() {
             $('input[type=checkbox]').removeAttr('disabled');

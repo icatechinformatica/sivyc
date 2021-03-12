@@ -111,8 +111,20 @@ class validacionDtaController extends Controller
 
         $unidades = DB::table('tbl_unidades')->select('unidad', 'ubicacion')->get();
 
+        $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+        $fecha = Carbon::parse(Carbon::now());
+        $anioActual = Carbon::now()->year;
+        $mesActual = $meses[($fecha->format('n')) - 1];
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
+        $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
+        $mesInformar = $fechaEntregaActual->mes_informar;
+
+        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
+        $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
+        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+
         //dd($cursos_validar);
-        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad')); 
+        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar')); 
     }
 
     /**

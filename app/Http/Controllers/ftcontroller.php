@@ -117,9 +117,19 @@ class ftcontroller extends Controller
             # si se encuentra vacio
             $var_cursos = null;
         }
-            //var_dump($_SESSION['unidades']);exit;
+        $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+        $fecha = Carbon::parse(Carbon::now());
+        $anioActual = Carbon::now()->year;
+        $mesActual = $meses[($fecha->format('n')) - 1];
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
+        $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
+        $mesInformar = $fechaEntregaActual->mes_informar;
 
-        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad'));    
+        $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
+        $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
+        $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
+
+        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar'));    
     }
 
     public function cursos(Request $request)
@@ -569,4 +579,45 @@ class ftcontroller extends Controller
         return $documentUrl;
     }
     
+    protected function chkDateToDeliver()
+    {
+        $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+        $fecha = Carbon::parse(Carbon::now());
+        $anioActual = Carbon::now()->year;
+        $mes = $meses[($fecha->format('n')) - 1];
+        /**
+         * obtener mes anterior
+         */
+        $mesAnterior = $meses[($fecha->format('n')) - 2];
+        $fechaActual = Carbon::now()->format('d-m-Y');
+        /**
+         * hacemos una consulta a la tabla para obtener el mes correspondiente
+         */
+        $fechaEntregaAnterior = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mesAnterior)->first();
+        $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mes)->first();
+        $fEAn = $fechaEntregaAnterior->fecha_entrega."-".$anioActual;
+        $fEAc = $fechaEntregaActual->fecha_entrega."-".$anioActual;
+        /**
+         * fechaAnteriorEntrega convertirla a fecha
+         */
+        $convertfEAn = date_create_from_format('d-m-Y', $fEAn);
+        $confEAn = date_format($convertfEAn, 'd-m-Y');
+        $comconfEAn = strtotime($confEAn);
+        $comfechaActual = strtotime($fechaActual);
+        $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
+        $confEAc = date_format($convertfEAc, 'd-m-Y');
+        $comconfEAc = strtotime($confEAc); // fecha actual de entrega
+        $dias = (strtotime($confEAc) - strtotime($fechaActual))/86400;
+        $dias = abs($dias); $dias = floor($dias);
+        /**
+         * vamos a realizar la última consulta que nos dara el rango en el que estamos
+         */
+        if ($comconfEAn <= $comfechaActual && $comconfEAc >= $comfechaActual) {
+            # retornamos verdadero
+            $respuesta = true;
+        } else {
+            $respuesta = false;
+        }
+        return json_encode($dias);
+    }
 }

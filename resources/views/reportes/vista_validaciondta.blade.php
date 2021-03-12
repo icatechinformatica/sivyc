@@ -55,6 +55,11 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
+        {{-- información sobre la entrega del formato t para unidades --}}
+        <div class="alert alert-info" role="alert">
+            <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong></b>
+        </div>
+        {{-- información sobre la entrega del formato t para unidades END --}}
         @if($errors->any())
             <div class="alert alert-danger">
                 {{$errors->first()}}
