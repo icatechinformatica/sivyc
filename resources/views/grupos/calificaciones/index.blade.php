@@ -1,6 +1,6 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
-@section('title', 'Reportes | SIVyC Icatech')
+@section('title', 'Calificaciones | SIVyC Icatech')
 @section('content')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
    
@@ -80,7 +80,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                        @if(count($alumnos)>0) 
+                        @if(count($alumnos)>0 AND $fecha_valida>=0) 
                             <td colspan="3" class="text-right">{{ Form::button('GUARDAR CAMBIOS', ['id' => 'guardar','class' => 'btn']) }}</td>
                         @endif
                         </tr>
@@ -94,8 +94,11 @@
     @section('script_content_js') 
         <script language="javascript">
              $(document).ready(function(){                
-                $("#guardar" ).click(function(){ $('#frm').attr('action', "{{route('grupos.calificaciones.guardar')}}"); $('#frm').submit(); });
-             
+                $("#guardar" ).click(function(){ 
+                    if(confirm("Esta seguro de ejecutar la acción?")==true){
+                        $('#frm').attr('action', "{{route('grupos.calificaciones.guardar')}}"); $('#frm').submit(); 
+                    }
+                });             
 
                 $('.numero').keyup(function (){                    
                     this.value = (this.value + '').replace(/[^0-9NP]/g, '');
