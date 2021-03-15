@@ -57,29 +57,6 @@
         <div class="row">
             <h4>Reporte Formato T</h4>  
         </div>
-        <div class="row">
-            <div class="pull-left">
-                {{ Form::open(['route' => 'formatot.cursos', 'method' => 'post', 'class' => 'form-inline', 'enctype' => 'multipart/form-data']) }}
-                <select class="form-control" id="turno" name="mes">
-                    <option>--SELECIONAR--</option>
-                    <option>Enero</option>
-                    <option>Febrero</option>
-                    <option>Marzo</option>
-                    <option>Abril</option>
-                    <option>Mayo</option>
-                    <option>Junio</option>
-                    <option>Julio</option>
-                    <option>Agosto</option>
-                    <option>Septiembre</option>
-                    <option>Octubre</option>
-                    <option>Noviembre</option>
-                    <option>Diciembre</option>
-                </select>
-                {{ Form::text('año', null , ['class' => 'form-control  mr-sm-1', 'placeholder' => 'AÑO A REPORTAR']) }}
-                {!! Form::submit( 'BUSCAR', ['id'=>'formatot', 'class' => 'btn btn-dark', 'name' => 'submitbutton'])!!}
-                {!! Form::close() !!}
-            </div> 
-        </div>
 
         {{ Form::open(['route' => 'vista_formatot', 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
             <div class="form-row">
@@ -103,6 +80,17 @@
             
         <hr style="border-color:dimgray">
         @if (count($var_cursos) > 0)
+            <form action="{{ route('reportes.formatot.unidad.xls') }}" method="POST">
+                <div class="form-row">
+                    <div class="form-group mb-2 mb-2">
+                        <button input type="submit" class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
+                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            EXPORTAR FORMATO T
+                        </button>
+                    </div>
+                    <input type="hidden" value="{{ $unidad }}" id="unidadesFormatoT" name="unidadesFormatoT">
+                </div>
+            </form>
             <form id="dtaformGetDocument" method="POST" action="{{ route('formatot.send.dta') }}" target="_blank">
                 @csrf
                 <div class="form-row">
@@ -136,13 +124,6 @@
                         </div>
                     @endif
                     
-                    <div class="form-group mb-2 mb-2">
-                        <a href="javascript:;" class="btn btn-success my-2 my-sm-0 waves-effect waves-light" id="exportarFormatoTExcel">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
-                            EXPORTAR FORMATO T
-                        </a>
-                    </div>
-                    <input type="hidden" value="{{ $unidad }}" id="unidadesFormatoT" name="unidadesFormatoT">
                 </div> 
                 <div class="table-responsive">     
                     <table  id="table-911" class="table" style='width: 100%'>                
@@ -633,13 +614,6 @@
             $('.modal-body #check_cursos_dta').val(check_cursos);
             $('.modal-body #comentarios_unidad').val(comentario_unidad);
             $("#exampleModalCenter").modal("show");
-        });
-
-        // mostrar click
-        $('#exportarFormatoTExcel').click(function(){
-            //deshabilitar
-            $('#numero_memo').addClass("{required:true}")
-            $('#dtaformGetDocument').attr('action', "{{route('reportes.formatot.unidad.xls')}}"); $('#dtaformGetDocument').submit();
         });
     });
 </script>
