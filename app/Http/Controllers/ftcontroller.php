@@ -13,7 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\tbl_curso;
 
@@ -160,12 +159,13 @@ class ftcontroller extends Controller
         $enFirma = DB::table('tbl_cursos')->where('status', '=', 'EN_FIRMA')->get();
         $retornoUnidad = DB::table('tbl_cursos')->where('status', 'RETORNO_UNIDAD')->get();
         //var_dump($rol);exit;
-        if($rol=='unidad')
-        { 
-            $unidad = Auth::user()->unidad;
-            $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
-            $_SESSION['unidad'] = $unidad;             
-        }
+        if (!empty($rol[0]->slug)) {
+            if($rol[0]->slug=='unidad')
+            { 
+                $unidad = Auth::user()->unidad;
+                $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
+                $_SESSION['unidad'] = $unidad;             
+            }
             //var_dump($_SESSION['unidades']);exit;
             $años = $año;
             $var_cursos = DB::table('tbl_cursos as c')->select('c.unidad','c.plantel','c.espe','c.curso','c.clave','c.mod','c.dura',DB::raw("case when extract(hour from to_timestamp(c.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
