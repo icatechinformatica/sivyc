@@ -110,4 +110,12 @@ class tbl_curso extends Model
             return $query->orderBy('inicio', 'DESC');
         }
     }
+
+    protected function scopeSearchByData($query, $unidades){
+        if ($unidades) {
+            # generamos la consulta del scope
+            $query->where('u.ubicacion', '=', $unidades);
+            return $query;
+        }
+    }
 }

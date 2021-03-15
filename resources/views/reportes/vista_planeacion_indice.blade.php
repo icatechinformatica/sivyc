@@ -74,13 +74,13 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>VALIDACIÓN DE CURSOS <strong>(FORMATO T)</strong> PARA DIRECCIÓN DE PLANEACIÓN</h2>
+                    <h2>VALIDACIÓN DE CURSOS POR LA DIRECCIÓN DE PLANEACIÓN <strong>(FORMATO T)</strong></h2>
                     {{-- formulario de busqueda en index --}}
                     {!! Form::open(['route' => 'planeacion.formatot.index', 'method' => 'GET', 'class' => 'form-inline']) !!}
                         <select name="busqueda_unidad" id="busqueda_unidad" class="form-control mr-sm-2">
                             <option value="">-- BUSQUEDA POR UNIDAD --</option>
                             @foreach ($unidadesIndex as $itemUnidadesIndex)
-                                <option value="{{ $itemUnidadesIndex->ubicacion }}">{{ $itemUnidadesIndex->unidad }}</option>
+                                <option value="{{ $itemUnidadesIndex->ubicacion }}">{{ $itemUnidadesIndex->ubicacion }}</option>
                             @endforeach
                         </select>
                     {{-- formulario de busqueda en index END --}}
@@ -95,6 +95,20 @@
         <hr style="border-color:dimgray">
         {{-- vamos a checar los datos que enviamos a la consulta --}}
         @if (count($cursos_unidades_planeacion) > 0)
+            {{-- formulario para la creación del formato t excel --}}
+            <form action="{{ route('reportes.planeacion.formatot.xls') }}" method="POST" target="_self">
+                @csrf
+                <div class="form-row">
+                    <div class="form-group mb-2">
+                        <button input type="submit" id="generarReporteT" name="generarReporteT" class="btn btn-success">
+                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            EXPORTAR FORMATO T
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {{-- formulario para la creación del formato t excel END --}}
+            
             {{-- formulario --}}
             <form action="{{ route('planeacion.generate.memo') }}" method="post" target="_blank" name="formPlaneacion" id="formPlaneacion">
                 @csrf
@@ -135,16 +149,14 @@
                             <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
                             REGRESAR DTA
                         </button>
-                    </div>
+                    </div> 
                 </div>
                 <div class="table-responsive container-fluid">
                     <table  id="table-instructor" class="table" style='width: 100%'>
                         <caption>CURSOS ENVIADOS A LA DIRECCIÓN DE PLANEACIÓN</caption>
                         <thead>
                             <tr align="center">
-                                <th scope="col">SELECCIONAR/QUITAR &nbsp;
-                                    <input type="checkbox" id="selectAll"/>
-                                </th>
+                                <th scope="col">SELECCIONAR/QUITAR &nbsp;</th>
                                 <th scope="col">UNIDAD</th>
                                 <th scope="col">PLANTEL</th>
                                 <th scope="col">ESPECIALIDAD</th>

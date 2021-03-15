@@ -56,8 +56,8 @@
 @section('content')
     <div class="container g-pt-50">
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert alert-info" role="alert">
-            <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong></b>
+        <div class="alert {{ ($diasParaEntrega <= 5) ? 'alert-warning' : 'alert-info'  }}" role="alert">
+            <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
         </div>
         {{-- información sobre la entrega del formato t para unidades END --}}
         @if($errors->any())
@@ -79,7 +79,7 @@
                         <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
                             <option value="">-- BUSQUEDA POR UNIDAD --</option>
                             @foreach ($unidades as $itemUnidades)
-                                <option value="{{ $itemUnidades->ubicacion }}">{{ $itemUnidades->unidad }}</option>
+                                <option value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
                             @endforeach
                         </select>
                         
@@ -94,13 +94,28 @@
         </div>
         <hr style="border-color:dimgray">
         @if(count($cursos_validar) > 0)
-            <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}">
+            <form action="{{ route('reportes.formatot.enlaces.unidad.xls') }}" method="POST">
                 @csrf
                 <div class="form-row">
-                    <div class="form-group col-md-8 mb-2">
+                    <div class="form-group mb-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            FORMATO T DE LA UNIDAD DE {{ $unidad }}
+                        </button>
+                    </div>
+                    <input type="hidden" name="unidad_" id="unidad_" value="{{ $unidad }}">
+                </div>
+            </form>
+            <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}"  target="_self">
+                @csrf
+                <div class="form-row">
+                    <div class="form-group col-md-4 mb-3">
+                        <input type="text" class="form-control mr-sm-1" name="num_memo_devolucion" id="num_memo_devolucion" placeholder="NÚMERO DE MEMORANDUM PARA REGRESO A UNIDAD">
+                    </div>
+                    <div class="form-group col-md-4 mb-2">
                         <input type="text" name="filterClaveCurso" id="filterClaveCurso" class="form-control" placeholder="BUSQUEDA POR CLAVE DE CURSO">
                     </div>
-                    <div class="form-group col-md-2 mb-2">
+                    <div class="form-group col-md-4 mb-2">
                         <a href="{{ $memorandum->memorandum }}" target="_blank" class="btn btn-info btn-circle m-1 btn-circle-sm" title="DESCARGAR MEMORANDUM N° {{ $memorandum->num_memo }}">
                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
                             MEMORANDUM {{ $memorandum->num_memo }}
@@ -108,15 +123,10 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-8 mb-3">
-                        <input type="text" class="form-control mr-sm-1" name="num_memo_devolucion" id="num_memo_devolucion" placeholder="NÚMERO DE MEMORANDUM PARA REGRESO A UNIDAD">
-                    </div>
-                </div>
-                <div class="form-row">
 
                     @can('envio.revision.dta')
                         <div class="form-group mb-2">
-                            <button input type="submit" id="validarEnDta" name="validarEnDta" value="EnviarJefaDta"  class="btn btn-success">
+                            <button input type="submit" id="validarEnDta" name="validarEnDta" value="EnviarJefaDta"  class="btn btn-info">
                                 <i class="fa fa-paper-plane-o fa-2x" aria-hidden="true"></i>&nbsp;
                                 ENVIAR A VALIDACIÓN JEFE DE DTA
                             </button> 
@@ -144,7 +154,6 @@
                             </div>
                         @endif
                     @endcan
-                    
                 </div>        
             
                 <div class="table-responsive container-fluid">
@@ -413,6 +422,7 @@
                     </table>
                 </div>
                 <input type="hidden" name="num_memo" id="num_memo" value="{{ $memorandum->num_memo }}">
+                <input type="hidden" name="unidadActual" id="unidadActual" value="{{ $unidad }}">
             </form> 
         @else
             <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
@@ -529,6 +539,7 @@
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
+
     });
 </script>
 @endsection

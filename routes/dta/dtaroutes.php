@@ -9,3 +9,10 @@ Route::post('/planeacion/enviar/dta', 'Validacion\planeacionController@sendtodta
 Route::post('/planeacion/finalizar/proceso', 'Validacion\planeacionController@finishPlaneacion')->name('planeacion.finish');
 // ruta para una función ajax --- 
 Route::get('/reportes/formato/checkToDeliver', 'ftcontroller@chkDateToDeliver')->name('formato.check.to.deliver');
+/**
+ * RUTA PARA GENERAR EL REPORTE T PARA PLANEACIÓN
+ */
+Route::post('/planeacion/reportes/formatot/xls', 'Validacion\planeacionController@xlsExportReporteT')->name('reportes.planeacion.formatot.xls');
+Route::post('/reportes/formatot/unidad/xls', 'ftcontroller@xlxExportReporteTbyUnidad')->name('reportes.formatot.unidad.xls');
+Route::post('/reportes/formatot/enlaces/unidad/xls', 'Validacion\validacionDtaController@xlsExportReporteFormatotEnlacesUnidad')->name('reportes.formatot.enlaces.unidad.xls');
+Route::post('/reportes/formatot/director/dta/xls', 'Validacion\validacionDtaController@xlsExportReporteFormatoTDirectorDTA')->name('reportes.formatot.director.dta.xls');

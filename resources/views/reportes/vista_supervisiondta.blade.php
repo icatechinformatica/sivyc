@@ -72,13 +72,13 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>VALIDACIÓN DE CURSOS DE DIRECCIÓN TÉCNICA ACADÉMICA <strong>(JEFES)</strong></h2>
+                    <h2>VALIDACIÓN DE CURSOS DE DIRECCIÓN TÉCNICA ACADÉMICA <strong>(DIRECCIÓN)</strong></h2>
 
                     {!! Form::open(['route' => 'validacion.dta.revision.cursos.indice', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
                             <option value="">-- BUSQUEDA POR UNIDAD --</option>
                             @foreach ($unidades as $itemUnidades)
-                                <option value="{{ $itemUnidades->ubicacion }}">{{ $itemUnidades->unidad }}</option>
+                                <option value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
                             @endforeach
                         </select>
                         
@@ -93,18 +93,32 @@
         </div>
         <hr style="border-color:dimgray">
         @if(count($cursos_validar) > 0)
+            <div class="form-row">
+                <div class="form-group mb-2">
+                    <form action=" {{ route('reportes.formatot.director.dta.xls') }}" method="POST" target="_self">
+                        @csrf
+                        <button type="submit" class="btn btn-success my-2 my-sm-0 waves-effect waves-light" id="validarDireccionDta" name="validarDireccionDta" value="generarMemoPlaneacion">
+                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            REPORTE FORMATO T
+                        </button>
+                    </form>
+                </div>
+                <div class="form-group mb-2">
+                    @foreach ($memorandum as $key)
+                        <a href="{{ $key->memorandum }}" target="_blank" class="btn btn-danger btn-circle m-1 btn-circle-sm" title="DESCARGAR MEMORANDUM N° {{ $key->num_memo }}">
+                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
+                            MEMORANDUM {{ $key->num_memo }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+            
             <form id="formSendDtaTo" method="POST" action="{{ route('validacion.dta.cursos.envio.planeacion') }}">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-2">
                         <input type="text" name="filterClaveCurso" id="filterClaveCurso" class="form-control" placeholder="BUSQUEDA POR CLAVE DE CURSO">
-                    </div>
-                    <div class="form-group col-md-2 mb-2">
-                        <a href="{{ $memorandum->memorandum }}" target="_blank" class="btn btn-info btn-circle m-1 btn-circle-sm" title="DESCARGAR MEMORANDUM N° {{ $memorandum->num_memo }}">
-                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
-                            MEMORANDUM {{ $memorandum->num_memo }}
-                        </a>
-                    </div>
+                    </div> 
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-3">
@@ -123,21 +137,19 @@
                     <div class="form-group mb-2">
                         <button input type="button" id="btnEnviarPlaneacion" name="btnEnviarPlaneacion" 
                             value="EnviarPlaneacion"  
-                            class="btn btn-success my-2 my-sm-0 waves-effect waves-light" data-toggle="modal" data-target="#exampleModalCenter">
+                            class="btn btn-info my-2 my-sm-0 waves-effect waves-light" data-toggle="modal" data-target="#exampleModalCenter">
                             <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>&nbsp;
                             ENVIAR A PLANEACIÓN
                         </button> 
                     </div>
                 {{-- @endcan --}}
                     
-                @if ($regresar_unidad->count() > 0)
                     <div class="form-group mb-2">
                         <button input type="submit" id="validarDireccionDta" name="validarDireccionDta" value="RegresarEnlaceDta"  class="btn btn-warning my-2 my-sm-0 waves-effect waves-light">
                             <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
                             REGRESAR A LOS ENLACES
                         </button>
                     </div>  
-                @endif
                     
                 </div>        
             
@@ -270,8 +282,8 @@
                                 <th scope="col">NAESCOLM9</th>
                                 <th scope="col">NAESCOLH9</th>
                                 <th scope="col" style="width:50%">OBSERVACIONES</th>
-                                <th scope="col" style="width:50%">OBSERVACIONES ENLACES</th>
-                                <th scope="col" style="width: 50%">COMENTARIOS</th>                                    
+                                <th scope="col" style="width: 50%">COMENTARIOS</th> 
+                                <th scope="col" style="width:50%">OBSERVACIONES ENLACES</th>                                   
                             </tr>
                         </thead>
                         <tbody style="height: 300px; overflow-y: auto">
@@ -399,8 +411,8 @@
                                     <td>{{ $datas->naesm9 }}</td>
                                     <td>{{ $datas->naesh9 }}</td>
                                     <td><div style = "width:900px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
-                                    <td><div style="width: 900px; word-wrap: break-word">{{ $datas->observaciones_enlaces }}</div></td>
-                                    <td><textarea name="comentarios[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea></td>                
+                                    <td><textarea name="comentarios[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea></td>
+                                    <td><div style="width: 900px; word-wrap: break-word">{{ $datas->observaciones_enlaces }}</div></td>             
                                 </tr>
                             @endforeach
                         </tbody>

@@ -114,7 +114,7 @@
                             <th>{{ $a->espe }}</th>  
                             <th>{{ $a->curso }}</th>
                             <th>{{ $a->clave }}</th>
-                            <th>NO REPORTADO</th>
+                            <th>{{ $a->status }}</th>
                         </tr>
                         @php $num=$num+1; @endphp
                         @endforeach

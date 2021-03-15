@@ -38,8 +38,8 @@
 @section('content')
     <div class="container g-pt-50">
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert alert-info" role="alert">
-            <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL <strong>{{ $fechaEntregaFormatoT }}</strong></b>
+        <div class="alert {{ $diasParaEntrega <= 5 ? 'alert-warning' : 'alert-info' }}" role="alert">
+            <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
         </div>
         {{-- información sobre la entrega del formato t para unidades END --}}
         <div class="alert"></div>
@@ -49,7 +49,7 @@
             </div>
         @endif
         @if ($message = Session::get('success'))
-            <div class="alert alert-warning">
+            <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
         @endif
@@ -97,6 +97,7 @@
                 <div class="form-group col-md-4">
                     {!! Form::submit( 'FILTRAR', ['id'=>'formatot', 'class' => 'btn btn-outline-info my-2 my-sm-0 waves-effect waves-light', 'name' => 'submitbutton'])!!}
                 </div>
+                
             </div>
         {!! Form::close() !!}
             
@@ -105,9 +106,12 @@
             <form id="dtaformGetDocument" method="POST" action="{{ route('formatot.send.dta') }}" target="_blank">
                 @csrf
                 <div class="form-row">
-                    <div class="form-group col-md-3 mb-2">
+                    <div class="form-group col-md-8 mb-2">
                         <input type="text" class="form-control mr-sm-1" name="numero_memo" id="numero_memo" placeholder="NÚMERO DE MEMORANDUM">
                     </div>
+                </div>
+                <div class="form-row">
+                    
                     <div class="form-group mb-2">
                         <button input type="submit" id="generarMemoAFirma" name="generarMemoAFirma"  class="btn btn-danger my-2 my-sm-0 waves-effect waves-light">
                             <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
@@ -132,6 +136,13 @@
                         </div>
                     @endif
                     
+                    <div class="form-group mb-2 mb-2">
+                        <a href="javascript:;" class="btn btn-success my-2 my-sm-0 waves-effect waves-light" id="exportarFormatoTExcel">
+                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
+                            EXPORTAR FORMATO T
+                        </a>
+                    </div>
+                    <input type="hidden" value="{{ $unidad }}" id="unidadesFormatoT" name="unidadesFormatoT">
                 </div> 
                 <div class="table-responsive">     
                     <table  id="table-911" class="table" style='width: 100%'>                
@@ -419,13 +430,17 @@
             <div class="modal-header">
               <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y ENVIAR A VALIDACIÓN DTA</b></h5>
             </div>
-            <form id="formSendDta" enctype="multipart/form-data" method="POST" action="{{ route('formatot.send.dta') }}">
+            <form id="formSendDta" enctype="multipart/form-data" method="POST" action="{{ route('formatot.seguimiento.paso2') }}">
+                @csrf
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <input type="file" name="cargar_archivo_formato_t" id="cargar_archivo_formato_t" class="form-control">
                         </div>
                     </div>
+                    <input type="hidden" name="check_cursos_dta" id="check_cursos_dta">
+                    <input type="hidden" name="numero_memo" id="numero_memo">
+                    <input type="hidden" name="comentarios_unidad" id="comentarios_unidad">
                 </div>
                 <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
@@ -436,58 +451,12 @@
         </div>
     </div>
     <!--MODAL FORMULARIO ENDS-->
-    {{-- MODAL DE MENSAJE --}}
-    <div class="modal fade" id="mensajeFechaLimite" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel"><b>INFORMACIÓN ACERCA DEL CALENDARIO DE FECHAS DE ENTREGA</b></h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <b>
-                  <strong>
-                    SE HACE UN ATENTO AVISO PARA ENVIAR LA INFORMACIÓN MENSUAL DEL FORMATO T A LA DIRECCIÓN DE PLANEACIÓN
-                    PARA EL CUMPLIMIENTO CON LA NORMA.
-                  </strong>
-              </b>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">CERRAR</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    {{-- MODAL DE MENSAJE DE TIEMPO DE ENTREGA --}}
     
 @endsection
 @section('script_content_js')
 <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
 <script type="text/javascript">
     $(function(){
-        // funcion en el onload del jquery
-        $.ajax({
-            url: "{{route('formato.check.to.deliver')}}",
-            type: 'GET',
-            success: function(response)
-            {
-                console.log(response);
-                if (response >= 20) {
-                    $('#mensajeFechaLimite').modal();
-                }
-                // if (response === 'true') {
-                //     console.log(response);
-                //     $('#mensajeFechaLimite').modal();
-                // } else {
-                    
-                // }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-            }
-        });
         //$('input[type=checkbox]').attr('disabled', 'disabled'); //disable
         $('#mod_format').on('click', function name() {
             $('input[type=checkbox]').removeAttr('disabled');
@@ -579,76 +548,98 @@
                         accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
                     }
                 },
-                submitHandler: function(form, event){
-                    event.preventDefault();
-                    var check_cursos = new Array();
-                    var comentario_unidad = new Array();
-                    $('input[name="chkcursos_list[]"]:checked').each(function() {
-                        check_cursos.push(this.value);
-                    });
-                    $('textarea[name="comentarios_unidad[]"]').each(function(){
-                        comentario_unidad.push(this.value);
-                    });
-                    var numero_memo = $('#numero_memo').val();
-                    /***
-                    * cargar_archivo_formato_t
-                    */
-                    var formData = new FormData(form);
-                    formData.append("check_cursos_dta", check_cursos);
-                    formData.append("numero_memo", numero_memo);
-                    formData.append("comentarios_unidad", comentario_unidad);
-                    var _url = "{{route('formatot.seguimiento.paso2')}}";
-                    var requested = $.ajax
-                    ({
-                        url: _url,
-                        method: 'POST',
-                        data: formData,
-                        dataType: 'json',
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        beforeSend: function(){
-                            $("#exampleModalCenter").modal("hide");
-                            document.querySelector("#spinner").removeAttribute('hidden');
-                        },
-                        success: function(response){
-                            if (response === 1) {
-                                $("#dtaform").trigger("reset");
-                                $( ".alert" ).addClass("alert-success");
-                                $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
-                                // redireccionar después de 5 segundos
-                                setTimeout(function(){ 
-                                    window.location.href = "{{ route('vista_formatot')}}";
-                                 }, 3000);
-                            }
-                        },
-                        complete:function(data){
-                            // escondemos el modales
-                            document.querySelector('#spinner').setAttribute('hidden', '');
-                        },
-                        error: function(jqXHR, textStatus){
-                            //jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                            //document.querySelector('#spinner').setAttribute('hidden', '');
-                            console.log(jqXHR.responseText);
-                            alert( "Hubo un error: " + jqXHR.status );
-                        }
-                    });
-                    $.when(requested).then(function(data, textStatus, jqXHR ){
-                        if (jqXHR.status === 200) {
-                            document.querySelector('#spinner').setAttribute('hidden', '');
-                        }
-                    });
-                }
+                // submitHandler: function(form, event){
+                //     event.preventDefault();
+                //     var check_cursos = new Array();
+                //     var comentario_unidad = new Array();
+                //     $('input[name="chkcursos_list[]"]:checked').each(function() {
+                //         check_cursos.push(this.value);
+                //     });
+                //     $('textarea[name="comentarios_unidad[]"]').each(function(){
+                //         comentario_unidad.push(this.value);
+                //     });
+                //     var numero_memo = $('#numero_memo').val();
+                //     /***
+                //     * cargar_archivo_formato_t
+                //     */
+                //     var formData = new FormData(form);
+                //     formData.append("check_cursos_dta", check_cursos);
+                //     formData.append("numero_memo", numero_memo);
+                //     formData.append("comentarios_unidad", comentario_unidad);
+                //     var _url = "{{route('formatot.seguimiento.paso2')}}";
+                //     var requested = $.ajax
+                //     ({
+                //         url: _url,
+                //         method: 'POST',
+                //         data: formData,
+                //         dataType: 'json',
+                //         cache: false,
+                //         contentType: false,
+                //         processData: false,
+                //         beforeSend: function(){
+                //             $("#exampleModalCenter").modal("hide");
+                //             document.querySelector("#spinner").removeAttribute('hidden');
+                //         },
+                //         success: function(response){
+                //             if (response === 1) {
+                //                 $("#dtaform").trigger("reset");
+                //                 $( ".alert" ).addClass("alert-success");
+                //                 $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
+                //                 // redireccionar después de 5 segundos
+                //                 setTimeout(function(){ 
+                //                     window.location.href = "{{ route('vista_formatot')}}";
+                //                  }, 3000);
+                //             }
+                //         },
+                //         complete:function(data){
+                //             // escondemos el modales
+                //             document.querySelector('#spinner').setAttribute('hidden', '');
+                //         },
+                //         error: function(jqXHR, textStatus){
+                //             //jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                //             //document.querySelector('#spinner').setAttribute('hidden', '');
+                //             console.log(jqXHR.responseText);
+                //             alert( "Hubo un error: " + jqXHR.status );
+                //         }
+                //     });
+                //     $.when(requested).then(function(data, textStatus, jqXHR ){
+                //         if (jqXHR.status === 200) {
+                //             document.querySelector('#spinner').setAttribute('hidden', '');
+                //         }
+                //     });
+                // }
             }); // configurar el validador
         });
-        $('#enviarDTA').click(function(){
-            $("#exampleModalCenter").modal("show");
-        });
+
         $('#close_btn_modal_send_dta').click(function(){
             $("#exampleModalCenter").modal("hide");
         });
         $("#selectAll").click(function() {
             $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
+        });
+        // cargar el modal al arbrirlo
+        $('#enviarDTA').click(function(){
+            var check_cursos = new Array();
+            var comentario_unidad = new Array();
+            var numero_memo = $('#numero_memo').val();
+            $('input[name="chkcursos_list[]"]:checked').each(function() {
+                check_cursos.push(this.value);
+            });
+            $('textarea[name="comentarios_unidad[]"]').each(function(){
+                comentario_unidad.push(this.value);
+            });
+
+            $('.modal-body #numero_memo').val(numero_memo);
+            $('.modal-body #check_cursos_dta').val(check_cursos);
+            $('.modal-body #comentarios_unidad').val(comentario_unidad);
+            $("#exampleModalCenter").modal("show");
+        });
+
+        // mostrar click
+        $('#exportarFormatoTExcel').click(function(){
+            //deshabilitar
+            $('#numero_memo').addClass("{required:true}")
+            $('#dtaformGetDocument').attr('action', "{{route('reportes.formatot.unidad.xls')}}"); $('#dtaformGetDocument').submit();
         });
     });
 </script>

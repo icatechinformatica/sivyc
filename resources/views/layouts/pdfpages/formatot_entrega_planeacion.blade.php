@@ -32,7 +32,7 @@
         
         }
         .margin_top_ccp {
-            margin-top: 9em;
+            margin-top: 8em;
         }
     </style>
 </head>
@@ -89,7 +89,7 @@
         <div align="justify" style="font-size:16px;">
            <p>
             Por este medio y en seguimiento a la integración del Formato T de las Unidades de Capacitación
-            de este Instituto correspondiente al mes de <b>febrero</b> de la anualidad en curso; me es grato infórmarle <br/>
+            de este Instituto correspondiente al mes de <b>{{ $mesDato }}</b> de la anualidad en curso; me es grato infórmarle <br/>
             que fue revisado y liberado el reporte estadístico denominado Formato T.
            </p>
         </div>
