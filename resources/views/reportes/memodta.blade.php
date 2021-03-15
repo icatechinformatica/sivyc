@@ -127,7 +127,7 @@
                         <th>{{ $a->cupo }}</th>
                         <th>{{ $a->nombre }}</th>
                         <th>{{ $a->clave }}</th>
-                        <th>{{ $a->observaciones }}</th>
+                        <th>{{ $a->tnota }}</th>
                     </tr>
                     @endforeach
                 </tbody>
