@@ -55,7 +55,11 @@
         @endif
         
         <div class="row">
-            <h4>Reporte Formato T</h4>  
+            <div class="col-lg-8 margin-tb">
+                <div>
+                    <h3><b>GENERACIÓN DEL FORMATO T DE LA UNIDAD {{ $unidad }}</b></h3>
+                </div>
+            </div>
         </div>
 
         {{ Form::open(['route' => 'vista_formatot', 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
