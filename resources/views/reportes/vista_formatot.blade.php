@@ -267,7 +267,7 @@
                         </thead>
                         <tbody style="height: 300px; overflow-y: auto">
                             @foreach ($var_cursos as $datas)
-                                <tr align="center">
+                                <tr align="center" style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#F14D08 ' : '' }}>">
                                     <td><input type="checkbox" id="cb1" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" checked {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}/></td></td>
                                     <td>{{ $datas->unidad }}</td>
                                     <td>{{ $datas->plantel }}</td>
