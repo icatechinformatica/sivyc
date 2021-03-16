@@ -511,12 +511,12 @@ Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
 Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
 Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc');
-Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
+Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot')->middleware('can:vista.formatot.unidades.indice');
 Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
 Route::post('/reportes/vista_ft/savetodta', 'ftcontroller@store')->name('formatot.send.dta');
 Route::post('/formato/ft/paso2', 'ftcontroller@paso2')->name('formatot.seguimiento.paso2');
-Route::get('/validacion/cursos/index', 'Validacion\validacionDtaController@index')->name('validacion.cursos.enviados.dta');
-Route::get('/validacion/dta/revision/cursos/index', 'Validacion\validacionDtaController@indexRevision')->name('validacion.dta.revision.cursos.indice');
+Route::get('/validacion/cursos/index', 'Validacion\validacionDtaController@index')->name('validacion.cursos.enviados.dta')->middleware('can:vista.validacion.enlaces.dta');
+Route::get('/validacion/dta/revision/cursos/index', 'Validacion\validacionDtaController@indexRevision')->name('validacion.dta.revision.cursos.indice')->middleware('can:vista.validacion.direccion.dta');
 Route::post('/reportes/dta/savetounity', 'Validacion\validacionDtaController@storedtafile')->name('dta.send.unity');
 // nueva modificación
 Route::post('/validacion/cursos/', 'Validacion\validacionDtaController@store')->name('enviar.cursos.validacion.dta');

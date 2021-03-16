@@ -139,15 +139,27 @@
                     </div>
 
                 </li>
-                <li class="nav-item g-mx-5--lg dropdown">
-                    <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Formatos t
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
-                        <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación Formato T por Unidades t</a>
-                        <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Validación DTA t</a>
-                    </div>
-                </li>
+                @can('formatot.menu.indice')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Formatos t
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
+                            @can('vista.formatot.unidades.indice')
+                                <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación Formato T por Unidades</a> 
+                            @endcan
+                            @can('vista.validacion.enlaces.dta')
+                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato t</a>  
+                            @endcan
+                            @can('vista.validacion.direccion.dta')
+                                <a class="dropdown-item" href="{{ route('validacion.dta.revision.cursos.indice') }}">Validación de Cursos Formato t DTA</a>
+                            @endcan
+                            @can('vista.revision.validacion.planeacion.indice')
+                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Revisión y Validación Final Formato t</a>
+                            @endcan
+                        </div>
+                    </li>
+                @endcan
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Solicitudes(DTA)
