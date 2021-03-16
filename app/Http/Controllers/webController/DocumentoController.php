@@ -48,7 +48,7 @@ class DocumentoController extends Controller
     {
         //
         $file = storage_path("app\\filesUpload\\".$folder."\\" . $id . '\\' . $slug);
-        // dd($file);
+         dd($file);
         
         if (file_exists($file)) {
             # si existe el archivo podemos avanzar
