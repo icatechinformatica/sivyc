@@ -612,7 +612,9 @@
                 check_cursos.push(this.value);
             });
             $('textarea[name="comentarios_unidad[]"]').each(function(){
-                comentario_unidad.push(this.value);
+                if (this.value) {
+                    comentario_unidad.push(this.value);
+                }
             });
 
             $('.modal-body #numero_memo').val(numero_memo);
