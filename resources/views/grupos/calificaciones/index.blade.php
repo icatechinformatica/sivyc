@@ -92,7 +92,7 @@
                     <tfoot>
                         <tr>
                         @if(count($alumnos)>0 AND $fecha_valida>=0 AND $cambios==true) 
-                            <td colspan="3" class="text-right">{{ Form::button('GUARDAR CAMBIOS', ['id' => 'guardar','class' => 'btn']) }}</td>
+                            <td colspan="4" class="text-right">{{ Form::button('GUARDAR CAMBIOS', ['id' => 'guardar','class' => 'btn']) }}</td>
                         @endif
                         </tr>
                     </tfoot>

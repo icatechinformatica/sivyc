@@ -55,7 +55,7 @@ class calificacionesController extends Controller
                 $fecha_valida =  strtotime($fecha_hoy)-strtotime($fecha_penultimo);
                 
                 if($curso->turnado == "UNIDAD" AND $curso->status!="REPORTADO" AND $curso->status!="CANCELADO"){                     
-                     $alumnos = DB::table('tbl_inscripcion')->select('id','matricula','alumno','calificacion','folio')->where('id_curso',$curso->id)->orderby('alumno')->get();
+                     $alumnos = DB::table('tbl_inscripcion')->select('id','matricula','alumno','calificacion','folio')->where('id_curso',$curso->id)->where('status','INSCRITO')->orderby('alumno')->get();
                      if($fecha_valida<0) $message = "No prodece el registro calificaciones, la fecha de termino del curso es el $curso->termino.";                                          
                 }else $message = "El Curso fué $curso->status y turnado a $curso->turnado.";// .$curso->turnado;           
                 
@@ -84,7 +84,7 @@ class calificacionesController extends Controller
                 $a = DB::table('tbl_inscripcion as i')->select('i.*','c.id as id_curso',DB::raw('right(c.clave,4) as grupo'),'c.area','c.espe','c.curso','c.mod','c.nombre as instructor', 'c.inicio','c.termino','c.hini', 'c.hfin', 'c.dura','c.ciclo', DB::raw('EXTRACT(MONTH FROM c.termino)  as mes_termino'))
                     ->Join('tbl_cursos as c', function($join){
                         $join->on('c.id', '=', 'i.id_curso');                        
-                    })->where('i.id',$key)->where('i.id_curso',$id_curso)->orderby('i.alumno')->first();
+                    })->where('i.id',$key)->where('i.id_curso',$id_curso)->where('i.status','INSCRITO')->orderby('i.alumno')->first();
                 if($a){
                     $result2 = DB::table('tbl_calificaciones')->updateOrInsert(
                         ['idcurso' => $a->id_curso, 'matricula' => $a->matricula],
