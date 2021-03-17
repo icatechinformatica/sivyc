@@ -267,8 +267,14 @@
                         </thead>
                         <tbody style="height: 300px; overflow-y: auto">
                             @foreach ($var_cursos as $datas)
-                                <tr align="center" style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#F14D08 ' : '' }}>">
-                                    <td><input type="checkbox" id="cb1" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" checked {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}/></td></td>
+                                <tr align="center" 
+                                    style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#F14D08 ' : '' }} 
+                                        {{ ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) ? '' : '#808080' }}" >
+                                    <td>
+                                        @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer)
+                                            <input type="checkbox" id="cb1" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" checked {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}/>
+                                        @endif
+                                    </td>
                                     <td>{{ $datas->unidad }}</td>
                                     <td>{{ $datas->plantel }}</td>
                                     <td>{{ $datas->espe }}</td>
@@ -391,7 +397,9 @@
                                     <td>{{ $datas->naesh9 }}</td>
                                     <td><div style = "width:800px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
                                     <td>
-                                        <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea>
+                                        @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer)
+                                            <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea>
+                                        @endif
                                     </td>
                                     <td><div style = "width:600px; word-wrap: break-word">{{ $datas->observaciones_enlaces }}</div></td>                    
                                 </tr>
