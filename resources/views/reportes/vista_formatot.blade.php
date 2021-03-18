@@ -433,7 +433,7 @@
                     </div>
                     <input type="hidden" name="check_cursos_dta" id="check_cursos_dta">
                     <input type="hidden" name="numero_memo" id="numero_memo">
-                    <input type="hidden" name="comentarios_unidad" id="comentarios_unidad">
+                    <input type="hidden" name="comentarios_unidad_to_dta" id="comentarios_unidad_to_dta">
                 </div>
                 <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
@@ -645,11 +645,13 @@
                 check_cursos.push(this.value);
             });
             $('textarea[name="comentarios_unidad[]"]').each(function(){
-                comentario_unidad.push(this.value);
+                if (!$(this).prop('disabled')) {
+                    comentario_unidad.push(this.value);
+                }
             });
             $('.modal-body #numero_memo').val(numero_memo);
             $('.modal-body #check_cursos_dta').val(check_cursos);
-            $('.modal-body #comentarios_unidad').val(comentario_unidad);
+            $('.modal-body #comentarios_unidad_to_dta').val(comentario_unidad);
             $("#exampleModalCenter").modal("show");
         });
     });

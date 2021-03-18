@@ -351,20 +351,22 @@ class ftcontroller extends Controller
                      */
                     # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
                     $data = explode(",", $cursoschk);
-                    dd($data);
-                    $comentario_unidad = explode(",", $_POST['comentarios_unidad']); // obtenemos los comentarios
+                    $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
                     foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
                         $comentarios_envio_dta = [
                             'OBSERVACION_UNIDAD' =>  $comentariosUnidad
                         ];
                         \DB::table('tbl_cursos')
                             ->where('id', $key)
-                            ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
+                            ->update([
+                            'memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
                             'status' => 'TURNADO_DTA', 
                             'turnado' => 'DTA',
-                            'fecha_turnado' => $formatFechaActual,
-                            'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)")]);
+                            'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)"),
+                            'fecha_turnado' => $formatFechaActual
+                            ]);
                     }
+                    
                 } else {
                     # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
                     #obtenemos el mes después
@@ -379,7 +381,7 @@ class ftcontroller extends Controller
                      */
                     # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
                     $data = explode(",", $cursoschk);
-                    $comentario_unidad = explode(",", $_POST['comentarios_unidad']); // obtenemos los comentarios
+                    $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
                     foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
                         $comentarios_envio_dta = [
                             'OBSERVACION_UNIDAD' =>  $comentariosUnidad

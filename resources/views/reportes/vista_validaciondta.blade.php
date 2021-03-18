@@ -161,7 +161,7 @@
                         <caption>CURSOS VALIDADOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA</caption>
                         <thead>
                             <tr align="center">
-                                <th scope="col">SELECCIONAR/QUITAR &nbsp;
+                                <th scope="col">SELECCIONAR &nbsp;
                                     <input type="checkbox" id="selectAll"/>
                                 </th>
                                 <th scope="col">MES REPORTADO</th>
@@ -293,7 +293,7 @@
                         <tbody style="height: 300px; overflow-y: auto">
                             @foreach ($cursos_validar as $datas)
                                 <tr align="center">
-                                    <td><input type="checkbox" id="{{ $datas->id_tbl_cursos }}" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}"/></td>
+                                    <td><input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}" class="checkbx" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}"/></td>
                                     <td>{{ $datas->fechaturnado }}</td>
                                     <td>{{ $datas->unidad }}</td>
                                     <td>{{ $datas->plantel }}</td>
@@ -417,7 +417,7 @@
                                     <td>{{ $datas->naesh9 }}</td>
                                     <td><div style = "width:900px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
                                     <td><div style="width: 300px; word-wrap: break-word">{{ $datas->observaciones_unidad }}</div></td>
-                                    <td><textarea name="comentarios_enlaces[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea></td>                
+                                    <td><textarea name="comentarios_enlaces[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" disabled></textarea></td>                
                                 </tr>
                             @endforeach
                         </tbody>
@@ -482,7 +482,9 @@
             });
             // se cargan los textarea en el arreglo
             $('textarea[name="comentarios_enlaces[]"]').each(function(){
-               comentario_retorno.push(this.value);
+                if (!$(this).prop('disabled')) {
+                    comentario_retorno.push(this.value);   
+                }
             });
             $('.modal-body #numero_memo_devolucion').val(numMemo);
             $('.modal-body #check_cursos_dta').val(cursosChecked);
@@ -495,7 +497,35 @@
             $("#exampleModalCenter").modal("hide");
         });
         $("#selectAll").click(function() {
-            $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
+            $("input[type=checkbox]").not(this).prop("checked", $(this).prop("checked"));
+            $("input[type=checkbox]").each(function(){
+                if ($(this).is(":checked")) {
+                    if ($(this).attr("id") != 'selectAll') {
+                        var id = $(this).attr("id").split("_");
+                        id = id[id.length-1];
+                        $('#comentario_' + id).attr('disabled', false);
+                    }
+                } else {
+                    if ($(this).attr("id") != 'selectAll') {
+                        var id = $(this).attr("id").split("_");
+                        id = id[id.length-1];
+                        $('#comentario_' + id).attr('disabled', true);
+                    }
+                }
+            })
+        });
+
+        // trabajar con el checkbox
+        $("input.checkbx").change(function(){
+            if (this.checked) {
+                var id = $(this).attr("id").split("_");
+                id = id[id.length-1];
+                $('#comentario_' + id).attr('disabled', false);
+            } else {
+                var id = $(this).attr("id").split("_");
+                id = id[id.length-1];
+                $('#comentario_' + id).attr('disabled', true);
+            }
         });
         
         // VALIDACIONES
