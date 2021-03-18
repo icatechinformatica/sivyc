@@ -351,6 +351,7 @@ class ftcontroller extends Controller
                      */
                     # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
                     $data = explode(",", $cursoschk);
+                    dd($data);
                     $comentario_unidad = explode(",", $_POST['comentarios_unidad']); // obtenemos los comentarios
                     foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
                         $comentarios_envio_dta = [

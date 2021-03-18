@@ -57,7 +57,7 @@
         <div class="row">
             <div class="col-lg-8 margin-tb">
                 <div>
-                    <h3><b>GENERACIÓN DEL FORMATO T DE LA UNIDAD {{ $unidad }}</b></h3>
+                    <h3><b>GENERACIÓN DEL FORMATO T</b></h3>
                 </div>
             </div>
         </div>
@@ -128,7 +128,6 @@
                             </button>
                         </div>
                     @endif
-                    
                 </div> 
                 <div class="table-responsive">     
                     <table  id="table-911" class="table" style='width: 100%'>                
@@ -136,8 +135,8 @@
                             <tr align="center">
                                 <th scope="col">
                                     <div style = "width:100px; word-wrap: break-word">
-                                        SELECCIONAR/QUITAR
-                                        <input type="checkbox" id="selectAll" checked {{ $retornoUnidad->isEmpty() ? '' : 'disabled'  }}/>
+                                        SELECCIONAR
+                                        <input type="checkbox" id="selectAll" {{ $retornoUnidad->isEmpty() ? '' : 'disabled'  }}/>
                                     </div>
                                 </th>
                                 <th scope="col">UNIDAD</th>
@@ -268,11 +267,11 @@
                         <tbody style="height: 300px; overflow-y: auto">
                             @foreach ($var_cursos as $datas)
                                 <tr align="center" 
-                                    style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#F14D08 ' : '' }} 
+                                    style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F ' : '' }} 
                                         {{ ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) ? '' : '#808080' }}" >
                                     <td>
                                         @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer)
-                                            <input type="checkbox" id="cb1" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" checked {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}/>
+                                            <input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}" class="checkbx" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}/>
                                         @endif
                                     </td>
                                     <td>{{ $datas->unidad }}</td>
@@ -398,7 +397,7 @@
                                     <td><div style = "width:800px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
                                     <td>
                                         @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer)
-                                            <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"></textarea>
+                                            <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" disabled></textarea>
                                         @endif
                                     </td>
                                     <td><div style = "width:600px; word-wrap: break-word">{{ $datas->observaciones_enlaces }}</div></td>                    
@@ -604,12 +603,38 @@
                 // }
             }); // configurar el validador
         });
-
         $('#close_btn_modal_send_dta').click(function(){
             $("#exampleModalCenter").modal("hide");
         });
         $("#selectAll").click(function() {
-            $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
+            $("input[type=checkbox]").not(this).prop("checked", this.checked);
+            $("input[type=checkbox]").each(function(){
+                if ($(this).is(":checked")) {
+                    if ($(this).attr("id") != 'selectAll') {
+                        var id = $(this).attr("id").split("_");
+                        id = id[id.length-1];
+                        $('#comentario_' + id).attr('disabled', false);
+                    }
+                } else {
+                    if ($(this).attr("id") != 'selectAll') {
+                        var id = $(this).attr("id").split("_");
+                        id = id[id.length-1];
+                        $('#comentario_' + id).attr('disabled', true);
+                    }
+                }
+            })
+        });
+        // trabajar con el checkbox
+        $("input.checkbx").change(function(){
+            if (this.checked) {
+                var id = $(this).attr("id").split("_");
+                id = id[id.length-1];
+                $('#comentario_' + id).attr('disabled', false);
+            } else {
+                var id = $(this).attr("id").split("_");
+                id = id[id.length-1];
+                $('#comentario_' + id).attr('disabled', true);
+            }
         });
         // cargar el modal al arbrirlo
         $('#enviarDTA').click(function(){
@@ -620,11 +645,8 @@
                 check_cursos.push(this.value);
             });
             $('textarea[name="comentarios_unidad[]"]').each(function(){
-                if (this.value) {
-                    comentario_unidad.push(this.value);
-                }
+                comentario_unidad.push(this.value);
             });
-
             $('.modal-body #numero_memo').val(numero_memo);
             $('.modal-body #check_cursos_dta').val(check_cursos);
             $('.modal-body #comentarios_unidad').val(comentario_unidad);

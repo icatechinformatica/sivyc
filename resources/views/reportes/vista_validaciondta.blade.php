@@ -134,25 +134,25 @@
                     @endcan
 
                     @can('envio.revision.dta')
-                        @if ($regresar_unidad->count() > 0)
+                        {{-- @if ($regresar_unidad->count() > 0) --}}
                             <div class="form-group mb-2">
                                 <button input type="submit" id="validarEnDta" name="validarEnDta" value="GenerarMemorandum"  class="btn btn-danger">
                                     <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
                                     GENERAR MEMORANDUM DE DEVOLUCIÓN
                                 </button>
                             </div>
-                        @endif
+                        {{-- @endif --}}
                     @endcan
                     {{-- cambios en la vista de validaciondta --}}
                     @can('envio.revision.dta')
-                        @if ($regresar_unidad->count() > 0)
+                        {{-- @if ($regresar_unidad->count() > 0) --}}
                             <div class="form-group mb-2">
                                 <button input type="button" id="enviardta" name="enviardta" value="RegresarUnidad"  class="btn btn-warning">
                                     <i class="fa fa-upload fa-2x" aria-hidden="true"></i>&nbsp;
                                     ENVIAR A UNIDAD
                                 </button>
                             </div>
-                        @endif
+                        {{-- @endif --}}
                     @endcan
                 </div>        
             
@@ -164,6 +164,7 @@
                                 <th scope="col">SELECCIONAR/QUITAR &nbsp;
                                     <input type="checkbox" id="selectAll"/>
                                 </th>
+                                <th scope="col">MES REPORTADO</th>
                                 <th scope="col">UNIDAD</th>
                                 <th scope="col">PLANTEL</th>
                                 <th scope="col">ESPECIALIDAD</th>
@@ -292,7 +293,8 @@
                         <tbody style="height: 300px; overflow-y: auto">
                             @foreach ($cursos_validar as $datas)
                                 <tr align="center">
-                                    <td><input type="checkbox" id="{{ $datas->id_tbl_cursos }}" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}"/></td></td>
+                                    <td><input type="checkbox" id="{{ $datas->id_tbl_cursos }}" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}"/></td>
+                                    <td>{{ $datas->fechaturnado }}</td>
                                     <td>{{ $datas->unidad }}</td>
                                     <td>{{ $datas->plantel }}</td>
                                     <td>{{ $datas->espe }}</td>
