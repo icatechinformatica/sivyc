@@ -55,7 +55,14 @@ class calificacionesController extends Controller
                 $fecha_valida =  strtotime($fecha_hoy)-strtotime($fecha_penultimo);
                 
                 if($curso->turnado == "UNIDAD" AND $curso->status!="REPORTADO" AND $curso->status!="CANCELADO"){                     
-                     $alumnos = DB::table('tbl_inscripcion')->select('id','matricula','alumno','calificacion','folio')->where('id_curso',$curso->id)->where('status','INSCRITO')->orderby('alumno')->get();
+                     $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.folio','f.folio as ffolio')
+                        ->leftJoin('tbl_folios as f', function($join){
+                            $join->on('f.id_curso', '=', 'i.id_curso');
+                            $join->on('f.matricula', '=', 'i.matricula');
+                            $join->where('f.movimiento', 'EXPEDIDO');
+                        })
+                        ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
+                     
                      if($fecha_valida<0) $message = "No prodece el registro calificaciones, la fecha de termino del curso es el $curso->termino.";                                          
                 }else $message = "El Curso fué $curso->status y turnado a $curso->turnado.";// .$curso->turnado;           
                 
