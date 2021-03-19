@@ -66,7 +66,7 @@
                         <tr>
                             <th scope="col" >MATR&Iacute;CULA</th>
                             <th scope="col">ALUMNOS</th>
-                            <th scope="col" class="text-center" width="10%">FOLIO ASIGNADO</th>
+                            <th scope="col" class="text-center" width="10%">FOLIO ASIGNADO</th>                            
                             <th scope="col" class="text-center" width="10%">CALIFICACI&Oacute;N</th>                           
                         </tr>
                     </thead>
@@ -76,7 +76,8 @@
                             <tr>
                                 <td> {{ $a->matricula}} </td>
                                 <td> {{ $a->alumno}} </td>
-                                <td class="text-center"> @if($a->folio=='0') {{ 'NINGUNO' }} @else {{$a->folio}}@endif</td>
+                               <!-- <td class="text-center"> @if($a->folio) {{$a->folio}} @else {{ 'NINGUNO' }} @endif</td>-->
+                                <td class="text-center"> @if($a->ffolio) {{$a->ffolio}} @else {{ 'NINGUNO' }} @endif </td>
                                 <td>
                                 @if($a->folio=='0')
                                     <?php $cambios = true; ?>
