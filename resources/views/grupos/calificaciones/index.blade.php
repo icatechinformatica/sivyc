@@ -65,23 +65,35 @@
                     <thead>
                         <tr>
                             <th scope="col" >MATR&Iacute;CULA</th>
-                            <th scope="col">ALUMNOS</th>                            
-                            <th scope="col" class="text-center" width="10%">CALIFICACI&Oacute;N</th>                
+                            <th scope="col">ALUMNOS</th>
+                            <th scope="col" class="text-center" width="10%">FOLIO ASIGNADO</th>                            
+                            <th scope="col" class="text-center" width="10%">CALIFICACI&Oacute;N</th>                           
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $cambios = false; ?>
                         @foreach($alumnos as $a)
                             <tr>
                                 <td> {{ $a->matricula}} </td>
                                 <td> {{ $a->alumno}} </td>
-                                <td> {{ Form::text('calificacion['.$a->id.']', $a->calificacion , ['id'=>$a->id, 'class' => 'form-control numero', 'required' => 'required', 'size' => 1]) }} </td>
+                               <!-- <td class="text-center"> @if($a->folio) {{$a->folio}} @else {{ 'NINGUNO' }} @endif</td>-->
+                                <td class="text-center"> @if($a->ffolio) {{$a->ffolio}} @else {{ 'NINGUNO' }} @endif </td>
+                                <td>
+                                @if($a->folio=='0')
+                                    <?php $cambios = true; ?>
+                                    {{ Form::text('calificacion['.$a->id.']', $a->calificacion , ['id'=>$a->id, 'class' => 'form-control numero', 'required' => 'required', 'size' => 1]) }}
+                                @else
+                                    {{ $a->calificacion }}    
+                                @endif 
+                                 
+                                 </td>                                 
                             </tr>
                         @endforeach                       
                     </tbody>
                     <tfoot>
                         <tr>
-                        @if(count($alumnos)>0 AND $fecha_valida>=0) 
-                            <td colspan="3" class="text-right">{{ Form::button('GUARDAR CAMBIOS', ['id' => 'guardar','class' => 'btn']) }}</td>
+                        @if(count($alumnos)>0 AND $fecha_valida>=0 AND $cambios==true) 
+                            <td colspan="4" class="text-right">{{ Form::button('GUARDAR CAMBIOS', ['id' => 'guardar','class' => 'btn']) }}</td>
                         @endif
                         </tr>
                     </tfoot>
