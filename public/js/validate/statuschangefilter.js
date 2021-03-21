@@ -22,11 +22,24 @@ $(function(){
         {
             $('#divunidades').prop("class", "")
             $('#divcampo').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
         }
         else
         {
             $('#divcampo').prop("class", "")
             $('#divunidades').prop("class", "form-row d-none d-print-none")
+        }
+        if(inputText == 'MES')
+        {
+            $('#divmes').prop("class", "")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "form-row d-none d-print-none")
+        }
+        else
+        {
+            $('#divcampo').prop("class", "")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
         }
       }
 
