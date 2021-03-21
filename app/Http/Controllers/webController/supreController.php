@@ -353,6 +353,26 @@ class supreController extends Controller
         return $json;
     }
 
+    protected function getfoliostats(Request $request)
+    {
+        if (isset($request->valor))
+        {
+            $folio = folio::WHERE('folio_validacion', '=', $request->valor)->FIRST();
+            if($folio == NULL)
+            {
+                $folio = 'N/A';
+            }
+        }
+        else
+        {
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+            $json=json_encode($folio);
+
+
+        return $json;
+    }
+
     public function doc_valsupre_upload(Request $request)
     {
         if ($request->hasFile('doc_validado')) {

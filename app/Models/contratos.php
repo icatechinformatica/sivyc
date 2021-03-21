@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class contratos extends Model
 {
@@ -28,7 +29,7 @@ class contratos extends Model
     /**
      * scope de busqueda por contratos
      */
-    public function scopeBusquedaPorContrato($query, $tipo, $buscar, $tipo_status, $unidad)
+    public function scopeBusquedaPorContrato($query, $tipo, $buscar, $tipo_status, $unidad, $mes)
     {
         if (!empty($tipo)) {
             # se valida el tipo
@@ -42,6 +43,33 @@ class contratos extends Model
                 else
                 {
                     return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
+                }
+            }
+            if($tipo == 'mes')
+            {
+                $now = Carbon::now();
+                $dateini = $now->year.'-'.$mes.'-01';
+                if($mes == '01' || $mes == '03' || $mes == '05' || $mes == '07' || $mes == '08' || $mes == '10' || $mes == '12')
+                {
+                    $datefin = $now->year.'-'.$mes.'-31';
+                }
+                if($mes == '04' || $mes == '06' || $mes == '09' || $mes == '11')
+                {
+                    $datefin = $now->year.'-'.$mes.'-30';
+                }
+                if($mes == '02')
+                {
+                    $datefin = $now->year.'-'.$mes.'-28';
+                }
+                //dd($datefin);
+                # busqueda por unidad capacitacion...
+                if (!empty($tipo_status))
+                {
+                    return $query->whereDate('contratos.created_at', '>=', $dateini)->whereDate('contratos.created_at', '<=', $datefin)->WHERE('folios.status', '=', $tipo_status);
+                }
+                else
+                {
+                    return $query->whereDate('contratos.created_at', '>=', $dateini)->whereDate('contratos.created_at', '<=', $datefin);
                 }
             }
             if (!empty(trim($buscar))) {
@@ -80,7 +108,7 @@ class contratos extends Model
     /**
      * busqueda scope por pagos
      */
-    public function scopeBusquedaPorPagos($query, $tipo, $buscar, $tipo_status, $unidad)
+    public function scopeBusquedaPorPagos($query, $tipo, $buscar, $tipo_status, $unidad, $mes)
     {
         if (!empty($tipo)) {
             # se valida el tipo
@@ -94,6 +122,33 @@ class contratos extends Model
                 else
                 {
                     return $query->WHERE('contratos.unidad_capacitacion', '=', $unidad);
+                }
+            }
+            if($tipo == 'mes')
+            {
+                $now = Carbon::now();
+                $dateini = $now->year.'-'.$mes.'-01';
+                if($mes == '01' || $mes == '03' || $mes == '05' || $mes == '07' || $mes == '08' || $mes == '10' || $mes == '12')
+                {
+                    $datefin = $now->year.'-'.$mes.'-31';
+                }
+                if($mes == '04' || $mes == '06' || $mes == '09' || $mes == '11')
+                {
+                    $datefin = $now->year.'-'.$mes.'-30';
+                }
+                if($mes == '02')
+                {
+                    $datefin = $now->year.'-'.$mes.'-28';
+                }
+                //dd($datefin);
+                # busqueda por unidad capacitacion...
+                if (!empty($tipo_status))
+                {
+                    return $query->whereDate('pagos.created_at', '>=', $dateini)->whereDate('pagos.created_at', '<=', $datefin)->WHERE('folios.status', '=', $tipo_status);
+                }
+                else
+                {
+                    return $query->whereDate('pagos.created_at', '>=', $dateini)->whereDate('pagos.created_at', '<=', $datefin);
                 }
             }
             if (!empty(trim($buscar))) {

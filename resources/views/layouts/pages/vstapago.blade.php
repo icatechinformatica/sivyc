@@ -37,7 +37,25 @@
                             <option value="no_contrato">N° DE CONTRATO</option>
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha_firma">FECHA</option>
+                            <option value="mes">MES</option>
                         </select>
+                        <Div id="divmes" name="divmes" class="d-none d-print-none">
+                            <select name="mes" class="form-control mr-sm-2" id="mes">
+                                <option value="">SELECCIONE MES</option>
+                                <option value="01">ENERO</option>
+                                <option value="02">FEBRERO</option>
+                                <option value="03">MARZO</option>
+                                <option value="04">ABRIL</option>
+                                <option value="05">MAYO</option>
+                                <option value="06">JUNIO</option>
+                                <option value="07">JULIO</option>
+                                <option value="08">AGOSTO</option>
+                                <option value="09">SEPTIEMBRE</option>
+                                <option value="10">OCTUBRE</option>
+                                <option value="11">NOVIEMBRE</option>
+                                <option value="12">DICIEMBRE</option>
+                            </select>
+                        </Div>
                         <Div id="divunidades" name="divunidades" class="d-none d-print-none">
                             <select name="unidad" class="form-control mr-sm-2" id="unidad">
                                 <option value="">SELECCIONE UNIDAD</option>
@@ -82,7 +100,12 @@
                 @foreach ($contratos_folios as $itemData)
                     <tr>
                         <td>{{$itemData->numero_contrato}}</td>
-                        <td>{{$itemData->fecha_firma}}</td>
+                        <td>
+                            @if($itemData->created_at != NULL)
+                                <?php $d = $itemData->created_at->format('d'); $m = $itemData->created_at->format('m'); $y = $itemData->created_at->format('y'); ?>
+                                {{$d}}/{{$m}}/{{$y}}
+                            @endif
+                        </td>
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>{{$itemData->fecha_status}}</td>
@@ -231,11 +254,24 @@
         {
             $('#divunidades').prop("class", "")
             $('#divcampo').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
         }
         else
         {
             $('#divcampo').prop("class", "")
             $('#divunidades').prop("class", "form-row d-none d-print-none")
+        }
+        if(inputText == 'MES')
+        {
+            $('#divmes').prop("class", "")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "form-row d-none d-print-none")
+        }
+        else
+        {
+            $('#divcampo').prop("class", "")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
         }
       }
 
