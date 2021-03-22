@@ -464,7 +464,7 @@ class ftcontroller extends Controller
             }
         } else {
             # si el número de memo está vacio por ende se regresa y se le comenta al usuario que se necesita adjuntar ese dato
-            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
+            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE ASIGNO EL NÚMERO DE MEMORANDUM!']);
         }
  
     }
