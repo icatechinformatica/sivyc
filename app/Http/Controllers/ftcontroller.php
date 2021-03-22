@@ -317,145 +317,153 @@ class ftcontroller extends Controller
     {
         $numero_memo = $request->get('numero_memo'); // número de memo
         $cursoschk = $request->get('check_cursos_dta');
-
-        if (!empty($cursoschk)) {
-            /**
-             * vamos al cargar el archivo que se sube
-            */
-            if ($request->hasFile('cargar_archivo_formato_t')) {
-                // obtenemos el valor del archivo memo
-
-                $validator = Validator::make($request->all(), [
-                    'cargar_archivo_formato_t' => 'mimes:pdf|max:2048'
-                ]);
-
-                if ($validator->fails()) {
-                     # mandar mensaje de error si falla el cargado del archivo
-                     return back()->withInput()->withErrors([$validator]);
-                } else {
-                    $memo = str_replace('/', '_', $numero_memo);
-                    /**
-                     * aquí vamos a verificar que el archivo no se encuentre guardado
-                     * previamente en el sistema de archivos del sistema de ser así se 
-                     * remplazará el archivo porel que se subirá a continuación
-                     */
-                    // construcción del archivo
-                    $archivo_memo = 'uploadFiles/memoValidacion/'.$memo.'/'.$memo.'.pdf';
-                    if (Storage::exists($archivo_memo)) {
-                        #checamos si hay algún documento, de ser así, procedemos a eliminarlo
-                        Storage::delete($archivo_memo);
+        
+        if (!empty($numero_memo)) {
+            # si el número de memo no está vacio hay que iniciar todo el proceso
+            if (!empty($cursoschk)) {
+                /**
+                 * vamos al cargar el archivo que se sube
+                */
+                if ($request->hasFile('cargar_archivo_formato_t')) {
+                    // obtenemos el valor del archivo memo
+    
+                    $validator = Validator::make($request->all(), [
+                        'cargar_archivo_formato_t' => 'mimes:pdf|max:2048'
+                    ]);
+    
+                    if ($validator->fails()) {
+                         # mandar mensaje de error si falla el cargado del archivo
+                         return back()->withInput()->withErrors([$validator]);
+                    } else {
+                        $memo = str_replace('/', '_', $numero_memo);
+                        /**
+                         * aquí vamos a verificar que el archivo no se encuentre guardado
+                         * previamente en el sistema de archivos del sistema de ser así se 
+                         * remplazará el archivo porel que se subirá a continuación
+                         */
+                        // construcción del archivo
+                        $archivo_memo = 'uploadFiles/memoValidacion/'.$memo.'/'.$memo.'.pdf';
+                        if (Storage::exists($archivo_memo)) {
+                            #checamos si hay algún documento, de ser así, procedemos a eliminarlo
+                            Storage::delete($archivo_memo);
+                        }
+    
+                        $archivo_memo_to_dta = $request->file('cargar_archivo_formato_t'); # obtenemos el archivo
+                        $url_archivo_memo = $this->uploaded_memo_validacion_file($archivo_memo_to_dta, $memo, 'memoValidacion'); #invocamos el método
                     }
-
-                    $archivo_memo_to_dta = $request->file('cargar_archivo_formato_t'); # obtenemos el archivo
-                    $url_archivo_memo = $this->uploaded_memo_validacion_file($archivo_memo_to_dta, $memo, 'memoValidacion'); #invocamos el método
+                } else {
+                    $url_archivo_memo = null;
+                }
+                # vamos a checar sólo a los checkbox checados como propiedad
+                if (!empty($cursoschk)) {
+                    // se agregar un arreglo con los meses del año calendario
+                    $mesesCalendarizado = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
+                    $fecha_ahora = Carbon::now();
+                    $fechaActual = Carbon::parse($fecha_ahora);
+                    $date = $fecha_ahora->format('Y-m-d'); // fecha
+                    $numero_memo = $request->get('numero_memo'); // número de memo
+                    $fecha_nueva=$fecha_ahora->format('d-m-Y');
+    
+                    $anioActual = $fecha_ahora->year; // año actual
+    
+                    $currentMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
+                    $fechaEntregaAct = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $currentMonth)->first();
+                    $fEAct = $fechaEntregaAct->fecha_entrega."-".$anioActual;
+                    /**
+                     * convertirlo en un formato fecha
+                     */
+                    $convertfEAct = date_create_from_format('d-m-Y', $fEAct);
+                    $confEAct = date_format($convertfEAct, 'd-m-Y');
+                    /**
+                     * fecha actual
+                     */
+                    $fecha_actual = strtotime($fecha_nueva);
+                    $fechaEntregaSpring = strtotime($confEAct);
+                    /**
+                     * se compara la fecha actual en la que se envía el paquete con la fecha establecida
+                     * en la entrega del calendario del formato t
+                     */
+                    // se generar el arreglo que enviara al paquete DTA
+                    $memos_DTA = [
+                        'NUMERO' => $numero_memo,
+                        'FECHA' => $date,
+                        'MEMORANDUM' => $url_archivo_memo
+                    ];
+    
+                    if ($fechaEntregaSpring >= $fecha_actual) {
+    
+                        $actualMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
+                        $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $actualMonth)->first();
+                        $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
+                        $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
+                        $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
+                        # la fecha de entrega debe siempre ser mayor o igual sobre la fecha actual que se envía el paquete.
+                        
+                        /**
+                         * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
+                         */
+                        # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
+                        $data = explode(",", $cursoschk);
+                        $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
+                        foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
+                            $comentarios_envio_dta = [
+                                'OBSERVACION_UNIDAD' =>  $comentariosUnidad
+                            ];
+                            \DB::table('tbl_cursos')
+                                ->where('id', $key)
+                                ->update([
+                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)"),
+                                    'memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
+                                    'status' => 'TURNADO_DTA', 
+                                    'turnado' => 'DTA',
+                                    'fecha_turnado' => $formatFechaActual
+                                ]);
+                        }
+                        
+                    } else {
+                        # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
+                        #obtenemos el mes después
+                        $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 0];
+                        $fechaNextSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $nextMonth)->first();
+                        $fechNextSpring = $fechaNextSpring->fecha_entrega."-".$anioActual;
+                        $nextSpring = date_create_from_format('d-m-Y', $fechNextSpring);
+                        $formatFechaSiguiente = date_format($nextSpring, 'Y-m-d');
+    
+                        /**
+                         * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
+                         */
+                        # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
+                        $data = explode(",", $cursoschk);
+                        $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
+                        foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
+                            $comentarios_envio_dta = [
+                                'OBSERVACION_UNIDAD' =>  $comentariosUnidad
+                            ];
+                            \DB::table('tbl_cursos')
+                                ->where('id', $key)
+                                ->update([
+                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)"),
+                                    'memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
+                                    'status' => 'TURNADO_DTA', 
+                                    'turnado' => 'DTA',
+                                    'fecha_turnado' => $formatFechaSiguiente,
+                                ]);
+                        }
+                    }
+    
+                    /**
+                     * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
+                     */
+                    return redirect()->route('vista_formatot')
+                           ->with('success', sprintf('CURSOS TURNADO A LA UNIDAD PARA VALIDACIÓN A LA DIRECCIÓN TÉCNICA ACÁDEMICA!'));
+    
                 }
             } else {
-                $url_archivo_memo = null;
-            }
-            # vamos a checar sólo a los checkbox checados como propiedad
-            if (!empty($cursoschk)) {
-                // se agregar un arreglo con los meses del año calendario
-                $mesesCalendarizado = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
-                $fecha_ahora = Carbon::now();
-                $fechaActual = Carbon::parse($fecha_ahora);
-                $date = $fecha_ahora->format('Y-m-d'); // fecha
-                $numero_memo = $request->get('numero_memo'); // número de memo
-                $fecha_nueva=$fecha_ahora->format('d-m-Y');
-
-                $anioActual = $fecha_ahora->year; // año actual
-
-                $currentMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
-                $fechaEntregaAct = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $currentMonth)->first();
-                $fEAct = $fechaEntregaAct->fecha_entrega."-".$anioActual;
-                /**
-                 * convertirlo en un formato fecha
-                 */
-                $convertfEAct = date_create_from_format('d-m-Y', $fEAct);
-                $confEAct = date_format($convertfEAct, 'd-m-Y');
-                /**
-                 * fecha actual
-                 */
-                $fecha_actual = strtotime($fecha_nueva);
-                $fechaEntregaSpring = strtotime($confEAct);
-                /**
-                 * se compara la fecha actual en la que se envía el paquete con la fecha establecida
-                 * en la entrega del calendario del formato t
-                 */
-                // se generar el arreglo que enviara al paquete DTA
-                $memos_DTA = [
-                    'NUMERO' => $numero_memo,
-                    'FECHA' => $date,
-                    'MEMORANDUM' => $url_archivo_memo
-                ];
-
-                if ($fechaEntregaSpring >= $fecha_actual) {
-
-                    $actualMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
-                    $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $actualMonth)->first();
-                    $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
-                    $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
-                    $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
-                    # la fecha de entrega debe siempre ser mayor o igual sobre la fecha actual que se envía el paquete.
-                    
-                    /**
-                     * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
-                     */
-                    # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
-                    $data = explode(",", $cursoschk);
-                    $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
-                    foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
-                        $comentarios_envio_dta = [
-                            'OBSERVACION_UNIDAD' =>  $comentariosUnidad
-                        ];
-                        \DB::table('tbl_cursos')
-                            ->where('id', $key)
-                            ->update([
-                            'memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
-                            'status' => 'TURNADO_DTA', 
-                            'turnado' => 'DTA',
-                            'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)"),
-                            'fecha_turnado' => $formatFechaActual
-                            ]);
-                    }
-                    
-                } else {
-                    # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
-                    #obtenemos el mes después
-                    $nextMonth = $mesesCalendarizado[($fechaActual->format('n')) + 0];
-                    $fechaNextSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $nextMonth)->first();
-                    $fechNextSpring = $fechaNextSpring->fecha_entrega."-".$anioActual;
-                    $nextSpring = date_create_from_format('d-m-Y', $fechNextSpring);
-                    $formatFechaSiguiente = date_format($nextSpring, 'Y-m-d');
-
-                    /**
-                     * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
-                     */
-                    # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
-                    $data = explode(",", $cursoschk);
-                    $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
-                    foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
-                        $comentarios_envio_dta = [
-                            'OBSERVACION_UNIDAD' =>  $comentariosUnidad
-                        ];
-                        \DB::table('tbl_cursos')
-                            ->where('id', $key)
-                            ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
-                            'status' => 'TURNADO_DTA', 
-                            'turnado' => 'DTA',
-                            'fecha_turnado' => $formatFechaSiguiente,
-                            'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)")]);
-                    }
-                }
-
-                /**
-                 * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
-                 */
-                return redirect()->route('vista_formatot')
-                       ->with('success', sprintf('CURSOS TURNADO A LA UNIDAD PARA VALIDACIÓN A LA DIRECCIÓN TÉCNICA ACÁDEMICA!'));
-
+                # enviamos un mensaje que no se puede porque no hay registros
+                return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
             }
         } else {
-            # enviamos un mensaje que no se puede porque no hay registros
+            # si el número de memo está vacio por ende se regresa y se le comenta al usuario que se necesita adjuntar ese dato
             return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
         }
  
