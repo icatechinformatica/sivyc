@@ -53,7 +53,7 @@ $(function(){
 
             request.fail(( jqXHR, textStatus ) =>
             {
-                alert( "Hubo un error: " + textStatus );
+                alert( "Hubo un error: " + jqXHR.responseText );
             });
 
             } else {
