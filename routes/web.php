@@ -46,7 +46,7 @@ Route::get('/convenios/alta-baja/{id}', 'webController\ConveniosController@alta_
 Route::post('/Convenios/alta-baja/save','webController\ConveniosController@alta_baja_save')->name('convenio-alta-baja-save');
 
 // Ruta Supre busqueda & misc
-Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats');
+Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats')->name('supre.busqueda.curso');
 Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios')->name('alumnos.sid.municipios');
 Route::post('/supre/validacion/upload_doc','webController\SupreController@doc_valsupre_upload')->name('doc-valsupre-guardar');
 Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
