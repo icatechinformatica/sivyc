@@ -45,7 +45,7 @@ $(function(){
 
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
                         }else{
-
+                            console.log("ESto es una respuesta" + respuesta);
                             //Puedes mostrar un mensaje de error en algún div del DOM
                         }
                     }
