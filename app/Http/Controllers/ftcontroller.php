@@ -532,7 +532,7 @@ class ftcontroller extends Controller
                     $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
                     'pvinculacion','jcyc','pjcyc')->where('unidad',$_SESSION['unidad'])->first();
                     $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva'));
-                    return $pdf->stream('Memo_DTA.pdf');
+                    return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
                      */
