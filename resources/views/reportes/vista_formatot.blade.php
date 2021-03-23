@@ -270,7 +270,7 @@
                                     style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F ' : '' }} 
                                         {{ ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) ? '' : '#808080' }}" >
                                     <td>
-                                        @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer)
+                                        @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad)
                                             <input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}" class="checkbx" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}/>
                                         @endif
                                     </td>
