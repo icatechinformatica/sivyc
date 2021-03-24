@@ -101,7 +101,7 @@ class PagoController extends Controller
                 // obtener unidades
                 $unidadPorUsuario = DB::table('tbl_unidades')->WHERE('id', $unidadUser)->FIRST();
 
-                $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad)
+                $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
                 ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
                 ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
