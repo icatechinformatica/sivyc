@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        {{ Form::open(['route' => 'vista_formatot', 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
+        {{-- {{ Form::open(['route' => 'vista_formatot', 'method' => 'post', 'enctype' => 'multipart/form-data']) }}
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <select name="" id="" class="form-control">
@@ -80,7 +80,7 @@
                 </div>
                 
             </div>
-        {!! Form::close() !!}
+        {!! Form::close() !!} --}}
             
         <hr style="border-color:dimgray">
         @if (count($var_cursos) > 0)
