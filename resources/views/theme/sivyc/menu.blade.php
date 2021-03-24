@@ -140,7 +140,7 @@
                         @endcan
                     </div>
                 </li>
-                
+
                 @endcan
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -163,6 +163,8 @@
                         </div>
                     </li>
                 @endcan
+
+                @can('solicitudes.folios')
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Solicitudes(DTA)
@@ -176,7 +178,9 @@
                         @endcan
                     </div>
 
-                </li>
+                </li> 
+                @endcan
+                
                 {{-- modificaciones en el curso del menu --}}
                 
             </ul>
