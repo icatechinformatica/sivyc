@@ -378,6 +378,7 @@ class validacionDtaController extends Controller
             ];
             if (!empty($_POST['chkcursos'])) {
                 # entramos al loop
+                dd($_POST['comentarios_enlaces']);
                 foreach ($_POST['chkcursos'] as $key => $value) {
                     $observaciones_revision_dta = [
                         'OBSERVACION_REVISION_JEFE_DTA' =>  $_POST['comentarios_enlaces'][$key]
@@ -389,7 +390,7 @@ class validacionDtaController extends Controller
                                 'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}','".json_encode($turnado_revision_dta)."'::jsonb)"), 
                                 'status' => 'REVISION_DTA', 
                                 'turnado' => 'REVISION_DTA',
-                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_DIRECCION_DTA}','".json_encode($observaciones_revision_dta)."'::jsonb)"),
+                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_DIRECCION_DTA}','".json_encode($observaciones_revision_dta)."', true)"),
                             ]);
                 }
                 return redirect()->route('validacion.cursos.enviados.dta')
@@ -424,8 +425,8 @@ class validacionDtaController extends Controller
                             $reg_cursos= 
                             DB::table('tbl_cursos')
                             ->select(DB::raw("case when EXTRACT( Month FROM termino) = '1' then 'ENERO' when EXTRACT( Month FROM termino) = '2' then 'FEBRERO' when EXTRACT( Month FROM termino) = '3' then 'MARZO' when EXTRACT( Month FROM termino) = '4' then 'ABRIL' when EXTRACT( Month FROM termino) = '5' then 'MAYO' when EXTRACT( Month FROM termino) = '6' then 'JUNIO' when EXTRACT( Month FROM termino) = '7' then 'JULIO' when EXTRACT( Month FROM termino) = '8' then 'AGOSTO' when EXTRACT( Month FROM termino) = '9' then 'SEPTIEMBRE' when EXTRACT( Month FROM termino) = '10' then 'OCTUBRE' when EXTRACT( Month FROM termino) = '11' then 'NOVIEMBRE' else 'DICIEMBRE' end as mes")
-                                        ,'unidad','espe','curso','clave', 'status')
-                            ->where('memos->TURNADO_EN_FIRMA->NUMERO',$request->num_memo)
+                                        ,'unidad','espe','curso','clave', 'status',
+                                        DB::raw("extract(year from termino) AS fecha_termino"))
                             ->where('turnado',"DTA")
                             ->WHERE('status', '=', 'TURNADO_DTA')
                             ->whereIn('id', $cursosIds)
