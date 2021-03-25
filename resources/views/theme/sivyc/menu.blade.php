@@ -122,9 +122,11 @@
                     </div>
                 </li>
 
+                @can('grupos.calificaciones')  
+                
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Grupos (Depto. Acad&eacute;mico)
+                        Grupos
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         @can('grupos.calificaciones')
@@ -137,8 +139,9 @@
                             <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>
                         @endcan
                     </div>
-
                 </li>
+
+                @endcan
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -160,9 +163,11 @@
                         </div>
                     </li>
                 @endcan
+
+                @can('solicitudes.folios')
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Solicitudes(DTA)
+                        Solicitudes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         @can('solicitudes.folios')
@@ -173,7 +178,9 @@
                         @endcan
                     </div>
 
-                </li>
+                </li> 
+                @endcan
+                
                 {{-- modificaciones en el curso del menu --}}
                 
             </ul>

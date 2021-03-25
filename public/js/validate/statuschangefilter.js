@@ -13,6 +13,9 @@ $(function(){
         if(inputText == 'FOLIO DE VALIDACIÓN')
         {
             $('#divstat').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "")
         }
         else
         {
@@ -20,14 +23,10 @@ $(function(){
         }
         if(inputText == 'UNIDAD CAPACITACIÓN')
         {
+            console.log('hola');
             $('#divunidades').prop("class", "")
             $('#divcampo').prop("class", "form-row d-none d-print-none")
             $('#divmes').prop("class", "form-row d-none d-print-none")
-        }
-        else
-        {
-            $('#divcampo').prop("class", "")
-            $('#divunidades').prop("class", "form-row d-none d-print-none")
         }
         if(inputText == 'MES')
         {
@@ -35,11 +34,19 @@ $(function(){
             $('#divunidades').prop("class", "form-row d-none d-print-none")
             $('#divcampo').prop("class", "form-row d-none d-print-none")
         }
-        else
+        if(inputText == 'FECHA')
         {
-            $('#divcampo').prop("class", "")
-            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divstat').prop("class", "")
             $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "")
+        }
+        if(inputText == 'N° MEMORANDUM')
+        {
+            $('#divstat').prop("class", "")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "")
         }
       }
 

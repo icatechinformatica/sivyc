@@ -245,9 +245,13 @@
       document.getElementById('tipo_pago').onchange = function() {
         var index = this.selectedIndex;
         var inputText = this.children[index].innerHTML.trim();
-        if(inputText == 'N° DE CONTRATO')
+
+        if(inputText == 'FOLIO DE VALIDACIÓN')
         {
             $('#divstat').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "")
         }
         else
         {
@@ -255,14 +259,10 @@
         }
         if(inputText == 'UNIDAD CAPACITACIÓN')
         {
+            console.log('hola');
             $('#divunidades').prop("class", "")
             $('#divcampo').prop("class", "form-row d-none d-print-none")
             $('#divmes').prop("class", "form-row d-none d-print-none")
-        }
-        else
-        {
-            $('#divcampo').prop("class", "")
-            $('#divunidades').prop("class", "form-row d-none d-print-none")
         }
         if(inputText == 'MES')
         {
@@ -270,11 +270,19 @@
             $('#divunidades').prop("class", "form-row d-none d-print-none")
             $('#divcampo').prop("class", "form-row d-none d-print-none")
         }
-        else
+        if(inputText == 'FECHA')
         {
-            $('#divcampo').prop("class", "")
-            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divstat').prop("class", "")
             $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "")
+        }
+        if(inputText == 'N° DE CONTRATO')
+        {
+            $('#divstat').prop("class", "")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "")
         }
       }
 

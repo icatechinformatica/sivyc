@@ -12,8 +12,8 @@ $(function(){
             }
             if (id == 'addmore['+x+'][clavecurso]') {
                 var valor = (document.getElementById(id).value).toUpperCase();
-                var datos = {valor: valor, _token: "{{ csrf_token() }}"};
-                var url = "{{ route('supre.busqueda.curso') }}";
+                var datos = {valor: valor};
+                var url = "/supre/busqueda/curso";
                 var request = $.ajax
                 ({
                     url: url,
