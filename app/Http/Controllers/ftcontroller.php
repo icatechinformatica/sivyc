@@ -167,6 +167,7 @@ class ftcontroller extends Controller
                 ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
                 ->WHERE('u.ubicacion', '=', $_SESSION['unidad'])
                 ->WHEREIN('c.status', ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'])
+                ->WHERE('c.clave', '!=', 'NULL')
                 // ->WHERE(DB::raw("extract(year from c.termino)"), '=', $anio_actual)
                 ->groupby('c.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion', 'e.id')
                 ->distinct()->get();
@@ -814,6 +815,7 @@ class ftcontroller extends Controller
         ->WHERE('u.ubicacion', '=', $unidad_)
         ->WHEREIN('c.status', ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'])
         ->WHERE(DB::raw("extract(year from c.termino)"), '=', $anio_actual)
+        ->WHERE('c.clave', '!=', 'NULL')
         ->groupby('c.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();
 
