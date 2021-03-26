@@ -138,7 +138,7 @@
                         </div>
                     @endif
                 </div> 
-                <div class="table-responsive row">
+                <div class="table-responsive row show-grid">
                     <div class="col-sm-12">
                         <table  id="table-911" class="table" style='width: 100%'>                
                             <thead class="thead-dark">
