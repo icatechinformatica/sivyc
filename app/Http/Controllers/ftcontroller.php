@@ -151,7 +151,7 @@ class ftcontroller extends Controller
                 ->JOIN('especialidades as e', function($join)
                     {
                         $join->on('ei.especialidad_id', '=', 'e.id');                
-                        $join->on('c.espe', '=', 'e.nombre');
+                        // $join->on('c.espe', '=', 'e.nombre');
                     })
                 ->JOIN($temptblinner ,function($join)
                 {
@@ -269,7 +269,7 @@ class ftcontroller extends Controller
                 ->JOIN('especialidades as e', function($join)
                     {
                         $join->on('ei.especialidad_id', '=', 'e.id');                
-                        $join->on('c.espe', '=', 'e.nombre');
+                        // $join->on('c.espe', '=', 'e.nombre');
                     })
                 ->JOIN('alumnos_registro as ar',function($join)
                 {
@@ -329,7 +329,7 @@ class ftcontroller extends Controller
                     // obtenemos el valor del archivo memo
     
                     $validator = Validator::make($request->all(), [
-                        'cargar_archivo_formato_t' => 'mimes:pdf|max:2048'
+                        'cargar_archivo_formato_t' => 'mimes:pdf|max:10240'
                     ]);
     
                     if ($validator->fails()) {
@@ -798,7 +798,7 @@ class ftcontroller extends Controller
         ->JOIN('especialidades as e', function($join)
             {
                 $join->on('ei.especialidad_id', '=', 'e.id');                
-                $join->on('c.espe', '=', 'e.nombre');
+                // $join->on('c.espe', '=', 'e.nombre');
             })
         ->JOIN($temptblinner ,function($join)
         {

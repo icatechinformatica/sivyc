@@ -120,14 +120,14 @@
                             GENERAR MEMORANDUM
                         </button> 
                     </div>
-                    @if ($enFirma->count() > 0)
+                    {{-- @if ($enFirma->count() > 0) --}}
                         <div class="form-group mb-2 mb-2">
-                            <button input type="button" id="enviarDTA" style="{{ $enFirma->isEmpty() ? 'display: none' : '' }}" name="enviarDTA"  class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
+                            <button input type="button" id="enviarDTA" name="enviarDTA"  class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
                                 <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>
                                 ENVIAR A VALIDACIÓN DE DTA
                             </button> 
                         </div>
-                    @endif
+                    {{-- @endif --}}
                     
                     @if ($retornoUnidad->count() > 0)
                         <div class="form-group mb-2 mb-2">
@@ -543,7 +543,7 @@
                     "cargar_archivo_formato_t": {
                         required: true, 
                         extension: "pdf", 
-                        filesize: 2000000
+                        filesize: 10000000
                     }
                 },
                 messages: {
