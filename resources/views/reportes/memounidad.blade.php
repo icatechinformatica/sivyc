@@ -102,7 +102,7 @@
                             <th>ESPECIALIDAD</th>                                   
                             <th>CURSO</th>  
                             <th>CLAVE</th>
-                            <th>ESTATUS</th>
+                            <th>AÑO TERMINO</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -114,7 +114,7 @@
                             <th>{{ $a->espe }}</th>  
                             <th>{{ $a->curso }}</th>
                             <th>{{ $a->clave }}</th>
-                            <th>{{ $a->status }}</th>
+                            <th>{{ $a->fecha_termino }}</th>
                         </tr>
                         @php $num=$num+1; @endphp
                         @endforeach

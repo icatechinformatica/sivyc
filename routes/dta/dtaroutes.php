@@ -16,3 +16,8 @@ Route::post('/planeacion/reportes/formatot/xls', 'Validacion\planeacionControlle
 Route::post('/reportes/formatot/unidad/xls', 'ftcontroller@xlxExportReporteTbyUnidad')->name('reportes.formatot.unidad.xls');
 Route::post('/reportes/formatot/enlaces/unidad/xls', 'Validacion\validacionDtaController@xlsExportReporteFormatotEnlacesUnidad')->name('reportes.formatot.enlaces.unidad.xls');
 Route::post('/reportes/formatot/director/dta/xls', 'Validacion\validacionDtaController@xlsExportReporteFormatoTDirectorDTA')->name('reportes.formatot.director.dta.xls');
+/**
+ * REPORTE FORMATO T APERTURADO
+ */
+Route::get('/reportes/formatot/aperturado/index', 'Validacion\validacionDtaController@ReporteAperturaIndexDta')->name('indice.dta.aperturado.indice');
+Route::post('/reportes/formatot/aperturado/generar', 'Validacion\validacionDtaController@generarreporteapertura')->name('generar.reporte.apertura');
