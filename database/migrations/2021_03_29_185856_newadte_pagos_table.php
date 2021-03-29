@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterTableTblInscripcion extends Migration
+class NewadtePagosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class AlterTableTblInscripcion extends Migration
      */
     public function up()
     {
-        Schema::table('tbl_inscripcion', function (Blueprint $table) {
-            $table->bigInteger('id_afolios')->default(0)->nullable();
-            $table->string('folio', 25)->default(0)->nullable();
-            $table->date('fecha_folio')->nullable();
+        Schema::table('pagos', function (Blueprint $table) {
+            $table->date('solicitud_fecha')->nullable();
         });
     }
 
@@ -27,6 +25,8 @@ class AlterTableTblInscripcion extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('pagos', function (Blueprint $table) {
+            //
+        });
     }
 }

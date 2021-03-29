@@ -31,6 +31,10 @@
                     <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control">
                     <input id="id_elabora" name="id_elabora" hidden>
                 </div>
+                <div class="form-group col-md-3">
+                    <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
+                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control">
+                </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">

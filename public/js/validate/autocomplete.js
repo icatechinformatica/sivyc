@@ -41,6 +41,7 @@ $(function(){
     select: function (event, ui) {
         // Set selection
         $('#nombre_director').val(ui.item.label); // display the selected text
+        $('#puesto_director').val(ui.item.charge);
         $('#id_director').val(ui.item.value); // save selected id to input
         return false;
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterTableTblInscripcion.php extends Migration
+class AlterTableTblInscripcion extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class AlterTableTblInscripcion.php extends Migration
      */
     public function up()
     {
-        Schema::table('tbl_inscripcion', function (Blueprint $table) {   
+        Schema::table('tbl_inscripcion', function (Blueprint $table) {
             $table->bigInteger('id_afolios')->default(0)->nullable();
             $table->string('folio', 25)->default(0)->nullable();
-            $table->date('fecha_folio')->nullable();            
+            $table->date('fecha_folio')->nullable();
         });
     }
 

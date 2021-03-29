@@ -338,7 +338,7 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
-        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
         $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
         $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
@@ -465,6 +465,7 @@ class ContratoController extends Controller
         $pago->no_memo = $request->no_memo;
         $pago->id_contrato = $request->id_contrato;
         $pago->liquido = $request->liquido;
+        $pago->solicitud_fecha = $request->solicitud_fecha;
 
         $file = $request->file('arch_asistencia'); # obtenemos el archivo
         $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
@@ -519,7 +520,8 @@ class ContratoController extends Controller
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
         $datac = $X::where('id_folios', '=', $id)->first();
-        $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins')
+        $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
+                                      'instructores.no_cuenta','instructores.interbancaria')
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
 
@@ -541,6 +543,7 @@ class ContratoController extends Controller
         $pago->no_memo = $request->no_memo;
         $pago->id_contrato = $request->id_contrato;
         $pago->liquido = $request->liquido;
+        $pago->solicitud_fecha = $request->solicitud_fecha;
         $pago->fecha_status = carbon::now();
 
         if($request->arch_asistencia != NULL)
@@ -767,7 +770,7 @@ class ContratoController extends Controller
                               'instructores.apellidoPaterno','instructores.apellidoMaterno', 'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                               'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
-                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.no_memo','pagos.liquido')
+                              'contratos.id_contrato','contratos.numero_contrato','pagos.created_at','pagos.solicitud_fecha','pagos.no_memo','pagos.liquido')
                         ->WHERE('folios.id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -775,11 +778,20 @@ class ContratoController extends Controller
                         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
                         ->FIRST();
-
-        $date = strtotime($data->created_at);
-        $D = date('d', $date);
-        $M = $this->toMonth(date('m',$date));
-        $Y = date("Y",$date);
+        if($data->solicitud_pago == NULL)
+        {
+            $date = strtotime($data->created_at);
+            $D = date('d', $date);
+            $M = $this->toMonth(date('m',$date));
+            $Y = date("Y",$date);
+        }
+        else
+        {
+            $date = strtotime($data->solicitud_fecha);
+            $D = date('d', $date);
+            $M = $this->toMonth(date('m',$date));
+            $Y = date("Y",$date);
+        }
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
         $elaboro = directorio::WHERE('id', '=', $data_directorio->solpa_elaboro)->FIRST();

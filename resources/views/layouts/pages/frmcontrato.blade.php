@@ -68,6 +68,10 @@
                     <input type="text" class="form-control" id="id_director" name="id_director" hidden>
                 </div>
                 <div class="form-group col-md-4">
+                    <label for="inputpuesto_testigo1" class="control-label">Puesto del Director/Encargado de Unidad de Capacitación</label>
+                    <input readonly type="text" class="form-control" id="puesto_director" name="puesto_director">
+                </div>
+                <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
                     <select name="unidad_capacitacion" class="form-control mr-sm-2" id="unidad_capacitacion">
                         <option value="">SELECCIONE UNIDAD</option>
