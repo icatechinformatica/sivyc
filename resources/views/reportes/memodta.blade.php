@@ -143,7 +143,7 @@
             <div style="font-size:11px;"> <b>C.c.p {{ $reg_unidad->jcyc }} ,{{ $reg_unidad->pjcyc }}. Para su conocimiento.</b> </div>
             <div style="font-size:11px;"> <b>Archivo / Minutario.</b> </div>
             <div style="font-size:11px;"> <b>Validó: {{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
-            <div style="font-size:11px;"> <b>Elaboró: {{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b></div>
+            <div style="font-size:11px;"> <b>Elaboró: {{ $elaboro }}.</b></div>
             <br><br>
     </div>        
 </body>
