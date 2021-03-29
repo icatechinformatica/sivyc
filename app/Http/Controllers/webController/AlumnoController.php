@@ -1118,6 +1118,16 @@ class AlumnoController extends Controller
                 //obtener el estado
                 $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
 
+                //obtener el valor de la empresa
+                if (!empty($request->empresa_mod)) {
+                    # si no está vacio tenemos que cargar el dato puro
+                    $empresa = trim($request->empresa_mod);
+                } else {
+                    # si está vacio tenemos que checar lo siguiente
+                    $empresa = 'DESEMPLEADO';
+                }
+                
+
             # code...
                 $array = [
                     'nombre' => trim($request->nombre_alum_mod),
@@ -1136,7 +1146,7 @@ class AlumnoController extends Controller
                     'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
                     'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
                     'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
-                    'empresa_trabaja' => trim($request->empresa_mod),
+                    'empresa_trabaja' => $empresa,
                     'antiguedad' => trim($request->antiguedad_mod),
                     'puesto_empresa' => trim($request->puesto_empresa_mod),
                     'direccion_empresa' => trim($request->direccion_empresa_mod)
@@ -1273,6 +1283,15 @@ class AlumnoController extends Controller
             //obtener el estado
             $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
 
+            //obtener el valor de la empresa
+            if (!empty($request->empresa_mod)) {
+                # si no está vacio tenemos que cargar el dato puro
+                $empresa = trim($request->empresa_mod);
+            } else {
+                # si está vacio tenemos que checar lo siguiente
+                $empresa = 'DESEMPLEADO';
+            }
+
         # code...
             $array = [
                 'nombre' => trim($request->nombre_alum_mod),
@@ -1291,7 +1310,7 @@ class AlumnoController extends Controller
                 'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
                 'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
                 'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
-                'empresa_trabaja' => trim($request->empresa_mod),
+                'empresa_trabaja' => $empresa,
                 'antiguedad' => trim($request->antiguedad_mod),
                 'puesto_empresa' => trim($request->puesto_empresa_mod),
                 'direccion_empresa' => trim($request->direccion_empresa_mod),
