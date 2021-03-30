@@ -59,13 +59,13 @@
         
         <table class="tablad" bgcolor="black">
                 <tr>
-                    <td colspan="4" style="color:white;"><b>AV. PASO LIMON NO. 1581 JUNTO AL COLEGIO LAURELES </b></td>
+                    <td colspan="4" style="color:white;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
                 </tr> 
                 <tr>
-                    <td colspan="4" style="color:white;"><b>COL. COMISION FEDERAL DE ELECTRICIDAD C.P. 29049.</b></td>
+                    <td colspan="4" style="color:white;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="color:white;"><b>TUXTLA GUTIERREZ, CHIAPAS</b></td>
+                    <td colspan="4" style="color:white;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
                 </tr>
         </table>
                
