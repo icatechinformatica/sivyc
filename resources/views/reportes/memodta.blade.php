@@ -57,12 +57,9 @@
             }
         </script>
         
-        <table class="tablad" bgcolor="black">
+        <table class="tablad" bgcolor="black" style="width: 280px;">
                 <tr>
-                    <td colspan="4" style="color:white;"><b>{{ $reg_unidad->direccion }}</b></td>
-                </tr> 
-                <tr>
-                    <td colspan="4" style="color:white;"><b>{{ $reg_unidad->codigo_postal }}</b></td>
+                    <td colspan="4" style="color:white; max-width:80px;"><b>{{ $reg_unidad->direccion }}</b></td>
                 </tr>
         </table>
                
