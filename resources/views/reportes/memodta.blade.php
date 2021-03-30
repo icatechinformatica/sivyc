@@ -59,13 +59,10 @@
         
         <table class="tablad" bgcolor="black">
                 <tr>
-                    <td colspan="4" style="color:white;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                    <td colspan="4" style="color:white;"><b>{{ $reg_unidad->direccion }}</b></td>
                 </tr> 
                 <tr>
-                    <td colspan="4" style="color:white;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="color:white;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+                    <td colspan="4" style="color:white;"><b>{{ $reg_unidad->codigo_postal }}</b></td>
                 </tr>
         </table>
                

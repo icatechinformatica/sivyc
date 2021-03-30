@@ -533,7 +533,7 @@ class ftcontroller extends Controller
                     ->where('status', 'EN_FIRMA')
                     ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA', DB::raw("observaciones_formato_t->'OBSERVACION_PARA_FIRMA'->>'OBSERVACION_FIRMA'"), 'arc', 'nota', 'observaciones')->get();
                     $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
-                    'pvinculacion','jcyc','pjcyc')->where('unidad',$_SESSION['unidad'])->first();
+                    'pvinculacion','jcyc','pjcyc', 'direccion', 'ubicacion', 'codigo_postal')->where('unidad',$_SESSION['unidad'])->whereNotIn('direccion', ['N/A', 'null'])->first();
                     $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'elaboro'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
