@@ -314,6 +314,9 @@ class ftcontroller extends Controller
                 
     }
 
+    /**
+     * enviar a validación enlaces DTA - envía los cursos para su validación de las unidades a los enlaces DTA
+     */
     public function paso2(Request $request)
     {
         $numero_memo = $request->get('numero_memo'); // número de memo
@@ -405,8 +408,16 @@ class ftcontroller extends Controller
                          */
                         # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
                         $data = explode(",", $cursoschk);
-                        $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
-                        foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
+                        /**
+                         * forzamos un nuevo registro con datos a un arreglo
+                         */
+                        $pila = [];
+                        foreach ($data as $key ) {
+                            array_push($pila, $key);
+                        }
+                        //$comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
+                        // dd($_POST['comentarios_unidad_to_dta']);
+                        foreach(array_combine($pila, $_POST['comentarios_unidad_to_dta']) as $key => $comentariosUnidad){
                             $comentarios_envio_dta = [
                                 'OBSERVACION_UNIDAD' =>  $comentariosUnidad
                             ];
@@ -435,8 +446,15 @@ class ftcontroller extends Controller
                          */
                         # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
                         $data = explode(",", $cursoschk);
-                        $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
-                        foreach(array_combine($data, $comentario_unidad) as $key => $comentariosUnidad){
+                        /**
+                         * forzamos un nuevo registro con datos a un arreglo
+                         */
+                        $pila = [];
+                        foreach ($data as $key ) {
+                            array_push($pila, $key);
+                        }
+                        // $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
+                        foreach(array_combine($pila, $_POST['comentarios_unidad_to_dta']) as $key => $comentariosUnidad){
                             $comentarios_envio_dta = [
                                 'OBSERVACION_UNIDAD' =>  $comentariosUnidad
                             ];
@@ -622,8 +640,13 @@ class ftcontroller extends Controller
                     ];
 
                     $data = explode(",", $_POST['checkedCursos']);
-                    $comentarioDireccionDTA = explode(",", $_POST['comentarios_direccionDta']);
-                    foreach (array_combine($data, $comentarioDireccionDTA) as $key => $value) {
+                    // GENERARMOS UN ARREGLO O PILA
+                    $pilasendtoplaneacion = [];
+                    foreach ($data as $key ) {
+                        array_push($pilasendtoplaneacion, $key);
+                    }
+                    // $comentarioDireccionDTA = explode(",", $_POST['comentarios_direccionDta']);
+                    foreach (array_combine($pilasendtoplaneacion, $_POST['comentarios_direccionDta']) as $key => $value) {
                         $comentarios_envio_planeacion = [
                             'OBSERVACION_ENVIO_PLANEACION' => $value
                         ];

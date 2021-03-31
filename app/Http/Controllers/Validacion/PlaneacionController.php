@@ -143,7 +143,7 @@ class PlaneacionController extends Controller
         })
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('tbl_cursos.status', '=', 'TURNADO_PLANEACION')
-        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
         ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();

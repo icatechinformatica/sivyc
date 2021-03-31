@@ -21,3 +21,4 @@ Route::post('/reportes/formatot/director/dta/xls', 'Validacion\validacionDtaCont
  */
 Route::get('/reportes/formatot/aperturado/index', 'Validacion\validacionDtaController@ReporteAperturaIndexDta')->name('indice.dta.aperturado.indice');
 Route::post('/reportes/formatot/aperturado/generar', 'Validacion\validacionDtaController@generarreporteapertura')->name('generar.reporte.apertura');
+Route::post('/planeacion/formatot/finalizar/proceso', 'Validacion\planeacionController@finish')->name('planeacion.formatot.finalizar.proceso');

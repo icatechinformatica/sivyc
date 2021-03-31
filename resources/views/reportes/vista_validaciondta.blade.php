@@ -453,7 +453,7 @@
                     </div>
                     <input type="hidden" name="check_cursos_dta" id="check_cursos_dta" value="">
                     <input type="hidden" name="numero_memo_devolucion" id="numero_memo_devolucion" value="">
-                    <input type="hidden" name="comentarios_enlaces" id="comentarios_enlaces" value="">
+                    <div class="field_wrapper_enlace_dta"></div>
                 </div>
                 <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
@@ -475,7 +475,8 @@
         }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
         $('#enviardta').click(function(){
             var cursosChecked = new Array();
-            var comentario_retorno = new Array();
+            // var comentario_retorno = new Array();
+            var wrapperEnlaceDta = $('.field_wrapper_enlace_dta');
             var numMemo = $('#num_memo_devolucion').val();
             $('input[name="chkcursos[]"]:checked').each(function() {
                 cursosChecked.push(this.value);
@@ -483,12 +484,14 @@
             // se cargan los textarea en el arreglo
             $('textarea[name="comentarios_enlaces[]"]').each(function(){
                 if (!$(this).prop('disabled')) {
-                    comentario_retorno.push(this.value);   
+                    var fieldHtml = '<input type="hidden" name="comentarios_enlaces[]" id="comentarios_enlaces" value="'+this.value+'">';
+                    $(wrapperEnlaceDta).append(fieldHtml); // Add field html
+                    // comentario_retorno.push(this.value);   
                 }
             });
             $('.modal-body #numero_memo_devolucion').val(numMemo);
             $('.modal-body #check_cursos_dta').val(cursosChecked);
-            $('.modal-body #comentarios_enlaces').val(comentario_retorno);
+            // $('.modal-body #comentarios_enlaces').val(comentario_retorno);
             $("#exampleModalCenter").modal("show");
         });
         $('#close_btn_modal_send_dta').click(function(){

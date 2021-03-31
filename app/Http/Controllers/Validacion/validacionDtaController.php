@@ -142,7 +142,7 @@ class validacionDtaController extends Controller
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('u.ubicacion', '=', $unidad)
         ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
-        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
         ->WHERE('tbl_cursos.turnado', '=', 'DTA')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();
@@ -313,7 +313,7 @@ class validacionDtaController extends Controller
         })
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('tbl_cursos.status', '=', 'REVISION_DTA')
-        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $ac)
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $ac)
         ->WHERE('tbl_cursos.turnado', '=', 'REVISION_DTA')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();
@@ -378,7 +378,6 @@ class validacionDtaController extends Controller
             ];
             if (!empty($_POST['chkcursos'])) {
                 # entramos al loop
-                dd($_POST['comentarios_enlaces']);
                 foreach ($_POST['chkcursos'] as $key => $value) {
                     $observaciones_revision_dta = [
                         'OBSERVACION_REVISION_JEFE_DTA' =>  $_POST['comentarios_enlaces'][$key]
@@ -394,7 +393,7 @@ class validacionDtaController extends Controller
                             ]);
                 }
                 return redirect()->route('validacion.cursos.enviados.dta')
-                        ->with('success', sprintf('CURSOS ENVIADOS A PLANEACIÓN PARA REVISIÓN!'));
+                        ->with('success', sprintf('CURSOS ENVIADOS A LA DIRECCIÓN PARA REVISIÓN FINAL!'));
             } else {
                 # regresamos y mandamos un mensaje de error
                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
@@ -544,72 +543,84 @@ class validacionDtaController extends Controller
         /***
          * vamos a checar el curso de dta
          */
-        if (!empty($cursoschk)) {
-            # si entramos en esta parte es que hay registros de cursos
-            if ($request->hasFile('memorandum_regreso_unidad')) {
-                # obtenemos el valor del archivo memo
-                $validator = validator::make($request->all(), [
-                    'memorandum_regreso_unidad' => 'mimes:pdf|max:2048'
-                ]);
-                if ($validator->fails()) {
-                    # mandar mensaje de error si falla el cargado del archivo
-                    return back()->withInput()->withErrors([$validator]);
-                } else {
-                    # si la validación no falla es hora de subir el archivo
-                    $memo = str_replace('/', '_', $numero_memo);
-                    /**
-                    * aquí vamos a verificar que el archivo no se encuentre guardado
-                    * previamente en el sistema de archivos del sistema de ser así se 
-                    * remplazará el archivo porel que se subirá a continuación
-                    */
-                    // construcción del archivo
-                    $archivo_memo = 'uploadFiles/memoRegresoUnidad/'.$memo.'/memorandum_regreso_unidad.pdf';
-                    if (Storage::exists($archivo_memo)) {
-                        #checamos si hay algún documento, de ser así, procedemos a eliminarlo
-                        Storage::delete($archivo_memo);
+        //checamos si trae el número de memo
+        if (!empty($numero_memo)) {
+            # seguimos la validación y lógica del sistema
+            if (!empty($cursoschk)) {
+                # si entramos en esta parte es que hay registros de cursos
+                if ($request->hasFile('memorandum_regreso_unidad')) {
+                    # obtenemos el valor del archivo memo
+                    $validator = validator::make($request->all(), [
+                        'memorandum_regreso_unidad' => 'mimes:pdf|max:2048'
+                    ]);
+                    if ($validator->fails()) {
+                        # mandar mensaje de error si falla el cargado del archivo
+                        return back()->withInput()->withErrors([$validator]);
+                    } else {
+                        # si la validación no falla es hora de subir el archivo
+                        $memo = str_replace('/', '_', $numero_memo);
+                        /**
+                        * aquí vamos a verificar que el archivo no se encuentre guardado
+                        * previamente en el sistema de archivos del sistema de ser así se 
+                        * remplazará el archivo porel que se subirá a continuación
+                        */
+                        // construcción del archivo
+                        $archivo_memo = 'uploadFiles/memoRegresoUnidad/'.$memo.'/memorandum_regreso_unidad.pdf';
+                        if (Storage::exists($archivo_memo)) {
+                            #checamos si hay algún documento, de ser así, procedemos a eliminarlo
+                            Storage::delete($archivo_memo);
+                        }
+                        $archivo_memo_to_dta = $request->file('memorandum_regreso_unidad'); # obtenemos el archivo
+                        $url_archivo_memo = $this->uploaded_memo_retorno_unidad_file($archivo_memo_to_dta, $memo, 'memoRegresoUnidad'); #invocamos el método
                     }
-                    $archivo_memo_to_dta = $request->file('memorandum_regreso_unidad'); # obtenemos el archivo
-                    $url_archivo_memo = $this->uploaded_memo_retorno_unidad_file($archivo_memo_to_dta, $memo, 'memoRegresoUnidad'); #invocamos el método
+                    
+                } else {
+                    # si está vacio sólo cargamos la url
+                    $url_archivo_memo = null;
                 }
-                
-            } else {
-                # si está vacio sólo cargamos la url
-                $url_archivo_memo = null;
-            }
-            $fecha_ahora = Carbon::now();
-            $date = $fecha_ahora->format('Y-m-d'); // fecha
-            /**
-             * aquí vamos a vaciar el arreglo en un ciclo que vamos a iterar para obtener los valores y hacer multiples
-             * actualizaciones de los registros para enviar la información
-             */
-            $turnado_unidad = [
-                'FECHA' => $date,
-                'MEMORANDUM' => $url_archivo_memo,
-                'NUMERO' => $numero_memo
-            ];
-            /**
-            * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
-            */
-            # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
-            $data = explode(",", $cursoschk);
-            $comentario = explode(",", $_POST['comentarios_enlaces']);
-            foreach(array_combine($data, $comentario) as $key => $comentarios){
-                $comentarios_regreso_unidad = [
-                    'OBSERVACION_RETORNO' =>  $comentarios
+                $fecha_ahora = Carbon::now();
+                $date = $fecha_ahora->format('Y-m-d'); // fecha
+                /**
+                 * aquí vamos a vaciar el arreglo en un ciclo que vamos a iterar para obtener los valores y hacer multiples
+                 * actualizaciones de los registros para enviar la información
+                 */
+                $turnado_unidad = [
+                    'FECHA' => $date,
+                    'MEMORANDUM' => $url_archivo_memo,
+                    'NUMERO' => $numero_memo
                 ];
-                \DB::table('tbl_cursos')
-                    ->where('id', $key)
-                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($turnado_unidad)."'::jsonb)"), 
-                    'status' => 'RETORNO_UNIDAD', 
-                    'turnado' => 'UNIDAD',
-                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_RETORNO_UNIDAD}', '".json_encode($comentarios_regreso_unidad)."'::jsonb)")]);
+                /**
+                * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
+                */
+                # sólo obtenemos a los que han sido chequeados para poder continuar con la actualización
+                $data = explode(",", $cursoschk);
+                // GENERARMOS UN ARREGLO O PILA
+                $pila = [];
+                foreach ($data as $key ) {
+                    array_push($pila, $key);
+                }
+                // $comentario = explode(",", $_POST['comentarios_enlaces']);
+                foreach(array_combine($pila, $_POST['comentarios_enlaces']) as $key => $comentarios){
+                    $comentarios_regreso_unidad = [
+                        'OBSERVACION_RETORNO' =>  $comentarios
+                    ];
+                    \DB::table('tbl_cursos')
+                        ->where('id', $key)
+                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($turnado_unidad)."'::jsonb)"), 
+                        'status' => 'RETORNO_UNIDAD', 
+                        'turnado' => 'UNIDAD',
+                        'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_RETORNO_UNIDAD}', '".json_encode($comentarios_regreso_unidad)."'::jsonb)")]);
+                }
+                // enviar  a la página de inicio del módulo si el proceso fue satisfactorio
+                return redirect()->route('validacion.cursos.enviados.dta')
+                ->with('success', sprintf('CURSOS TURNADO A LA UNIDAD CORRESPONDIENTE!'));
+            } else {
+                # no hay cursos (están vacios) se tiene que cargar un mensaje de error
+                return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
             }
-            // enviar  a la página de inicio del módulo si el proceso fue satisfactorio
-            return redirect()->route('validacion.cursos.enviados.dta')
-            ->with('success', sprintf('CURSOS TURNADO A LA UNIDAD CORRESPONDIENTE!'));
         } else {
-            # no hay cursos (están vacios) se tiene que cargar un mensaje de error
-            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
+            # no hay número de memo está vacio se envía un mensaje de error
+            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE CUENTA CON NÚMERO DE MEMORANDUM!']);
         }
     }
 
@@ -1110,7 +1121,7 @@ class validacionDtaController extends Controller
         })
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('tbl_cursos.status', '=', 'REVISION_DTA')
-        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
         ->WHERE('tbl_cursos.turnado', '=', 'REVISION_DTA')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();

@@ -454,7 +454,7 @@
                     </div>
                     <input type="hidden" name="checkedCursos" id="checkedCursos" value="">
                     <input type="hidden" name="numeroMemo" id="numeroMemo" value="">
-                    <input type="hidden" name="comentarios_direccionDta" id="comentarios_direccionDta">
+                    <div class="field_wrapper_direccion_dta"></div>
                 </div>
                 <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="send_to_planeacion">ENVIAR</button>
@@ -548,17 +548,20 @@
         // abrir el modal
         $('#btnEnviarPlaneacion').click(function(){
             var checkedCursos = new Array();
-            var comentarios_direcciondta = new Array();
+            // var comentarios_direcciondta = new Array();
+            var wrapperDireccionDTA = $('.field_wrapper_direccion_dta');
             var numero_memo = $('#num_memo_devolucion').val();
             $('input[name="chkcursos[]"]:checked').each(function() {
                 checkedCursos.push(this.value);
             });
             $('textarea[name="comentarios_direccion_dta[]"]').each(function(){
                 if (!$(this).prop('disabled')) {
-                    comentarios_direcciondta.push(this.value);
+                    var fieldHTML = '<input type="hidden" name="comentarios_direccionDta[]" id="comentarios_direccionDta" value="'+this.value+'">';
+                    $(wrapperDireccionDTA).append(fieldHTML); // Add field html
+                    // comentarios_direcciondta.push(this.value);
                 }
             });
-            $('.modal-body #comentarios_direccionDta').val(comentarios_direcciondta);
+            // $('.modal-body #comentarios_direccionDta').val(comentarios_direcciondta);
             $('.modal-body #numeroMemo').val(numero_memo);
             $('.modal-body #checkedCursos').val(checkedCursos);
             $("#exampleModalCenter").modal("show");

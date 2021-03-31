@@ -444,7 +444,8 @@
                     </div>
                     <input type="hidden" name="check_cursos_dta" id="check_cursos_dta">
                     <input type="hidden" name="numero_memo" id="numero_memo">
-                    <input type="hidden" name="comentarios_unidad_to_dta" id="comentarios_unidad_to_dta">
+                    <div class="field_wrapper">
+                    </div>
                 </div>
                 <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
@@ -650,19 +651,23 @@
         // cargar el modal al arbrirlo
         $('#enviarDTA').click(function(){
             var check_cursos = new Array();
-            var comentario_unidad = new Array();
+            // var comentario_unidad = new Array();
+            var wrapper = $('.field_wrapper'); //Input field wrapper
             var numero_memo = $('#numero_memo').val();
             $('input[name="chkcursos_list[]"]:checked').each(function() {
                 check_cursos.push(this.value);
             });
             $('textarea[name="comentarios_unidad[]"]').each(function(){
                 if (!$(this).prop('disabled')) {
-                    comentario_unidad.push(this.value);
+                    var fieldHTML = '<input type="hidden" name="comentarios_unidad_to_dta[]" id="comentarios_unidad_to_dta" value="'+this.value+'">';
+                    $(wrapper).append(fieldHTML); // Add field html
+                    // comentario_unidad.push();
                 }
             });
+            console.log(comentario_unidad);
             $('.modal-body #numero_memo').val(numero_memo);
             $('.modal-body #check_cursos_dta').val(check_cursos);
-            $('.modal-body #comentarios_unidad_to_dta').val(comentario_unidad);
+            // $('.modal-body #comentarios_unidad_to_dta').val(comentario_unidad);
             $("#exampleModalCenter").modal("show");
         });
     });

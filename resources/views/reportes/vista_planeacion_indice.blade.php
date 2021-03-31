@@ -439,6 +439,7 @@
               <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y REGRESAR A DIRECCIÓN TÉCNICA ACADÉMICA </b></h5>
             </div>
             <form id="formGoBackDTA" enctype="multipart/form-data" method="POST">
+                @csrf
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-md-12">
@@ -463,13 +464,15 @@
             <div class="modal-header">
               <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y TERMINAR PROCESO </b></h5>
             </div>
-            <form id="formFinish" enctype="multipart/form-data" method="POST">
+            <form id="formFinish" enctype="multipart/form-data" method="POST" action="{{ route('planeacion.formatot.finalizar.proceso') }}">
+                @csrf
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <input type="file" name="memorandumPositivoFile" id="memorandumPositivoFile" class="form-control">
                         </div>
                     </div>
+                    <div class="field_wrapper_planeacion_terminar"></div>
                 </div>
                 <div class="modal-footer">
                 <button type="submit" class="btn btn-success" id="send_to_finish">ENVIAR</button>
