@@ -136,8 +136,8 @@
             <br><br><br>
             <div style="font-size:11px;"> <b>C.c.p ING. MARÍA TERESA JIMÉNEZ FONSECA , JEFE DEL DEPARTAMENTO DE CERTIFICACIÓN Y CONTROL. Para su conocimiento.</b> </div>
             <div style="font-size:11px;"> <b>Archivo / Minutario.</b> </div>
-            <div style="font-size:11px;"> <b>Validó: {{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
-            <div style="font-size:11px;"> <b>Elaboró: {{ $elaboro }}.</b></div>
+            <div style="font-size:11px;"> <b>Validó: {{ $reg_unidad->dunidad }}. {{ $reg_unidad->pdunidad }}</b> </div>
+            <div style="font-size:11px;"> <b>Elaboró: {{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b></div>
             <br><br>
     </div>        
 </body>
