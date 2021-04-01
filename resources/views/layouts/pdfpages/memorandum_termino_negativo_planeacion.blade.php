@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>MEMORANDUM FORMATO ENTREGA SATISFACTORIA</title>
+    <title>MEMORANDUM FORMATO ENTREGA NEGATIVA</title>
     <style type="text/css">
         body{font-family: sans-serif}
         /* margenes top 20px right 50px bottom 120px left 50px */
@@ -93,8 +93,8 @@
             medio del Sistema Integral de Vinculación y Capacitación (SIVyC), con cierre al mes de <b>Marzo</b>,
             me permito informarle que una vez revisada la información relativa a los números
             absolutos de las variables cualitativas y cuantitativas; esta Dirección a través del
-            Departamento de Programación y Presupuesto da por concluido el cierre estadístico del mes
-            de marzo del 2021.
+            Departamento de Programación y Presupuesto, No da por concluido el cierre estadístico del mes
+            de marzo del 2021, derivado a que presenta inconsistencias.
            </p>
         </div>
         <br>
@@ -103,7 +103,6 @@
         <div align="justify" style="font-size:16px;">Sin más por el momento y agradeciéndole su valioso apoyo, le envío un cordial saludo.</div>
         <br>
         
-        <br>
         <br>
         <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
 

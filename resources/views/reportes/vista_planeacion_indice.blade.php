@@ -464,7 +464,7 @@
             <div class="modal-header">
               <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y TERMINAR PROCESO </b></h5>
             </div>
-            <form id="formFinish" enctype="multipart/form-data" method="POST" action="{{ route('planeacion.formatot.finalizar.proceso') }}">
+            <form id="formFinish" enctype="multipart/form-data" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-row">
@@ -492,6 +492,8 @@
             $.validator.addMethod('filesize', function (value, element, param) {
                 return this.optional(element) || (element.files[0].size <= param)
             }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
+
+            document.querySelector('#spinner').setAttribute('hidden', '');
             // se agrega el método
             // CHECAR TODOS LOS CHECKBOX AL MOMENTO
             $("#selectAll").click(function() {
@@ -559,23 +561,21 @@
                     submitHandler: function(form, event){
                         event.preventDefault();
                         var chkCursos = new Array();
-                        var comentarioPlaneacionDTA = new Array();
+                        var formData = new FormData(form);
                         $('input[name="chkcursos[]"]:checked').each(function() {
                             chkCursos.push(this.value);
                         });
                         $('textarea[name="comentarios_planeacion[]"]').each(function(){
                             if (!$(this).prop('disabled')) {
-                                comentarioPlaneacionDTA.push(this.value);
+                                formData.append("comentariosPlaneacion[]", this.value);
                             }
                         });
                         var numero_memo = $('#num_memo').val();
                         /***
                         * cargar_archivo_negativo
                         */
-                        var formData = new FormData(form);
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
-                        formData.append("comentarios_planeacion", comentarioPlaneacionDTA);
                         var _url = "{{route('planeacion.send.to.dta')}}";
                         var requested = $.ajax
                         ({
@@ -603,6 +603,9 @@
                                 } else if (response === 'EMPTYCURSOS') {
                                     $( ".alert" ).addClass("alert-danger");
                                     $(".alert").append("<b>LOS CURSOS NO ESTÁN SELECCIONADOS Y NO SE PUEDE REALIZAR EL PROCESO</b>" );
+                                } else if (response === 'EMPTYNUMMEMO') {
+                                    $( ".alert" ).addClass("alert-danger");
+                                    $(".alert").append("<b>EL PROCESO NO SE PUEDE REALIZAR DEBIDO A QUE NO SE AGREGO EN NÚMERO DE MEMORANDUM</b>" );
                                 }
                             },
                             complete:function(data){
@@ -644,23 +647,21 @@
                     {
                         events.preventDefault();
                         var chkCursos = new Array();
-                        var comentarioPlaneacionDTA = new Array();
+                        var formData = new FormData(forms);
                         $('input[name="chkcursos[]"]:checked').each(function() {
                             chkCursos.push(this.value);
                         });
                         $('textarea[name="comentarios_planeacion[]"]').each(function(){
                             if (!$(this).prop('disabled')) {
-                                comentarioPlaneacionDTA.push(this.value);
+                                formData.append("comentariosPlaneacionTerminar[]", this.value);
                             }
                         });
                         var numero_memo = $('#num_memo').val();
                         /***
                         * cargar_archivo_negativo
                         */
-                        var formData = new FormData(forms);
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
-                        formData.append("comentarios_planeacion", comentarioPlaneacionDTA);
                         var _urlFinish = "{{route('planeacion.finish')}}";
                         var requested = $.ajax({
                             url: _urlFinish,
@@ -671,7 +672,7 @@
                             contentType: false,
                             processData: false,
                             beforeSend: function(){
-                                $("#exampleModalCenter").modal("hide");
+                                $("#modalFinish").modal("hide");
                                 document.querySelector("#spinner").removeAttribute('hidden');
                             },
                             success: function(response){
@@ -687,6 +688,9 @@
                                 } else if(response === 'EMPTYCURSOS'){
                                     $( ".alert" ).addClass("alert-danger");
                                     $(".alert").append("<b>LOS CURSOS NO ESTÁN SELECCIONADOS Y NO SE PUEDE REALIZAR EL PROCESO</b>" );
+                                } else if (response === 'EMPTYNUMMEMOs') {
+                                    $( ".alert" ).addClass("alert-danger");
+                                    $(".alert").append("<b>EL PROCESO NO SE PUEDE REALIZAR DEBIDO A QUE NO SE AGREGO EN NÚMERO DE MEMORANDUM</b>" );
                                 }
                             },
                             complete:function(data){
@@ -697,7 +701,7 @@
                                 //jsonValue = jQuery.parseJSON( jqXHR.responseText );
                                 //document.querySelector('#spinner').setAttribute('hidden', '');
                                 console.log(jqXHR.responseText);
-                                alert( "Hubo un error: " + jqXHR.status );
+                                alert( "Hubo un error: " + jqXHR.responseText );
                             }
                         });
                         $.when(requested).then(function(data, textStatus, jqXHR ){
