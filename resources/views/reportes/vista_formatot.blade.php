@@ -664,7 +664,6 @@
                     // comentario_unidad.push();
                 }
             });
-            console.log(comentario_unidad);
             $('.modal-body #numero_memo').val(numero_memo);
             $('.modal-body #check_cursos_dta').val(check_cursos);
             // $('.modal-body #comentarios_unidad_to_dta').val(comentario_unidad);
