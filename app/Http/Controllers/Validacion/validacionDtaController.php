@@ -950,7 +950,7 @@ class validacionDtaController extends Controller
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('u.ubicacion', '=', $unidadActual)
         ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
-        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
         ->WHERE('tbl_cursos.turnado', '=', 'DTA')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();
