@@ -432,11 +432,23 @@ class validacionDtaController extends Controller
                             ->groupby('unidad','espe','curso','clave','termino', 'status')
                             ->orderby('mes')->get();
 
+                            // OTRO REGISTRO PARA CARGAR EL TOTAL DE REGISTROS
+                            $total_turnado_dta = DB::table('tbl_cursos')
+                            ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_dta"))
+                            ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                            ->WHERE('tbl_cursos.turnado',"DTA")
+                            ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
+                            ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
+                            ->get();
+
+                            $comentarios_enviados = $_POST['comentarios_enlaces'];
+
                             // dd(DB::getQueryLog()); // Show results of log
+                            $elabora = Auth::user()->name;
 
                             $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
-                            'pvinculacion','jcyc','pjcyc')->where('unidad', $unidadSeleccionada)->first();
-                            $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva'));
+                            'pvinculacion','jcyc','pjcyc', 'ubicacion')->where('unidad', $unidadSeleccionada)->first();
+                            $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados'));
                             return $pdf->download('Memo_Unidad.pdf');
                         } else {
                             # hay cursos vacios, regresamos y mandamos un mensaje de error
@@ -950,7 +962,7 @@ class validacionDtaController extends Controller
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('u.ubicacion', '=', $unidadActual)
         ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
-        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
+        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
         ->WHERE('tbl_cursos.turnado', '=', 'DTA')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();

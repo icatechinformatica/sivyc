@@ -485,7 +485,7 @@
             $('textarea[name="comentarios_enlaces[]"]').each(function(){
                 if (!$(this).prop('disabled')) {
                     var fieldHtml = '<input type="hidden" name="comentarios_enlaces[]" id="comentarios_enlaces" value="'+this.value+'">';
-                    $(wrapperEnlaceDta).append(fieldHtml); // Add field html
+                    $(s).append(fieldHtml); // Add field html
                     // comentario_retorno.push(this.value);   
                 }
             });
