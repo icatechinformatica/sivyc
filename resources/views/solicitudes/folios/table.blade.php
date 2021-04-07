@@ -48,7 +48,7 @@
                      </td> 
 
                      <td class="text-center">
-                        @if($item->total>$item->contador AND $item->facta>'2020-12-31')                        
+                        @if($item->total>$item->contador)                        
                             <a class="nav-link" onclick="editar('{{ $item->id }}',{{$item->contador}})">
                                 <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
