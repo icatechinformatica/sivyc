@@ -68,8 +68,8 @@ class foliosController extends Controller
             elseif($request->mod=="CAE") $prefijo = "C";
             else $prefijo = "A";
                         
-            $folio_inicial = $prefijo.str_pad($num_inicio, 5, "0", STR_PAD_LEFT);
-            $folio_final = $prefijo.str_pad($num_fin, 5, "0", STR_PAD_LEFT);
+            $folio_inicial = $prefijo.str_pad($num_inicio, 6, "0", STR_PAD_LEFT);
+            $folio_final = $prefijo.str_pad($num_fin, 6, "0", STR_PAD_LEFT);
                     
             $total = $num_fin-$num_inicio+1;
 
