@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 
 class foliosController extends Controller
 {   
@@ -17,7 +18,7 @@ class foliosController extends Controller
     }
     
     public function index(Request $request){
-        $id_user = Auth::user()->id;
+        $id_user = Auth::user()->id;  
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');        
@@ -42,23 +43,108 @@ class foliosController extends Controller
         return view('solicitudes.folios.index', compact('message','data', 'unidades'));     
     }  
     
-   
+    public function edit(Request $request){
+        $request->id;
+        $json = DB::table('tbl_afolios')->select('id','id_unidad','mod', 'num_inicio','num_fin','num_acta','facta','activo')->where('id',$request->id)->first();
+        $json = json_decode(json_encode($json), true);
+        return $json;
+    }
+
     public function store(Request $request){
-        
+        $boton = $request->boton;
+        $id = $request->id;
         $unidades = json_decode(json_encode($_SESSION['unidades']), true);
         $unidades = array_flip($unidades);
         $unidad = array_search($request->id_unidad, $unidades);
-        $num_inicio = substr($request->finicial,1, strlen($request->finicial))*1;
-        $num_fin = substr($request->ffinal,1, strlen($request->ffinal))*1;
+        $num_inicio = $request->finicial;
+        $num_fin = $request->ffinal;
+        $num_acta = $request->num_acta;
+        $id_unidad = $request->id_unidad;
 
-       $result = DB::table('tbl_afolios')->insertOrIgnore(
-            ['unidad' => $unidad, 'finicial' => $request->finicial, 'ffinal' => $request->ffinal, 'total' => $request->total,
-            'mod' => $request->mod, 'facta'=> $request->facta, 'num_inicio' => $num_inicio, 'num_fin' => $num_fin,
-            'id_unidad' => $request->id_unidad, 'contador' =>  $num_inicio, 'num_acta' => $request->num_acta,
-            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id ]
-        );
-        if($result) $message = "Operación exitosa!! el registro ha sido guardado correctamente.";
-        else $message = "Operación inválida, es probable que exista el registro, por favor corrobore.";
+        if($num_fin>$num_inicio){
+            if($request->mod=="EXT") $prefijo = "D";
+            elseif($request->mod=="CAE") $prefijo = "C";
+            else $prefijo = "A";
+                        
+            $folio_inicial = $prefijo.str_pad($num_inicio, 5, "0", STR_PAD_LEFT);
+            $folio_final = $prefijo.str_pad($num_fin, 5, "0", STR_PAD_LEFT);
+                    
+            $total = $num_fin-$num_inicio+1;
+
+            if($total>0){
+                ///Validación que no exista el rango de folio en la misma Unidad y modalida.
+                //$valido = DB::table('tbl_afolios')->where('id_unidad',$id_unidad)->where('finicial',$folio_inicial)->where('ffinal',$folio_final)->doesntExist();
+                
+                
+                //if($valido){
+                    $url_file = NULL;
+                    if ($request->hasFile('file_acta') AND $num_acta) {
+                        $num_acta = $request->num_acta;
+                        $file = $request->file('file_acta');
+                        $file_result = $this->upload_file($file, $num_acta);
+                        //var_dump($file_result);exit;
+                        $url_file = $file_result["url_file"];
+                    }else $message = "Archivo inválido";
+                    if($id){
+                        if($unidad)$data['unidad']= $unidad;
+                        if($folio_inicial)$data['finicial'] = $folio_inicial;
+                        if($request->mod)$data['mod'] = $request->mod;                        
+                        $data = [ 'ffinal' => $folio_final, 'total' => $total, 'facta'=> $request->facta, 
+                            'num_inicio' => $num_inicio, 'num_fin' => $num_fin,'id_unidad' => $id_unidad, 'num_acta' => $num_acta,
+                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id, 'file_acta' =>$url_file ];
+                        $result = DB::table('tbl_afolios')->where('id',$id)->update($data);
+                    }else{
+                        $result = DB::table('tbl_afolios')->Insert(                        
+                            ['unidad' => $unidad, 'finicial' => $folio_inicial, 'ffinal' => $folio_final, 'total' => $total,
+                            'mod' => $request->mod, 'facta'=> $request->facta, 'num_inicio' => $num_inicio, 'num_fin' => $num_fin,
+                            'id_unidad' => $id_unidad, 'contador' =>  0, 'num_acta' => $num_acta,
+                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id, 'file_acta' =>$url_file ]
+                        );   
+                    }
+    
+                    if($result) $message = "Operación exitosa!! El registro ha sido guardado correctamente.";
+                    else $message = "Operación inválida, es probable que exista el registro, por favor corrobore.";
+
+               // }else $message = "El rango de folio ya esta dado de alta en la misma Unidad y Modalidad.";
+               
+            }else $message = "Rango de Folios no válido.";
+        }else $message = "Rango de Folios no válido.";
         return redirect('/solicitudes/folios')->with(['message'=>$message]);
     }
+
+    protected function upload_file($file,$name)
+    {        //https://www.sivyc.icatech.gob.mx/storage/uploadFiles/convenios/98/arcivo_convenio2021030900060998.pdf
+        $ext = $file->getClientOriginalExtension(); // extension de la imagen
+        $ext = strtolower($ext);
+        $url = $mgs= null;
+
+        if($ext == "pdf"){
+            $name = trim($name.".pdf");
+            $path = "/uploadFiles/DTA/solicitud_folios/".$name;
+            Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
+            $url = Storage::disk('custom_folder_1')->url($path);
+            $msg = "El archivo ha sido cargado o reemplazado correctamente.";
+            
+        }else $msg= "Formato de Archivo no válido, sólo PDF.";
+        
+        $data_file = ["message"=>$msg, 'url_file'=>$url];
+        
+        return $data_file;
+    }
+
+    public function pdf($id)
+    {
+        echo $id;exit;
+        echo $file = "/uploadFiles/DTA/solicitud_folios/".$pdf; exit;
+        if (file_exists($file)) {
+            # si existe el archivo podemos avanzar
+            $headers = [
+                'Content-Type' => 'application/pdf'
+            ];
+            return response()->download($file, 'File Test', $headers, 'inline');
+        } else {
+            abort(404, 'Archivo no encontrado!');
+        }
+    }
+   
 }

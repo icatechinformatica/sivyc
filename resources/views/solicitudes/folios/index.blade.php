@@ -1,6 +1,6 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
-@section('title', 'Reportes | SIVyC Icatech')
+@section('title', 'DTA Folios | SIVyC Icatech')
 @section('content_script_css')    
         <link rel="stylesheet" href="{{asset('css/bootstrap4-toggle.min.css') }}"/>
         <link rel="stylesheet" href="{{asset('css/global.css') }}" />
@@ -26,12 +26,11 @@
         {{ Form::open(['route' => 'solicitudes.folios.guardar', 'method' => 'post','id'=>'frm', 'enctype' => 'multipart/form-data' ]) }} 
             <div class="row form-inline">
                     {{ Form::select('id_unidad', $unidades, NULL ,['id'=>'id_unidad','class' => 'form-control  mr-sm-5 mt-3','title' => 'UNIDAD']) }}
-                    {{ Form::select('mod', ['EXT'=>'EXT','CAE'=>'CAE'], '' ,array('id'=>'mod','class' => 'form-control  mr-sm-4 mt-3','title' => 'MODALIDAD')) }}                    
-                    {{ Form::text('finicial',NULL, ['id'=>'finicial', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => ' FOLIO INICIAL', 'required' => 'required', 'size' => 20]) }}
-                    {{ Form::text('ffinal',NULL, ['id'=>'ffinal', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'FOLIO FINAL', 'required' => 'required', 'size' => 20]) }}
-                    {{ Form::text('total',NULL, ['id'=>'total', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'CANTIDAD', 'required' => 'required', 'size' => 15]) }}                    
-                    {{ Form::text('num_acta',NULL, ['id'=>'num_acta', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'NUM.ACTA', 'required' => 'required', 'size' => 30]) }}                    
-                    {{ Form::date('facta', NULL , ['id'=>'facta', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA ACTA', 'required' => 'required']) }}                                        
+                    {{ Form::select('mod', ['EXT'=>'EXT','CAE'=>'CAE','GRAL'=>'GENERAL'], '' ,array('id'=>'mod','class' => 'form-control  mr-sm-4 mt-3','title' => 'MODALIDAD')) }}                    
+                    {{ Form::text('finicial',NULL, ['id'=>'finicial', 'class' => 'form-control mr-sm-4 mt-3 numero', 'placeholder' => ' FOLIO INICIAL', 'title' => ' FOLIO INICIAL','required' => 'required', 'size' => 20]) }}
+                    {{ Form::text('ffinal',NULL, ['id'=>'ffinal', 'class' => 'form-control mr-sm-4 mt-3 numero', 'placeholder' => 'FOLIO FINAL', 'title' => 'FOLIO FINAL', 'required' => 'required', 'size' => 20]) }}                    
+                    {{ Form::text('num_acta',NULL, ['id'=>'num_acta', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'NUM. ACTA', 'title' => 'NUM. ACTA', 'required' => 'required', 'size' => 30]) }}                    
+                    {{ Form::date('facta', NULL , ['id'=>'facta', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA ACTA', 'title' => 'FECHA ACTA', 'required' => 'required']) }}                                        
                     <div class="input-group mr-sm-4 mt-3">
                         <div class="custom-file">
                             <input type="file" id="file_acta" name="file_acta" accept="application/pdf" class="custom-file-input">
@@ -41,7 +40,9 @@
                     <div class="input-group mr-sm-4 mt-3">                        
                         <input type="checkbox" id="publicar" name="publicar" checked data-toggle="toggle" data-on="PUBLICAR" data-off="No Publicar" data-onstyle="primary" data-offstyle="danger" data-width="140" data-height="38">
                     </div>                   
-                    {{ Form::button('AGREGAR', ['class' => 'btn mr-sm-4 mt-3', 'type' => 'submit']) }}                                    
+                    {{ Form::button('AGREGAR', ['id' => 'boton', 'name'=> 'boton', 'value' => 'AGREGAR', 'class' => 'btn mr-sm-4 mt-3', 'type' => 'submit']) }}
+                    {{ Form::button('CANCELAR', ['id' => 'cancelar','class' => 'btn mr-sm-4 mt-3 hide bg-danger']) }}
+                     {{ Form::hidden('id',NULL, ['id'=>'id']) }}
             </div>
         {!! Form::close() !!}
         <br/>
@@ -66,19 +67,65 @@
         <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
                 
         <script language="javascript">        
-             $('#chkToggle2').bootstrapToggle();             
-
-            function editar(clave){
-                $("#clave").val(clave);
-                $('#frm').attr('action', "{{route('grupos.consultas.calificaciones')}}"); $('#frm').submit();                 
+            $('#chkToggle2').bootstrapToggle();
+            
+            $('#cancelar').click(function (){                    
+                $('#boton').text('AGREGAR');                
+                $('#cancelar').hide();
+            });
+             $("#boton" ).click(function(){ 
+                    if(confirm("Esta seguro de ejecutar la acción?")==true)$('#frm').submit();
+             }); 
+                         
+            function editar(id,asignados) {
+                $.ajax({
+                    data: {id : id, _token:"{{csrf_token()}}"},
+                    url: "{{route('solicitudes.folios.edit')}}",
+                    type:  'GET',
+                    dataType : 'json',
+                    success:  function (data) {
+                        console.log(data);
+                        if(asignados>0){                            
+                            $("#id_unidad" ).attr('disabled', true);
+                            $("#mod" ).attr('disabled', true);
+                            $("#finicial" ).prop('readonly', true);
+                        }else{
+                            $("#id_unidad" ).attr('disabled', false);
+                            $("#mod" ).attr('disabled', false);
+                            $("#finicial" ).prop('readonly', false);
+                        }
+                        
+                        if(data['id'])$("#id" ).val(data['id']);
+                        if(data['id_unidad'])$("#id_unidad option[value="+ data['id_unidad'] +"]").attr("selected",true);
+                        if(data['mod'])$("#mod option[value="+ data['mod'] +"]").attr("selected",true);
+                        if(data['num_inicio'])$("#finicial" ).val(data['num_inicio']);
+                        if(data['num_fin'])$("#ffinal" ).val(data['num_fin']);
+                        if(data['num_acta'])$("#num_acta" ).val(data['num_acta']);
+                        if(data['facta'])$("#facta" ).val(data['facta']);
+                        if(data['activo']==true)$('#publicar').prop('checked', true);
+                        $('#boton').css('background-color','#efb810');
+                        $('#boton').text('GUARDAR CAMBIOS');
+                        $('#boton').val('GUARDAR CAMBIOS');                        
+                        $('#cancelar').show();
+                        $("#ffinal").focus();
+                    },
+                    error:function(x,xs,xt){                        
+                        alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
+                    }
+                });
             }
+
        
-        $(function() {
-            $( ".datepicker" ).datepicker({
-                dateFormat: "yy-mm-dd"
-            });            
-         });         
- 
+            $(function() {
+                $( ".datepicker" ).datepicker({
+                    dateFormat: "yy-mm-dd"
+                });            
+            });         
+            
+            $('.numero').keyup(function (){                    
+                    this.value = (this.value + '').replace(/[^0-9NP]/g, '');
+            });
     </script>  
     @endsection
 @endsection
+

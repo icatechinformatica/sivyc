@@ -80,13 +80,50 @@
         <div align=left style="font-size:11px;"><b>PRESENTE.</b></div>
         <br><br>
             <div align="justify" style="font-size:11px;">
-                En seguimiento a la integración del Formato T del mes de Agosto del presente 
-                año de su Unidad de Capacitación, recibido el pasado 27 de agosto al correo electronico 
-                clavestapachula.dta@hotmail.com, le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
+                En seguimiento a la integración del Formato T del mes de Marzo del presente 
+                año de su Unidad de Capacitación, recibido el pasado 31 de Marzo al correo electronico
+                @switch($reg_unidad->ubicacion)
+                    @case('REFORMA')
+                        informacion.formatot@gmail.com
+                        @break
+                    @case('VILLAFLORES')
+                        informacion.formatot@gmail.com
+                        @break
+                    @case('TUXTLA')
+                        informacion.formatot@gmail.com
+                        @break
+                    @case('TONALA')
+                        informacion.formatot@gmail.com
+                        @break
+                    @case('SAN CRISTOBAL')
+                        formatot.icatech.dta@gmail.com
+                        @break
+                    @case('YAJALON')
+                        formatot.icatech.dta@gmail.com
+                        @break
+                    @case('OCOSINGO')
+                        formatot.icatech.dta@gmail.com
+                        @break
+                    @case('CATAZAJA')
+                        informesestadisticos.cert2@gmail.com
+                        @break
+                    @case('TAPACHULA')
+                        informesestadisticos.cert2@gmail.com
+                        @break
+                    @case('JIQUIPILAS')
+                        informesestadisticos.cert2@gmail.com
+                        @break
+                    @case('COMITAN')
+                        informesestadisticos.cert2@gmail.com
+                        @break
+                    @default
+                        
+                @endswitch
+                , le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                 RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
-                digitalizados con firmas y sellos de {{ $total }} cursos pertencientes a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
+                digitalizados con firmas y sellos de un total de {{ $total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
                 hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
-                de Planeación de este Instituto 0 cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
+                de Planeación de este Instituto un total de {{ $total_turnado_dta[0]->total_cursos_turnado_dta }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
             </div>
             <br>
             @php
@@ -102,11 +139,11 @@
                             <th>ESPECIALIDAD</th>                                   
                             <th>CURSO</th>  
                             <th>CLAVE</th>
-                            <th>AÑO TERMINO</th>
+                            <th>OBSERVACIONES</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($reg_cursos as $a)
+                        @foreach($reg_cursos as $index => $a)
                         <tr>                           	  
                             <th>{{ $num }}</th>     
                             <th>{{ $a->mes }}</th>               
@@ -114,9 +151,11 @@
                             <th>{{ $a->espe }}</th>  
                             <th>{{ $a->curso }}</th>
                             <th>{{ $a->clave }}</th>
-                            <th>{{ $a->fecha_termino }}</th>
+                            <th>{{ $comentarios_enviados[$index] }}</th>
                         </tr>
-                        @php $num=$num+1; @endphp
+                            @php 
+                                $num=$num+1;
+                            @endphp
                         @endforeach
                     </tbody>                                               
                 </table>
@@ -137,8 +176,8 @@
                 <div style="font-size:11px;"> <b>C.c.p Mtra. Fabiola Lizbeth Astudillo Reyes ,Directora General del ICATECH. Para su conocimiento. - Ciudad</b> </div>
                 <div style="font-size:11px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
                 <div style="font-size:11px;"> <b>Archivo / Minutario.</b> </div>
-                <div style="font-size:11px;"> <b>Validó: {{ $reg_unidad->jcyc }}. {{ $reg_unidad->pjcyc }}.</b> </div>
-                <div style="font-size:11px;"> <b>Elaboró: {{ $reg_unidad->jcyc }}. {{ $reg_unidad->pjcyc }}.</b> </div>
+                <div style="font-size:11px;"> <b>Validó: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
+                <div style="font-size:11px;"> <b>Elaboró: {{ $elabora }}.</b> </div>
             </div><br><br>
     </div>
 </body>
