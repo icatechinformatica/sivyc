@@ -14,12 +14,14 @@
                 <th scope="col">NUM. ACTA</th>
                 <th scope="col">FECHA ACTA</th>
                 <th scope="col">PUBLICADO</th>
+                <th scope="col">PDF ACTA</th>
                 <th scope="col" class="text-center">EDITAR</th>                
             </tr>
         </thead>
         <tbody>
         <?php $i = 1; ?>
             @foreach ($data as $item)
+                <?php $pendientes = $item->total-$item->contador; ?>
                 <tr>     
                      <td>{{ $i++ }}</td>          
                      <td>{{ $item->unidad }}</td>
@@ -30,10 +32,24 @@
                      <td class="text-center">{{ $item->contador }}</td>
                      <td>{{ $item->num_acta }}</td>
                      <td>{{ $item->facta }}</td>                 
-                     <td> @if($item->activo==true){{ 'SI' }}@else {{ 'NO' }} @endif</td> 
+                     <td class="text-center"> 
+                     @if($item->activo==true)
+                        <b>SI</b>
+                     @else 
+                        <p class="text-danger"><b>NO</b></p>                      
+                     @endif
+                     </td>
+                     <td>
+                        @if($item->file_acta)
+                            <a class="nav-link"  href="{{ $item->file_acta }}" target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i></a>  
+                        @else 
+                            {{ "NO ADJUNTADO"}}
+                        @endif
+                     </td> 
+
                      <td class="text-center">
-                        @if($item->contador>0)                        
-                            <a class="nav-link" onclick="editar('{{ $item->id }}')">
+                        @if($item->total>$item->contador AND $item->facta>'2020-12-31')                        
+                            <a class="nav-link" onclick="editar('{{ $item->id }}',{{$item->contador}})">
                                 <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
                         @endif                        
@@ -41,7 +57,7 @@
                 </tr>
             @endforeach
                 <tr>
-                    <td colspan="11" >
+                    <td colspan="12" >
                        {{ $data->render() }}
                      </td>
                 </tr>
