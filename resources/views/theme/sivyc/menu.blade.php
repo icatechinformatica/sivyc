@@ -176,9 +176,9 @@
                         @can('solicitudes.folios')
                             <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
                         @endcan
-                        @can('solicitudes.folios.cancelacion')
+                        {{-- @can('solicitudes.folios.cancelacion')
                             <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n de Folios</a>
-                        @endcan
+                        @endcan --}}
                     </div>
 
                 </li> 
