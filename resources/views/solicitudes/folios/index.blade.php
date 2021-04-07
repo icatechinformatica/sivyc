@@ -74,7 +74,7 @@
                 $('#cancelar').hide();
             });
              $("#boton" ).click(function(){ 
-                    if(confirm("Esta seguro de ejecutar la acción?")==true)$('#frm').submit();
+                    if(confirm("Esta seguro de ejecutar la acci\u00F3n?")==true)$('#frm').submit();
              }); 
                          
             function editar(id,asignados) {
