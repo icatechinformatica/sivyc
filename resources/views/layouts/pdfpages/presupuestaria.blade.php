@@ -112,7 +112,7 @@
             <br><p class="text-left"><p>Atentamente.</p></p>
             <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
             <br><b>{{$getremitente->puesto}} {{$getremitente->area}}</b>
-            <br><b>Unidad de Capacitación {{$unidad->ubicacion}}.</b>
+            <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
             @if ($unidad->cct != '07EI')
                 <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
             @else
