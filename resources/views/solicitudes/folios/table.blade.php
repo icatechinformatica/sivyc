@@ -36,7 +36,7 @@
                      @if($item->activo==true)
                         <b>SI</b>
                      @else 
-                        <p class="text-danger"><b>NO</b></p>                      
+                        <p class="text-danger"><b>NO</b></p>            
                      @endif
                      </td>
                      <td>

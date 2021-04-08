@@ -16,7 +16,7 @@ class foliosController extends Controller
     function __construct() {
         session_start();
         $this->path_pdf = "/DTA/solicitud_folios/";
-        $this->path_storage = $_ENV["APP_URL"].'/storage/uploadFiles';
+        $this->path_storage = env('APP_URL').'/storage/uploadFiles';
     }
     
     public function index(Request $request){
