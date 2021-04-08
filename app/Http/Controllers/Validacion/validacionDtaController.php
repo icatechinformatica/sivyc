@@ -436,8 +436,16 @@ class validacionDtaController extends Controller
                             $total_turnado_dta = DB::table('tbl_cursos')
                             ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_dta"))
                             ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                            ->WHERE('tbl_cursos.turnado',"DTA")
-                            ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
+                            ->WHEREIN('tbl_cursos.status', ['TURNADO_DTA', 'TURNADO_PLANEACION'])
+                            ->WHEREIN('tbl_cursos.turnado',['DTA','PLANEACION'])
+                            ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
+                            ->get();
+                            // ENVIADOS A PLANEACION
+                            $total_turnado_planeacion = DB::table('tbl_cursos')
+                            ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_planeacion"))
+                            ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                            ->WHERE('tbl_cursos.status', '=', 'TURNADO_PLANEACION')
+                            ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION')
                             ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
                             ->get();
 
@@ -448,7 +456,7 @@ class validacionDtaController extends Controller
 
                             $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
                             'pvinculacion','jcyc','pjcyc', 'ubicacion')->where('unidad', $unidadSeleccionada)->first();
-                            $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados'));
+                            $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion'));
                             return $pdf->download('Memo_Unidad.pdf');
                         } else {
                             # hay cursos vacios, regresamos y mandamos un mensaje de error
