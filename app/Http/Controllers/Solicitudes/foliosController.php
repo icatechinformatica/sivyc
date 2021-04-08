@@ -15,8 +15,8 @@ class foliosController extends Controller
 {   
     function __construct() {
         session_start();
-        $this->path_file = "/DTA/solicitud_folios/";
-        //$this->path = $_ENV["APP_URL"];
+        $this->path_pdf = "/DTA/solicitud_folios/";
+        $this->path_storage = $_ENV["APP_URL"].'/storage/uploadFiles';
     }
     
     public function index(Request $request){
@@ -124,7 +124,7 @@ class foliosController extends Controller
 
         if($ext == "pdf"){
             $name = trim($name.".pdf");
-            $path = $this->path_file.$name;
+            $path = $this->path_pdf.$name;
             Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
             //$url = Storage::disk('custom_folder_1')->url($path);
             $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
