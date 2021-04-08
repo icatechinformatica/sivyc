@@ -79,8 +79,7 @@ class foliosController extends Controller
                 ///Validación que no exista el rango de folio en la misma Unidad y modalida.
                 $valido = DB::table('tbl_afolios')->where('mod',$request->mod);
                     if($id)$valido = $valido->where('id','<>',$id);
-                    $valido = $valido->where('finicial',$folio_inicial)->where('ffinal',$folio_final)->doesntExist();
-                
+                    $valido = $valido->where('finicial',$folio_inicial)->where('ffinal',$folio_final)->doesntExist();                
                 
                 if($valido){
                     $url_file = NULL;

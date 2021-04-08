@@ -45,8 +45,7 @@
                      {{ Form::hidden('id',NULL, ['id'=>'id']) }}
             </div>
         {!! Form::close() !!}
-        <br/>
-        
+        <br/>        
         <hr/>
         {{ Form::open(['route' => 'solicitudes.folios', 'method' => 'post','id'=>'frmbuscar', 'enctype' => 'multipart/form-data' ]) }}              
 

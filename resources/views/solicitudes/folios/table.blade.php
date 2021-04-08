@@ -46,7 +46,6 @@
                             {{ "NO ADJUNTADO"}}
                         @endif
                      </td> 
-
                      <td class="text-center">
                         @if($item->total>$item->contador)                        
                             <a class="nav-link" onclick="editar('{{ $item->id }}',{{$item->contador}})">
