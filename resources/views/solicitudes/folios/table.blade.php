@@ -41,7 +41,7 @@
                      </td>
                      <td>
                         @if($item->file_acta)
-                            <a class="nav-link"  href="{{ Storage::disk('custom_folder_1')->url($item->file_acta) }}" target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i></a>  
+                            <a class="nav-link"  href="{{ $path_file.$item->file_acta }}" target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i></a>  
                         @else 
                             {{ "NO ADJUNTADO"}}
                         @endif

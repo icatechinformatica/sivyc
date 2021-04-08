@@ -69,7 +69,8 @@
         <script language="javascript">        
             $('#chkToggle2').bootstrapToggle();
             
-            $('#cancelar').click(function (){                    
+            $('#cancelar').click(function (){  
+                $("#id" ).val('');
                 $('#boton').text('AGREGAR');                
                 $('#cancelar').hide();
             });
@@ -84,16 +85,7 @@
                     type:  'GET',
                     dataType : 'json',
                     success:  function (data) {
-                        console.log(data);
-                        if(asignados>0){                            
-                            $("#id_unidad" ).attr('disabled', true);
-                            $("#mod" ).attr('disabled', true);
-                            $("#finicial" ).prop('readonly', true);
-                        }else{
-                            $("#id_unidad" ).attr('disabled', false);
-                            $("#mod" ).attr('disabled', false);
-                            $("#finicial" ).prop('readonly', false);
-                        }
+                        console.log(data);                       
                         
                         if(data['id'])$("#id" ).val(data['id']);
                         if(data['id_unidad'])$("#id_unidad option[value="+ data['id_unidad'] +"]").attr("selected",true);
@@ -108,6 +100,15 @@
                         $('#boton').val('GUARDAR CAMBIOS');                        
                         $('#cancelar').show();
                         $("#ffinal").focus();
+                        if(asignados>0){                            
+                            $("#id_unidad" ).attr('disabled', true);
+                            $("#mod" ).attr('disabled', true);
+                            $("#finicial" ).prop('readonly', true);
+                        }else{
+                            $("#id_unidad" ).attr('disabled', false);
+                            $("#mod" ).attr('disabled', false);
+                            $("#finicial" ).prop('readonly', false);
+                        }
                     },
                     error:function(x,xs,xt){                        
                         alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
