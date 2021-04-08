@@ -1272,7 +1272,7 @@ class AlumnoController extends Controller
 
     public function updateSidJefeUnidad(Request $request, $idAspirante){
         if (isset($idAspirante)) {
-            $match_actual_curp = \DB::table('alumnos_pre')->select('curp')->where('id', $idAspirante)->first();
+            $match_actual_curp = \DB::table('alumnos_pre')->select('curp')->where('id', base64_decode($idAspirante))->first();
             if (strcmp($match_actual_curp->curp, $request->curp_mod) === 0) {
                 # tiene que hacer el update - porque el input de curp no fue modificado
                 # código
