@@ -63,8 +63,7 @@
         </div>
     </div>    
     @section('script_content_js')        
-        <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
-                
+        <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>                
         <script language="javascript">        
             $('#chkToggle2').bootstrapToggle();
             
@@ -84,7 +83,6 @@
                     type:  'GET',
                     dataType : 'json',
                     success:  function (data) {
-                        console.log(data);                       
                         
                         if(data['id'])$("#id" ).val(data['id']);
                         if(data['id_unidad'])$("#id_unidad option[value="+ data['id_unidad'] +"]").attr("selected",true);
@@ -99,6 +97,7 @@
                         $('#boton').val('GUARDAR CAMBIOS');                        
                         $('#cancelar').show();
                         $("#ffinal").focus();
+                        
                         if(asignados>0){                            
                             $("#id_unidad" ).attr('disabled', true);
                             $("#mod" ).attr('disabled', true);

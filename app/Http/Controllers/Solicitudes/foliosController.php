@@ -16,7 +16,7 @@ class foliosController extends Controller
     function __construct() {
         session_start();
         $this->path_pdf = "/DTA/solicitud_folios/";        
-        $this->path_storage = $_SERVER["APP_URL"].'/storage/uploadFiles';
+        $this->path_files = $_SERVER["APP_URL"].'/storage/uploadFiles';
     }
     
     public function index(Request $request){
@@ -42,7 +42,7 @@ class foliosController extends Controller
             if($request->num_acta) $data = $data->where('num_acta','like','%'.$request->num_acta.'%');            
             $data =$data->orderby('id','DESC')->paginate(15);
             
-        $path_file = $this->path_storage;        
+        $path_file = $this->path_files;        
         return view('solicitudes.folios.index', compact('message','data', 'unidades', 'path_file'));     
     }  
     
@@ -90,8 +90,8 @@ class foliosController extends Controller
                         //var_dump($file_result);exit;
                         $url_file = $file_result["url_file"];
                     }else $message = "Archivo inválido";
-                    if($id){
-                                             
+                    
+                    if($id){                                             
                         $data = [ 'ffinal' => $folio_final, 'total' => $total, 'facta'=> $request->facta, 
                             'num_inicio' => $num_inicio, 'num_fin' => $num_fin,'id_unidad' => $id_unidad, 'num_acta' => $num_acta,
                             'activo' => $request->publicar, 'iduser_created' => Auth::user()->id];
