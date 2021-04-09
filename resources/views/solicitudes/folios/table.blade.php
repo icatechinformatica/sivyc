@@ -1,5 +1,4 @@
 <!--ELABORO ROMELIA PEREZ NANGUELU- rpnanguelu@gmail.com-->
-
 <div class="table-responsive">
     <table class="table table-bordered table-striped">
         <thead>
