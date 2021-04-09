@@ -61,14 +61,15 @@
         <div class="row">
             @include('solicitudes.folios.table')
         </div>
-    </div>    
-    @section('script_content_js')        
-        <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
-                
+    </div>
+@endsection
+@section('script_content_js')        
+        <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>                
         <script language="javascript">        
             $('#chkToggle2').bootstrapToggle();
             
-            $('#cancelar').click(function (){                    
+            $('#cancelar').click(function (){  
+                $("#id" ).val('');
                 $('#boton').text('AGREGAR');                
                 $('#cancelar').hide();
             });
@@ -83,16 +84,6 @@
                     type:  'GET',
                     dataType : 'json',
                     success:  function (data) {
-                        console.log(data);
-                        if(asignados>0){                            
-                            $("#id_unidad" ).attr('disabled', true);
-                            $("#mod" ).attr('disabled', true);
-                            $("#finicial" ).prop('readonly', true);
-                        }else{
-                            $("#id_unidad" ).attr('disabled', false);
-                            $("#mod" ).attr('disabled', false);
-                            $("#finicial" ).prop('readonly', false);
-                        }
                         
                         if(data['id'])$("#id" ).val(data['id']);
                         if(data['id_unidad'])$("#id_unidad option[value="+ data['id_unidad'] +"]").attr("selected",true);
@@ -107,6 +98,16 @@
                         $('#boton').val('GUARDAR CAMBIOS');                        
                         $('#cancelar').show();
                         $("#ffinal").focus();
+                        
+                        if(asignados>0){                            
+                            $("#id_unidad" ).attr('disabled', true);
+                            $("#mod" ).attr('disabled', true);
+                            $("#finicial" ).prop('readonly', true);
+                        }else{
+                            $("#id_unidad" ).attr('disabled', false);
+                            $("#mod" ).attr('disabled', false);
+                            $("#finicial" ).prop('readonly', false);
+                        }
                     },
                     error:function(x,xs,xt){                        
                         alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
@@ -124,7 +125,5 @@
             $('.numero').keyup(function (){                    
                     this.value = (this.value + '').replace(/[^0-9NP]/g, '');
             });
-    </script>  
-    @endsection
+        </script>  
 @endsection
-
