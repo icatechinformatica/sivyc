@@ -16,7 +16,7 @@ class foliosController extends Controller
     function __construct() {
         session_start();
         $this->path_pdf = "/DTA/solicitud_folios/";        
-        $this->path_files = $_SERVER["APP_URL"].'/storage/uploadFiles';
+        $this->path_files = env("APP_URL").'/storage/uploadFiles';
     }
     
     public function index(Request $request){
@@ -38,8 +38,14 @@ class foliosController extends Controller
             $unidades = DB::table('tbl_unidades')->orderby('unidad','ASC')->pluck('unidad','id');
             $_SESSION['unidades'] = $unidades;  
         }
-        $data = DB::table('tbl_afolios');
-            if($request->num_acta) $data = $data->where('num_acta','like','%'.$request->num_acta.'%');            
+        if($request->num_acta) $valor = $request->num_acta;
+        else $valor = null;
+        
+        
+        $data = DB::table('tbl_banco_folios');            
+            if (date('Y-m-d', strtotime($valor)) == $valor) $data = $data->where('facta',$valor);
+            elseif(ctype_alpha(str_replace(' ', '', $valor))) $data = $data->where('unidad','like','%'.$valor.'%');
+            else $data = $data->where('num_acta','like','%'.$valor.'%');            
             $data =$data->orderby('id','DESC')->paginate(15);
             
         $path_file = $this->path_files;        
@@ -48,7 +54,7 @@ class foliosController extends Controller
     
     public function edit(Request $request){
         $request->id;
-        $json = DB::table('tbl_afolios')->select('id','id_unidad','mod', 'num_inicio','num_fin','num_acta','facta','activo')->where('id',$request->id)->first();
+        $json = DB::table('tbl_banco_folios')->select('id','id_unidad','mod', 'num_inicio','num_fin','num_acta','facta','activo')->where('id',$request->id)->first();
         $json = json_decode(json_encode($json), true);
         return $json;
     }
@@ -63,7 +69,7 @@ class foliosController extends Controller
         $num_fin = $request->ffinal;
         $num_acta = $request->num_acta;
         $id_unidad = $request->id_unidad;
-
+        if(!$request->publicar) $request->publicar=false;
         if($num_fin>$num_inicio){
             $folio_inicial = $folio_final = NULL;
             if($request->mod=="EXT") $prefijo = "D";
@@ -77,7 +83,7 @@ class foliosController extends Controller
 
             if($total>0){
                 ///Validación que no exista el rango de folio en la misma Unidad y modalida.
-                $valido = DB::table('tbl_afolios')->where('mod',$request->mod);
+                $valido = DB::table('tbl_banco_folios')->where('mod',$request->mod);
                     if($id)$valido = $valido->where('id','<>',$id);
                     $valido = $valido->where('finicial',$folio_inicial)->where('ffinal',$folio_final)->doesntExist();                
                 
@@ -100,9 +106,9 @@ class foliosController extends Controller
                         if($folio_inicial)$data['finicial'] = $folio_inicial;
                         if($request->mod)$data['mod'] = $request->mod; 
                          //var_dump($data);exit;
-                        $result = DB::table('tbl_afolios')->where('id',$id)->update($data);
+                        $result = DB::table('tbl_banco_folios')->where('id',$id)->update($data);
                     }else{
-                        $result = DB::table('tbl_afolios')->Insert(                        
+                        $result = DB::table('tbl_banco_folios')->Insert(                        
                             ['unidad' => $unidad, 'finicial' => $folio_inicial, 'ffinal' => $folio_final, 'total' => $total,
                             'mod' => $request->mod, 'facta'=> $request->facta, 'num_inicio' => $num_inicio, 'num_fin' => $num_fin,
                             'id_unidad' => $id_unidad, 'contador' =>  0, 'num_acta' => $num_acta,
