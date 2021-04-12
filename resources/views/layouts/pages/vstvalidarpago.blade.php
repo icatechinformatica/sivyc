@@ -66,7 +66,7 @@
         </div>
         <form method="POST" action="{{ route('pago-rechazo') }}">
             @csrf
-            <div id="rechazar_contrato" class="form-row d-none d-print-none">
+            <div id="rechazar_pago" class="form-row d-none d-print-none">
                 <div class="form-group col-md-6">
                     <label for="observaciones">Describa el motivo de rechazo</label>
                     <textarea name="observaciones" id="observaciones" cols="6" rows="6" class="form-control"></textarea>
@@ -119,4 +119,16 @@
 @endsection
 @section('script_content_js')
     <script src="{{ asset("js/validate/modals.js") }}"></script>
+    <script>
+        $(function(){
+            //boton valsupre rechazar
+            $("#rechazarPago").click(function(e){
+            e.preventDefault();
+            $('#rechazar_pago').prop("class", "form-row");
+            $('#btn_rechazar').prop("class", "form-row");
+            //$('#observaciones').prop("class", "form-row");
+            //$('#observaciones').rules('add',  { required: true });
+            });
+        });
+    </script>
 @endsection
