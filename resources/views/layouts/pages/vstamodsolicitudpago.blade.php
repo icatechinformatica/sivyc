@@ -62,16 +62,10 @@
                 <br>favor de subir la indicada, de lo contrario dejar sin seleccionar archivos en las opciones</h6>
             </label>
             <div class="form-row">
-                @if($datac->arch_factura == NULL)
                     <div class="form-group col-md-3">
                         <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
                     </div>
-                @else
-                <div class="form-group col-md-3">
-                    <label for="input arch_factura" class="control-label"><h4>La Factura de Instructor ya fue Cargada.</h4></label>
-                </div>
-                @endif
                 <div class="form-group col-md-3">
                     <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
                     <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
