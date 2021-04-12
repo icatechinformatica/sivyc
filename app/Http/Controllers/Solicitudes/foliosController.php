@@ -15,6 +15,8 @@ class foliosController extends Controller
 {   
     function __construct() {
         session_start();
+        $this->path_pdf = "/DTA/solicitud_folios/";        
+        $this->path_files = env("APP_URL").'/storage/uploadFiles';
     }
     
     public function index(Request $request){
@@ -36,22 +38,29 @@ class foliosController extends Controller
             $unidades = DB::table('tbl_unidades')->orderby('unidad','ASC')->pluck('unidad','id');
             $_SESSION['unidades'] = $unidades;  
         }
-        $data = DB::table('tbl_afolios');
-            if($request->num_acta) $data = $data->where('num_acta','like','%'.$request->num_acta.'%');
-            //if($_SESSION['unidades']) $data = $data->wherein('num_acta','like','%'.$request->num_acta.'%');
-            $data =$data->orderby('id','DESC')->paginate(15);        
-        return view('solicitudes.folios.index', compact('message','data', 'unidades'));     
+        if($request->num_acta) $valor = $request->num_acta;
+        else $valor = null;
+        
+        
+        $data = DB::table('tbl_banco_folios');            
+            if (date('Y-m-d', strtotime($valor)) == $valor) $data = $data->where('facta',$valor);
+            elseif(ctype_alpha(str_replace(' ', '', $valor))) $data = $data->where('unidad','like','%'.$valor.'%');
+            else $data = $data->where('num_acta','like','%'.$valor.'%');            
+            $data =$data->orderby('id','DESC')->paginate(15);
+            
+        $path_file = $this->path_files;        
+        return view('solicitudes.folios.index', compact('message','data', 'unidades', 'path_file'));     
     }  
     
     public function edit(Request $request){
         $request->id;
-        $json = DB::table('tbl_afolios')->select('id','id_unidad','mod', 'num_inicio','num_fin','num_acta','facta','activo')->where('id',$request->id)->first();
+        $json = DB::table('tbl_banco_folios')->select('id','id_unidad','mod', 'num_inicio','num_fin','num_acta','facta','activo')->where('id',$request->id)->first();
         $json = json_decode(json_encode($json), true);
         return $json;
     }
 
     public function store(Request $request){
-        $boton = $request->boton;
+        $boton = $request->boton; 
         $id = $request->id;
         $unidades = json_decode(json_encode($_SESSION['unidades']), true);
         $unidades = array_flip($unidades);
@@ -60,23 +69,25 @@ class foliosController extends Controller
         $num_fin = $request->ffinal;
         $num_acta = $request->num_acta;
         $id_unidad = $request->id_unidad;
-
+        if(!$request->publicar) $request->publicar=false;
         if($num_fin>$num_inicio){
+            $folio_inicial = $folio_final = NULL;
             if($request->mod=="EXT") $prefijo = "D";
             elseif($request->mod=="CAE") $prefijo = "C";
             else $prefijo = "A";
                         
-            $folio_inicial = $prefijo.str_pad($num_inicio, 5, "0", STR_PAD_LEFT);
-            $folio_final = $prefijo.str_pad($num_fin, 5, "0", STR_PAD_LEFT);
+            if($num_inicio)$folio_inicial = $prefijo.str_pad($num_inicio, 6, "0", STR_PAD_LEFT);
+            if($num_fin)$folio_final = $prefijo.str_pad($num_fin, 6, "0", STR_PAD_LEFT);
                     
             $total = $num_fin-$num_inicio+1;
 
             if($total>0){
                 ///Validación que no exista el rango de folio en la misma Unidad y modalida.
-                //$valido = DB::table('tbl_afolios')->where('id_unidad',$id_unidad)->where('finicial',$folio_inicial)->where('ffinal',$folio_final)->doesntExist();
+                $valido = DB::table('tbl_banco_folios')->where('mod',$request->mod);
+                    if($id)$valido = $valido->where('id','<>',$id);
+                    $valido = $valido->where('finicial',$folio_inicial)->where('ffinal',$folio_final)->doesntExist();                
                 
-                
-                //if($valido){
+                if($valido){
                     $url_file = NULL;
                     if ($request->hasFile('file_acta') AND $num_acta) {
                         $num_acta = $request->num_acta;
@@ -85,16 +96,19 @@ class foliosController extends Controller
                         //var_dump($file_result);exit;
                         $url_file = $file_result["url_file"];
                     }else $message = "Archivo inválido";
-                    if($id){
-                        if($unidad)$data['unidad']= $unidad;
-                        if($folio_inicial)$data['finicial'] = $folio_inicial;
-                        if($request->mod)$data['mod'] = $request->mod;                        
+                    
+                    if($id){                                             
                         $data = [ 'ffinal' => $folio_final, 'total' => $total, 'facta'=> $request->facta, 
                             'num_inicio' => $num_inicio, 'num_fin' => $num_fin,'id_unidad' => $id_unidad, 'num_acta' => $num_acta,
-                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id, 'file_acta' =>$url_file ];
-                        $result = DB::table('tbl_afolios')->where('id',$id)->update($data);
+                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id];
+                        if($url_file ) $data['file_acta'] = $url_file;
+                        if($unidad)$data['unidad']= $unidad;
+                        if($folio_inicial)$data['finicial'] = $folio_inicial;
+                        if($request->mod)$data['mod'] = $request->mod; 
+                         //var_dump($data);exit;
+                        $result = DB::table('tbl_banco_folios')->where('id',$id)->update($data);
                     }else{
-                        $result = DB::table('tbl_afolios')->Insert(                        
+                        $result = DB::table('tbl_banco_folios')->Insert(                        
                             ['unidad' => $unidad, 'finicial' => $folio_inicial, 'ffinal' => $folio_final, 'total' => $total,
                             'mod' => $request->mod, 'facta'=> $request->facta, 'num_inicio' => $num_inicio, 'num_fin' => $num_fin,
                             'id_unidad' => $id_unidad, 'contador' =>  0, 'num_acta' => $num_acta,
@@ -105,7 +119,7 @@ class foliosController extends Controller
                     if($result) $message = "Operación exitosa!! El registro ha sido guardado correctamente.";
                     else $message = "Operación inválida, es probable que exista el registro, por favor corrobore.";
 
-               // }else $message = "El rango de folio ya esta dado de alta en la misma Unidad y Modalidad.";
+                }else $message = "El rango de folio ya esta dado de alta Modalidad.";
                
             }else $message = "Rango de Folios no válido.";
         }else $message = "Rango de Folios no válido.";
@@ -113,38 +127,22 @@ class foliosController extends Controller
     }
 
     protected function upload_file($file,$name)
-    {        //https://www.sivyc.icatech.gob.mx/storage/uploadFiles/convenios/98/arcivo_convenio2021030900060998.pdf
+    {       
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
         $url = $mgs= null;
 
         if($ext == "pdf"){
             $name = trim($name.".pdf");
-            $path = "/uploadFiles/DTA/solicitud_folios/".$name;
+            $path = $this->path_pdf.$name;
             Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
-            $url = Storage::disk('custom_folder_1')->url($path);
-            $msg = "El archivo ha sido cargado o reemplazado correctamente.";
-            
+            //echo $url = Storage::disk('custom_folder_1')->url($path); exit;
+            $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
         }else $msg= "Formato de Archivo no válido, sólo PDF.";
-        
-        $data_file = ["message"=>$msg, 'url_file'=>$url];
-        
+                
+        $data_file = ["message"=>$msg, 'url_file'=>$path];
+       
         return $data_file;
-    }
-
-    public function pdf($id)
-    {
-        echo $id;exit;
-        echo $file = "/uploadFiles/DTA/solicitud_folios/".$pdf; exit;
-        if (file_exists($file)) {
-            # si existe el archivo podemos avanzar
-            $headers = [
-                'Content-Type' => 'application/pdf'
-            ];
-            return response()->download($file, 'File Test', $headers, 'inline');
-        } else {
-            abort(404, 'Archivo no encontrado!');
-        }
     }
    
 }

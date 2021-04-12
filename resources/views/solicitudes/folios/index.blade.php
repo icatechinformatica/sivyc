@@ -38,21 +38,20 @@
                         </div>
                     </div> 
                     <div class="input-group mr-sm-4 mt-3">                        
-                        <input type="checkbox" id="publicar" name="publicar" checked data-toggle="toggle" data-on="PUBLICAR" data-off="No Publicar" data-onstyle="primary" data-offstyle="danger" data-width="140" data-height="38">
+                        <input type="checkbox" id="publicar" name="publicar" data-toggle="toggle" data-on="PUBLICAR" data-off="NO PUBLICAR" data-onstyle="primary" data-offstyle="danger" data-width="140" data-height="38" >
                     </div>                   
                     {{ Form::button('AGREGAR', ['id' => 'boton', 'name'=> 'boton', 'value' => 'AGREGAR', 'class' => 'btn mr-sm-4 mt-3', 'type' => 'submit']) }}
-                    {{ Form::button('CANCELAR', ['id' => 'cancelar','class' => 'btn mr-sm-4 mt-3 hide bg-danger']) }}
+                    {{ Form::button('CANCELAR', ['id' => 'cancelar','class' => 'btn mr-sm-4 mt-3 hide ']) }}
                      {{ Form::hidden('id',NULL, ['id'=>'id']) }}
             </div>
         {!! Form::close() !!}
-        <br/>
-        
+        <br/>        
         <hr/>
         {{ Form::open(['route' => 'solicitudes.folios', 'method' => 'post','id'=>'frmbuscar', 'enctype' => 'multipart/form-data' ]) }}              
 
             <div class="form-row">
-                <div class="form-group col-md-2">           
-                    {{ Form::text('num_acta', NULL, ['id'=>'num_acta', 'class' => 'form-control mr-sm-2', 'placeholder' => 'NUM. ACTA', 'aria-label' => 'CLAVE DEL CURSO', 'size' => 20]) }}
+                <div class="form-group col-md-3">           
+                    {{ Form::text('num_acta', NULL, ['id'=>'num_acta', 'class' => 'form-control mr-sm-2', 'placeholder' => 'FECHA / NUM. ACTA / UNIDAD']) }}
                 </div>
                 <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['class' => 'btn', 'type' => 'submit']) }}                
@@ -62,19 +61,19 @@
         <div class="row">
             @include('solicitudes.folios.table')
         </div>
-    </div>    
-    @section('script_content_js')        
-        <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
-                
-        <script language="javascript">        
-            $('#chkToggle2').bootstrapToggle();
-            
-            $('#cancelar').click(function (){                    
+    </div>
+@endsection
+@section('script_content_js')        
+        <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>                
+        <script language="javascript">
+            $('#cancelar').click(function (){  
+                $("#id" ).val('');
                 $('#boton').text('AGREGAR');                
                 $('#cancelar').hide();
+                //$('#boton').css('background-color','#12322b');                
             });
              $("#boton" ).click(function(){ 
-                    if(confirm("Esta seguro de ejecutar la acción?")==true)$('#frm').submit();
+                    if(confirm("Esta seguro de ejecutar la acci\u00F3n?")==true)$('#frm').submit();
              }); 
                          
             function editar(id,asignados) {
@@ -84,7 +83,24 @@
                     type:  'GET',
                     dataType : 'json',
                     success:  function (data) {
-                        console.log(data);
+                        
+                        if(data['id'])$("#id" ).val(data['id']);
+                        if(data['id_unidad'])$("#id_unidad option[value="+ data['id_unidad'] +"]").attr("selected",true);
+                        if(data['mod'])$("#mod option[value="+ data['mod'] +"]").attr("selected",true);
+                        if(data['num_inicio'])$("#finicial" ).val(data['num_inicio']);
+                        if(data['num_fin'])$("#ffinal" ).val(data['num_fin']);
+                        if(data['num_acta'])$("#num_acta" ).val(data['num_acta']);
+                        if(data['facta'])$("#facta" ).val(data['facta']);
+                        if(data['activo']==true)$('#publicar').bootstrapToggle('on'); 
+                        else $('#publicar').bootstrapToggle('off'); 
+                          
+                        $('#cancelar').css('background-color','#EBA801');
+                        $('#boton').text('GUARDAR CAMBIOS');
+                        $('#boton').val('GUARDAR CAMBIOS');                        
+                        $('#cancelar').show();
+                        $("#ffinal").focus();
+                        //console.log(data);
+                        
                         if(asignados>0){                            
                             $("#id_unidad" ).attr('disabled', true);
                             $("#mod" ).attr('disabled', true);
@@ -94,20 +110,6 @@
                             $("#mod" ).attr('disabled', false);
                             $("#finicial" ).prop('readonly', false);
                         }
-                        
-                        if(data['id'])$("#id" ).val(data['id']);
-                        if(data['id_unidad'])$("#id_unidad option[value="+ data['id_unidad'] +"]").attr("selected",true);
-                        if(data['mod'])$("#mod option[value="+ data['mod'] +"]").attr("selected",true);
-                        if(data['num_inicio'])$("#finicial" ).val(data['num_inicio']);
-                        if(data['num_fin'])$("#ffinal" ).val(data['num_fin']);
-                        if(data['num_acta'])$("#num_acta" ).val(data['num_acta']);
-                        if(data['facta'])$("#facta" ).val(data['facta']);
-                        if(data['activo']==true)$('#publicar').prop('checked', true);
-                        $('#boton').css('background-color','#efb810');
-                        $('#boton').text('GUARDAR CAMBIOS');
-                        $('#boton').val('GUARDAR CAMBIOS');                        
-                        $('#cancelar').show();
-                        $("#ffinal").focus();
                     },
                     error:function(x,xs,xt){                        
                         alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
@@ -125,7 +127,5 @@
             $('.numero').keyup(function (){                    
                     this.value = (this.value + '').replace(/[^0-9NP]/g, '');
             });
-    </script>  
-    @endsection
+        </script>  
 @endsection
-

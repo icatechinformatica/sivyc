@@ -1,5 +1,4 @@
 <!--ELABORO ROMELIA PEREZ NANGUELU- rpnanguelu@gmail.com-->
-
 <div class="table-responsive">
     <table class="table table-bordered table-striped">
         <thead>
@@ -36,19 +35,20 @@
                      @if($item->activo==true)
                         <b>SI</b>
                      @else 
-                        <p class="text-danger"><b>NO</b></p>                      
+                        <p class="text-danger"><b>NO</b></p>            
                      @endif
                      </td>
                      <td>
                         @if($item->file_acta)
-                            <a class="nav-link"  href="{{ $item->file_acta }}" target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i></a>  
+                            <a class="nav-link"  href="{{ $path_file.$item->file_acta }}" target="_blank">
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            </a>  
                         @else 
                             {{ "NO ADJUNTADO"}}
                         @endif
                      </td> 
-
                      <td class="text-center">
-                        @if($item->total>$item->contador AND $item->facta>'2020-12-31')                        
+                        @if($item->total>$item->contador)                        
                             <a class="nav-link" onclick="editar('{{ $item->id }}',{{$item->contador}})">
                                 <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>

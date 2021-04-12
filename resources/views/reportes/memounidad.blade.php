@@ -121,9 +121,9 @@
                 @endswitch
                 , le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                 RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
-                digitalizados con firmas y sellos de un total de {{ $total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
+                digitalizados con firmas y sellos de un total de {{ $total_turnado_dta[0]->total_cursos_turnado_dta }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
                 hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
-                de Planeación de este Instituto un total de {{ $total_turnado_dta[0]->total_cursos_turnado_dta }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
+                de Planeación de este Instituto un total de {{ $total_turnado_planeacion[0]->total_cursos_turnado_planeacion }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
             </div>
             <br>
             @php
