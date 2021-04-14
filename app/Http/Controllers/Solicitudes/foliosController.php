@@ -40,13 +40,14 @@ class foliosController extends Controller
         }
         if($request->num_acta) $valor = $request->num_acta;
         else $valor = null;
-        
-        
-        $data = DB::table('tbl_banco_folios');            
-            if (date('Y-m-d', strtotime($valor)) == $valor) $data = $data->where('facta',$valor);
+                
+        $data = DB::table('tbl_banco_folios');
+        if($valor){            
+            if(date('Y-m-d', strtotime($valor)) == $valor) $data = $data->where('facta',$valor);
             elseif(ctype_alpha(str_replace(' ', '', $valor))) $data = $data->where('unidad','like','%'.$valor.'%');
-            else $data = $data->where('num_acta','like','%'.$valor.'%');            
-            $data =$data->orderby('id','DESC')->paginate(15);
+            else $data = $data->where('num_acta','like','%'.$valor.'%');
+        }            
+        $data =$data->orderby('id','DESC')->paginate(15);
             
         $path_file = $this->path_files;        
         return view('solicitudes.folios.index', compact('message','data', 'unidades', 'path_file'));     
