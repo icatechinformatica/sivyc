@@ -218,6 +218,15 @@
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan
+                                    @can('contrato.restart')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#restartModalContrato"
+                                            data-id='{{$itemData->id_folios}}'
+                                            title="Reiniciar Contrato">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
@@ -229,6 +238,15 @@
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
+                                    @can('contrato.restart')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#restartModalContrato"
+                                            data-id='{{$itemData->id_folios}}'
+                                            title="Reiniciar Contrato">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
                                 @endif
                                 @if ($itemData->status == 'Pago_Verificado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>

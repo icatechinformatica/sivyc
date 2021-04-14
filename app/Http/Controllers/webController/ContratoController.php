@@ -655,6 +655,12 @@ class ContratoController extends Controller
 
     public function contractRestart($id)
     {
+        $id_contrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $id)->FIRST();
+        $id_pago = pago::SELECT('id')->WHERE('id_contrato', '=', $id_contrato->id_contrato)->FIRST();
+        if ($id_pago != NULL)
+        {
+            pago::WHERE('id', '=', $id_pago->id)->delete();
+        }
         $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $id)->update(['status' => 'Contrato_Rechazado']);
 
         return redirect()->route('contrato-inicio')
