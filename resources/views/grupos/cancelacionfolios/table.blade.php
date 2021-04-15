@@ -11,8 +11,7 @@
                 <th scope="col">CLAVE</th>
                 <th scope="col">CURSO</th>                
                 <th scope="col">FOLIO</th>
-                <th scope="col">ESTATUS</th>
-                <th scope="col">MOTIVO</th>
+                <th scope="col">ESTATUS</th>                
                 <th scope="col">CANCELAR</th>
         </thead>
         <tbody>
@@ -22,20 +21,17 @@
                 <tr>     
                      <td>{{ $i++ }}</td>          
                      <td>{{ $item->matricula }}</td>
-                     <td>{{ $item->alumnos }}</td>
+                     <td>{{ $item->alumno }}</td>
                      <td>{{ $item->unidad }}</td>
                      <td>{{ $item->clave }}</td>
                      <td>{{ $item->curso }}</td>                     
                      <td>{{ $item->folio }}</td>
-                     <td>{{ $item->movimiento }}</td>
-                     <td>{{ $item->motivof }}</td>
+                     <td>{{ $item->movimiento }}</td>                     
                      <td class='text-center'>    
-                        @if( $item->movimiento!="CANCELADO")                 
+                        @if( $item->movimiento == "EXPEDIDO" AND $item->reexpedicion==false)                 
                             <div class="form-check">
-                                <input class="form-check-input custom-checkbox checkbox-lg" type="checkbox" value="{{$item->id_folio}}"  name="folios[]" id="check + {{ $item->id_folio }}" checked>
-                            </div>
-                        @else 
-                            {{'SOLICITUD'}} {{$item->num_solicitud}}
+                                <input class="form-check-input custom-checkbox checkbox-lg" type="checkbox" value="{{$item->id_folio}}"  name="ids[]" id="check + {{ $item->id_folio }}">
+                            </div>                     
                         @endif
                      </td>
                 </tr>

@@ -21,7 +21,7 @@
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
         ?>        
-        {{ Form::open(['route' => 'solicitudes.cancelacionfolios', 'method' => 'post','id'=>'frmbuscar', 'enctype' => 'multipart/form-data' ]) }}              
+        {{ Form::open(['route' => 'grupos.cancelacionfolios', 'method' => 'post','id'=>'frmbuscar', 'enctype' => 'multipart/form-data' ]) }}              
             @csrf
             <h5>BÚSQUEDA POR MATRÍCULA DEL ALUMNO O CLAVE DEL CURSO</h5>
             <hr/>
@@ -31,24 +31,17 @@
                 {{ Form::button('BUSCAR', ['class' => 'form-control mr-sm-2 mt-3 btn', 'type' => 'submit']) }}                
             </div>
         {!! Form::close() !!}
-        {{ Form::open(['route' => 'solicitudes.cancelacionfolios.guardar', 'method' => 'post','id'=>'frm', 'enctype' => 'multipart/form-data' ]) }} 
+        {{ Form::open(['route' => 'grupos.cancelacionfolios.guardar', 'method' => 'post','id'=>'frm', 'enctype' => 'multipart/form-data' ]) }} 
         @csrf
             <div class="row">
-                @include('solicitudes.cancelacionfolios.table')
+                @include('grupos.cancelacionfolios.table')
             </div>
-            <h5>DATOS DE CANCELACIÓN</h5>
+            
             <hr/>            
-            <div class="row form-inline">
-                    {{ Form::text('num_acta',NULL, ['id'=>'num_acta', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'NUM.SOLICITUD', 'required' => 'required', 'size' => 30]) }}                    
-                    {{ Form::date('facta', NULL , ['id'=>'facta', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA SOLICITUD', 'required' => 'required']) }}                                        
-                    <div class="input-group mr-sm-4 mt-3">
-                        <div class="custom-file">
-                            <input type="file" id="file_acta" name="file_acta" accept="application/pdf" class="custom-file-input">
-                            <label for="file_acta" class="custom-file-label">PDF ACTA</label>
-                        </div>
-                    </div>                     
-                    {{ Form::select('motivo', $motivo, '' ,array('id'=>'motivo','class' => 'form-control  mr-sm-4 mt-3','title' => 'MOTIVO', 'required' => 'required')) }}
-                    {{ Form::button('CANCELAR FOLIO(S)', ['class' => 'btn mr-sm-4 mt-3 bg-danger', 'type' => 'submit']) }}                                    
+            <div class="row form-inline justify-content-end">
+                {{ Form::label('MOTIVO:','',['class' => 'mr-sm-4 mt-3'])}}                                                 
+                {{ Form::select('motivo', $motivo, '' ,array('id'=>'motivo','class' => 'form-control  mr-sm-4 mt-3','title' => 'MOTIVO', 'required' => 'required')) }}
+                {{ Form::button('CANCELAR FOLIO(S)', ['class' => 'btn mr-sm-4 mt-3 bg-danger', 'type' => 'submit']) }}                                    
             </div>
         {!! Form::close() !!}
     </div>    
