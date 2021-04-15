@@ -168,6 +168,15 @@
                             @can('vista.revision.validacion.planeacion.indice')
                                 <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Revisión y Validación Final Formato t</a>
                             @endcan
+                            @can('vista.formatot.unidades.indice')
+                                <a class="dropdown-item" href="{{route('checar.memorandum.unidad')}}">Memorandums Enviados y Recibidos a la Unidad</a> 
+                            @endcan
+                            @can('vista.validacion.direccion.dta')
+                                <a class="dropdown-item" href="{{route('checar.memorandum.dta.mes')}}">Memorandums Enviados y Recibidos a la DTA</a>
+                            @endcan
+                            @can('vista.revision.validacion.planeacion.indice')
+                            <a class="dropdown-item" href="{{route('checar.memorandum.dta.mes')}}">Memorandums Respuesta Posivita y Negativa Planeación</a>
+                            @endcan
                         </div>
                     </li>
                 @endcan

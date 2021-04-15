@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * DESARROLLADO POR MIS LSC DANIEL MÉNDEZ CRUZ
+ */
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -969,6 +971,36 @@ class ftcontroller extends Controller
         if(count($formatot_planeacion_unidad)>0){  
             return Excel::download(new FormatoTReport($formatot_planeacion_unidad,$head, $titulo), $nombreLayout);
         }
+    }
+
+    /**
+     * nuevo método para generar  el módulo
+     */
+    protected function memorandumporunidad(Request $request){
+        // obtenemos la unidad en base a una sesion
+        $unidad = Auth::user()->unidad;
+        $unidadstr = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
+        // dd($unidadstr);
+        $busquedaPorMes = $request->get('busquedaMes');
+        $meses = array(1 => 'ENERO', 2 => 'FEBRERO', 3 => 'MARZO', 4 => 'ABRIL', 5 => 'MAYO', 6 => 'JUNIO', 7 => 'JULIO', 8 => 'AGOSTO', 9 => 'SEPTIEMBRE', 10 => 'OCTUBRE', 11 => 'NOVIEMBRE', 12 => 'DICIEMBRE');
+        /**
+         * CONSULTA PARA MOSTRAR INFORMACIÓN DE LOS MEMORANDUM DEL FORMATO T
+         */
+        if (isset($busquedaPorMes)) {
+            # si la variable está inicializada se carga la consulta
+            $queryGetMemo = DB::table('tbl_cursos')
+                        ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum_enviados"), DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS memorandum_retorno_unidad"))
+                        ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
+                        ->where('u.ubicacion', '=', $unidadstr)
+                        ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_DTA'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
+                        ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM'"), DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"))
+                        ->paginate(5);
+        } else {
+            # si la variable no está inicializada no se carga la consulta
+            $queryGetMemo = (array) null;
+        }
+        //dd($queryGetMemo);
+        return view('reportes.memorandum_unidad_formatot', compact('meses', 'queryGetMemo', 'unidadstr'));
     }
 
 }

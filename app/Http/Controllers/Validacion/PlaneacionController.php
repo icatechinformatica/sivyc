@@ -751,4 +751,11 @@ class PlaneacionController extends Controller
             return Excel::download(new FormatoTReport($formatot_planeacion,$head, $titulo), $nombreLayout);
         }
     }
+
+    /**
+     * memorandum de planeacion
+     */
+    protected function memorandumplaneacion(Request $request){
+        
+    }
 }
