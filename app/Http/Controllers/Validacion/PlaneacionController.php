@@ -756,6 +756,28 @@ class PlaneacionController extends Controller
      * memorandum de planeacion
      */
     protected function memorandumplaneacion(Request $request){
-        
+        // obtenemos la unidad en base a una sesion
+        $unidadesIcatech = DB::table('tbl_unidades')->select('ubicacion')->groupby('ubicacion')->get();
+        $busquedaPorMes = $request->get('busquedaMes');
+        $busquedaPorUnidad = $request->get('busquedaPorUnidad');
+        $meses = array(1 => 'ENERO', 2 => 'FEBRERO', 3 => 'MARZO', 4 => 'ABRIL', 5 => 'MAYO', 6 => 'JUNIO', 7 => 'JULIO', 8 => 'AGOSTO', 9 => 'SEPTIEMBRE', 10 => 'OCTUBRE', 11 => 'NOVIEMBRE', 12 => 'DICIEMBRE');
+        /**
+         * CONSULTA PARA MOSTRAR INFORMACIÓN DE LOS MEMORANDUM DEL FORMATO T
+         */
+        if (isset($busquedaPorMes)) {
+            # si la variable está inicializada se carga la consulta
+            $queryGetMemo = DB::table('tbl_cursos')
+                        ->select( DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS memorandum_retorno_unidad"), 'tbl_cursos.unidad')
+                        ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
+                        ->where('u.ubicacion', '=', $busquedaPorUnidad)
+                        ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_UNIDAD'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
+                        ->groupby(DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"), 'tbl_cursos.unidad')
+                        ->paginate(5);
+        } else {
+            # si la variable no está inicializada no se carga la consulta
+            $queryGetMemo = (array) null;
+        }
+        //dd($queryGetMemo);
+        return view('reportes.memorandum_dta_formatot', compact('meses', 'queryGetMemo', 'unidadesIcatech'));
     }
 }
