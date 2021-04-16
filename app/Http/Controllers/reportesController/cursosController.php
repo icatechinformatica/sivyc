@@ -27,7 +27,7 @@ class cursosController extends Controller
     public function index(Request $request){
         $id_user = Auth::user()->id;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
-            ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', '=', 'unidad')
+            ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');        
         $_SESSION['unidades']=NULL;
         //var_dump($rol);exit;        
