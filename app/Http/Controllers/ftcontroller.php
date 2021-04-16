@@ -28,7 +28,7 @@ class ftcontroller extends Controller
         $rol = DB::table('role_user')
         ->select('roles.slug')
         ->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')            
-        ->where([['role_user.user_id', '=', $id_user], ['roles.slug', '=', 'unidad']])
+        ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
         ->get();
         $_SESSION['unidades']=NULL;
         $meses = array(1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 7 => 'Julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'diciembre');
@@ -206,7 +206,7 @@ class ftcontroller extends Controller
         $id_user = Auth::user()->id;
         //var_dump($id_user);exit;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
-        ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', '=', 'unidad')
+        ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
         ->value('roles.slug');        
         $_SESSION['unidades']=NULL;
         $meses = array(1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 7 => 'Julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'diciembre');
