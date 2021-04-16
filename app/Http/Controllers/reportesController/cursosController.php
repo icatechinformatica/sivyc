@@ -30,8 +30,8 @@ class cursosController extends Controller
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', '=', 'unidad')
             ->value('roles.slug');        
         $_SESSION['unidades']=NULL;
-        //var_dump($rol);exit;
-        if($rol=='unidad'){ 
+        //var_dump($rol);exit;        
+        if($rol){ 
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad');        
