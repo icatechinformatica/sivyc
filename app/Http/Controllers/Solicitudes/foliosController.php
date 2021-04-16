@@ -37,7 +37,7 @@ class foliosController extends Controller
         if(!$unidades ){
             $unidades = DB::table('tbl_unidades')->orderby('unidad','ASC')->pluck('unidad','id');
             $_SESSION['unidades'] = $unidades;  
-        }
+        } 
         if($request->num_acta) $valor = $request->num_acta;
         else $valor = null;
                 
@@ -63,9 +63,10 @@ class foliosController extends Controller
     public function store(Request $request){
         $boton = $request->boton; 
         $id = $request->id;
-        $unidades = json_decode(json_encode($_SESSION['unidades']), true);
+        $unidades = json_decode(json_encode($_SESSION['unidades']), true); //var_dump($unidades);exit;
         $unidades = array_flip($unidades);
         $unidad = array_search($request->id_unidad, $unidades);
+        
         $num_inicio = $request->finicial;
         $num_fin = $request->ffinal;
         $num_acta = $request->num_acta;
@@ -98,9 +99,14 @@ class foliosController extends Controller
                         $url_file = $file_result["url_file"];
                     }else $message = "Archivo inválido";
                     
+                    $asignados = DB::table('tbl_folios')->where('folio', '>=', $folio_inicial)->where('folio', '<=', $folio_final)->value(DB::raw('count(*)'));
+                        
+                       
+                    if(!$asignados)$asignados=0;
+                    // echo var_dump($asignados);exit;
                     if($id){                                             
                         $data = [ 'ffinal' => $folio_final, 'total' => $total, 'facta'=> $request->facta, 
-                            'num_inicio' => $num_inicio, 'num_fin' => $num_fin,'id_unidad' => $id_unidad, 'num_acta' => $num_acta,
+                            'num_inicio' => $num_inicio, 'num_fin' => $num_fin,'id_unidad' => $id_unidad, 'contador' =>  $asignados, 'num_acta' => $num_acta,
                             'activo' => $request->publicar, 'iduser_created' => Auth::user()->id];
                         if($url_file ) $data['file_acta'] = $url_file;
                         if($unidad)$data['unidad']= $unidad;
@@ -109,10 +115,12 @@ class foliosController extends Controller
                          //var_dump($data);exit;
                         $result = DB::table('tbl_banco_folios')->where('id',$id)->update($data);
                     }else{
+                        
+                        
                         $result = DB::table('tbl_banco_folios')->Insert(                        
                             ['unidad' => $unidad, 'finicial' => $folio_inicial, 'ffinal' => $folio_final, 'total' => $total,
                             'mod' => $request->mod, 'facta'=> $request->facta, 'num_inicio' => $num_inicio, 'num_fin' => $num_fin,
-                            'id_unidad' => $id_unidad, 'contador' =>  0, 'num_acta' => $num_acta,
+                            'id_unidad' => $id_unidad, 'contador' =>  $asignados, 'num_acta' => $num_acta,
                             'activo' => $request->publicar, 'iduser_created' => Auth::user()->id, 'file_acta' =>$url_file ]
                         );   
                     }
