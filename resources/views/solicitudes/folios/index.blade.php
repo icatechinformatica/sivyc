@@ -101,12 +101,10 @@
                         //console.log(data);
                         
                         if(asignados>0){                            
-                            $("#id_unidad" ).attr('disabled', true);
-                            $("#mod" ).attr('disabled', true);
+                            $("#id_unidad" ).attr('disabled', true);                            
                             $("#finicial" ).prop('readonly', true);
                         }else{
-                            $("#id_unidad" ).attr('disabled', false);
-                            $("#mod" ).attr('disabled', false);
+                            $("#id_unidad" ).attr('disabled', false);                            
                             $("#finicial" ).prop('readonly', false);
                         }
                     },

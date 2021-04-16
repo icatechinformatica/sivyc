@@ -52,7 +52,7 @@ class asignarfoliosController extends Controller
         
         if($acta AND !$message){
             $id_curso = $curso->id;  
-            $num_folio = $acta->num_inicio+$acta->contador;// echo $num_folio;exit;
+            $num_folio = $acta->num_inicio+$acta->contador; //echo $num_folio;exit;
                
             foreach($alumnos as $a){  //var_dump($a);exit;
                 if($num_folio<=$acta->num_fin){
@@ -94,7 +94,7 @@ class asignarfoliosController extends Controller
                         $num_folio++;
                     }           
                      
-                }else $message = "Se han agotado los folios en esta Acta, volver a intentar!!";
+                }else $message = "El folio final ha sido asignado!!";
             }
         }           
         return redirect('grupos/asignarfolios')->with(['message'=>$message, 'clave'=>$clave]);
