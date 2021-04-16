@@ -37,7 +37,7 @@ class ftcontroller extends Controller
         //var_dump($rol);exit;
         if (!empty($rol[0]->slug)) {
             # si no está vacio
-            if($rol[0]->slug=='unidad')
+            if(count($rol) > 0)
             { 
                 $unidad = Auth::user()->unidad;
                 //dd($unidad);
@@ -214,7 +214,7 @@ class ftcontroller extends Controller
         $retornoUnidad = DB::table('tbl_cursos')->where('status', 'RETORNO_UNIDAD')->get();
         //var_dump($rol);exit;
         if (!empty($rol[0]->slug)) {
-            if($rol[0]->slug=='unidad')
+            if(count($rol) > 0)
             { 
                 $unidad = Auth::user()->unidad;
                 $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
