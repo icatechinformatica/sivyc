@@ -84,7 +84,7 @@ class ContratoController extends Controller
             break;
             case 'unidad.ejecutiva':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $unidad, $mes)
+                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato,  $tipoStatus, $unidad, $mes)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
