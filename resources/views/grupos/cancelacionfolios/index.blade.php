@@ -39,19 +39,17 @@
             
             <hr/>            
             <div class="row form-inline justify-content-end">
+                {{ Form::text('num_autorizacion',NULL, ['id'=>'num_autorizacion', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'NUM. AUTORIZACI&Oacute;N', 'title' => 'NUM. AUTORIZACI&Oacute;N', 'required' => 'required', 'size' => 25]) }}
+                <div class="input-group mr-sm-4 mt-3">
+                    <div class="custom-file">
+                        <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
+                        <label for="file_autorizacion" class="custom-file-label">PDF AUTORIZACI&Oacute;N</label>
+                    </div>
+                </div> 
                 {{ Form::label('MOTIVO:','',['class' => 'mr-sm-4 mt-3'])}}                                                 
                 {{ Form::select('motivo', $motivo, '' ,array('id'=>'motivo','class' => 'form-control  mr-sm-4 mt-3','title' => 'MOTIVO', 'required' => 'required')) }}
                 {{ Form::button('CANCELAR FOLIO(S)', ['class' => 'btn mr-sm-4 mt-3 bg-danger', 'type' => 'submit']) }}                                    
             </div>
         {!! Form::close() !!}
-    </div>    
-    @section('script_content_js')        
-        <script language="javascript">          
-            $(function() {
-                $( ".datepicker" ).datepicker({
-                    dateFormat: "yy-mm-dd"
-                });            
-            }); 
-    </script>  
-    @endsection
+    </div>
 @endsection
