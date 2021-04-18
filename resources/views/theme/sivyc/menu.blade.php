@@ -121,7 +121,7 @@
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">FORMATOT</a> --}}
                     </div>
                 </li>
-                
+
                 {{-- Grupo calificaciones --}}
                 @can('grupos.calificaciones')
                 <li class="nav-item g-mx-5--lg dropdown">
@@ -135,7 +135,7 @@
                         @can('grupos.asignarfolios')
                             <a class="dropdown-item" href="{{route('grupos.asignarfolios')}}">Asignar Folios</a>
                         @endcan
-                        @can('grupos.folios.cancelacion')
+                        @can('grupos.cancelacionfolios')
                             <a class="dropdown-item" href="{{route('grupos.cancelacionfolios')}}">Cancelar Folios</a>
                         @endcan
                         @can('grupos.consultas')                        
