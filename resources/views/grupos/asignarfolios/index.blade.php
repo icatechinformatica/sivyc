@@ -107,7 +107,7 @@
                                 <td> {{ $a->alumno }} </td>
                                 <td class="text-center"> {{ $a->calificacion }} </td>
                                 <td class="text-center"> @if($a->movimiento=='CANCELADO'  AND $a->reexpedicion==false){{ '0' }} @else {{ $a->folio }}@endif </td>                                
-                                <td class="text-center"> @if($a->movimiento=='CANCELADO'  AND $a->reexpedicion==false){{ '' }} @else {{ date('d/m/Y', strtotime($a->fecha_expedicion)) }} @endif </td>
+                                <td class="text-center"> @if($a->movimiento=='CANCELADO'  AND $a->reexpedicion==false ){{ '' }} @elseif($a->fecha_expedicion) {{ date('d/m/Y', strtotime($a->fecha_expedicion)) }} @endif </td>
                                 <td class="text-center"> {{ $a->movimiento}} </td>
                                 <td class="text-center"> {{ $a->motivo}} </td>                                    
                             </tr>

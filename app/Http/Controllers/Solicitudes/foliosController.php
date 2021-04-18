@@ -29,7 +29,7 @@ class foliosController extends Controller
         if($rol){ 
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
-            $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad'.'id');
+            $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad','id');
             if(count($unidades)==0) $unidades =[$unidad];       
             $_SESSION['unidades'] = $unidades;              
         }
@@ -99,11 +99,11 @@ class foliosController extends Controller
                         $url_file = $file_result["url_file"];
                     }else $message = "Archivo inválido";
                     
-                    $asignados = DB::table('tbl_folios')->where('folio', '>=', $folio_inicial)->where('folio', '<=', $folio_final)->value(DB::raw('count(*)'));
-                        
+                    $asignados = DB::table('tbl_folios')->where('folio', '>=', $folio_inicial)
+                    ->where('folio', '<=', $folio_final)->value(DB::raw('count(distinct(folio))'));                        
                        
                     if(!$asignados)$asignados=0;
-                    // echo var_dump($asignados);exit;
+                    //echo var_dump($asignados);exit;
                     if($id){                                             
                         $data = [ 'ffinal' => $folio_final, 'total' => $total, 'facta'=> $request->facta, 
                             'num_inicio' => $num_inicio, 'num_fin' => $num_fin,'id_unidad' => $id_unidad, 'contador' =>  $asignados, 'num_acta' => $num_acta,

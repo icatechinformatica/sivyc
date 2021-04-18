@@ -48,17 +48,17 @@ class cancelacionfoliosController extends Controller
             $data = DB::table('tbl_inscripcion as i')
                 ->select('i.id as id_inscripcion','i.matricula','i.alumno','i.reexpedicion',
                 'f.id as id_folio','f.folio','f.fecha_expedicion','f.movimiento','f.motivo','c.unidad','c.clave','c.curso')
+                ->where('i.status','INSCRITO')
                 ->leftJoin('tbl_folios as f', function($join){                                        
                         $join->on('f.id_curso', '=', 'i.id_curso');
                         $join->on('f.matricula', '=', 'i.matricula');                            
-                    }) 
-                //->LEFTJOIN('tbl_folios as f', 'f.id', '=', 'i.id_folio')
+                    })
                 ->LEFTJOIN('tbl_cursos as c', 'c.id', '=', 'i.id_curso')
                 ->where('c.clave',$clave);
                 if($_SESSION['unidades'])$data = $data->whereIn('c.unidad',$_SESSION['unidades']); 
                 if($request->matricula) $data = $data->where('i.matricula',$request->matricula);
                 
-                $data =$data->orderby('i.alumno','ASC')->get();
+                $data = $data->orderby('i.alumno','ASC')->get();
             //    var_dump($data);exit;
             if(count($data)==0) $message= "Clave inválida para la Unidad de Capacitación.";
             else $_SESSION['clave'] = $clave;  
@@ -89,7 +89,7 @@ class cancelacionfoliosController extends Controller
             ->select('f.id')
             ->LEFTJOIN('tbl_folios as f', 'f.id', '=', 'i.id_folio')
             ->LEFTJOIN('tbl_cursos as c', 'c.id', '=', 'i.id_curso')
-            ->where('c.clave',$clave)
+            ->where('i.status','INSCRITO')->where('c.clave',$clave)
             ->wherein('f.id',$ids)->pluck('f.id');
             
             //var_dump($cancelar);exit;
