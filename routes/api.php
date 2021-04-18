@@ -45,13 +45,13 @@ use Illuminate\Http\Request;
      Route::apiResource('alumno-inscrito', 'ApiController\AlumnoRegistradoController');
      Route::apiResource('inscripcion', 'ApiController\InscripcionController');
      Route::post('inscripcion/{id}/{matricula}', 'ApiController\InscripcionController@update');
-     Route::apiResource('calificacion', 'ApiController\CalificacionController');
-     Route::post('calificacion/{idcurso}/{matricula}', 'ApiController\CalificacionController@update');
+    //  Route::apiResource('calificacion', 'ApiController\CalificacionController');
+    //  Route::post('calificacion/{idcurso}/{matricula}', 'ApiController\CalificacionController@update');
      Route::post('updateCatalogoCurso/{id}', 'ApiController\CatalogoCursoController@update');
-     Route::apiResource('afolios', 'ApiController\AfoliosController');
-     Route::post('afolios/{id}', 'ApiController\AfoliosController@update');
-     Route::apiResource('folios', 'ApiController\FolioController');
-     Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
+    //  Route::apiResource('afolios', 'ApiController\AfoliosController');
+    //  Route::post('afolios/{id}', 'ApiController\AfoliosController@update');
+    //  Route::apiResource('folios', 'ApiController\FolioController');
+    //  Route::post('folios/{curso}/{id}', 'ApiController\FolioController@update');
      Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
      Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
 
@@ -68,7 +68,7 @@ Route::group([
       'middleware' => 'auth:api_sice'
     ], function() {
         Route::post('details', 'ApiController\Api\PassportController@details');
-        Route::apiResource('afolios-check', 'ApiController\AfoliosController');
+        // Route::apiResource('afolios-check', 'ApiController\AfoliosController');
         Route::post('logout', 'ApiController\Api\PassportController@logout');
     });
 });
