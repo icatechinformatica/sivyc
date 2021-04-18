@@ -76,8 +76,7 @@
                             <tr>
                                 <td> {{ $a->matricula}} </td>
                                 <td> {{ $a->alumno}} </td>
-                               <!-- <td class="text-center"> @if($a->folio) {{$a->folio}} @else {{ 'NINGUNO' }} @endif</td>-->
-                                <td class="text-center"> @if($a->ffolio) {{$a->ffolio}} @else {{ 'NINGUNO' }} @endif </td>
+                                <td class="text-center"> @if($a->folio) {{$a->folio}} @else {{ 'NINGUNO' }} @endif</td>                                
                                 <td>
                                 @if($a->folio=='0')
                                     <?php $cambios = true; ?>
