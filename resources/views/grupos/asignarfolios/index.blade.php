@@ -36,13 +36,15 @@
                 <h5>{{count($acta)}} ACTA(S) DISPONIBLE(S)</h5>                
                 @foreach($acta as $a)
                     <div class="row bg-light" style="padding-top:8px; margin-bottom: 2px ;">                    
-                        <div class="form-group col-md-1">ID: <b>{{ str_pad ($a->id, 8, 0, STR_PAD_LEFT)}}</b></div>
-                        <div class="form-group col-md-1">MOD: <b>{{ $a->mod }}</b></div>
+                        <div class="form-group col-md-2">ID: <b>{{ str_pad ($a->id, 8, 0, STR_PAD_LEFT)}}</b></div>
+                        <div class="form-group col-md-2">MOD: <b>{{ $a->mod }}</b></div>
                         <div class="form-group col-md-2">NUM. ACTA: <b>{{ $a->num_acta }}</b></div>
                         <div class="form-group col-md-2">FECHA ACTA: <b>{{ date('d/m/Y', strtotime($a->facta)) }}</b></div>
                         <div class="form-group col-md-2">FOLIO INICIAL: <b>{{ $a->finicial }}</b></div>
                         <div class="form-group col-md-2">FOLIO FINAL: <b>{{ $a->ffinal }}</b></div>
-                        <div class="form-group col-md-2">FOLIOS DISPONIBLES: <b>{{ $a->total-$a->contador }}</b></div>
+                        <div class="form-group col-md-2">DISPONIBLE: <b>{{ $a->folio_disponible }}</b></div>                        
+                        <div class="form-group col-md-2">TOTAL DISPONIBLES: <b>{{ $a->total-$a->contador }}</b></div>
+                        
                     </div>
                     <?php $actas[$a->id] =  str_pad ($a->id, 8, 0, STR_PAD_LEFT); ?>
                 @endforeach            
