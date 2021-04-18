@@ -121,9 +121,9 @@
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">FORMATOT</a> --}}
                     </div>
                 </li>
-
-                @can('grupos.calificaciones')  
                 
+                {{-- Grupo calificaciones --}}
+                @can('grupos.calificaciones')
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Grupos
@@ -142,10 +142,10 @@
                             <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>                        
                         @endcan
                     </div>
-                     
                 </li> 
-
                 @endcan
+                {{-- grupo calificaciones end --}}
+                
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
