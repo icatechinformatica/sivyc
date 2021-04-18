@@ -123,10 +123,10 @@ class asignarfoliosController extends Controller
                 
                 ///ALUMNOS REGISTRADOS
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','f.folio','f.fecha_expedicion','f.movimiento','f.motivo')
-                    //->leftjoin('tbl_folios as f','f.id','i.id_folio')
+                    ->where('i.status','INSCRITO')
                     ->leftJoin('tbl_folios as f', function($join){                                        
                         $join->on('f.id_curso', '=', 'i.id_curso');
-                        $join->on('f.matricula', '=', 'i.matricula');                            
+                        $join->on('f.matricula', '=', 'i.matricula');
                     }) 
                     ->where('i.id_curso',$curso->id)->orderby('i.alumno')->get();                  
                //var_dump($alumnos);exit;
