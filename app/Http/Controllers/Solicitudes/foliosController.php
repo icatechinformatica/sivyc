@@ -106,10 +106,11 @@ class foliosController extends Controller
                     //echo var_dump($asignados);exit;
                     if($id){                                             
                         $data = [ 'ffinal' => $folio_final, 'total' => $total, 'facta'=> $request->facta, 
-                            'num_inicio' => $num_inicio, 'num_fin' => $num_fin,'id_unidad' => $id_unidad, 'contador' =>  $asignados, 'num_acta' => $num_acta,
+                            'num_inicio' => $num_inicio, 'num_fin' => $num_fin, 'contador' =>  $asignados, 'num_acta' => $num_acta,
                             'activo' => $request->publicar, 'iduser_created' => Auth::user()->id];
                         if($url_file ) $data['file_acta'] = $url_file;
-                        if($unidad)$data['unidad']= $unidad;
+                        if($id_unidad)$data['unidad']= $unidad;
+                        if($unidad)$data['id_unidad']= $id_unidad;
                         if($folio_inicial)$data['finicial'] = $folio_inicial;
                         if($request->mod)$data['mod'] = $request->mod; 
                          //var_dump($data);exit;
