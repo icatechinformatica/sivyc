@@ -784,7 +784,7 @@ class ContratoController extends Controller
                         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.id', '=', 'contratos.instructor_perfilid')
                         ->FIRST();
-        if($data->solicitud_pago == NULL)
+        if($data->solicitud_fecha == NULL)
         {
             $date = strtotime($data->created_at);
             $D = date('d', $date);
