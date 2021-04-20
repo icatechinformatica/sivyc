@@ -111,7 +111,9 @@ class asignarfoliosController extends Controller
                 ///ACTA CON FOLIOS DISPONIBLES
                 if($curso->mod=="EXT" OR $curso->mod=="CAE" ) $mod = $curso->mod;
                 else $mod = "GRAL";
-                $acta =  DB::table('tbl_banco_folios')->where('unidad',$curso->unidad)->where('mod',$mod)
+                $acta =  DB::table('tbl_banco_folios')
+                    ->select('*',DB::RAW("CONCAT(substr(finicial,1,1),lpad((num_inicio+contador)::text, 6, '0')) as folio_disponible"))
+                    ->where('unidad',$curso->unidad)->where('mod',$mod)
                     ->where('activo',true)->whereColumn('contador','<','total');
                     if($id_afolio){
                         $acta =  $acta->where('id',$id_afolio)->first(); //solo un folio
@@ -120,13 +122,13 @@ class asignarfoliosController extends Controller
                         $acta =  $acta->orderby('id')->get(); //todos los folios
                         if(count($acta)==0) $message = "No hay Acta con Folios disponibles. ";
                     }
-                
+               // var_dump($acta);exit;
                 ///ALUMNOS REGISTRADOS
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','f.folio','f.fecha_expedicion','f.movimiento','f.motivo')
-                    //->leftjoin('tbl_folios as f','f.id','i.id_folio')
+                    ->where('i.status','INSCRITO')
                     ->leftJoin('tbl_folios as f', function($join){                                        
                         $join->on('f.id_curso', '=', 'i.id_curso');
-                        $join->on('f.matricula', '=', 'i.matricula');                            
+                        $join->on('f.matricula', '=', 'i.matricula');
                     }) 
                     ->where('i.id_curso',$curso->id)->orderby('i.alumno')->get();                  
                //var_dump($alumnos);exit;

@@ -404,6 +404,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
 
     /*Grupos RPN*/
+       
     //Calificaciones
     Route::get('/grupos/calificaciones', 'Grupos\calificacionesController@index')->name('grupos.calificaciones')->middleware('can:grupos.calificaciones');
     Route::post('/grupos/calificaciones/buscar', 'Grupos\calificacionesController@search')->name('grupos.calificaciones.buscar')->middleware('can:grupos.calificaciones.buscar');
@@ -423,7 +424,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/grupos/cancelacionfolios/guardar', 'Grupos\cancelacionfoliosController@store')->name('grupos.cancelacionfolios.guardar')->middleware('can:grupos.cancelacionfolios.guardar');
  
  
-    /*Consultas*/
+    /*Grupos Consultas*/
     Route::get('/grupos/consultas', 'Grupos\consultasController@index')->name('grupos.consultas')->middleware('can:grupos.consultas');
     Route::post('/grupos/consultas', 'Grupos\consultasController@index')->name('grupos.consultas')->middleware('can:grupos.consultas');
     Route::post('/grupos/consultas/calificaciones', 'Grupos\consultasController@calificaciones')->name('grupos.consultas.calificaciones')->middleware('can:grupos.consultas.calificaciones');
@@ -437,9 +438,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/solicitudes/folios/guardar', 'Solicitudes\foliosController@store')->name('solicitudes.folios.guardar')->middleware('can:solicitudes.folios.guardar');
     Route::post('/solicitudes/folios/editar', 'Solicitudes\foliosController@edit')->name('solicitudes.folios.edit')->middleware('can:solicitudes.folios.edit');
     Route::get('/solicitudes/folios/editar', 'Solicitudes\foliosController@edit')->name('solicitudes.folios.edit')->middleware('can:solicitudes.folios.edit');
-
     Route::get('/storage/uploadFiles/DTA/solicitud_folios/{pdf}', 'Solicitudes\foliosController@pdf')->name('solicitudes.folios.pdf');
-
+    
+     /*CONSULTAS*/
+    Route::get('/consultas/folios', 'Consultas\foliosController@asignados')->name('consultas.folios.asignados')->middleware('can:consultas.folios.asignados');
+    Route::post('/consultas/folios', 'Consultas\foliosController@asignados')->name('consultas.folios.asignados')->middleware('can:consultas.folios.asignados');
+    Route::post('/consultas/folios/xls', 'Consultas\foliosController@asignadosXLS')->name('consultas.folios.xls');
 
       
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/

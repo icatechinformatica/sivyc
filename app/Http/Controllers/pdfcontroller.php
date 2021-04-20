@@ -42,12 +42,11 @@ class pdfcontroller extends Controller
     {
         $id_user = Auth::user()->id;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
-        ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', '=', 'unidad')
+        ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
         ->value('roles.slug');        
         $_SESSION['unidades']=NULL;
         //var_dump($rol);exit;
-        if($rol=='unidad')
-        { 
+        if($rol){ 
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad');
@@ -92,11 +91,11 @@ class pdfcontroller extends Controller
     {
             $id_user = Auth::user()->id;
             $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
-                ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', '=', 'unidad')
+                ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
                 ->value('roles.slug');        
             $_SESSION['unidades']=NULL;
             //var_dump($rol);exit;
-            if($rol=='unidad')
+            if($rol)
             { 
                 $unidad = Auth::user()->unidad;
                 $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
