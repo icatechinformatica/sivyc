@@ -110,7 +110,7 @@ class foliosController extends Controller
                     if($id){                                             
                         $data = [ 'ffinal' => $folio_final, 'total' => $total, 'facta'=> $request->facta, 
                             'num_inicio' => $num_inicio, 'num_fin' => $num_fin, 'contador' =>  $asignados, 'num_acta' => $num_acta,
-                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id];
+                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id,'updated_at'=>date('Y-m-d H:i:s')];
                         if($url_file ) $data['file_acta'] = $url_file;
                         if($id_unidad)$data['unidad']= $unidad;
                         if($unidad)$data['id_unidad']= $id_unidad;
@@ -125,7 +125,9 @@ class foliosController extends Controller
                             ['unidad' => $unidad, 'finicial' => $folio_inicial, 'ffinal' => $folio_final, 'total' => $total,
                             'mod' => $request->mod, 'facta'=> $request->facta, 'num_inicio' => $num_inicio, 'num_fin' => $num_fin,
                             'id_unidad' => $id_unidad, 'contador' =>  $asignados, 'num_acta' => $num_acta,
-                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id, 'file_acta' =>$url_file ]
+                            'activo' => $request->publicar, 'iduser_created' => Auth::user()->id, 'file_acta' =>$url_file, 
+                            'created_at'=>date('Y-m-d H:i:s'), 'updated_at'=>date('Y-m-d H:i:s')
+                            ]
                         );   
                     }
     
