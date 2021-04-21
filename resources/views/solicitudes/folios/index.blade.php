@@ -42,7 +42,8 @@
                     </div>                   
                     {{ Form::button('AGREGAR', ['id' => 'boton', 'name'=> 'boton', 'value' => 'AGREGAR', 'class' => 'btn mr-sm-4 mt-3', 'type' => 'submit']) }}
                     {{ Form::button('CANCELAR', ['id' => 'cancelar','class' => 'btn mr-sm-4 mt-3 hide ']) }}
-                     {{ Form::hidden('id',NULL, ['id'=>'id']) }}
+                    {{ Form::hidden('id',NULL, ['id'=>'id']) }}
+                    {{ Form::hidden('valor',$valor, ['id'=>'valor']) }} 
             </div>
         {!! Form::close() !!}
         <br/>        
@@ -51,7 +52,7 @@
 
             <div class="form-row">
                 <div class="form-group col-md-3">           
-                    {{ Form::text('num_acta', NULL, ['id'=>'num_acta', 'class' => 'form-control mr-sm-2', 'placeholder' => 'FECHA / NUM. ACTA / UNIDAD']) }}
+                    {{ Form::text('num_acta', $valor, ['id'=>'num_acta', 'class' => 'form-control mr-sm-2', 'placeholder' => 'FECHA / NUM. ACTA / UNIDAD']) }}
                 </div>
                 <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['class' => 'btn', 'type' => 'submit']) }}                

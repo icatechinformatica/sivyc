@@ -5,10 +5,11 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">UNIDAD</th>
-                <th scope="col">MODALIDAD</th>
+                <th scope="col">MOD</th>
                 <th scope="col">FOLIO INICIAL</th>
                 <th scope="col">FOLIO FINAL</th>                
-                <th scope="col">TOTAL</th>
+                <th scope="col">TOTAL</th>                
+                <th scope="col" class="text-center">PENDIENTES</th>
                 <th scope="col" class="text-center">ASIGNADOS</th>
                 <th scope="col">NUM. ACTA</th>
                 <th scope="col">FECHA ACTA</th>
@@ -27,7 +28,8 @@
                      <td>{{ $item->mod }}</td>
                      <td>{{ $item->finicial }}</td>
                      <td>{{ $item->ffinal }}</td>
-                     <td>{{ $item->total }}</td>
+                     <td>{{ $item->total }}</td>                     
+                     <td class="text-center">{{ $item->total-$item->contador }}</td>
                      <td class="text-center">{{ $item->contador }}</td>
                      <td>{{ $item->num_acta }}</td>
                      <td>{{ $item->facta }}</td>                 
@@ -57,7 +59,7 @@
                 </tr>
             @endforeach
                 <tr>
-                    <td colspan="12" >
+                    <td colspan="13" >
                        {{ $data->render() }}
                      </td>
                 </tr>

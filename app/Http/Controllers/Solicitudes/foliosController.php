@@ -39,6 +39,7 @@ class foliosController extends Controller
             $_SESSION['unidades'] = $unidades;  
         } 
         if($request->num_acta) $valor = $request->num_acta;
+        elseif(session('valor')) $valor = session('valor'); 
         else $valor = null;
                 
         $data = DB::table('tbl_banco_folios');
@@ -46,11 +47,12 @@ class foliosController extends Controller
             if(date('Y-m-d', strtotime($valor)) == $valor) $data = $data->where('facta',$valor);
             elseif(ctype_alpha(str_replace(' ', '', $valor))) $data = $data->where('unidad','like','%'.$valor.'%');
             else $data = $data->where('num_acta','like','%'.$valor.'%');
+             $_SESSION['valor'] = $valor;
         }            
         $data =$data->orderby('id','DESC')->paginate(15);
             
         $path_file = $this->path_files;        
-        return view('solicitudes.folios.index', compact('message','data', 'unidades', 'path_file'));     
+        return view('solicitudes.folios.index', compact('message','data', 'unidades', 'path_file','valor'));     
     }  
     
     public function edit(Request $request){
@@ -60,7 +62,8 @@ class foliosController extends Controller
         return $json;
     }
 
-    public function store(Request $request){
+    public function store(Request $request){  
+        $valor = $request->valor;
         $boton = $request->boton; 
         $id = $request->id;
         $unidades = json_decode(json_encode($_SESSION['unidades']), true); //var_dump($unidades);exit;
@@ -133,7 +136,7 @@ class foliosController extends Controller
                
             }else $message = "Rango de Folios no válido.";
         }else $message = "Rango de Folios no válido.";
-        return redirect('/solicitudes/folios')->with(['message'=>$message]);
+        return redirect('/solicitudes/folios')->with(['message'=>$message,'valor'=>$valor]);
     }
 
     protected function upload_file($file,$name)
