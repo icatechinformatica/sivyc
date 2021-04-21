@@ -78,7 +78,7 @@ class asignarfoliosController extends Controller
                             ['unidad' => $curso->unidad, 'id_curso'=>$curso->id,'matricula'=>$a->matricula, 'nombre'=>$a->alumno,
                                 'folio' => $folio, 'movimiento'=> $movimiento, 'motivo' => $motivo, 'mod'=> $curso->mod, 'fini' => $acta->finicial, 'ffin' => $acta->ffinal, 'focan' => 0,
                                 'fecha_acta' => $acta->facta, 'fecha_expedicion' => $fecha_expedicion, 'id_unidad' => $acta->id_unidad, 'id_banco_folios' => $acta->id, 
-                                'iduser_created' => Auth::user()->id, 'realizo'=>Auth::user()->name 
+                                'iduser_created' => Auth::user()->id, 'realizo'=>Auth::user()->name,'created_at'=>date('Y-m-d H:i:s'), 'updated_at'=>date('Y-m-d H:i:s')
                                 ]                            
                          );
                          
