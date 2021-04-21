@@ -88,7 +88,7 @@ class asignarfoliosController extends Controller
                   
                                         
                         if($id_folio){
-                                DB::table('tbl_banco_folios')->where('id',$acta->id)->lockForUpdate()->increment('contador');
+                                DB::table('tbl_banco_folios')->where('id',$acta->id)->increment('contador');
                                 $message = "Operacion exitosa!!";
                         }                
                         $num_folio++;
