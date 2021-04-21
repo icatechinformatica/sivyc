@@ -508,7 +508,23 @@ class PlaneacionController extends Controller
                                 'muni' => $getvalueOfTblCursos->muni, 'depen' => $getvalueOfTblCursos->depen, 'cgeneral' => $getvalueOfTblCursos->cgeneral,
                                 'sector' => $getvalueOfTblCursos->sector, 'mpaqueteria' => $getvalueOfTblCursos->mpaqueteria, 'iem1' => $getvalueOfTblCursos->iem1,
                                 'ieh1' => $getvalueOfTblCursos->ieh1, 'iem2' => $getvalueOfTblCursos->iem2, 'ieh2' => $getvalueOfTblCursos->ieh2, 'iem3' => $getvalueOfTblCursos->iem3,
-                                'ieh3' => $getvalueOfTblCursos->ieh3, 'iem4' => $getvalueOfTblCursos->iem4, 'ieh4' => $getvalueOfTblCursos->ieh4, ''
+                                'ieh3' => $getvalueOfTblCursos->ieh3, 'iem4' => $getvalueOfTblCursos->iem4, 'ieh4' => $getvalueOfTblCursos->ieh4, 'iem5' => $getvalueOfTblCursos->iem5,
+                                'ieh5' => $getvalueOfTblCursos->ieh5, 'iem6' => $getvalueOfTblCursos->iem6, 'ieh6' => $getvalueOfTblCursos->ieh6, 'iem7' => $getvalueOfTblCursos->iem7,
+                                'ieh7' => $getvalueOfTblCursos->ieh7, 'iem8' => $getvalueOfTblCursos->iem8, 'ieh8' => $getvalueOfTblCursos->ieh8, 'iesm1' => $getvalueOfTblCursos->iesm1,
+                                'iesh1' => $getvalueOfTblCursos->iesh1, 'iesm2' => $getvalueOfTblCursos->iesm2, 'iesh2' => $getvalueOfTblCursos->iesh2, 'iesm3' => $getvalueOfTblCursos->iesm3,
+                                'iesh3' => $getvalueOfTblCursos->iesh3, 'iesm4' => $getvalueOfTblCursos->iesm4, 'iesh4' => $getvalueOfTblCursos->iesh4, 'iesm5' => $getvalueOfTblCursos->iesm5,
+                                'iesh5' => $getvalueOfTblCursos->iesh5, 'iesm6' => $getvalueOfTblCursos->iesm6, 'iesh6' => $getvalueOfTblCursos->iesh6, 'iesm7' => $getvalueOfTblCursos->iesm7,
+                                'iesh7' => $getvalueOfTblCursos->iesh7, 'iesm8' => $getvalueOfTblCursos->iesm8, 'iesh8' => $getvalueOfTblCursos->iesh8, 'iesm9' => $getvalueOfTblCursos->iesm9,
+                                'iesh9' => $getvalueOfTblCursos->iesh9, 'aesm1' => $getvalueOfTblCursos->aesm1, 'aesh1' => $getvalueOfTblCursos->aesh1, 'aesm2' => $getvalueOfTblCursos->aesm2,
+                                'aesh2' => $getvalueOfTblCursos->aesh2, 'aesm3' => $getvalueOfTblCursos->aesm3, 'aesh3' => $getvalueOfTblCursos->aesh3, 'aesm4' => $getvalueOfTblCursos->aesm4,
+                                'aesh4' => $getvalueOfTblCursos->aesh4, 'aesm5' => $getvalueOfTblCursos->aesm5, 'aesh5' => $getvalueOfTblCursos->aesh5, 'aesm6' => $getvalueOfTblCursos->aesm6,
+                                'aesh6' => $getvalueOfTblCursos->aesh6, 'aesm7' => $getvalueOfTblCursos->aesm7, 'aesh7' => $getvalueOfTblCursos->aesh7, 'aesm8' => $getvalueOfTblCursos->aesm8,
+                                'aesh8' => $getvalueOfTblCursos->aesh8, 'aesm9' => $getvalueOfTblCursos->aesm9, 'aesh9' => $getvalueOfTblCursos->aesh9, 'naesm1' => $getvalueOfTblCursos->naesm1,
+                                'naesh1' => $getvalueOfTblCursos->naesh1, 'naesm2' => $getvalueOfTblCursos->naesm2, 'naesh2' => $getvalueOfTblCursos->naesh2, 'naesm3' => $getvalueOfTblCursos->naesm3,
+                                'naesh3' => $getvalueOfTblCursos->naesh3, 'naesm4' => $getvalueOfTblCursos->naesm4, 'naesh4' => $getvalueOfTblCursos->naesh4, 'naesm5' => $getvalueOfTblCursos->naesm5,
+                                'naesh5' => $getvalueOfTblCursos->naesh5, 'naesm6' => $getvalueOfTblCursos->naesm6, 'naesh6' => $getvalueOfTblCursos->naesh6, 'naesm7' => $getvalueOfTblCursos->naesm7,
+                                'naesh7' => $getvalueOfTblCursos->naesh7, 'naesm8' => $getvalueOfTblCursos->naesm8, 'naesh8' => $getvalueOfTblCursos->naesh8, 'naesm9' => $getvalueOfTblCursos->naesm9,
+                                'naesh9' => $getvalueOfTblCursos->naesh9, 'tnota' => $getvalueOfTblCursos->tnota
                             ]);
                         }
         
