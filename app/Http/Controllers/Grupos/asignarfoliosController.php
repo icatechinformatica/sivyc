@@ -53,7 +53,7 @@ class asignarfoliosController extends Controller
         if($acta AND !$message){
             $id_curso = $curso->id;  
             $num_folio = $acta->num_inicio+$acta->contador; //echo $num_folio;exit;
-               
+            $fecha_expedicion = $curso->termino;
             foreach($alumnos as $a){  //var_dump($a);exit;
                 if($num_folio<=$acta->num_fin){
                     if((!$a->folio AND $a->calificacion !="NP") OR ($a->movimiento=="CANCELADO" AND $a->reexpedicion==false))  {
@@ -77,7 +77,7 @@ class asignarfoliosController extends Controller
                         $id_folio = DB::table('tbl_folios')->insertGetId(
                             ['unidad' => $curso->unidad, 'id_curso'=>$curso->id,'matricula'=>$a->matricula, 'nombre'=>$a->alumno,
                                 'folio' => $folio, 'movimiento'=> $movimiento, 'motivo' => $motivo, 'mod'=> $curso->mod, 'fini' => $acta->finicial, 'ffin' => $acta->ffinal, 'focan' => 0,
-                                'fecha_acta' => $acta->facta, 'fecha_expedicion' => date('Y-m-d'), 'id_unidad' => $acta->id_unidad, 'id_banco_folios' => $acta->id, 
+                                'fecha_acta' => $acta->facta, 'fecha_expedicion' => $fecha_expedicion, 'id_unidad' => $acta->id_unidad, 'id_banco_folios' => $acta->id, 
                                 'iduser_created' => Auth::user()->id, 'realizo'=>Auth::user()->name 
                                 ]                            
                          );
