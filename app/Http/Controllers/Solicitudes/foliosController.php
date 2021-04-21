@@ -112,10 +112,10 @@ class foliosController extends Controller
                             'num_inicio' => $num_inicio, 'num_fin' => $num_fin, 'contador' =>  $asignados, 'num_acta' => $num_acta,
                             'activo' => $request->publicar, 'iduser_created' => Auth::user()->id,'updated_at'=>date('Y-m-d H:i:s')];
                         if($url_file ) $data['file_acta'] = $url_file;
-                        if($id_unidad)$data['unidad']= $unidad;
-                        if($unidad)$data['id_unidad']= $id_unidad;
-                        if($folio_inicial)$data['finicial'] = $folio_inicial;
-                        if($request->mod)$data['mod'] = $request->mod; 
+                        //if($unidad)$data['unidad']= $unidad;
+                        //if($id_unidad)$data['id_unidad']= $id_unidad;
+                        //if($folio_inicial)$data['finicial'] = $folio_inicial;
+                        //if($request->mod)$data['mod'] = $request->mod; 
                          //var_dump($data);exit;
                         $result = DB::table('tbl_banco_folios')->where('id',$id)->update($data);
                     }else{
