@@ -18,7 +18,7 @@ class foliosController extends Controller
         session_start();
     }
     
-    public function asignados(Request $request){
+    public function index(Request $request){
         $id_user = Auth::user()->id;
         $message = $folios = $unidad = $mod = $finicial = $ffinal= NULL;
         
@@ -60,10 +60,10 @@ class foliosController extends Controller
                 ->join('tbl_cursos as c','c.id','i.id_curso')->orderby('f.folio')->get();
        }
         
-        return view('consultas.folios.asignados', compact('message','unidades','folios','unidad', 'mod', 'finicial', 'ffinal'));     
+        return view('consultas.folios', compact('message','unidades','folios','unidad', 'mod', 'finicial', 'ffinal'));     
     }  
     
-    public function asignadosXLS(Request $request){
+    public function xls(Request $request){
         
         $unidad = $request->unidad;
         $mod = $request->mod;

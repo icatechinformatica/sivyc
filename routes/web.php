@@ -437,9 +437,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/storage/uploadFiles/DTA/solicitud_folios/{pdf}', 'Solicitudes\foliosController@pdf')->name('solicitudes.folios.pdf');
     
      /*CONSULTAS*/
-    Route::get('/consultas/folios', 'Consultas\foliosController@asignados')->name('consultas.folios.asignados')->middleware('can:consultas.folios.asignados');
-    Route::post('/consultas/folios', 'Consultas\foliosController@asignados')->name('consultas.folios.asignados')->middleware('can:consultas.folios.asignados');
-    Route::post('/consultas/folios/xls', 'Consultas\foliosController@asignadosXLS')->name('consultas.folios.xls');
+     /*FOLIOS ASIGNADOS*/
+    Route::get('/consultas/folios', 'Consultas\foliosController@index')->name('consultas.folios')->middleware('can:consultas.folios');
+    Route::post('/consultas/folios', 'Consultas\foliosController@index')->name('consultas.folios')->middleware('can:consultas.folios');
+    Route::post('/consultas/folios/xls', 'Consultas\foliosController@xls')->name('consultas.folios.xls');
+    
+     /*LOTES DE FOLIOS*/
+    Route::get('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
+    Route::post('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
+    Route::post('/consultas/lotes/xls', 'Consultas\lotesController@xls')->name('consultas.lotes.xls');
 
       
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/

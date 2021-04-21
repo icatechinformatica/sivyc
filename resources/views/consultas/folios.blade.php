@@ -67,12 +67,7 @@
                         @endforeach                       
                     </tbody>                    
                     
-                    <tfoot>
-                        <tr>
-                        <td colspan="8" >
-                           
-                         </td>
-                        </tr>
+                    <tfoot>                       
                     </tfoot>
                     @endif
                 </table>
@@ -83,7 +78,7 @@
      @section('script_content_js') 
         <script language="javascript">           
             $(document).ready(function(){ 
-                $("#botonFILTRAR" ).click(function(){ $('#frm').attr('action', "{{route('consultas.folios.asignados')}}"); $("#frm").attr("target", '_self'); $('#frm').submit(); });
+                $("#botonFILTRAR" ).click(function(){ $('#frm').attr('action', "{{route('consultas.folios')}}"); $("#frm").attr("target", '_self'); $('#frm').submit(); });
                 $("#botonXLS" ).click(function(){ $('#frm').attr('action', "{{route('consultas.folios.xls')}}"); $("#frm").attr("target", '_blanck');$('#frm').submit();});                                
             });
         </script>  
