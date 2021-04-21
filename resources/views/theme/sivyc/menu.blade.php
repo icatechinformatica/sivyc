@@ -193,8 +193,11 @@
                         Consultas
                     </a>                    
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        @can('consultas.folios.asignados')
-                            <a class="dropdown-item" href="{{route('consultas.folios.asignados')}}">Folios Asignados</a>
+                        @can('consultas.folios')
+                            <a class="dropdown-item" href="{{route('consultas.folios')}}">Folios Asignados</a>
+                        @endcan
+                         @can('consultas.lotes')
+                            <a class="dropdown-item" href="{{route('consultas.lotes')}}">Actas de Folios</a>
                         @endcan
                     </div>
                 </li> 
