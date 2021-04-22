@@ -830,7 +830,9 @@ class PlaneacionController extends Controller
     }
 
     private function cierrePlaneacion($id){
-       return tbl_curso::select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
+
+       $temporal = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+       $queryReturn = tbl_curso::select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
         DB::raw('extract(day from tbl_cursos.inicio) as diai'),DB::raw('extract(month from tbl_cursos.inicio) as mesi'),DB::raw('extract(day from tbl_cursos.termino) as diat'),DB::raw('extract(month from tbl_cursos.termino) as mest'),DB::raw("case when EXTRACT( Month FROM tbl_cursos.termino) between '7' and '9' then '1' when EXTRACT( Month FROM tbl_cursos.termino) between '10' and '12' then '2' when EXTRACT( Month FROM tbl_cursos.termino) between '1' and '3' then '3' else '4' end as pfin"),
         'tbl_cursos.horas','tbl_cursos.dia',DB::raw("concat(tbl_cursos.hini,' ', 'A', ' ',tbl_cursos.hfin) as horario"),DB::raw('count(distinct(ca.id)) as tinscritos'),DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujer"),DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombre"),DB::raw("SUM(CASE WHEN ca.acreditado= 'X' THEN 1 ELSE 0 END) as egresado"),
         DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as emujer"),DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ehombre"),DB::raw("SUM(CASE WHEN ca.noacreditado='X' THEN 1 ELSE 0 END) as desertado"),
@@ -930,7 +932,7 @@ class PlaneacionController extends Controller
                 $join->on('ei.especialidad_id', '=', 'e.id');                
                 $join->on('tbl_cursos.espe', '=', 'e.nombre');
             })
-        ->JOIN($temp_inner ,function($join)
+        ->JOIN($temporal ,function($join)
         {
             $join->on('ca.matricula', '=', 'ar.no_control');                
             $join->on('tbl_cursos.id_curso','=','ar.id_curso');
@@ -942,11 +944,13 @@ class PlaneacionController extends Controller
             $join->on('ca.matricula','=','ins.matricula');
         })
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
-        ->WHERE('tbl_cursos.status', '=', 'TURNADO_PLANEACION')
+        ->WHERE('tbl_cursos.status', '=', 'REPORTADO')
         // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
-        ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION')
+        ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION_TERMINADO')
         ->WHERE('tbl_cursos.id', '=', $id)
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
-        ->distinct()->get();
+        ->distinct()->first();
+
+        return $queryReturn;
     }
 }
