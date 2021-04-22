@@ -118,9 +118,9 @@
                     </tbody>
                     <tfoot>
                         <tr>                            
-                            <td colspan="4" class="text-right" style="border-color:white;"></td>                                                            
+                            <td colspan="3" class="text-right" style="border-color:white;"></td>                                                            
                             @if(count($alumnos)>0 AND  $asignar AND isset($actas))
-                                <td colspan="1" class="text-right" style="border-color:white;">                                
+                                <td colspan="2" class="text-right" style="border-color:white;">                                
                                     {{ Form::select('id_afolio', $actas, NULL ,['id'=>'id_afolio', 'class' => 'form-control mt-2']) }}
                                 </td>
                                 <td colspan="2" class="text-right" style="border-color:white;">
