@@ -68,8 +68,8 @@ class asignarfoliosController extends Controller
                              $movimiento = "EXPEDIDO";
                         }
                         
-                        if($curso->mod=="EXT") $prefijo = "D";
-                        elseif($curso->mod=="CAE") $prefijo = "C";
+                        if($acta->mod=="EXT") $prefijo = "D";
+                        elseif($acta->mod=="CAE") $prefijo = "C";
                         else $prefijo = "A";
 
                         $folio = $prefijo.str_pad($num_folio, 6, "0", STR_PAD_LEFT);                       
