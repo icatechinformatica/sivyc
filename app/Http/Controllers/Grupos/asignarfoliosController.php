@@ -109,12 +109,14 @@ class asignarfoliosController extends Controller
                 $curso = $curso->first();
             if($curso){
                 ///ACTA CON FOLIOS DISPONIBLES
-                if($curso->mod=="EXT" OR $curso->mod=="CAE" ) $mod = $curso->mod;
-                else $mod = "GRAL";
+                if($curso->mod=="EXT" OR $curso->mod=="CAE" ) $mod[] = $curso->mod;
+                $mod[] = "GRAL";
+                
                 $acta =  DB::table('tbl_banco_folios')
                     ->select('*',DB::RAW("CONCAT(substr(finicial,1,1),lpad((num_inicio+contador)::text, 6, '0')) as folio_disponible"))
-                    ->where('unidad',$curso->unidad)->where('mod',$mod)
+                    ->where('unidad',$curso->unidad)->wherein('mod',$mod)
                     ->where('activo',true)->whereColumn('contador','<','total');
+                                        
                     if($id_afolio){
                         $acta =  $acta->where('id',$id_afolio)->first(); //solo un folio
                         if(!$acta) $message = "No hay Acta con Folios disponibles. ";
