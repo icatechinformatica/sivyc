@@ -168,15 +168,6 @@
                             @can('vista.revision.validacion.planeacion.indice')
                                 <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Revisión y Validación Final Formato t</a>
                             @endcan
-                            @can('vista.formatot.unidades.indice')
-                                <a class="dropdown-item" href="{{route('checar.memorandum.unidad')}}">Memorandums Enviados y Recibidos a la Unidad</a> 
-                            @endcan
-                            @can('vista.validacion.direccion.dta')
-                                <a class="dropdown-item" href="{{route('checar.memorandum.dta.mes')}}">Memorandums Enviados y Recibidos a la DTA</a>
-                            @endcan
-                            @can('vista.revision.validacion.planeacion.indice')
-                            <a class="dropdown-item" href="{{route('checar.memorandum.dta.mes')}}">Memorandums Respuesta Posivita y Negativa Planeación</a>
-                            @endcan
                         </div>
                     </li>
                 @endcan
@@ -187,6 +178,7 @@
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitudes
+<<<<<<< HEAD
                         </a>                     
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitudes.folios')
@@ -199,6 +191,20 @@
                     </li>
                 @endcan 
      
+=======
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @can('solicitudes.folios')
+                                <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
+                            @endcan
+                        </div>
+
+                    </li> 
+                @endcan
+                
+                {{-- modificaciones en el curso del menu --}}
+                {{-- consultas folios asignados --}}
+>>>>>>> 0dabf8bb... modificaciones en el modulo de modificacion sid requermientos
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Consultas
@@ -210,10 +216,14 @@
                         @can('consultas.lotes')
                             <a class="dropdown-item" href="{{route('consultas.lotes')}}">Actas de Folios</a>
                         @endcan
+<<<<<<< HEAD
                         @can('consultas.cursosfinalizados')
                             <a class="dropdown-item" href="{{route('consultas.cursosfinalizados')}}">Cursos Finalizados</a>
                         @endcan
                     </div>                    
+=======
+                    </div>
+>>>>>>> 0dabf8bb... modificaciones en el modulo de modificacion sid requermientos
                 </li> 
                 {{-- consultas folios asignados END --}}
                 
