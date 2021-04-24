@@ -845,57 +845,6 @@ $(function(){
      * Documentos
      *
      */
-    $('#especialidad_sid_mod' && '#tipo_curso_mod').on("change", () => {
-
-        $("#especialidad_sid_mod option:selected").each( () => {
-            var IdEsp = $('#especialidad_sid_mod').val();
-            var tipo = $('#tipo_curso_mod').val();
-            var datos = { idEsp_mod: IdEsp, tipo_mod: tipo};
-            var url = '/alumnos/sid/cursos_update';
-            console.log(datos);
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-            request.done(( respuesta ) =>
-            {
-                console.log(respuesta);
-                if (respuesta.length < 1) {
-                    $("#curso_sid_mod").empty();
-                    $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#curso_sid_mod").empty();
-                        $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            $('#curso_sid_mod').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
-                        });
-                        $("#curso_sid_mod").focus();
-                    }else{
-
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + textStatus );
-            });
-        });
-    });
 
 
     /**
