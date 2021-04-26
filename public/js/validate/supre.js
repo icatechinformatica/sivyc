@@ -11,6 +11,7 @@ $(function(){
                 x = id.substring(8,9);
             }
             if (id == 'addmore['+x+'][clavecurso]') {
+                console.log('entro')
                 var valor = (document.getElementById(id).value).toUpperCase();
                 var datos = {valor: valor};
                 var url = "/supre/busqueda/curso";

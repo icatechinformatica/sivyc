@@ -129,6 +129,15 @@
                                             <i class="fa fa-history"></i>
                                         </button>
                                     @endcan
+                                    @can('folio.cancel')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#cancelModalFolio"
+                                            data-id='{{$itemData->id_folios}}'
+                                            title="Cancelar Folio">
+                                            <i class="fa fa-window-close"></i>
+                                        </button>
+                                    @endcan
                                 @break
                                 @case('Pago_Verificado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
@@ -168,6 +177,15 @@
                                             data-id='{{$itemData->id_folios}}'
                                             title="Reiniciar Contrato">
                                             <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
+                                    @can('folio.cancel')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#cancelModalFolio"
+                                            data-id='{{$itemData->id_folios}}'
+                                            title="Cancelar Folio">
+                                            <i class="fa fa-window-close"></i>
                                         </button>
                                     @endcan
                                 @break
@@ -276,6 +294,41 @@
             </div>
         </div>
     </div>
+<!-- END -->
+<!-- Modal Cancel Folio -->
+<div class="modal fade" id="cancelModalFolio" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>¿Esta seguro de cancelar este proceso?</b></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('folio-cancel') }}" method="post" id="cancelfolio">
+                @csrf
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-8">
+                        <label for="observaciones"><b>Describa el motivo de cancelación</b></label>
+                        <textarea name="observaciones" id="observaciones" cols="8" rows="6" class="form-control" required></textarea>
+                        <input name="idf" id="idf" type="text" class="form-control" hidden>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button type="submit" class="btn btn-primary" >Aceptar</button>
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- END -->
 @endsection
 @section('script_content_js')

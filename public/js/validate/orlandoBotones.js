@@ -106,7 +106,8 @@ $(function(){
     //Botones en tabla modsupre
         $("#addmodsupre").click(function(){
             ++m;
-            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" disabled value="12101" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /></td><td><input type="text" name="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td><td><input type="text" name="addmore['+m+'][comentario]" id="addmore['+m+'][comentario]" placeholder="comentario" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
+            console.log(m);
+            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" id="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" id="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" disabled value="12101" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" id="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" id="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /><footer name="addmore['+m+'][aviso]" id="addmore['+m+'][aviso]" style="color: red"></footer></td><td><input type="text" name="addmore['+m+'][iva]" id="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td><td><input type="text" name="addmore['+m+'][comentario]" id="addmore['+m+'][comentario]" placeholder="comentario" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
 
         });
 
@@ -300,7 +301,7 @@ $(function(){
         }
     });
 
-    $( document ).on('input', function(){
+   $( document ).on('input', function(){
         if(document.getElementById('curso') != null || document.getElementById('general') != null || document.getElementById('unidad') != null)
         {
             if (document.getElementById('curso').checked) {

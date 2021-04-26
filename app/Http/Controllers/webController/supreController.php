@@ -311,6 +311,16 @@ class supreController extends Controller
                     ->with('success','Suficiencia Presupuestal Reiniciada');
     }
 
+    public function cancelFolio(Request $request)
+    {
+        $folio = folio::find($request->idf);
+        $folio->observacion_cancelacion = $request->observaciones;
+        $folio->status = 'Cancelado';
+        $folio->save();
+        return redirect()->route('supre-inicio')
+                    ->with('success','Folio de Suficiencia Presupuestal Cancelada');
+    }
+
     protected function getcursostats(Request $request)
     {
         if (isset($request->valor)){
