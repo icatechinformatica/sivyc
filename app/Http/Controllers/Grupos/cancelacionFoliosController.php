@@ -95,7 +95,7 @@ class cancelacionfoliosController extends Controller
             //var_dump($cancelar);exit;
             if(count($cancelar)>0){
                  $result = DB::table('tbl_folios')->wherein('id',$cancelar)->update(
-                    ['movimiento' => 'CANCELADO', 'motivo' => $request->motivo,'num_autorizacion'=>$request->num_autorizacion,'file_autorizacion'=>$url_file, 'iduser_updated' => Auth::user()->id, 'realizo'=>Auth::user()->name ]
+                    ['movimiento' => 'CANCELADO', 'motivo' => $request->motivo,'num_autorizacion'=>$request->num_autorizacion,'file_autorizacion'=>$url_file, 'iduser_updated' => Auth::user()->id, 'realizo'=>Auth::user()->name , 'updated_at'=>date('Y-m-d H:i:s')]
                  );                        
                  if($result) $message = "Operación exitosa!! el registro ha sido guardado correctamente.";
             }else $message = "No existen folios que cancelar.";

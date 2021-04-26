@@ -21,3 +21,13 @@ Route::post('/reportes/formatot/director/dta/xls', 'Validacion\validacionDtaCont
  */
 Route::get('/reportes/formatot/aperturado/index', 'Validacion\validacionDtaController@ReporteAperturaIndexDta')->name('indice.dta.aperturado.indice');
 Route::post('/reportes/formatot/aperturado/generar', 'Validacion\validacionDtaController@generarreporteapertura')->name('generar.reporte.apertura');
+/**
+ * RUTAS MEMORANDUM DEL FORMATO T
+ */
+Route::get('/consultar/memorandum/unidad/index', 'ftcontroller@memorandumporunidad')->name('checar.memorandum.unidad')->middleware('can:vista.formatot.unidades.indice');
+Route::get('/consultar/memorandum/dta/index', 'Validacion\validacionDtaController@memorandumpordta')->name('checar.memorandum.dta.mes')->middleware('can:vista.validacion.direccion.dta');
+Route::get('/consultar/memorandum/planeacion/index', 'Validacion\PlaneacionController@memorandumplaneacion')->name('checar.memorandum.planeacion')->middleware('can:vista.revision.validacion.planeacion.indice');
+/**
+ * modificaciones de busqueda por especialidad, tipo de curso y cursos
+ */
+Route::post('/alumnos/sid/cursos/modificar', 'webController\AlumnoController@getcursosModified')->name('alumnos.sid.cursos.modificado');

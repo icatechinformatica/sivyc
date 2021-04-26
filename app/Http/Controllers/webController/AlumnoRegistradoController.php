@@ -156,6 +156,7 @@ class AlumnoRegistradoController extends Controller
             'grupo' => trim($request->input('grupo_mod')),
             'tipo_curso' => trim($request->input('tipo_curso_mod'))
         ];
+
         $alumnoId = base64_decode($idregistrado);
 
         $Alumno->WHERE('id', '=', $alumnoId)->UPDATE($array_solicitud);

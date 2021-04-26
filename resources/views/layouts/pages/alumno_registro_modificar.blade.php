@@ -2,6 +2,40 @@
 <!--generado por Daniel Méndez-->
 @section('title', 'Matricular Alumno | Sivyc Icatech')
 <!--contenido-->
+@section('content_script_css')
+    <style>
+        .modal
+        {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            -moz-opacity: 0.8;
+        }
+        .center
+        {
+            z-index: 1000;
+            margin: 300px auto;
+            padding: 10px;
+            width: 150px;
+            background-color: White;
+            border-radius: 10px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            -moz-opacity: 1;
+        }
+        .center img
+        {
+            height: 128px;
+            width: 128px;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="container g-pt-50">
         @if ($errors->any())
@@ -26,7 +60,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="horario" class="control-label">TIPO DE CURSO</label>
-                    <select class="form-control" id="tipo_curso" name="tipo_curso_mod" required>
+                    <select class="form-control" id="tipo_curso_mod" name="tipo_curso_mod" required>
                         <option value="">--SELECCIONAR--</option>
                         <option {{ ($alumnos->tipo_curso == "PRESENCIAL") ? "selected" : "" }} value="PRESENCIAL">PRESENCIAL</option>
                         <option {{ ($alumnos->tipo_curso == "A DISTANCIA") ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
@@ -79,5 +113,83 @@
             </div>
             <input type="hidden" name="no_control_update" id="no_control_update" value="{{$alumnos->no_control}}">
         </form>
+        {{-- modal --}}
+            <div class="modal">
+                <div class="center">
+                    <img alt="" src="{{URL::asset('/img/cargando.gif')}}" />
+                </div>
+            </div>
+        {{-- modal END --}}
+        
     </div>
 @endsection
+{{-- parte de javascript --}}
+@section('script_content_js')
+    <script type="text/javascript">
+        $(function(){
+            /***
+             * escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar
+             * los cursos de esa especialidad
+            */
+            $('#tipo_curso_mod' && '#especialidad_sid_mod').on("change", () => {
+
+                $("#especialidad_sid_mod option:selected").each( () => {
+                    var IdEsp = $('#especialidad_sid_mod').val();
+                    var tipo = $('#tipo_curso_mod').val();
+                    var unidad = $('#tblunidades').val();
+                    var datos = { idEsp_mod: IdEsp, tipo_mod: tipo, _token: "{{ csrf_token() }}"};
+                    var url = "{{route('alumnos.sid.cursos.modificado')}}";
+
+                    var solicitud = $.ajax
+                    ({
+                        url: url,
+                        method: 'POST',
+                        data: datos,
+                        dataType: 'json',
+                        beforeSend: function(){
+                            $(".modal").show();
+                        },
+                        success: function(response){
+                            /*
+                                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                            */
+                            if (response.length < 1) {
+                                $("#curso_sid_mod").empty();
+                                $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                            } else {
+                                if(!response.hasOwnProperty('error')){
+                                    $("#curso_sid_mod").empty();
+                                    $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                    $.each(response, (k ,v) => {
+                                        $('#curso_sid_mod').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
+                                    });
+                                    $("#curso_sid_mod").focus();
+                                }
+                            }
+                        },
+                        complete:function(data){
+                            // escondemos el modal
+                            $(".modal").hide();
+                        },
+                        error: function(jqXHR, textStatus){
+                            jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                            console.log(jqXHR.status);
+                            alert( "Hubo un error: " + jsonValue );
+                        }
+                    });
+
+                    $.when(solicitud).then(function(data, textStatus, jqXHR ){
+                        if (jqXHR.status === 200) {
+                            $(".modal").hide();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+@endsection
+{{-- parte de javascript END --}}
+

@@ -978,6 +978,23 @@ class AlumnoController extends Controller
         return $json;
     }
 
+    protected function getcursosModified(Request $request){
+        if (isset($request->idEsp_mod)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $idEspecialidad = $request->idEsp_mod;
+            $tipo_curso = $request->tipo_mod;
+            //$Curso = new curso();
+            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad]])->get();
+
+            /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
+            $json=json_encode($Cursos);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+        return $json;
+    }
+
     protected function checkcursos(Request $request)
     {
         if (isset($request->unidad)){
@@ -997,6 +1014,9 @@ class AlumnoController extends Controller
 
     protected function getcursos_update(Request $request)
     {
+        /**
+         * QUITAR O MODIFICAR
+         */
         if (isset($request->idEsp_mod)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad_mod = $request->idEsp_mod;

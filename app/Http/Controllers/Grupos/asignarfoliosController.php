@@ -68,8 +68,8 @@ class asignarfoliosController extends Controller
                              $movimiento = "EXPEDIDO";
                         }
                         
-                        if($curso->mod=="EXT") $prefijo = "D";
-                        elseif($curso->mod=="CAE") $prefijo = "C";
+                        if($acta->mod=="EXT") $prefijo = "D";
+                        elseif($acta->mod=="CAE") $prefijo = "C";
                         else $prefijo = "A";
 
                         $folio = $prefijo.str_pad($num_folio, 6, "0", STR_PAD_LEFT);                       
@@ -78,7 +78,7 @@ class asignarfoliosController extends Controller
                             ['unidad' => $curso->unidad, 'id_curso'=>$curso->id,'matricula'=>$a->matricula, 'nombre'=>$a->alumno,
                                 'folio' => $folio, 'movimiento'=> $movimiento, 'motivo' => $motivo, 'mod'=> $curso->mod, 'fini' => $acta->finicial, 'ffin' => $acta->ffinal, 'focan' => 0,
                                 'fecha_acta' => $acta->facta, 'fecha_expedicion' => $fecha_expedicion, 'id_unidad' => $acta->id_unidad, 'id_banco_folios' => $acta->id, 
-                                'iduser_created' => Auth::user()->id, 'realizo'=>Auth::user()->name 
+                                'iduser_created' => Auth::user()->id, 'realizo'=>Auth::user()->name,'created_at'=>date('Y-m-d H:i:s'), 'updated_at'=>date('Y-m-d H:i:s')
                                 ]                            
                          );
                          
@@ -88,7 +88,7 @@ class asignarfoliosController extends Controller
                   
                                         
                         if($id_folio){
-                                DB::table('tbl_banco_folios')->where('id',$acta->id)->lockForUpdate()->increment('contador');
+                                DB::table('tbl_banco_folios')->where('id',$acta->id)->increment('contador');
                                 $message = "Operacion exitosa!!";
                         }                
                         $num_folio++;
@@ -109,12 +109,14 @@ class asignarfoliosController extends Controller
                 $curso = $curso->first();
             if($curso){
                 ///ACTA CON FOLIOS DISPONIBLES
-                if($curso->mod=="EXT" OR $curso->mod=="CAE" ) $mod = $curso->mod;
-                else $mod = "GRAL";
+                if($curso->mod=="EXT" OR $curso->mod=="CAE" ) $mod[] = $curso->mod;
+                $mod[] = "GRAL";
+                
                 $acta =  DB::table('tbl_banco_folios')
                     ->select('*',DB::RAW("CONCAT(substr(finicial,1,1),lpad((num_inicio+contador)::text, 6, '0')) as folio_disponible"))
-                    ->where('unidad',$curso->unidad)->where('mod',$mod)
+                    ->where('unidad',$curso->unidad)->wherein('mod',$mod)
                     ->where('activo',true)->whereColumn('contador','<','total');
+                                        
                     if($id_afolio){
                         $acta =  $acta->where('id',$id_afolio)->first(); //solo un folio
                         if(!$acta) $message = "No hay Acta con Folios disponibles. ";
