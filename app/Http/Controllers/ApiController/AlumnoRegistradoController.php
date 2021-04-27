@@ -117,7 +117,7 @@ class AlumnoRegistradoController extends Controller
                     'alumnos_pre.colonia',
                     'alumnos_pre.municipio',
                     'alumnos_pre.estado_civil',
-                    DB::raw("CONCAT('alumnos_pre.ultimo_grado_estudios','-', 'cursos.nombre_curso') AS ultimo_grado_estudios"),
+                    DB::raw("CONCAT(alumnos_pre.ultimo_grado_estudios,' - ', cursos.nombre_curso) AS ultimo_grado_estudios"),
                     'alumnos_pre.telefono',
                     'alumnos_pre.correo',
                     'cursos.nombre_curso',
