@@ -64,7 +64,7 @@ class AlumnoRegistradoController extends Controller
                    'alumnos_registro.etnia',
                    'alumnos_registro.indigena',
                    'alumnos_registro.migrante',
-                   'cursos.nombre_curso')
+                   DB::raw("CONCAT('alumnos_pre.ultimo_grado_estudios','-', 'cursos.nombre_curso')"))
                    ->ORDERBY('id_registro', 'desc')
                    ->GET();
 
