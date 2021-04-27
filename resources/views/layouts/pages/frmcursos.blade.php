@@ -13,7 +13,7 @@
             </ul>
         </div><br />
     @endif
-    <form method="POST" action="{{ url('cursos/guardar-catalogo') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('cursos.guardar-catalogo') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
         <div style="text-align: right;width:60%">
             <label for="tituloformulariocurso"><h1>NUEVO CURSO</h1></label>

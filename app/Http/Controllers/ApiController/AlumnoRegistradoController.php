@@ -101,6 +101,7 @@ class AlumnoRegistradoController extends Controller
         //
         $alumnos = DB::table('alumnos_registro')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                ->JOIN('cursos', 'alumnos_registro.id_curso', '=', 'cursos.id')
                 ->SELECT(
                     'alumnos_registro.unidad',
                     'alumnos_registro.no_control',
@@ -116,7 +117,9 @@ class AlumnoRegistradoController extends Controller
                     'alumnos_pre.estado_civil',
                     'alumnos_pre.ultimo_grado_estudios',
                     'alumnos_pre.telefono',
-                    'alumnos_pre.correo'
+                    'alumnos_pre.correo',
+                    'cursos.nombre_curso',
+                    'cursos.id AS id_cursos'
                 )
                 ->WHERE('alumnos_registro.no_control', '=', $id)
                 ->FIRST();
