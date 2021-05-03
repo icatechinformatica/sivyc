@@ -382,14 +382,17 @@ class validacionDtaController extends Controller
                     $observaciones_revision_dta = [
                         'OBSERVACION_REVISION_JEFE_DTA' =>  $_POST['comentarios_enlaces'][$key]
                     ];
+                    $revision_dta = [
+                        'TURNADO_REVISION_DTA' => $turnado_revision_dta
+                    ];
                     # modificaciones
                     \DB::table('tbl_cursos')
                             ->where('id', $value)
                             ->update([
-                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}','".json_encode($turnado_revision_dta)."'::jsonb)"), 
+                                'memos' => DB::raw("'".json_encode($revision_dta)."'::jsonb"), 
                                 'status' => 'REVISION_DTA', 
                                 'turnado' => 'REVISION_DTA',
-                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_DIRECCION_DTA}','".json_encode($observaciones_revision_dta)."', true)"),
+                                'observaciones_formato_t' => DB::raw("'".json_encode($observaciones_revision_dta)."'::jsonb"),
                             ]);
                 }
                 return redirect()->route('validacion.cursos.enviados.dta')
@@ -504,13 +507,16 @@ class validacionDtaController extends Controller
                             $observaciones_revision_a_planeacion = [
                                 'OBSERVACION_REVISION_A_PLANEACION' =>  $_POST['comentarios'][$key]
                             ];
+                            $array_planeacion = [
+                                'TURNADO_PLANEACION' => $turnado_planeacion
+                            ];
                             # entremos en el loop
                             \DB::table('tbl_cursos')
                                     ->where('id', $value)
-                                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}','".json_encode($turnado_planeacion)."'::jsonb)"), 
+                                    ->update(['memos' => DB::raw("'".json_encode($array_planeacion)."'::jsonb"), 
                                     'status' => 'TURNADO_PLANEACION', 
                                     'turnado' => 'PLANEACION',
-                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_PLANEACION}', '".json_encode($observaciones_revision_a_planeacion)."'::jsonb)")]);
+                                    'observaciones_formato_t' => DB::raw("'".json_encode($observaciones_revision_a_planeacion)."'::jsonb")]);
                         }
                         return redirect()->route('validacion.dta.revision.cursos.indice')
                                 ->with('success', sprintf('CURSOS ENVIADOS A PLANEACIÓN PARA REVISIÓN!'));
@@ -531,13 +537,16 @@ class validacionDtaController extends Controller
                             $observaciones_revision_dta_enlaces = [
                                 'OBSERVACION_RETORNO_ENLACES' =>  $_POST['comentarios'][$key]
                             ];
+                            $array_turnado_enlace = [
+                                'TURNADO_ENLACE_DTA' => $regresar_enlace_dta
+                            ];
                             # entremos en el loop
                             \DB::table('tbl_cursos')
                                 ->where('id', $value)
-                                ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_ENLACE_DTA}','".json_encode($regresar_enlace_dta)."'::jsonb)"), 
+                                ->update(['memos' => DB::raw("'".json_encode($array_turnado_enlace)."'::jsonb"), 
                                 'status' => 'TURNADO_DTA', 
                                 'turnado' => 'DTA',
-                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_ENLACES_DTA}', '".json_encode($observaciones_revision_dta_enlaces)."'::jsonb)")
+                                'observaciones_formato_t' => DB::raw("'".json_encode($observaciones_revision_dta_enlaces)."'::jsonb")
                             ]);
                         }
                         return redirect()->route('validacion.dta.revision.cursos.indice')
@@ -862,7 +871,7 @@ class validacionDtaController extends Controller
 
         $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         // cursos unidades por planeacion
-        $formatot_enlace_dta = tbl_curso::select(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado"), 'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
+        $formatot_enlace_dta = tbl_curso::select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
         DB::raw('extract(day from tbl_cursos.inicio) as diai'),DB::raw('extract(month from tbl_cursos.inicio) as mesi'),DB::raw('extract(day from tbl_cursos.termino) as diat'),DB::raw('extract(month from tbl_cursos.termino) as mest'),DB::raw("case when EXTRACT( Month FROM tbl_cursos.termino) between '7' and '9' then '1' when EXTRACT( Month FROM tbl_cursos.termino) between '10' and '12' then '2' when EXTRACT( Month FROM tbl_cursos.termino) between '1' and '3' then '3' else '4' end as pfin"),
         'tbl_cursos.horas','tbl_cursos.dia',DB::raw("concat(tbl_cursos.hini,' ', 'A', ' ',tbl_cursos.hfin) as horario"),DB::raw('count(distinct(ca.id)) as tinscritos'),DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujer"),DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombre"),DB::raw("SUM(CASE WHEN ca.acreditado= 'X' THEN 1 ELSE 0 END) as egresado"),
         DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as emujer"),DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ehombre"),DB::raw("SUM(CASE WHEN ca.noacreditado='X' THEN 1 ELSE 0 END) as desertado"),
@@ -945,7 +954,13 @@ class validacionDtaController extends Controller
         DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh8"),
         DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm9"),
         DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
-        DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota")
+
+        DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota"),
+        DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_UNIDAD_DTA'->>'OBSERVACION_UNIDAD' AS observaciones_unidad"),
+        DB::raw("count( ar.id_pre) AS totalinscripciones"),
+        DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
+        DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
+        DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado")
         )
         ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
         ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
@@ -970,7 +985,7 @@ class validacionDtaController extends Controller
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('u.ubicacion', '=', $unidadActual)
         ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
-        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
         ->WHERE('tbl_cursos.turnado', '=', 'DTA')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();
