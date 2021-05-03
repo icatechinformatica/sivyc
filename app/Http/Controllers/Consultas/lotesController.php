@@ -29,6 +29,7 @@ class lotesController extends Controller
             ->value('roles.slug');        
         $_SESSION['unidades'] = $unidades = $message = $data = NULL;
         if(session('message')) $message = session('message');
+        //$rol="unidad";
         if($rol){ 
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
@@ -48,7 +49,8 @@ class lotesController extends Controller
             $mod = $request->mod;
             $data = DB::table('tbl_banco_folios as f');
                 if($request->mod) $data = $data->where('f.mod',$request->mod);
-                if($request->unidad) $data = $data->where('f.unidad',$request->unidad);                        
+                if($request->unidad) $data = $data->where('f.unidad',$request->unidad);
+                if($_SESSION['unidades'])$data = $data->whereIn('f.unidad',$_SESSION['unidades']);                        
                 $data = $data->orderby('id','DESC')->paginate(15);
        //}
          $path_file = $this->path_files;   
@@ -61,7 +63,8 @@ class lotesController extends Controller
             $mod = $request->mod;
             $data = DB::table('tbl_banco_folios')->select('unidad','mod','finicial','ffinal','total','contador','num_acta','facta','activo');
                 if($request->mod) $data = $data->where('mod',$request->mod);
-                if($request->unidad) $data = $data->where('unidad',$request->unidad);                        
+                if($request->unidad) $data = $data->where('unidad',$request->unidad);     
+                if($_SESSION['unidades'])$data = $data->whereIn('unidad',$_SESSION['unidades']);                   
                 $data = $data->orderby('finicial','DESC')->get();
             
             if(count($data)==0){ return "NO REGISTROS QUE MOSTRAR";exit;}

@@ -16,6 +16,7 @@ class foliosController extends Controller
 {   
     function __construct() {
         session_start();
+        $this->path_files = env("APP_URL").'/storage/uploadFiles';
     }
     
     public function index(Request $request){
@@ -27,6 +28,7 @@ class foliosController extends Controller
             ->value('roles.slug');        
         $_SESSION['unidades'] = $unidades = $message = $data = NULL;
         if(session('message')) $message = session('message');
+       // $rol="unidad";
         if($rol){ 
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
@@ -47,11 +49,13 @@ class foliosController extends Controller
             $finicial = $request->finicial;
             $ffinal = $request->ffinal;
                             
-            $folios = DB::table('tbl_folios as f')->select('c.unidad','f.folio','f.mod','f.fecha_expedicion','f.movimiento','f.motivo','i.matricula','i.alumno','c.clave','c.curso')->where('f.folio','>','0');
+            $folios = DB::table('tbl_folios as f')->select('c.unidad','f.folio','f.mod','f.fecha_expedicion','f.movimiento','f.motivo','i.matricula','i.alumno','c.clave','c.curso','f.file_autorizacion')->where('f.folio','>','0');
                 if($request->mod) $folios = $folios->where('f.mod',$request->mod);
                 if($request->finicial) $folios = $folios->where('f.folio','>=',$request->finicial);
                 if($request->ffinal) $folios = $folios->where('f.folio','<=',$request->ffinal);
-                if($request->unidad) $folios = $folios->where('c.unidad',$request->unidad);                        
+                if($request->unidad) $folios = $folios->where('c.unidad',$request->unidad);  
+                if($_SESSION['unidades'])$folios = $folios->whereIn('f.unidad',$_SESSION['unidades']);
+                                      
                 $folios = $folios
                 ->Join('tbl_inscripcion as i', function($join){                                        
                 $join->on('f.id_curso', '=', 'i.id_curso');
@@ -59,8 +63,8 @@ class foliosController extends Controller
                 })
                 ->join('tbl_cursos as c','c.id','i.id_curso')->orderby('f.folio')->get();
        }
-        
-        return view('consultas.folios', compact('message','unidades','folios','unidad', 'mod', 'finicial', 'ffinal'));     
+       $path_file = $this->path_files;         
+        return view('consultas.folios', compact('message','unidades','folios','unidad', 'mod', 'finicial', 'ffinal', 'path_file'));     
     }  
     
     public function xls(Request $request){
@@ -74,7 +78,8 @@ class foliosController extends Controller
                 if($request->mod) $folios = $folios->where('f.mod',$request->mod);
                 if($request->finicial) $folios = $folios->where('f.folio','>=',$request->finicial);
                 if($request->ffinal) $folios = $folios->where('f.folio','<=',$request->ffinal);
-                if($request->unidad) $folios = $folios->where('f.unidad',$request->unidad);                        
+                if($request->unidad) $folios = $folios->where('f.unidad',$request->unidad);
+                 if($_SESSION['unidades'])$folios = $folios->whereIn('f.unidad',$_SESSION['unidades']);                        
                 $folios = $folios
                 ->Join('tbl_inscripcion as i', function($join){                                        
                 $join->on('f.id_curso', '=', 'i.id_curso');
