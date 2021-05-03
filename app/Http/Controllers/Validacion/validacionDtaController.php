@@ -341,7 +341,7 @@ class validacionDtaController extends Controller
         $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
         $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
 
-        var_dump($diasParaEntrega = $this->getFechaDiff());
+        $diasParaEntrega = $this->getFechaDiff();
 
         return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega')); 
     }
@@ -382,17 +382,14 @@ class validacionDtaController extends Controller
                     $observaciones_revision_dta = [
                         'OBSERVACION_REVISION_JEFE_DTA' =>  $_POST['comentarios_enlaces'][$key]
                     ];
-                    $revision_dta = [
-                        'TURNADO_REVISION_DTA' => $turnado_revision_dta
-                    ];
                     # modificaciones
                     \DB::table('tbl_cursos')
                             ->where('id', $value)
                             ->update([
-                                'memos' => DB::raw("'".json_encode($revision_dta)."'::jsonb"), 
+                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}','".json_encode($turnado_revision_dta)."'::jsonb)"), 
                                 'status' => 'REVISION_DTA', 
                                 'turnado' => 'REVISION_DTA',
-                                'observaciones_formato_t' => DB::raw("'".json_encode($observaciones_revision_dta)."'::jsonb"),
+                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_DIRECCION_DTA}','".json_encode($observaciones_revision_dta)."', true)"),
                             ]);
                 }
                 return redirect()->route('validacion.cursos.enviados.dta')
@@ -439,8 +436,8 @@ class validacionDtaController extends Controller
                             $total_turnado_dta = DB::table('tbl_cursos')
                             ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_dta"))
                             ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                            ->WHEREIN('tbl_cursos.status', ['TURNADO_PLANEACION'])
-                            ->WHEREIN('tbl_cursos.turnado',['PLANEACION'])
+                            ->WHEREIN('tbl_cursos.status', ['TURNADO_DTA', 'TURNADO_PLANEACION'])
+                            ->WHEREIN('tbl_cursos.turnado',['DTA','PLANEACION'])
                             ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
                             ->WHEREIN(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), ['MARZO', 'ABRIL'])
                             ->get();
@@ -511,16 +508,13 @@ class validacionDtaController extends Controller
                             $observaciones_revision_a_planeacion = [
                                 'OBSERVACION_REVISION_A_PLANEACION' =>  $_POST['comentarios'][$key]
                             ];
-                            $array_planeacion = [
-                                'TURNADO_PLANEACION' => $turnado_planeacion
-                            ];
                             # entremos en el loop
                             \DB::table('tbl_cursos')
                                     ->where('id', $value)
-                                    ->update(['memos' => DB::raw("'".json_encode($array_planeacion)."'::jsonb"), 
+                                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}','".json_encode($turnado_planeacion)."'::jsonb)"), 
                                     'status' => 'TURNADO_PLANEACION', 
                                     'turnado' => 'PLANEACION',
-                                    'observaciones_formato_t' => DB::raw("'".json_encode($observaciones_revision_a_planeacion)."'::jsonb")]);
+                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_PLANEACION}', '".json_encode($observaciones_revision_a_planeacion)."'::jsonb)")]);
                         }
                         return redirect()->route('validacion.dta.revision.cursos.indice')
                                 ->with('success', sprintf('CURSOS ENVIADOS A PLANEACIÓN PARA REVISIÓN!'));
@@ -541,16 +535,13 @@ class validacionDtaController extends Controller
                             $observaciones_revision_dta_enlaces = [
                                 'OBSERVACION_RETORNO_ENLACES' =>  $_POST['comentarios'][$key]
                             ];
-                            $array_turnado_enlace = [
-                                'TURNADO_ENLACE_DTA' => $regresar_enlace_dta
-                            ];
                             # entremos en el loop
                             \DB::table('tbl_cursos')
                                 ->where('id', $value)
-                                ->update(['memos' => DB::raw("'".json_encode($array_turnado_enlace)."'::jsonb"), 
+                                ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_ENLACE_DTA}','".json_encode($regresar_enlace_dta)."'::jsonb)"), 
                                 'status' => 'TURNADO_DTA', 
                                 'turnado' => 'DTA',
-                                'observaciones_formato_t' => DB::raw("'".json_encode($observaciones_revision_dta_enlaces)."'::jsonb")
+                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_ENLACES_DTA}', '".json_encode($observaciones_revision_dta_enlaces)."'::jsonb)")
                             ]);
                         }
                         return redirect()->route('validacion.dta.revision.cursos.indice')
@@ -848,7 +839,7 @@ class validacionDtaController extends Controller
          * obtener mes anterior
          */
         $mesAnterior = $meses[($fecha->format('n')) - 2];
-        $fechaActual = Carbon::now()->format('Y-m-d');
+        $fechaActual = Carbon::now()->format('d-m-Y');
         /**
          * hacemos una consulta a la tabla para obtener el mes correspondiente
          */
@@ -859,27 +850,15 @@ class validacionDtaController extends Controller
         /**
          * fechaAnteriorEntrega convertirla a fecha
          */
-        $convertir_fecha_entrega_actual = Carbon::parse($fEAc)->format('Y-m-d');
         $convertfEAn = date_create_from_format('d-m-Y', $fEAn);
-        $fActual = date_create_from_format('Y-m-d', $fechaActual);
         $confEAn = date_format($convertfEAn, 'd-m-Y');
         $comconfEAn = strtotime($confEAn);
         $comfechaActual = strtotime($fechaActual);
-        $convertfEAc = date_create_from_format('Y-m-d', $convertir_fecha_entrega_actual);
-        $confEAc = date_format($convertfEAc, 'Y-m-d');
+        $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
+        $confEAc = date_format($convertfEAc, 'd-m-Y');
         $comconfEAc = strtotime($confEAc); // fecha actual de entrega
-        // $dias = $convertfEAc->diff($fActual)->days;
-        if ($convertfEAc >=  $fActual) {
-            # la fecha de entrega debe de ser mayor o igual que la fecha actual
-            $dias = 1;
-        }
-        else {
-            # la fecha de entrega es menor que la fecha actual
-            $dias = 0;
-
-        }
-        // $dias = (strtotime($confEAc) - strtotime($fechaActual))/86400;
-        // $dias = abs($dias); $dias = floor($dias);
+        $dias = (strtotime($confEAc) - strtotime($fechaActual))/86400;
+        $dias = abs($dias); $dias = floor($dias);
 
         return $dias;
     }
@@ -890,7 +869,7 @@ class validacionDtaController extends Controller
 
         $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         // cursos unidades por planeacion
-        $formatot_enlace_dta = tbl_curso::select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
+        $formatot_enlace_dta = tbl_curso::select(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado"), 'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
         DB::raw('extract(day from tbl_cursos.inicio) as diai'),DB::raw('extract(month from tbl_cursos.inicio) as mesi'),DB::raw('extract(day from tbl_cursos.termino) as diat'),DB::raw('extract(month from tbl_cursos.termino) as mest'),DB::raw("case when EXTRACT( Month FROM tbl_cursos.termino) between '7' and '9' then '1' when EXTRACT( Month FROM tbl_cursos.termino) between '10' and '12' then '2' when EXTRACT( Month FROM tbl_cursos.termino) between '1' and '3' then '3' else '4' end as pfin"),
         'tbl_cursos.horas','tbl_cursos.dia',DB::raw("concat(tbl_cursos.hini,' ', 'A', ' ',tbl_cursos.hfin) as horario"),DB::raw('count(distinct(ca.id)) as tinscritos'),DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujer"),DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombre"),DB::raw("SUM(CASE WHEN ca.acreditado= 'X' THEN 1 ELSE 0 END) as egresado"),
         DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as emujer"),DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ehombre"),DB::raw("SUM(CASE WHEN ca.noacreditado='X' THEN 1 ELSE 0 END) as desertado"),
@@ -973,13 +952,7 @@ class validacionDtaController extends Controller
         DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh8"),
         DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm9"),
         DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
-
-        DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota"),
-        DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_UNIDAD_DTA'->>'OBSERVACION_UNIDAD' AS observaciones_unidad"),
-        DB::raw("count( ar.id_pre) AS totalinscripciones"),
-        DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
-        DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
-        DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado")
+        DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota")
         )
         ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
         ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
@@ -1413,35 +1386,5 @@ class validacionDtaController extends Controller
         if(count($reporteDirectorDTA)>0){  
             return Excel::download(new FormatoTReport($reporteDirectorDTA,$cabecera, $titulo), $nombreLayout);
         }
-    }
-
-    /**
-     * Método para generar el módulo de MEMORANDUMS FIRMADOS PARA LA DIRECCIÓN
-     * TÉCNICA ACADÉMICA Y RECIBIDOS PARA TÉCNICA ACADÉMICA
-     */
-    protected function memorandumpordta(Request $request){
-        // obtenemos la unidad en base a una sesion
-        $unidadesIcatech = DB::table('tbl_unidades')->select('ubicacion')->groupby('ubicacion')->get();
-        $busquedaPorMes = $request->get('busquedaMes');
-        $busquedaPorUnidad = $request->get('busquedaPorUnidad');
-        $meses = array(1 => 'ENERO', 2 => 'FEBRERO', 3 => 'MARZO', 4 => 'ABRIL', 5 => 'MAYO', 6 => 'JUNIO', 7 => 'JULIO', 8 => 'AGOSTO', 9 => 'SEPTIEMBRE', 10 => 'OCTUBRE', 11 => 'NOVIEMBRE', 12 => 'DICIEMBRE');
-        /**
-         * CONSULTA PARA MOSTRAR INFORMACIÓN DE LOS MEMORANDUM DEL FORMATO T
-         */
-        if (isset($busquedaPorMes)) {
-            # si la variable está inicializada se carga la consulta
-            $queryGetMemo = DB::table('tbl_cursos')
-                        ->select( DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS memorandum_retorno_unidad"), 'tbl_cursos.unidad')
-                        ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
-                        ->where('u.ubicacion', '=', $busquedaPorUnidad)
-                        ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_UNIDAD'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
-                        ->groupby(DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"), 'tbl_cursos.unidad')
-                        ->paginate(5);
-        } else {
-            # si la variable no está inicializada no se carga la consulta
-            $queryGetMemo = (array) null;
-        }
-        //dd($queryGetMemo);
-        return view('reportes.memorandum_dta_formatot', compact('meses', 'queryGetMemo', 'unidadesIcatech'));
     }
 }
