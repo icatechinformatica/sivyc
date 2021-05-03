@@ -341,7 +341,7 @@ class validacionDtaController extends Controller
         $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
         $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
 
-        $diasParaEntrega = $this->getFechaDiff();
+        var_dump($diasParaEntrega = $this->getFechaDiff());
 
         return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega')); 
     }
@@ -839,7 +839,7 @@ class validacionDtaController extends Controller
          * obtener mes anterior
          */
         $mesAnterior = $meses[($fecha->format('n')) - 2];
-        $fechaActual = Carbon::now()->format('d-m-Y');
+        $fechaActual = Carbon::now()->format('Y-m-d');
         /**
          * hacemos una consulta a la tabla para obtener el mes correspondiente
          */
@@ -850,15 +850,27 @@ class validacionDtaController extends Controller
         /**
          * fechaAnteriorEntrega convertirla a fecha
          */
+        $convertir_fecha_entrega_actual = Carbon::parse($fEAc)->format('Y-m-d');
         $convertfEAn = date_create_from_format('d-m-Y', $fEAn);
+        $fActual = date_create_from_format('Y-m-d', $fechaActual);
         $confEAn = date_format($convertfEAn, 'd-m-Y');
         $comconfEAn = strtotime($confEAn);
         $comfechaActual = strtotime($fechaActual);
-        $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
-        $confEAc = date_format($convertfEAc, 'd-m-Y');
+        $convertfEAc = date_create_from_format('Y-m-d', $convertir_fecha_entrega_actual);
+        $confEAc = date_format($convertfEAc, 'Y-m-d');
         $comconfEAc = strtotime($confEAc); // fecha actual de entrega
-        $dias = (strtotime($confEAc) - strtotime($fechaActual))/86400;
-        $dias = abs($dias); $dias = floor($dias);
+        // $dias = $convertfEAc->diff($fActual)->days;
+        if ($convertfEAc >=  $fActual) {
+            # la fecha de entrega debe de ser mayor o igual que la fecha actual
+            $dias = 1;
+        }
+        else {
+            # la fecha de entrega es menor que la fecha actual
+            $dias = 0;
+
+        }
+        // $dias = (strtotime($confEAc) - strtotime($fechaActual))/86400;
+        // $dias = abs($dias); $dias = floor($dias);
 
         return $dias;
     }

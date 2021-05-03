@@ -420,20 +420,25 @@ class ftcontroller extends Controller
                         }
                         //$comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
                         // dd($_POST['comentarios_unidad_to_dta']);
+                        // DB::enableQueryLog(); // Enable query log
                         foreach(array_combine($pila, $_POST['comentarios_unidad_to_dta']) as $key => $comentariosUnidad){
                             $comentarios_envio_dta = [
-                                'OBSERVACION_UNIDAD' =>  $comentariosUnidad
+                                'COMENTARIOS_UNIDAD' =>  $comentariosUnidad
+                            ];
+                            $array_memosDTA = [
+                                'TURNADO_DTA' => $memos_DTA
                             ];
                             \DB::table('tbl_cursos')
                                 ->where('id', $key)
                                 ->update([
-                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)"),
-                                    'memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
+                                    'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_dta)."'::jsonb"),
+                                    'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"), 
                                     'status' => 'TURNADO_DTA', 
                                     'turnado' => 'DTA',
                                     'fecha_turnado' => $formatFechaActual
                                 ]);
                         }
+                        // dd(DB::getQueryLog());
                         
                     } else {
                         # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
@@ -457,20 +462,25 @@ class ftcontroller extends Controller
                             array_push($pila, $key);
                         }
                         // $comentario_unidad = explode(",", $_POST['comentarios_unidad_to_dta']); // obtenemos los comentarios
+                        // DB::enableQueryLog(); // Enable query log
                         foreach(array_combine($pila, $_POST['comentarios_unidad_to_dta']) as $key => $comentariosUnidad){
                             $comentarios_envio_dta = [
-                                'OBSERVACION_UNIDAD' =>  $comentariosUnidad
+                                'COMENTARIOS_UNIDAD' =>  $comentariosUnidad
+                            ];
+                            $array_memosDTA = [
+                                'TURNADO_DTA' => $memos_DTA
                             ];
                             \DB::table('tbl_cursos')
                                 ->where('id', $key)
                                 ->update([
-                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_UNIDAD_DTA}', '".json_encode($comentarios_envio_dta)."'::jsonb)"),
-                                    'memos' => DB::raw("jsonb_set(memos, '{TURNADO_DTA}','".json_encode($memos_DTA)."'::jsonb)"), 
+                                    'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_dta)."'::jsonb"),
+                                    'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"), 
                                     'status' => 'TURNADO_DTA', 
                                     'turnado' => 'DTA',
                                     'fecha_turnado' => $formatFechaSiguiente,
                                 ]);
                         }
+                        // dd(DB::getQueryLog());
                     }
     
                     /**

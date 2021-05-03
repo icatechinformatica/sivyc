@@ -56,9 +56,21 @@
 @section('content')
     <div class="container-fluid px-5 g-pt-30">
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert {{ ($diasParaEntrega <= 5) ? 'alert-warning' : 'alert-info'  }}" role="alert">
-            <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
-        </div>
+        @switch($diasParaEntrega)
+            @case(1)
+                    <div class="alert alert-info " role="alert">
+                        <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; </b>
+                    </div>
+                @break
+            @case(0)
+                <div class="alert alert-danger " role="alert">
+                    <b>LA FECHA LÍMITE DEL PERÍODO DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T DE LAS UNIDADES CORRESPONDIENTES ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; </b>
+                </div>
+                @break
+            @default
+                
+        @endswitch
+        
         {{-- información sobre la entrega del formato t para unidades END --}}
         @if($errors->any())
             <div class="alert alert-danger">
