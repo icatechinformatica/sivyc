@@ -170,7 +170,7 @@
             
                 <div class="form-row">
                     <div class="table-responsive container-fluid mt-5">
-                        <table  id="table-instructor" class="table" style='width: 100%; margin-left: -1.2em;'>
+                        <table  id="table-instructor" class="table" style='width: 100%; margin-left: -1.1em;'>
                             <caption>CURSOS VALIDADOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA</caption>
                             <thead class="thead-dark">
                                 <tr align="center">
