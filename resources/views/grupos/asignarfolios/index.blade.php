@@ -94,32 +94,42 @@
                             <th scope="col" >MATR&Iacute;CULA</th>
                             <th scope="col">ALUMNOS</th>
                             <th scope="col" class="text-center" width="10%">CALIFICACI&Oacute;N</th>
-                            <th scope="col" class="text-center" width="10%">FOLIO</th>                            
-                            <th scope="col" class="text-center" width="10%">EXPEDICI&Oacute;N</th>
+                            <th scope="col" class="text-center" width="10%">FOLIO</th>
                             <th scope="col" class="text-center" width="10%">ESTATUS</th>
+                            <th scope="col" class="text-center" width="10%">EXPEDICI&Oacute;N</th>
                             <th scope="col" class="text-center" width="10%">MOTIVO</th>                        
                         </tr>
                     </thead>
                     @if(isset($alumnos))   
                     <tbody>
-                        <?php $asignar = false;?>
+                        <?php $boton_asignar = false; //con una asignaicion se activa ?>
                         @foreach($alumnos as $a)
+                            <?php 
+                            $asignar = false;
+                            if(($a->calificacion>5 AND !$a->folio) OR ($a->id_folioi== $a->id_foliof AND $a->movimiento=='CANCELADO'  AND $a->reexpedicion==false)){
+                                if(count($alumnos)>0 AND isset($actas)) $boton_asignar = $asignar = true;
+                            }    
+                            ?>
                             <tr>
-                                <td> {{ $a->matricula }} </td>
+                                <td> {{ $a->matricula }} {{$a->id_folioi}}</td>
                                 <td> {{ $a->alumno }} </td>
                                 <td class="text-center"> {{ $a->calificacion }} </td>
-                                <td class="text-center"> @if($a->movimiento=='CANCELADO'  AND $a->reexpedicion==false){{ '0' }} @else {{ $a->folio }}@endif </td>                                
-                                <td class="text-center"> @if($a->movimiento=='CANCELADO'  AND $a->reexpedicion==false ){{ '' }} @elseif($a->fecha_expedicion) {{ date('d/m/Y', strtotime($a->fecha_expedicion)) }} @endif </td>
-                                <td class="text-center"> {{ $a->movimiento}} </td>
+                                <td class="text-center"> {{ $a->folio }} </td>
+                                 @if($asignar==true)
+                                    <td class="text-center text-danger">@if($a->folio){{ "REASIGNAR" }}@else {{ "ASIGNAR" }}@endif </td>  
+                                 @else
+                                    <td class="text-center"> {{ $a->movimiento}} </td>
+                                 @endif
+                                 <td class="text-center"> @if($a->fecha_expedicion){{ date('d/m/Y', strtotime($a->fecha_expedicion)) }}@endif  </td>
                                 <td class="text-center"> {{ $a->motivo}} </td>                                    
                             </tr>
-                            <?php if(($a->calificacion>5 AND !$a->folio) OR ($a->movimiento=='CANCELADO'  AND $a->reexpedicion==false))$asignar = true;?>
+                            
                         @endforeach                       
                     </tbody>
                     <tfoot>
                         <tr>                            
                             <td colspan="3" class="text-right" style="border-color:white;"></td>                                                            
-                            @if(count($alumnos)>0 AND  $asignar AND isset($actas))
+                            @if($boton_asignar==true)
                                 <td colspan="2" class="text-right" style="border-color:white;">                                
                                     {{ Form::select('id_afolio', $actas, NULL ,['id'=>'id_afolio', 'class' => 'form-control mt-2']) }}
                                 </td>

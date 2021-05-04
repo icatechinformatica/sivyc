@@ -48,12 +48,17 @@ class asignarfoliosController extends Controller
         $id_afolio = $request->id_afolio*1;
         $clave = $_SESSION['clave'];
         $data = $this->validaCurso($clave, $id_afolio);
-        list($curso, $acta, $alumnos, $message) = $data; //var_dump($acta);exit;      
+        list($curso, $acta, $alumnos_out, $message) = $data; //var_dump($acta);exit;      
         
         if($acta AND !$message){
             $id_curso = $curso->id;  
             $num_folio = $acta->num_inicio+$acta->contador; //echo $num_folio;exit;
             $fecha_expedicion = $curso->termino;
+            
+            $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','f.folio','f.fecha_expedicion','f.movimiento','f.motivo')
+                    ->where('i.status','INSCRITO')->leftjoin('tbl_folios as f','f.id','i.id_folio')                     
+                    ->where('i.id_curso',$id_curso)->orderby('i.alumno')->get();
+                   // var_dump($alumnos);exit;
             foreach($alumnos as $a){  //var_dump($a);exit;
                 if($num_folio<=$acta->num_fin){
                     if((!$a->folio AND $a->calificacion !="NP") OR ($a->movimiento=="CANCELADO" AND $a->reexpedicion==false))  {
@@ -119,14 +124,14 @@ class asignarfoliosController extends Controller
                                         
                     if($id_afolio){
                         $acta =  $acta->where('id',$id_afolio)->first(); //solo un folio
-                        if(!$acta) $message = "No hay Acta con Folios disponibles. ";
+                        if(!$acta) $message = "No hay Acta con Folios disponibles, realice su solicitud a la DTA. ";
                     }else{
                         $acta =  $acta->orderby('id')->get(); //todos los folios
-                        if(count($acta)==0) $message = "No hay Acta con Folios disponibles. ";
+                        if(count($acta)==0) $message = "No hay Acta con Folios disponibles, realice su solicitud a la DTA. ";
                     }
                // var_dump($acta);exit;
                 ///ALUMNOS REGISTRADOS
-                $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','f.folio','f.fecha_expedicion','f.movimiento','f.motivo')
+                $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','i.id_folio as id_folioi','f.folio','f.fecha_expedicion','f.movimiento','f.motivo','f.id as id_foliof')
                     ->where('i.status','INSCRITO')
                     ->leftJoin('tbl_folios as f', function($join){                                        
                         $join->on('f.id_curso', '=', 'i.id_curso');
