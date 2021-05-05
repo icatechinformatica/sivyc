@@ -452,6 +452,7 @@ class validacionDtaController extends Controller
                             ->get();
 
                             $comentarios_enviados = $_POST['comentarios_enlaces'];
+                            dd($total_turnado_planeacion);
 
                             // dd(DB::getQueryLog()); // Show results of log
                             $elabora = Auth::user()->name;
