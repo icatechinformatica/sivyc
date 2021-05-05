@@ -436,10 +436,10 @@ class validacionDtaController extends Controller
                             $total_turnado_dta = DB::table('tbl_cursos')
                             ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_dta"))
                             ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                            ->WHEREIN('tbl_cursos.status', ['TURNADO_DTA', 'TURNADO_PLANEACION'])
-                            ->WHEREIN('tbl_cursos.turnado',['DTA','PLANEACION'])
+                            ->WHEREIN('tbl_cursos.status', ['TURNADO_PLANEACION'])
+                            ->WHEREIN('tbl_cursos.turnado',['PLANEACION'])
                             ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
-                            ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') = 'ABRIL'"))
+                            ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') IN ('MARZO', 'ABRIL')"))
                             ->get();
                             // ENVIADOS A PLANEACION
                             $total_turnado_planeacion = DB::table('tbl_cursos')
