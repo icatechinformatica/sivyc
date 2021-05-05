@@ -451,6 +451,8 @@ class validacionDtaController extends Controller
                             ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), '=', 'ABRIL')
                             ->get();
 
+                            $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion + $total;
+
                             $comentarios_enviados = $_POST['comentarios_enlaces'];
 
                             // dd(DB::getQueryLog()); // Show results of log
@@ -458,7 +460,7 @@ class validacionDtaController extends Controller
 
                             $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
                             'pvinculacion','jcyc','pjcyc', 'ubicacion')->where('unidad', $unidadSeleccionada)->first();
-                            $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion'));
+                            $pdf = PDF::loadView('reportes.memounidad',compact('reg_cursos','reg_unidad','nume_memo','total','fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total'));
                             return $pdf->download('Memo_Unidad.pdf');
                         } else {
                             # hay cursos vacios, regresamos y mandamos un mensaje de error
