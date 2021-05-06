@@ -111,7 +111,7 @@ class supreController extends Controller
                         ->with('success','Error Interno. Intentelo mas tarde.');
             }
         }
-
+//
 
         return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
