@@ -161,8 +161,9 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->medio_entero = ($request->input('medio_entero') === "0") ? $request->input('medio_entero_especificar') : $request->input('medio_entero');
                 $AlumnoPreseleccion->puesto_empresa = $request->puesto_empresa;
                 $AlumnoPreseleccion->sistema_capacitacion_especificar = ($request->input('motivos_eleccion_sistema_capacitacion') === "0") ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion');
-                $AlumnoPreseleccion->empresa_trabaja = $request->empresa;
+                $AlumnoPreseleccion->empresa_trabaja = (!empty($request->empresa)) ? $request->empresa : 'DESEMPLEADO';
                 $AlumnoPreseleccion->antiguedad = $request->antiguedad;
+                $AlumnoPreseleccion->direccion_empresa = $request->direccion_empresa;
                 $AlumnoPreseleccion->realizo = $usuario;
                 $AlumnoPreseleccion->tiene_documentacion = false;
                 $AlumnoPreseleccion->es_cereso = false;
@@ -858,8 +859,7 @@ class AlumnoController extends Controller
                         'grupo' => $request->input('grupo'),
                         'unidad' => $request->input('tblunidades'),
                         'tipo_curso' => $request->input('tipo_curso'),
-                        'realizo' => $usuario,
-                        'cerrs' => $request->input('cerrs')
+                        'realizo' => $usuario
                     ]);
 
                     $AlumnosPre->alumnos()->save($alumno);
@@ -978,6 +978,23 @@ class AlumnoController extends Controller
         return $json;
     }
 
+    protected function getcursosModified(Request $request){
+        if (isset($request->idEsp_mod)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $idEspecialidad = $request->idEsp_mod;
+            $tipo_curso = $request->tipo_mod;
+            //$Curso = new curso();
+            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad]])->get();
+
+            /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
+            $json=json_encode($Cursos);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+        return $json;
+    }
+
     protected function checkcursos(Request $request)
     {
         if (isset($request->unidad)){
@@ -997,6 +1014,9 @@ class AlumnoController extends Controller
 
     protected function getcursos_update(Request $request)
     {
+        /**
+         * QUITAR O MODIFICAR
+         */
         if (isset($request->idEsp_mod)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad_mod = $request->idEsp_mod;
@@ -1122,6 +1142,16 @@ class AlumnoController extends Controller
                 //obtener el estado
                 $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
 
+                //obtener el valor de la empresa
+                if (!empty($request->empresa_mod)) {
+                    # si no está vacio tenemos que cargar el dato puro
+                    $empresa = trim($request->empresa_mod);
+                } else {
+                    # si está vacio tenemos que checar lo siguiente
+                    $empresa = 'DESEMPLEADO';
+                }
+                
+
             # code...
                 $array = [
                     'nombre' => trim($request->nombre_alum_mod),
@@ -1140,7 +1170,7 @@ class AlumnoController extends Controller
                     'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
                     'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
                     'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
-                    'empresa_trabaja' => trim($request->empresa_mod),
+                    'empresa_trabaja' => $empresa,
                     'antiguedad' => trim($request->antiguedad_mod),
                     'puesto_empresa' => trim($request->puesto_empresa_mod),
                     'direccion_empresa' => trim($request->direccion_empresa_mod)
@@ -1266,49 +1296,128 @@ class AlumnoController extends Controller
 
     public function updateSidJefeUnidad(Request $request, $idAspirante){
         if (isset($idAspirante)) {
-            # code...
-            $AlumnoPre = new Alumnopre();
+            $match_actual_curp = \DB::table('alumnos_pre')->select('curp')->where('id', base64_decode($idAspirante))->first();
+            if (strcmp($match_actual_curp->curp, $request->curp_mod) === 0) {
+                # tiene que hacer el update - porque el input de curp no fue modificado
+                # código
+                $AlumnoPre = new Alumnopre();
 
-            $dia = trim($request->dia_mod);
-            $mes = trim($request->mes_mod);
-            $anio = trim($request->anio_mod);
-            $fecha_nacimiento = $anio."-".$mes."-".$dia;
+                $dia = trim($request->dia_mod);
+                $mes = trim($request->mes_mod);
+                $anio = trim($request->anio_mod);
+                $fecha_nacimiento = $anio."-".$mes."-".$dia;
 
-            //obtener el estado
-            $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
+                //obtener el estado
+                $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
 
-        # code...
-            $array = [
-                'nombre' => trim($request->nombre_alum_mod),
-                'apellido_paterno' => trim($request->apellido_pat_mod),
-                'apellido_materno' => trim($request->apellido_mat_mod),
-                'sexo' => trim($request->sexo_mod),
-                'fecha_nacimiento' => trim($fecha_nacimiento),
-                'telefono' => trim($request->telefono_mod),
-                'domicilio' => trim($request->domicilio_mod),
-                'colonia' => trim($request->colonia_mod),
-                'cp' => trim($request->codigo_postal_mod),
-                'estado' => trim($nombre_estado_mod[0]->nombre),
-                'municipio' => trim($request->municipio_mod),
-                'estado_civil' => trim($request->estado_civil_mod),
-                'discapacidad' => trim($request->discapacidad_mod),
-                'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
-                'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
-                'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
-                'empresa_trabaja' => trim($request->empresa_mod),
-                'antiguedad' => trim($request->antiguedad_mod),
-                'puesto_empresa' => trim($request->puesto_empresa_mod),
-                'direccion_empresa' => trim($request->direccion_empresa_mod),
-                'curp' => trim($request->curp_mod)
-            ];
+                //obtener el valor de la empresa
+                if (!empty($request->empresa_mod)) {
+                    # si no está vacio tenemos que cargar el dato puro
+                    $empresa = trim($request->empresa_mod);
+                } else {
+                    # si está vacio tenemos que checar lo siguiente
+                    $empresa = 'DESEMPLEADO';
+                }
 
-            $AspiranteId = base64_decode($idAspirante);
+                # code...
+                $array = [
+                    'nombre' => trim($request->nombre_alum_mod),
+                    'apellido_paterno' => trim($request->apellido_pat_mod),
+                    'apellido_materno' => trim($request->apellido_mat_mod),
+                    'sexo' => trim($request->sexo_mod),
+                    'fecha_nacimiento' => trim($fecha_nacimiento),
+                    'telefono' => trim($request->telefono_mod),
+                    'domicilio' => trim($request->domicilio_mod),
+                    'colonia' => trim($request->colonia_mod),
+                    'cp' => trim($request->codigo_postal_mod),
+                    'estado' => trim($nombre_estado_mod[0]->nombre),
+                    'municipio' => trim($request->municipio_mod),
+                    'estado_civil' => trim($request->estado_civil_mod),
+                    'discapacidad' => trim($request->discapacidad_mod),
+                    'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
+                    'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
+                    'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
+                    'empresa_trabaja' => $empresa,
+                    'antiguedad' => trim($request->antiguedad_mod),
+                    'puesto_empresa' => trim($request->puesto_empresa_mod),
+                    'direccion_empresa' => trim($request->direccion_empresa_mod),
+                    'curp' => trim($request->curp_mod)
+                ];
 
-            $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
+                $AspiranteId = base64_decode($idAspirante);
 
-            $curpAlumno = $request->curp_mod;
-            return redirect()->route('alumnos.index')
-                ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
+                $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
+
+                $curpAlumno = $request->curp_mod;
+                return redirect()->route('alumnos.index')
+                    ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
+            } else {
+                // quitarle los espacios de los lados
+                $curpMod = trim($request->curp_mod);
+                # tiene que volver a buscarse en la base de datos debido a que el input de la curp fue modificado
+                $busquedaCurpRep = \DB::table('alumnos_pre')->where('curp', $curpMod)->get();
+                if (count($busquedaCurpRep) > 0) {
+                    # si la consulta regresa con algún registro se procede a mandar un mensaje de error con lo siguiente
+                    return redirect()->back()->withErrors(sprintf('LO SENTIMOS, LA CURP QUE SE ESTÁ MODIFICANDO: %s YA SE ENCUENTRA REGISTRADA, BUSCAR EN ASPIRANTES', $request->curp_mod));
+
+                } else {
+                    # si la consulta regresa en cero se tiene que actualizar todos los registros del formulario
+                    # tiene que hacer el update - porque el input de curp no fue modificado
+                    # código
+                    $AlumnoPre = new Alumnopre();
+
+                    $dia = trim($request->dia_mod);
+                    $mes = trim($request->mes_mod);
+                    $anio = trim($request->anio_mod);
+                    $fecha_nacimiento = $anio."-".$mes."-".$dia;
+
+                    //obtener el estado
+                    $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
+
+                    //obtener el valor de la empresa
+                    if (!empty($request->empresa_mod)) {
+                        # si no está vacio tenemos que cargar el dato puro
+                        $empresa = trim($request->empresa_mod);
+                    } else {
+                        # si está vacio tenemos que checar lo siguiente
+                        $empresa = 'DESEMPLEADO';
+                    }
+
+                    # code...
+                    $array = [
+                        'nombre' => trim($request->nombre_alum_mod),
+                        'apellido_paterno' => trim($request->apellido_pat_mod),
+                        'apellido_materno' => trim($request->apellido_mat_mod),
+                        'sexo' => trim($request->sexo_mod),
+                        'fecha_nacimiento' => trim($fecha_nacimiento),
+                        'telefono' => trim($request->telefono_mod),
+                        'domicilio' => trim($request->domicilio_mod),
+                        'colonia' => trim($request->colonia_mod),
+                        'cp' => trim($request->codigo_postal_mod),
+                        'estado' => trim($nombre_estado_mod[0]->nombre),
+                        'municipio' => trim($request->municipio_mod),
+                        'estado_civil' => trim($request->estado_civil_mod),
+                        'discapacidad' => trim($request->discapacidad_mod),
+                        'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
+                        'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
+                        'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
+                        'empresa_trabaja' => $empresa,
+                        'antiguedad' => trim($request->antiguedad_mod),
+                        'puesto_empresa' => trim($request->puesto_empresa_mod),
+                        'direccion_empresa' => trim($request->direccion_empresa_mod),
+                        'curp' => trim($request->curp_mod)
+                    ];
+
+                    $AspiranteId = base64_decode($idAspirante);
+
+                    $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
+
+                    $curpAlumno = $request->curp_mod;
+                    return redirect()->route('alumnos.index')
+                        ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
+                }
+                
+            }
         }
     }
     /***

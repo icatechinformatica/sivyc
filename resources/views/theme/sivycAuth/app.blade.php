@@ -12,12 +12,12 @@
         <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}">
 
         <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
+        <link href="{{asset("css/roboto.css") }}" rel="stylesheet">
 
         <!-- CSS Global Compulsory -->
         <link rel="stylesheet" href="{{asset("vendor/bootstrap/bootstrap.min.css") }}">
         <link rel="stylesheet" href="{{asset("vendor/bootstrap/offcanvas.css") }}">
-        <script src="https://code.iconify.design/1/1.0.3/iconify.min.js"></script>
+        <script src="{{ asset("js/components/iconify.min.js") }}"></script>
 
         <!-- CSS Implementing Plugins -->
         <link rel="stylesheet" href="{{asset("fonts/font-awesome/css/font-awesome.min.css") }}">
@@ -55,11 +55,11 @@
 
 
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
         <script src="{{asset("vendor/jquery/jquery.min.js")}}"></script>
         <script src="{{asset("vendor/jquery-migrate/jquery-migrate.min.js")}}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="{{asset("js/components/popper.min.js")}}"></script>
+        <script src="{{asset("js/components/bootstrap.min.js")}}"></script>
 
             <script src="{{asset("vendor/hs-megamenu/src/hs.megamenu.js") }}"></script>
             <script src="{{asset("vendor/dzsparallaxer/dzsparallaxer.js") }}"></script>
@@ -76,9 +76,9 @@
             <script src="{{asset("js/components/hs.popup.js") }}"></script>
             <script src="{{asset("js/components/hs.carousel.js") }}"></script>
             <script src="{{asset("js/components/hs.go-to.js") }}"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
-            <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-            <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+            <script src="{{ asset("js/components/jquery.validate.js") }}"></script>
+            <script src="{{ asset("js/components/jquery-ui.js") }}"></script>
+            <link rel="stylesheet" href="{{asset("css/jquery-ui.css") }}">
     </body>
 
 </html>

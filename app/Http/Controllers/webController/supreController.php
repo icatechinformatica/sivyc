@@ -7,17 +7,19 @@ use App\Models\supre;
 use App\Models\folio;
 use App\Models\tbl_curso;
 use Illuminate\Support\Facades\Storage;
-use App\ProductoStock;
-use App\Models\cursoValidado;
+use Illuminate\Support\Facades\DB;
 use App\Models\supre_directorio;
 use App\Models\directorio;
 use App\Models\criterio_pago;
 use App\Models\tbl_unidades;
+use App\Models\contratos;
+use App\Models\contrato_directorio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PDF;
 use function PHPSTORM_META\type;
 use Carbon\Carbon;
+use DateTime;
 
 class supreController extends Controller
 {
@@ -33,11 +35,14 @@ class supreController extends Controller
          */
         $busqueda_suficiencia = $request->get('busquedaporSuficiencia');
         $tipoSuficiencia = $request->get('tipo_suficiencia');
+        $tipoStatus = $request->get('tipo_status');
+        $unidad = $request->get('unidad');
 
         $supre = new supre();
-        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia)->where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)->where('id', '!=', '0')->latest()->get();
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
-        return view('layouts.pages.vstasolicitudsupre', compact('data'));
+        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));
     }
 
     public function frm_formulario() {
@@ -106,7 +111,7 @@ class supreController extends Controller
                         ->with('success','Error Interno. Intentelo mas tarde.');
             }
         }
-
+//
 
         return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
@@ -287,24 +292,69 @@ class supreController extends Controller
                     ->with('success','Suficiencia Presupuestal Eliminada');
     }
 
+    public function restartSupre($id)
+    {
+        $list = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id)->GET();
+        foreach($list as $item)
+        {
+            $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $item->id_folios)->FIRST();
+            if($idcontrato != NULL)
+            {
+                contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
+                contratos::where('id_folios', '=', $item->id_folios)->DELETE();
+            }
+            $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $item->id_folios)->update(['status' => 'Rechazado']);
+        }
+
+        DB::table('tabla_supre')->WHERE('id', $id)->UPDATE(['status' => 'Rechazado', 'doc_validado' => '']);
+
+        return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Reiniciada');
+    }
+
+    public function cancelFolio(Request $request)
+    {
+        $folio = folio::find($request->idf);
+        $folio->observacion_cancelacion = $request->observaciones;
+        $folio->status = 'Cancelado';
+        $folio->save();
+        return redirect()->route('supre-inicio')
+                    ->with('success','Folio de Suficiencia Presupuestal Cancelada');
+    }
+
     protected function getcursostats(Request $request)
     {
         if (isset($request->valor)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;
             $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura')
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
             {
-                if ($Cursos->ze == 'II')
+                $inicio = date("m-d-Y", strtotime($Cursos->inicio));
+                $date1 = "2021-05-01";
+                $date1 = date("m-d-Y", strtotime($date1));
+
+                if ($date1 <= $inicio)
                 {
-                    $criterio = criterio_pago::SELECT('monto_hora_ze2 AS monto')->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    $ze2 = 'ze2_2021 AS monto';
+                    $ze3 = 'ze3_2021 AS monto';
                 }
                 else
                 {
-                    $criterio = criterio_pago::SELECT('monto_hora_ze3 AS monto')->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    $ze2 = 'monto_hora_ze2 AS monto';
+                    $ze3 = 'monto_hora_ze3 AS monto';
+                }
+
+                if ($Cursos->ze == 'II')
+                {
+                    $criterio = criterio_pago::SELECT($ze2)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                }
+                else
+                {
+                    $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
                 }
 
                 if($criterio != NULL)
@@ -324,6 +374,26 @@ class supreController extends Controller
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
         }
+
+
+        return $json;
+    }
+
+    protected function getfoliostats(Request $request)
+    {
+        if (isset($request->valor))
+        {
+            $folio = folio::WHERE('folio_validacion', '=', $request->valor)->FIRST();
+            if($folio == NULL)
+            {
+                $folio = 'N/A';
+            }
+        }
+        else
+        {
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+            $json=json_encode($folio);
 
 
         return $json;
@@ -364,6 +434,7 @@ class supreController extends Controller
     public function planeacion_reportepdf(Request $request)
     {
         $i = 0;
+        set_time_limit(0);
 
         if ($request->filtro == "general")
         {
@@ -382,7 +453,6 @@ class supreController extends Controller
         }
         else if ($request->filtro == 'curso')
         {
-            dd('entro');
             $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
                            'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
@@ -430,10 +500,14 @@ class supreController extends Controller
                            ->GET();
         }
 
+
         foreach($data as $cadwell)
         {
-            $risr[$i] = $cadwell->importe_total * 0.10;
-            $riva[$i] = $cadwell->importe_total * 0.1066;
+            $risr[$i] = $this->numberFormat(round($cadwell->importe_total * 0.10, 2));
+            $riva[$i] = $this->numberFormat(round($cadwell->importe_total * 0.1066, 2));
+
+            $iva[$i] = $this->numberFormat($cadwell->iva);
+            $cantidad[$i] = $this->numberFormat($cadwell->importe_total);
 
             $hm = $cadwell->hombre+$cadwell->mujer;
             if ($hm < 10)
@@ -447,11 +521,10 @@ class supreController extends Controller
             $i++;
         }
 
-        //dd($data);
 
-        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva'));
         $pdf->setPaper('legal', 'Landscape');
-        return $pdf->download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+        return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
 
     }
 
@@ -466,6 +539,11 @@ class supreController extends Controller
         $M = $this->monthToString(date('m',$date));
         $Y = date("Y",$date);
 
+        $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion')
+                                ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
+                                ->FIRST();
+        $unidad->cct = substr($unidad->cct, 0, 4);
+
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
         $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
@@ -478,7 +556,7 @@ class supreController extends Controller
         $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
         $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio'));
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio','unidad'));
         return  $pdf->stream('medium.pdf');
     }
 
@@ -684,5 +762,13 @@ class supreController extends Controller
             echo json_encode($response);
             exit;
         }
+    }
+
+    protected function numberFormat($numero)
+    {
+        $part = explode(".", $numero);
+        $part[0] = number_format($part['0']);
+        $cadwell = implode(".", $part);
+        return ($cadwell);
     }
 }

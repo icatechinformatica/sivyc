@@ -106,7 +106,8 @@ $(function(){
     //Botones en tabla modsupre
         $("#addmodsupre").click(function(){
             ++m;
-            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" disabled value="12101" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /></td><td><input type="text" name="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td><td><input type="text" name="addmore['+m+'][comentario]" id="addmore['+m+'][comentario]" placeholder="comentario" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
+            console.log(m);
+            $("#dynamicTablemodsupre").append('<tr><td><input type="text" name="addmore['+m+'][folio]" id="addmore['+m+'][folio]" placeholder="folio" class="form-control" /></td><td><input type="text" name="addmore['+m+'][numeropresupuesto]" id="addmore['+m+'][numeropresupuesto]" placeholder="Numero Presupuesto" class="form-control" disabled value="12101" /></td><td><input type="text" name="addmore['+m+'][clavecurso]" id="addmore['+m+'][clavecurso]" placeholder="Clave curso" class="form-control" /></td><td><input type="text" name="addmore['+m+'][importe]" id="addmore['+m+'][importe]" placeholder="importe total" class="form-control" /><footer name="addmore['+m+'][aviso]" id="addmore['+m+'][aviso]" style="color: red"></footer></td><td><input type="text" name="addmore['+m+'][iva]" id="addmore['+m+'][iva]" placeholder="Iva" class="form-control" /></td><td><input type="text" name="addmore['+m+'][comentario]" id="addmore['+m+'][comentario]" placeholder="comentario" class="form-control" /></td><td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td></tr>');
 
         });
 
@@ -275,439 +276,49 @@ $(function(){
     });
 
     $( document ).on('input', function(){
-        if(document.getElementById('curso') != null && document.getElementById('instructor') != null && document.getElementById('general') != null && document.getElementById('unidad') != null)
+        if(document.getElementById('curso') != null || document.getElementById('instructor') != null || document.getElementById('general') != null || document.getElementById('unidad') != null)
         {
-        if (document.getElementById('curso').checked) {
-            $('#div_curso').prop("class", "form-row")
-            $('#div_instructor').prop("class", "form-row d-none d-print-none")
-            $('#div_unidad').prop("class", "form-row d-none d-print-none")
-        }
-        else if (document.getElementById('instructor').checked) {
-            $('#div_curso').prop("class", "form-row d-none d-print-none")
-            $('#div_instructor').prop("class", "form-row")
-            $('#div_unidad').prop("class", "form-row d-none d-print-none")
-        }
-        else if (document.getElementById('general').checked) {
-            $('#div_curso').prop("class", "form-row d-none d-print-none")
-            $('#div_instructor').prop("class", "form-row d-none d-print-none")
-            $('#div_unidad').prop("class", "form-row d-none d-print-none")
-        }
-        else if (document.getElementById('unidad').checked) {
-            $('#div_curso').prop("class", "form-row d-none d-print-none")
-            $('#div_instructor').prop("class", "form-row d-none d-print-none")
-            $('#div_unidad').prop("class", "form-row")
-        }
-    }
-    });
-
-    //autocomplete
-    $( "#nombre_director" ).autocomplete({
-    source: function( request, response ) {
-        console.log(request);
-        // Fetch data
-        $.ajax({
-        url:"/directorio/getdirectorio",
-        type: 'post',
-        dataType: "json",
-        data: {
-            search: request.term
-        },
-        success: function( data ) {
-            response( data );
-        }
-        });
-    },
-    select: function (event, ui) {
-        // Set selection
-        $('#nombre_director').val(ui.item.label); // display the selected text
-        $('#id_director').val(ui.item.value); // save selected id to input
-        return false;
-    }
-    });
-
-    $( "#testigo1" ).autocomplete({
-        source: function( request, response ) {
-            console.log(request);
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
+            if (document.getElementById('curso').checked) {
+                $('#div_curso').prop("class", "form-row")
+                $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                $('#div_unidad').prop("class", "form-row d-none d-print-none")
             }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#testigo1').val(ui.item.label); // display the selected text
-            $('#puesto_testigo1').val(ui.item.charge);
-            $('#id_testigo1').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#testigo2" ).autocomplete({
-        source: function( request, response ) {
-            console.log(request);
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
+            else if (document.getElementById('instructor').checked) {
+                $('#div_curso').prop("class", "form-row d-none d-print-none")
+                $('#div_instructor').prop("class", "form-row")
+                $('#div_unidad').prop("class", "form-row d-none d-print-none")
             }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#testigo2').val(ui.item.label); // display the selected text
-            $('#puesto_testigo2').val(ui.item.charge);
-            $('#id_testigo2').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#testigo3" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
+            else if (document.getElementById('general').checked) {
+                $('#div_curso').prop("class", "form-row d-none d-print-none")
+                $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                $('#div_unidad').prop("class", "form-row d-none d-print-none")
             }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#testigo3').val(ui.item.label); // display the selected text
-            $('#puesto_testigo3').val(ui.item.charge);
-            $('#id_testigo3').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $('#destino').autocomplete({
-        source: function(request, response) {
-            // fetch data
-            $.ajax({
-                url: '/directorio/getdirectorio',
-                type: 'post',
-                dataType: "json",
-                data: {
-                    search: request.term
-                },
-                success: function(data) {
-                    response(data);
-                }
-            });
-        },
-        select: function(event, ui) {
-            // Set selection
-            $('#destino').val(ui.item.label); // display the selected text
-            $('#destino_puesto').val(ui.item.charge);
-            $('#id_destino').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#remitente" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
+            else if (document.getElementById('unidad').checked) {
+                $('#div_curso').prop("class", "form-row d-none d-print-none")
+                $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                $('#div_unidad').prop("class", "form-row")
             }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#remitente').val(ui.item.label); // display the selected text
-            $('#remitente_puesto').val(ui.item.charge);
-           $('#id_remitente').val(ui.item.value); // save selected id to input
-            return false;
         }
     });
 
-    $( "#nombre_valida" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
+   $( document ).on('input', function(){
+        if(document.getElementById('curso') != null || document.getElementById('general') != null || document.getElementById('unidad') != null)
+        {
+            if (document.getElementById('curso').checked) {
+                $('#div_curso').prop("class", "form-row")
+                $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                $('#div_unidad').prop("class", "form-row d-none d-print-none")
             }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#nombre_valida').val(ui.item.label); // display the selected text
-            $('#puesto_valida').val(ui.item.charge);
-           $('#id_valida').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#nombre_elabora" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
+            else if (document.getElementById('general').checked) {
+                $('#div_curso').prop("class", "form-row d-none d-print-none")
+                $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                $('#div_unidad').prop("class", "form-row d-none d-print-none")
             }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#nombre_elabora').val(ui.item.label); // display the selected text
-            $('#puesto_elabora').val(ui.item.charge);
-           $('#id_elabora').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#nombre_ccp1" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
+            else if (document.getElementById('unidad').checked) {
+                $('#div_curso').prop("class", "form-row d-none d-print-none")
+                $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                $('#div_unidad').prop("class", "form-row")
             }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#nombre_ccp1').val(ui.item.label); // display the selected text
-            $('#puesto_ccp1').val(ui.item.charge);
-           $('#id_ccp1').val(ui.item.value); // save selected id to input
-            return false;
         }
     });
-
-    $( "#nombre_ccp2" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#nombre_ccp2').val(ui.item.label); // display the selected text
-            $('#puesto_ccp2').val(ui.item.charge);
-           $('#id_ccp2').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#nombre_firmante" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#nombre_firmante').val(ui.item.label); // display the selected text
-            $('#puesto_firmante').val(ui.item.charge);
-           $('#id_firmante').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#ccp1" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#ccp1').val(ui.item.label); // display the selected text
-            $('#ccpa1').val(ui.item.charge);
-           $('#id_ccp1').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#ccp2" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#ccp2').val(ui.item.label); // display the selected text
-            $('#ccpa2').val(ui.item.charge);
-           $('#id_ccp2').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#ccp3" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#ccp3').val(ui.item.label); // display the selected text
-            $('#ccpa3').val(ui.item.charge);
-           $('#id_ccp3').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#ccp4" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getdirectorio",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#ccp4').val(ui.item.label); // display the selected text
-            $('#ccpa4').val(ui.item.charge);
-           $('#id_ccp4').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#cursoaut" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getcurso",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#cursoaut').val(ui.item.label); // display the selected text
-           $('#id_curso').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-    $( "#instructoraut" ).autocomplete({
-        source: function( request, response ) {
-            // Fetch data
-            $.ajax({
-            url:"/directorio/getins",
-            type: 'post',
-            dataType: "json",
-            data: {
-                search: request.term
-            },
-            success: function( data ) {
-                response( data );
-            }
-            });
-        },
-        select: function (event, ui) {
-            // Set selection
-            $('#instructoraut').val(ui.item.label); // display the selected text
-           $('#id_instructor').val(ui.item.value); // save selected id to input
-            return false;
-        }
-    });
-
-
 });

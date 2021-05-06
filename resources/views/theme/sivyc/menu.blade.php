@@ -1,3 +1,4 @@
+{{-- Desarrollado por MIS. Daniel Méndez Cruz --}}
 
 <!--Navbar -->
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark pink darken-4">
@@ -62,17 +63,19 @@
                         @endcan
                         <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                         <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
-                        
                         @can('areas.inicio')
                             <a class="dropdown-item" href="{{route('areas.inicio')}}">Áreas</a>
                         @endcan
                         @can('especialidades.inicio')
                             <a class="dropdown-item" href="{{route('especialidades.inicio')}}">Especialidades</a>
                         @endcan
+                        @can('unidades.index')
+                            <a class="dropdown-item" href="{{route('unidades.inicio')}}">Unidades</a>
+                        @endcan
                         <a class="dropdown-item" href="{{route('exoneraciones.inicio')}}">Exoneraciones</a>
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
-                        @endcan  
+                        @endcan
                     </div>
                 </li>
                 @can('tablero.metas.index')
@@ -101,39 +104,110 @@
                         Reportes
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        {{-- <a class="dropdown-item" href="https://datastudio.google.com/reporting/7c518e16-99ea-4cb2-8509-7064c0604e00" target="_blank">CURSOS VS OBJETIVOS</a>
+                        <a class="dropdown-item" href="https://datastudio.google.com/reporting/512e11eb-babf-4476-8827-8d4243e2c219" target="_blank">STATUS PAGO INSTRUCTORES</a> --}}
+                        {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">REPORTE DE FORMATO T</a>                         --}}
+                        @can('academicos.arc')
+                            <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">APERTURA</a>
+                        @endcan
                         @can('reportes.cursos')
                             <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">CURSOS AUTORIZADOS</a>
                         @endcan
-                        <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Planeación</a>
+                        @can('planeacion.reporte')
+                            <a class="dropdown-item" href="{{route('planeacion.reporte')}}">PLANEACIÓN</a>
+                        @endcan
+                        @can('financieros.reporte')
+                            <a class="dropdown-item" href="{{route('financieros.reporte')}}">ESTADO DE CONTRATOS Y PAGOS</a>
+                        @endcan
+                        {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">FORMATOT</a> --}}
                     </div>
                 </li>
-                <!--PESTAÑA SOLICITUDES DA-->
-                @can('supervision.escolar')
+
+                {{-- Grupo calificaciones --}}
+                @can('grupos.calificaciones')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Solicitudes DA
-                        </a>
+                            Grupos
+                        </a>                    
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            {{-- @can('supervision.escolar') --}}
-                            <a class="dropdown-item" href="{{route('solicitudesDA.inicio')}}">Modificación de cursos</a>
-                            {{-- @endcan --}}
-                            <a class="dropdown-item" href="{{route('solicitudesApoyo.inicio')}}">Solicitud de apoyo</a>
+                            @can('grupos.calificaciones')
+                                <a class="dropdown-item" href="{{route('grupos.calificaciones')}}">Registrar Calificaciones</a>
+                            @endcan
+                            @can('grupos.asignarfolios')
+                                <a class="dropdown-item" href="{{route('grupos.asignarfolios')}}">Asignar Folios</a>
+                            @endcan
+                            @can('grupos.cancelacionfolios')
+                                <a class="dropdown-item" href="{{route('grupos.cancelacionfolios')}}">Cancelar Folios</a>
+                            @endcan
+                            @can('grupos.consultas')                        
+                                <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>                        
+                            @endcan
+                        </div>
+                    </li> 
+                @endcan
+                {{-- grupo calificaciones end --}}
+                
+                @can('formatot.menu.indice')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Formatos t
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
+                            @can('vista.formatot.unidades.indice')
+                                <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación Formato T por Unidades</a> 
+                            @endcan
+                            @can('vista.validacion.enlaces.dta')
+                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato t</a>  
+                            @endcan
+                            @can('vista.validacion.direccion.dta')
+                                <a class="dropdown-item" href="{{ route('validacion.dta.revision.cursos.indice') }}">Validación de Cursos Formato t DTA</a>
+                            @endcan
+                            @can('vista.validacion.direccion.dta')
+                                <a class="dropdown-item" href="{{ route('indice.dta.aperturado.indice') }}" >Formato T Aperturado</a>
+                            @endcan
+                            @can('vista.revision.validacion.planeacion.indice')
+                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Revisión y Validación Final Formato t</a>
+                            @endcan
                         </div>
                     </li>
                 @endcan
-                <!--PESTAÑA SOLICITUDES DTA-->
-                @can('supervision.escolar')
+                
+                {{-- modificaciones en el curso del menu --}}
+                {{-- consultas folios asignados --}}
+                @can('solicitudes.folios')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Solicitudes (DTA)
-                        </a>
+                            Solicitudes
+                        </a>                     
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            {{-- @can('supervision.escolar') --}}
-                            <a class="dropdown-item" href="{{route('solicitudesDTA.inicio')}}">Modificación de cursos</a>
-                            {{-- @endcan --}}
+                            @can('solicitudes.folios')
+                                <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
+                            @endcan                       
+                            @can('solicitudes.cancelacionfolios')
+                                <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n Folios</a>
+                            @endcan                       
                         </div>
                     </li>
-                @endcan
+                @endcan 
+     
+                <li class="nav-item g-mx-5--lg dropdown">
+                    <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Consultas
+                    </a>                    
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @can('consultas.folios')
+                            <a class="dropdown-item" href="{{route('consultas.folios')}}">Folios Asignados</a>
+                        @endcan
+                        @can('consultas.lotes')
+                            <a class="dropdown-item" href="{{route('consultas.lotes')}}">Actas de Folios</a>
+                        @endcan
+                        @can('consultas.cursosfinalizados')
+                            <a class="dropdown-item" href="{{route('consultas.cursosfinalizados')}}">Cursos Finalizados</a>
+                        @endcan
+                    </div>                    
+                </li> 
+                {{-- consultas folios asignados END --}}
+                
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">

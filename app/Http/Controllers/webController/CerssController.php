@@ -51,7 +51,7 @@ class CerssController extends Controller
                     $unidadUsuario = DB::table('tbl_unidades')->WHERE('id', $usuarioUnidad)->FIRST();
 
                     $data = $cerss::BusquedaCerss($tipoCerss, $busqueda_cerss)
-                                    ->WHERE('unidad', '=', $unidadUsuario->id)
+                                    ->WHERE('id_unidad', '=', $unidadUsuario->id)
                                     ->WHERE('id', '!=', '0')
                                     ->GET();
                 break;

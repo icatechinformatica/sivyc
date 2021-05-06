@@ -7,10 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\Convenio;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+// use Illuminate\Support\Facades\File;
+use App\Models\Municipio;
 use App\Models\convenioAvailable;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\Municipio;
+use Maatwebsite\Excel\Concerns\ToArray;
+use PhpParser\Node\Stmt\Foreach_;
+use SebastianBergmann\Environment\Console;
+
+use function Complex\add;
 
 class ConveniosController extends Controller
 {
@@ -124,7 +130,7 @@ class ConveniosController extends Controller
         if ($request->hasFile('archivo_convenio')) {
 
             // obtenemos el valor de acta_nacimiento
-            $doc_convenio = \DB::table('convenios')->WHERE('id', $convenioId)->VALUE('archivo_convenio');
+            $doc_convenio = DB::table('convenios')->WHERE('id', $convenioId)->VALUE('archivo_convenio');
             // checamos que no sea nulo
             if (!is_null($doc_convenio)) {
                 # si no está nulo
@@ -145,7 +151,7 @@ class ConveniosController extends Controller
             ];
 
             // vamos a actualizar el registro con el arreglo que trae diferentes variables y carga de archivos
-            \DB::table('convenios')->WHERE('id', $convenioId)->update($arregloConvenio);
+            DB::table('convenios')->WHERE('id', $convenioId)->update($arregloConvenio);
 
             // limpiamos el arreglo
             unset($arregloConvenio);

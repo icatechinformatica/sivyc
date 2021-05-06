@@ -22,7 +22,7 @@
             <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
                 <select name="unidad" id="unidad" class="form-control">
-                    <option value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
+                    <option value="sin especificar">SIN ESPECIFICAR</option>
                     @foreach ($unidades as $data )
                         <option value="{{$data->unidad}}">{{$data->unidad}}</option>
                     @endforeach
@@ -60,9 +60,9 @@
                     <th>Acción</th>
                 </tr>
                 <tr>
-                    <td><input type="text" name="addmore[0][folio]" id="addmore[0][folio]" placeholder="folio" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][folio]" id="addmore[0][folio]" placeholder="folio" class="form-control" /><footer name="addmore[0][avisofolio]" id="addmore[0][avisofolio]" style="color: red"></footer></td>
                     <td><input type="text" name="addmore[0][numeropresupuesto]" id="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" disabled value="12101" /></td>
-                    <td><input type="text" name="addmore[0][clavecurso]" id="addmore[0][clavecurso]" placeholder="clave curso" class="form-control" /></td>
+                    <td><input type="text" name="addmore[0][clavecurso]" id="addmore[0][clavecurso]" placeholder="clave curso" class="form-control claveCurso" /></td>
                     <td><input type="text" name="addmore[0][importe]" id="addmore[0][importe]" placeholder="importe total" class="form-control" readonly/><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
                     <td><input type="text" name="addmore[0][iva]" id="addmore[0][iva]" placeholder="IVA" class="form-control" readonly /></td>
                     <td><input type="text" name="addmore[0][comentario]" id="addmore[0][comentario]" placeholder="Comentario" class="form-control" /></td>
@@ -147,43 +147,218 @@
         <br>
     </form>
  </div>
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
+<script type="text/javascript">
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
- <script type="text/javascript">
+    // función sólo letras
+    function soloLetras(e) {
+        key = e.keyCode || e.which;
+        tecla = String.fromCharCode(key).toLowerCase();
+        letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
+        especiales = [8, 37, 39, 46];
 
-     // Add the following code if you want the name of the file appear on select
-     $(".custom-file-input").on("change", function() {
-       var fileName = $(this).val().split("\\").pop();
-       $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-     });
-//hola
-     function soloLetras(e) {
-       key = e.keyCode || e.which;
-       tecla = String.fromCharCode(key).toLowerCase();
-       letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
-       especiales = [8, 37, 39, 46];
+        tecla_especial = false
+        for(var i in especiales) {
+            if(key == especiales[i]) {
+                tecla_especial = true;
+                break;
+            }
+        }
 
-       tecla_especial = false
-       for(var i in especiales) {
-           if(key == especiales[i]) {
-               tecla_especial = true;
-               break;
-           }
-       }
+        if(letras.indexOf(tecla) == -1 && !tecla_especial)
+            return false;
+    }
 
-       if(letras.indexOf(tecla) == -1 && !tecla_especial)
-           return false;
-   }
+    function limpia() {
+        var val = document.getElementById("miInput").value;
+        var tam = val.length;
+        for(i = 0; i < tam; i++) {
+            if(!isNaN(val[i]))
+                document.getElementById("miInput").value = '';
+        }
+    }
 
-   function limpia() {
-       var val = document.getElementById("miInput").value;
-       var tam = val.length;
-       for(i = 0; i < tam; i++) {
-           if(!isNaN(val[i]))
-               document.getElementById("miInput").value = '';
-       }
-   }
- </script>
+    $(function(){
+        $(function(){
+    var i = 0;
 
-@stop
+    $( document ).on('input', function(){
+        $('input').on('input', function(event){
+            id = this.id;
+            x = id.substring(8,10);
+            comp = x.substring(1);
+            if(comp == ']')
+            {
+                x = id.substring(8,9);
+            }
+            if (id == 'addmore['+x+'][clavecurso]') {
+                var valor = (document.getElementById(id).value).toUpperCase();
+                var datos = {valor: valor};
+                var url = '/supre/busqueda/curso';
+                var request = $.ajax
+                ({
+                    url: url,
+                    method: 'POST',
+                    data: datos,
+                    dataType: 'json'
+                });
+
+                request.done(( respuesta) =>
+                {
+                    console.log(respuesta);
+                    if (respuesta == 'N/A') {
+                        document.getElementById('addmore['+x+'][importe]').value = null;
+                        document.getElementById('addmore['+x+'][iva]').value = null;
+                        document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
+                    } else {
+                        if(!respuesta.hasOwnProperty('error')){
+                            iva = respuesta * 0.16;
+                            iva = parseFloat(iva).toFixed(2);
+                            total = respuesta*1.16
+                            total = parseFloat(total).toFixed(2);
+
+                            document.getElementById('addmore['+x+'][importe]').value = total;
+
+                            document.getElementById('addmore['+x+'][iva]').value = iva;
+
+                            document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
+                        }else{
+
+                            //Puedes mostrar un mensaje de error en algún div del DOM
+                        }
+                    }
+                });
+
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                alert( "Hubo un error: " + textStatus );
+            });
+
+            } else {
+
+            }
+        });
+    });
+
+   /* $( document ).on('input', function(){
+        $('input').on('input', function(event){
+            id = this.id;
+            x = id.substring(8,10);
+            comp = x.substring(1);
+            if(comp == ']')
+            {
+                x = id.substring(8,9);
+            }
+            if (id == 'addmore['+x+'][folio]') {
+                var valor = (document.getElementById(id).value).toUpperCase();
+                var datos = {valor: valor};
+                var url = '/supre/busqueda/folio';
+                var request = $.ajax
+                ({
+                    url: url,
+                    method: 'POST',
+                    data: datos,
+                    dataType: 'json'
+                });
+                console.log('hola');
+                request.done(( respuesta) =>
+                {
+                    console.log(respuesta);
+                    if (respuesta != 'N/A') {
+                        document.getElementById('addmore['+x+'][avisofolio]').innerHTML = 'Folio Existente';
+                    } else {
+                        if(!respuesta.hasOwnProperty('error')){
+                            console.log('respuesta= ')
+                            console.log(respuesta)
+                            document.getElementById('addmore['+x+'][avisofolio]').innerHTML = null;
+                        }else{
+
+                            //Puedes mostrar un mensaje de error en algún div del DOM
+                        }
+                    }
+                });
+
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                alert( "Hubo un error: " + textStatus );
+            });
+
+            } else {
+
+            }
+        });
+    });*/
+
+});
+        // evento de cargar los datos en el elemento jquery con los inputs dinámicos
+       /* $('.claveCurso').on('input', function(event){
+            id = this.id;
+            x = id.substring(8,10);
+            comp = x.substring(1);
+            if(comp == ']')
+            {
+                x = id.substring(8,9);
+            }
+            console.log('hola');
+            if (id == 'addmore['+x+'][clavecurso]') {
+                var valor = (document.getElementById(id).value).toUpperCase();
+                var datos = {valor: valor, _token: "{{ csrf_token() }}"};
+                var url = "{{ route('supre.busqueda.curso') }}";
+                var request = $.ajax
+                ({
+                    url: url,
+                    method: 'POST',
+                    data: datos,
+                    dataType: 'json'
+                });
+
+                request.done(( respuesta) =>
+                {
+                    console.log(respuesta);
+                    if (respuesta == 'N/A') {
+                        document.getElementById('addmore['+x+'][importe]').value = null;
+                        document.getElementById('addmore['+x+'][iva]').value = null;
+                        document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
+                    } else {
+                        if(!respuesta.hasOwnProperty('error')){
+                            console.log('respuesta= ')
+                            console.log(respuesta)
+                            iva = respuesta * 0.16;
+                            iva = parseFloat(iva).toFixed(2);
+                            total = respuesta*1.16
+                            total = parseFloat(total).toFixed(2);
+
+                            document.getElementById('addmore['+x+'][importe]').value = total;
+
+                            document.getElementById('addmore['+x+'][iva]').value = iva;
+
+                            document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
+                        }else{
+                            console.log("Esto es una respuesta de Error:" + respuesta);
+                            //Puedes mostrar un mensaje de error en algún div del DOM
+                        }
+                    }
+                });
+
+            request.fail(( jqXHR, textStatus ) =>
+            {
+                alert( "Hubo un error: " + jqXHR.responseText );
+            });
+
+            } else {
+
+            }
+        });*/
+
+    });
+</script>
+@endsection
 

@@ -15,6 +15,8 @@ use App\Models\especialidad;
 use App\Models\Area;
 use App\Models\tbl_unidades;
 use App\Models\criterio_pago;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CursosController extends Controller
 {
@@ -24,30 +26,43 @@ class CursosController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function prueba()
-    {
-        $curso = curso::SELECT('id')->WHERE('id', '!=', '0')->GET();
-        foreach($curso as $cadwell)
-        {
-            curso::WHERE('id', '=', $cadwell->id)->update(['estado' => TRUE]);
-        }
-        dd('ya quedo');
-    }
-
     public function index(Request $request)
     {
         /**
          *
          */
         $buscar_curso = $request->get('busquedaPorCurso');
-
         $tipoCurso = $request->get('tipo_curso');
 
+        $unidadUser = Auth::user()->unidad;
+
+        $userId = Auth::user()->id;
+
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico')
+        {
         $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
-        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')->PAGINATE(25, [
-            'cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion', 'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
-        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion', 'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre'
-        ]);
+        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
+        ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
+                   'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
+                   'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
+                   'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre']);
+        }
+        else
+        {
+            $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
+            ->WHERE('cursos.estado', '=', true)
+            ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
+            ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
+                       'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
+                       'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
+                       'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre']);
+        }
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
 
@@ -89,72 +104,95 @@ class CursosController extends Controller
             'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
             'PALENQUE'];
 
-            $cursos = new curso;
-            $cursos->nombre_curso = trim($request->nombrecurso);
-            $cursos->modalidad = trim($request->modalidad);
-            $cursos->clasificacion = trim($request->clasificacion);
-            $cursos->costo = trim($request->costo);
-            $cursos->horas = trim($request->duracion);
-            $cursos->objetivo = trim($request->objetivo);
-            $cursos->perfil = trim($request->perfil);
-            $cursos->fecha_validacion = $cursos->setFechaAttribute($request->fecha_validacion);
-            $cursos->fecha_actualizacion = $cursos->setFechaAttribute($request->fecha_actualizacion);
-            $cursos->descripcion = trim($request->descripcionCurso);
-            $cursos->no_convenio = trim($request->no_convenio);
-            $cursos->id_especialidad = $request->especialidadCurso;
-            $cursos->unidad_amovil = trim($request->unidad_accion_movil);
-            $cursos->area = $request->areaCursos;
-            $cursos->solicitud_autorizacion = $request->solicitud_autorizacion;
-            $cursos->memo_actualizacion = trim($request->memo_actualizacion);
-            $cursos->memo_validacion = trim($request->memo_validacion);
-            $cursos->cambios_especialidad = trim($request->cambios_especialidad);
-            $cursos->nivel_estudio = trim($request->nivel_estudio);
-            $cursos->categoria = trim($request->categoria);
-            $cursos->tipo_curso = trim($request->tipo_curso);
-            $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
-            $cursos->rango_criterio_pago_maximo = trim($request->criterio_pago_maximo);
-            $cursos->unidades_disponible = $unidades;
-            $cursos->save();
+            /**
+             * MODIFICACION DE RESTRICCIÓN DE GUARDADO DE CURSOS
+             * 26-ABRIL-2021 CREANDO RESTRICCIONES
+             */
+            $consulta_curso_existente = DB::table('cursos')
+                ->where([
+                    ['memo_actualizacion', '=', trim($request->memo_actualizacion)], 
+                    ['memo_validacion', '=', trim($request->memo_validacion)],
+                    ['tipo_curso', '=', trim($request->tipo_curso)],
+                    ['nombre_curso', 'LIKE', '%'.trim($request->nombrecurso).'%']
+                ])
+                ->get();
 
-            # ==================================
-            # Aquí tenemos el id recién guardado
-            # ==================================
-            $cursosId = $cursos->id;
+            if (count($consulta_curso_existente) > 0) {
+                # si es mayor a cero hay registros en la consulta
+                return redirect()->back()->withErrors(['msg', sprintf('EL CURSO %s YA SE ENCUENTRA REGISTRADO EN LA BASE DE DATOS', $request->nombrecurso)]);
+            } else {
+                # por el contrario no hay registros se procede a guardar el registro en la base de datos
 
-            // validamos si hay archivos
-            if ($request->hasFile('documento_solicitud_autorizacion')) {
-                # Carga el archivo y obtener la url
-                $documento_solicitud_autorizacion = $request->file('documento_solicitud_autorizacion'); # obtenemos el archivo
-                $url_solicitud_autorizacion = $this->uploaded_file($documento_solicitud_autorizacion, $cursosId, 'documento_solicitud_autorizacion'); #invocamos el método
-                // guardamos en la base de datos
-                $cursoUpdate = curso::find($cursosId);
-                $cursoUpdate->documento_solicitud_autorizacion = $url_solicitud_autorizacion;
-                $cursoUpdate->save();
+                $cursos = new curso;
+                $cursos->nombre_curso = trim($request->nombrecurso);
+                $cursos->modalidad = trim($request->modalidad);
+                $cursos->clasificacion = trim($request->clasificacion);
+                $cursos->costo = trim($request->costo);
+                $cursos->horas = trim($request->duracion);
+                $cursos->objetivo = trim($request->objetivo);
+                $cursos->perfil = trim($request->perfil);
+                $cursos->fecha_validacion = $cursos->setFechaAttribute($request->fecha_validacion);
+                $cursos->fecha_actualizacion = $cursos->setFechaAttribute($request->fecha_actualizacion);
+                $cursos->descripcion = trim($request->descripcionCurso);
+                $cursos->no_convenio = trim($request->no_convenio);
+                $cursos->id_especialidad = $request->especialidadCurso;
+                $cursos->unidad_amovil = trim($request->unidad_accion_movil);
+                $cursos->area = $request->areaCursos;
+                $cursos->solicitud_autorizacion = $request->solicitud_autorizacion;
+                $cursos->memo_actualizacion = trim($request->memo_actualizacion);
+                $cursos->memo_validacion = trim($request->memo_validacion);
+                $cursos->cambios_especialidad = trim($request->cambios_especialidad);
+                $cursos->nivel_estudio = trim($request->nivel_estudio);
+                $cursos->categoria = trim($request->categoria);
+                $cursos->tipo_curso = trim($request->tipo_curso);
+                $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
+                $cursos->rango_criterio_pago_maximo = trim($request->criterio_pago_maximo);
+                $cursos->unidades_disponible = $unidades;
+                $cursos->estado = TRUE;
+                $cursos->save();
+
+                # ==================================
+                # Aquí tenemos el id recién guardado
+                # ==================================
+                $cursosId = $cursos->id;
+
+                // validamos si hay archivos
+                if ($request->hasFile('documento_solicitud_autorizacion')) {
+                    # Carga el archivo y obtener la url
+                    $documento_solicitud_autorizacion = $request->file('documento_solicitud_autorizacion'); # obtenemos el archivo
+                    $url_solicitud_autorizacion = $this->uploaded_file($documento_solicitud_autorizacion, $cursosId, 'documento_solicitud_autorizacion'); #invocamos el método
+                    // guardamos en la base de datos
+                    $cursoUpdate = curso::find($cursosId);
+                    $cursoUpdate->documento_solicitud_autorizacion = $url_solicitud_autorizacion;
+                    $cursoUpdate->save();
+                }
+
+                // validamos el siguiente archivo
+                if ($request->hasFile('documento_memo_validacion')) {
+                    # Carga el archivo y obtener la url
+                    $documento_memo_validacion = $request->file('documento_memo_validacion'); # obtenemos el archivo
+                    $url_memo_validacion = $this->uploaded_file($documento_memo_validacion, $cursosId, 'documento_memo_validacion'); #invocamos el método
+                    // guardamos en la base de datos
+                    $cursoUp = curso::find($cursosId);
+                    $cursoUp->documento_memo_validacion = $url_memo_validacion;
+                    $cursoUp->save();
+                }
+
+                // validamos el siguiente archivo
+                if ($request->hasFile('documento_memo_actualizacion')) {
+                    # Carga el archivo y obtener la url
+                    $documento_memo_actualizacion = $request->file('documento_memo_actualizacion'); # obtenemos el archivo
+                    $url_memo_actualizacion = $this->uploaded_file($documento_memo_actualizacion, $cursosId, 'documento_memo_actualizacion'); #invocamos el método
+                    // guardamos en la base de datos
+                    $cursoU = curso::find($cursosId);
+                    $cursoU->documento_memo_actualizacion = $url_memo_actualizacion;
+                    $cursoU->save();
+                }
+
+                return redirect()->route('curso-inicio')->with('success', 'Nuevo Curso Agregado!');
+
             }
-
-            // validamos el siguiente archivo
-            if ($request->hasFile('documento_memo_validacion')) {
-                # Carga el archivo y obtener la url
-                $documento_memo_validacion = $request->file('documento_memo_validacion'); # obtenemos el archivo
-                $url_memo_validacion = $this->uploaded_file($documento_memo_validacion, $cursosId, 'documento_memo_validacion'); #invocamos el método
-                // guardamos en la base de datos
-                $cursoUp = curso::find($cursosId);
-                $cursoUp->documento_memo_validacion = $url_memo_validacion;
-                $cursoUp->save();
-            }
-
-            // validamos el siguiente archivo
-            if ($request->hasFile('documento_memo_actualizacion')) {
-                # Carga el archivo y obtener la url
-                $documento_memo_actualizacion = $request->file('documento_memo_actualizacion'); # obtenemos el archivo
-                $url_memo_actualizacion = $this->uploaded_file($documento_memo_actualizacion, $cursosId, 'documento_memo_actualizacion'); #invocamos el método
-                // guardamos en la base de datos
-                $cursoU = curso::find($cursosId);
-                $cursoU->documento_memo_actualizacion = $url_memo_actualizacion;
-                $cursoU->save();
-            }
-
-            return redirect()->route('curso-inicio')->with('success', 'Nuevo Curso Agregado!');
+            
         } catch (Exception $e) {
             return Redirect::back()->withErrors($e->getMessage());
         }
@@ -267,18 +305,9 @@ class CursosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $cursos = new curso();
         // modificacion de un recurso guardado
         if (isset($id)) {
-            $cursos = new curso();
-            # code...
-            if($request->estado != NULL)
-            {
-                $estado = TRUE;
-            }
-            else
-            {
-                $estado = FALSE;
-            }
             $array = [
                 'nombre_curso' => trim($request->nombrecurso),
                 'modalidad' => trim($request->modalidad),
@@ -301,12 +330,24 @@ class CursosController extends Controller
                 'nivel_estudio' => trim($request->nivel_estudio),
                 'categoria' => trim($request->categoria),
                 'tipo_curso' => trim($request->tipo_curso),
-                'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
-                'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
-                'estado' => $estado,
             ];
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
+            if($request->estado != NULL)
+            {
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => TRUE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
+            }
+            else
+            {
+                $cursos->WHERE('id', '=', $id)
+                ->UPDATE(['estado' => FALSE,
+                          'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
+                          'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit)]);
+            }
+
             # ==================================
             # Aquí modificamos el curso con id
             # ==================================

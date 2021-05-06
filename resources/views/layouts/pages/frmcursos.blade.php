@@ -13,7 +13,7 @@
             </ul>
         </div><br />
     @endif
-    <form method="POST" action="{{ url('cursos/guardar-catalogo') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('cursos.guardar-catalogo') }}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
         <div style="text-align: right;width:60%">
             <label for="tituloformulariocurso"><h1>NUEVO CURSO</h1></label>
@@ -220,4 +220,93 @@
     </form>
     <br>
 </div>
+@endsection
+@section('script_content_js')
+    <script type="text/javascript">
+        $(function(){
+            $.validator.addMethod('filesize', function (value, element, param) {
+                return this.optional(element) || (element.files[0].size <= param)
+            }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A 2 MB.');
+            /**
+             * Modificacion de cursos, validación
+            */
+            $('#frmcursoscatalogo').validate({
+                rules: {
+                    nombrecurso: {
+                        required: true
+                    },
+                    modalidad: {
+                        required: true
+                    },
+                    clasificacion: {
+                        required: true
+                    },
+                    documento_solicitud_autorizacion: {
+                        extension: "pdf",
+                        filesize: 2000000   //max size 2mb
+                    },
+                    documento_memo_actualizacion: {
+                        extension: "pdf",
+                        filesize: 2000000   //max size 2mb
+                    },
+                    documento_memo_validacion: {
+                        extension: "pdf",
+                        filesize: 2000000   //max size 2mb
+                    },
+                    fecha_validacion: {
+                        required: true
+                    },
+                    areaCursos: {
+                        required: true
+                    },
+                    especialidadCurso: {
+                        required: true
+                    },
+                    duracion: {
+                        number: true
+                    },
+                    tipo_curso: {
+                            required: true,
+                            valueNotEquals: "default"
+                    }
+                },
+                messages: {
+                    nombrecurso: {
+                        required: "Por favor, Escriba nombre del curso"
+                    },
+                    modalidad: {
+                        required: "Por favor, Seleccione la modalidad"
+                    },
+                    clasificacion: {
+                        required: "Por favor, Seleccione la clasificación"
+                    },
+                    documento_solicitud_autorizacion: {
+                        extension: "Sólo se permiten pdf",
+                    },
+                    documento_memo_actualizacion: {
+                        extension: "Sólo se permiten pdf",
+                    },
+                    documento_memo_validacion: {
+                        extension: "Sólo se permiten pdf",
+                    },
+                    fecha_validacion: {
+                        required: "la fecha de validación es requerido"
+                    },
+                    especialidadCurso: {
+                        required: "Por favor, Seleccione la especialidad"
+                    },
+                    areaCursos: {
+                        required: "Por favor, Seleccione el campo"
+                    },
+                    duracion: {
+                        number: 'Acepta sólo números'
+                    },
+                    tipo_curso: {
+                        required: "Por favor ingrese el tipo de curso",
+                        valueNotEquals: "Por favor ingrese el tipo de curso"
+                }
+                }
+            });
+        });
+    </script>
 @endsection

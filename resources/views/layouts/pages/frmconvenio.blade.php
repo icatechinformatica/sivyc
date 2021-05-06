@@ -212,7 +212,9 @@
             <div class="row mt-5">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
+                        {{-- <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a> --}}
+                        <a class="btn btn-danger" id="tbn">Regresar</a>
+
                     </div>
                     <div class="pull-right">
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -233,7 +235,6 @@
             $.validator.addMethod('filesize', function(value, element, param) {
                 return this.optional(element) || (element.files[0].size <= param)
             }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
-
             // validaciones
             $('#frmConvenio').validate({
                 rules: {
@@ -339,7 +340,6 @@
                     }
                 }
             });
-
             var dateFormat = "dd-mm-yy",
                 from = $("#fecha_firma")
                 .datepicker({
@@ -360,7 +360,6 @@
                 .on("change", function() {
                     // from.datepicker("option", "maxDate", getDate(this));
                 });
-
             function getDate(element) {
                 var date;
                 try {
@@ -368,18 +367,14 @@
                 } catch (error) {
                     date = null;
                 }
-
                 return date;
             }
-
             // switch
             $('#chkToggle2').bootstrapToggle();
-
             // checksBox
             var checked = true;
             $('.settings').prop('checked', true);
             $('#btnMarcar').html('Desmarcar todos');
-
             $('.check-all').on('click', function() {
                 if (checked == false) {
                     $('.settings').prop('checked', true);
@@ -429,6 +424,5 @@
             });
 
         });
-
     </script>
 @endsection

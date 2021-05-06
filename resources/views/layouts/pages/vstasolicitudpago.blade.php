@@ -28,8 +28,12 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputelaboro">Nombre de Quien Elabora</label>
-                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control">
-                    <input id="id_elabora" name="id_elabora" hidden>
+                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" required>
+                    <input id="id_elabora" name="id_elabora" hidden required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
+                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control">
                 </div>
             </div>
             <div class="form-row">
@@ -59,7 +63,7 @@
                 @endif
                 <div class="form-group col-md-3">
                     <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
-                    <input type="text" name="liquid" id="liquid" class="form-control" required>
+                    <input type="text" name="liquido" id="liquido" class="form-control" required>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
@@ -112,15 +116,15 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre_banco" class="control-label">Nombre de Banco</label>
-                    <input type="text" name="nombre_banco" id="nombre_banco" class="form-control" disabled>
+                    <input type="text" name="nombre_banco" id="nombre_banco" class="form-control" value="{{$bancario->banco}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputnumero_cuenta" class="control-label">Número de Cuenta</label>
-                    <input type="text" name="numero_cuenta" id="numero_cuenta" class="form-control" disabled>
+                    <input type="text" name="numero_cuenta" id="numero_cuenta" class="form-control" value="{{$bancario->no_cuenta}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe" class="control-label">Clabe Interbancaria</label>
-                    <input type="text" name="clabe" id="clabe" class="form-control" disabled>
+                    <input type="text" name="clabe" id="clabe" class="form-control" value="{{$bancario->interbancaria}}" disabled>
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -178,30 +182,6 @@
         <br>
     </div>
 @endsection
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script>
-    $(function(){
-
-        $.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $("#mod-datosBancarios").click(function(e){
-            e.preventDefault();
-            $.ajax({
-                success: function(){
-                    $('#arch_bancario').prop("disabled", false)
-                    $('#arch_bancario').prop("required", true)
-                    $('#nombre_banco').prop("disabled", false)
-                    $('#nombre_banco').prop("required", true)
-                    $('#numero_cuenta').prop("disabled", false)
-                    $('#numero_cuenta').prop("required", true)
-                    $('#clabe').prop("disabled", false)
-                    $('#clabe').prop("required", true)
-                }
-            });
-        });
-    });
-</script>
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+@endsection

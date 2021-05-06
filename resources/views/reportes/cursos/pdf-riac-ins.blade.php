@@ -137,8 +137,10 @@
                     <td>@if($a->abrinscri=="ET" OR $a->abrinscri=="EP"){{ "X" }}@endif</td>
                     @if(isset($discapacidad[$a->discapacidad]))<td>{{ $discapacidad[$a->discapacidad] }}</td>
                     @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
-                    <td>{{ $a->sexo }}</td>
-                    <td>{{ $a->edad }}</td>
+                   @if($a->sexo)<td>{{ $a->sexo }}</td>
+                    @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
+                    @if($a->edad )<td>{{ $a->edad  }}</td>
+                    @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
                     @if(isset($escolaridad[$a->ultimo_grado_estudios]))<td> {{ $escolaridad[$a->ultimo_grado_estudios] }}</td>
                     @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
                     <td></td>

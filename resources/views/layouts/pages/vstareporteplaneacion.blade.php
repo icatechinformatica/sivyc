@@ -29,6 +29,36 @@
         tr {
             height: 65px;
         }
+       .modal
+        {
+            position: fixed;
+            z-index: 999;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: Black;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            -moz-opacity: 0.8;
+        }
+        .center
+        {
+            z-index: 1000;
+            margin: 300px auto;
+            padding: 10px;
+            width: 150px;
+            background-color: White;
+            border-radius: 10px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            -moz-opacity: 1;
+        }
+        .center img
+        {
+            height: 128px;
+            width: 128px;
+        }
     </style>
 </head>
 @section('content')
@@ -111,10 +141,20 @@
                         <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                     </div>
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                        <button id="submit" name="submit" type="submit" class="btn btn-primary" >Generar</button>
                     </div>
                 </div>
             </div>
         </form>
+        <!--display modal-->
+        <div class="modal">
+            <div class="center">
+                <img alt="" src="{{URL::asset('/img/cargando.gif')}}" />
+            </div>
+        </div>
     </section>
-@stop
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+@endsection

@@ -171,7 +171,7 @@
                         </select>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="horario" class="control-label">TIPO DE CURSO</label>
+                        <label for="tipo_curso" class="control-label">TIPO DE CURSO</label>
                         <select class="form-control" id="tipo_curso" name="tipo_curso" required>
                             <option value="">--SELECCIONAR--</option>
                             <option value="PRESENCIAL">PRESENCIAL</option>
@@ -326,9 +326,9 @@
                 });
             });
         });
-        
+
         /***
-         * escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar 
+         * escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar
          * los cursos de esa especialidad
         */
         $('#especialidad_sid' && '#tipo_curso').on("change", () => {
@@ -337,7 +337,7 @@
                 var IdEsp = $('#especialidad_sid').val();
                 var tipo = $('#tipo_curso').val();
                 var unidad = $('#tblunidades').val();
-                var datos = { idEsp: IdEsp, tipo: tipo, unidad: unidad};
+                var datos = { idEsp: IdEsp, tipo: tipo, unidad: unidad, _token: "{{ csrf_token() }}"};
                 var url = "{{route('alumnos.sid.cursos')}}";
 
                 var solicitud = $.ajax
@@ -366,7 +366,6 @@
                                 $.each(response, (k ,v) => {
                                     $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
                                 });
-                                
                                 $("#cursos_sid").focus();
                             }
                         }

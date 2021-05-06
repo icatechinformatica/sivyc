@@ -466,34 +466,8 @@ $(function(){
         }
     });
 
-    /**
-     * validar formulario paso2UploadFiles
-     */
-    $("#paso2UploadFiles").validate({
-        rules: {
-            customFile: {
-                extension: "pdf|png|jpg|jpeg",
-                filesize: 2000000,   //max size 2mb
-                required: true
-            },
-            tipoDocumento:{
-                required: true
-            }
-        },
-        messages: {
-            customFile: {
-                extension: "Sólo se permiten pdf, png, jpg, jpege",
-                filesize:"El archivo debe ser menor de 2 MB",
-                required: "Anexar el documento"
-            },
-            tipoDocumento: {
-                required: 'Por favor, seleccione el tipo de documento',
-            }
-        }
 
-    });
 
-    
 
     // hacemos que los input sean mayusculos
     $('input[type=text]').val (function () {
@@ -505,56 +479,6 @@ $(function(){
     })
 
 
-    
-
-    $('#estado').on("change", () => {
-        var IdEst =$('#estado').val();
-        $("#estado option:selected").each( () => {
-            var IdEst = $('#estado').val();
-            var datos = {idEst: IdEst};
-            var url = '/alumnos/sid/municipios';
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-
-            request.done(( respuesta ) =>
-            {
-                if (respuesta.length < 1) {
-                    $("#municipio").empty();
-                    $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#municipio").empty();
-                        $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            $('#municipio').append('<option value="' + v.muni + '">' + v.muni + '</option>');
-                        });
-                        $("#municipio").focus();
-                    }else{
-
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + textStatus );
-            });
-        });
-    });
 
     /**
      * cambios select dependientes
@@ -667,90 +591,6 @@ $(function(){
           .replace(/(?<=\.\d\d).*/g, "")
           .replace(/\B(?=(\d{3})+(?!\d))/g, "");
         });
-    });
-
-    /**
-     * Modificacion de cursos, validación
-     */
-    $('#frmcursoscatalogo').validate({
-        rules: {
-            nombrecurso: {
-                required: true
-            },
-            modalidad: {
-                required: true
-            },
-            clasificacion: {
-                required: true
-            },
-            documento_solicitud_autorizacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            documento_memo_actualizacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            documento_memo_validacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            fecha_validacion: {
-                required: true
-            },
-            areaCursos: {
-                required: true
-            },
-            especialidadCurso: {
-                required: true
-            },
-            duracion: {
-                number: true
-            },
-            tipo_curso: {
-                    required: true,
-                    valueNotEquals: "default"
-            }
-        },
-        messages: {
-            nombrecurso: {
-                required: "Por favor, Escriba nombre del curso"
-            },
-            modalidad: {
-                required: "Por favor, Seleccione la modalidad"
-            },
-            clasificacion: {
-                required: "Por favor, Seleccione la clasificación"
-            },
-            documento_solicitud_autorizacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            documento_memo_actualizacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            documento_memo_validacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            fecha_validacion: {
-                required: "la fecha de validación es requerido"
-            },
-            especialidadCurso: {
-                required: "Por favor, Seleccione la especialidad"
-            },
-            areaCursos: {
-                required: "Por favor, Seleccione el campo"
-            },
-            duracion: {
-                number: 'Acepta sólo números'
-            },
-            tipo_curso: {
-                required: "Por favor ingrese el tipo de curso",
-                valueNotEquals: "Por favor ingrese el tipo de curso"
-        }
-        }
     });
 
     /***
@@ -916,66 +756,6 @@ $(function(){
      * Documentos
      *
      */
-    $('#especialidad_sid_mod' && '#tipo_curso_mod').on("change", () => {
-
-        $("#especialidad_sid_mod option:selected").each( () => {
-            var IdEsp = $('#especialidad_sid_mod').val();
-            var tipo = $('#tipo_curso_mod').val();
-            var datos = { idEsp_mod: IdEsp, tipo_mod: tipo};
-            var url = '/alumnos/sid/cursos_update';
-            console.log(datos);
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-            request.done(( respuesta ) =>
-            {
-                console.log(respuesta);
-                if (respuesta.length < 1) {
-                    $("#curso_sid_mod").empty();
-                    $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#curso_sid_mod").empty();
-                        $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            $('#curso_sid_mod').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
-                        });
-                        $("#curso_sid_mod").focus();
-                    }else{
-
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + textStatus );
-            });
-        });
-    });
-
-    // disabled button while submit
-    $("#paso2UploadFiles").submit(function (e) {
-
-        $("#submitDocs").attr("disabled", true);
-
-        return true;
-
-    });
 
 
     /**

@@ -163,8 +163,8 @@
                 <FONT SIZE=0><b>{{$getremitente->puesto}}</b></FONT><br/>
                 <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
                 <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
-                    <font size=0>La Secretaria de hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2020, en ese sentido, con Fundamento en el Art. 17 Fracción V, VI y 26
-                    del decreto de presupuesto de egresos del estado de Chiapas para el Ejercicio Fiscal 2020 y en pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de capacitación, al Padrón de Instructores del ICATECH
+                    <font size=0>La Secretaria de hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2021, en ese sentido, con Fundamento en el Art. 13 del decreto de presupuesto
+                    de egresos del estado de Chiapas para el Ejercicio Fiscal 2021 y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de capacitación, al Padrón de Instructores del ICATECH
                     y a la clave de autorización de apertura de cursos y demás disposiciones normativas aplicables vigentes; le informo que una vez revisada su solicitud y la información descrita en el formato de Validación de Suficiencia Presupuestal, se otorga la Validación
                     Presupuestal, con el fin de que conforme a lo indicado en la normatividad aplicable vigente se continúe y se cumpla con los procedimientos administrativos que correspondan, observando además el contrato de prestación de servicios profesionales por honorarios en su
                     modalidad de Horas-Curso que celebran el ICATECH con el prestador de servicio.<br/></font>

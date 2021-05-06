@@ -33,7 +33,7 @@
             @else
                 <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
             @endif
-            @if ($data->archivo_alta != NULL)
+            @if ($data->arch_factura != NULL)
                 <a class="btn btn-info" href={{$data->arch_factura}} download>Factura</a><br>
             @else
                 <a class="btn btn-danger" disabled>Factura</a><br>

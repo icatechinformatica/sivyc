@@ -35,6 +35,9 @@ class PagoController extends Controller
          */
         $tipoPago = $request->get('tipo_pago');
         $busqueda_pago = $request->get('busquedaPorPago');
+        $tipoStatus = $request->get('tipo_status');
+        $unidad = $request->get('unidad');
+        $mes = $request->get('mes');
 
         $contrato = new contratos();
         // obtener el usuario y su unidad
@@ -49,25 +52,34 @@ class PagoController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
         //dd($roles[0]->role_name);
 
-        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago)
+        $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
+        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+        ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+        ->orderBy('pagos.created_at', 'desc')
         ->PAGINATE(25, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
-            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre'
-        ])
-        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado']);
-
+            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre',
+            'pagos.created_at'
+        ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
                 # code...
                 $contratos_folios = $contratos_folios;
                 break;
+            case 'admin':
+                # code...
+                $contratos_folios = $contratos_folios;
+
+            break;
             case 'direccion.general':
                 # code...
                 $contratos_folios = $contratos_folios;
@@ -89,11 +101,23 @@ class PagoController extends Controller
                 // obtener unidades
                 $unidadPorUsuario = DB::table('tbl_unidades')->WHERE('id', $unidadUser)->FIRST();
 
-                $contratos_folios = $contratos_folios->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion);
+                $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
+                ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
+                ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
+                ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
+                ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                ->orderBy('contratos.fecha_firma', 'desc')
+                ->PAGINATE(25, [
+                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
+                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
+                    'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre'
+                ]);
                 break;
         }
 
-        return view('layouts.pages.vstapago', compact('contratos_folios'));
+        return view('layouts.pages.vstapago', compact('contratos_folios','unidades'));
     }
 
     public function crear_pago($id)
@@ -192,6 +216,14 @@ class PagoController extends Controller
         return redirect()->route('pago-inicio')->with('info', 'El pago ha sido verificado exitosamente.');
     }
 
+    public function pagoRestart($id)
+    {
+        $affecttbl_inscripcion = DB::table("folios")->WHERE('id_folios', $id)->update(['status' => 'Pago_Rechazado']);
+
+        return redirect()->route('pago-inicio')
+                        ->with('success','Solicitud de Pago Reiniciado');
+    }
+
     public function historial_validacion($id)
     {
         //
@@ -232,5 +264,52 @@ class PagoController extends Controller
         $pdf = PDF::loadView('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
 
         return $pdf->download('medium.pdf');
+    }
+
+    public function financieros_reporte()
+    {
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.vstareportefinancieros', compact('unidades'));
+    }
+
+    public function financieros_reportepdf(Request $request)
+    {
+        $i = 0;
+        set_time_limit(0);
+        $count = 0;
+
+        $data = folio::SELECT('folios.folio_validacion as suf','folios.status','tabla_supre.fecha','tabla_supre.no_memo',
+                                  'tabla_supre.unidad_capacitacion','tbl_cursos.curso','tbl_cursos.clave',
+                                  'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
+                                  'instructores.numero_control')
+                                  ->WHERE('folios.status', '!=', 'En_Proceso')
+                                  ->WHERE('folios.status', '!=', 'Rechazado')
+                                  ->WHERE('folios.status', '!=', 'Validado')
+                                  ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                                  ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                                  ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                                  ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                                  ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                                  //->OrderByRaw('FIELD(folios.status, ' . implode(', ', $x) . ') ASC')
+                                  ->GET();
+
+        if ($request->filtro == 'curso')
+        {
+            $data = $data->WHERE('tbl_cursos.id', '=', $request->id_curso);
+        }
+        else if ($request->filtro == 'unidad')
+        {
+            $data = $data->WHERE('tabla_supre.unidad_capacitacion', '=', $request->unidad);
+        }
+
+        $data = $data->sortBy(function($item){
+            return array_search($item->status, ['Validando_Contrato', 'Contrato_Rechazado', 'Contratado', 'Verificando_Pago', 'Pago_Rechazado', 'Pago_Verificado', 'Finalizado']);
+        });
+
+        $pdf = PDF::loadView('layouts.pdfpages.reportefinancieros', compact('data','count'));
+        $pdf->setPaper('legal', 'Landscape');
+        return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+
     }
 }

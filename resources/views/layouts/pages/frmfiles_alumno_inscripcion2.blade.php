@@ -163,3 +163,42 @@
         <br>
     </div>
 @endsection
+@section('script_content_js')
+    <script type="text/javascript">
+        $(function(){
+            // disabled button while submit
+            $("#paso2UploadFiles").submit(function (e) {
+                $("#submitDocs").attr("disabled", true);
+                return true;
+            });
+
+            $.validator.addMethod('filesize', function (value, element, param) {
+                return this.optional(element) || (element.files[0].size <= param)
+            }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A 2 MB.');
+            /**
+            * validar formulario paso2UploadFiles
+            */
+            $("#paso2UploadFiles").validate({
+                rules: {
+                    customFile: {
+                        extension: "pdf|png|jpg|jpeg",
+                        filesize: 2000000,   //max size 2mb
+                        required: true
+                    },
+                    tipoDocumento:{
+                        required: true
+                    }
+                },
+                messages: {
+                    customFile: {
+                        extension: "SÓLO SE PERMITEN PDF, PNG, JPG, JPEG",
+                        required: "ANEXAR EL DOCUMENTO"
+                    },
+                    tipoDocumento: {
+                        required: 'POR FAVOR, SELECCIONE EL TIPO DE DOCUMENTO',
+                    }
+                }
+            });
+        });
+    </script>
+@endsection

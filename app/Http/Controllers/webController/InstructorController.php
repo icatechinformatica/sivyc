@@ -24,6 +24,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class InstructorController extends Controller
 {
@@ -39,12 +40,28 @@ class InstructorController extends Controller
     public function index(Request $request)
     {
         $busquedaInstructor = $request->get('busquedaPorInstructor');
-
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
 
-        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->where('id', '!=', '0')->PAGINATE(25, [
-            'nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id'
-        ]);
+        $unidadUser = Auth::user()->unidad;
+
+        $userId = Auth::user()->id;
+
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor')
+        {
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+        }
+        else
+        {
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            ->WHERE('estado' ,'=', true)
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+        }
         return view('layouts.pages.initinstructor', compact('data'));
     }
 
@@ -63,6 +80,7 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
+        $userId = Auth::user()->id;
 
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
         if(is_null($verify) == TRUE)
@@ -90,6 +108,7 @@ class InstructorController extends Controller
             $saveInstructor->domicilio = $request->domicilio;
             $saveInstructor->numero_control = "Pendiente";
             $saveInstructor->status = "En Proceso";
+            $saveInstructor->lastUserId = $userId;
 
             if ($request->file('arch_ine') != null)
             {
@@ -176,9 +195,12 @@ class InstructorController extends Controller
 
     public function rechazo_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $saveInstructor = instructor::find($request->id);
         $saveInstructor->rechazo = $request->comentario_rechazo;
         $saveInstructor->status = "Rechazado";
+        $saveInstructor->lastUserId = $userId;
         $saveInstructor->save();
 
         return redirect()->route('instructor-inicio')
@@ -187,6 +209,7 @@ class InstructorController extends Controller
 
     public function validado_save(Request $request)
     {
+        $userId = Auth::user()->id;
         $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
         'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
         'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
@@ -211,6 +234,7 @@ class InstructorController extends Controller
         $instructor->status = "Validado";
         $instructor->estado = TRUE;
         $instructor->unidades_disponible = $unidades;
+        $instructor->lastUserId = $userId;
 
         //Creacion de el numero de control
         $uni = substr($request->unidad_registra, -2);
@@ -235,6 +259,7 @@ class InstructorController extends Controller
 
     public function guardar_mod(Request $request)
     {
+        $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
 
         $modInstructor->nombre = trim($request->nombre);
@@ -245,6 +270,7 @@ class InstructorController extends Controller
         $modInstructor->no_cuenta = $request->numero_cuenta;
         $modInstructor->domicilio = $request->domicilio;
         $modInstructor->status = "En Proceso";
+        $modInstructor->lastUserId = $userId;
 
         if ($request->file('arch_ine') != null)
         {
@@ -346,11 +372,11 @@ class InstructorController extends Controller
 
     public function save_ins(Request $request)
     {
-
+        $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
 
-        $old = $modInstructor->nombre . ' ' . $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno;
-        $new = $request->nombre . ' ' . $request->apellido_paterno . ' ' . $request->apellido_materno;
+        $old = $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno . ' ' . $modInstructor->nombre;
+        $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
 
         $modInstructor->nombre = trim($request->nombre);
         $modInstructor->apellidoPaterno = trim($request->apellido_paterno);
@@ -386,6 +412,7 @@ class InstructorController extends Controller
         $modInstructor->interbancaria = $request->clabe;
         $modInstructor->no_cuenta = $request->numero_cuenta;
         $modInstructor->domicilio = $request->domicilio;
+        $modInstructor->lastUserId = $userId;
 
 
         if ($request->file('arch_ine') != null)
@@ -460,6 +487,7 @@ class InstructorController extends Controller
         Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
         Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
         tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
+        tbl_curso::where('id_instructor', '=', $request->id)->update(['curp' => $request->curp]);
 
 
         return redirect()->route('instructor-inicio')
@@ -510,6 +538,8 @@ class InstructorController extends Controller
 
     public function modperfilinstructor_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $perfilInstructor = InstructorPerfil::find($request->id);
         #proceso de guardado
         $perfilInstructor->grado_profesional = trim($request->grado_prof); //
@@ -530,6 +560,7 @@ class InstructorController extends Controller
         $perfilInstructor->experiencia_laboral = trim($request->exp_lab);
         $perfilInstructor->experiencia_docente = trim($request->exp_doc);
         $perfilInstructor->numero_control = trim($request->idInstructor);
+        $perfilInstructor->lastUserId = $userId;
         $perfilInstructor->save(); // guardar registro
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
@@ -539,6 +570,8 @@ class InstructorController extends Controller
 
     public function perfilinstructor_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $perfilInstructor = new InstructorPerfil();
         #proceso de guardado
         $perfilInstructor->grado_profesional = trim($request->grado_prof); //
@@ -559,6 +592,7 @@ class InstructorController extends Controller
         $perfilInstructor->experiencia_laboral = trim($request->exp_lab);
         $perfilInstructor->experiencia_docente = trim($request->exp_doc);
         $perfilInstructor->numero_control = trim($request->idInstructor);
+        $perfilInstructor->lastUserId = $userId;
         $perfilInstructor->save(); // guardar registro
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
@@ -575,7 +609,7 @@ class InstructorController extends Controller
 
     public function cursoimpartir_form($id, $idins)
     {
-        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional']);
+        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
         $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
@@ -585,6 +619,8 @@ class InstructorController extends Controller
 
     public function especval_mod_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
         $espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;
@@ -594,6 +630,7 @@ class InstructorController extends Controller
         $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_mod->observacion = $request->observaciones;
         $espec_mod->criterio_pago_id = $request->criterio_pago_mod;
+        $espec_mod->lastUserId = $userId;
         $espec_mod->save();
         // declarar un arreglo
         $pila_edit = array();
@@ -626,6 +663,8 @@ class InstructorController extends Controller
 
     public function espec_val_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $espec_save = new especialidad_instructor;
         $espec_save->especialidad_id = $request->idespec;
         $espec_save->perfilprof_id = $request->valido_perfil;
@@ -635,6 +674,7 @@ class InstructorController extends Controller
         $espec_save->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_save->observacion = $request->observaciones;
         $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
+        $espec_save->lastUserId = $userId;
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
         $especialidadInstrcutorId = $espec_save->id;
@@ -808,7 +848,7 @@ class InstructorController extends Controller
         }
         if($this->checkComparator($request->chk_villa_corzo) == TRUE)
         {
-            array_push($unidades, 'VILLA_CORZO');
+            array_push($unidades, 'VILLA CORZO');
         }
         if($this->checkComparator($request->chk_cacahoatan) == TRUE)
         {
