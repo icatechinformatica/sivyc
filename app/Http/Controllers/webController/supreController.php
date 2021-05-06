@@ -19,6 +19,7 @@ use App\Http\Controllers\Controller;
 use PDF;
 use function PHPSTORM_META\type;
 use Carbon\Carbon;
+use DateTime;
 
 class supreController extends Controller
 {
@@ -327,18 +328,33 @@ class supreController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;
             $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura')
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
             {
-                if ($Cursos->ze == 'II')
+                $inicio = date("m-d-Y", strtotime($Cursos->inicio));
+                $date1 = "2021-05-01";
+                $date1 = date("m-d-Y", strtotime($date1));
+
+                if ($date1 <= $inicio)
                 {
-                    $criterio = criterio_pago::SELECT('monto_hora_ze2 AS monto')->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    $ze2 = 'ze2_2021 AS monto';
+                    $ze3 = 'ze3_2021 AS monto';
                 }
                 else
                 {
-                    $criterio = criterio_pago::SELECT('monto_hora_ze3 AS monto')->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    $ze2 = 'monto_hora_ze2 AS monto';
+                    $ze3 = 'monto_hora_ze3 AS monto';
+                }
+
+                if ($Cursos->ze == 'II')
+                {
+                    $criterio = criterio_pago::SELECT($ze2)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                }
+                else
+                {
+                    $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
                 }
 
                 if($criterio != NULL)
