@@ -25,13 +25,30 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
+use DateTime;
 
 class ContratoController extends Controller
 {
     public function prueba()
     {
-        $it = contratos::whereDate('contratos.created_at', '>=', '2021-10-01')->whereDate('contratos.created_at', '<=', '2021-10-31')->GET();
-        dd($it);
+        $Curso = new tbl_curso();
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio')
+                                    ->WHERE('clave', '=', '852')->FIRST();
+                $inicio = date("m-d-Y", strtotime($Cursos->inicio));
+                $date1 = "2021-05-01";
+                $date1 = date("m-d-Y", strtotime($date1));
+
+                if ($date1 <= $inicio) {
+
+                    $ze2 = 'ze2_2021 AS monto';
+                    $ze3 = 'ze3_2021 AS monto';
+                    dd($ze2);
+                }else{
+
+                    $ze2 = 'monto_hora_ze2 AS monto';
+                    $ze3 = 'monto_hora_ze3 AS monto';
+                    dd($ze2);
+                }
     }
     public function index(Request $request)
     {
