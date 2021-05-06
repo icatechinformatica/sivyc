@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class tbl_Solicitudes extends Model {
     
-    protected $table = 'tbl_Solicitudes';
+    protected $table = 'tbl_solicitudes';
 
     protected $fillable = [
         'id','id_curso','tipo_solicitud','num_solicitud','fecha_solicitud','opcion_solicitud','obs_solicitud', 

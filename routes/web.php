@@ -459,4 +459,26 @@ Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesControl
 
 /*Modulo solicitudes DA --Modificación de cursos--*/
 Route::get('/solicitudesDA/inicio', 'SolicitudesDA\tbl_SolicitudesController@index')->name('solicitudesDA.inicio');
-// Route::post('/solicitudesDA/guardar', 'webController\ExoneracionesController@store')->name('exoneraciones.guardar')
+Route::post('/solicitudesDA/guardar', 'SolicitudesDA\tbl_SolicitudesController@store')->name('solicitudesDA.guardar');
+Route::get('/solicitudesDA/{id}', 'SolicitudesDA\tbl_SolicitudesController@destroy')->name('solicitudesDA.destroy');
+Route::get('/solicitudesDA/tabla-pdf/{id}', 'SolicitudesDA\tbl_SolicitudesController@tablaSolicitud_pdf')->name('tablaSolicitud.pdf');
+Route::post('/solicitudesDA/guardarSolicitud', 'SolicitudesDA\tbl_SolicitudesController@storeSolicitud')->name('solicitudesDA.guardarSolicitud');
+
+/*Modulo solicitudes DA --Modificación de cursos--*/
+Route::get('/solicitudesDTA/inicio', 'SolicitudesDTA\SolicitudesDTAController@index')->name('solicitudesDTA.inicio');
+Route::get('/solicitudesDTA/{id}', 'SolicitudesDTA\SolicitudesDTAController@show')->name('solicitudesDTA.show');
+Route::post('/solicitudesDTA/cancelar', 'SolicitudesDTA\SolicitudesDTAController@cancelar')->name('solicitudesDTA.cancelar');
+Route::get('/solicitudesDTA/tabla-pdf/{id}', 'SolicitudesDTA\SolicitudesDTAController@tablaSolicitud_pdf')->name('tablaSolicitudDTA.pdf');
+Route::post('/solicitudesDTA/guardarRespuesta', 'SolicitudesDTA\SolicitudesDTAController@storeSolicitud')->name('solicitudesDTA.guardarRespuesta');
+Route::post('/solicitudesDTA/noProcede', 'SolicitudesDTA\SolicitudesDTAController@noProcede')->name('solicitudesDTA.noProcede');
+
+
+Route::get('/solicitudModificacionDTA/{id}', 'SolicitudesDTA\SolicitudesDTAController@showModify')->name('solicitudesDTA.showModify');
+Route::post('/calendario/guardarEvents', 'SolicitudesDTA\SolicitudesDTAController@storeEvents')->name('calendario.guardar');
+Route::get('/calendario/showEvents/{id}', 'SolicitudesDTA\SolicitudesDTAController@showEvents')->name('calendario.showEvents');
+Route::get('/calendario/{id}', 'SolicitudesDTA\SolicitudesDTAController@destroy')->name('calendario.destroy');
+Route::post('/calendario/updateEvents/{id}', 'SolicitudesDTA\SolicitudesDTAController@updateEvents')->name('calendario.update');
+Route::post('/solicitudesDTA/saveCambios', 'SolicitudesDTA\SolicitudesDTAController@saveCambios')->name('solicitudesDTA.saveCambios');
+
+/*Modulo solicitudes DA --Solicitudes de apoyo--*/
+Route::get('/solicitudesApoyo/inicio', 'SolicitudesDA\SolicitudesApoyoController@index')->name('solicitudesApoyo.inicio');

@@ -18,7 +18,7 @@ class CreateTblSolicitudesTable extends Migration
 
             $table->unsignedBigInteger('id_curso')->nullable();
             $table->string('tipo_solicitud')->nullable();
-            $table->integer('num_solicitud')->nullable();
+            $table->string('num_solicitud')->nullable();
             $table->date('fecha_solicitud')->nullable();
             $table->string('opcion_solicitud')->nullable();
             $table->text('obs_solicitud')->nullable();
@@ -37,6 +37,8 @@ class CreateTblSolicitudesTable extends Migration
             $table->foreign('id_curso')->references('id')->on('tbl_cursos');
             $table->foreign('iduser_created')->references('id')->on('users');
             $table->foreign('iduser_updated')->references('id')->on('users');
+
+            $table->unique(['id_curso','num_solicitud']);
         });
     }
 
