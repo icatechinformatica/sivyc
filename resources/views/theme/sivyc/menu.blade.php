@@ -171,23 +171,25 @@
                         </div>
                     </li>
                 @endcan
-
+                
+                {{-- modificaciones en el curso del menu --}}
+                {{-- consultas folios asignados --}}
                 @can('solicitudes.folios')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitudes
-                        </a>
+                        </a>                     
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitudes.folios')
                                 <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
-                            @endcan
+                            @endcan                       
+                            @can('solicitudes.cancelacionfolios')
+                                <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n Folios</a>
+                            @endcan                       
                         </div>
-
-                    </li> 
-                @endcan
-                
-                {{-- modificaciones en el curso del menu --}}
-                {{-- consultas folios asignados --}}
+                    </li>
+                @endcan 
+     
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Consultas
@@ -196,10 +198,13 @@
                         @can('consultas.folios')
                             <a class="dropdown-item" href="{{route('consultas.folios')}}">Folios Asignados</a>
                         @endcan
-                         @can('consultas.lotes')
+                        @can('consultas.lotes')
                             <a class="dropdown-item" href="{{route('consultas.lotes')}}">Actas de Folios</a>
                         @endcan
-                    </div>
+                        @can('consultas.cursosfinalizados')
+                            <a class="dropdown-item" href="{{route('consultas.cursosfinalizados')}}">Cursos Finalizados</a>
+                        @endcan
+                    </div>                    
                 </li> 
                 {{-- consultas folios asignados END --}}
                 

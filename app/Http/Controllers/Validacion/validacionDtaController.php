@@ -439,6 +439,7 @@ class validacionDtaController extends Controller
                             ->WHEREIN('tbl_cursos.status', ['TURNADO_DTA', 'TURNADO_PLANEACION'])
                             ->WHEREIN('tbl_cursos.turnado',['DTA','PLANEACION'])
                             ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
+                            ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') = 'ABRIL'"))
                             ->get();
                             // ENVIADOS A PLANEACION
                             $total_turnado_planeacion = DB::table('tbl_cursos')
@@ -447,6 +448,7 @@ class validacionDtaController extends Controller
                             ->WHERE('tbl_cursos.status', '=', 'TURNADO_PLANEACION')
                             ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION')
                             ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
+                            ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') = 'ABRIL'"))
                             ->get();
 
                             $comentarios_enviados = $_POST['comentarios_enlaces'];
@@ -622,14 +624,17 @@ class validacionDtaController extends Controller
                 // $comentario = explode(",", $_POST['comentarios_enlaces']);
                 foreach(array_combine($pila, $_POST['comentarios_enlaces']) as $key => $comentarios){
                     $comentarios_regreso_unidad = [
-                        'OBSERVACION_RETORNO' =>  $comentarios
+                        'OBSERVACION_RETORNO_UNIDAD' =>  $comentarios
+                    ];
+                    $array_regreso_unidad = [
+                        'TURNADO_UNIDAD' => $turnado_unidad
                     ];
                     \DB::table('tbl_cursos')
                         ->where('id', $key)
-                        ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}','".json_encode($turnado_unidad)."'::jsonb)"), 
+                        ->update(['memos' => DB::raw("'".json_encode($array_regreso_unidad)."'::jsonb"), 
                         'status' => 'RETORNO_UNIDAD', 
                         'turnado' => 'UNIDAD',
-                        'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_RETORNO_UNIDAD}', '".json_encode($comentarios_regreso_unidad)."'::jsonb)")]);
+                        'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_regreso_unidad)."'::jsonb")]);
                 }
                 // enviar  a la página de inicio del módulo si el proceso fue satisfactorio
                 return redirect()->route('validacion.cursos.enviados.dta')
@@ -970,7 +975,7 @@ class validacionDtaController extends Controller
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
         ->WHERE('u.ubicacion', '=', $unidadActual)
         ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
-        ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
         ->WHERE('tbl_cursos.turnado', '=', 'DTA')
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();

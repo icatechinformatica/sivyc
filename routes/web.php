@@ -439,6 +439,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitudes/folios/editar', 'Solicitudes\foliosController@edit')->name('solicitudes.folios.edit')->middleware('can:solicitudes.folios.edit');
     Route::get('/solicitudes/folios/editar', 'Solicitudes\foliosController@edit')->name('solicitudes.folios.edit')->middleware('can:solicitudes.folios.edit');
     Route::get('/storage/uploadFiles/DTA/solicitud_folios/{pdf}', 'Solicitudes\foliosController@pdf')->name('solicitudes.folios.pdf');
+    //Cancelación y Eliminacion de Folios
+    Route::get('/solicitudes/cancelacionfolios', 'Solicitudes\cancelacionfoliosController@index')->name('solicitudes.cancelacionfolios')->middleware('can:solicitudes.cancelacionfolios');
+    Route::post('/solicitudes/cancelacionfolios', 'Solicitudes\cancelacionfoliosController@index')->name('solicitudes.cancelacionfolios')->middleware('can:solicitudes.cancelacionfolios');
+    Route::post('/solicitudes/cancelacionfolios/guardar', 'Solicitudes\cancelacionfoliosController@store')->name('solicitudes.cancelacionfolios.guardar')->middleware('can:solicitudes.cancelacionfolios.guardar');
+    Route::get('/solicitudes/cancelacionfolios/guardar', 'Solicitudes\cancelacionfoliosController@store')->name('solicitudes.cancelacionfolios.guardar')->middleware('can:solicitudes.cancelacionfolios.guardar');
 
      /*CONSULTAS*/
      /*FOLIOS ASIGNADOS*/
@@ -450,6 +455,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
     Route::post('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
     Route::post('/consultas/lotes/xls', 'Consultas\lotesController@xls')->name('consultas.lotes.xls');
+
+   /*CURSOS FINALIZADOS*/
+    Route::get('/consultas/cursosfinalizados', 'Consultas\cursosfinalizadosController@index')->name('consultas.cursosfinalizados')->middleware('can:consultas.cursosfinalizados');
+    Route::post('/consultas/cursosfinalizados', 'Consultas\cursosfinalizadosController@index')->name('consultas.cursosfinalizados')->middleware('can:consultas.cursosfinalizados');
+    Route::post('/consultas/cursosfinalizados/xls', 'Consultas\cursosfinalizadosController@xls')->name('consultas.cursosfinalizados.xls');
 
 
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/

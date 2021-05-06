@@ -46,6 +46,7 @@
                             <th scope="col"  width="15%">ALUMNOS</th>
                             <th scope="col" width="12%">CLAVE</th>
                             <th scope="col" width="20%">CURSO</th>
+                            <th scope="col" class="text-center" width="5%">AUTORIZACI&Oacute;N</th>
                         </tr>
                     </thead>
                     @if(isset($folios))
@@ -62,7 +63,16 @@
                                 <td> {{ $f->matricula}}  </td>
                                 <td>{{ $f->alumno}} </td>
                                 <td class="text-center"> {{ $f->clave}} </td>
-                                <td class="text-center"> {{ $f->curso}} </td>                                                                                                    
+                                <td class="text-center"> {{ $f->curso}} </td>
+                                <td class="text-center">
+                                 @if($f->file_autorizacion)
+                                    <a class="nav-link"  href="{{ $path_file.$f->file_autorizacion }}" target="_blank">
+                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                    </a>  
+                                @else 
+                                    {{ "NO ADJUNTADO"}}
+                                @endif
+                                </td>                                                                                                      
                             </tr>                            
                         @endforeach                       
                     </tbody>                    

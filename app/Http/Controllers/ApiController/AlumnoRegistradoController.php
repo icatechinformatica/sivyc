@@ -21,6 +21,7 @@ class AlumnoRegistradoController extends Controller
          */
         $alumnos = DB::table('alumnos_registro')
                    ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                   ->JOIN('cursos', 'alumnos_registro.id_curso', '=', 'cursos.id')
                    ->SELECT(
                        'alumnos_registro.unidad',
                        'alumnos_registro.no_control',
@@ -34,7 +35,7 @@ class AlumnoRegistradoController extends Controller
                        'alumnos_pre.colonia',
                        'alumnos_pre.municipio',
                        'alumnos_pre.estado_civil',
-                       'alumnos_pre.ultimo_grado_estudios',
+                       DB::raw("CONCAT(alumnos_pre.ultimo_grado_estudios,' - ', cursos.nombre_curso) AS ultimo_grado_estudios"),
                        'alumnos_pre.telefono',
                        'alumnos_pre.correo',
                        'alumnos_registro.id AS id_registro',
@@ -62,7 +63,8 @@ class AlumnoRegistradoController extends Controller
                    'alumnos_pre.discapacidad',
                    'alumnos_registro.etnia',
                    'alumnos_registro.indigena',
-                   'alumnos_registro.migrante')
+                   'alumnos_registro.migrante',
+                   DB::raw("CONCAT(alumnos_pre.ultimo_grado_estudios,' - ', cursos.nombre_curso)"))
                    ->ORDERBY('id_registro', 'desc')
                    ->GET();
 
@@ -101,6 +103,7 @@ class AlumnoRegistradoController extends Controller
         //
         $alumnos = DB::table('alumnos_registro')
                 ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                ->JOIN('cursos', 'alumnos_registro.id_curso', '=', 'cursos.id')
                 ->SELECT(
                     'alumnos_registro.unidad',
                     'alumnos_registro.no_control',
@@ -114,9 +117,11 @@ class AlumnoRegistradoController extends Controller
                     'alumnos_pre.colonia',
                     'alumnos_pre.municipio',
                     'alumnos_pre.estado_civil',
-                    'alumnos_pre.ultimo_grado_estudios',
+                    DB::raw("CONCAT(alumnos_pre.ultimo_grado_estudios,' - ', cursos.nombre_curso) AS ultimo_grado_estudios"),
                     'alumnos_pre.telefono',
-                    'alumnos_pre.correo'
+                    'alumnos_pre.correo',
+                    'cursos.nombre_curso',
+                    'cursos.id AS id_cursos'
                 )
                 ->WHERE('alumnos_registro.no_control', '=', $id)
                 ->FIRST();

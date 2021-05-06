@@ -100,15 +100,7 @@
                         $('#boton').val('GUARDAR CAMBIOS');                        
                         $('#cancelar').show();
                         $("#ffinal").focus();
-                        //console.log(data);
-                        
-                        if(asignados>0){                            
-                            $("#id_unidad" ).attr('disabled', true);                            
-                            $("#finicial" ).prop('readonly', true);
-                        }else{
-                            $("#id_unidad" ).attr('disabled', false);                            
-                            $("#finicial" ).prop('readonly', false);
-                        }
+                        //console.log(data);                       
                     },
                     error:function(x,xs,xt){                        
                         alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
