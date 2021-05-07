@@ -404,7 +404,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
 
     /*Grupos RPN*/
-
     //Calificaciones
     Route::get('/grupos/calificaciones', 'Grupos\calificacionesController@index')->name('grupos.calificaciones')->middleware('can:grupos.calificaciones');
     Route::post('/grupos/calificaciones/buscar', 'Grupos\calificacionesController@search')->name('grupos.calificaciones.buscar')->middleware('can:grupos.calificaciones.buscar');
@@ -416,7 +415,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/grupos/asignarfolios', 'Grupos\asignarfoliosController@index')->name('grupos.asignarfolios')->middleware('can:grupos.asignarfolios');
     Route::post('/grupos/asignarfolios/guardar', 'Grupos\asignarfoliosController@store')->name('grupos.asignarfolios.guardar')->middleware('can:grupos.asignarfolios.guardar');
     Route::get('/grupos/asignarfolios/guardar', 'Grupos\asignarfoliosController@store')->name('grupos.asignarfolios.guardar')->middleware('can:grupos.asignarfolios.guardar');
-
      //Cancelación de Folios
     Route::get('/grupos/cancelacionfolios', 'Grupos\cancelacionfoliosController@index')->name('grupos.cancelacionfolios')->middleware('can:grupos.cancelacionfolios');
     Route::post('/grupos/cancelacionfolios', 'Grupos\cancelacionfoliosController@index')->name('grupos.cancelacionfolios')->middleware('can:grupos.cancelacionfolios');
@@ -450,7 +448,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consultas/folios', 'Consultas\foliosController@index')->name('consultas.folios')->middleware('can:consultas.folios');
     Route::post('/consultas/folios', 'Consultas\foliosController@index')->name('consultas.folios')->middleware('can:consultas.folios');
     Route::post('/consultas/folios/xls', 'Consultas\foliosController@xls')->name('consultas.folios.xls');
-
      /*LOTES DE FOLIOS*/
     Route::get('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
     Route::post('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
@@ -471,7 +468,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@turnar')->name('preinscripcion.grupo.nuevo');
     Route::post('/preinscripcion/grupo/turnar', 'Preinscripcion\grupoController@turnar')->name('preinscripcion.grupo.turnar');
     Route::get('/preinscripcion/alumno/eliminar', 'Preinscripcion\tableAlumnoController@delete')->name('preinscripcion.alumno.eliminar');
-
     /*VINCULACION->PREINSCRIPCION=> BUSCAR GRUPO RPN*/
     Route::get('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');
     Route::post('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');

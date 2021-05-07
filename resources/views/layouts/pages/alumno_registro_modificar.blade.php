@@ -47,17 +47,30 @@
                 </ul>
             </div><br />
         @endif
+
         <div style="text-align: center;">
             <h3><b>MODIFICACIÓN (SID - {{ $alumnos->no_control }})</b></h3>
         </div>
+
         <hr style="border-color:dimgray">
         <div style="text-align: center;">
             <h4><b>DATOS DEL CURSO</b></h4>
         </div>
+        
         <form method="POST" id="form_sid_registro" action="{{ route('alumnos-cursos.update', ['idregistrado' => base64_encode($alumnos->id) ]) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="especialidad" class="control-label">ESPECIALIDAD A LA QUE ESTA INSCRITO:</label>
+                    <select class="form-control" id="especialidad_sid_mod" name="especialidad_sid_mod">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($especialidades as $itemEspecialidad)
+                            <option {{ ($alumnos->id_especialidad == $itemEspecialidad->id) ? "selected" : "" }} value="{{$itemEspecialidad->id}}">{{ $itemEspecialidad->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <div class="form-group col-md-6">
                     <label for="horario" class="control-label">TIPO DE CURSO</label>
                     <select class="form-control" id="tipo_curso_mod" name="tipo_curso_mod" required>
@@ -66,19 +79,9 @@
                         <option {{ ($alumnos->tipo_curso == "A DISTANCIA") ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
                     </select>
                 </div>
-
-                <div class="form-group col-md-6">
-                    <label for="especialidad" class="control-label">ESPECIALIDAD:</label>
-                    <select class="form-control" id="especialidad_sid_mod" name="especialidad_sid_mod">
-                        <option value="">--SELECCIONAR--</option>
-                        @foreach ($especialidades as $itemEspecialidad)
-                            <option {{ ($alumnos->id_especialidad == $itemEspecialidad->id) ? "selected" : "" }} value="{{$itemEspecialidad->id}}">{{ $itemEspecialidad->nombre }}</option>
-                        @endforeach
-                    </select>
-                </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-8">
+                <div class="form-group col">
                     <label for="cursos" class="control-label">CURSO:</label>
                     <select class="form-control" id="curso_sid_mod" name="curso_sid_mod">
                         <option value="">--SELECCIONAR--</option>
@@ -99,7 +102,7 @@
                 </div>
             </div>
             <!--botones de enviar y retroceder-->
-            <div class="row">
+            <div class="row mt-5">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
                         <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
@@ -131,8 +134,36 @@
              * escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar
              * los cursos de esa especialidad
             */
-            $('#tipo_curso_mod' && '#especialidad_sid_mod').on("change", () => {
+            $('#especialidad_sid_mod').on('change', () => {
+                $('#tipo_curso_mod').val('');
+            });
 
+            $('#form_sid_registro').validate({
+                rules: {
+                    especialidad_sid_mod: {
+                        required: true
+                    },
+                    tipo_curso_mod: {
+                        required: true
+                    },
+                    curso_sid_mod: {
+                        required: true
+                    }
+                },
+                messages: {
+                    especialidad_sid_mod: {
+                        required: 'Campo requerido'
+                    },
+                    tipo_curso_mod: {
+                        required: 'Campo requerido'
+                    },
+                    curso_sid_mod: {
+                        required: 'Campo requerido'
+                    }
+                }
+            });
+
+            $('#tipo_curso_mod').on("change", () => {
                 $("#especialidad_sid_mod option:selected").each( () => {
                     var IdEsp = $('#especialidad_sid_mod').val();
                     var tipo = $('#tipo_curso_mod').val();
@@ -140,8 +171,7 @@
                     var datos = { idEsp_mod: IdEsp, tipo_mod: tipo, _token: "{{ csrf_token() }}"};
                     var url = "{{route('alumnos.sid.cursos.modificado')}}";
 
-                    var solicitud = $.ajax
-                    ({
+                    var solicitud = $.ajax({
                         url: url,
                         method: 'POST',
                         data: datos,

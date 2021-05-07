@@ -117,7 +117,8 @@ class validacionDtaController extends Controller
         DB::raw("count( ar.id_pre) AS totalinscripciones"),
         DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
         DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
-        DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado")
+        DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado"),
+        DB::raw("tbl_cursos.observaciones_formato_t->'COMENTARIOS_UNIDAD' AS observaciones_unidad")
         )
         ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
         ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
@@ -285,11 +286,11 @@ class validacionDtaController extends Controller
         DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
 
         DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota"),
-        DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACIONES_REVISION_DTA'->>'OBSERVACION_REVISION_JEFE_DTA' AS observaciones_enlaces"),
         DB::raw("count( ar.id_pre) AS totalinscripciones"),
         DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
         DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
-        DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado")
+        DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado"),
+        DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACIONES_REVISION_DIRECCION_DTA'->>'OBSERVACION_REVISION_JEFE_DTA' AS observaciones_enlaces")
         )
         ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
         ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
@@ -436,8 +437,8 @@ class validacionDtaController extends Controller
                             $total_turnado_dta = DB::table('tbl_cursos')
                             ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_dta"))
                             ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                            ->WHEREIN('tbl_cursos.status', ['TURNADO_PLANEACION'])
-                            ->WHEREIN('tbl_cursos.turnado',['PLANEACION'])
+                            ->WHEREIN('tbl_cursos.status', ['TURNADO_DTA', 'TURNADO_PLANEACION'])
+                            ->WHEREIN('tbl_cursos.turnado',['DTA','PLANEACION'])
                             ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
                             ->WHEREIN(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), ['MARZO', 'ABRIL'])
                             ->get();
