@@ -376,7 +376,7 @@ class PlaneacionController extends Controller
                                     'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}','".json_encode($turnado_revision_dta)."'::jsonb)"), 
                                     'status' => 'REVISION_DTA', 
                                     'turnado' => 'REVISION_DTA',
-                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_CERRADO_PLANEACION}', '".json_encode($observaciones_revision_dta)."'::jsonb)")
+                                    'observaciones_para_formato_t' => DB::raw("jsonb_set(observaciones_para_formato_t, '{OBSERVACION_PLANEACION_ENVIDO_DTA}', '".json_encode($observaciones_revision_dta)."'::jsonb)")
                                 ]);
                         }
         
@@ -478,6 +478,54 @@ class PlaneacionController extends Controller
                                 'turnado' => 'PLANEACION_TERMINADO',
                                 'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_CERRADO_PLANEACION}', '".json_encode($comentarios_regreso_unidad)."'::jsonb)")
                                 ]);
+
+                            /**
+                             * en esta parte vamos a generar la consulta con el id y vamos a obtener todos los registros a un insert
+                             * de otra tabla, generamos un método para mostrar toda la info
+                             */
+                            $getvalueOfTblCursos = $this->cierrePlaneacion($key);
+                            \DB::table('tbl_cierre_formato_t')->insert([
+                                'id_tbl_cursos' => $getvalueOfTblCursos->id_tbl_cursos,
+                                'fechaturnado' => $getvalueOfTblCursos->fechaturnado,
+                                'unidad' => $getvalueOfTblCursos->unidad, 'plantel' => $getvalueOfTblCursos->plantel,
+                                'espe' => $getvalueOfTblCursos->espe, 'curso' => $getvalueOfTblCursos->curso,
+                                'clave' => $getvalueOfTblCursos->clave, 'mod' => $getvalueOfTblCursos->mod,
+                                'dura' => $getvalueOfTblCursos->dura, 'turno' => $getvalueOfTblCursos->turno,
+                                'diai' => $getvalueOfTblCursos->diai, 'mesi' => $getvalueOfTblCursos->mesi,
+                                'diat' => $getvalueOfTblCursos->diat, 'mest' => $getvalueOfTblCursos->mest,
+                                'pfin' => $getvalueOfTblCursos->pfin, 'horas' => $getvalueOfTblCursos->horas,
+                                'dia' => $getvalueOfTblCursos->dia, 'horario' => $getvalueOfTblCursos->horario,
+                                'tinscritos' => $getvalueOfTblCursos->tinscritos, 'imujer' => $getvalueOfTblCursos->imujer, 'ihombre' => $getvalueOfTblCursos->ihombre,
+                                'egresado' => $getvalueOfTblCursos->egresado, 'emujer' => $getvalueOfTblCursos->emujer, 'ehombre' => $getvalueOfTblCursos->ehombre,
+                                'desertado' => $getvalueOfTblCursos->desertado, 'costo' => $getvalueOfTblCursos->costo, 'ctotal' => $getvalueOfTblCursos->ctotal,
+                                'etmujer' => $getvalueOfTblCursos->etmujer, 'ethombre' => $getvalueOfTblCursos->ethombre, 'epmujer' => $getvalueOfTblCursos->epmujer,
+                                'ephombre' => $getvalueOfTblCursos->ephombre, 'cespecifico' => $getvalueOfTblCursos->cespecifico, 'mvalida' => $getvalueOfTblCursos->mvalida,
+                                'efisico' => $getvalueOfTblCursos->efisico, 'nombre' => $getvalueOfTblCursos->nombre, 'grado_profesional' =>  $getvalueOfTblCursos->grado_profesional,
+                                'estatus' => $getvalueOfTblCursos->estatus, 'sexo' => $getvalueOfTblCursos->sexo, 'memorandum_validacion' => $getvalueOfTblCursos->memorandum_validacion, 
+                                'mexoneracion' => $getvalueOfTblCursos->mexoneracion, 'empleado' => $getvalueOfTblCursos->empleado, 'desempleado' => $getvalueOfTblCursos->desempleado,
+                                'desempleado' => $getvalueOfTblCursos->desempleado, 'discapacidad' => $getvalueOfTblCursos->discapacidad, 'migrante' => $getvalueOfTblCursos->migrante,
+                                'indigena' => $getvalueOfTblCursos->indigena, 'etnia' => $getvalueOfTblCursos->etnia, 'programa' => $getvalueOfTblCursos->programa,
+                                'muni' => $getvalueOfTblCursos->muni, 'depen' => $getvalueOfTblCursos->depen, 'cgeneral' => $getvalueOfTblCursos->cgeneral,
+                                'sector' => $getvalueOfTblCursos->sector, 'mpaqueteria' => $getvalueOfTblCursos->mpaqueteria, 'iem1' => $getvalueOfTblCursos->iem1,
+                                'ieh1' => $getvalueOfTblCursos->ieh1, 'iem2' => $getvalueOfTblCursos->iem2, 'ieh2' => $getvalueOfTblCursos->ieh2, 'iem3' => $getvalueOfTblCursos->iem3,
+                                'ieh3' => $getvalueOfTblCursos->ieh3, 'iem4' => $getvalueOfTblCursos->iem4, 'ieh4' => $getvalueOfTblCursos->ieh4, 'iem5' => $getvalueOfTblCursos->iem5,
+                                'ieh5' => $getvalueOfTblCursos->ieh5, 'iem6' => $getvalueOfTblCursos->iem6, 'ieh6' => $getvalueOfTblCursos->ieh6, 'iem7' => $getvalueOfTblCursos->iem7,
+                                'ieh7' => $getvalueOfTblCursos->ieh7, 'iem8' => $getvalueOfTblCursos->iem8, 'ieh8' => $getvalueOfTblCursos->ieh8, 'iesm1' => $getvalueOfTblCursos->iesm1,
+                                'iesh1' => $getvalueOfTblCursos->iesh1, 'iesm2' => $getvalueOfTblCursos->iesm2, 'iesh2' => $getvalueOfTblCursos->iesh2, 'iesm3' => $getvalueOfTblCursos->iesm3,
+                                'iesh3' => $getvalueOfTblCursos->iesh3, 'iesm4' => $getvalueOfTblCursos->iesm4, 'iesh4' => $getvalueOfTblCursos->iesh4, 'iesm5' => $getvalueOfTblCursos->iesm5,
+                                'iesh5' => $getvalueOfTblCursos->iesh5, 'iesm6' => $getvalueOfTblCursos->iesm6, 'iesh6' => $getvalueOfTblCursos->iesh6, 'iesm7' => $getvalueOfTblCursos->iesm7,
+                                'iesh7' => $getvalueOfTblCursos->iesh7, 'iesm8' => $getvalueOfTblCursos->iesm8, 'iesh8' => $getvalueOfTblCursos->iesh8, 'iesm9' => $getvalueOfTblCursos->iesm9,
+                                'iesh9' => $getvalueOfTblCursos->iesh9, 'aesm1' => $getvalueOfTblCursos->aesm1, 'aesh1' => $getvalueOfTblCursos->aesh1, 'aesm2' => $getvalueOfTblCursos->aesm2,
+                                'aesh2' => $getvalueOfTblCursos->aesh2, 'aesm3' => $getvalueOfTblCursos->aesm3, 'aesh3' => $getvalueOfTblCursos->aesh3, 'aesm4' => $getvalueOfTblCursos->aesm4,
+                                'aesh4' => $getvalueOfTblCursos->aesh4, 'aesm5' => $getvalueOfTblCursos->aesm5, 'aesh5' => $getvalueOfTblCursos->aesh5, 'aesm6' => $getvalueOfTblCursos->aesm6,
+                                'aesh6' => $getvalueOfTblCursos->aesh6, 'aesm7' => $getvalueOfTblCursos->aesm7, 'aesh7' => $getvalueOfTblCursos->aesh7, 'aesm8' => $getvalueOfTblCursos->aesm8,
+                                'aesh8' => $getvalueOfTblCursos->aesh8, 'aesm9' => $getvalueOfTblCursos->aesm9, 'aesh9' => $getvalueOfTblCursos->aesh9, 'naesm1' => $getvalueOfTblCursos->naesm1,
+                                'naesh1' => $getvalueOfTblCursos->naesh1, 'naesm2' => $getvalueOfTblCursos->naesm2, 'naesh2' => $getvalueOfTblCursos->naesh2, 'naesm3' => $getvalueOfTblCursos->naesm3,
+                                'naesh3' => $getvalueOfTblCursos->naesh3, 'naesm4' => $getvalueOfTblCursos->naesm4, 'naesh4' => $getvalueOfTblCursos->naesh4, 'naesm5' => $getvalueOfTblCursos->naesm5,
+                                'naesh5' => $getvalueOfTblCursos->naesh5, 'naesm6' => $getvalueOfTblCursos->naesm6, 'naesh6' => $getvalueOfTblCursos->naesh6, 'naesm7' => $getvalueOfTblCursos->naesm7,
+                                'naesh7' => $getvalueOfTblCursos->naesh7, 'naesm8' => $getvalueOfTblCursos->naesm8, 'naesh8' => $getvalueOfTblCursos->naesh8, 'naesm9' => $getvalueOfTblCursos->naesm9,
+                                'naesh9' => $getvalueOfTblCursos->naesh9, 'tnota' => $getvalueOfTblCursos->tnota
+                            ]);
                         }
         
                     }
@@ -750,5 +798,159 @@ class PlaneacionController extends Controller
         if(count($formatot_planeacion)>0){  
             return Excel::download(new FormatoTReport($formatot_planeacion,$head, $titulo), $nombreLayout);
         }
+    }
+
+    /**
+     * memorandum de planeacion
+     */
+    protected function memorandumplaneacion(Request $request){
+        // obtenemos la unidad en base a una sesion
+        $unidadesIcatech = DB::table('tbl_unidades')->select('ubicacion')->groupby('ubicacion')->get();
+        $busquedaPorMes = $request->get('busquedaMes');
+        $busquedaPorUnidad = $request->get('busquedaPorUnidad');
+        $meses = array(1 => 'ENERO', 2 => 'FEBRERO', 3 => 'MARZO', 4 => 'ABRIL', 5 => 'MAYO', 6 => 'JUNIO', 7 => 'JULIO', 8 => 'AGOSTO', 9 => 'SEPTIEMBRE', 10 => 'OCTUBRE', 11 => 'NOVIEMBRE', 12 => 'DICIEMBRE');
+        /**
+         * CONSULTA PARA MOSTRAR INFORMACIÓN DE LOS MEMORANDUM DEL FORMATO T
+         */
+        if (isset($busquedaPorMes)) {
+            # si la variable está inicializada se carga la consulta
+            $queryGetMemo = DB::table('tbl_cursos')
+                        ->select( DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS memorandum_retorno_unidad"), 'tbl_cursos.unidad')
+                        ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
+                        ->where('u.ubicacion', '=', $busquedaPorUnidad)
+                        ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_UNIDAD'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
+                        ->groupby(DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"), 'tbl_cursos.unidad')
+                        ->paginate(5);
+        } else {
+            # si la variable no está inicializada no se carga la consulta
+            $queryGetMemo = (array) null;
+        }
+        //dd($queryGetMemo);
+        return view('reportes.memorandum_dta_formatot', compact('meses', 'queryGetMemo', 'unidadesIcatech'));
+    }
+
+    private function cierrePlaneacion($id){
+
+       $temporal = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+       $queryReturn = tbl_curso::select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
+        DB::raw('extract(day from tbl_cursos.inicio) as diai'),DB::raw('extract(month from tbl_cursos.inicio) as mesi'),DB::raw('extract(day from tbl_cursos.termino) as diat'),DB::raw('extract(month from tbl_cursos.termino) as mest'),DB::raw("case when EXTRACT( Month FROM tbl_cursos.termino) between '7' and '9' then '1' when EXTRACT( Month FROM tbl_cursos.termino) between '10' and '12' then '2' when EXTRACT( Month FROM tbl_cursos.termino) between '1' and '3' then '3' else '4' end as pfin"),
+        'tbl_cursos.horas','tbl_cursos.dia',DB::raw("concat(tbl_cursos.hini,' ', 'A', ' ',tbl_cursos.hfin) as horario"),DB::raw('count(distinct(ca.id)) as tinscritos'),DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujer"),DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombre"),DB::raw("SUM(CASE WHEN ca.acreditado= 'X' THEN 1 ELSE 0 END) as egresado"),
+        DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as emujer"),DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ehombre"),DB::raw("SUM(CASE WHEN ca.noacreditado='X' THEN 1 ELSE 0 END) as desertado"),
+        DB::raw("SUM(DISTINCT(ins.costo)) as costo"),DB::raw("SUM(ins.costo) as ctotal"),DB::raw("sum(case when ins.abrinscri='ET' and ap.sexo='FEMENINO' then 1 else 0 end) as etmujer"),DB::raw("sum(case when ins.abrinscri='ET' and ap.sexo='MASCULINO' then 1 else 0 end) as ethombre"),DB::raw("sum(case when ins.abrinscri='EP' and ap.sexo='FEMENINO' then 1 else 0 end) as epmujer"),
+        DB::raw("sum(case when ins.abrinscri='EP' and ap.sexo='MASCULINO' then 1 else 0 end) as ephombre"),'tbl_cursos.cespecifico','tbl_cursos.mvalida','tbl_cursos.efisico','tbl_cursos.nombre','ip.grado_profesional','ip.estatus','i.sexo','ei.memorandum_validacion','tbl_cursos.mexoneracion',
+        DB::raw("sum(case when ap.empresa_trabaja<>'DESEMPLEADO' then 1 else 0 end) as empleado"),DB::raw("sum(case when ap.empresa_trabaja='DESEMPLEADO' then 1 else 0 end) as desempleado"),
+        DB::raw("sum(case when ap.discapacidad<> 'NINGUNA' then 1 else 0 end) as discapacidad"),DB::raw("sum(case when ar.migrante='true' then 1 else 0 end) as migrante"),DB::raw("sum(case when ar.indigena='true' then 1 else 0 end) as indigena"),DB::raw("sum(case when ar.etnia<> NULL then 1 else 0 end) as etnia"),
+        'tbl_cursos.programa','tbl_cursos.muni','tbl_cursos.depen','tbl_cursos.cgeneral','tbl_cursos.sector','tbl_cursos.mpaqueteria',
+
+        DB::raw("sum( case when EXTRACT( year from (age(tbl_cursos.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='FEMENINO' then 1 else 0 end) as iem1"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh1"),
+        DB::raw("sum( CASE  WHEN  EXTRACT(YEAR FROM (AGE(tbl_cursos.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO'  THEN 1  ELSE 0 END ) as iem2"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh2"),
+        DB::raw("sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END ) as iem3"),
+        DB::raw("sum( Case When EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 20 and 24 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh3"),
+        DB::raw("sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END ) as iem4"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34 AND ap.sexo='MASCULINO' then 1 else 0 end) as ieh4"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem5"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='MASCULINO' then 1 else 0 end) as ieh5"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem6"),
+        db::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='MASCULINO' then 1 else 0 end) as ieh6"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 55 and 64 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem7"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 55 and 64 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh7"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 AND ap.sexo='FEMENINO' then 1 else 0 end) as iem8"),
+        DB::raw("sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 and ap.sexo='MASCULINO' then 1 else 0 end) as ieh8"),
+
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm1"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh1"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm2"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh2"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm3"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh3"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm4"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh4"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm5"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh5"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm6"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh6"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm7"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh7"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm8"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh8"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' then 1 else 0 end) as iesm9"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' then 1 else 0 end) as iesh9"),
+
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm1"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh1"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm2"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh2"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm3"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh3"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm4"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh4"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm5"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh5"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm6"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh6"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm7"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh7"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm8"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh8"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' and ca.acreditado='X' then 1 else 0 end) as aesm9"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.acreditado='X' then 1 else 0 end) as aesh9"),
+
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm1"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh1"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm2"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh2"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm3"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA INCONCLUSA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh3"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm4"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='SECUNDARIA TERMINADA' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh4"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm5"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh5"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm6"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL MEDIO SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh6"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm7"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR INCONCLUSO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh7"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm8"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh8"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm9"),
+        DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
+
+        DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota"),
+        DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_DIRECCIONDTA_TO_PLANEACION'->>'OBSERVACION_ENVIO_PLANEACION' AS observacion_envio_to_planeacion"),
+        DB::raw("count( ar.id_pre) AS totalinscripciones"),
+        DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
+        DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
+        DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado")
+        )
+        ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
+        ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
+        ->JOIN('instructor_perfil as ip','i.id', '=', 'ip.numero_control')
+        ->JOIN('especialidad_instructores as ei','ip.id', '=', 'ei.perfilprof_id')                
+        ->JOIN('especialidades as e', function($join)
+            {
+                $join->on('ei.especialidad_id', '=', 'e.id');                
+                $join->on('tbl_cursos.espe', '=', 'e.nombre');
+            })
+        ->JOIN($temporal ,function($join)
+        {
+            $join->on('ca.matricula', '=', 'ar.no_control');                
+            $join->on('tbl_cursos.id_curso','=','ar.id_curso');
+        }) 
+        ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
+        ->JOIN('tbl_inscripcion as ins', function($join)
+        {
+            $join->on('ca.idcurso', '=', 'ins.id_curso');                
+            $join->on('ca.matricula','=','ins.matricula');
+        })
+        ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
+        ->WHERE('tbl_cursos.status', '=', 'REPORTADO')
+        // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
+        ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION_TERMINADO')
+        ->WHERE('tbl_cursos.id', '=', $id)
+        ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
+        ->distinct()->first();
+
+        return $queryReturn;
     }
 }

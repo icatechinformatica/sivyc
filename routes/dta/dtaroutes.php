@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\Route;
 //Rutas dta_ --creado MIS Daniel Méndez Cruz
 Route::post('/validacion/dta/revision/cursos/envio/planeacion', 'Validacion\validacionDtaController@entrega_planeacion')->name('validacion.dta.cursos.envio.planeacion');
 // Rutas de planeación
-Route::get('/planeacion/formatot/index', 'validacion\planeacionController@index')->name('planeacion.formatot.index')->middleware('can:vista.revision.validacion.planeacion.indice');
+Route::get('/planeacion/formatot/index', 'Validacion\planeacionController@index')->name('planeacion.formatot.index')->middleware('can:vista.revision.validacion.planeacion.indice');
 Route::post('/planeacion/generar/memorandum', 'Validacion\planeacionController@generarMemorandum')->name('planeacion.generate.memo');
 Route::post('/planeacion/enviar/dta', 'Validacion\planeacionController@sendtodta')->name('planeacion.send.to.dta');
 Route::post('/planeacion/finalizar/proceso', 'Validacion\planeacionController@finishPlaneacion')->name('planeacion.finish');
@@ -31,3 +31,4 @@ Route::get('/consultar/memorandum/planeacion/index', 'Validacion\PlaneacionContr
  * modificaciones de busqueda por especialidad, tipo de curso y cursos
  */
 Route::post('/alumnos/sid/cursos/modificar', 'webController\AlumnoController@getcursosModified')->name('alumnos.sid.cursos.modificado');
+Route::get('/consultar/memorandum/planeacion/index', 'Validacion\PlaneacionController@memorandumplaneacion')->name('checar.memorandum.planeacion')->middleware('can:vista.revision.validacion.planeacion.indice');
