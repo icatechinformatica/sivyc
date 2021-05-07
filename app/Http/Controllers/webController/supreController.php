@@ -112,7 +112,7 @@ class supreController extends Controller
             }
         }
 //
-
+// este es el cambio de prueba cherry-pick
         return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
     }
