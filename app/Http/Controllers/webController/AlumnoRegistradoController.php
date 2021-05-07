@@ -24,8 +24,7 @@ class AlumnoRegistradoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $buscar = $request->get('busquedapor');
 
         $tipo = $request->get('tipo_busqueda');
@@ -101,8 +100,7 @@ class AlumnoRegistradoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $Especialidad = new especialidad;
         $especialidades = $Especialidad->all();
         $municipio = new Municipio();
