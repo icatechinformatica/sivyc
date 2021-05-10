@@ -145,7 +145,7 @@ class ftcontroller extends Controller
                 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 35 and 44 
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 45 and 54
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 55 and 64 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) >= 65 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) >= 65 and ap.sexo='MASCULINO' then 1 else 0 end)) as sumatoria_total_ins_edad"),
-                DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_unidad_retorno")
+                DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces")
                 )
                 ->JOIN('tbl_calificaciones as ca','c.id', '=', 'ca.idcurso')
                 ->JOIN('instructores as i','c.id_instructor', '=', 'i.id')
@@ -263,7 +263,6 @@ class ftcontroller extends Controller
                 db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm8"),db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh8"),
                 db::raw("sum(case when ap.ultimo_grado_estudios='POSTRADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm9"),db::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
                 DB::raw("case when arc='01' then nota else observaciones end as tnota"),
-                DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD'->>'OBSERVACION_RETORNO' AS observaciones_enlaces")
                 )
                 ->JOIN('tbl_calificaciones as ca','c.id', '=', 'ca.idcurso')
                 ->JOIN('instructores as i','c.id_instructor', '=', 'i.id')
@@ -544,7 +543,7 @@ class ftcontroller extends Controller
                                 'memos' => $memos, 
                                 'status' => 'EN_FIRMA', 
                                 'turnado' => 'UNIDAD',
-                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_PARA_FIRMA}', '".json_encode($comentarios_envio_firma)."'::jsonb)")
+                                'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_firma)."'::jsonb")
                             ]);
                     }
                     $total=count($_POST['chkcursos_list']);          
@@ -663,17 +662,14 @@ class ftcontroller extends Controller
                         $comentarios_envio_planeacion = [
                             'OBSERVACION_ENVIO_PLANEACION' => $value
                         ];
-                        $array_planeacion = [
-                            'TURNADO_PLANEACION' => $memo_turnado_planeacion
-                        ];
                         # entramos en el ciclo para guardar cada registro
                         \DB::table('tbl_cursos')
                             ->where('id', $key)
                             ->update([
-                                'memos' => DB::raw("'".json_encode($array_planeacion)."'::jsonb"), 
+                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}', '".json_encode($memo_turnado_planeacion)."', true)"), 
                                 'status' => 'TURNADO_PLANEACION', 
                                 'turnado' => 'PLANEACION',
-                                'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_planeacion)."'::jsonb"),
+                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{COMENTARIO_ENVIO_PLANEACION}', '".json_encode($comentarios_envio_planeacion)."', true)"),
                             ]);
                     }
                     // enviar  a la página de inicio del módulo si el proceso fue satisfactorio

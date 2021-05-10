@@ -28,7 +28,7 @@ class validacionDtaController extends Controller
         $temp_inner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $anio_actual = Carbon::now()->year; // año actual obtenido del servidor
 
-        $cursos_validar = tbl_curso::select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura',DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
+        $cursos_validar = tbl_curso::select('tbl_cursos.id AS id_tbl_cursos', 'tbl_cursos.status AS estadocurso' ,'tbl_cursos.unidad','tbl_cursos.plantel','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura', 'tbl_cursos.turnado AS turnados_enlaces', DB::raw("case when extract(hour from to_timestamp(tbl_cursos.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
         DB::raw('extract(day from tbl_cursos.inicio) as diai'),DB::raw('extract(month from tbl_cursos.inicio) as mesi'),DB::raw('extract(day from tbl_cursos.termino) as diat'),DB::raw('extract(month from tbl_cursos.termino) as mest'),DB::raw("case when EXTRACT( Month FROM tbl_cursos.termino) between '7' and '9' then '1' when EXTRACT( Month FROM tbl_cursos.termino) between '10' and '12' then '2' when EXTRACT( Month FROM tbl_cursos.termino) between '1' and '3' then '3' else '4' end as pfin"),
         'tbl_cursos.horas','tbl_cursos.dia',DB::raw("concat(tbl_cursos.hini,' ', 'A', ' ',tbl_cursos.hfin) as horario"),DB::raw('count(distinct(ca.id)) as tinscritos'),DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujer"),DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombre"),DB::raw("SUM(CASE WHEN ca.acreditado= 'X' THEN 1 ELSE 0 END) as egresado"),
         DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as emujer"),DB::raw("SUM(CASE WHEN ca.acreditado='X' and ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ehombre"),DB::raw("SUM(CASE WHEN ca.noacreditado='X' THEN 1 ELSE 0 END) as desertado"),
@@ -113,12 +113,12 @@ class validacionDtaController extends Controller
         DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
 
         DB::raw("case when tbl_cursos.arc='01' then nota else observaciones end as tnota"),
-        DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_UNIDAD_DTA'->>'OBSERVACION_UNIDAD' AS observaciones_unidad"),
         DB::raw("count( ar.id_pre) AS totalinscripciones"),
         DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
         DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
         DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado"),
-        DB::raw("tbl_cursos.observaciones_formato_t->'COMENTARIOS_UNIDAD' AS observaciones_unidad")
+        DB::raw("tbl_cursos.observaciones_formato_t->'COMENTARIOS_UNIDAD' AS observaciones_unidad"),
+        DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno")
         )
         ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
         ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
@@ -144,7 +144,7 @@ class validacionDtaController extends Controller
         ->WHERE('u.ubicacion', '=', $unidad)
         ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
         // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
-        ->WHERE('tbl_cursos.turnado', '=', 'DTA')
+        ->WHEREIN('tbl_cursos.turnado', ['DTA', 'MEMO_TURNADO_RETORNO'])
         ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
         ->distinct()->get();
         
@@ -387,7 +387,7 @@ class validacionDtaController extends Controller
                     \DB::table('tbl_cursos')
                             ->where('id', $value)
                             ->update([
-                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}','".json_encode($turnado_revision_dta)."'::jsonb)"), 
+                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}', '".json_encode($turnado_revision_dta)."', true)"), 
                                 'status' => 'REVISION_DTA', 
                                 'turnado' => 'REVISION_DTA',
                                 'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_DIRECCION_DTA}','".json_encode($observaciones_revision_dta)."', true)"),
@@ -407,31 +407,50 @@ class validacionDtaController extends Controller
                 switch ($validacion) {
 
                     case 'GenerarMemorandum':
+                        $nume_memo=$request->num_memo_devolucion;
                         # entramos a un loop y antes checamos que se haya seleccionado cursos para realizar esta operacion
                         if (!empty($_POST['chkcursos'])) {
-                            $cursosIds = [];
+                            $memos_retorno = [
+                                'NUMERO_MEMO' => $nume_memo,
+                                'FECHA' => $date
+                            ];
+
                             # si no están vacios enviamos a un loop
-                              foreach ($_POST['chkcursos'] as $key => $value) { 
+                            foreach (array_combine($_POST['chkcursos'], $_POST['comentarios_enlaces']) as $key => $value) {
+                                // $comentarios_retorno_unidad = [
+                                //     'OBSERVACION_ENLACES_RETORNO_UNIDAD' =>  $value
+                                // ];
+                                /**
+                                 * se actualizan los registros seleccionados para ver el curso
+                                 */
+                                \DB::table('tbl_cursos')
+                                ->where('id', $key)
+                                ->update([
+                                    'memos' => DB::raw("jsonb_set(memos, '{ENLACE_TURNADO_RETORNO}', '".json_encode($memos_retorno)."', true)"),
+                                    'turnado' => 'MEMO_TURNADO_RETORNO',
+                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_ENLACES_RETORNO_UNIDAD}', '".json_encode($value)."', true)")
+                                ]);
                                 
-                                 # aqui vas a generar el documento pdf Julio del memorandum de devolución para las unidades
-                                  array_push($cursosIds, $value);
-                              }
-                            //   dd($cursosIds);
-                            $nume_memo=$request->num_memo_devolucion;
+                            }
+                            
                             $unidadSeleccionada = $request->get('unidadActual');
                             $total=count($_POST['chkcursos']);              
                             $mes='1';
-                            // DB::enableQueryLog(); // Enable query log
-                            $reg_cursos= 
-                            DB::table('tbl_cursos')
-                            ->select(DB::raw("case when EXTRACT( Month FROM termino) = '1' then 'ENERO' when EXTRACT( Month FROM termino) = '2' then 'FEBRERO' when EXTRACT( Month FROM termino) = '3' then 'MARZO' when EXTRACT( Month FROM termino) = '4' then 'ABRIL' when EXTRACT( Month FROM termino) = '5' then 'MAYO' when EXTRACT( Month FROM termino) = '6' then 'JUNIO' when EXTRACT( Month FROM termino) = '7' then 'JULIO' when EXTRACT( Month FROM termino) = '8' then 'AGOSTO' when EXTRACT( Month FROM termino) = '9' then 'SEPTIEMBRE' when EXTRACT( Month FROM termino) = '10' then 'OCTUBRE' when EXTRACT( Month FROM termino) = '11' then 'NOVIEMBRE' else 'DICIEMBRE' end as mes")
-                                        ,'unidad','espe','curso','clave', 'status',
-                                        DB::raw("extract(year from termino) AS fecha_termino"))
-                            ->where('turnado',"DTA")
-                            ->WHERE('status', '=', 'TURNADO_DTA')
-                            ->whereIn('id', $cursosIds)
-                            ->groupby('unidad','espe','curso','clave','termino', 'status')
-                            ->orderby('mes')->get();
+
+                            $reg_cursos= DB::table('tbl_cursos')
+                                ->select(
+                                    DB::raw("case when EXTRACT( Month FROM termino) = '1' then 'ENERO' when EXTRACT( Month FROM termino) = '2' then 'FEBRERO' when EXTRACT( Month FROM termino) = '3' then 'MARZO' when EXTRACT( Month FROM termino) = '4' then 'ABRIL' when EXTRACT( Month FROM termino) = '5' then 'MAYO' when EXTRACT( Month FROM termino) = '6' then 'JUNIO' when EXTRACT( Month FROM termino) = '7' then 'JULIO' when EXTRACT( Month FROM termino) = '8' then 'AGOSTO' when EXTRACT( Month FROM termino) = '9' then 'SEPTIEMBRE' when EXTRACT( Month FROM termino) = '10' then 'OCTUBRE' when EXTRACT( Month FROM termino) = '11' then 'NOVIEMBRE' else 'DICIEMBRE' end AS mes"),
+                                    'unidad','espe','curso','clave', 'status', 
+                                    DB::raw("extract(year from termino) AS fecha_termino"),
+                                    DB::raw("observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno")
+                                )
+                                ->where(DB::raw("memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO'"), $nume_memo)
+                                ->where('turnado', 'MEMO_TURNADO_RETORNO')
+                                ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA', 
+                                    DB::raw("observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD'"), 'espe', 'status')
+                                ->orderby('mes')
+                                ->get();
+                                
 
                             // OTRO REGISTRO PARA CARGAR EL TOTAL DE REGISTROS
                             $total_turnado_dta = DB::table('tbl_cursos')
@@ -506,16 +525,18 @@ class validacionDtaController extends Controller
                     if (!empty($request->get('chkcursos'))) {
                         # checamos que la variable no se encuentre vacia
                         foreach ($_POST['chkcursos'] as $key => $value) {
-                            $observaciones_revision_a_planeacion = [
-                                'OBSERVACION_REVISION_A_PLANEACION' =>  $_POST['comentarios'][$key]
-                            ];
+                            // $observaciones_revision_a_planeacion = [
+                            //     'OBSERVACION_REVISION_A_PLANEACION' =>  
+                            // ];
                             # entremos en el loop
                             \DB::table('tbl_cursos')
                                     ->where('id', $value)
-                                    ->update(['memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}','".json_encode($turnado_planeacion)."'::jsonb)"), 
-                                    'status' => 'TURNADO_PLANEACION', 
-                                    'turnado' => 'PLANEACION',
-                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_REVISION_PLANEACION}', '".json_encode($observaciones_revision_a_planeacion)."'::jsonb)")]);
+                                    ->update([
+                                        'memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}', '".json_encode($turnado_planeacion)."', true)"), 
+                                        'status' => 'TURNADO_PLANEACION', 
+                                        'turnado' => 'PLANEACION',
+                                        'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_REVISION_A_PLANEACION}', '".json_encode($_POST['comentarios'][$key])."', true)")
+                                    ]);
                         }
                         return redirect()->route('validacion.dta.revision.cursos.indice')
                                 ->with('success', sprintf('CURSOS ENVIADOS A PLANEACIÓN PARA REVISIÓN!'));
@@ -624,20 +645,19 @@ class validacionDtaController extends Controller
                 foreach ($data as $key ) {
                     array_push($pila, $key);
                 }
-                // $comentario = explode(",", $_POST['comentarios_enlaces']);
+
                 foreach(array_combine($pila, $_POST['comentarios_enlaces']) as $key => $comentarios){
                     $comentarios_regreso_unidad = [
                         'OBSERVACION_RETORNO_UNIDAD' =>  $comentarios
                     ];
-                    $array_regreso_unidad = [
-                        'TURNADO_UNIDAD' => $turnado_unidad
-                    ];
                     \DB::table('tbl_cursos')
                         ->where('id', $key)
-                        ->update(['memos' => DB::raw("'".json_encode($array_regreso_unidad)."'::jsonb"), 
-                        'status' => 'RETORNO_UNIDAD', 
-                        'turnado' => 'UNIDAD',
-                        'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_regreso_unidad)."'::jsonb")]);
+                        ->update([
+                            'memos' => DB::raw("jsonb_set(memos, '{TURNADO_UNIDAD}', '".json_encode($turnado_unidad)."', true)"), 
+                            'status' => 'RETORNO_UNIDAD', 
+                            'turnado' => 'UNIDAD',
+                            'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_RETORNO_UNIDAD}', '".json_encode($comentarios)."', true)")
+                        ]);
                 }
                 // enviar  a la página de inicio del módulo si el proceso fue satisfactorio
                 return redirect()->route('validacion.cursos.enviados.dta')
@@ -747,10 +767,10 @@ class validacionDtaController extends Controller
                             # modificaciones
                             \DB::table('tbl_cursos')->where('id', $value)
                             ->update([
-                                'memos' =>  DB::raw("jsonb_set(memos, '{TURNADO_RETORNO_ENLACES}','".json_encode($turnado_retorno_unidad)."'::jsonb)"), 
+                                'memos' =>  DB::raw("jsonb_set(memos, '{TURNADO_RETORNO_ENLACES}', '".json_encode($turnado_retorno_unidad)."', true)"), 
                                 'status' => 'TURNADO_DTA', 
                                 'turnado' => 'DTA',
-                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_RETORNO_ENLACES}', '".json_encode($observaciones_retorno_enlace)."'::jsonb)")
+                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACIONES_RETORNO_ENLACES}', '".json_encode($observaciones_retorno_enlace)."', true)")
                             ]);
                         }
 

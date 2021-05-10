@@ -306,7 +306,7 @@
                             <tbody style="height: 300px; overflow-y: auto">
                                 @foreach ($cursos_validar as $datas)
                                     <tr align="center">
-                                        <td><input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}" class="checkbx" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}"/></td>
+                                        <td><input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}" class="checkbx" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}" {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }} {{ $datas->turnados_enlaces == 'MEMO_TURNADO_RETORNO' ? 'checked' : '' }}/></td>
                                         <td>{{ $datas->fechaturnado }}</td>
                                         <td>{{ $datas->unidad }}</td>
                                         <td>{{ $datas->plantel }}</td>
@@ -428,9 +428,26 @@
                                         <td>{{ $datas->naesh8 }}</td>
                                         <td>{{ $datas->naesm9 }}</td>
                                         <td>{{ $datas->naesh9 }}</td>
-                                        <td><div style = "width:900px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
-                                        <td><div style="width: 300px; word-wrap: break-word">{{ $datas->observaciones_unidad }}</div></td>
-                                        <td><textarea name="comentarios_enlaces[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" disabled></textarea></td>                
+                                        <td>
+                                            <div style = "width:900px; word-wrap: break-word" align="justify">
+                                                {{ $datas->tnota }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="width: 300px; word-wrap: break-word" align="justify">
+                                                {{ json_decode($datas->observaciones_unidad, JSON_UNESCAPED_SLASHES) }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if ($datas->turnados_enlaces == 'MEMO_TURNADO_RETORNO')
+                                                <textarea name="comentarios_enlaces[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3">
+                                                    {{ json_decode($datas->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}
+                                                </textarea>
+                                            @else
+                                                <textarea name="comentarios_enlaces[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" disabled >
+                                                </textarea>
+                                            @endif
+                                        </td>                
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -418,9 +418,19 @@
                                         <td>{{ $datas->naesh8 }}</td>
                                         <td>{{ $datas->naesm9 }}</td>
                                         <td>{{ $datas->naesh9 }}</td>
-                                        <td><div style = "width:900px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
-                                        <td><textarea name="comentarios_direccion_dta[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" disabled></textarea></td>
-                                        <td><div style="width: 900px; word-wrap: break-word">{{ $datas->observaciones_enlaces }}</div></td>             
+                                        <td>
+                                            <div style = "width:900px; word-wrap: break-word" align="justify">
+                                                {{ $datas->tnota }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <textarea name="comentarios_direccion_dta[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" disabled></textarea>
+                                        </td>
+                                        <td>
+                                            <div style="width: 900px; word-wrap: break-word" align="justify">
+                                                {{ $datas->observaciones_enlaces }}
+                                            </div>
+                                        </td>             
                                     </tr>
                                 @endforeach
                             </tbody>

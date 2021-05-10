@@ -413,7 +413,7 @@
                                                     <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" {{ $datas->estadocurso == 'EN_FIRMA' ? '' : 'disabled' }} ></textarea>
                                                 @endif
                                             </td>
-                                            <td><div style = "width:600px; word-wrap: break-word">{{ $datas->observaciones_unidad_retorno }}</div></td>                    
+                                            <td><div style = "width:600px; word-wrap: break-word" align="justify">{{ json_decode($datas->observaciones_enlaces, JSON_UNESCAPED_SLASHES) }}</div></td>                    
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -118,4 +118,15 @@ class tbl_curso extends Model
             return $query;
         }
     }
+
+    protected function scopeSearchByUnidadMes($query, $unidad, $mes){
+        /**
+         * SCOPE BUSCADOR PARA UNIDAD Y MES .- DISEÑADO POR MIS. DANIEL MÉNDEZ CRUZ
+         */
+        if (!empty($unidad) AND !empty($mes)) {
+            # checamos que no haya vacios
+            $query->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $mes)->WHERE('tblU.ubicacion', $unidad);
+           return $query;
+        }
+    }
 }

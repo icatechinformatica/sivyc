@@ -373,10 +373,10 @@ class PlaneacionController extends Controller
                             \DB::table('tbl_cursos')
                                 ->where('id', $key)
                                 ->update([
-                                    'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}','".json_encode($turnado_revision_dta)."'::jsonb)"), 
+                                    'memos' => DB::raw("jsonb_set(memos, '{TURNADO_REVISION_DTA}','".json_encode($turnado_revision_dta)."', true)"), 
                                     'status' => 'REVISION_DTA', 
                                     'turnado' => 'REVISION_DTA',
-                                    'observaciones_para_formato_t' => DB::raw("jsonb_set(observaciones_para_formato_t, '{OBSERVACION_PLANEACION_ENVIDO_DTA}', '".json_encode($observaciones_revision_dta)."'::jsonb)")
+                                    'observaciones_para_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{PLANEACION_ENVIDO_DTA}', '".json_encode($observaciones_revision_dta)."', true)"),
                                 ]);
                         }
         
@@ -465,18 +465,24 @@ class PlaneacionController extends Controller
                             # vaciamos los datos en un arreglo
                             array_push($pilaPlaneacionFinish, $key);
                         }
+                        /**
+                         * obtener la fecha actual para guardar
+                         */
+                        $fechaActual = Carbon::now();
+                        $fechaTermino = $fechaActual->format('Y-m-d');
                         // $comentario = explode(",", $_POST['comentariosPlaneacionTerminar']);
                         foreach(array_combine($pilaPlaneacionFinish, $_POST['comentariosPlaneacionTerminar']) as $key => $comentarios){
                             $comentarios_regreso_unidad = [
-                                'OBSERVACION_RETORNO' =>  $comentarios
+                                'OBSERVACION_REPORTADO' =>  $comentarios
                             ];
                             \DB::table('tbl_cursos')
                                 ->where('id', $key)
                                 ->update([
-                                'memos' => DB::raw("jsonb_set(memos, '{CERRADO_PLANEACION}','".json_encode($cerrado_planeacion)."'::jsonb)"), 
-                                'status' => 'REPORTADO', 
-                                'turnado' => 'PLANEACION_TERMINADO',
-                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_CERRADO_PLANEACION}', '".json_encode($comentarios_regreso_unidad)."'::jsonb)")
+                                    'memos' => DB::raw("jsonb_set(memos, '{CERRADO_PLANEACION}','".json_encode($cerrado_planeacion)."', true)"), 
+                                    'status' => 'REPORTADO', 
+                                    'turnado' => 'PLANEACION_TERMINADO',
+                                    'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_CERRADO_PLANEACION}', '".json_encode($comentarios_regreso_unidad)."', true)"),
+                                    'proceso_terminado' => true
                                 ]);
 
                             /**
@@ -524,7 +530,7 @@ class PlaneacionController extends Controller
                                 'naesh3' => $getvalueOfTblCursos->naesh3, 'naesm4' => $getvalueOfTblCursos->naesm4, 'naesh4' => $getvalueOfTblCursos->naesh4, 'naesm5' => $getvalueOfTblCursos->naesm5,
                                 'naesh5' => $getvalueOfTblCursos->naesh5, 'naesm6' => $getvalueOfTblCursos->naesm6, 'naesh6' => $getvalueOfTblCursos->naesh6, 'naesm7' => $getvalueOfTblCursos->naesm7,
                                 'naesh7' => $getvalueOfTblCursos->naesh7, 'naesm8' => $getvalueOfTblCursos->naesm8, 'naesh8' => $getvalueOfTblCursos->naesh8, 'naesm9' => $getvalueOfTblCursos->naesm9,
-                                'naesh9' => $getvalueOfTblCursos->naesh9, 'tnota' => $getvalueOfTblCursos->tnota
+                                'naesh9' => $getvalueOfTblCursos->naesh9, 'tnota' => $getvalueOfTblCursos->tnota, 'fecha_terminado' => $fechaTermino
                             ]);
                         }
         
