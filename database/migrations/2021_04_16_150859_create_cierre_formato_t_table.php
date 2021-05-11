@@ -1,0 +1,155 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateCierreFormatoTTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('tbl_cierre_formato_t', function (Blueprint $table) {
+            $table->id();
+            $table->string('id_tbl_cursos');
+            $table->string('fechaturnado');
+            $table->string('unidad');
+            $table->string('plantel');
+            $table->string('espe');
+            $table->string('curso');
+            $table->string('clave');
+            $table->string('mod');
+            $table->string('dura');
+            $table->string('turno');
+            $table->string('diai');
+            $table->string('mesi');
+            $table->string('diat');
+            $table->string('mest');
+            $table->string('pfin');
+            $table->string('horas');
+            $table->string('dia');
+            $table->string('horario');
+            $table->string('tinscritos');
+            $table->string('imujer');
+            $table->string('ihombre');
+            $table->string('egresado');
+            $table->string('emujer');
+            $table->string('ehombre');
+            $table->string('desertado');
+            $table->string('costo');
+            $table->string('ctotal');
+            $table->string('etmujer');
+            $table->string('ethombre');
+            $table->string('epmujer');
+            $table->string('ephombre');
+            $table->string('cespecifico');
+            $table->string('mvalida');
+            $table->string('efisico');
+            $table->string('nombre');
+            $table->string('grado_profesional');
+            $table->string('estatus');
+            $table->string('sexo');
+            $table->string('memorandum_validacion');
+            $table->string('mexoneracion');
+            $table->string('empleado');
+            $table->string('desempleado');
+            $table->string('discapacidad');
+            $table->string('migrante');
+            $table->string('indigena');
+            $table->string('etnia');
+            $table->string('programa');
+            $table->string('muni');
+            $table->string('depen');
+            $table->string('cgeneral');
+            $table->string('sector');
+            $table->string('mpaqueteria');
+            $table->string('iem1');
+            $table->string('ieh1');
+            $table->string('iem2');
+            $table->string('ieh2');
+            $table->string('iem3');
+            $table->string('ieh3');
+            $table->string('iem4');
+            $table->string('ieh4');
+            $table->string('iem5');
+            $table->string('ieh5');
+            $table->string('iem6');
+            $table->string('ieh6');
+            $table->string('iem7');
+            $table->string('ieh7');
+            $table->string('iem8');
+            $table->string('ieh8');
+            $table->string('iesm1');
+            $table->string('iesh1');
+            $table->string('iesm2');
+            $table->string('iesh2');
+            $table->string('iesm3');
+            $table->string('iesh3');
+            $table->string('iesm4');
+            $table->string('iesh4');
+            $table->string('iesm5');
+            $table->string('iesh5');
+            $table->string('iesm6');
+            $table->string('iesh6');
+            $table->string('iesm7');
+            $table->string('iesh7');
+            $table->string('iesm8');
+            $table->string('iesh8');
+            $table->string('iesm9');
+            $table->string('iesh9');
+            $table->string('aesm1');
+            $table->string('aesh1');
+            $table->string('aesm2');
+            $table->string('aesh2');
+            $table->string('aesm3');
+            $table->string('aesh3');
+            $table->string('aesm4');
+            $table->string('aesh4');
+            $table->string('aesm5');
+            $table->string('aesh5');
+            $table->string('aesm6');
+            $table->string('aesh6');
+            $table->string('aesm7');
+            $table->string('aesh7');
+            $table->string('aesm8');
+            $table->string('aesh8');
+            $table->string('aesm9');
+            $table->string('aesh9');
+            $table->string('naesm1');
+            $table->string('naesh1');
+            $table->string('naesm2');
+            $table->string('naesh2');
+            $table->string('naesm3');
+            $table->string('naesh3');
+            $table->string('naesm4');
+            $table->string('naesh4');
+            $table->string('naesm5');
+            $table->string('naesh5');
+            $table->string('naesm6');
+            $table->string('naesh6');
+            $table->string('naesm7');
+            $table->string('naesh7');
+            $table->string('naesm8');
+            $table->string('naesh8');
+            $table->string('naesm9');
+            $table->string('naesh9');
+            $table->string('tnota');
+            $table->date('fecha_terminado');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('tbl_cierre_formato_t');
+    }
+}

@@ -34,7 +34,7 @@
     </style>
 </head>
 <body>
-<header>
+    <header>
             <img class="izquierda" src="{{ public_path('img/logohorizontalica1.jpg') }}">
             <img class="derecha" src='img/chiapas.png'>
             <br>
@@ -56,7 +56,6 @@
                 $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
             }
         </script>
-        
         <table class="tablad" bgcolor="black">
                 <tr>
                     <td colspan="4" style="color:white;"><b>AV. PASO LIMON NO. 1581 JUNTO AL COLEGIO LAURELES </b></td>
@@ -79,57 +78,57 @@
         <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}</b></div>
         <div align=left style="font-size:11px;"><b>PRESENTE.</b></div>
         <br><br>
-            <div align="justify" style="font-size:11px;">
-                En seguimiento a la integración del Formato T del mes de Abril del presente 
-                año de su Unidad de Capacitación, recibido el pasado 28 de Abril al correo electronico
-                @switch($reg_unidad->ubicacion)
-                    @case('REFORMA')
-                        informacion.formatot@gmail.com
-                        @break
-                    @case('VILLAFLORES')
-                        informacion.formatot@gmail.com
-                        @break
-                    @case('TUXTLA')
-                        informacion.formatot@gmail.com
-                        @break
-                    @case('TONALA')
-                        informacion.formatot@gmail.com
-                        @break
-                    @case('SAN CRISTOBAL')
-                        formatot.icatech.dta@gmail.com
-                        @break
-                    @case('YAJALON')
-                        formatot.icatech.dta@gmail.com
-                        @break
-                    @case('OCOSINGO')
-                        formatot.icatech.dta@gmail.com
-                        @break
-                    @case('CATAZAJA')
-                        informesestadisticos.cert2@gmail.com
-                        @break
-                    @case('TAPACHULA')
-                        informesestadisticos.cert2@gmail.com
-                        @break
-                    @case('JIQUIPILAS')
-                        informesestadisticos.cert2@gmail.com
-                        @break
-                    @case('COMITAN')
-                        informesestadisticos.cert2@gmail.com
-                        @break
-                    @default
-                        
-                @endswitch
-                , le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
-                RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
-                digitalizados con firmas y sellos de un total de {{ $sum_total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
-                hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
-                de Planeación de este Instituto un total de {{ $total_turnado_planeacion[0]->total_cursos_turnado_planeacion }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
-            </div>
-            <br>
             @php
                 $num=1;
             @endphp
             <div class="table-responsive-sm">
+                <div align="justify" style="font-size:11px;">
+                    En seguimiento a la integración del Formato T del mes de Abril del presente 
+                    año de su Unidad de Capacitación, recibido el pasado 28 de Abril al correo electronico
+                    @switch($reg_unidad->ubicacion)
+                        @case('REFORMA')
+                            informacion.formatot@gmail.com
+                            @break
+                        @case('VILLAFLORES')
+                            informacion.formatot@gmail.com
+                            @break
+                        @case('TUXTLA')
+                            informacion.formatot@gmail.com
+                            @break
+                        @case('TONALA')
+                            informacion.formatot@gmail.com
+                            @break
+                        @case('SAN CRISTOBAL')
+                            formatot.icatech.dta@gmail.com
+                            @break
+                        @case('YAJALON')
+                            formatot.icatech.dta@gmail.com
+                            @break
+                        @case('OCOSINGO')
+                            formatot.icatech.dta@gmail.com
+                            @break
+                        @case('CATAZAJA')
+                            informesestadisticos.cert2@gmail.com
+                            @break
+                        @case('TAPACHULA')
+                            informesestadisticos.cert2@gmail.com
+                            @break
+                        @case('JIQUIPILAS')
+                            informesestadisticos.cert2@gmail.com
+                            @break
+                        @case('COMITAN')
+                            informesestadisticos.cert2@gmail.com
+                            @break
+                        @default
+                            
+                    @endswitch
+                    , le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
+                    RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
+                    digitalizados con firmas y sellos de un total de {{ $sum_total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
+                    hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
+                    de Planeación de este Instituto un total de {{ $total_turnado_planeacion[0]->total_cursos_turnado_planeacion }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
+                </div>
+                <br>
                 <table class="tablas">
                     <thead>                       
                         <tr>      	  
@@ -151,7 +150,7 @@
                             <th>{{ $a->espe }}</th>  
                             <th>{{ $a->curso }}</th>
                             <th>{{ $a->clave }}</th>
-                            <th>{{ $comentarios_enviados[$index] }}</th>
+                            <th>{{ json_decode($a->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}</th>
                         </tr>
                             @php 
                                 $num=$num+1;

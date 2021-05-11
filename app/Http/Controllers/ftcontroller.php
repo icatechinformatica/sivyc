@@ -145,7 +145,7 @@ class ftcontroller extends Controller
                 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 35 and 44 
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 45 and 54
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 55 and 64 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) >= 65 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) >= 65 and ap.sexo='MASCULINO' then 1 else 0 end)) as sumatoria_total_ins_edad"),
-                DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_unidad_retorno")
+                DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces")
                 )
                 ->JOIN('tbl_calificaciones as ca','c.id', '=', 'ca.idcurso')
                 ->JOIN('instructores as i','c.id_instructor', '=', 'i.id')
@@ -263,7 +263,6 @@ class ftcontroller extends Controller
                 db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm8"),db::raw("sum(case when ap.ultimo_grado_estudios='NIVEL SUPERIOR TERMINADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh8"),
                 db::raw("sum(case when ap.ultimo_grado_estudios='POSTRADO' and ap.sexo='FEMENINO' and ca.noacreditado='X' then 1 else 0 end) as naesm9"),db::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ca.noacreditado='X' then 1 else 0 end) as naesh9"),
                 DB::raw("case when arc='01' then nota else observaciones end as tnota"),
-                DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD'->>'OBSERVACION_RETORNO' AS observaciones_enlaces")
                 )
                 ->JOIN('tbl_calificaciones as ca','c.id', '=', 'ca.idcurso')
                 ->JOIN('instructores as i','c.id_instructor', '=', 'i.id')
@@ -544,7 +543,7 @@ class ftcontroller extends Controller
                                 'memos' => $memos, 
                                 'status' => 'EN_FIRMA', 
                                 'turnado' => 'UNIDAD',
-                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_PARA_FIRMA}', '".json_encode($comentarios_envio_firma)."'::jsonb)")
+                                'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_firma)."'::jsonb")
                             ]);
                     }
                     $total=count($_POST['chkcursos_list']);          
@@ -663,17 +662,14 @@ class ftcontroller extends Controller
                         $comentarios_envio_planeacion = [
                             'OBSERVACION_ENVIO_PLANEACION' => $value
                         ];
-                        $array_planeacion = [
-                            'TURNADO_PLANEACION' => $memo_turnado_planeacion
-                        ];
                         # entramos en el ciclo para guardar cada registro
                         \DB::table('tbl_cursos')
                             ->where('id', $key)
                             ->update([
-                                'memos' => DB::raw("'".json_encode($array_planeacion)."'::jsonb"), 
+                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}', '".json_encode($memo_turnado_planeacion)."', true)"), 
                                 'status' => 'TURNADO_PLANEACION', 
                                 'turnado' => 'PLANEACION',
-                                'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_planeacion)."'::jsonb"),
+                                'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{COMENTARIO_ENVIO_PLANEACION}', '".json_encode($comentarios_envio_planeacion)."', true)"),
                             ]);
                     }
                     // enviar  a la página de inicio del módulo si el proceso fue satisfactorio
@@ -998,19 +994,43 @@ class ftcontroller extends Controller
          */
         if (isset($busquedaPorMes)) {
             # si la variable está inicializada se carga la consulta
+            // DB::connection()->enableQueryLog();
             $queryGetMemo = DB::table('tbl_cursos')
-                        ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum_enviados"), DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS memorandum_retorno_unidad"))
+                        ->select(
+                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM' AS ruta"), 
+                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO' AS numero_memo"),
+                            DB::raw("CASE  WHEN tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO' is not NULL THEN 'MEMORANDUM TURNADO DTA' END AS tipo_memo")
+                        )
                         ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
                         ->where('u.ubicacion', '=', $unidadstr)
                         ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_DTA'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
-                        ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM'"), DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"))
+                        ->groupby(DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM'"), 
+                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO'")
+                        )
                         ->paginate(5);
+            // dd(DB::getQueryLog());
+
+            $queryGetMemoRetorno = DB::table('tbl_cursos')
+                                ->select(
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS ruta"), 
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO' AS numero_memo"),
+                                    DB::raw("CASE WHEN tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO' is not NULL THEN 'MEMORANDUM TURNADO UNIDAD' END AS tipo_memo")
+                                )
+                                ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
+                                ->where('u.ubicacion', '=', $unidadstr)
+                                ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_UNIDAD'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
+                                ->groupby(
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"), 
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO'")
+                                )
+                                ->paginate(5);
         } else {
             # si la variable no está inicializada no se carga la consulta
             $queryGetMemo = (array) null;
+            $queryGetMemoRetorno = (array) null;
         }
         //dd($queryGetMemo);
-        return view('reportes.memorandum_unidad_formatot', compact('meses', 'queryGetMemo', 'unidadstr'));
+        return view('reportes.memorandum_unidad_formatot', compact('meses', 'queryGetMemo', 'unidadstr', 'queryGetMemoRetorno'));
     }
 
 }
