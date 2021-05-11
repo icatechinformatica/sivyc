@@ -109,7 +109,7 @@
         <div class="form-row">
             {{-- tabla --}}
             <table class="table">
-                <caption>AVANCES de las UNIDADES EN EL FORMATO T MES DE {{ $mesActual }}</caption>
+                <caption>AVANCES de las UNIDADES EN EL FORMATO T MES DE {{ $messeleccionado }}</caption>
                 <thead class="thead-light">
                     <tr>
                         <th scope="col">UBICACIÓN</th>
