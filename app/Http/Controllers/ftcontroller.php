@@ -994,19 +994,43 @@ class ftcontroller extends Controller
          */
         if (isset($busquedaPorMes)) {
             # si la variable está inicializada se carga la consulta
+            // DB::connection()->enableQueryLog();
             $queryGetMemo = DB::table('tbl_cursos')
-                        ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum_enviados"), DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS memorandum_retorno_unidad"))
+                        ->select(
+                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM' AS ruta"), 
+                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO' AS numero_memo"),
+                            DB::raw("CASE  WHEN tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO' is not NULL THEN 'MEMORANDUM TURNADO DTA' END AS tipo_memo")
+                        )
                         ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
                         ->where('u.ubicacion', '=', $unidadstr)
                         ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_DTA'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
-                        ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM'"), DB::raw("memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"))
+                        ->groupby(DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM'"), 
+                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO'")
+                        )
                         ->paginate(5);
+            // dd(DB::getQueryLog());
+
+            $queryGetMemoRetorno = DB::table('tbl_cursos')
+                                ->select(
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS ruta"), 
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO' AS numero_memo"),
+                                    DB::raw("CASE WHEN tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO' is not NULL THEN 'MEMORANDUM TURNADO UNIDAD' END AS tipo_memo")
+                                )
+                                ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
+                                ->where('u.ubicacion', '=', $unidadstr)
+                                ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_UNIDAD'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
+                                ->groupby(
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"), 
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO'")
+                                )
+                                ->paginate(5);
         } else {
             # si la variable no está inicializada no se carga la consulta
             $queryGetMemo = (array) null;
+            $queryGetMemoRetorno = (array) null;
         }
         //dd($queryGetMemo);
-        return view('reportes.memorandum_unidad_formatot', compact('meses', 'queryGetMemo', 'unidadstr'));
+        return view('reportes.memorandum_unidad_formatot', compact('meses', 'queryGetMemo', 'unidadstr', 'queryGetMemoRetorno'));
     }
 
 }

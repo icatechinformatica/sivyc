@@ -797,30 +797,16 @@ class validacionDtaController extends Controller
     {
         if (isset($num_memo_planeacion)) {
             /**
-             * mandar información fecha
+             * obtener el mes de los cursos que se encuentran en el registro del módulo 
+             * de la dirección DTA 
              */
-            $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
-            $fecha = Carbon::parse(Carbon::now());
-            $anioActual = Carbon::now()->year;
-            $mes_ = $meses[($fecha->format('n')) - 1];
-            /**
-             * obtener mes anterior
-            */
-            $fechaActual = Carbon::now()->format('d-m-Y');
-            $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mes_)->first();
-            $fEAc = $fechaEntregaActual->fecha_entrega."-".$anioActual;
-            $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
-            $confEAct = date_format($convertfEAc, 'd-m-Y');
-            $fechaSpring = strtotime($confEAct);
-            $fechaActual_ = strtotime($fechaActual);
-
-            if ($fechaSpring >= $fechaActual_) {
-                # si la condición de fecha de entrega se cumple es mayor a la fecha actual o igual entonces el mes el el actual
-                $mesDato = $fechaEntregaActual->mes_informar;
-            } else {
-                # si la condición no se cumple por lo consiguiente se agrega un mes más 
-                $mesDato = $meses[($fecha->format('n')) + 0];
-            }
+            $queryMesMemo = DB::table('tbl_cursos')
+            ->select(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS mes_obtenido"))
+            ->WHERE("turnado", 'REVISION_DTA')
+            ->groupBy(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"))
+            ->orderBy(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), 'desc')
+            ->limit(1)
+            ->get();
             
             # GENERAMOS EL DOCUMENTO EN PDF
             $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
@@ -840,7 +826,7 @@ class validacionDtaController extends Controller
             $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
             $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
             $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesDato'));
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'queryMesMemo'));
             // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
             return $pdf->download('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {
