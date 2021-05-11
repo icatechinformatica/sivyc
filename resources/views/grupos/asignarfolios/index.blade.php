@@ -19,12 +19,16 @@
         <?php
             if(isset($curso)) $clave = $curso->clave;
             else $clave = null;
+            
         ?>
         {{ Form::open(['route' => 'grupos.asignarfolios', 'method' => 'post', 'id'=>'frm']) }}                    
 
          <div class="row">
             <div class="form-group col-md-3">
                     {{ Form::text('clave', $clave, ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'CLAVE DEL CURSO', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 30]) }}
+            </div>
+             <div class="form-group col-md-2">
+                    {{ Form::text('matricula', $matricula, ['id'=>'matricula', 'class' => 'form-control', 'placeholder' => 'MATRICULA', 'aria-label' => 'MATRICULA', 'size' => 15]) }}
             </div>
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['class' => 'btn', 'type' => 'submit']) }}
@@ -111,7 +115,7 @@
                             }    
                             ?>
                             <tr>
-                                <td> {{ $a->matricula }} {{$a->id_folioi}}</td>
+                                <td> {{ $a->matricula }}</td>
                                 <td> {{ $a->alumno }} </td>
                                 <td class="text-center"> {{ $a->calificacion }} </td>
                                 <td class="text-center"> {{ $a->folio }} </td>
