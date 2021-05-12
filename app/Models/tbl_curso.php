@@ -129,4 +129,12 @@ class tbl_curso extends Model
            return $query;
         }
     }
+
+    protected function scopeSearchByMesUnidadAnio($query, $mesoptenido){
+        if (!empty($mesoptenido)) {
+            # se cumple culquiera de las condiciones
+            $query->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $mesoptenido);
+            return $query;
+        }
+    }
 }

@@ -26,9 +26,17 @@ Route::post('/reportes/formatot/aperturado/generar', 'Validacion\validacionDtaCo
  */
 Route::get('/consultar/memorandum/unidad/index', 'ftcontroller@memorandumporunidad')->name('checar.memorandum.unidad')->middleware('can:vista.formatot.unidades.indice');
 Route::get('/consultar/memorandum/dta/index', 'Validacion\validacionDtaController@memorandumpordta')->name('checar.memorandum.dta.mes')->middleware('can:vista.validacion.direccion.dta');
+Route::get('/consultar/memorandum/dta/index', 'Validacion\validacionDtaController@memorandumpordta')->name('checar.memorandum.dta.mes')->middleware('can:vista.validacion.enlaces.dta');
 Route::get('/consultar/memorandum/planeacion/index', 'Validacion\PlaneacionController@memorandumplaneacion')->name('checar.memorandum.planeacion')->middleware('can:vista.revision.validacion.planeacion.indice');
 /**
  * modificaciones de busqueda por especialidad, tipo de curso y cursos
  */
 Route::post('/alumnos/sid/cursos/modificar', 'webController\AlumnoController@getcursosModified')->name('alumnos.sid.cursos.modificado');
-Route::get('/consultar/memorandum/planeacion/index', 'Validacion\PlaneacionController@memorandumplaneacion')->name('checar.memorandum.planeacion')->middleware('can:vista.revision.validacion.planeacion.indice');
+Route::get('/seguimiento/avances/unidades/formatot/index', 'webController\SeguimientoController@index')->name('seguimento.avance.unidades.formatot.ejecutiva.index');
+/**
+ * CONSULTAR CURSOS REPORTADOS HISTORICOS MESES ANTERIORES
+ */
+Route::get('/cursos/reportados/historico/unidad/index', 'ftcontroller@cursosreportados')->name('cursos.reportados.historico.index')->middleware('can:vista.formatot.unidades.indice');
+Route::get('/cursos/reportados/historico/dta/index', 'Validacion\validacionDtaController@cursosReportadosDta')->name('cursos.reportados.historico.dta.index')->middleware('can:vista.validacion.enlaces.dta');
+Route::get('/cursos/reportados/historico/direccion/dta/index', 'Validacion\validacionDtaController@cursosReportatosDireccionDta')->name('cursos.reportados.historico.direccion.dta.index')->middleware('can:vista.validacion.direccion.dta');
+Route::get('/cursos/reportados/historico/planeacion/index', 'Validacion\planeacionController@cursosReportadosPlaneacion')->name('cursos.reportados.historico.planeacion.index')->middleware('can:vista.revision.validacion.planeacion.indice');

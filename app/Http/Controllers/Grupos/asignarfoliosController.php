@@ -22,7 +22,7 @@ class asignarfoliosController extends Controller
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');        
-        $_SESSION['unidades'] =  $_SESSION['id_curso'] = $clave = $curso = $alumnos = $message = NULL;
+        $_SESSION['unidades'] =  $_SESSION['id_curso'] = $clave = $matricula = $curso = $alumnos = $message = NULL;
         //var_dump($rol);exit;
         if($rol){ 
             $unidad = Auth::user()->unidad;
@@ -36,18 +36,24 @@ class asignarfoliosController extends Controller
         if(session('clave')) $clave = session('clave');
         else $clave = $request->clave;
         if($clave) $_SESSION['clave'] = $clave;
-        $data = $this->validaCurso($clave, NULL);
+        
+        if(session('matricula')) $matricula = session('matricula');
+        else $matricula = $request->matricula;
+        if($matricula) $_SESSION['matricula'] = $matricula;
+        
+        $data = $this->validaCurso($clave, $matricula, NULL);
         list($curso, $acta, $alumnos, $message) = $data; 
 
         if(session('message')) $message = session('message');
 
-        return  view('grupos.asignarfolios.index', compact('curso','alumnos','message','acta')); 
+        return  view('grupos.asignarfolios.index', compact('curso','alumnos','message','acta', 'matricula')); 
     } 
     
     public function store(Request $request) {     
         $id_afolio = $request->id_afolio*1;
         $clave = $_SESSION['clave'];
-        $data = $this->validaCurso($clave, $id_afolio);
+        $matricula = $_SESSION['matricula'];
+        $data = $this->validaCurso($clave, $matricula,$id_afolio);
         list($curso, $acta, $alumnos_out, $message) = $data; //var_dump($acta);exit;      
         
         if($acta AND !$message){
@@ -56,8 +62,9 @@ class asignarfoliosController extends Controller
             $fecha_expedicion = $curso->termino;
             
             $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','f.folio','f.fecha_expedicion','f.movimiento','f.motivo')
-                    ->where('i.status','INSCRITO')->leftjoin('tbl_folios as f','f.id','i.id_folio')                     
-                    ->where('i.id_curso',$id_curso)->orderby('i.alumno')->get();
+                    ->where('i.status','INSCRITO')->leftjoin('tbl_folios as f','f.id','i.id_folio');
+                    if($matricula)$alumnos = $alumnos->where('i.matricula',$matricula);                             
+                    $alumnos = $alumnos->where('i.id_curso',$id_curso)->orderby('i.alumno')->get();
                    // var_dump($alumnos);exit;
             foreach($alumnos as $a){  //var_dump($a);exit;
                 if($num_folio<=$acta->num_fin){
@@ -102,14 +109,14 @@ class asignarfoliosController extends Controller
                 }else $message = "El folio final ha sido asignado!!";
             }
         }           
-        return redirect('grupos/asignarfolios')->with(['message'=>$message, 'clave'=>$clave]);
+        return redirect('grupos/asignarfolios')->with(['message'=>$message, 'clave'=>$clave, 'matricula'=>$matricula]);
     } 
 
-    private function validaCurso($clave, $id_afolio){
+    private function validaCurso($clave, $matricula, $id_afolio){
         $curso = $alumnos = $message = $acta = NULL;
         if($clave){  
             //EXISTE EL CURSO
-            $curso = DB::table('tbl_cursos')->where('clave',$clave);
+            $curso = DB::table('tbl_cursos')->where('clave',$clave);                
                 if($_SESSION['unidades'])$curso = $curso->whereIn('unidad',$_SESSION['unidades']);                               
                 $curso = $curso->first();
             if($curso){
@@ -132,17 +139,21 @@ class asignarfoliosController extends Controller
                // var_dump($acta);exit;
                 ///ALUMNOS REGISTRADOS
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','i.id_folio as id_folioi','f.folio','f.fecha_expedicion','f.movimiento','f.motivo','f.id as id_foliof')
-                    ->where('i.status','INSCRITO')
-                    ->leftJoin('tbl_folios as f', function($join){                                        
+                    ->where('i.status','INSCRITO');
+                    if($matricula)$alumnos = $alumnos->where('i.matricula',$matricula);
+                    $alumnos = $alumnos->leftJoin('tbl_folios as f', function($join){                                        
                         $join->on('f.id_curso', '=', 'i.id_curso');
                         $join->on('f.matricula', '=', 'i.matricula');
-                    }) 
-                    ->where('i.id_curso',$curso->id)->orderby('i.alumno')->get();                  
+                    }); 
+                    $alumnos = $alumnos->where('i.id_curso',$curso->id)->orderby('i.alumno')->get();                  
                //var_dump($alumnos);exit;
                 if(count($alumnos)==0) $message = "El curso no tiene alumnos registrados. ";
                 elseif(count($alumnos)>0) if(!$alumnos[0]->calificacion)$message = "No hay registro de calificaciones, no podrá asignar folios. ";
                 //elseif(count($alumnos)>0) if($alumnos[0]->folio)$message = "Curso con folios expedidos. ";
-                if(!$message)  $_SESSION['clave'] = $curso->clave; 
+                if(!$message){
+                    $_SESSION['clave'] = $curso->clave;
+                    $_SESSION['matricula'] = $matricula;
+                } 
                 
             }else $message = "Clave inválida.";
         }
