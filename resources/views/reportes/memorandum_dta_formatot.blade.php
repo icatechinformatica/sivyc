@@ -74,7 +74,7 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2> <strong>MEMORANDUMS FIRMADOS Y RECIBIDOS MENSUALMENTE A LA DIRECCIÓN TÉCNICA ACADÉMICA</strong></h2>
+                    <h2> <strong>MEMORANDUMS FIRMADOS Y RECIBIDOS A LA DIRECCIÓN TÉCNICA ACADÉMICA</strong></h2>
                     {{-- formulario de busqueda en index --}}
                     {!! Form::open(['route' => 'checar.memorandum.dta.mes', 'method' => 'GET', 'class' => 'form-inline']) !!}
                         <select name="busquedaMes" id="busquedaMes" class="form-control mr-sm-2">
@@ -86,7 +86,7 @@
                         {{-- selector de busqueda por unidades--}}
                         <select name="busquedaPorUnidad" id="busquedaPorUnidad" class="form-control mr-sm-2">
                             <option value="">--SELECCIONAR LA UNIDAD--</option>
-                            @foreach ($unidadesIcatech as $itemUnidades)
+                            @foreach ($unidadstr as $itemUnidades)
                                 <option value="{{ $itemUnidades->ubicacion }}">{{ $itemUnidades->ubicacion }}</option>
                             @endforeach
                         </select>
@@ -94,7 +94,7 @@
                         
                         
                     {{-- formulario de busqueda en index END --}}
-                        {!! Form::submit('CONSULTAR', ['class' => 'btn btn-outline-info my-2 my-sm-0']) !!}
+                        {!! Form::submit('FILTRAR', ['class' => 'btn btn-outline-info my-2 my-sm-0']) !!}
                     {!! Form::close() !!}
                 </div>
                 <div class="pull-right">
@@ -112,8 +112,9 @@
                         <caption>MEMORANDUM RECIBIDOS Y ENVIADOS POR MES</caption>
                         <thead class="thead-dark">
                             <tr align="justify">
-                                <th>TIPO DE MEMORANDUM</th>
-                                <th>MEMORANDUM</th>                           
+                                <th>NÚMERO DE MEMORANDUM</th>
+                                <th>TIPO DE MEMORANDUM</th>   
+                                <th>MEMORANDUM</th>                   
                             </tr>
                         </thead>
                         <tbody>
@@ -121,19 +122,17 @@
                                 <tr align="justify">
                                     <td>
                                         <p>
-                                            @if (!empty($itemgetmemo->memorandum_retorno_unidad))
-                                                <b>MEMORANDUM DE REGRESO A LA UNIDAD</b>
-                                            @endif
+                                            <b>{{ $itemgetmemo->numero_memo }}</b>
                                         </p>
                                     </td>
                                     <td>
-                                        @if (!empty($itemgetmemo->memorandum_retorno_unidad))
-                                            DE LA UNIDAD{{ tbl_cursos.unidad }}
-                                            <a href="{{ $itemgetmemo->memorandum_retorno_unidad }}" class="btn btn-danger btn-circles btn-xl" title="MEMORANDUM DE ENVÍO A DIRECCIÓN TÉCNICA ACADÉMICA" target="_blank">
-                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                            </a>
-                                        @endif
-                                    </td>              
+                                        <b>{{ $itemgetmemo->tipo_memo }}</b>
+                                    </td> 
+                                    <td>
+                                        <a href="{{ $itemgetmemo->ruta }}" class="btn btn-danger btn-circles btn-xl" title="MEMORANDUM DE ENVÍO A DIRECCIÓN TÉCNICA ACADÉMICA" target="_blank">
+                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                        </a>
+                                    </td>         
                                 </tr>
                             @endforeach
                         </tbody>
