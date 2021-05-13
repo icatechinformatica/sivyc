@@ -136,7 +136,7 @@
                                 <th>{{ $a->ze }}</th>
                                 <th>{{ $a->depen }}</th>                           
                                 <th>@if($a->tipo=="PINS"){{ "X" }}@endif</th>
-                                <th>@if($a->tipo=="CERTI"){{ "X" }}@endif</th>
+                                <th>@if($a->tipo_curso=="CERTIFICACION"){{ "X" }}@endif</th>
                                 <th>@if($a->tipo=="EXO"){{ "X" }}@endif</th>
                                 <th>@if($a->tipo=="EPAR"){{ "X" }}@endif</th>
                                 <th>{{ $a->efisico }}</th>                           
