@@ -328,7 +328,7 @@ class supreController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;
             $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio')
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
@@ -359,7 +359,15 @@ class supreController extends Controller
 
                 if($criterio != NULL)
                 {
-                    $total = $criterio->monto * $Cursos->dura;
+                    if($Cursos->tipo_curso == 'CERTIFICACION')
+                    {
+                        $total = $criterio->monto * 10;
+                        //$aviso = TRUE;
+                    }
+                    else
+                    {
+                        $total = $criterio->monto * $Cursos->dura;
+                    }
                 }
                 else
                 {
@@ -378,6 +386,36 @@ class supreController extends Controller
 
         return $json;
     }
+    protected function gettipocurso(Request $request)
+    {
+        $claveCurso = $request->valor;
+        $Curso = new tbl_curso();
+        $Cursos = $Curso->SELECT('tbl_cursos.tipo_curso')
+                                ->WHERE('clave', '=', $claveCurso)->FIRST();
+
+        if($Cursos != NULL)
+        {
+            switch ($Cursos->tipo_curso) {
+                case 'CERTIFICACION':
+                    $tipo = 'CERT';
+                break;
+                case 'NORMAL':
+                    $tipo = 'NORMAL';
+                break;
+                default:
+                    $tipo = 'ERROR';
+                break;
+            }
+        }
+        else
+        {
+            $tipo = 'ERROR';
+        }
+
+        $json=json_encode($tipo);
+        return $json;
+    }
+
 
     protected function getfoliostats(Request $request)
     {
