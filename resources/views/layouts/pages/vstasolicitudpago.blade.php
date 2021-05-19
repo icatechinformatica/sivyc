@@ -26,15 +26,21 @@
                     <label for="inputno_memo">Numero de Memorandum</label>
                     <input id="no_memo" name="no_memo" type="text" class="form-control">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="inputelaboro">Nombre de Quien Elabora</label>
-                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" required>
-                    <input id="id_elabora" name="id_elabora" hidden required>
-                </div>
                 <div class="form-group col-md-3">
                     <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
                     <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control">
                 </div>
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputelaboro">Nombre de Quien Elabora</label>
+                        <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Quien Elabora</label>
+                        <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" required>
+                        <input id="id_elabora" name="id_elabora" hidden required>
+                    </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
