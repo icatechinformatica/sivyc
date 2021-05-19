@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\tbl_curso;
+use Hamcrest\Core\HasToString;
 
 class ftcontroller extends Controller
 {
@@ -526,6 +527,18 @@ class ftcontroller extends Controller
                     $numero_memo = $request->get('numero_memo'); // número de memo
                     $fecha_nueva=$fecha_ahora->format('d-m-Y');
 
+                    // buscamos si hay cursos con ese numero de memo y se reinician
+                    $cursosChecks = \DB::select("SELECT id FROM tbl_cursos as c where c.status = 'EN_FIRMA' and c.memos->'TURNADO_EN_FIRMA'->>'NUMERO' = '$numero_memo'");
+                    foreach ($cursosChecks as $value) {
+                        \DB::table('tbl_cursos')
+                            ->where('id', '=', $value->id)
+                            ->update([
+                                'status' => 'NO REPORTADO',
+                                'memos' => null,
+                                'observaciones_formato_t' => null
+                            ]);
+                    }
+
                     $memos = [
                         'TURNADO_EN_FIRMA' => [
                             'NUMERO' => $numero_memo,
@@ -577,7 +590,7 @@ class ftcontroller extends Controller
                 }
 
             } else {
-                return back()->withInput()->withErrors(['ERROR AL MOMENTO DE GUARDAR LOS REGISTROS, SE DEBE DE ESTAR SELECCIONADOS LOS CHECKBOX CORRESPONDIENTES']);
+                return back()->withInput()->withErrors(['ERROR AL MOMENTO DE GUARDAR LOS REGISTROS, DEBEN DE ESTAR SELECCIONADOS LOS CHECKBOX CORRESPONDIENTES']);
             }
         }
 

@@ -528,7 +528,6 @@ Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar'
 Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
 
 /* Modulo exoneraciones */
-
 Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio');
 Route::get('/exoneraciones/agregar', 'webController\ExoneracionesController@create')->name('exoneraciones.agregar')
     ->middleware('can:exoneraciones.create');

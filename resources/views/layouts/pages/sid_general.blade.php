@@ -366,7 +366,6 @@
                                 $.each(response, (k ,v) => {
                                     $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
                                 });
-
                                 $("#cursos_sid").focus();
                             }
                         }

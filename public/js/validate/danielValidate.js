@@ -390,95 +390,7 @@ $(function(){
     /****
      *
      */
-    $('#conveniosFrm').validate({
-        rules: {
-            no_convenio: {
-                required: true
-            },
-            institucion: {
-                required: true
-            },
-            telefono: {
-                required: true
-            },
-            sector: {
-                required: true
-            },
-            fecha_firma: {
-                required: true
-            },
-            fecha_termino: {
-                required: true
-            },
-            poblacion: {
-                required: true
-            },
-            municipio: {
-                required: true
-            },
-            nombre_titular: {
-                required: true
-            },
-            nombre_enlace: {
-                required: true
-            },
-            status: {
-                required: true
-            },
-            direccion: {
-                required: true
-            },
-            archivo_convenio: {
-                required: true,
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            }
-        },
-        messages: {
-            no_convenio: {
-                required: "Campo requerido"
-            },
-            institucion: {
-                required: "Campo requerido"
-            },
-            telefono: {
-                required: "Campo requerido"
-            },
-            sector: {
-                required: "Campo requerido"
-            },
-            fecha_firma: {
-                required: "Campo requerido"
-            },
-            fecha_termino: {
-                required: "Campo requerido"
-            },
-            poblacion: {
-                required: "Campo requerido"
-            },
-            municipio: {
-                required: "Campo requerido"
-            },
-            nombre_titular: {
-                required: "Campo requerido"
-            },
-            nombre_enlace: {
-                required: "Campo requerido"
-            },
-            status: {
-                required: "Campo requerido"
-            },
-            direccion: {
-                required: "Campo requerido"
-            },
-            archivo_convenio: {
-                extension: "Sólo se permiten pdf",
-                filesize: "El archivo debe ser menor de 2 MB",
-                required: "Documento requerido"
-            }
-        }
-
-    });
+    
 
     /**
      * form paso 2
@@ -553,7 +465,6 @@ $(function(){
             }
         }
     });
-
 
 
 
