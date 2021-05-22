@@ -200,4 +200,10 @@ class CursoValidadoController extends Controller
         $newsAll = $instructor::where('numero_control', $input)->first();
         return response()->json($newsAll, 200);
     }
+
+    public function cursosVinculador_reporte()
+    {
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        return view('layouts.pages.vstareportecursovinculador', compact('unidades'));
+    }
 }
