@@ -51,7 +51,7 @@ class calificacionesController extends Controller
                 if($_SESSION['unidades'])$curso = $curso->whereIn('unidad',$_SESSION['unidades']);                               
                 $curso = $curso->first();
            if($curso){
-                if(Auth::user()->unidad==1) $fecha_penultimo = date("Y-m-d",strtotime($curso->termino."- 2 days"));
+                if(Auth::user()->unidad==1) $fecha_penultimo = date("Y-m-d",strtotime($curso->termino."- 3 days"));
                 else $fecha_penultimo = date("Y-m-d",strtotime($curso->termino."- 1 days"));
                 $fecha_valida =  strtotime($fecha_hoy)-strtotime($fecha_penultimo);
                 
