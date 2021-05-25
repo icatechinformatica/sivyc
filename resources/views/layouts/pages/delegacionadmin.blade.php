@@ -226,7 +226,7 @@
                             total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = total;
-
+                            document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
                             document.getElementById('addmore['+x+'][iva]').value = iva;
 
                         }else{
