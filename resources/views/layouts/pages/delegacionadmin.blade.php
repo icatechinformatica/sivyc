@@ -238,13 +238,13 @@
 
             request.fail(( jqXHR, textStatus ) =>
             {
-                alert( "Hubo un error: " + textStatus );
+                //alert( "Hubo un error: " + textStatus );
             });
 
             } else {
 
             }
-            var url = '/supre/busqueda/tipo_curso';
+            /*var url = '/supre/busqueda/tipo_curso';
                 var request = $.ajax
                 ({
                     url: url,
@@ -262,7 +262,7 @@
                     {
                         document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
                     }
-                });
+                });*/
         });
     });
 
