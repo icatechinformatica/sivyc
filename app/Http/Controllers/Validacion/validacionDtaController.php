@@ -411,7 +411,7 @@ class validacionDtaController extends Controller
                         if (!empty($_POST['chkcursos'])) {
 
                             // buscamos si hay cursos con ese numero de memo y se reinician
-                            $cursosChecks = \DB::select("SELECT id, memos, observaciones_formato_t FROM tbl_cursos as c where c.status = 'TURNADO_DTA' and c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' = '$nume_memo'");
+                            /* $cursosChecks = \DB::select("SELECT id, memos, observaciones_formato_t FROM tbl_cursos as c where c.status = 'TURNADO_DTA' and c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' = '$nume_memo'");
                             if ($cursosChecks != null) {
                                 foreach ($cursosChecks as $value) {
                                     $memos = json_decode($value->memos, true);
@@ -434,7 +434,7 @@ class validacionDtaController extends Controller
                                             'observaciones_formato_t' => $observaciones_enlace
                                     ]);
                                 }
-                            }
+                            } */
 
 
                             $memos_retorno = [
