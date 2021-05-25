@@ -544,14 +544,16 @@ class ftcontroller extends Controller
 
                     // buscamos si hay cursos con ese numero de memo y se reinician
                     $cursosChecks = \DB::select("SELECT id FROM tbl_cursos as c where c.status = 'EN_FIRMA' and c.memos->'TURNADO_EN_FIRMA'->>'NUMERO' = '$numero_memo'");
-                    foreach ($cursosChecks as $value) {
-                        \DB::table('tbl_cursos')
-                            ->where('id', '=', $value->id)
-                            ->update([
-                                'status' => 'NO REPORTADO',
-                                'memos' => null,
-                                'observaciones_formato_t' => null
+                    if($cursosChecks != null) {
+                        foreach ($cursosChecks as $value) {
+                            \DB::table('tbl_cursos')
+                                ->where('id', '=', $value->id)
+                                ->update([
+                                    'status' => 'NO REPORTADO',
+                                    'memos' => null,
+                                    'observaciones_formato_t' => null
                             ]);
+                        }
                     }
 
                     $memos = [
