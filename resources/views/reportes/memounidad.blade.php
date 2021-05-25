@@ -161,7 +161,7 @@
                 <br>
                 <div align="justify" style="font-size:11px;">
                     No omito manifestar sobre la información antes mencionada, que se encuentran pendientes los documentos
-                    originales de las entregas realizadas por su Unidad de Capacitacón para el reporte estadístico una vez
+                    originales de las entregas realizadas por su Unidad de Capacitación para el reporte estadístico una vez
                     reintegrados al trabajo presencial.
                 </div>
                 <br>

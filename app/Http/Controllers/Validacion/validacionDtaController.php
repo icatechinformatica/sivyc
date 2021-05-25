@@ -363,8 +363,7 @@ class validacionDtaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         // variables y creación de la fecha de retorno
         $fecha_actual = Carbon::now();
         $date = $fecha_actual->format('Y-m-d'); // fecha
@@ -410,6 +409,32 @@ class validacionDtaController extends Controller
                         $nume_memo=$request->num_memo_devolucion;
                         # entramos a un loop y antes checamos que se haya seleccionado cursos para realizar esta operacion
                         if (!empty($_POST['chkcursos'])) {
+
+                            // buscamos si hay cursos con ese numero de memo y se reinician
+                            $cursosChecks = \DB::select("SELECT id, memos, observaciones_formato_t FROM tbl_cursos as c where c.status = 'TURNADO_DTA' and c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' = '$nume_memo'");
+                            foreach ($cursosChecks as $value) {
+                                $memos = json_decode($value->memos, true);
+                                $observaciones_enlace = json_decode($value->observaciones_formato_t, true);
+                                foreach ($memos as $key => $value1) {
+                                    if ($key == 'ENLACE_TURNADO_RETORNO') {
+                                        unset($memos[$key]);
+                                    }
+                                }
+                                foreach ($observaciones_enlace as $key2 => $value2) {
+                                    if ($key2 == 'OBSERVACION_ENLACES_RETORNO_UNIDAD') {
+                                        unset($observaciones_enlace[$key2]);
+                                    }
+                                }
+                                \DB::table('tbl_cursos')
+                                    ->where('id', '=', $value->id)
+                                    ->update([
+                                        'memos' => $memos,
+                                        'turnado' => 'DTA',
+                                        'observaciones_formato_t' => $observaciones_enlace
+                                    ]);
+                            }
+
+
                             $memos_retorno = [
                                 'NUMERO_MEMO' => $nume_memo,
                                 'FECHA' => $date

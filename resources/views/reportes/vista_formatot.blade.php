@@ -412,10 +412,10 @@
                                             <td><div style = "width:800px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
                                             <td>
                                                 @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer)
-                                                    <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" {{ $datas->estadocurso == 'EN_FIRMA' ? '' : 'disabled' }} ></textarea>
+                                                    <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" {{ $datas->estadocurso == 'EN_FIRMA' ? '' : 'disabled' }} >{{ json_decode($datas->observaciones_firma, JSON_UNESCAPED_SLASHES) }}</textarea>
                                                 @endif
                                             </td>
-                                            <td><div style = "width:600px; word-wrap: break-word" align="justify">{{ json_decode($datas->observaciones_enlaces, JSON_UNESCAPED_SLASHES) }}</div></td>                    
+                                            <td><div style = "width:600px; word-wrap: break-word" align="justify">{{ json_decode($datas->observaciones_enlaces, JSON_UNESCAPED_SLASHES) }}</div></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
