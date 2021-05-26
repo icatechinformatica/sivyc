@@ -410,8 +410,17 @@ class validacionDtaController extends Controller
                         # entramos a un loop y antes checamos que se haya seleccionado cursos para realizar esta operacion
                         if (!empty($_POST['chkcursos'])) {
 
+                            $unidadSeleccionada = $request->get('unidadActual');
+                            $unidadeSearch = \DB::table('tbl_unidades')->select('unidad')->where('ubicacion', '=', $unidadSeleccionada)->get();
+                            $unidadesT = [];
+                            foreach ($unidadeSearch as $uni) {
+                                array_push($unidadesT, $uni->unidad);
+                            }
+
                             // buscamos si hay cursos con ese numero de memo y se reinician
-                            /* $cursosChecks = \DB::select("SELECT id, memos, observaciones_formato_t FROM tbl_cursos as c where c.status = 'TURNADO_DTA' and c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' = '$nume_memo'");
+                            // c.unidad in '$unidadesT' and
+                            $cursosChecks = \DB::select("SELECT id, memos, observaciones_formato_t FROM tbl_cursos as c where c.status = 'TURNADO_DTA' and c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' = '$nume_memo'");
+                            
                             if ($cursosChecks != null) {
                                 foreach ($cursosChecks as $value) {
                                     $memos = json_decode($value->memos, true);
@@ -434,7 +443,7 @@ class validacionDtaController extends Controller
                                             'observaciones_formato_t' => $observaciones_enlace
                                     ]);
                                 }
-                            } */
+                            }
 
 
                             $memos_retorno = [
@@ -460,7 +469,7 @@ class validacionDtaController extends Controller
                                 
                             }
                             
-                            $unidadSeleccionada = $request->get('unidadActual');
+                            // $unidadSeleccionada = $request->get('unidadActual');
                             $total=count($_POST['chkcursos']);              
                             $mes='1';
 
