@@ -416,35 +416,64 @@ class validacionDtaController extends Controller
                             foreach ($unidadeSearch as $uni) {
                                 array_push($unidadesT, $uni->unidad);
                             }
+                            // dd($unidadesT);
 
                             // buscamos si hay cursos con ese numero de memo y se reinician
                             // c.unidad in '$unidadesT' and
                             $cursosChecks = \DB::select("SELECT id, memos, observaciones_formato_t FROM tbl_cursos as c where c.status = 'TURNADO_DTA' and c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' = '$nume_memo'");
-
                             if ($cursosChecks != null) {
                                 foreach ($cursosChecks as $value) {
-                                    $memos = json_decode($value->memos, true);
-                                    $observaciones_enlace = json_decode($value->observaciones_formato_t, true);
-                                    foreach ($memos as $key => $value1) {
-                                        if ($key == 'ENLACE_TURNADO_RETORNO') {
-                                            unset($memos[$key]);
+                                    $memos = $value->memos != null ? json_decode($value->memos, true) : null;
+                                    $observaciones_enlace = $value->observaciones_formato_t != null ? json_decode($value->observaciones_formato_t, true) : null;
+
+                                    if ($memos != null && $observaciones_enlace != null) {
+                                        foreach ($memos as $key => $value1) {
+                                            if ($key == 'ENLACE_TURNADO_RETORNO') {
+                                                unset($memos[$key]);
+                                            }
                                         }
-                                    }
-                                    foreach ($observaciones_enlace as $key2 => $value2) {
-                                        if ($key2 == 'OBSERVACION_ENLACES_RETORNO_UNIDAD') {
-                                            unset($observaciones_enlace[$key2]);
+
+                                        foreach ($observaciones_enlace as $key2 => $value2) {
+                                            if ($key2 == 'OBSERVACION_ENLACES_RETORNO_UNIDAD') {
+                                                unset($observaciones_enlace[$key2]);
+                                            }
                                         }
-                                    }
-                                    \DB::table('tbl_cursos')
+
+                                        \DB::table('tbl_cursos')
                                         ->where('id', '=', $value->id)
                                         ->update([
                                             'memos' => $memos,
                                             'turnado' => 'DTA',
                                             'observaciones_formato_t' => $observaciones_enlace
-                                    ]);
+                                        ]);
+                                    }
                                 }
                             }
 
+                            // se corrigen los cursos que estuvieran en nulos
+                            // dd($unidadesT);
+                            /* $cursosNul = \DB::select("SELECT id, memos, observaciones_formato_t, turnado FROM tbl_cursos as c where c.status = 'TURNADO_DTA' and c.turnado = 'MEMO_TURNADO_RETORNO'");
+                            if($cursosNul != null) {
+                                foreach ($cursosNul as $key => $value) {
+                                    $memos1 = $value->memos != null ? json_decode($value->memos, true) : null;
+                                    $observaciones1 = $value->observaciones_formato_t != null ? json_decode($value->observaciones_formato_t, true) : null;
+
+                                    $comentarios_envio_dta1 = [
+                                        'COMENTARIOS_UNIDAD' =>  ''
+                                    ];
+                                    $array_memosDTA1 = [
+                                        'TURNADO_DTA' => ''
+                                    ];
+
+                                    \DB::table('tbl_cursos')
+                                        ->where('id', '=', $value->id)
+                                        ->update([
+                                            'memos' => $memos1 != null ? $memos1 : \DB::raw("'".json_encode($comentarios_envio_dta1)."'::jsonb"),
+                                            'turnado' => 'DTA',
+                                            'observaciones_formato_t' => $observaciones1 != null ? $observaciones1 : \DB::raw("'".json_encode($array_memosDTA1)."'::jsonb"),
+                                        ]);
+                                }
+                            } */
 
                             $memos_retorno = [
                                 'NUMERO_MEMO' => $nume_memo,
