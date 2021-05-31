@@ -63,7 +63,7 @@
 </head>
 @section('content')
     <section class="container g-pt-50">
-        <form action="{{ route('planeacion.reportepdf') }}" method="post" id="registercontrato">
+        <form action="{{ route('vinculacion.reportepdf') }}" method="post" id="registercontrato">
             @csrf
             <div class="text-center">
                 <h1>Reporte de Alumnos por Vinculador</h1>
@@ -81,10 +81,6 @@
                         <td class="custom-radio radio-xl" id='choice-td'>
                             <input type="radio" class="custom-control-input"  id="curso" name="filtro" value="curso">
                             <label for="curso" class="custom-control-label"><h4>Curso</h4></label>
-                        </td>
-                        <td class="custom-radio radio-xl" id='choice-td'>
-                            <input type="radio" class="custom-control-input"  id="unidad" name="filtro" value="unidad">
-                            <label for="unidad" class="custom-control-label"><h4>Unidad</h4></label>
                         </td>
                         <td class="custom-radio radio-xl" id='choice-td'>
                             <input type="radio" class="custom-control-input"  id="vinculador" name="filtro" value="vinculador">
@@ -114,24 +110,12 @@
                     <input type="text" name="id_curso" id="id_curso" class="form-control" hidden required>
                 </div>
             </div>
-            <div id="div_instructor" class="form-row d-none d-print-none">
+            <div id="div_vinculador" class="form-row d-none d-print-none">
                 <div class="form-group col-md-2"></div>
                 <div class="form-group col-md-6">
-                    <label for="inputid_instructor"><h3>Nombre del Instructor</h3></label>
-                    <input type="text" name="instructoraut" id="instructoraut" class="form-control" required>
-                    <input type="text" name="id_instructor" id="id_instructor" class="form-control" hidden  required>
-                </div>
-            </div>
-            <div id="div_unidad" class="form-row d-none d-print-none">
-                <div class="form-group col-md-2"></div>
-                <div class="form-group col-md-6">
-                    <label for="unidad" class="control-label">Unidad de Capacitación </label>
-                    <select name="unidad" id="unidad" class="form-control">
-                    <option value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
-                    @foreach ($unidades as $data )
-                        <option value="{{$data->unidad}}">{{$data->unidad}}</option>
-                    @endforeach
-                </select>
+                    <label for="inputid_vinculador"><h3>Nombre del Vinculador</h3></label>
+                    <input type="text" name="vinculadoraut" id="vinculadoraut" class="form-control" required>
+                    <input type="text" name="id_vinculador" id="id_vinculador" class="form-control" hidden  required>
                 </div>
             </div>
             <br>
@@ -156,5 +140,35 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
-<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script>
+    $(function(){
+        //metodo
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+       $( document ).on('input', function(){
+            if(document.getElementById('curso') != null || document.getElementById('general') != null || document.getElementById('unidad') != null)
+            {
+                if (document.getElementById('curso').checked) {
+                    $('#div_curso').prop("class", "form-row")
+                    $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                    $('#div_unidad').prop("class", "form-row d-none d-print-none")
+                }
+                else if (document.getElementById('general').checked) {
+                    $('#div_curso').prop("class", "form-row d-none d-print-none")
+                    $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                    $('#div_unidad').prop("class", "form-row d-none d-print-none")
+                }
+                else if (document.getElementById('unidad').checked) {
+                    $('#div_curso').prop("class", "form-row d-none d-print-none")
+                    $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                    $('#div_unidad').prop("class", "form-row")
+                }
+            }
+        });
+    });
+</script>
 @endsection

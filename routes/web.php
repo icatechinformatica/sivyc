@@ -489,7 +489,6 @@ Route::post('/encuesta/save','supervisionController\EncuestaController@encuesta_
 
 /*Reporte Planeación 04012021-20052021*/
 Route::get('/planeacion/reporte', 'webController\supreController@planeacion_reporte')->name('planeacion.reporte');
-Route::get('/vinculadores/reporte-cursos', 'webController\CursoValidadoController@cursosVinculador_reporte')->name('cursosvinculador.reporte');
 Route::post('/planeacion/reporte/pdf','webController\supreController@planeacion_reportepdf')->name('planeacion.reportepdf');
 Route::post('/directorio/getcurso','webController\supreController@get_curso')->name('get-curso');
 Route::post('/directorio/getins','webController\supreController@get_ins')->name('get-ins');
@@ -562,3 +561,8 @@ Route::post('/validacion/dta/revision/enviar/planeacion', 'ftcontroller@sendToPl
 
 //cancelacion de folio de supre 21/04/2021
 Route::post('/supre/cancelacion/folio', 'webController\supreController@cancelFolio')->name('folio-cancel');
+
+//Reporte alumnos vinculacion 31/05/2021
+Route::get('/vinculadores/reporte-cursos', 'webController\CursoValidadoController@cursosVinculador_reporte')->name('cursosvinculador.reporte');
+Route::post('/directorio/getvin','webController\CursoValidadoController@get_vin')->name('get-vin');
+Route::post('/vinculacion/reporte/pdf','webController\supreController@planeacion_reportepdf')->name('vinculacion.reportepdf');
