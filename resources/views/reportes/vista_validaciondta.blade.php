@@ -2,6 +2,7 @@
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
 @section('title', 'Cursos enviados a Dirección Técnica Académica | SIVyC Icatech')
+
 @section('content_script_css')
     <style>
         #spinner:not([hidden]) {
@@ -58,7 +59,7 @@
 
     </style>
 @endsection
-<!--seccion-->
+
 @section('content')
     <div class="container-fluid px-5 g-pt-30">
         {{-- información sobre la entrega del formato t para unidades --}}
@@ -85,11 +86,13 @@
                 {{ $errors->first() }}
             </div>
         @endif
+        
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
         @endif
+        
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -112,6 +115,7 @@
                 </div>
             </div>
         </div>
+        
         <hr style="border-color:dimgray">
         @if (count($cursos_validar) > 0)
             <form action="{{ route('reportes.formatot.enlaces.unidad.xls') }}" method="POST">
@@ -126,12 +130,14 @@
                     <input type="hidden" name="unidad_" id="unidad_" value="{{ $unidad }}">
                 </div>
             </form>
+
+
             <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}" target="_self">
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-4 mb-3">
                         <input type="text" class="form-control mr-sm-1" name="num_memo_devolucion" id="num_memo_devolucion"
-                            placeholder="NÚMERO DE MEMORANDUM PARA REGRESO A UNIDAD">
+                            value="" placeholder="NÚMERO DE MEMORANDUM PARA REGRESO A UNIDAD">
                     </div>
                     <div class="form-group col-md-4 mb-2">
                         <input type="text" name="filterClaveCurso" id="filterClaveCurso" class="form-control"
@@ -193,6 +199,7 @@
                                     <th scope="col">SELECCIONAR &nbsp;
                                         <input type="checkbox" id="selectAll" />
                                     </th>
+                                    <th scope="col" style="width:100%">COMENTARIOS</th>
                                     <th scope="col">MES REPORTADO</th>
                                     <th scope="col">UNIDAD DE CAPACITACION</th>
                                     <th scope="col">PLANTEL</th>
@@ -316,17 +323,31 @@
                                     <th scope="col">DESC ESCOL H9</th>
                                     <th scope="col" style="width:50%">OBSERVACIONES</th>
                                     <th scope="col" style="width: 50%">OBSERVACIONES UNIDAD</th>
-                                    <th scope="col" style="width: 50%">COMENTARIOS</th>
                                 </tr>
                             </thead>
                             <tbody style="height: 300px; overflow-y: auto">
                                 @foreach ($cursos_validar as $key => $datas)
                                     <tr align="center">
-                                        <td>{{$key + 1}}</td>
+                                        <td>{{ $key + 1 }}</td>
                                         <td><input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}" class="checkbx"
                                                 name="chkcursos[]" value="{{ $datas->id_tbl_cursos }}"
                                                 {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}
                                                 {{ $datas->turnados_enlaces == 'MEMO_TURNADO_RETORNO' ? 'checked' : '' }} />
+                                        </td>
+                                        <td>
+                                            {{-- word-wrap: break-word align="justify" --}}
+                                            <div style="width: 300px;" align="justify">
+                                                {{-- <textarea id="comentario_{{ $datas->id_tbl_cursos }}" name="comentarios_enlaces[]" cols="45" class="form-control" rows="3">{{ json_decode($datas->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}</textarea> --}}
+                                                @if ($datas->turnados_enlaces == 'MEMO_TURNADO_RETORNO')
+                                                    <textarea name="comentarios_enlaces[]"
+                                                        id="comentario_{{ $datas->id_tbl_cursos }}" cols="45"
+                                                        rows="3">{{ json_decode($datas->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}</textarea>
+                                                @else
+                                                    <textarea name="comentarios_enlaces[]"
+                                                        id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"
+                                                        disabled></textarea>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td>{{ $datas->fechaturnado }}</td>
                                         <td>{{ $datas->unidad }}</td>
@@ -478,19 +499,6 @@
                                                 {{ json_decode($datas->observaciones_unidad, JSON_UNESCAPED_SLASHES) }}
                                             </div>
                                         </td>
-                                        <td>
-                                            @if ($datas->turnados_enlaces == 'MEMO_TURNADO_RETORNO')
-                                                <textarea name="comentarios_enlaces[]"
-                                                    id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"> 
-                                                        {{ json_decode($datas->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}
-                                                    </textarea>
-                                            @else
-                                                <textarea name="comentarios_enlaces[]"
-                                                    id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"
-                                                    disabled>
-                                                    </textarea>
-                                            @endif
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -542,145 +550,150 @@
     </div>
     <!--MODAL FORMULARIO ENDS-->
 @endsection
+
 @section('script_content_js')
-<script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
-<script type="text/javascript">
-    $(function() {
-        document.querySelector('#spinner').setAttribute('hidden', '');
-        $.validator.addMethod('filesize', function(value, element, param) {
-            return this.optional(element) || (element.files[0].size <= param)
-        }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
-        $('#enviardta').click(function() {
-            var cursosChecked = new Array();
-            // var comentario_retorno = new Array();
-            var wrapperEnlaceDta = $('.field_wrapper_enlace_dta');
-            var numMemo = $('#num_memo_devolucion').val();
-            $('input[name="chkcursos[]"]:checked').each(function() {
-                cursosChecked.push(this.value);
-            });
-            // se cargan los textarea en el arreglo
-            $('textarea[name="comentarios_enlaces[]"]').each(function() {
-                if (!$(this).prop('disabled')) {
-                    var fieldHtml =
-                        '<input type="hidden" name="comentarios_enlaces[]" id="comentarios_enlaces" value="' +
-                        this.value + '">';
-                    $(wrapperEnlaceDta).append(fieldHtml); // Add field html
-                    // comentario_retorno.push(this.value);   
-                }
-            });
-            $('.modal-body #numero_memo_devolucion').val(numMemo);
-            $('.modal-body #check_cursos_dta').val(cursosChecked);
-            // $('.modal-body #comentarios_enlaces').val(comentario_retorno);
-            $("#exampleModalCenter").modal("show");
-        });
-        /*
-         * CERRAMOS EL MODAL
-         */
-        $('#close_btn_modal_send_dta').click(function() {
-            $("#numero_memo").rules('remove', 'required', 'extension', 'filesize');
-            $("input[id*=numero_memo]").removeClass("error"); // workaround
-            $("#exampleModalCenter").modal("hide");
-            // quitamos lo que hay en el contenido del wrapper
-            $('.field_wrapper_enlace_dta').empty();
-        });
-        $("#selectAll").click(function() {
-            $("input[type=checkbox]").not(this).prop("checked", $(this).prop("checked"));
-            $("input[type=checkbox]").each(function() {
-                if ($(this).is(":checked")) {
-                    if ($(this).attr("id") != 'selectAll') {
-                        var id = $(this).attr("id").split("_");
-                        id = id[id.length - 1];
-                        $('#comentario_' + id).attr('disabled', false);
+    <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            document.querySelector('#spinner').setAttribute('hidden', '');
+            $.validator.addMethod('filesize', function(value, element, param) {
+                return this.optional(element) || (element.files[0].size <= param)
+            }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
+            
+            $('#enviardta').click(function() {
+                var cursosChecked = new Array();
+                // var comentario_retorno = new Array();
+                var wrapperEnlaceDta = $('.field_wrapper_enlace_dta');
+                var numMemo = $('#num_memo_devolucion').val();
+                $('input[name="chkcursos[]"]:checked').each(function() {
+                    cursosChecked.push(this.value);
+                });
+                // se cargan los textarea en el arreglo
+                $('textarea[name="comentarios_enlaces[]"]').each(function() {
+                    if (!$(this).prop('disabled')) {
+                        var fieldHtml =
+                            '<input type="hidden" name="comentarios_enlaces[]" id="comentarios_enlaces" value="' +
+                            this.value + '">';
+                        $(wrapperEnlaceDta).append(fieldHtml); // Add field html
+                        // comentario_retorno.push(this.value);   
                     }
+                });
+                $('.modal-body #numero_memo_devolucion').val(numMemo);
+                $('.modal-body #check_cursos_dta').val(cursosChecked);
+                // $('.modal-body #comentarios_enlaces').val(comentario_retorno);
+                $("#exampleModalCenter").modal("show");
+            });
+
+            /*
+            * CERRAMOS EL MODAL
+            */
+            $('#close_btn_modal_send_dta').click(function() {
+                $("#numero_memo").rules('remove', 'required', 'extension', 'filesize');
+                $("input[id*=numero_memo]").removeClass("error"); // workaround
+                $("#exampleModalCenter").modal("hide");
+                // quitamos lo que hay en el contenido del wrapper
+                $('.field_wrapper_enlace_dta').empty();
+            });
+
+            $("#selectAll").click(function() {
+                $("input[type=checkbox]").not(this).prop("checked", $(this).prop("checked"));
+                $("input[type=checkbox]").each(function() {
+                    if ($(this).is(":checked")) {
+                        if ($(this).attr("id") != 'selectAll') {
+                            var id = $(this).attr("id").split("_");
+                            id = id[id.length - 1];
+                            $('#comentario_' + id).attr('disabled', false);
+                        }
+                    } else {
+                        if ($(this).attr("id") != 'selectAll') {
+                            var id = $(this).attr("id").split("_");
+                            id = id[id.length - 1];
+                            $('#comentario_' + id).attr('disabled', true);
+                        }
+                    }
+                })
+            });
+
+            // trabajar con el checkbox
+            $("input.checkbx").change(function() {
+                if (this.checked) {
+                    var id = $(this).attr("id").split("_");
+                    id = id[id.length - 1];
+                    $('#comentario_' + id).attr('disabled', false);
                 } else {
-                    if ($(this).attr("id") != 'selectAll') {
-                        var id = $(this).attr("id").split("_");
-                        id = id[id.length - 1];
-                        $('#comentario_' + id).attr('disabled', true);
-                    }
+                    var id = $(this).attr("id").split("_");
+                    id = id[id.length - 1];
+                    $('#comentario_' + id).attr('disabled', true);
+                    $('#comentario_' + id).val('');
                 }
-            })
-        });
+            });
 
-        // trabajar con el checkbox
-        $("input.checkbx").change(function() {
-            if (this.checked) {
-                var id = $(this).attr("id").split("_");
-                id = id[id.length - 1];
-                $('#comentario_' + id).attr('disabled', false);
-            } else {
-                var id = $(this).attr("id").split("_");
-                id = id[id.length - 1];
-                $('#comentario_' + id).attr('disabled', true);
-            }
-        });
-
-        // VALIDACIONES
-        $('#formSendDtaTo').validate({
-            rules: {
-                num_memo_devolucion: {
-                    required: true
-                },
-            },
-            messages: {
-                num_memo_devolucion: {
-                    required: "CAMPO REQUERIDO"
-                },
-            }
-        });
-
-        $('#send_to_dta').click(function() {
-            $('#formSendUnity').validate({
+            // VALIDACIONES
+            $('#formSendDtaTo').validate({
                 rules: {
-                    "cargar_archivo_formato_t": {
-                        required: true,
-                        extension: "pdf",
-                        filesize: 2000000
-                    }
+                    num_memo_devolucion: {
+                        required: true
+                    },
                 },
                 messages: {
-                    "cargar_archivo_formato_t": {
-                        required: "ARCHIVO REQUERIDO",
-                        accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
-                    }
+                    num_memo_devolucion: {
+                        required: "CAMPO REQUERIDO"
+                    },
                 }
-            }); // configurar el validador
-        });
-        /**
-         * Abrir el modal
-         **/
-        /*
-         * modificaciones de datos en filtro
-         */
-        $("#filterClaveCurso").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#table-instructor tr").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
+
+            $('#send_to_dta').click(function() {
+                $('#formSendUnity').validate({
+                    rules: {
+                        "cargar_archivo_formato_t": {
+                            required: true,
+                            extension: "pdf",
+                            filesize: 2000000
+                        }
+                    },
+                    messages: {
+                        "cargar_archivo_formato_t": {
+                            required: "ARCHIVO REQUERIDO",
+                            accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
+                        }
+                    }
+                }); // configurar el validador
+            });
+            /**
+            * Abrir el modal
+            **/
+            /*
+            * modificaciones de datos en filtro
+            */
+            $("#filterClaveCurso").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#table-instructor tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            /*
+            * click para iniciar el envío del formulario y deshabilitar el validador del número de memo
+            */
+            $('#validacionDireccionDta').click(function() {
+                // deshabilitar el elemento que tiene el atributo
+                $('[name="num_memo_devolucion"]').rules('remove', 'required');
+                // envíamos el formuario
+                // $('#formSendDtaTo').submit(function(eventObj) {
+                //     $(this).append('<input type="hidden" name="validarEnDta" value="EnviarJefaDta" /> ');
+                //     return true;
+                // });
+                var form = document.getElementById('formSendDtaTo'); //obtienes el formulario del elemento
+                var input = document.createElement(
+                    'input'); //preparar un nuevo elemento de entrada en el doom
+                input.setAttribute('name', 'envioDireccionDta'); //se asigna el nombre
+                input.setAttribute('value', 1); // asignación de la variable
+                input.setAttribute('type', 'hidden') //set the type, like "hidden" or other
+                form.appendChild(input); //append the input to the form
+                form.submit(); //send with added input
+            });
+
         });
 
-        /*
-         * click para iniciar el envío del formulario y deshabilitar el validador del número de memo
-         */
-        $('#validacionDireccionDta').click(function() {
-            // deshabilitar el elemento que tiene el atributo
-            $('[name="num_memo_devolucion"]').rules('remove', 'required');
-            // envíamos el formuario
-            // $('#formSendDtaTo').submit(function(eventObj) {
-            //     $(this).append('<input type="hidden" name="validarEnDta" value="EnviarJefaDta" /> ');
-            //     return true;
-            // });
-            var form = document.getElementById('formSendDtaTo'); //obtienes el formulario del elemento
-            var input = document.createElement(
-            'input'); //preparar un nuevo elemento de entrada en el doom
-            input.setAttribute('name', 'envioDireccionDta'); //se asigna el nombre
-            input.setAttribute('value', 1); // asignación de la variable
-            input.setAttribute('type', 'hidden') //set the type, like "hidden" or other
-            form.appendChild(input); //append the input to the form
-            form.submit(); //send with added input
-        });
-
-    });
-
-</script>
+    </script>
 @endsection
