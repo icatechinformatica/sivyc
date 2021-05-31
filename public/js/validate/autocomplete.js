@@ -430,6 +430,28 @@ $(function(){
             return false;
         }
     });
+    $( "#vinculadoraut" ).autocomplete({
+        source: function( request, response ) {
+            // Fetch data
+            $.ajax({
+            url:"/directorio/getvin",
+            type: 'post',
+            dataType: "json",
+            data: {
+                search: request.term
+            },
+            success: function( data ) {
+                response( data );
+            }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            $('#vinculadoraut').val(ui.item.label); // display the selected text
+           $('#id_vinculador').val(ui.item.value); // save selected id to input
+            return false;
+        }
+    });
 
 
 });
