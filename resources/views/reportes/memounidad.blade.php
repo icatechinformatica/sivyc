@@ -83,8 +83,8 @@
             @endphp
             <div class="table-responsive-sm">
                 <div align="justify" style="font-size:11px;">
-                    En seguimiento a la integración del Formato T del mes de Abril del presente 
-                    año de su Unidad de Capacitación, recibido el pasado 28 de Abril al correo electronico
+                    En seguimiento a la integración del Formato T del mes de {{$mesReportado2}} del presente 
+                    año de su Unidad de Capacitación, recibido el pasado {{$diaArray[0]}} de {{$mesReportado2}} al correo electronico
                     @switch($reg_unidad->ubicacion)
                         @case('REFORMA')
                             informacion.formatot@gmail.com
@@ -126,7 +126,7 @@
                     RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
                     digitalizados con firmas y sellos de un total de {{ $sum_total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
                     hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
-                    de Planeación de este Instituto un total de {{ $total_turnado_planeacion[0]->total_cursos_turnado_planeacion }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
+                    de Planeación de este Instituto un total de {{ $totalReportados }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
                 </div>
                 <br>
                 <table class="tablas">
@@ -170,13 +170,13 @@
                 <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
                 <br><br><br>
                 <div style="font-size:11px;"> <b>DR. ERICH ARMANDO CRUZ CASTELLANOS</b> </div>
-                <div style="font-size:11px;"> <b>DIRECTOR(A) TECNICO ACADEMICO</b> </div>
+                <div style="font-size:11px;"> <b>DIRECTOR TECNICO ACADEMICO</b> </div>
                 <br><br><br>
-                <div style="font-size:11px;"> <b>C.c.p Mtra. Fabiola Lizbeth Astudillo Reyes ,Directora General del ICATECH. Para su conocimiento. - Ciudad</b> </div>
-                <div style="font-size:11px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
-                <div style="font-size:11px;"> <b>Archivo / Minutario.</b> </div>
-                <div style="font-size:11px;"> <b>Validó: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
-                <div style="font-size:11px;"> <b>Elaboró: {{ $elabora }}.</b> </div>
+                <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div>
+                <div style="font-size:9px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
+                <div style="font-size:9px;"> <b>ARCHIVO / MINUTARIO.</b> </div>
+                <div style="font-size:7px;"> <b>VALIDÓ: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
+                <div style="font-size:7px;"> <b>ELABORÓ: {{ $elabora }}.</b> </div>
             </div><br><br>
     </div>
 </body>
