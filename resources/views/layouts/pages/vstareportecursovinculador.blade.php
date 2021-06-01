@@ -150,7 +150,7 @@
         });
 
        $( document ).on('input', function(){
-            if(document.getElementById('curso') != null || document.getElementById('general') != null || document.getElementById('unidad') != null)
+            if(document.getElementById('curso') != null || document.getElementById('general') != null || document.getElementById('vinculador') != null)
             {
                 if (document.getElementById('curso').checked) {
                     $('#div_curso').prop("class", "form-row")
@@ -162,7 +162,7 @@
                     $('#div_vinculador').prop("class", "form-row d-none d-print-none")
                     $('#div_unidad').prop("class", "form-row d-none d-print-none")
                 }
-                else if (document.getElementById('unidad').checked) {
+                else if (document.getElementById('vinculador').checked) {
                     $('#div_curso').prop("class", "form-row d-none d-print-none")
                     $('#div_vinculador').prop("class", "form-row d-none d-print-none")
                     $('#div_unidad').prop("class", "form-row")

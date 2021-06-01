@@ -220,7 +220,7 @@ class CursoValidadoController extends Controller
         if ($request->filtro == "general")
         {
             $data = tbl_curso::SELECT('tbl_cursos.curso','tbl_cursos.tcapacitacion','tbl_cursos.mod','tbl_cursos.espe',
-                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_curso.clave','tbl_inscripcion.alumno',
+                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_cursos.clave','tbl_inscripcion.alumno',
                             'tbl_inscripcion.matricula','tbl_inscripcion.realizo')
                            ->whereDate('tbl_cursos.inicio', '>=', $request->fecha1)
                            ->whereDate('tbl_cursos.inicio', '<=', $request->fecha2)
@@ -231,7 +231,7 @@ class CursoValidadoController extends Controller
         else if ($request->filtro == 'curso')
         {
             $data = tbl_curso::SELECT('tbl_cursos.curso','tbl_cursos.tcapacitacion','tbl_cursos.mod','tbl_cursos.espe',
-                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_curso.clave','tbl_inscripcion.alumno',
+                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_cursos.clave','tbl_inscripcion.alumno',
                             'tbl_inscripcion.matricula','tbl_inscripcion.realizo')
                            ->whereDate('tbl_cursos.inicio', '>=', $request->fecha1)
                            ->whereDate('tbl_cursos.inicio', '<=', $request->fecha2)
@@ -243,7 +243,7 @@ class CursoValidadoController extends Controller
         else if ($request->filtro == 'vinculador')
         {
             $data = tbl_curso::SELECT('tbl_cursos.curso','tbl_cursos.tcapacitacion','tbl_cursos.mod','tbl_cursos.espe',
-                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_curso.clave','tbl_inscripcion.alumno',
+                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_cursos.clave','tbl_inscripcion.alumno',
                             'tbl_inscripcion.matricula','tbl_inscripcion.realizo')
                            ->whereDate('tbl_cursos.inicio', '>=', $request->fecha1)
                            ->whereDate('tbl_cursos.inicio', '<=', $request->fecha2)
