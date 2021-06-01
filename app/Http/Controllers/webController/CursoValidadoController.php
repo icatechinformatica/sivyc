@@ -208,7 +208,7 @@ class CursoValidadoController extends Controller
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         return view('layouts.pages.vstareportecursovinculador', compact('unidades'));
     }
-
+//a
     public function vinculacion_reportepdf(Request $request)
     {
         $usuarioUnidad = Auth::user()->unidad;
