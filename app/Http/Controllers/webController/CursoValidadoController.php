@@ -256,8 +256,8 @@ class CursoValidadoController extends Controller
         foreach($data as $cadwell)
         {
             $ins_sivyc = Alumno::SELECT('alumnos_registro.realizo','alumnos_pre.curp', 'alumnos_pre.sexo')
-            ->WHERE('alumnos_registro.no_control', '=', $cadwell->id_curso)
-            ->WHERE('alumnos_registro.id_curso', '=', $cadwell->matricula)
+            ->WHERE('alumnos_registro.no_control', '=', $cadwell->matricula)
+            ->WHERE('alumnos_registro.id_curso', '=', $cadwell->id_curso)
             ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
             ->FIRST();
 
