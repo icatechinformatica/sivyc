@@ -33,7 +33,7 @@
             <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
             <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
             <h6>LISTA DE ASISTENCIA</h6>
-            <h6>(LAD-05)</h6> 
+            <h6>(LAD-04)</h6> 
            
      </header>
 
