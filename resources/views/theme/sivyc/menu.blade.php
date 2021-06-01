@@ -119,6 +119,9 @@
                         @can('financieros.reporte')
                             <a class="dropdown-item" href="{{route('financieros.reporte')}}">ESTADO DE CONTRATOS Y PAGOS</a>
                         @endcan
+                        @can('vinculacion.reporte')
+                            <a class="dropdown-item" href="{{route('cursosvinculador.reporte')}}">VINCULADOR-ALUMNO</a>
+                        @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">FORMATOT</a> --}}
                     </div>
                 </li>
@@ -128,7 +131,7 @@
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Grupos
-                        </a>                    
+                        </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('grupos.calificaciones')
                                 <a class="dropdown-item" href="{{route('grupos.calificaciones')}}">Registrar Calificaciones</a>
@@ -139,14 +142,14 @@
                             @can('grupos.cancelacionfolios')
                                 <a class="dropdown-item" href="{{route('grupos.cancelacionfolios')}}">Cancelar Folios</a>
                             @endcan
-                            @can('grupos.consultas')                        
-                                <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>                        
+                            @can('grupos.consultas')
+                                <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>
                             @endcan
                         </div>
-                    </li> 
+                    </li>
                 @endcan
                 {{-- grupo calificaciones end --}}
-                
+
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -154,10 +157,10 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
                             @can('vista.formatot.unidades.indice')
-                                <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación Formato T por Unidades</a> 
+                                <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación Formato T por Unidades</a>
                             @endcan
                             @can('vista.validacion.enlaces.dta')
-                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato t</a>  
+                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato t</a>
                             @endcan
                             @can('vista.validacion.direccion.dta')
                                 <a class="dropdown-item" href="{{ route('validacion.dta.revision.cursos.indice') }}">Validación de Cursos Formato t DTA</a>
@@ -192,29 +195,29 @@
                         </div>
                     </li>
                 @endcan
-                
+
                 {{-- modificaciones en el curso del menu --}}
                 {{-- consultas folios asignados --}}
                 @can('solicitudes.folios')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitudes
-                        </a>                     
+                        </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitudes.folios')
                                 <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
-                            @endcan                       
+                            @endcan
                             @can('solicitudes.cancelacionfolios')
                                 <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n Folios</a>
-                            @endcan                       
+                            @endcan
                         </div>
                     </li>
-                @endcan 
-     
+                @endcan
+
                 <li class="nav-item g-mx-5--lg dropdown">
                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Consultas
-                    </a>                    
+                    </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         @can('consultas.folios')
                             <a class="dropdown-item" href="{{route('consultas.folios')}}">Folios Asignados</a>
@@ -225,10 +228,10 @@
                         @can('consultas.cursosfinalizados')
                             <a class="dropdown-item" href="{{route('consultas.cursosfinalizados')}}">Cursos Finalizados</a>
                         @endcan
-                    </div>                    
-                </li> 
+                    </div>
+                </li>
                 {{-- consultas folios asignados END --}}
-                
+
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">

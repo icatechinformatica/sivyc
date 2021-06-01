@@ -18,6 +18,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\tbl_unidades;
+use App\Models\Alumno;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -210,80 +211,72 @@ class CursoValidadoController extends Controller
 
     public function vinculacion_reportepdf(Request $request)
     {
+        $usuarioUnidad = Auth::user()->unidad;
+        $unidadUsuario = DB::table('tbl_unidades')->WHERE('id', $usuarioUnidad)->FIRST();
+
         $i = 0;
         set_time_limit(0);
 
         if ($request->filtro == "general")
         {
-            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
-                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
-                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
-                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
-                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
-                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+            $data = tbl_curso::SELECT('tbl_cursos.curso','tbl_cursos.tcapacitacion','tbl_cursos.mod','tbl_cursos.espe',
+                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_curso.clave','tbl_inscripcion.alumno',
+                            'tbl_inscripcion.matricula','tbl_inscripcion.realizo')
+                           ->whereDate('tbl_cursos.inicio', '>=', $request->fecha1)
+                           ->whereDate('tbl_cursos.inicio', '<=', $request->fecha2)
+                           ->WHERE('tbl_cursos.unidad', '=', $unidadUsuario->ubicacion)
+                           ->LEFTJOIN('tbl_inscripcion', 'tbl_inscripcion.id_curso', '=', 'tbl_cursos.id')
                            ->GET();
         }
         else if ($request->filtro == 'curso')
         {
-            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
-                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
-                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
-                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
-                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+            $data = tbl_curso::SELECT('tbl_cursos.curso','tbl_cursos.tcapacitacion','tbl_cursos.mod','tbl_cursos.espe',
+                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_curso.clave','tbl_inscripcion.alumno',
+                            'tbl_inscripcion.matricula','tbl_inscripcion.realizo')
+                           ->whereDate('tbl_cursos.inicio', '>=', $request->fecha1)
+                           ->whereDate('tbl_cursos.inicio', '<=', $request->fecha2)
+                           ->WHERE('tbl_cursos.unidad', '=', $unidadUsuario->ubicacion)
                            ->WHERE('tbl_cursos.id', '=', $request->id_curso)
-                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->LEFTJOIN('tbl_inscripcion', 'tbl_inscripcion.id_curso', '=', 'tbl_cursos.id')
                            ->GET();
         }
         else if ($request->filtro == 'vinculador')
         {
-            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
-                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
-                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
-                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
-                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
-                           ->WHERE('instructores.id', '=', $request->id_instructor)
-                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
-                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+            $data = tbl_curso::SELECT('tbl_cursos.curso','tbl_cursos.tcapacitacion','tbl_cursos.mod','tbl_cursos.espe',
+                            'tbl_cursos.id_curso','tbl_cursos.unidad','tbl_curso.clave','tbl_inscripcion.alumno',
+                            'tbl_inscripcion.matricula','tbl_inscripcion.realizo')
+                           ->whereDate('tbl_cursos.inicio', '>=', $request->fecha1)
+                           ->whereDate('tbl_cursos.inicio', '<=', $request->fecha2)
+                           ->WHERE('tbl_cursos.unidad', '=', $unidadUsuario->ubicacion)
+                           ->WHERE('tbl_inscripcion.realizo', '=', $request->vinculadoraut)
+                           ->LEFTJOIN('tbl_inscripcion', 'tbl_inscripcion.id_curso', '=', 'tbl_cursos.id')
                            ->GET();
         }
 
-
         foreach($data as $cadwell)
         {
-            $risr[$i] = $this->numberFormat(round($cadwell->importe_total * 0.10, 2));
-            $riva[$i] = $this->numberFormat(round($cadwell->importe_total * 0.1066, 2));
+            $ins_sivyc = Alumno::SELECT('alumnos_registro.realizo','alumnos_pre.curp', 'alumnos_pre.sexo')
+            ->WHERE('alumnos_registro.no_control', '=', $cadwell->id_curso)
+            ->WHERE('alumnos_registro.id_curso', '=', $cadwell->matricula)
+            ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+            ->FIRST();
 
-            $iva[$i] = $this->numberFormat($cadwell->iva);
-            $cantidad[$i] = $this->numberFormat($cadwell->importe_total);
-
-            $hm = $cadwell->hombre+$cadwell->mujer;
-            if ($hm < 10)
+            if($ins_sivyc !=  NULL)
             {
-                $recursos[$i] = "Estatal";
+                $realizo[$i] = $ins_sivyc->realizo;
+                $curp[$i] = $ins_sivyc->curp;
+                $sexo[$i] = $ins_sivyc->sexo;
             }
             else
             {
-                $recursos[$i] = "Federal";
+                $curp[$i] = NULL;
+                $sexo[$i] = NULL;
             }
+
             $i++;
         }
 
-
-        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportevincalum', compact('data','curp','sexo','realizo'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
 
