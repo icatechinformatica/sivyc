@@ -21,6 +21,7 @@ use App\Models\tbl_unidades;
 use App\Models\Alumno;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class CursoValidadoController extends Controller
 {
