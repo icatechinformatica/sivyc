@@ -154,17 +154,17 @@
             {
                 if (document.getElementById('curso').checked) {
                     $('#div_curso').prop("class", "form-row")
-                    $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                    $('#div_vinculador').prop("class", "form-row d-none d-print-none")
                     $('#div_unidad').prop("class", "form-row d-none d-print-none")
                 }
                 else if (document.getElementById('general').checked) {
                     $('#div_curso').prop("class", "form-row d-none d-print-none")
-                    $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                    $('#div_vinculador').prop("class", "form-row d-none d-print-none")
                     $('#div_unidad').prop("class", "form-row d-none d-print-none")
                 }
                 else if (document.getElementById('unidad').checked) {
                     $('#div_curso').prop("class", "form-row d-none d-print-none")
-                    $('#div_instructor').prop("class", "form-row d-none d-print-none")
+                    $('#div_vinculador').prop("class", "form-row d-none d-print-none")
                     $('#div_unidad').prop("class", "form-row")
                 }
             }

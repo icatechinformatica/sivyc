@@ -565,4 +565,4 @@ Route::post('/supre/cancelacion/folio', 'webController\supreController@cancelFol
 //Reporte alumnos vinculacion 31/05/2021
 Route::get('/vinculadores/reporte-cursos', 'webController\CursoValidadoController@cursosVinculador_reporte')->name('cursosvinculador.reporte');
 Route::post('/directorio/getvin','webController\CursoValidadoController@get_vin')->name('get-vin');
-Route::post('/vinculacion/reporte/pdf','webController\supreController@planeacion_reportepdf')->name('vinculacion.reportepdf');
+Route::post('/vinculacion/reporte/pdf','webController\CursoValidadoController@vinculacion_reportepdf')->name('vinculacion.reportepdf');
