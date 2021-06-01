@@ -7,7 +7,7 @@
                 font-family: sans-serif;
             }
             @page {
-                margin: 110px 10px 110px;
+                margin: 110px 80px 110px;
             }
             header { position: fixed;
                 left: 0px;
