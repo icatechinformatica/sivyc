@@ -164,8 +164,7 @@
                 }
                 else if (document.getElementById('vinculador').checked) {
                     $('#div_curso').prop("class", "form-row d-none d-print-none")
-                    $('#div_vinculador').prop("class", "form-row d-none d-print-none")
-                    $('#div_unidad').prop("class", "form-row")
+                    $('#div_vinculador').prop("class", "form-row")
                 }
             }
         });
