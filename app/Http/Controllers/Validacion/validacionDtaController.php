@@ -238,8 +238,7 @@ class validacionDtaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexRevision(Request $request)
-    {
+    public function indexRevision(Request $request) {
         $unidades_busqueda = $request->get('busqueda_unidad');
 
         $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
@@ -408,13 +407,18 @@ class validacionDtaController extends Controller
 
         $memorandum = DB::table('tbl_cursos')
             ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo, tbl_unidades.unidad"))
-            ->leftjoin('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-            ->where('turnado', '=', 'REVISION_DTA')
-            ->where('status', '=', 'REVISION_DTA')
+            ->join('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+            // ->where('tbl_cursos.plantel', '=', 'UNIDAD')
+            ->where('tbl_unidades.cct', 'LIKE', '%07EIC%') // verificar que solo sean unidades
+            ->where('tbl_cursos.turnado', '=', 'REVISION_DTA')
+            ->where('tbl_cursos.status', '=', 'REVISION_DTA')
+            // ->where("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM'", '!=', null)
             ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM', memos->'TURNADO_EN_FIRMA'->>'NUMERO', tbl_unidades.unidad"))
             ->get();
 
-        $unidades = DB::table('tbl_unidades')->select('unidad')->orderBy('unidad', 'asc')->get();
+        // dd($memorandum);
+
+        $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
 
         $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
@@ -939,8 +943,7 @@ class validacionDtaController extends Controller
         return $documentUrl;
     }
 
-    protected function entrega_planeacion(Request $request)
-    {
+    protected function entrega_planeacion(Request $request) {
         $valor = $request->get('validarDireccionDta');
         if (isset($valor)) {
             # si la variable está inicializada procedemos a meterlo en el switch
@@ -1002,8 +1005,7 @@ class validacionDtaController extends Controller
         }
     }
 
-    private function generarMemorandumPlaneacion($num_memo_planeacion)
-    {
+    private function generarMemorandumPlaneacion($num_memo_planeacion) {
         if (isset($num_memo_planeacion)) {
             /**
              * obtener el mes de los cursos que se encuentran en el registro del módulo
@@ -1054,6 +1056,8 @@ class validacionDtaController extends Controller
                 'dgeneral',
                 'pdgeneral'
             )->first();
+            dd($reg_unidad->pdacademico);
+
             $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
             $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
             $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
@@ -1317,8 +1321,7 @@ class validacionDtaController extends Controller
     /**
      * funcion protegida hecha para exportar el reporte T de formato para Directores de la dirección DTA
      */
-    protected function xlsExportReporteFormatoTDirectorDTA(Request $request)
-    {
+    protected function xlsExportReporteFormatoTDirectorDTA(Request $request) {
         $anioActual = Carbon::now()->year;
 
         $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");

@@ -48,11 +48,13 @@ class ftcontroller extends Controller
                 // dd($_SESSION['unidad']);
             }
 
-            $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+            // $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
 
             // $var_cursos = DB::select('SELECT * FROM formato_t(?,?,?)', [$_SESSION['unidad'], '{NO REPORTADO, EN_FIRMA, RETORNO_UNIDAD}', null]);
-            
-            $var_cursos = DB::table('tbl_cursos as c')
+            $var_cursos = dataFormatoT($_SESSION['unidad'], ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
+            // dd($var_cursos);
+
+            /*$var_cursos = DB::table('tbl_cursos as c')
                 ->select('c.id AS id_tbl_cursos', 'c.status AS estadocurso' ,'c.unidad','c.plantel','c.espe','c.curso','c.clave','c.mod','c.dura',
                     DB::raw("case when extract(hour from to_timestamp(c.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
                     DB::raw('extract(day from c.inicio) as diai'),DB::raw('extract(month from c.inicio) as mesi'),
@@ -193,7 +195,8 @@ class ftcontroller extends Controller
                 ->WHERE('c.clave', '!=', 'null')
                 // ->WHERE(DB::raw("extract(year from c.termino)"), '=', $anio_actual)
                 ->groupby('c.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion', 'e.id')
-                ->distinct()->get();
+                ->distinct()->get(); */
+            // dd($var_cursos);
 
         } else {
             # si se encuentra vacio
@@ -767,14 +770,26 @@ class ftcontroller extends Controller
         $unidad_ = $request->unidadesFormatoT;
 
         // cursos unidades por planeacion
-        $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+        // $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
 
         // $formatot_planeacion_unidad1 = DB::select('SELECT * FROM formato_t(?,?,?)', [$unidad_, '{NO REPORTADO, EN_FIRMA, RETORNO_UNIDAD}', null]);
+        $formatot_planeacion_unidad = dataFormatoT($unidad_, ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
+        foreach ($formatot_planeacion_unidad as $value) {
+            unset($value->id_tbl_cursos);
+            unset($value->estadocurso);
+            unset($value->madres_solteras);
+            unset($value->observaciones_firma);
+            // unset($value->totalinscripciones);
+            // unset($value->masculinocheck);
+            // unset($value->femeninocheck);
+            unset($value->sumatoria_total_ins_edad);
+            unset($value->observaciones_enlaces);
+        }    
+
         // $formatot_planeacion_unidad = collect($formatot_planeacion_unidad1);
-        
         // $formatot_planeacion_unidad = array_push($formatot_planeacion_unidad, $formatot_planeacion_unidad[0]);
 
-        $formatot_planeacion_unidad = DB::table('tbl_cursos as c')
+        /* $formatot_planeacion_unidad = DB::table('tbl_cursos as c')
         ->select('c.unidad','c.plantel','c.espe','c.curso','c.clave','c.mod','c.dura',DB::raw("case when extract(hour from to_timestamp(c.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
             DB::raw('extract(day from c.inicio) as diai'),DB::raw('extract(month from c.inicio) as mesi'),DB::raw('extract(day from c.termino) as diat'),DB::raw('extract(month from c.termino) as mest'),DB::raw("case when EXTRACT( Month FROM c.termino) between '7' and '9' then '1' when EXTRACT( Month FROM c.termino) between '10' and '12' then '2' when EXTRACT( Month FROM c.termino) between '1' and '3' then '3' else '4' end as pfin"),
             'c.horas','c.dia',DB::raw("concat(c.hini,' ', 'A', ' ',c.hfin) as horario"),DB::raw('count(distinct(ca.id)) as tinscritos'),DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujer"),DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombre"),DB::raw("SUM(CASE WHEN ca.acreditado= 'X' THEN 1 ELSE 0 END) as egresado"),
@@ -887,55 +902,56 @@ class ftcontroller extends Controller
         ->WHERE(DB::raw("extract(year from c.termino)"), '=', $anio_actual)
         ->WHERE('c.clave', '!=', 'NULL')
         ->groupby('c.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
-        ->distinct()->get();
+        ->distinct()->get(); */
 
         // 'id curso', 'ESTADO DEL CURSO', discapacitados, ->, madres solteras
-        $head = ['UNIDAD DE CAPACITACION','TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)','ESPECIALIDAD','CURSO','CLAVE DEL GRUPO','MODALIDAD','DURACION TOTAL EN HORAS','TURNO','DIA INICIO','MES INICIO','DIA TERMINO','MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
-        'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION TOTAL MUJERES', 'EXONERACION TOTAL HOMBRES', 'EXONERACION PARCIAL MUJERES', 'EXONERACION PARCIAL HOMBRES', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
-        'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'STATUS', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS',  'MIGRANTES',
-        'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 
-        'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 
-        'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 
-        'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 
-        'INSCRITOS EDAD-4 MUJERES', 'INSCRITOS EDAD-4 HOMBRES', 
-        'INSCRITOS EDAD-5 MUJERES', 'INSCRITOS EDAD-5 HOMBRES', 
-        'INSCRITOS EDAD-6 MUJERES', 'INSCRITOS EDAD-6 HOMBRES', 
-        'INSCRITOS EDAD-7 MUJERES', 'INSCRITOS EDAD-7 HOMBRES',
-        'INSCRITOS EDAD-8 MUJERES', 'INSCRITOS EDAD-8 HOMBRES', 
-        'INSCRITOS ESC-1 MUJERES', 'INSCRITOS ESC-1 HOMBRES', 
-        'INSCRITOS ESC-2 MUJERES', 'INSCRITOS ESC-2 HOMBRES', 
-        'INSCRITOS ESC-3 MUJERES', 'INSCRITOS ESC-3 HOMBRES', 
-        'INSCRITOS ESC-4 MUJERES', 'INSCRITOS ESC-4 HOMBRES',
-        'INSCRITOS ESC-5 MUJERES', 'INSCRITOS ESC-5 HOMBRES',
-        'INSCRITOS ESC-6 MUJERES', 'INSCRITOS ESC-6 HOMBRES',
-        'INSCRITOS ESC-7 MUJERES', 'INSCRITOS ESC-7 HOMBRES',
-        'INSCRITOS ESC-8 MUJERES', 'INSCRITOS ESC-8 HOMBRES',
-        'INSCRITOS ESC-9 MUJERES', 'INSCRITOS ESC-9 HOMBRES', 
-        'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES', 
-        'ACREDITADOS ESC-2 MUJERES', 'ACREDITADOS ESC-2 HOMBRES',
-        'ACREDITADOS ESC-3 MUJERES', 'ACREDITADOS ESC-3 HOMBRES', 
-        'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES', 
-        'ACREDITADOS ESC-5 MUJERES', 'ACREDITADOS ESC-5 HOMBRES', 
-        'ACREDITADOS ESC-6 MUJERES', 'ACREDITADOS ESC-6 HOMBRES', 
-        'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES', 
-        'ACREDITADOS ESC-8 MUJERES', 'ACREDITADOS ESC-8 HOMBRES', 
-        'ACREDITADOS ESC-9 MUJERES', 'ACREDITADOS ESC-9 HOMBRES', 
-        'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES', 
-        'DESERTORES ESC-2 MUJERES', 'DESERTORES ESC-2 HOMBRES',
-        'DESERTORES ESC-3 MUJERES', 'DESERTORES ESC-3 HOMBRES', 
-        'DESERTORES ESC-4 MUJERES', 'DESERTORES ESC-4 HOMBRES', 
-        'DESERTORES ESC-5 MUJERES', 'DESERTORES ESC-5 HOMBRES', 
-        'DESERTORES ESC-6 MUJERES', 'DESERTORES ESC-6 HOMBRES', 
-        'DESERTORES ESC-7 MUJERES', 'DESERTORES ESC-7 HOMBRES', 
-        'DESERTORES ESC-8 MUJERES', 'DESERTORES ESC-8 HOMBRES', 
-        'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES', 
-        'OBSERVACIONES'
-        // 'OBSERVACIONES FIRMA', 'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO', 'SUMATORIA TOTAL', 'COMENTARIOS ENLACES'    
-    ];
+        $head = [
+            'UNIDAD DE CAPACITACION','TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)','ESPECIALIDAD','CURSO','CLAVE DEL GRUPO','MODALIDAD','DURACION TOTAL EN HORAS','TURNO','DIA INICIO','MES INICIO','DIA TERMINO','MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
+            'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION TOTAL MUJERES', 'EXONERACION TOTAL HOMBRES', 'EXONERACION PARCIAL MUJERES', 'EXONERACION PARCIAL HOMBRES', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
+            'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'STATUS', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS',  'MIGRANTES',
+            'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 
+            'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 
+            'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 
+            'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 
+            'INSCRITOS EDAD-4 MUJERES', 'INSCRITOS EDAD-4 HOMBRES', 
+            'INSCRITOS EDAD-5 MUJERES', 'INSCRITOS EDAD-5 HOMBRES', 
+            'INSCRITOS EDAD-6 MUJERES', 'INSCRITOS EDAD-6 HOMBRES', 
+            'INSCRITOS EDAD-7 MUJERES', 'INSCRITOS EDAD-7 HOMBRES',
+            'INSCRITOS EDAD-8 MUJERES', 'INSCRITOS EDAD-8 HOMBRES', 
+            'INSCRITOS ESC-1 MUJERES', 'INSCRITOS ESC-1 HOMBRES', 
+            'INSCRITOS ESC-2 MUJERES', 'INSCRITOS ESC-2 HOMBRES', 
+            'INSCRITOS ESC-3 MUJERES', 'INSCRITOS ESC-3 HOMBRES', 
+            'INSCRITOS ESC-4 MUJERES', 'INSCRITOS ESC-4 HOMBRES',
+            'INSCRITOS ESC-5 MUJERES', 'INSCRITOS ESC-5 HOMBRES',
+            'INSCRITOS ESC-6 MUJERES', 'INSCRITOS ESC-6 HOMBRES',
+            'INSCRITOS ESC-7 MUJERES', 'INSCRITOS ESC-7 HOMBRES',
+            'INSCRITOS ESC-8 MUJERES', 'INSCRITOS ESC-8 HOMBRES',
+            'INSCRITOS ESC-9 MUJERES', 'INSCRITOS ESC-9 HOMBRES', 
+            'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES', 
+            'ACREDITADOS ESC-2 MUJERES', 'ACREDITADOS ESC-2 HOMBRES',
+            'ACREDITADOS ESC-3 MUJERES', 'ACREDITADOS ESC-3 HOMBRES', 
+            'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES', 
+            'ACREDITADOS ESC-5 MUJERES', 'ACREDITADOS ESC-5 HOMBRES', 
+            'ACREDITADOS ESC-6 MUJERES', 'ACREDITADOS ESC-6 HOMBRES', 
+            'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES', 
+            'ACREDITADOS ESC-8 MUJERES', 'ACREDITADOS ESC-8 HOMBRES', 
+            'ACREDITADOS ESC-9 MUJERES', 'ACREDITADOS ESC-9 HOMBRES', 
+            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES', 
+            'DESERTORES ESC-2 MUJERES', 'DESERTORES ESC-2 HOMBRES',
+            'DESERTORES ESC-3 MUJERES', 'DESERTORES ESC-3 HOMBRES', 
+            'DESERTORES ESC-4 MUJERES', 'DESERTORES ESC-4 HOMBRES', 
+            'DESERTORES ESC-5 MUJERES', 'DESERTORES ESC-5 HOMBRES', 
+            'DESERTORES ESC-6 MUJERES', 'DESERTORES ESC-6 HOMBRES', 
+            'DESERTORES ESC-7 MUJERES', 'DESERTORES ESC-7 HOMBRES', 
+            'DESERTORES ESC-8 MUJERES', 'DESERTORES ESC-8 HOMBRES', 
+            'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES', 
+            'OBSERVACIONES',
+            'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO'
+            // 'OBSERVACIONES FIRMA', 'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO', 'SUMATORIA TOTAL', 'COMENTARIOS ENLACES'    
+        ];
 
         $nombreLayout = "FORMATO_T_PARA_LA_UNIDAD_".$unidad_.".xlsx";
         $titulo = "FORMATO T DE LA UNIDAD ".$unidad_;
-
         
         if(count($formatot_planeacion_unidad)>0){  
             return Excel::download(new FormatoTReport($formatot_planeacion_unidad,$head, $titulo), $nombreLayout);
