@@ -143,7 +143,6 @@
                                 <a class="dropdown-item" href="{{route('grupos.cancelacionfolios')}}">Cancelar Folios</a>
                             @endcan
                             @can('grupos.consultas')
-                                <a class="dropdown-item" href="{{route('grupos.consultas')}}">Consultas</a>
                                 <li class="nav-item g-mx-5--lg dropdown">
                                     <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Consultas
@@ -154,6 +153,9 @@
                                         @endcan
                                         @can('consultas.lotes')
                                             <a class="dropdown-item" href="{{route('consultas.lotes')}}">Actas de Folios</a>
+                                        @endcan
+                                        @can('consultas.cursosaperturados')
+                                            <a class="dropdown-item" href="{{route('consultas.cursosfinalizados')}}">Cursos Finalizados</a>
                                         @endcan
                                         @can('consultas.cursosaperturados')
                                             <a class="dropdown-item" href="{{route('consultas.cursosaperturados')}}">Cursos Aperturados</a>
