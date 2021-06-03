@@ -654,12 +654,15 @@ class supreController extends Controller
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
 
-        $cadwell = folio::SELECT('id_cursos')->WHERE('id_supre', '=', $id)->GET();
+        $cadwell = folio::SELECT('id_cursos')->WHERE('id_supre', '=', $id)
+            ->WHERE('folios.status', '!=', 'Cancelado')
+            ->GET();
         foreach ($cadwell as $item)
         {
             $h = tbl_curso::SELECT('hombre')->WHERE('id', '=', $item->id_cursos)->FIRST();
             $m = tbl_curso::SELECT('mujer')->WHERE('id', '=', $item->id_cursos)->FIRST();
             $hm = $h->hombre+$m->mujer;
+            //printf($item->id_cursos  . $h . ' + ' . $m . '=' . $hm . ' // ');
             if ($hm < 10)
             {
                 $recursos[$i] = "Estatal";
@@ -670,6 +673,8 @@ class supreController extends Controller
             }
             $i++;
         }
+
+       // dd($recursos);
 
 
         $date = strtotime($data2->fecha);
@@ -694,7 +699,7 @@ class supreController extends Controller
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 
-        return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
+        return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
     }
 
     protected function monthToString($month)

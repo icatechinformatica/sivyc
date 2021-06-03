@@ -12,7 +12,6 @@
         br {
             line-height:70px;
         }
-        }
 
         #myInput {
         background-image: url('img/search.png');
@@ -24,10 +23,7 @@
         padding: 12px 20px 12px 40px;
         border: 1px solid #ddd;
         margin-bottom: 12px;
-
-        br {
             line-height:50px;
-        }
         }
     </style>
     <div class="container g-pt-50">
