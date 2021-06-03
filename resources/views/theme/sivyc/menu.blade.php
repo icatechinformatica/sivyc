@@ -243,12 +243,11 @@
                         @can('consultas.lotes')
                             <a class="dropdown-item" href="{{route('consultas.lotes')}}">Actas de Folios</a>
                         @endcan
-                        @can('consultas.cursosfinalizados')
-                            <a class="dropdown-item" href="{{route('consultas.cursosfinalizados')}}">Cursos Finalizados</a>
+                        @can('consultas.cursosaperturados')
+                            <a class="dropdown-item" href="{{route('consultas.cursosaperturados')}}">Cursos Aperturados</a>
                         @endcan
                     </div>
-                </li>
-                {{-- consultas folios asignados END --}}
+             </li>
 
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
