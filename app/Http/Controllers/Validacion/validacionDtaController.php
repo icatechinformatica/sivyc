@@ -1018,6 +1018,8 @@ class validacionDtaController extends Controller
                 ->orderBy(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), 'desc')
                 ->limit(1)
                 ->get();
+            
+            // dd($queryMesMemo);
 
             # GENERAMOS EL DOCUMENTO EN PDF
             $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
