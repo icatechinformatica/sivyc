@@ -1,4 +1,4 @@
-<!--Creado por Orlando Chavez-->
+<!--Creado por Orlando Chavez -->
 @extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
 @section('title', 'Contratos | SIVyC Icatech')
