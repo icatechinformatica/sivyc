@@ -52,6 +52,7 @@
                     <th scope="col">UNIDAD</th>
                     <th scope="col">CLAVE DE CURSO</th>
                     <th scope="col">NOMBRE DEL CURSO</th>
+                    <th scope="col">TIPO DE CURSO</th>
                     <th scope="col">INSTRUCTOR</th>
                     <th scope="col">FECHA IMPARTIR</th>
                     <th scope="col">Documentos</th>
@@ -64,6 +65,7 @@
                             <td>{{$itemData->unidad}}</td>
                             <td>{{$itemData->clave}}</td>
                             <td>{{$itemData->nombrecur}}</td>
+                            <td>{{$itemData->tcapacitacion}}</td>
                             <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
                             <td>{{ \Carbon\Carbon::parse($itemData->inicio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($itemData->termino)->format('d/m/Y') }}</td>
                             <td>
