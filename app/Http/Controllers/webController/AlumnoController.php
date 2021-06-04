@@ -1057,12 +1057,8 @@ class AlumnoController extends Controller
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
-        //$path = $file->storeAs('/filesUpload/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
-        //$documentUrl = $documentFile;
-        $path = 'alumnos/'.$id.'/'.$documentFile;
-        Storage::disk('mydisk')->put($path, file_get_contents($file));
-        //$path = storage_path('app/filesUpload/alumnos/'.$id.'/'.$documentFile);
-        $documentUrl = Storage::disk('mydisk')->url('/uploadFiles/alumnos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $file->storeAs('/uploadFiles/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+        $documentUrl = Storage::url('/uploadFiles/alumnos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
 
