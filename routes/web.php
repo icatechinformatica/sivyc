@@ -318,7 +318,8 @@ Route::middleware(['auth'])->group(function () {
     /**
      * agregado en 06 de marzo del 2020
      */
-    Route::get('/convenios/indice', 'webController\ConveniosController@index')->name('convenios.index');
+    Route::get('/convenios/indice', 'webController\ConveniosController@index')->name('convenios.index')
+    ->middleware('can:convenios.index');
     Route::get('/convenios/crear', 'webController\ConveniosController@create')->name('convenio.create')
     ->middleware('can:convenios.create');
     Route::post('/convenios/guardar', 'webController\ConveniosController@store')->name('convenios.store')
@@ -516,7 +517,8 @@ Route::post('/directorio/getcurso','webController\supreController@get_curso')->n
 Route::post('/directorio/getins','webController\supreController@get_ins')->name('get-ins');
 
 /* Modulo CERSS 11012021 */
-Route::get('/cerss/inicio', 'webController\CerssController@index')->name('cerss.inicio');
+Route::get('/cerss/inicio', 'webController\CerssController@index')->name('cerss.inicio')
+    ->middleware('can:cerss.inicio');
 Route::get('/cerss/formulario', 'webController\CerssController@create')->name('cerss.frm');
 Route::get('/cerss/modificar/{id}', 'webController\CerssController@update')->name('cerss.update');
 Route::post('/cerss/formulario/save', 'webController\CerssController@save')->name('cerss.save');
@@ -550,7 +552,8 @@ Route::get('/unidades/modificar/{id}', 'webController\UnidadesController@editar'
 Route::post('/unidades/modificar/guardar', 'webController\UnidadesController@update')->name('unidades-actualizar');
 
 /* Modulo exoneraciones */
-Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio');
+Route::get('/exoneraciones/inicio', 'webController\ExoneracionesController@index')->name('exoneraciones.inicio')
+    ->middleware('can:exoneraciones.inicio');
 Route::get('/exoneraciones/agregar', 'webController\ExoneracionesController@create')->name('exoneraciones.agregar')
     ->middleware('can:exoneraciones.create');
 Route::post('/exoneraciones/guardar', 'webController\ExoneracionesController@store')->name('exoneraciones.guardar')

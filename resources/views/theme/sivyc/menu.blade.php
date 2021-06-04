@@ -61,8 +61,12 @@
                         @can('alumnos.inscritos.index')
                             <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         @endcan
-                        <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
-                        <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
+                        @can('convenios.index')
+                            <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
+                        @endcan
+                        @can('cerss.inicio')
+                            <a class="dropdown-item" href="{{route('cerss.inicio')}}">CERSS</a>
+                        @endcan
                         @can('areas.inicio')
                             <a class="dropdown-item" href="{{route('areas.inicio')}}">Áreas</a>
                         @endcan
@@ -72,7 +76,9 @@
                         @can('unidades.index')
                             <a class="dropdown-item" href="{{route('unidades.inicio')}}">Unidades</a>
                         @endcan
-                        <a class="dropdown-item" href="{{route('exoneraciones.inicio')}}">Exoneraciones</a>
+                        @can('exoneraciones.inicio')
+                            <a class="dropdown-item" href="{{route('exoneraciones.inicio')}}">Exoneraciones</a>
+                        @endcan
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
                         @endcan
@@ -153,17 +159,20 @@
                 @can('formatot.menu.indice')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a href="#" class="nav-link g-color-white--hover" id="navbarDropdownMenuLinkValidacion" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Formatos t
+                            Formatos T
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLinkValidacion">
                             @can('vista.formatot.unidades.indice')
                                 <a class="dropdown-item" href="{{route('vista_formatot')}}">Generación Formato T por Unidades</a>
                             @endcan
                             @can('vista.validacion.enlaces.dta')
-                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato t</a>
+                                <a class="dropdown-item" href="{{ route('validacion.cursos.enviados.dta') }}">Revisión de Cursos Formato T</a>
                             @endcan
                             @can('vista.validacion.direccion.dta')
-                                <a class="dropdown-item" href="{{ route('validacion.dta.revision.cursos.indice') }}">Validación de Cursos Formato t DTA</a>
+                                <a class="dropdown-item" href="{{ route('validacion.dta.revision.cursos.indice') }}">Validación de Cursos Formato T DTA</a>
+                            @endcan
+                            @can('vista.revision.validacion.planeacion.indice')
+                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Revisión y Validación Final Formato T</a>
                             @endcan
                             @can('vista.validacion.direccion.dta')
                                 <a class="dropdown-item" href="{{ route('indice.dta.aperturado.indice') }}" >Formato T Aperturado</a>
@@ -176,9 +185,6 @@
                                 <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memorandums Enviados a DTA</a>
                             @endcan
                             {{-- agregar nuevo elemento a menu END --}}
-                            @can('vista.revision.validacion.planeacion.indice')
-                                <a class="dropdown-item" href="{{ route('planeacion.formatot.index') }}">Revisión y Validación Final Formato t</a>
-                            @endcan
                             @can('vista.formatot.unidades.indice')
                                 <a href="{{ route('cursos.reportados.historico.index') }}" class="dropdown-item">Cursos Reportados de Meses Anteriores Para la Unidad</a>
                             @endcan
