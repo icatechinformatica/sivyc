@@ -260,7 +260,7 @@ class AlumnoController extends Controller
                 } else {
                     $fecha_nacimiento = $anio."-".$mes."-".$dia;
                 }
-
+//A
                 $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
                     'id_unidad' => $usuarioUnidad,
                     'nombre' => $request->input('nombre_aspirante_cerss'),
