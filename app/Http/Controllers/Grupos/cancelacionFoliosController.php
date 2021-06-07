@@ -96,8 +96,13 @@ class cancelacionfoliosController extends Controller
             if(count($cancelar)>0){
                  $result = DB::table('tbl_folios')->wherein('id',$cancelar)->update(
                     ['movimiento' => 'CANCELADO', 'motivo' => $request->motivo,'num_autorizacion'=>$request->num_autorizacion,'file_autorizacion'=>$url_file, 'iduser_updated' => Auth::user()->id, 'realizo'=>Auth::user()->name , 'updated_at'=>date('Y-m-d H:i:s')]
-                 );                        
-                 if($result) $message = "Operación exitosa!! el registro ha sido guardado correctamente.";
+                 );             
+                 if($result){
+                     if($request->motivo=='ERROR MECANOGRAFICO')
+                            $resultIns = DB::table('tbl_inscripcion')->wherein('id_folio',$cancelar)->update(['id_folio' => null]);
+                    
+                    $message = "Operación exitosa!! el registro ha sido guardado correctamente.";
+                 }
             }else $message = "No existen folios que cancelar.";
         }
         return redirect('/grupos/cancelacionfolios')->with(['message'=>$message, 'clave'=>$clave]);
