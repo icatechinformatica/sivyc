@@ -134,6 +134,7 @@ class AlumnoController extends Controller
                 /**
                  * formar el formato fecha para fecha de nacimiento
                  */
+                $usuarioUnidad = Auth::user()->unidad;
                 $dia = trim($request->dia);
                 $mes = trim($request->mes);
                 $anio = trim($request->anio);
@@ -143,6 +144,7 @@ class AlumnoController extends Controller
                 $nombre_estado = DB::table('estados')->where('id', $request->input('estado'))->select('nombre')->first();
 
                 $AlumnoPreseleccion = new Alumnopre;
+                $AlumnoPreseleccion->id_unidad = $usuarioUnidad;
                 $AlumnoPreseleccion->nombre = $request->nombre;
                 $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
                 $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
@@ -196,6 +198,7 @@ class AlumnoController extends Controller
      */
     public function storecerss(Request $request)
     {
+        $usuarioUnidad = Auth::user()->unidad;
 
         $rules = [
             'nombre_cerss' => ['required', 'min:4'],
@@ -259,6 +262,7 @@ class AlumnoController extends Controller
                 }
 
                 $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
+                    'id_unidad' => $usuarioUnidad,
                     'nombre' => $request->input('nombre_aspirante_cerss'),
                     'apellido_paterno' => (is_null($request->input('apellidoPaterno_aspirante_cerss')) ? '' : $request->input('apellidoPaterno_aspirante_cerss')),
                     'apellido_materno' => (is_null($request->input('apellidoMaterno_aspirante_cerss')) ? '' : $request->input('apellidoMaterno_aspirante_cerss')),
