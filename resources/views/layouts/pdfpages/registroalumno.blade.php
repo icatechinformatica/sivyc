@@ -8,14 +8,14 @@
   <style>
     body{
       font-family: sans-serif;
-      font-size: 1.3em;
-      margin: 10px;
+      font-size: 1.2em;
+      margin: 10px 10px 10px 10px;
     }
     @page {
         margin: 20px 20px;
     }
     small {
-        font-size: .7em
+        font-size: .6em
     }
     sa {
         text-decoration-line: overline;
@@ -24,12 +24,16 @@
         text-decoration-line: underline;
     }
     table {
-        margin-top: .6em;
-        margin-bottom: 0.5em;
+        margin-top: .3em;
+        margin-bottom: 0.2em;
+        border-collapse: collapse
         padding: 0; margin: 0;
         border: 0.8px solid black; //Cualquier otro tipo de borde como bottom que es el inferior o ninguno
     }
     table, td {
+        margin-top: .0em;
+        margin-bottom: 0em;
+        border-collapse: collapse;
         border-style: none;
         padding: 0;
         border: 1px solid black; //Cualquier otro tipo de borde como bottom que es el inferior o ninguno
@@ -45,16 +49,16 @@
     td.tres { width: calc(100%/2); }
     td.cuatro { width: calc(100%/4); }
     small.sml {
-        font-size: .5em
+        font-size: .4em
     }
     td{
-        padding: 2em 3px;
+        padding: 0em 0px;
     }
     div.centrado {
         text-align: center;
     }
     small.texto-centrado {
-        font-size: .8em
+        font-size: .7em
     }
     .linea {
         border-top: 1px solid black;
@@ -93,7 +97,7 @@
                 SOLICITUD DE INSCRIPCIÓN ( SID - 01 ).</b>
                 </div>
             </small>
-        </p>
+        </p><br>
         <table class="table tds">
             <colgroup>
                 <col style="width: 33%"/>
@@ -101,8 +105,8 @@
                 <col style="width: 33%"/>
             </colgroup>
             <tbody>
-                <tr>
-                    <td style="border: hidden">
+                <tr style="height: 25px; margin: 0px; paddin: 0px;">
+                    <td style="border: hidden;">
                         <small>
                             <div class="centrados">
                                 {{$date}}
@@ -141,19 +145,21 @@
             <colgroup>
 				<col style="width: 30%"/>
 				<col style="width: 70%"/>
+                <col style="width: 30%"/>
+                <col style="width: 25%"/>
 			</colgroup>
             <thead>
-              <tr>
-                <td scope="col" colspan="2">
+              <tr style='padding-bottom: -1em'>
+                <td scope="col" colspan="4" style='padding-bottom: -1em'>
                     <div align="center">
-                        <b>DATOS DE LA UNIDAD DE CAPACITACIÓN</b>
+                        <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATOS DE LA UNIDAD DE CAPACITACIÓN</b>
                     </div>
                 </td>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td colspan="2" style='border-bottom:none'>
+                <td colspan="3" style='border-bottom:none'>
                     <small>
                         <b>INSTITUTO:</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <se>
@@ -163,13 +169,13 @@
                 </td>
               </tr>
               <tr>
-                <td scope="row" class="tres" style='border-right:none;border-top:none'>
+                <td scope="row" colspan="2" style='border-right:none;border-top:none'>
                     <small>
                         <b> UNIDAD DE CAPACITACIÓN: &nbsp;&nbsp; {{ $alumnos->unidad }}</b>
                     </small>
 
                 </td>
-                <td scope="row" class="tres" style='border-left:none;border-top:none'>
+                <td scope="row" colspan="2" style='border-left:none;border-top:none'>
                    <small>
                        <b> CLAVE CCT:  {{$alumnos->unidades }}</b>
                    </small>
@@ -177,121 +183,119 @@
               </tr>
             </tbody>
         </table>
-        <table class="table td">
+       <table class="table td">
             <colgroup>
 				<col style="width: 25%"/>
                 <col style="width: 25%"/>
                 <col style="width: 25%"/>
-                <col style="width: 25%"/>
-			</colgroup>
-            <thead>
-                <tr>
-                  <td scope="col" colspan="4">
-                      <div align="center">
-                          <b>DATOS PERSONALES</b>
-                      </div>
-                  </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
-                        <small>
-                            <b> PRIMER APELLIDO: &nbsp;&nbsp; </b>
-                            <se>{{ $alumnos->apellido_paterno }}</se>
-                        </small>
+                    <col style="width: 25%"/>
+                </colgroup>
+           <thead>
+                    <tr>
+                    <td scope="col" colspan="4">
+                        <div align="center">
+                            <b>DATOS PERSONALES</b>
+                        </div>
                     </td>
-                    <td scope="row" style='border-right:none;border-left:none; border-bottom:none;'>
-                        <small>
-                            <b> SEGUNDO APELLIDO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->apellido_materno }}</se>
-                        </small>
-                    </td>
-                    <td scope="row" colspan="2" style='border-left:none; border-bottom:none;'>
-                        <small>
-                            <b> NOMBRE(S): &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->nombrealumno }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>SEXO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->sexo }}</se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>CURP: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->curp_alumno }}</se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>EDAD: &nbsp;&nbsp;</b>
-                            <se>{{ $edad }} AÑOS </se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>TELEFONO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->telefono }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>DOMICILIO: &nbsp;&nbsp;</b>
-                            <se>
-                                {{ $alumnos->domicilio }}
-                            </se>
-                        </small>
-                    </td>
-                    <td colspan="2" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>COLONIA O LOCALIDAD: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->colonia }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>C.P.: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->cp }}</se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>MUNICIPIO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->municipio }}</se>
-                        </small>
-                    </td>
-                    <td colspan="2" style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>ESTADO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->estado }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>ESTADO CIVIL: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->estado_civil }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style='border-right:none; border-top:none;'>
-                        <small>
-                            <b>DISCAPACIDAD QUE PRESENTA: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->discapacidad }}</se>
-                        </small>
-                    </td>
-                </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
+                            <small>
+                                <b> PRIMER APELLIDO: &nbsp;&nbsp; </b>
+                                <se>{{ $alumnos->apellido_paterno }}</se>
+                            </small>
+                        </td>
+                        <td scope="row" style='border-right:none;border-left:none; border-bottom:none;'>
+                            <small>
+                                <b> SEGUNDO APELLIDO: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->apellido_materno }}</se>
+                            </small>
+                        </td>
+                        <td scope="row" colspan="2" style='border-left:none; border-bottom:none;'>
+                            <small>
+                                <b> NOMBRE(S): &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->nombrealumno }}</se>
+                            </small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>SEXO: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->sexo }}</se>
+                            </small>
+                        </td>
+                        <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>CURP: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->curp_alumno }}</se>
+                            </small>
+                        </td>
+                        <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>EDAD: &nbsp;&nbsp;</b>
+                                <se>{{ $edad }} AÑOS </se>
+                            </small>
+                        </td>
+                        <td style='border-left:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>TELEFONO: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->telefono }}</se>
+                            </small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>DOMICILIO: &nbsp;&nbsp;</b>
+                                <se>
+                                    {{ $alumnos->domicilio }}
+                                </se>
+                            </small>
+                        </td>
+                        <td colspan="2" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>COLONIA O LOCALIDAD: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->colonia }}</se>
+                            </small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>C.P.: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->cp }}</se>
+                            </small>
+                        </td>
+                        <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>MUNICIPIO: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->municipio }}</se>
+                            </small>
+                        </td>
+                        <td colspan="2" style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>ESTADO: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->estado }}</se>
+                            </small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='border-right:none; border-top:none; border-bottom:none;'>
+                            <small>
+                                <b>ESTADO CIVIL: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->estado_civil }}</se>
+                            </small>
+                        </td>
+                        <td colspan="3" style='border-right:none; border-top:none; border-left:none;'>
+                            <small>
+                                <b>DISCAPACIDAD QUE PRESENTA: &nbsp;&nbsp;</b>
+                                <se>{{ $alumnos->discapacidad }}</se>
+                            </small>
+                        </td>
+                    </tr>
             </tbody>
         </table>
         <table class="table td" cellspacing="0" cellpadding="0">
@@ -344,22 +348,21 @@
                         <small>
                             <b>DOCUMENTACIÓN ENTREGADA: &nbsp;&nbsp;</b>
                             <se><br>
-                                @if($alumnos->chk_acta_nacimiento == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;@if($alumnos->chk_ine == TRUE)(X) @else() ( ) @endif COPIA DE LA CREDENCIAL DEL ELECTOR (INE) O IDENTIFICACIÓN OFICIAL
-                            <p>@if($alumnos->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE LA CURP;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos->chk_pasaporte_licencia == TRUE)(X) @else() ( ) @endif PASAPORTE, LICENCIA DE MANEJO O CARTILLA MILITAR
-                            <br>@if($alumnos->chk_comprobante_domicilio == TRUE)(X) @else() ( ) @endif COPIA DE COMPROBANTE DE DOMICILIO&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS
-                            <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA </se>
-
+                                @if($alumnos->chk_acta_nacimiento == TRUE || $alumnos->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO (NO MAYOR A 2 AÑOS) O CURP (VIGENCIA UN AÑO)
+                            <br>@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS EN CASO DE CONTAR CON EL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA DIGITAL O IMPRESA</se>
+                            <br><b>EXTRANJEROS ANEXAR: &nbsp;&nbsp;</b>
+                            <se><p>@if($alumnos->chk_comprobante_calidad_migratoria == TRUE)(X) @else() ( ) @endif COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL</se>
                         </small>
                     </td>
                 </tr>
-                <tr>
+                <!--<tr>
                     <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
                             <b>EXTRANJEROS ANEXAR: &nbsp;&nbsp;</b>
                             <se><p>@if($alumnos->chk_comprobante_calidad_migratoria == TRUE)(X) @else() ( ) @endif COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL</se>
                         </small>
                     </td>
-                </tr>
+                </tr>-->
                 <tr>
                     <td style='border-right:none; border-top:none; border-bottom:none;'>
                         <small>
@@ -397,7 +400,7 @@
                 </tr>
             </tbody>
         </table>
-        <p><p><p> <p><p><p> <br><br><br><br><br>
+        <p><p><p> <p><p><p>
         <table class="table td" cellspacing="0" cellpadding="0">
             <colgroup>
 				<col style="width: 50%"/>
@@ -481,7 +484,7 @@
                 <col style="width: 25%"/>
             </colgroup>
             <thead>
-                <tr>
+                <!--<tr>
                     <td colspan="4" style='border-right:none; border-top:none; border-bottom:none;'>
                         <div class="left-algn">
                             <small>
@@ -489,22 +492,33 @@
                             </small>
                         </div>
                     </td>
-                </tr>
+                </tr>-->
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="2" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
+                    <td colspan="4" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <small>
+                                <b>COMPROBANTE PARA EL INSTITUTO</b>
+                            </small>
+                        
+                        <br>
                         <small>
                             <b>FECHA:</b>
                             <se>{{$date}}</se>
                         </small>
-                    </td>
-                    <td colspan="2" scope="row" class="tres" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <small>
                             <b>NÚMERO DE SOLICITUD:</b>
                             <se>{{$alumnos->no_control}}{{$alumnos->id}}</se>
                         </small>
                     </td>
+                   <!-- <td colspan="2" scope="row" class="tres" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
+                        <br><small>
+                            <b>NÚMERO DE SOLICITUD:</b>
+                            <se>{{$alumnos->no_control}}{{$alumnos->id}}</se>
+                        </small>
+                    </td>-->
                 </tr>
                 <tr>
                     <td colspan="4" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
