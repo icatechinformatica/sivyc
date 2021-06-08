@@ -591,3 +591,8 @@ Route::post('/supre/cancelacion/folio', 'webController\supreController@cancelFol
 Route::get('/vinculadores/reporte-cursos', 'webController\CursoValidadoController@cursosVinculador_reporte')->name('cursosvinculador.reporte');
 Route::post('/directorio/getvin','webController\CursoValidadoController@get_vin')->name('get-vin');
 Route::post('/vinculacion/reporte/pdf','webController\CursoValidadoController@vinculacion_reportepdf')->name('vinculacion.reportepdf');
+/**
+ * apartado supre generado por ISC. Orlando Chavez 07/06/2021
+ */
+Route::get('planeacion/generar/reporte/{filtrotipo}/{idcurso}/{unidad}/{idInstructor}/{fecha1}/{fecha2}', 'webController\supreController@generate_report_supre_pdf')->name('planeacion.generar.reporte.supre.pdf');
+Route::get('planeacion/generar/reporte/xls/{filtrotipo}/{idcurso}/{unidad}/{idInstructor}/{fecha1}/{fecha2}', 'webController\supreController@generate_report_supre_xls')->name('planeacion.generar.reporte.supre.xls');
