@@ -107,7 +107,7 @@
                 </div>
             </div>
 
-            {{-- envio de los botones de descarga --}}
+            {{-- envio de los botones de descargaa --}}
             @if (isset($filtrotipo))
                 <div class="row">
                     <div class="col-md-9">
