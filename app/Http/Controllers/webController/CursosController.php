@@ -51,7 +51,7 @@ class CursosController extends Controller
         ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
                    'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
                    'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
-                   'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre']);
+                   'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre', 'cursos.tipo_curso']);
         }
         else
         {
@@ -61,7 +61,7 @@ class CursosController extends Controller
             ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
                        'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
                        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
-                       'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre']);
+                       'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre', 'cursos.tipo_curso']);
         }
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
