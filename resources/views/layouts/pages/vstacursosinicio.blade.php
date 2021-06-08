@@ -63,6 +63,7 @@
                 <tr>
                     <th scope="col">Especialidad</th>
                     <th scope="col">Curso</th>
+                    <th scope="col">Tipo de Curso</th>
                     <th scope="col">Duración</th>
                     <th scope="col">Modalidad</th>
                     <th scope="col">Clasificación</th>
@@ -76,8 +77,9 @@
             <tbody>
                 @foreach ($data as $itemData)
                     <tr>
-                    <th scope="row">{{$itemData->nombre}}</th>
+                        <th scope="row">{{$itemData->nombre}}</th>
                         <td>{{$itemData->nombre_curso}}</td>
+                        <td>{{$itemData->tipo_curso}}</td>
                         <td>{{$itemData->horas}}</td>
                         <td>{{$itemData->modalidad}}</td>
                         <td>{{$itemData->clasificacion}}</td>

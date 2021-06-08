@@ -661,6 +661,9 @@ $(function(){
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> MEMO ACTUALIZACIÓN: </b> ' + '<a href="'+response[0].documento_memo_actualizacion+'" target="_blank">DOCUMENTO</a>'
                   +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +   '<b>OBJETIVOS DEL CURSO: </b>' + response[0].objetivo
+                  +   '</li>'
                   + '</ul>'
               );
             },
