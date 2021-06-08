@@ -21,11 +21,13 @@ class validacionDtaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
-
-        //
+    public function index(Request $request) {
         $unidad = $request->get('busqueda_unidad');
+        $mesSearch = $request->get('mesSearchE');
+
+        if ($mesSearch != null) {
+            session(['mesBuscarE' => $mesSearch]);
+        }
 
         $temp_inner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $anio_actual = Carbon::now()->year; // año actual obtenido del servidor
@@ -186,12 +188,14 @@ class validacionDtaController extends Controller
                 $join->on('ca.matricula', '=', 'ins.matricula');
             })
             ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
+            ->whereMonth('fecha_turnado', $mesSearch)
             ->WHERE('u.ubicacion', '=', $unidad)
             ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
             // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
             ->WHEREIN('tbl_cursos.turnado', ['DTA', 'MEMO_TURNADO_RETORNO'])
             ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
-            ->distinct()->get();
+            ->distinct()
+            ->get();
 
         $memorandum = DB::table('tbl_cursos')
             ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo"))
@@ -200,7 +204,6 @@ class validacionDtaController extends Controller
             ->where('tbl_unidades.ubicacion', '=', $unidad)
             ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM', memos->'TURNADO_EN_FIRMA'->>'NUMERO'"))
             ->first();
-
 
         /**
          * vamos a consultar para regresar cursos a la unidad
@@ -211,9 +214,8 @@ class validacionDtaController extends Controller
             ->where('status', '=', 'REVISION_DTA')
             ->get();
 
-        $unidades = DB::table('tbl_unidades')
-            ->select('unidad')
-            ->orderBy('unidad', 'asc')->get();
+        // $unidades = DB::table('tbl_unidades')->select('unidad')->orderBy('unidad', 'asc')->get();
+        $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
 
         $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
@@ -230,7 +232,7 @@ class validacionDtaController extends Controller
         $diasParaEntrega = $this->getFechaDiff();
 
         // dd($cursos_validar);
-        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar', 'unidad', 'diasParaEntrega'));
+        return view('reportes.vista_validaciondta', compact('cursos_validar', 'unidades', 'memorandum', 'regresar_unidad', 'fechaEntregaFormatoT', 'mesInformar', 'unidad', 'diasParaEntrega', 'mesSearch'));
     }
 
     /**
@@ -1108,10 +1110,10 @@ class validacionDtaController extends Controller
         return $dias;
     }
 
-    protected function xlsExportReporteFormatotEnlacesUnidad(Request $request)
-    {
+    protected function xlsExportReporteFormatotEnlacesUnidad(Request $request) {
         $anio_actual = Carbon::now()->year;
         $unidadActual = $request->unidad_;
+        $mesSearch = $request->mes_;
 
         $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         // cursos unidades por planeacion
@@ -1262,6 +1264,7 @@ class validacionDtaController extends Controller
             })
             ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
             ->WHERE('u.ubicacion', '=', $unidadActual)
+            ->whereMonth('fecha_turnado', $mesSearch)
             ->WHERE('tbl_cursos.status', '=', 'TURNADO_DTA')
             // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
             ->WHERE('tbl_cursos.turnado', '=', 'DTA')

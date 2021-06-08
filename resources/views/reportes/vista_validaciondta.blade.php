@@ -61,6 +61,7 @@
 @endsection
 
 @section('content')
+
     <div class="container-fluid px-5 g-pt-30">
         {{-- información sobre la entrega del formato t para unidades --}}
         @switch($diasParaEntrega)
@@ -99,12 +100,28 @@
                     <h2>VALIDACIÓN DE CURSOS PARA DIRECCIÓN TÉCNICA ACADÉMICA <strong>(ENLACES)</strong> </h2>
 
                     {!! Form::open(['route' => 'validacion.cursos.enviados.dta', 'method' => 'GET', 'class' => 'form-inline']) !!}
-                    <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
-                        <option value="">-- BUSQUEDA POR UNIDAD --</option>
-                        @foreach ($unidades as $itemUnidades)
-                            <option value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
-                        @endforeach
-                    </select>
+                        <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
+                            <option value="">-- BUSQUEDA POR UNIDAD --</option>
+                            @foreach ($unidades as $itemUnidades)
+                                <option {{$itemUnidades->unidad == $unidad ? 'selected' : ''}} value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="mesSearchE" id="mesSearchE" class="form-control mr-sm-2">
+                            <option value="">-- MES A BUSCAR --</option>
+                            <option {{$mesSearch == '01' ? 'selected' : ''}} value="01">ENERO</option>
+                            <option {{$mesSearch == '02' ? 'selected' : ''}} value="02">FEBRERO</option>
+                            <option {{$mesSearch == '03' ? 'selected' : ''}} value="03">MARZO</option>
+                            <option {{$mesSearch == '04' ? 'selected' : ''}} value="04">ABRIL</option>
+                            <option {{$mesSearch == '05' ? 'selected' : ''}} value="05">MAYO</option>
+                            <option {{$mesSearch == '06' ? 'selected' : ''}} value="06">JUNIO</option>
+                            <option {{$mesSearch == '07' ? 'selected' : ''}} value="07">JULIO</option>
+                            <option {{$mesSearch == '08' ? 'selected' : ''}} value="08">AGOSTO</option>
+                            <option {{$mesSearch == '09' ? 'selected' : ''}} value="09">SEPTIEMBRE</option>
+                            <option {{$mesSearch == '10' ? 'selected' : ''}} value="10">OCTUBRE</option>
+                            <option {{$mesSearch == '11' ? 'selected' : ''}} value="11">NOVIEMBRE</option>
+                            <option {{$mesSearch == '12' ? 'selected' : ''}} value="12">DICIEMBRE</option>
+                        </select>
 
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">FILTRAR</button>
                     {!! Form::close() !!}
@@ -128,6 +145,7 @@
                         </button>
                     </div>
                     <input type="hidden" name="unidad_" id="unidad_" value="{{ $unidad }}">
+                    <input type="hidden" name="mes_" id="mes_" value="{{ $mesSearch }}">
                 </div>
             </form>
 
@@ -144,12 +162,14 @@
                             placeholder="BUSQUEDA POR CLAVE DE CURSO">
                     </div>
                     <div class="form-group col-md-4 mb-2">
-                        <a href="{{ $memorandum->memorandum }}" target="_blank"
-                            class="btn btn-info btn-circle m-1 btn-circle-sm"
-                            title="DESCARGAR MEMORANDUM N° {{ $memorandum->num_memo }}">
-                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
-                            MEMORANDUM {{ $memorandum->num_memo }}
-                        </a>
+                        @if ($memorandum != null)
+                            <a href="{{ $memorandum->memorandum }}" target="_blank"
+                                class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                title="DESCARGAR MEMORANDUM N° {{ $memorandum->num_memo }}">
+                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>&nbsp;
+                                MEMORANDUM {{ $memorandum->num_memo }}
+                            </a>
+                        @endif
                     </div>
                 </div>
                 <div class="form-row">
@@ -504,12 +524,12 @@
                             </tbody>
                         </table>
                     </div>
-                    <input type="hidden" name="num_memo" id="num_memo" value="{{ $memorandum->num_memo }}">
+                    <input type="hidden" name="num_memo" id="num_memo" value="{{ $memorandum != null ? $memorandum->num_memo : '' }}">
                     <input type="hidden" name="unidadActual" id="unidadActual" value="{{ $unidad }}">
                 </div>
             </form>
         @else
-            <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
+            <h2><b>NO  SE ENCONTRARON REGISTROS</b></h2>
         @endif
         <br>
     </div>
