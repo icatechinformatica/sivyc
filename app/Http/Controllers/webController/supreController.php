@@ -473,18 +473,18 @@ class supreController extends Controller
 
     public function planeacion_reportepdf(Request $request)
     {
-        
+
         $filtrotipo = (isset($request->filtro) ? $request->filtro: 0);
         $idcurso = (isset($request->id_curso) ? $request->id_curso : 0);
         $unidad = (empty($request->unidad) ? $request->unidad : 0);
         $idInstructor = (isset($request->id_instructor)? $request->id_instructor : 0);
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
-        
-        # si el arreglo nos retorna un número mayor a cero
+
+        # ssi el arreglo nos retorna un número mayor a cero
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         return view('layouts.pages.vstareporteplaneacion', compact('unidades', 'filtrotipo','idcurso','unidad','idInstructor','fecha1','fecha2'));
-       
+
         // dd($data);
 
         // $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva'));
@@ -504,7 +504,7 @@ class supreController extends Controller
 
         // $nombreLayout = "formato de control".$request->fecha1 . ' - '. $request->fecha2.".xlsx";
         // $titulo = "formato de control ".$request->fecha1 . ' - '. $request->fecha2;
-        // if(count($data)>0){  
+        // if(count($data)>0){
         //     return Excel::download(new FormatoTReport($data,$head, $titulo), $nombreLayout);
         // }
 
@@ -762,7 +762,7 @@ class supreController extends Controller
     }
 
     /**
-     * agregar métodos - generate_report_supre_pdf - 
+     * agregar métodos - generate_report_supre_pdf -
      */
     protected function generate_report_supre_pdf($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
@@ -859,7 +859,7 @@ class supreController extends Controller
     }
 
     /**
-     * 
+     *
      */
     protected function generate_report_supre_xls($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
@@ -960,7 +960,7 @@ class supreController extends Controller
 
         $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2.".xlsx";
         $titulo = "formato de control ".$fecha1 . ' - '. $fecha2;
-        if(count($data)>0){  
+        if(count($data)>0){
             return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
         }
     }
