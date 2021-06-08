@@ -110,12 +110,12 @@
             {{-- envio de los botones de descarga --}}
             @if (isset($filtrotipo))
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-9">
                         <a class="btn btn-danger" href="{{ route('planeacion.generar.reporte.supre.pdf', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}">
                             <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp; Reporte Pdf
                         </a>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <a href="{{ route('planeacion.generar.reporte.supre.xls', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}" class="btn btn-success" style="background-color:transparent;">
                             <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp; reporte Excel
                         </a>
@@ -123,7 +123,7 @@
                 </div>
             @endif
             {{-- comment --}}
-            
+
             <div id="div_curso" class="form-row d-none d-print-none">
                 <div class="form-group col-md-2"></div>
                 <div class="form-group col-md-6">
