@@ -62,6 +62,7 @@ class supreController extends Controller
             {
                 $validacion_folio = folio::SELECT('folio_validacion')
                  ->WHERE('folio_validacion', '=', $value['folio'])
+                 ->WHERE('status', '!=', 'Cancelado')
                  ->FIRST();
                  if (isset($validacion_folio))
                  {
@@ -69,7 +70,10 @@ class supreController extends Controller
                     ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE FOLIO INGRESADO YA SE ENCUENTRA REGISTRADO', $validacion_folio));
                  }
                  $claveval = tbl_curso::SELECT('id')->WHERE('clave', '=', $value['clavecurso'])->FIRST();
-                 $validacion_curso = folio::SELECT('id_cursos')->WHERE('id_cursos', '=', $claveval->id)->FIRST();
+                 $validacion_curso = folio::SELECT('id_cursos')
+                 ->WHERE('id_cursos', '=', $claveval->id)
+                 ->WHERE('status', '!=', 'Cancelado')
+                 ->FIRST();
                  if (isset($validacion_curso))
                  {
                     return redirect()->route('frm-supre')
