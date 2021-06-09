@@ -110,7 +110,7 @@
                         @foreach($alumnos as $a)
                             <?php 
                             $asignar = false;
-                            if(($a->calificacion>5 AND !$a->folio) OR ($a->id_folioi== $a->id_foliof AND $a->movimiento=='CANCELADO'  AND $a->reexpedicion==false)){
+                            if(($a->calificacion>5 AND !$a->folio) OR ( $a->movimiento=='CANCELADO'  AND $a->reexpedicion==false)){
                                 if(count($alumnos)>0 AND isset($actas)) $boton_asignar = $asignar = true;
                             }    
                             ?>
