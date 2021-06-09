@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
+use App\Models\pago;
 
 class supreController extends Controller
 {
@@ -54,69 +55,98 @@ class supreController extends Controller
     }
 
     public function store(Request $request) {
-        $supre = new supre();
-        $curso_validado = new tbl_curso();
-        $directorio = new supre_directorio();
-
-        //Guarda Solicitud
-        $supre->unidad_capacitacion = strtoupper($request->unidad);
-        $supre->no_memo = strtoupper($request->memorandum);
-        $supre->fecha = strtoupper($request->fecha);
-        $supre->status = 'En_Proceso';
-        $supre->fecha_status = strtoupper($request->fecha);
-        $supre->save();
-
-       $id = $supre->id;
-       $directorio->supre_dest = $request->id_destino;
-       $directorio->supre_rem = $request->id_remitente;
-       $directorio->supre_valida = $request->id_valida;
-       $directorio->supre_elabora = $request->id_elabora;
-       $directorio->supre_ccp1 = $request->id_ccp1;
-       $directorio->supre_ccp2 = $request->id_ccp2;
-       $directorio->id_supre = $id;
-       $directorio->save();
-
-        //Guarda Folios
-        foreach ($request->addmore as $key => $value){
-            $folio = new folio();
-            $folio->folio_validacion = strtoupper($value['folio']);
-            $folio->iva = $value['iva'];
-            $folio->comentario = $value['comentario'];
-            $clave = strtoupper($value['clavecurso']);
-            $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
-                    ->WHERE('tbl_cursos.clave', '=', $clave)
-                    ->FIRST();
-            $importe = $value['importe']/1.16;
-            $X = $hora->dura;
-            if ($X != NULL)
+        $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
+        if (is_null($memo))
+        {
+            foreach ($request->addmore as $key => $value)
             {
-                if (strpos($hora->dura, " ")) {
-                    # si tiene un espacio en blanco la cadena
-                    $str_horas = explode (" ", $hora->dura);
-                    $horas = (int) $str_horas[0];
-                } else {
-                    $horas = (int) $hora->dura;
+                $validacion_folio = folio::SELECT('folio_validacion')
+                 ->WHERE('folio_validacion', '=', $value['folio'])
+                 ->FIRST();
+                 if (isset($validacion_folio))
+                 {
+                    return redirect()->route('frm-supre')
+                    ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE FOLIO INGRESADO YA SE ENCUENTRA REGISTRADO', $validacion_folio));
+                 }
+                 $claveval = tbl_curso::SELECT('id')->WHERE('clave', '=', $value['clavecurso'])->FIRST();
+                 $validacion_curso = folio::SELECT('id_cursos')->WHERE('id_cursos', '=', $claveval->id)->FIRST();
+                 if (isset($validacion_curso))
+                 {
+                    return redirect()->route('frm-supre')
+                    ->withErrors(sprintf('LO SENTIMOS, EL CURSO INGRESADO YA SE ENCUENTRA REGISTRADO', $validacion_curso));
+                 }
+            }
+            $supre = new supre();
+            $curso_validado = new tbl_curso();
+            $directorio = new supre_directorio();
+
+            //Guarda Solicitud
+            $supre->unidad_capacitacion = strtoupper($request->unidad);
+            $supre->no_memo = strtoupper($request->memorandum);
+            $supre->fecha = strtoupper($request->fecha);
+            $supre->status = 'En_Proceso';
+            $supre->fecha_status = strtoupper($request->fecha);
+            $supre->save();
+
+            $id = $supre->id;
+            $directorio->supre_dest = $request->id_destino;
+            $directorio->supre_rem = $request->id_remitente;
+            $directorio->supre_valida = $request->id_valida;
+            $directorio->supre_elabora = $request->id_elabora;
+            $directorio->supre_ccp1 = $request->id_ccp1;
+            $directorio->supre_ccp2 = $request->id_ccp2;
+            $directorio->id_supre = $id;
+            $directorio->save();
+
+            //Guarda Folios
+            foreach ($request->addmore as $key => $value)
+            {
+                $folio = new folio();
+                $folio->folio_validacion = strtoupper($value['folio']);
+                $folio->iva = $value['iva'];
+                $folio->comentario = $value['comentario'];
+                $clave = strtoupper($value['clavecurso']);
+                $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
+                        ->WHERE('tbl_cursos.clave', '=', $clave)
+                        ->FIRST();
+                $importe = $value['importe']/1.16;
+                $X = $hora->dura;
+                if ($X != NULL)
+                {
+                    if (strpos($hora->dura, " "))
+                    {
+                        # si tiene un espacio en blanco la cadena
+                        $str_horas = explode (" ", $hora->dura);
+                        $horas = (int) $str_horas[0];
+                    } else
+                    {
+                        $horas = (int) $hora->dura;
+                    }
+                    $importe_hora = $importe / $horas;
+                    $folio->importe_hora = $importe_hora;
+                    $folio->importe_total = $value['importe'];
+                    $folio->id_supre = $id;
+                    $folio->id_cursos = $hora->id;
+                    $folio->status = 'En_Proceso';
+                    $folio->save();
                 }
-                $importe_hora = $importe / $horas;
-                $folio->importe_hora = $importe_hora;
-                $folio->importe_total = $value['importe'];
-                $folio->id_supre = $id;
-                $folio->id_cursos = $hora->id;
-                $folio->status = 'En_Proceso';
-                $folio->save();
+                else
+                {
+                    supre::WHERE('id', '=', $id)->DELETE();
+                    supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
+                    return redirect()->route('supre-inicio')
+                            ->with('success','Error Interno. Intentelo mas tarde.');
+                }
             }
-            else
-            {
-                supre::WHERE('id', '=', $id)->DELETE();
-                supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
-                return redirect()->route('supre-inicio')
-                        ->with('success','Error Interno. Intentelo mas tarde.');
-            }
-        }
-//
-// este es el cambio de prueba cherry-pick
-        return redirect()->route('supre-inicio')
+
+            return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+        }
+        else
+        {
+            return redirect()->route('frm-supre')
+                    ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE MEMORANDUM INGRESADO YA SE ENCUENTRA REGISTRADO', $request->memorandum));
+        }
     }
 
     public function solicitud_modificar($id)
@@ -320,6 +350,14 @@ class supreController extends Controller
         $folio->observacion_cancelacion = $request->observaciones;
         $folio->status = 'Cancelado';
         $folio->save();
+
+        $idcontrato = contratos::SELECT('id_contrato')->WHERE('id_folios', '=', $request->idf)->FIRST();
+        if($idcontrato != NULL)
+            {
+                contrato_directorio::WHERE('id_contrato', '=', $idcontrato->id_contrato)->DELETE();
+                pago::WHERE('id_contrato', '=', $request->idf)->DELETE();
+                contratos::where('id_folios', '=', $request->idf)->DELETE();
+            }
         return redirect()->route('supre-inicio')
                     ->with('success','Folio de Suficiencia Presupuestal Cancelada');
     }
@@ -473,18 +511,18 @@ class supreController extends Controller
 
     public function planeacion_reportepdf(Request $request)
     {
-        
+
         $filtrotipo = (isset($request->filtro) ? $request->filtro: 0);
         $idcurso = (isset($request->id_curso) ? $request->id_curso : 0);
         $unidad = (empty($request->unidad) ? $request->unidad : 0);
         $idInstructor = (isset($request->id_instructor)? $request->id_instructor : 0);
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
-        
+
         # si el arreglo nos retorna un número mayor a cero
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         return view('layouts.pages.vstareporteplaneacion', compact('unidades', 'filtrotipo','idcurso','unidad','idInstructor','fecha1','fecha2'));
-       
+
         // dd($data);
 
         // $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva'));
@@ -504,7 +542,7 @@ class supreController extends Controller
 
         // $nombreLayout = "formato de control".$request->fecha1 . ' - '. $request->fecha2.".xlsx";
         // $titulo = "formato de control ".$request->fecha1 . ' - '. $request->fecha2;
-        // if(count($data)>0){  
+        // if(count($data)>0){
         //     return Excel::download(new FormatoTReport($data,$head, $titulo), $nombreLayout);
         // }
 
@@ -762,7 +800,7 @@ class supreController extends Controller
     }
 
     /**
-     * agregar métodos - generate_report_supre_pdf - 
+     * agregar métodos - generate_report_supre_pdf -
      */
     protected function generate_report_supre_pdf($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
@@ -859,7 +897,7 @@ class supreController extends Controller
     }
 
     /**
-     * 
+     *
      */
     protected function generate_report_supre_xls($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
@@ -960,7 +998,7 @@ class supreController extends Controller
 
         $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2.".xlsx";
         $titulo = "formato de control ".$fecha1 . ' - '. $fecha2;
-        if(count($data)>0){  
+        if(count($data)>0){
             return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
         }
     }
