@@ -629,9 +629,6 @@ $(function(){
                   +     '<b> Unidad Móvil: </b> '+ response[0].unidad_amovil
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> Memo de Validación: </b> '+ response[0].memo_validacion
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
                   +     '<b> NIVEL DE ESTUDIOS: </b> ' + response[0].nivel_estudio
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
@@ -662,7 +659,7 @@ $(function(){
                   +     '<b> MEMO ACTUALIZACIÓN: </b> ' + '<a href="'+response[0].documento_memo_actualizacion+'" target="_blank">DOCUMENTO</a>'
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +   '<b>OBJETIVOS DEL CURSO: </b>' + response[0].objetivo
+                  +     '<b>OBJETIVOS DEL CURSO: </b>' + response[0].objetivo
                   +   '</li>'
                   + '</ul>'
               );
