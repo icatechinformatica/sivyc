@@ -987,8 +987,9 @@ class AlumnoController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad = $request->idEsp_mod;
             $tipo_curso = $request->tipo_mod;
+            $unidad_seleccionada = '["'.$request->unidad.'"]';
             //$Curso = new curso();
-            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['estado', '=', true]])->get();
+            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['unidades_disponible', '@>', $unidad_seleccionada], ['estado', '=', true]])->orderBy('nombre_curso', 'asc')->get();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);
