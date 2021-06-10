@@ -775,7 +775,7 @@ class AlumnoController extends Controller
         $Especialidad = new especialidad;
         $unidadestbl = new tbl_unidades();
         $tblUnidades = $unidadestbl->SELECT('ubicacion')->GROUPBY('ubicacion')->GET(['ubicacion']);
-        $especialidades = $Especialidad->all(['id', 'nombre']);
+        $especialidades = $Especialidad->SELECT('id', 'nombre')->orderBy('nombre', 'asc')->GET();
         $Alumno = $AlumnoMatricula->findOrfail($idpre, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'sexo', 'curp', 'fecha_nacimiento',
         'telefono', 'cp', 'estado', 'municipio', 'estado_civil', 'discapacidad', 'domicilio', 'colonia']);
 
