@@ -13,6 +13,7 @@ use App\Models\Municipio;
 use App\Models\Estado;
 use App\Models\especialidad;
 use App\Models\curso;
+use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\Log;
 // reference the Dompdf namespace
 use PDF;
@@ -102,13 +103,13 @@ class AlumnoRegistradoController extends Controller
      */
     public function edit($id) {
         $Especialidad = new especialidad;
-        $especialidades = $Especialidad->all();
+        $especialidades = $Especialidad->SELECT('id','nombre')->orderBy('nombre', 'asc')->GET();
         $municipio = new Municipio();
         $estado = new Estado();
         $municipios = $municipio->all();
         $estados = $estado->all();
         $curso = new curso();
-        $cursos = $curso->all();
+        //$cursos = $curso->all();
         //
         $id_alumno_registro = base64_decode($id);
         $alumnos = Alumno::WHERE('alumnos_registro.id', '=', $id_alumno_registro)
@@ -126,6 +127,10 @@ class AlumnoRegistradoController extends Controller
                         'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_registro.id_especialidad', 'alumnos_registro.id_curso'
                     ]);
 
+        $ubicacion = tbl_unidades::SELECT('ubicacion')->WHERE('unidad', '=', $alumnos->unidad)->FIRST();
+        $unidad_seleccionada = '["'.$ubicacion->ubicacion.'"]';
+        $cursos = $curso->select('id','nombre_curso')->where([['tipo_curso', '=', $alumnos->tipo_curso], ['id_especialidad', '=', $alumnos->id_especialidad], ['estado', '=', true]])->orderBy('nombre_curso', 'asc')->get();
+
         $fecha_nac = explode("-", $alumnos->fecha_nacimiento);
         $anio_nac = $fecha_nac[0];
         $mes_nac = $fecha_nac[1];
@@ -133,7 +138,7 @@ class AlumnoRegistradoController extends Controller
 
 
 
-        return view('layouts.pages.alumno_registro_modificar', compact('alumnos', 'especialidades', 'municipios', 'estados', 'dia_nac', 'mes_nac', 'anio_nac', 'cursos'));
+        return view('layouts.pages.alumno_registro_modificar', compact('alumnos', 'especialidades', 'municipios', 'estados', 'dia_nac', 'mes_nac', 'anio_nac', 'cursos', 'unidad_seleccionada', 'ubicacion'));
     }
 
     /**

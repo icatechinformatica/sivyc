@@ -56,7 +56,7 @@
         <div style="text-align: center;">
             <h4><b>DATOS DEL CURSO</b></h4>
         </div>
-        
+
         <form method="POST" id="form_sid_registro" action="{{ route('alumnos-cursos.update', ['idregistrado' => base64_encode($alumnos->id) ]) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -95,6 +95,7 @@
                 <div class="form-group col-md-6">
                     <label for="horario" class="control-label">HORARIO:</label>
                     <input type="text" name="horario_mod" id="horario_mod" value="{{$alumnos->horario}}" class="form-control" autocomplete="off">
+                    <input type="text" hidden name="unidad" id="unidad" value="{{$ubicacion->ubicacion}}" class="form-control" autocomplete="off">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="grupo_mod" class="control-label">GRUPO:</label>
@@ -123,7 +124,7 @@
                 </div>
             </div>
         {{-- modal END --}}
-        
+
     </div>
 @endsection
 {{-- parte de javascript --}}
@@ -167,8 +168,8 @@
                 $("#especialidad_sid_mod option:selected").each( () => {
                     var IdEsp = $('#especialidad_sid_mod').val();
                     var tipo = $('#tipo_curso_mod').val();
-                    var unidad = $('#tblunidades').val();
-                    var datos = { idEsp_mod: IdEsp, tipo_mod: tipo, _token: "{{ csrf_token() }}"};
+                    var unidad = $('#unidad').val();
+                    var datos = { idEsp_mod: IdEsp, tipo_mod: tipo, unidad: unidad, _token: "{{ csrf_token() }}"};
                     var url = "{{route('alumnos.sid.cursos.modificado')}}";
 
                     var solicitud = $.ajax({
