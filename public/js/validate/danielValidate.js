@@ -650,13 +650,7 @@ $(function(){
                   +     '<b> Curso Tipo: </b> ' + response[0].tipo_curso
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + '<a href="'+response[0].documento_solicitud_autorizacion+'" target="_blank">DOCUMENTO</a>'
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> MEMO VALIDACIÓN: </b> ' + '<a href="'+response[0].documento_memo_validacion+'" target="_blank">DOCUMENTO</a>'
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> MEMO ACTUALIZACIÓN: </b> ' + '<a href="'+response[0].documento_memo_actualizacion+'" target="_blank">DOCUMENTO</a>'
+                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response[0].solicitud_autorizacion ? 'SI' : 'NO')
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>OBJETIVOS DEL CURSO: </b>' + response[0].objetivo

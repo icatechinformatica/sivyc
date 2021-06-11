@@ -877,11 +877,11 @@ class supreController extends Controller
 
         foreach($data as $cadwell)
         {
-            $risr[$i] = $this->numberFormat(round($cadwell->importe_total * 0.10, 2));
-            $riva[$i] = $this->numberFormat(round($cadwell->importe_total * 0.1066, 2));
+            $risr[$i] = $this->numberFormat( floatval(round($cadwell->importe_total * 0.10, 2)));
+            $riva[$i] = $this->numberFormat( floatval(round($cadwell->importe_total * 0.1066, 2)));
 
-            $iva[$i] = $this->numberFormat($cadwell->iva);
-            $cantidad[$i] = $this->numberFormat($cadwell->importe_total);
+            $iva[$i] = $this->numberFormat( floatval($cadwell->iva));
+            $cantidad[$i] = $this->numberFormat( floatval($cadwell->importe_total));
 
             $hm = $cadwell->hombre+$cadwell->mujer;
             if ($hm < 10)
@@ -909,12 +909,25 @@ class supreController extends Controller
 
         if ($filtrotipo == "general")
         {
-            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
-                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
-                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+            $data = supre::SELECT('tabla_supre.no_memo', 
+                    'folios.folio_validacion as suf',
+                    'tabla_supre.fecha', 
+                    \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
+                    'tabla_supre.unidad_capacitacion', 
+                    'tbl_cursos.curso',
+                    'tbl_cursos.clave',
+                    'tbl_cursos.ze', 
+                    'tbl_cursos.dura', 
+                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99') AS importe_hora"),
+                    \DB::raw("TO_CHAR(folios.iva, '999,999.99') AS importe_iva_16"),
+                    \DB::raw("'12101 Honorarios' AS partida_concepto"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_federal"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END AS importe_estatal"),
+                    \DB::raw("ROUND(folios.importe_total * 0.10, 2) AS retencion_isr"),
+                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2) AS retencion_iva"),
+                    'tabla_supre.folio_validacion AS memo_validacion',
+                    'tabla_supre.fecha_validacion AS fecha_registro',
+                    'folios.comentario AS observaciones')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -924,12 +937,23 @@ class supreController extends Controller
         }
         else if ($filtrotipo == 'curso')
         {
-            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
-                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
-                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+            $data = supre::SELECT('tabla_supre.no_memo', 
+                    'folios.folio_validacion as suf',
+                    'tabla_supre.fecha', 
+                    \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
+                    'tabla_supre.unidad_capacitacion', 
+                    'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tbl_cursos.ze', 'tbl_cursos.dura', 
+                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    \DB::raw("'12101 Honorarios'"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END"),
+                    \DB::raw("ROUND(folios.importe_total * 0.10, 2)"),
+                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2)"),
+                    'tabla_supre.folio_validacion',
+                    'tabla_supre.fecha_validacion',
+                    'folios.comentario')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('tbl_cursos.id', '=', $idcurso)
@@ -940,12 +964,19 @@ class supreController extends Controller
         }
         else if ($filtrotipo == 'unidad')
         {
-            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
-                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
-                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+            $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
+                    'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
+                    'tabla_supre.unidad_capacitacion', 'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    \DB::raw("'12101 Honorarios'"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END"),
+                    \DB::raw("ROUND(folios.importe_total * 0.10, 2)"),
+                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2)"),
+                    'tabla_supre.folio_validacion',
+                    'tabla_supre.fecha_validacion',
+                    'folios.comentario')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)
@@ -956,12 +987,19 @@ class supreController extends Controller
         }
         else if ($filtrotipo == 'instructor')
         {
-            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
-                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
-                           'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                           'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+            $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
+                    'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
+                    'tabla_supre.unidad_capacitacion', 'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
+                    \DB::raw("'12101 Honorarios'"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') ELSE 0 END"),
+                    \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) < 10 THEN TO_CHAR(folios.importe_total, '999,999.99') ELSE 0 END"),
+                    \DB::raw("ROUND(folios.importe_total * 0.10, 2)"),
+                    \DB::raw("ROUND(folios.importe_total * 0.1066, 2)"),
+                    'tabla_supre.folio_validacion',
+                    'tabla_supre.fecha_validacion',
+                    'folios.comentario')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('instructores.id', '=', $idInstructor)
@@ -971,31 +1009,10 @@ class supreController extends Controller
                            ->GET();
         }
 
-
-        foreach($data as $cadwell)
-        {
-            $risr[$i] = $this->numberFormat(round($cadwell->importe_total * 0.10, 2));
-            $riva[$i] = $this->numberFormat(round($cadwell->importe_total * 0.1066, 2));
-
-            $iva[$i] = $this->numberFormat($cadwell->iva);
-            $cantidad[$i] = $this->numberFormat($cadwell->importe_total);
-
-            $hm = $cadwell->hombre+$cadwell->mujer;
-            if ($hm < 10)
-            {
-                $recursos[$i] = "Estatal";
-            }
-            else
-            {
-                $recursos[$i] = "Federal";
-            }
-            $i++;
-        }
-
         $cabecera = [
-            'SEC. DE SOLIC.', 'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA',
-            'FECHA', 'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO', 'CLAVE DEL GRUPO',
-            'Z.E.', 'HSM', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
+            'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO', 'CLAVE DEL GRUPO',
+            'Z.E.', 'HSM', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES'
         ];
