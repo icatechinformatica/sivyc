@@ -297,6 +297,14 @@ class ContratoController extends Controller
 
     public function contrato_save(Request $request)
     {
+        $check_contrato = contratos::SELECT('numero_contrato')
+            ->WHERE('numero_contrato', '=', $request->numero_contrato)
+            ->FIRST();
+        if(isset($check_contrato))
+        {
+            return back()->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE CONTRATO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->numero_contrato));
+        }
+
         $contrato = new contratos();
         $contrato->numero_contrato = $request->numero_contrato;
         $contrato->instructor_perfilid = $request->perfil_instructor;
@@ -484,8 +492,13 @@ class ContratoController extends Controller
     }
 
     public function save_doc(Request $request){
-        $pago = new pago();
+        $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
+        if(isset($check_pago))
+        {
+            return back()->withErrors(sprintf('LO SENTIMOS, EL MEMORANDUM DE PAGO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->no_memo));
+        }
 
+        $pago = new pago();
         $pago->no_memo = $request->no_memo;
         $pago->id_contrato = $request->id_contrato;
         $pago->liquido = $request->liquido;
