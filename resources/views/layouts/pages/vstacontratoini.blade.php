@@ -152,7 +152,7 @@
                                         </a>
                                     @endcan
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
@@ -179,7 +179,7 @@
                                         <i class="fa fa-address-book" aria-hidden="true"></i>
                                     </a>
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
@@ -201,7 +201,7 @@
                                         <i class="fa fa-address-book" aria-hidden="true"></i>
                                     </a>
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
@@ -232,7 +232,7 @@
                                         </button>
                                     @endcan
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
@@ -263,7 +263,7 @@
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
@@ -289,7 +289,7 @@
                                         </button>
                                     @endcan
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
@@ -306,7 +306,7 @@
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
@@ -323,7 +323,7 @@
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
                                     @can('folio.cancel')
-                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#cancelModalFolio"
                                             data-id='{{$itemData->id_folios}}'
