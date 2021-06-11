@@ -4,6 +4,15 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div> <br>
+        @endif
         <form action="{{ route('contrato-save') }}" method="post" id="registercontrato" enctype="multipart/form-data">
             @csrf
             <div style="text-align: right;width:65%">
