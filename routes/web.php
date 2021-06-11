@@ -391,6 +391,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reportes/acred/pdf', 'reportesController\cursosController@riacAcred')->name('reportes.acred.pdf');
     Route::post('/reportes/cert/pdf', 'reportesController\cursosController@riacCert')->name('reportes.cert.pdf');
     Route::post('/reportes/const/xls', 'reportesController\cursosController@xlsConst')->name('reportes.const.xls');
+    /*REPORTE 911 AGC*/
+    Route::get('/reportes/911', 'reportesController\formato911Controller@showForm')->name('reportes.911.showForm')->middleware('can:reportes.911');
+    Route::post('/reportes/911/pdf', 'reportesController\formato911Controller@store')->name('contacto');
 
     Route::get('reportes/formato_t_reporte/index', function () {
         return view('layouts.pages.reportes.formato_t_reporte');
