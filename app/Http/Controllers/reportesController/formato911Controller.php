@@ -77,6 +77,7 @@ class formato911Controller extends Controller
         ->where('unidad','=',$unidades)
         ->where('tc.hini','>=',$a)
         ->where('tc.hini','<=',$b)
+        ->where('tc.status_curso', '!=', 'CANCELADO')
         ->groupBy('e.id')     
         ->groupByRaw('e.clave, e.nombre')
         ->orderByRaw('e.nombre')
@@ -142,6 +143,7 @@ class formato911Controller extends Controller
         ->where('tc.unidad','=',$unidades)
         ->where('tc.hini','>=',$a)
         ->where('tc.hini','<=',$b)
+        ->where('tc.status_curso', '!=', 'CANCELADO')
         ->groupBy('tc.espe')
         ->orderBy('tc.espe')
         ->get();

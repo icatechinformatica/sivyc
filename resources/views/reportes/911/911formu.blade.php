@@ -12,12 +12,12 @@
         
     </div>
     <div class="card card-body" >
-        <br />            
+        <br />   
         <div class="container">
             <div class="row justify-content-center"> 
                 <div class="col-md-5">
-                    <br>
-                    <form action="{{route('contacto')}}" method="POST" id="cacahuate">
+                    <br> 
+                    <form action="{{route('contacto')}}" method="POST" id="cacahuate" target="_blank">
                         <div class="form-group">
                             <label for="unidades">Unidad</label> 
                             <select name="unidades" class="form-control" placeholder=" " id="unidades">
@@ -54,7 +54,7 @@
                     </form>
                 </div>
             </div>
-        </div>        
+        </div>    
     </div>
 @endsection
 @section('script_content_js') 

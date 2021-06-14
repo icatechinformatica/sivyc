@@ -118,15 +118,6 @@
                     <td style="border: hidden">
                         <small>
                             <div class="centrados">
-                                {{ $alumnos->no_control }}
-                                <div class="linea"></div>
-                                N°. DE CONTROL
-                            </div>
-                        </small>
-                    </td>
-                    <td style="border: hidden">
-                        <small>
-                            <div class="centrados">
                                 {{$alumnos->no_control}}{{$alumnos->id}}
                                 <div class="linea"></div>
                                 NÚMERO DE SOLICITUD
@@ -501,7 +492,7 @@
                             <small>
                                 <b>COMPROBANTE PARA EL INSTITUTO</b>
                             </small>
-                        
+
                         <br>
                         <small>
                             <b>FECHA:</b>

@@ -775,7 +775,7 @@ class AlumnoController extends Controller
         $Especialidad = new especialidad;
         $unidadestbl = new tbl_unidades();
         $tblUnidades = $unidadestbl->SELECT('ubicacion')->GROUPBY('ubicacion')->GET(['ubicacion']);
-        $especialidades = $Especialidad->all(['id', 'nombre']);
+        $especialidades = $Especialidad->SELECT('id', 'nombre')->orderBy('nombre', 'asc')->GET();
         $Alumno = $AlumnoMatricula->findOrfail($idpre, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'sexo', 'curp', 'fecha_nacimiento',
         'telefono', 'cp', 'estado', 'municipio', 'estado_civil', 'discapacidad', 'domicilio', 'colonia']);
 
@@ -971,7 +971,7 @@ class AlumnoController extends Controller
             $tipo_curso = $request->tipo;
             $unidad_seleccionada = '["'.$request->unidad.'"]';
             //$Curso = new curso();
-            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['unidades_disponible', '@>', $unidad_seleccionada], ['estado', '=', true]])->get();
+            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['unidades_disponible', '@>', $unidad_seleccionada], ['estado', '=', true]])->orderBy('nombre_curso', 'asc')->get();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);
@@ -987,8 +987,9 @@ class AlumnoController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $idEspecialidad = $request->idEsp_mod;
             $tipo_curso = $request->tipo_mod;
+            $unidad_seleccionada = '["'.$request->unidad.'"]';
             //$Curso = new curso();
-            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['estado', '=', true]])->get();
+            $Cursos = DB::table('cursos')->select('id','nombre_curso')->where([['tipo_curso', '=', $tipo_curso], ['id_especialidad', '=', $idEspecialidad], ['unidades_disponible', '@>', $unidad_seleccionada], ['estado', '=', true]])->orderBy('nombre_curso', 'asc')->get();
 
             /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
             $json=json_encode($Cursos);
