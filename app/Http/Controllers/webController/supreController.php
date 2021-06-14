@@ -23,6 +23,7 @@ use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\pago;
+use Illuminate\Support\Facades\Auth;
 
 class supreController extends Controller
 {
@@ -350,8 +351,11 @@ class supreController extends Controller
 
     public function cancelFolio(Request $request)
     {
+        $userName = Auth::user()->name;
+
         $folio = folio::find($request->idf);
         $folio->observacion_cancelacion = $request->observaciones;
+        $folio->cancelo = $userName;
         $folio->status = 'Cancelado';
         $folio->save();
 
