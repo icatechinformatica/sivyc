@@ -128,6 +128,9 @@
                         @can('vinculacion.reporte')
                             <a class="dropdown-item" href="{{route('cursosvinculador.reporte')}}">VINCULADOR-ALUMNO</a>
                         @endcan
+                        @can('reportes.911')
+                            <a class="dropdown-item" href="{{route('reportes.911.showForm')}}">REPORTE 911</a>
+                        @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">FORMATOT</a> --}}
                     </div>
                 </li>
