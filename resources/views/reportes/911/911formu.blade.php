@@ -4,22 +4,22 @@
 @section('title', 'Reportes | SIVyC Icatech')
 @section('content')
     <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
-    <style>         
+    <style>
         table tr th .nav-link {padding: 0; margin: 0;}
     </style>
     <div class="card-header">
         Reporte formato 911
-        
+
     </div>
     <div class="card card-body" >
-        <br />            
+        <br />
         <div class="container">
-            <div class="row justify-content-center"> 
+            <div class="row justify-content-center">
                 <div class="col-md-5">
                     <br>
-                    <form action="{{route('contacto')}}" method="POST" id="cacahuate">
+                    <form action="{{route('contacto')}}" method="POST" id="cacahuate" target="_blank">
                         <div class="form-group">
-                            <label for="unidades">Unidad</label> 
+                            <label for="unidades">Unidad</label>
                             <select name="unidades" class="form-control" placeholder=" " id="unidades">
                                 <option value=0 selected disabled="">Selecciona una opción</option>
                                 @if($tipo=='string')
@@ -54,26 +54,26 @@
                     </form>
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
 @endsection
-@section('script_content_js') 
+@section('script_content_js')
 <script language="javascript">
     $( function() {
-        $('#cacahuate').validate({   
+        $('#cacahuate').validate({
             rules: {
                 unidades: { required: true },
                 turno: {required: true },
                 fecha_inicio: {required: true },
-                fecha_termino: {required: true }   
-            },     
+                fecha_termino: {required: true }
+            },
             messages: {
                 unidades: { required: 'Por favor ingrese la unidad' },
                 turno: { required: 'Por favor ingrese el turno' },
                 fecha_inicio: { required: 'Por favor ingrese la fecha de inicio' },
-                fecha_termino: { required: 'Por favor ingrese la fecha de termino' } 
+                fecha_termino: { required: 'Por favor ingrese la fecha de termino' }
             }
         });
     });
-</script>  
+</script>
 @endsection
