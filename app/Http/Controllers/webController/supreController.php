@@ -352,7 +352,7 @@ class supreController extends Controller
     public function cancelFolio(Request $request)
     {
         $userName = Auth::user()->name;
-
+//a
         $folio = folio::find($request->idf);
         $folio->observacion_cancelacion = $request->observaciones;
         $folio->cancelo = $userName;
