@@ -510,6 +510,13 @@ class supreController extends Controller
         }
     }
 
+    public function cancelados_reporte()
+    {
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.vstareportecancelados', compact('unidades'));
+    }
+
     public function planeacion_reporte()
     {
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
