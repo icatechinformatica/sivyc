@@ -29,10 +29,12 @@ class validacionDtaController extends Controller
             session(['mesBuscarE' => $mesSearch]);
         }
 
-        $temp_inner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+        // $temp_inner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $anio_actual = Carbon::now()->year; // año actual obtenido del servidor
 
-        $cursos_validar = tbl_curso::select(
+        $cursos_validar = dataFormatoT2do($unidad, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, 'TURNADO_DTA');
+
+        /* $cursos_validar = tbl_curso::select(
             'tbl_cursos.id AS id_tbl_cursos',
             'tbl_cursos.status AS estadocurso',
             'tbl_cursos.unidad',
@@ -195,7 +197,7 @@ class validacionDtaController extends Controller
             ->WHEREIN('tbl_cursos.turnado', ['DTA', 'MEMO_TURNADO_RETORNO'])
             ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
             ->distinct()
-            ->get();
+            ->get(); */
 
         $memorandum = DB::table('tbl_cursos')
             ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo"))
@@ -242,11 +244,13 @@ class validacionDtaController extends Controller
      */
     public function indexRevision(Request $request) {
         $unidades_busqueda = $request->get('busqueda_unidad');
+        $mesSearch = $request->get('mesSearchD');
 
-        $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $ac = Carbon::now()->year; // año actual obtenido del servidor
 
-
+        $cursos_validar = dataFormatoT2do($unidades_busqueda, ['REVISION_DTA'], null, $mesSearch, 'REVISION_DTA');
+            
+        /* $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $cursos_validar = tbl_curso::searchbydata($unidades_busqueda)->select(
             'tbl_cursos.id AS id_tbl_cursos',
             'tbl_cursos.status AS estadocurso',
@@ -401,11 +405,11 @@ class validacionDtaController extends Controller
             })
             ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
             ->WHERE('tbl_cursos.status', '=', 'REVISION_DTA')
+            ->whereMonth('tbl_cursos.fecha_turnado', $mesSearch)
             // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $ac)
             ->WHERE('tbl_cursos.turnado', '=', 'REVISION_DTA')
             ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
-            ->distinct()->get();
-
+            ->distinct()->get(); */
 
         $memorandum = DB::table('tbl_cursos')
             ->select(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM' AS memorandum, memos->'TURNADO_EN_FIRMA'->>'NUMERO' AS num_memo, tbl_unidades.unidad"))
@@ -414,11 +418,10 @@ class validacionDtaController extends Controller
             ->where('tbl_unidades.cct', 'LIKE', '%07EIC%') // verificar que solo sean unidades
             ->where('tbl_cursos.turnado', '=', 'REVISION_DTA')
             ->where('tbl_cursos.status', '=', 'REVISION_DTA')
+            ->whereMonth('tbl_cursos.fecha_turnado', $mesSearch)
             // ->where("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM'", '!=', null)
             ->groupby(DB::raw("memos->'TURNADO_DTA'->>'MEMORANDUM', memos->'TURNADO_EN_FIRMA'->>'NUMERO', tbl_unidades.unidad"))
             ->get();
-
-        // dd($memorandum);
 
         $unidades = DB::table('tbl_unidades')->select('unidad')->where('cct', 'LIKE', '%07EIC%')->orderBy('unidad', 'asc')->get();
 
@@ -436,17 +439,7 @@ class validacionDtaController extends Controller
 
         $diasParaEntrega = $this->getFechaDiff();
 
-        return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('reportes.vista_supervisiondta', compact('cursos_validar', 'unidades', 'memorandum', 'unidades_busqueda', 'diasParaEntrega', 'mesInformar', 'fechaEntregaFormatoT', 'diasParaEntrega', 'mesSearch'));
     }
 
     /**
@@ -714,7 +707,6 @@ class validacionDtaController extends Controller
         }
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
@@ -888,51 +880,6 @@ class validacionDtaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     protected function uploaded_memo_retorno_unidad_file($file, $memo, $subpath)
     {
         $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
@@ -947,6 +894,7 @@ class validacionDtaController extends Controller
 
     protected function entrega_planeacion(Request $request) {
         $valor = $request->get('validarDireccionDta');
+        $mesUnity = $request->get('txtUnity');
         if (isset($valor)) {
             # si la variable está inicializada procedemos a meterlo en el switch
             switch ($valor) {
@@ -956,7 +904,7 @@ class validacionDtaController extends Controller
                      */
                     # generamos el memo de entrega a planeacion.
                     $numMemo = $request->get('num_memo_devolucion');
-                    return $this->generarMemorandumPlaneacion($numMemo);
+                    return $this->generarMemorandumPlaneacion($numMemo, $mesUnity);
                     break;
                 case 'RegresarEnlaceDta':
                     /**
@@ -1007,21 +955,20 @@ class validacionDtaController extends Controller
         }
     }
 
-    private function generarMemorandumPlaneacion($num_memo_planeacion) {
+    private function generarMemorandumPlaneacion($num_memo_planeacion, $mesUnity) {
         if (isset($num_memo_planeacion)) {
             /**
              * obtener el mes de los cursos que se encuentran en el registro del módulo
              * de la dirección DTA
              */
-            $queryMesMemo = DB::table('tbl_cursos')
+            /*$queryMesMemo = DB::table('tbl_cursos')
                 ->select(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS mes_obtenido"))
                 ->WHERE("turnado", 'REVISION_DTA')
                 ->groupBy(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"))
                 ->orderBy(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), 'desc')
                 ->limit(1)
-                ->get();
+                ->get(); */
             
-            // dd($queryMesMemo);
 
             # GENERAMOS EL DOCUMENTO EN PDF
             $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
@@ -1060,12 +1007,26 @@ class validacionDtaController extends Controller
                 'dgeneral',
                 'pdgeneral'
             )->first();
-            // dd($reg_unidad->pdacademico);
+
+            switch ($mesUnity) {
+                case '01': $mesUnity = 'ENERO'; break;
+                case '02': $mesUnity = 'FEBRERO'; break;
+                case '03': $mesUnity = 'MARZO'; break;
+                case '04': $mesUnity = 'ABRIL'; break;
+                case '05': $mesUnity = 'MAYO'; break;
+                case '06': $mesUnity = 'JUNIO'; break;
+                case '07': $mesUnity = 'JULIO'; break;
+                case '08': $mesUnity = 'AGOSTO'; break;
+                case '09': $mesUnity = 'SEPTIEMBRE'; break;
+                case '10': $mesUnity = 'OCTUBRE'; break;
+                case '11': $mesUnity = 'NOVIEMBRE'; break;
+                case '12': $mesUnity = 'DICIEMBRE'; break;
+            }
 
             $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
             $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
             $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'queryMesMemo'));
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity'));
             // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
             return $pdf->download('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {
@@ -1115,8 +1076,22 @@ class validacionDtaController extends Controller
         $unidadActual = $request->unidad_;
         $mesSearch = $request->mes_;
 
-        $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
-        // cursos unidades por planeacion
+        $formatot_enlace_dta = dataFormatoT2do($unidadActual, ['DTA', 'MEMO_TURNADO_RETORNO'], null, $mesSearch, 'TURNADO_DTA');
+        foreach ($formatot_enlace_dta as $value) {
+            unset($value->id_tbl_cursos);
+            unset($value->estadocurso);
+            unset($value->turnados_enlaces);
+            unset($value->madres_solteras);
+            unset($value->observaciones_firma);
+            unset($value->fecha_turnado);
+            unset($value->numero_memo_retorno1);
+            unset($value->comentario_enlaces_retorno);
+            unset($value->sumatoria_total_ins_edad);
+            unset($value->observaciones_enlaces);
+            unset($value->observaciones_unidad);
+        }
+
+        /* $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $formatot_enlace_dta = tbl_curso::select(
             DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado"),
             'tbl_cursos.unidad',
@@ -1269,8 +1244,7 @@ class validacionDtaController extends Controller
             // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anio_actual)
             ->WHERE('tbl_cursos.turnado', '=', 'DTA')
             ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
-            ->distinct()->get();
-
+            ->distinct()->get(); */
 
         $head = [
             'MES REPORTADO', 'UNIDAD DE CAPACITACION', 'TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)', 'ESPECIALIDAD', 'CURSO', 'CLAVE DEL GRUPO', 'MODALIDAD', 'DURACION TOTAL EN HORAS', 'TURNO', 'DIA INICIO', 'MES INICIO', 'DIA TERMINO', 'MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
@@ -1312,7 +1286,8 @@ class validacionDtaController extends Controller
             'DESERTORES ESC-7 MUJERES', 'DESERTORES ESC-7 HOMBRES',
             'DESERTORES ESC-8 MUJERES', 'DESERTORES ESC-8 HOMBRES',
             'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES',
-            'OBSERVACIONES'
+            'OBSERVACIONES',
+            'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO'
         ];
 
         $nombreLayout = "FORMATO_T_PARA_ENLACES_DIRECCION_TECNICA_ACADEMICA.xlsx";
@@ -1329,8 +1304,22 @@ class validacionDtaController extends Controller
     protected function xlsExportReporteFormatoTDirectorDTA(Request $request) {
         $anioActual = Carbon::now()->year;
 
-        $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+        $reporteDirectorDTA = dataFormatoT2do($request->unidadD, ['REVISION_DTA'], null, $request->mesSearch, 'REVISION_DTA');
+        foreach ($reporteDirectorDTA as $value) {
+            unset($value->id_tbl_cursos);
+            unset($value->estadocurso);
+            unset($value->turnados_enlaces);
+            unset($value->madres_solteras);
+            unset($value->observaciones_firma);
+            unset($value->fecha_turnado);
+            unset($value->numero_memo_retorno1);
+            unset($value->comentario_enlaces_retorno);
+            unset($value->sumatoria_total_ins_edad);
+            unset($value->observaciones_enlaces);
+            unset($value->observaciones_unidad);
+        }
 
+        /* $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $reporteDirectorDTA =
             tbl_curso::select(
                 DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH') AS fechaturnado"),
@@ -1482,7 +1471,7 @@ class validacionDtaController extends Controller
             // ->WHERE(DB::raw("extract(year from tbl_cursos.termino)"), '=', $anioActual)
             ->WHERE('tbl_cursos.turnado', '=', 'REVISION_DTA')
             ->groupby('tbl_cursos.id', 'ip.grado_profesional', 'ip.estatus', 'i.sexo', 'ei.memorandum_validacion')
-            ->distinct()->get();
+            ->distinct()->get(); */
 
         $cabecera = [
             'MES REPORTADO', 'UNIDAD DE CAPACITACION', 'TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)', 'ESPECIALIDAD', 'CURSO', 'CLAVE DEL GRUPO', 'MODALIDAD', 'DURACION TOTAL EN HORAS', 'TURNO', 'DIA INICIO', 'MES INICIO', 'DIA TERMINO', 'MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
@@ -1524,7 +1513,8 @@ class validacionDtaController extends Controller
             'DESERTORES ESC-7 MUJERES', 'DESERTORES ESC-7 HOMBRES',
             'DESERTORES ESC-8 MUJERES', 'DESERTORES ESC-8 HOMBRES',
             'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES',
-            'OBSERVACIONES'
+            'OBSERVACIONES',
+            'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO'
         ];
 
         $nombreLayout = "FORMATO_T_PARA_DIRECTOR_DE_DIRECCION_TECNICA_ACADEMICA.xlsx";

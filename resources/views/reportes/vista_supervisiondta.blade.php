@@ -84,29 +84,47 @@
                     <h2>VALIDACIÓN DE CURSOS DE DIRECCIÓN TÉCNICA ACADÉMICA <strong>(DIRECCIÓN)</strong></h2>
 
                     {!! Form::open(['route' => 'validacion.dta.revision.cursos.indice', 'method' => 'GET', 'class' => 'form-inline']) !!}
-                    <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
-                        <option value="">-- BUSQUEDA POR UNIDAD --</option>
-                        @foreach ($unidades as $itemUnidades)
-                            <option value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
-                        @endforeach
-                    </select>
+                        <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
+                            <option value="">-- BUSQUEDA POR UNIDAD --</option>
+                            @foreach ($unidades as $itemUnidades)
+                                <option {{$itemUnidades->unidad == $unidades_busqueda ? 'selected' : ''}} value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="mesSearchD" id="mesSearchD" class="form-control mr-sm-2">
+                            <option value="">-- MES A BUSCAR --</option>
+                            <option {{$mesSearch == '01' ? 'selected' : ''}} value="01">ENERO</option>
+                            <option {{$mesSearch == '02' ? 'selected' : ''}} value="02">FEBRERO</option>
+                            <option {{$mesSearch == '03' ? 'selected' : ''}} value="03">MARZO</option>
+                            <option {{$mesSearch == '04' ? 'selected' : ''}} value="04">ABRIL</option>
+                            <option {{$mesSearch == '05' ? 'selected' : ''}} value="05">MAYO</option>
+                            <option {{$mesSearch == '06' ? 'selected' : ''}} value="06">JUNIO</option>
+                            <option {{$mesSearch == '07' ? 'selected' : ''}} value="07">JULIO</option>
+                            <option {{$mesSearch == '08' ? 'selected' : ''}} value="08">AGOSTO</option>
+                            <option {{$mesSearch == '09' ? 'selected' : ''}} value="09">SEPTIEMBRE</option>
+                            <option {{$mesSearch == '10' ? 'selected' : ''}} value="10">OCTUBRE</option>
+                            <option {{$mesSearch == '11' ? 'selected' : ''}} value="11">NOVIEMBRE</option>
+                            <option {{$mesSearch == '12' ? 'selected' : ''}} value="12">DICIEMBRE</option>
+                        </select>
 
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">FILTRAR</button>
                     {!! Form::close() !!}
                 </div>
 
                 <div class="pull-right">
-
                 </div>
             </div>
         </div>
-        {{-- <hr style="border-color:dimgray"> --}}
 
         @if (count($cursos_validar) > 0)
             <div class="form-row my-3">
                 <div class="form-group mr-3">
-                    <form action=" {{ route('reportes.formatot.director.dta.xls') }}" method="POST" target="_self">
+                    {{-- target="_self" --}}
+                    <form action=" {{ route('reportes.formatot.director.dta.xls') }}" method="POST"> 
                         @csrf
+                        <input id="mesSearch" name="mesSearch" class="d-none" type="text" value="{{$mesSearch}}">
+                        <input id="unidadD" name="unidadD" class="d-none" type="text" value="{{$unidades_busqueda}}">
+
                         <button type="submit" class="btn btn-success my-2 my-sm-0 waves-effect waves-light"
                             id="validarDireccionDta" name="validarDireccionDta" value="generarMemoPlaneacion">
                             <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
@@ -130,21 +148,10 @@
                 </div>
             </div>
 
-            {{-- <div class="form-row mb-2">
-                <div class="form-group">
-                    <form action=" {{ route('reportes.formatot.director.dta.xls') }}" method="POST" target="_self">
-                        @csrf
-                        <button type="submit" class="btn btn-success my-2 my-sm-0 waves-effect waves-light"
-                            id="validarDireccionDta" name="validarDireccionDta" value="generarMemoPlaneacion">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
-                            REPORTE FORMATO T
-                        </button>
-                    </form>
-                </div>
-            </div> --}}
-
             <form id="formSendDtaTo" method="POST" action="{{ route('validacion.dta.cursos.envio.planeacion') }}">
                 @csrf
+
+                <input class="d-none" id="txtUnity" name="txtUnity" type="text" value="{{$mesSearch}}">
                 <div class="form-row">
                     <div class="form-group col-md-4 mb-3">
                         <input type="text" class="form-control mr-sm-1" name="num_memo_devolucion" id="num_memo_devolucion"
@@ -500,7 +507,7 @@
                 <input type="hidden" name="unidad_busqueda" id="unidad_busqueda" value="{{ $unidades_busqueda }}">
             </form>
         @else
-            <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
+            <h2 class="mt-5"><b>NO SE ENCONTRARON REGISTROS</b></h2>
         @endif
         <br>
     </div>

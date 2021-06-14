@@ -87,10 +87,9 @@
         <div align="left" style="font-size: 11px;"><b>Presente</b></div>
         <br><br><br><br>
         <div align="justify" style="font-size:16px;">
-            {{-- <b>{{ $queryMesMemo[0]->mes_obtenido }}</b> --}}
            <p>
             Por este medio y en seguimiento a la integración del Formato T de las Unidades de Capacitación
-            de este Instituto correspondiente al mes de <b>MAYO</b> de la anualidad en curso; me es grato infórmarle <br/>
+            de este Instituto correspondiente al mes de <b>{{$mesUnity}}</b> de la anualidad en curso; me es grato infórmarle <br/>
             que fue revisado y liberado el reporte estadístico denominado Formato T.
            </p>
         </div>

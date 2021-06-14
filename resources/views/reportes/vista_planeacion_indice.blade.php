@@ -2,7 +2,7 @@
 @extends('theme.sivyc.layout')
 {{-- llamar a la plantilla principal --}}
 @section('title', 'Cursos de Formato T enviados a Dirección de Planeación | SIVYC ICATECH')
-{{-- sección del titutlo --}}
+    {{-- sección del titutlo --}}
 @section('content_script_css')
     <style>
         #spinner:not([hidden]) {
@@ -15,16 +15,18 @@
             justify-content: center;
             align-items: center;
         }
+
         #spinner::after {
-        content: "";
-        width: 80px;
-        height: 80px;
-        border: 2px solid #f3f3f3;
-        border-top: 3px solid #f25a41;
-        border-radius: 100%;
-        will-change: transform;
-        animation: spin 1s infinite linear
+            content: "";
+            width: 80px;
+            height: 80px;
+            border: 2px solid #f3f3f3;
+            border-top: 3px solid #f25a41;
+            border-radius: 100%;
+            will-change: transform;
+            animation: spin 1s infinite linear
         }
+
         table tr td {
             border: 1px solid #ccc;
         }
@@ -33,36 +35,49 @@
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
         }
 
-        @media all and (max-width:500px){
-            table{
-                width:100%;
+        @media all and (max-width:500px) {
+            table {
+                width: 100%;
             }
-            
-            td{
-                display:block;
-                width:100%;
+
+            td {
+                display: block;
+                width: 100%;
             }
-            
-            tr{
-                display:block;
-                margin-bottom:30px;
+
+            tr {
+                display: block;
+                margin-bottom: 30px;
             }
         }
+
+        /* thead tr th { 
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                background-color: #ffffff;
+            }
+        
+            .table-responsive { 
+                height:600px;
+                overflow:scroll;
+            } */
 
     </style>
 @endsection
 {{-- seccion de un contenido css para estilos definidos del  archivo --}}
 @section('content')
-    <div class="container-fluid px-5 g-pt-30">
+    <div class="container-fluid px-5">
         <div class="alert"></div>
-        @if($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger">
-                {{$errors->first()}}
+                {{ $errors->first() }}
             </div>
         @endif
         @if ($message = Session::get('success'))
@@ -77,28 +92,44 @@
                     <h2>VALIDACIÓN DE CURSOS POR LA DIRECCIÓN DE PLANEACIÓN <strong>(FORMATO T)</strong></h2>
                     {{-- formulario de busqueda en index --}}
                     {!! Form::open(['route' => 'planeacion.formatot.index', 'method' => 'GET', 'class' => 'form-inline']) !!}
-                        <select name="busqueda_unidad" id="busqueda_unidad" class="form-control mr-sm-2">
-                            <option value="">-- BUSQUEDA POR UNIDAD --</option>
-                            @foreach ($unidadesIndex as $itemUnidadesIndex)
-                                <option value="{{ $itemUnidadesIndex->ubicacion }}">{{ $itemUnidadesIndex->ubicacion }}</option>
-                            @endforeach
-                        </select>
+                    <select name="busqueda_unidad" id="busqueda_unidad" class="form-control mr-sm-2">
+                        <option value="">-- BUSQUEDA POR UNIDAD --</option>
+                        @foreach ($unidadesIndex as $itemUnidadesIndex)
+                            <option {{$itemUnidadesIndex->ubicacion == $unidades ? 'selected' : ''}} value="{{ $itemUnidadesIndex->ubicacion }}">{{ $itemUnidadesIndex->ubicacion }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <select name="mesSearch" id="mesSearch" class="form-control mr-sm-2">
+                        <option value="">-- MES A BUSCAR --</option>
+                        <option {{$mesSearch == '01' ? 'selected' : ''}} value="01">ENERO</option>
+                        <option {{$mesSearch == '02' ? 'selected' : ''}} value="02">FEBRERO</option>
+                        <option {{$mesSearch == '03' ? 'selected' : ''}} value="03">MARZO</option>
+                        <option {{$mesSearch == '04' ? 'selected' : ''}} value="04">ABRIL</option>
+                        <option {{$mesSearch == '05' ? 'selected' : ''}} value="05">MAYO</option>
+                        <option {{$mesSearch == '06' ? 'selected' : ''}} value="06">JUNIO</option>
+                        <option {{$mesSearch == '07' ? 'selected' : ''}} value="07">JULIO</option>
+                        <option {{$mesSearch == '08' ? 'selected' : ''}} value="08">AGOSTO</option>
+                        <option {{$mesSearch == '09' ? 'selected' : ''}} value="09">SEPTIEMBRE</option>
+                        <option {{$mesSearch == '10' ? 'selected' : ''}} value="10">OCTUBRE</option>
+                        <option {{$mesSearch == '11' ? 'selected' : ''}} value="11">NOVIEMBRE</option>
+                        <option {{$mesSearch == '12' ? 'selected' : ''}} value="12">DICIEMBRE</option>
+                    </select>
                     {{-- formulario de busqueda en index END --}}
-                        {!! Form::submit('FILTRAR', ['class' => 'btn btn-outline-info my-2 my-sm-0']) !!}
+                    {!! Form::submit('FILTRAR', ['class' => 'btn btn-outline-info my-2 my-sm-0']) !!}
                     {!! Form::close() !!}
                 </div>
-                <div class="pull-right">
-
-                </div>
+                {{-- <div class="pull-right">
+                </div> --}}
             </div>
         </div>
-        <hr style="border-color:dimgray">
+        {{-- <hr style="border-color:dimgray"> --}}
         {{-- vamos a checar los datos que enviamos a la consulta --}}
         @if (count($cursos_unidades_planeacion) > 0)
             {{-- formulario para la creación del formato t excel --}}
             <form action="{{ route('reportes.planeacion.formatot.xls') }}" method="POST" target="_self">
                 @csrf
-                <div class="form-row">
+                <div class="form-row my-2">
                     <div class="form-group mb-2">
                         <button input type="submit" id="generarReporteT" name="generarReporteT" class="btn btn-success">
                             <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp;
@@ -107,60 +138,68 @@
                     </div>
                 </div>
             </form>
-            {{-- formulario para la creación del formato t excel END --}}
-            
+
             {{-- formulario --}}
-            <form action="{{ route('planeacion.generate.memo') }}" method="post" target="_blank" name="formPlaneacion" id="formPlaneacion">
+            <form action="{{ route('planeacion.generate.memo') }}" method="post" target="_blank" name="formPlaneacion"
+                id="formPlaneacion">
                 @csrf
+
+                <input class="d-none" id="mesReport" name="mesReport" type="text" value="{{$mesSearch}}">
                 <div class="form-row">
-                    <div class="form-group col-md-8 mb-2">
-                        <input type="text" name="filterCursos" id="filterCursos" class="form-control" placeholder="BUSQUEDA POR CLAVE DE CURSO">
+                    <div class="form-group col-md-4 mb-3">
+                        <input type="text" class="form-control mr-sm-1" name="num_memo" id="num_memo"
+                            placeholder="NÚMERO DE MEMORANDUM">
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-8 mb-3">
-                        <input type="text" class="form-control mr-sm-1" name="num_memo" id="num_memo" placeholder="NÚMERO DE MEMORANDUM">
+                    <div class="form-group col-md-4 mb-2">
+                        <input type="text" name="filterCursos" id="filterCursos" class="form-control"
+                            placeholder="BUSQUEDA POR CLAVE DE CURSO">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group mb-2">
-                        <button input type="submit" id="memorandumGenerado" name="memorandumGenerado" value="memorandumPositivo"  class="btn btn-danger">
+                        <button input type="submit" id="memorandumGenerado" name="memorandumGenerado"
+                            value="memorandumPositivo" class="btn btn-success">
                             <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
                             MEMORANDUM POSITIVO
-                        </button> 
+                        </button>
                     </div>
-                    
+
                     <div class="form-group mb-2">
-                        <button input type="button" id="terminarProceso" name="terminarProceso"  class="btn btn-info" data-toggle="modal" data-target="#modalFinish">
+                        <button input type="button" id="terminarProceso" name="terminarProceso" class="btn btn-info"
+                            data-toggle="modal" data-target="#modalFinish">
                             <i class="fa fa-check fa-2x" aria-hidden="true"></i>&nbsp;
                             TERMINAR
                         </button>
                     </div>
 
                     <div class="form-group mb-2">
-                        <button input type="submit" id="memorandumGenerado" name="memorandumGenerado" value="memorandumNegativo"  class="btn btn-danger">
+                        <button input type="submit" id="memorandumGenerado" name="memorandumGenerado"
+                            value="memorandumNegativo" class="btn btn-danger">
                             <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp;
                             MEMORANDUM NEGATIVO
                         </button>
                     </div>
 
                     <div class="form-group mb-2">
-                        <button input type="button" id="regresarDTA" name="regresarDTA"   class="btn btn-warning" data-toggle="modal" data-target="#modalGoBackDTA">
+                        <button input type="button" id="regresarDTA" name="regresarDTA" class="btn btn-warning"
+                            data-toggle="modal" data-target="#modalGoBackDTA">
                             <i class="fa fa-retweet fa-2x" aria-hidden="true"></i>&nbsp;
                             REGRESAR DTA
                         </button>
-                    </div> 
+                    </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="table-responsive container-fluid mt-2">
-                        <table  id="table-instructor" class="table" style='width: 100%; margin-left: -1.1em;'>
+                        <table id="table-instructor" class="table" style='width: 100%; margin-left: -1.1em;'>
                             <caption>CURSOS ENVIADOS A LA DIRECCIÓN DE PLANEACIÓN</caption>
                             <thead class="thead-dark">
                                 <tr align="center">
+                                    <th scope="col">N°</th>
                                     <th scope="col">SELECCIONAR &nbsp;
-                                        <input type="checkbox" id="selectAll"/>
+                                        <input type="checkbox" id="selectAll" />
                                     </th>
+                                    <th scope="col" style="width: 50%">COMENTARIOS</th>
                                     <th scope="col">MES REPORTADO</th>
                                     <th scope="col">UNIDAD DE CAPACITACION</th>
                                     <th scope="col">PLANTEL</th>
@@ -284,19 +323,30 @@
                                     <th scope="col">DESC ESCOL H9</th>
                                     <th scope="col" style="width:50%">OBSERVACIONES</th>
                                     <th scope="col" style="width: 50%">OBSERVACIONES DTA</th>
-                                    <th scope="col" style="width: 50%">COMENTARIOS</th>                                    
                                 </tr>
                             </thead>
                             <tbody style="height: 300px; overflow-y: auto">
-                                @foreach ($cursos_unidades_planeacion as $datas)
+                                @foreach ($cursos_unidades_planeacion as $key => $datas)
                                     <tr align="center">
-                                        <td><input type="checkbox" id="{{ $datas->id_tbl_cursos }}" name="chkcursos[]" value="{{  $datas->id_tbl_cursos }}" class="checkbx"/></td>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td><input type="checkbox" id="{{ $datas->id_tbl_cursos }}" name="chkcursos[]"
+                                                value="{{ $datas->id_tbl_cursos }}" class="checkbx" />
+                                        </td>
+                                        <td>
+                                            <textarea name="comentarios_planeacion[]"
+                                                id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"
+                                                disabled></textarea>
+                                        </td>
                                         <td>{{ $datas->fechaturnado }}</td>
                                         <td>{{ $datas->unidad }}</td>
                                         <td>{{ $datas->plantel }}</td>
                                         <td>{{ $datas->espe }}</td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->curso }}</div></td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->clave }}</div></td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->curso }}</div>
+                                        </td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->clave }}</div>
+                                        </td>
                                         <td>{{ $datas->mod }}</td>
                                         <td>{{ $datas->dura }}</td>
                                         <td>{{ $datas->turno }}</td>
@@ -306,8 +356,12 @@
                                         <td>{{ $datas->mest }}</td>
                                         <td>{{ $datas->pfin }}</td>
                                         <td>{{ $datas->horas }}</td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->dia }}</div></td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->horario }}</div></td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->dia }}</div>
+                                        </td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->horario }}</div>
+                                        </td>
                                         <td>{{ $datas->tinscritos }}</td>
                                         <td>{{ $datas->imujer }}</td>
                                         <td>{{ $datas->ihombre }}</td>
@@ -321,10 +375,19 @@
                                         <td>{{ $datas->ethombre }}</td>
                                         <td>{{ $datas->epmujer }}</td>
                                         <td>{{ $datas->ephombre }}</td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->cespecifico }}</div></td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->mvalida }}</div></td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->efisico }}</div></td>
-                                        <td><div style = "width:200px; word-wrap: break-word">{{ $datas->nombre }}</div></td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->cespecifico }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->mvalida }}</div>
+                                        </td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->efisico }}</div>
+                                        </td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->nombre }}</div>
+                                        </td>
                                         <td>{{ $datas->grado_profesional }}</td>
                                         <td>{{ $datas->estatus }}</td>
                                         <td>{{ $datas->sexo }}</td>
@@ -338,7 +401,9 @@
                                         <td>{{ $datas->etnia }}</td>
                                         <td>{{ $datas->programa }}</td>
                                         <td>{{ $datas->muni }}</td>
-                                        <td><div style = "width:300px; word-wrap: break-word">{{ $datas->depen }}</div></td>
+                                        <td>
+                                            <div style="width:300px; word-wrap: break-word">{{ $datas->depen }}</div>
+                                        </td>
                                         <td>{{ $datas->cgeneral }}</td>
                                         <td>{{ $datas->sector }}</td>
                                         <td>{{ $datas->mpaqueteria }}</td>
@@ -412,21 +477,25 @@
                                         <td>{{ $datas->naesh8 }}</td>
                                         <td>{{ $datas->naesm9 }}</td>
                                         <td>{{ $datas->naesh9 }}</td>
-                                        <td><div style = "width:900px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
-                                        <td><div style="width: 300px; word-wrap: break-word">{{ $datas->observacion_envio_to_planeacion }}</div></td>
-                                        <td><textarea name="comentarios_planeacion[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" disabled></textarea></td>                
+                                        <td>
+                                            <div style="width:900px; word-wrap: break-word">{{ $datas->tnota }}</div>
+                                        </td>
+                                        <td>
+                                            <div style="width: 300px; word-wrap: break-word">
+                                                {{ $datas->observacion_envio_to_planeacion }}</div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
-                
+
                 <input type="hidden" name="unidad_busqueda" id="unidad_busqueda" value="{{ $unidades }}">
             </form>
             {{-- formulario END --}}
         @else
-            <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
+            <h2 class="my-5"><b>NO SE ENCONTRARON REGISTROS</b></h2>
         @endif
         {{-- checamos que haya datos en la consulta end --}}
     </div>
@@ -434,66 +503,69 @@
     {{-- spinner --}}
     <div hidden id="spinner"></div>
     {{-- spinner END --}}
-    
+
     {{-- MODAL DE ENVIO --}}
-    <div class="modal fade" id="modalGoBackDTA" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modalGoBackDTA" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-info" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y REGRESAR A DIRECCIÓN TÉCNICA ACADÉMICA </b></h5>
-            </div>
-            <form id="formGoBackDTA" enctype="multipart/form-data" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <input type="file" name="memorandumNegativoFile" id="memorandumNegativoFile" class="form-control">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y REGRESAR A DIRECCIÓN TÉCNICA ACADÉMICA </b>
+                    </h5>
+                </div>
+                <form id="formGoBackDTA" enctype="multipart/form-data" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <input type="file" name="memorandumNegativoFile" id="memorandumNegativoFile"
+                                    class="form-control">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
-                <button type="button" id="close_btn_modal_modal_go_back_dta" class="btn btn-danger">CERRAR</button>
-                </div>
-            </form>
-          </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
+                        <button type="button" id="close_btn_modal_modal_go_back_dta" class="btn btn-danger">CERRAR</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    {{-- MODAL DE ENVIO END --}}
 
     {{-- MODAL DE TERMINO --}}
-    <div class="modal fade" id="modalFinish" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modalFinish" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-info" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y TERMINAR PROCESO </b></h5>
-            </div>
-            <form id="formFinish" enctype="multipart/form-data" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <input type="file" name="memorandumPositivoFile" id="memorandumPositivoFile" class="form-control">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y TERMINAR PROCESO </b></h5>
+                </div>
+                <form id="formFinish" enctype="multipart/form-data" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <input type="file" name="memorandumPositivoFile" id="memorandumPositivoFile"
+                                    class="form-control">
+                            </div>
                         </div>
+                        <div class="field_wrapper_planeacion_terminar"></div>
                     </div>
-                    <div class="field_wrapper_planeacion_terminar"></div>
-                </div>
-                <div class="modal-footer">
-                <button type="submit" class="btn btn-success" id="send_to_finish">ENVIAR</button>
-                <button type="button" id="close_btn_modal_modal_finish" class="btn btn-danger">CERRAR</button>
-                </div>
-            </form>
-          </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" id="send_to_finish">ENVIAR</button>
+                        <button type="button" id="close_btn_modal_modal_finish" class="btn btn-danger">CERRAR</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    {{-- MODAL DE TERMINO END --}}
-    
+
 @endsection
 {{-- contenido js --}}
 @section('script_content_js')
     <script type="text/javascript">
-        $(function(){
-            $.validator.addMethod('filesize', function (value, element, param) {
+        $(function() {
+            $.validator.addMethod('filesize', function(value, element, param) {
                 return this.optional(element) || (element.files[0].size <= param)
             }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
 
@@ -502,17 +574,17 @@
             // CHECAR TODOS LOS CHECKBOX AL MOMENTO
             $("#selectAll").click(function() {
                 $("input[type=checkbox]").not(this).prop("checked", this.checked);
-                $("input[type=checkbox]").each(function(){
+                $("input[type=checkbox]").each(function() {
                     if ($(this).is(":checked")) {
                         if ($(this).attr("id") != 'selectAll') {
                             var id = $(this).attr("id").split("_");
-                            id = id[id.length-1];
+                            id = id[id.length - 1];
                             $('#comentario_' + id).attr('disabled', false);
                         }
                     } else {
                         if ($(this).attr("id") != 'selectAll') {
                             var id = $(this).attr("id").split("_");
-                            id = id[id.length-1];
+                            id = id[id.length - 1];
                             $('#comentario_' + id).attr('disabled', true);
                         }
                     }
@@ -520,14 +592,14 @@
             });
 
             // trabajar con el checkbox
-            $("input.checkbx").change(function(){
+            $("input.checkbx").change(function() {
                 if (this.checked) {
                     var id = $(this).attr("id").split("_");
-                    id = id[id.length-1];
+                    id = id[id.length - 1];
                     $('#comentario_' + id).attr('disabled', false);
                 } else {
                     var id = $(this).attr("id").split("_");
-                    id = id[id.length-1];
+                    id = id[id.length - 1];
                     $('#comentario_' + id).attr('disabled', true);
                 }
             });
@@ -540,19 +612,19 @@
                 });
             });
             // filtrado de la clave del curso
-            $('#close_btn_modal_modal_go_back_dta').click(function(){
+            $('#close_btn_modal_modal_go_back_dta').click(function() {
                 $("#modalGoBackDTA").modal("hide");
             });
-            $('#close_btn_modal_modal_finish').click(function(){
+            $('#close_btn_modal_modal_finish').click(function() {
                 $("#modalFinish").modal("hide");
             });
 
-            $('#send_to_dta').click(function(){
+            $('#send_to_dta').click(function() {
                 $('#formGoBackDTA').validate({
                     rules: {
                         "memorandumNegativoFile": {
-                            required: true, 
-                            extension: "pdf", 
+                            required: true,
+                            extension: "pdf",
                             filesize: 2000000
                         }
                     },
@@ -562,27 +634,26 @@
                             accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
                         }
                     },
-                    submitHandler: function(form, event){
+                    submitHandler: function(form, event) {
                         event.preventDefault();
                         var chkCursos = new Array();
                         var formData = new FormData(form);
                         $('input[name="chkcursos[]"]:checked').each(function() {
                             chkCursos.push(this.value);
                         });
-                        $('textarea[name="comentarios_planeacion[]"]').each(function(){
+                        $('textarea[name="comentarios_planeacion[]"]').each(function() {
                             if (!$(this).prop('disabled')) {
                                 formData.append("comentariosPlaneacion[]", this.value);
                             }
                         });
                         var numero_memo = $('#num_memo').val();
                         /***
-                        * cargar_archivo_negativo
-                        */
+                         * cargar_archivo_negativo
+                         */
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
-                        var _url = "{{route('planeacion.send.to.dta')}}";
-                        var requested = $.ajax
-                        ({
+                        var _url = "{{ route('planeacion.send.to.dta') }}";
+                        var requested = $.ajax({
                             url: _url,
                             method: 'POST',
                             data: formData,
@@ -590,54 +661,64 @@
                             cache: false,
                             contentType: false,
                             processData: false,
-                            beforeSend: function(){
+                            beforeSend: function() {
                                 $("#modalGoBackDTA").modal("hide");
-                                document.querySelector("#spinner").removeAttribute('hidden');
+                                document.querySelector("#spinner").removeAttribute(
+                                    'hidden');
                             },
-                            success: function(response){
+                            success: function(response) {
 
                                 if (response === 'DONE') {
                                     $("#dtaform").trigger("reset");
-                                    $( ".alert" ).addClass("alert-success");
-                                    $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
+                                    $(".alert").addClass("alert-success");
+                                    $(".alert").append(
+                                        "<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>"
+                                    );
                                     // redireccionar después de 5 segundos
-                                    setTimeout(function(){ 
-                                        window.location.href = "{{ route('planeacion.formatot.index')}}";
+                                    setTimeout(function() {
+                                        window.location.href =
+                                            "{{ route('planeacion.formatot.index') }}";
                                     }, 2000);
                                 } else if (response === 'EMPTYCURSOS') {
-                                    $( ".alert" ).addClass("alert-danger");
-                                    $(".alert").append("<b>LOS CURSOS NO ESTÁN SELECCIONADOS Y NO SE PUEDE REALIZAR EL PROCESO</b>" );
+                                    $(".alert").addClass("alert-danger");
+                                    $(".alert").append(
+                                        "<b>LOS CURSOS NO ESTÁN SELECCIONADOS Y NO SE PUEDE REALIZAR EL PROCESO</b>"
+                                    );
                                 } else if (response === 'EMPTYNUMMEMO') {
-                                    $( ".alert" ).addClass("alert-danger");
-                                    $(".alert").append("<b>EL PROCESO NO SE PUEDE REALIZAR DEBIDO A QUE NO SE AGREGO EN NÚMERO DE MEMORANDUM</b>" );
+                                    $(".alert").addClass("alert-danger");
+                                    $(".alert").append(
+                                        "<b>EL PROCESO NO SE PUEDE REALIZAR DEBIDO A QUE NO SE AGREGO EN NÚMERO DE MEMORANDUM</b>"
+                                    );
                                 }
                             },
-                            complete:function(data){
+                            complete: function(data) {
                                 // escondemos el modales
-                                document.querySelector('#spinner').setAttribute('hidden', '');
+                                document.querySelector('#spinner').setAttribute(
+                                    'hidden', '');
                             },
-                            error: function(jqXHR, textStatus){
+                            error: function(jqXHR, textStatus) {
                                 //jsonValue = jQuery.parseJSON( jqXHR.responseText );
                                 //document.querySelector('#spinner').setAttribute('hidden', '');
                                 console.log(jqXHR.responseText);
-                                alert( "Hubo un error: " + jqXHR.status );
+                                alert("Hubo un error: " + jqXHR.status);
                             }
                         });
-                        $.when(requested).then(function(data, textStatus, jqXHR ){
+                        $.when(requested).then(function(data, textStatus, jqXHR) {
                             if (jqXHR.status === 200) {
-                                document.querySelector('#spinner').setAttribute('hidden', '');
+                                document.querySelector('#spinner').setAttribute(
+                                    'hidden', '');
                             }
                         });
                     }
                 });
             });
             // ENVIAR Y TERMINAR PROCESO CLICK
-            $('#send_to_finish').click(function(){
+            $('#send_to_finish').click(function() {
                 $('#formFinish').validate({
                     rules: {
                         "memorandumPositivoFile": {
-                            required: true, 
-                            extension: "pdf", 
+                            required: true,
+                            extension: "pdf",
                             filesize: 2000000
                         }
                     },
@@ -647,26 +728,26 @@
                             accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
                         }
                     },
-                    submitHandler: function(forms, events)
-                    {
+                    submitHandler: function(forms, events) {
                         events.preventDefault();
                         var chkCursos = new Array();
                         var formData = new FormData(forms);
                         $('input[name="chkcursos[]"]:checked').each(function() {
                             chkCursos.push(this.value);
                         });
-                        $('textarea[name="comentarios_planeacion[]"]').each(function(){
+                        $('textarea[name="comentarios_planeacion[]"]').each(function() {
                             if (!$(this).prop('disabled')) {
-                                formData.append("comentariosPlaneacionTerminar[]", this.value);
+                                formData.append("comentariosPlaneacionTerminar[]", this
+                                    .value);
                             }
                         });
                         var numero_memo = $('#num_memo').val();
                         /***
-                        * cargar_archivo_negativo
-                        */
+                         * cargar_archivo_negativo
+                         */
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
-                        var _urlFinish = "{{route('planeacion.finish')}}";
+                        var _urlFinish = "{{ route('planeacion.finish') }}";
                         var requested = $.ajax({
                             url: _urlFinish,
                             method: 'POST',
@@ -675,42 +756,52 @@
                             cache: false,
                             contentType: false,
                             processData: false,
-                            beforeSend: function(){
+                            beforeSend: function() {
                                 $("#modalFinish").modal("hide");
-                                document.querySelector("#spinner").removeAttribute('hidden');
+                                document.querySelector("#spinner").removeAttribute(
+                                    'hidden');
                             },
-                            success: function(response){
+                            success: function(response) {
                                 console.log(response);
                                 if (response === 'DONE') {
                                     $("#dtaform").trigger("reset");
-                                    $( ".alert" ).addClass("alert-success");
-                                    $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
+                                    $(".alert").addClass("alert-success");
+                                    $(".alert").append(
+                                        "<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>"
+                                    );
                                     // redireccionar después de 5 segundos
-                                    setTimeout(function(){ 
-                                        window.location.href = "{{ route('planeacion.formatot.index')}}";
+                                    setTimeout(function() {
+                                        window.location.href =
+                                            "{{ route('planeacion.formatot.index') }}";
                                     }, 2000);
-                                } else if(response === 'EMPTYCURSOS'){
-                                    $( ".alert" ).addClass("alert-danger");
-                                    $(".alert").append("<b>LOS CURSOS NO ESTÁN SELECCIONADOS Y NO SE PUEDE REALIZAR EL PROCESO</b>" );
+                                } else if (response === 'EMPTYCURSOS') {
+                                    $(".alert").addClass("alert-danger");
+                                    $(".alert").append(
+                                        "<b>LOS CURSOS NO ESTÁN SELECCIONADOS Y NO SE PUEDE REALIZAR EL PROCESO</b>"
+                                    );
                                 } else if (response === 'EMPTYNUMMEMOs') {
-                                    $( ".alert" ).addClass("alert-danger");
-                                    $(".alert").append("<b>EL PROCESO NO SE PUEDE REALIZAR DEBIDO A QUE NO SE AGREGO EN NÚMERO DE MEMORANDUM</b>" );
+                                    $(".alert").addClass("alert-danger");
+                                    $(".alert").append(
+                                        "<b>EL PROCESO NO SE PUEDE REALIZAR DEBIDO A QUE NO SE AGREGO EN NÚMERO DE MEMORANDUM</b>"
+                                    );
                                 }
                             },
-                            complete:function(data){
+                            complete: function(data) {
                                 // escondemos el modales
-                                document.querySelector('#spinner').setAttribute('hidden', '');
+                                document.querySelector('#spinner').setAttribute(
+                                    'hidden', '');
                             },
-                            error: function(jqXHR, textStatus){
+                            error: function(jqXHR, textStatus) {
                                 //jsonValue = jQuery.parseJSON( jqXHR.responseText );
                                 //document.querySelector('#spinner').setAttribute('hidden', '');
                                 console.log(jqXHR.responseText);
-                                alert( "Hubo un error: " + jqXHR.responseText );
+                                alert("Hubo un error: " + jqXHR.responseText);
                             }
                         });
-                        $.when(requested).then(function(data, textStatus, jqXHR ){
+                        $.when(requested).then(function(data, textStatus, jqXHR) {
                             if (jqXHR.status === 200) {
-                                document.querySelector('#spinner').setAttribute('hidden', '');
+                                document.querySelector('#spinner').setAttribute(
+                                    'hidden', '');
                             }
                         });
                     }
@@ -719,7 +810,7 @@
 
             $('#formPlaneacion').validate({
                 rules: {
-                    num_memo : {
+                    num_memo: {
                         required: true
                     },
                 },
@@ -730,6 +821,7 @@
                 }
             })
         });
+
     </script>
 @endsection
 {{-- contenido js END --}}
