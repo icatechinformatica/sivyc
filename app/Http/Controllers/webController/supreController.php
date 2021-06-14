@@ -909,15 +909,15 @@ class supreController extends Controller
 
         if ($filtrotipo == "general")
         {
-            $data = supre::SELECT('tabla_supre.no_memo', 
+            $data = supre::SELECT('tabla_supre.no_memo',
                     'folios.folio_validacion as suf',
-                    'tabla_supre.fecha', 
+                    'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tabla_supre.unidad_capacitacion', 
+                    'tabla_supre.unidad_capacitacion',
                     'tbl_cursos.curso',
                     'tbl_cursos.clave',
-                    'tbl_cursos.ze', 
-                    'tbl_cursos.dura', 
+                    'tbl_cursos.ze',
+                    'tbl_cursos.dura',
                     \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99') AS importe_hora"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99') AS importe_iva_16"),
                     \DB::raw("'12101 Honorarios' AS partida_concepto"),
@@ -937,13 +937,13 @@ class supreController extends Controller
         }
         else if ($filtrotipo == 'curso')
         {
-            $data = supre::SELECT('tabla_supre.no_memo', 
+            $data = supre::SELECT('tabla_supre.no_memo',
                     'folios.folio_validacion as suf',
-                    'tabla_supre.fecha', 
+                    'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tabla_supre.unidad_capacitacion', 
+                    'tabla_supre.unidad_capacitacion',
                     'tbl_cursos.curso', 'tbl_cursos.clave',
-                    'tbl_cursos.ze', 'tbl_cursos.dura', 
+                    'tbl_cursos.ze', 'tbl_cursos.dura',
                     \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),

@@ -15,7 +15,7 @@ class formato911Controller extends Controller
         $id_unidad= Auth::user()->unidad;
 
         $unidades = $unidad = NULL;
-        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')               
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
         ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');//dd($rol);
         if ($rol) {
@@ -44,7 +44,7 @@ class formato911Controller extends Controller
             //dd($unidades);
             //var_dump($unidades);
             return view('reportes.911.911formu', compact('unidades','tipo'));
-        }       
+        }
     }
 
     public function store(Request $request){
@@ -71,13 +71,14 @@ class formato911Controller extends Controller
         $encabezado= DB::table('tbl_cursos as tc')
         ->join('cursos as c','tc.id_curso','=','c.id')
         ->join('especialidades as e','c.id_especialidad','=','e.id')
-        ->select(DB::raw('count(e.id)'), 'e.clave','e.nombre as especialidad')   
+        ->select(DB::raw('count(e.id)'), 'e.clave','e.nombre as especialidad')
         ->where('termino','>=',$fecha_inicio)
         ->where('termino','<=',$fecha_termino)
         ->where('unidad','=',$unidades)
         ->where('tc.hini','>=',$a)
         ->where('tc.hini','<=',$b)
-        ->groupBy('e.id')     
+        ->where('tc.status_curso', '!=', 'CANCELADO')
+        ->groupBy('e.id')
         ->groupByRaw('e.clave, e.nombre')
         ->orderByRaw('e.nombre')
         ->get();
@@ -87,7 +88,7 @@ class formato911Controller extends Controller
         ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
         ->join('alumnos_registro as ar', function($join)
                     {
-                        $join->on('tc.id_curso','=','ar.id_curso');                
+                        $join->on('tc.id_curso','=','ar.id_curso');
                         $join->on('i.matricula','=','ar.no_control');
                     })
         ->join('alumnos_pre as ap','ap.id','=','ar.id_pre')
@@ -142,6 +143,7 @@ class formato911Controller extends Controller
         ->where('tc.unidad','=',$unidades)
         ->where('tc.hini','>=',$a)
         ->where('tc.hini','<=',$b)
+        ->where('tc.status_curso', '!=', 'CANCELADO')
         ->groupBy('tc.espe')
         ->orderBy('tc.espe')
         ->get();
