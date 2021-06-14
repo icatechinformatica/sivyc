@@ -632,7 +632,7 @@ class supreController extends Controller
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                            ->GET();
         }
-
+//a
         $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data','recursos','risr','riva','cantidad','iva'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
