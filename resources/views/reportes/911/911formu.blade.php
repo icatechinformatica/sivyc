@@ -48,7 +48,7 @@
                             <input type="date" name="fecha_termino" class="form-control" id="fecha_termino">
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="Generar PDF" class="btn btn-primary">
+                            <input type="submit" value="Generar PDF" class="btn">
                         </div>
                         {{csrf_field()}}
                     </form>
