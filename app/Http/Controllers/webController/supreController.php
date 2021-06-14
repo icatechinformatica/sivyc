@@ -595,6 +595,49 @@ class supreController extends Controller
         return  $pdf->stream('medium.pdf');
     }
 
+    protected function planeacion_reporte_canceladospdf(Request $request){
+        $i = 0;
+        set_time_limit(0);
+
+        if ($request->filtro == "general")
+        {
+            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario','folios.cancelo',
+                           'folios.observacion_cancelacion','instructores.nombre','instructores.apellidoPaterno',
+                           'instructores.apellidoMaterno','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze',
+                           'tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer')
+                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                           ->WHERE('folios.status', '=', 'Cancelado')
+                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->GET();
+        }
+        else if ($request->filtro == 'unidad')
+        {
+            $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario','folios.cancelo',
+                           'folios.observacion_cancelacion','instructores.nombre','instructores.apellidoPaterno',
+                           'instructores.apellidoMaterno','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze',
+                           'tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer')
+                           ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
+                           ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
+                           ->WHERE('tabla_supre.unidad_capacitacion', '=', $request->unidad)
+                           ->WHERE('folios.status', '=', 'Cancelado')
+                           ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                           ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->GET();
+        }
+
+        $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data','recursos','risr','riva','cantidad','iva'));
+        $pdf->setPaper('legal', 'Landscape');
+        return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+    }
+
     public function tablasupre_pdf($id){
         $supre = new supre;
         $curso = new tbl_curso;

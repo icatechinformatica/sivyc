@@ -114,19 +114,23 @@
                         <a class="dropdown-item" href="https://datastudio.google.com/reporting/512e11eb-babf-4476-8827-8d4243e2c219" target="_blank">STATUS PAGO INSTRUCTORES</a> --}}
                         {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">Reporte de Formato T</a>                         --}}
                         @can('academicos.arc')
-                            <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">Apertura ARC01</a>
+                            <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">Solicitudes ARC01 y ARC02 </a>
                         @endcan
                         @can('reportes.cursos')
                             <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">Cursos Autorizados</a>
                         @endcan
                         @can('planeacion.reporte')
                             <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Suficiencias Presupuestales</a>
+                            <!--<a class="dropdown-item" href="{{route('planeacion.reporte-cancelados')}}">Folios Cancelados</a>-->
                         @endcan
                         @can('financieros.reporte')
                             <a class="dropdown-item" href="{{route('financieros.reporte')}}">Estado de Contratos y Pagos</a>
                         @endcan
                         @can('vinculacion.reporte')
                             <a class="dropdown-item" href="{{route('cursosvinculador.reporte')}}">Alumno por Vinculador</a>
+                        @endcan
+                        @can('reportes.911')
+                            <a class="dropdown-item" href="{{route('reportes.911.showForm')}}">Reporte 911</a>
                         @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
