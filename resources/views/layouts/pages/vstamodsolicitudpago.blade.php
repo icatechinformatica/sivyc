@@ -33,14 +33,32 @@
                     <label for="inputno_memo">Numero de Memorandum</label>
                     <input id="no_memo" name="no_memo" type="text" class="form-control" value="{{$datap->no_memo}}">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="inputelaboro">Nombre de Quien Elabora</label>
-                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" value="{{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}">
-                    <input id="id_elabora" name="id_elabora" hidden value="{{$directorio->solpa_elaboro}}">
-                </div>
                 <div class="form-group col-md-3">
                     <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
                     <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control" value="{{$datap->solicitud_fecha}}">
+                </div>
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputeremite">Nombre de Remitente</label>
+                        <input id="remitente" name="remitente" type="text" class="form-control" value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Remitente</label>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$director->puesto}}" required>
+                        <input id="id_remitente" name="id_remitente" hidden required>
+                    </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputelaboro">Nombre de Quien Elabora</label>
+                    <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" value="{{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}">
+
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_para">Puesto de Quien Elabora</label>
+                    <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" value="{{$para->puesto}}">
+                    <input id="id_elabora" name="id_elabora" hidden value="{{$directorio->solpa_elaboro}}">
                 </div>
             </div>
             <div class="form-row">
