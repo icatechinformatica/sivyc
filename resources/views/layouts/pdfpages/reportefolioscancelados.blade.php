@@ -112,7 +112,6 @@
                             <td scope="col" ><small style="font-size: 8px;">Z.E.</small></td>
                             <td scope="col"><small style="font-size: 8px;">HSM</small></td>
                             <td scope="col" ><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
-                            <td scope="col"><small style="font-size: 8px;">IVA 16%</small></td>
                             <td scope="col" ><small style="font-size: 8px;">PARTIDA/ CONCEPTO<small></td>
                             <td width="6px" ><small style="font-size: 8px;">MEMO. RESPUESTA<small></td>
                             <td scope="col" ><small style="font-size: 8px;">FECHA REGISTRO<small></td>
@@ -135,7 +134,6 @@
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->ze}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->dura}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->importe_hora}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$iva[$key]}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">12101 Honorarios</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->folio_validacion}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->fecha_validacion}}</td>
