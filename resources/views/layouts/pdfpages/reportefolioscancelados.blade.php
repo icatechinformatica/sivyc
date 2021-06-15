@@ -95,7 +95,7 @@
             <div align=center><b><h6>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLOGICA DEL ESTADO DE CHIAPAS
                 <br>DIRECCIÓN DE PLANEACIÓN
                 <br>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO
-                <br>FORMATO DE CONTROL DE SUFICIENCIA PRESUPUESTAL
+                <br>FORMATO DE CONTROL DE FOLIOS CANCELADOS
             </div>
             <div class="form-row">
                 <table width="700" class="table table-striped" id="table-one">
@@ -114,13 +114,11 @@
                             <td scope="col" ><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
                             <td scope="col"><small style="font-size: 8px;">IVA 16%</small></td>
                             <td scope="col" ><small style="font-size: 8px;">PARTIDA/ CONCEPTO<small></td>
-                            <td scope="col" ><small style="font-size: 8px;">IMPORTE TOTAL FEDERAL<small></td>
-                            <td scope="col" ><small style="font-size: 8px;">IMPORTE TOTAL ESTATAL<small></td>
-                            <td scope="col" ><small style="font-size: 8px;">RETENCIÓN ISR<small></td>
-                            <td scope="col" ><small style="font-size: 8px;">RETENCIÓN IVA<small></td>
                             <td width="6px" ><small style="font-size: 8px;">MEMO. RESPUESTA<small></td>
                             <td scope="col" ><small style="font-size: 8px;">FECHA REGISTRO<small></td>
+                            <td scope="col" ><small style="font-size: 8px;">FECHA DE CANCELACIÓN<small></td>
                             <td scope="col" ><small style="font-size: 8px;">OBSERVACIONES<small></td>
+                            <td scope="col" ><small style="font-size: 8px;">CANCELÓ<small></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,18 +137,11 @@
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->importe_hora}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$iva[$key]}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">12101 Honorarios</td>
-                                @if ($recursos[$key] == "Federal")
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$cantidad[$key]}}</td>
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;"></td>
-                                @else
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;"></td>
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$cantidad[$key]}}</td>
-                                @endif
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$risr[$key]}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$riva[$key]}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->folio_validacion}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->fecha_validacion}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->comentario}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->updated_at}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->observacion_cancelacion}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->cancelo}}</small></td>
                             </tr>
                         @endforeach
                     </tbody>
