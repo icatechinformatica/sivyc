@@ -895,16 +895,14 @@ class validacionDtaController extends Controller
     protected function entrega_planeacion(Request $request) {
         $valor = $request->get('validarDireccionDta');
         $mesUnity = $request->get('txtUnity');
+        $totalCursos = $request->get('totalCursos');
         if (isset($valor)) {
             # si la variable está inicializada procedemos a meterlo en el switch
             switch ($valor) {
                 case 'generarMemoPlaneacion':
-                    /**
-                     * GENERAR MEMORANDUM
-                     */
                     # generamos el memo de entrega a planeacion.
                     $numMemo = $request->get('num_memo_devolucion');
-                    return $this->generarMemorandumPlaneacion($numMemo, $mesUnity);
+                    return $this->generarMemorandumPlaneacion($numMemo, $mesUnity, $totalCursos);
                     break;
                 case 'RegresarEnlaceDta':
                     /**
@@ -955,7 +953,7 @@ class validacionDtaController extends Controller
         }
     }
 
-    private function generarMemorandumPlaneacion($num_memo_planeacion, $mesUnity) {
+    private function generarMemorandumPlaneacion($num_memo_planeacion, $mesUnity, $totalCursos) {
         if (isset($num_memo_planeacion)) {
             /**
              * obtener el mes de los cursos que se encuentran en el registro del módulo
@@ -969,7 +967,6 @@ class validacionDtaController extends Controller
                 ->limit(1)
                 ->get(); */
             
-
             # GENERAMOS EL DOCUMENTO EN PDF
             $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
             $jefdepto = 'JEFE DE DEPARTAMENTO DE CERTIFICACION Y CONTROL';
@@ -1026,7 +1023,7 @@ class validacionDtaController extends Controller
             $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
             $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
             $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity'));
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos'));
             // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
             return $pdf->download('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {

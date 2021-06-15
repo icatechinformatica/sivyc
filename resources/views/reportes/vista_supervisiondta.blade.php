@@ -85,7 +85,7 @@
 
                     {!! Form::open(['route' => 'validacion.dta.revision.cursos.indice', 'method' => 'GET', 'class' => 'form-inline']) !!}
                         <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
-                            <option value="">-- BUSQUEDA POR UNIDAD --</option>
+                            <option value="all">TODAS LAS UNIDADES</option>
                             @foreach ($unidades as $itemUnidades)
                                 <option {{$itemUnidades->unidad == $unidades_busqueda ? 'selected' : ''}} value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
                             @endforeach
@@ -170,6 +170,7 @@
                     </div>
                 </div> --}}
 
+                <input class="d-none" id="totalCursos" name="totalCursos" type="text" value="{{count($cursos_validar)}}">
                 <div class="form-row">
                     <div class="form-group mb-2">
                         <button type="submit" class="btn btn-danger my-2 my-sm-0 waves-effect waves-light"

@@ -93,7 +93,7 @@
                     {{-- formulario de busqueda en index --}}
                     {!! Form::open(['route' => 'planeacion.formatot.index', 'method' => 'GET', 'class' => 'form-inline']) !!}
                     <select name="busqueda_unidad" id="busqueda_unidad" class="form-control mr-sm-2">
-                        <option value="">-- BUSQUEDA POR UNIDAD --</option>
+                        <option value="all">TODAS LAS UNIDADES</option>
                         @foreach ($unidadesIndex as $itemUnidadesIndex)
                             <option {{$itemUnidadesIndex->ubicacion == $unidades ? 'selected' : ''}} value="{{ $itemUnidadesIndex->ubicacion }}">{{ $itemUnidadesIndex->ubicacion }}
                             </option>

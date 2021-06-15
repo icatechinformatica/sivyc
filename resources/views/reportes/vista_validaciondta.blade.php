@@ -101,7 +101,7 @@
 
                     {!! Form::open(['route' => 'validacion.cursos.enviados.dta', 'method' => 'GET', 'class' => 'form-inline']) !!}
                         <select name="busqueda_unidad" class="form-control mr-sm-2" id="busqueda_unidad">
-                            <option value="">-- BUSQUEDA POR UNIDAD --</option>
+                            <option value="all">TODAS LAS UNIDADES</option>
                             @foreach ($unidades as $itemUnidades)
                                 <option {{$itemUnidades->unidad == $unidad ? 'selected' : ''}} value="{{ $itemUnidades->unidad }}">{{ $itemUnidades->unidad }}</option>
                             @endforeach
