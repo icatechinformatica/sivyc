@@ -121,7 +121,7 @@
                         @endcan
                         @can('planeacion.reporte')
                             <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Suficiencias Presupuestales</a>
-                            <!--<a class="dropdown-item" href="{{route('planeacion.reporte-cancelados')}}">Folios Cancelados</a>-->
+                            <a class="dropdown-item" href="{{route('planeacion.reporte-cancelados')}}">Folios Cancelados</a>
                         @endcan
                         @can('financieros.reporte')
                             <a class="dropdown-item" href="{{route('financieros.reporte')}}">Estado de Contratos y Pagos</a>
