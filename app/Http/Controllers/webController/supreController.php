@@ -633,7 +633,7 @@ class supreController extends Controller
                            ->GET();
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data','recursos','risr','riva','cantidad','iva'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
     }
