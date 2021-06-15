@@ -604,9 +604,9 @@ class supreController extends Controller
             $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
                            'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario','folios.cancelo',
-                           'folios.observacion_cancelacion','instructores.nombre','instructores.apellidoPaterno',
-                           'instructores.apellidoMaterno','tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze',
-                           'tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer')
+                           'folios.observacion_cancelacion','folios.updated_at','instructores.nombre',
+                           'instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.curso',
+                           'tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer')
                            ->whereDate('tabla_supre.fecha', '>=', $request->fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $request->fecha2)
                            ->WHERE('folios.status', '=', 'Cancelado')
