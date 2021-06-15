@@ -90,7 +90,7 @@
            <p>
             Por este medio y en seguimiento a la integración del Formato T de las Unidades de Capacitación
             de este Instituto correspondiente al mes de <b>{{$mesUnity}}</b> de la anualidad en curso; me es grato infórmarle <br/>
-            que fue revisado y liberado el reporte estadístico denominado Formato T.
+            que fue revisado y liberado el reporte estadístico denominado Formato T con la cantidad de <strong>{{$totalCursos}}</strong> cursos.
            </p>
         </div>
         <br>

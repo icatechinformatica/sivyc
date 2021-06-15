@@ -386,7 +386,6 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
         })
         ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
-        ->WHERE('u.ubicacion', '=', $unidad)
         ->whereMonth('c.fecha_turnado', $mesSearch) // new
         ->WHERE('c.status', '=', $status) // new
         ->WHEREIN('c.turnado', $turnado)
@@ -426,10 +425,17 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
             'ip.grado_profesional',
             'ip.estatus'
         )
-        ->distinct()
-        ->get();
+        ->distinct();
 
-    return $var_cursos;
+        if ($unidad != 'all' && $unidad != 'ALL') {
+            $var_cursos2 = $var_cursos->WHERE('u.ubicacion', '=', $unidad)->get();
+        } else {
+            $var_cursos2 = $var_cursos->get();
+        }
+ 
+        // ->get();
+
+    return $var_cursos2;
 }
 
 function dataFormatoTSaveData($id)
