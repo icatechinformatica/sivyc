@@ -485,7 +485,7 @@ class InstructorController extends Controller
         //$affecttbl_cursos = DB::table("tbl_cursos")->WHERE('nombre', $old)->update(['nombre' =>$new]);
 
         Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
-        Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
+        //Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
         tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
         tbl_curso::where('id_instructor', '=', $request->id)->update(['curp' => $request->curp]);
 
