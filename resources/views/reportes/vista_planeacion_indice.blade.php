@@ -647,9 +647,8 @@
                             }
                         });
                         var numero_memo = $('#num_memo').val();
-                        /***
-                         * cargar_archivo_negativo
-                         */
+                        
+                        formData.append("_token", $("meta[name='csrf-token']").attr("content"));
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
                         var _url = "{{ route('planeacion.send.to.dta') }}";
@@ -742,9 +741,8 @@
                             }
                         });
                         var numero_memo = $('#num_memo').val();
-                        /***
-                         * cargar_archivo_negativo
-                         */
+                        
+                        formData.append("_token", $("meta[name='csrf-token']").attr("content"));
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
                         var _urlFinish = "{{ route('planeacion.finish') }}";
