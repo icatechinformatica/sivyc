@@ -113,21 +113,19 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    
                     <div class="form-group mb-2">
                         <button input type="submit" id="generarMemoAFirma" name="generarMemoAFirma"  class="btn btn-danger my-2 my-sm-0 waves-effect waves-light">
                             <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
                             GENERAR MEMORANDUM
                         </button> 
                     </div>
-                    {{-- @if ($enFirma->count() > 0) --}}
-                        <div class="form-group mb-2 mb-2">
-                            <button input type="button" id="enviarDTA" name="enviarDTA"  class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
-                                <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>
-                                ENVIAR A VALIDACIÓN DE DTA
-                            </button> 
-                        </div>
-                    {{-- @endif --}}
+
+                    <div class="form-group mb-2 mb-2">
+                        <button input type="button" id="enviarDTA" name="enviarDTA"  class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
+                            <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>
+                            ENVIAR A VALIDACIÓN DE DTA
+                        </button> 
+                    </div>
                     
                     @if ($retornoUnidad->count() > 0)
                         <div class="form-group mb-2 mb-2">
