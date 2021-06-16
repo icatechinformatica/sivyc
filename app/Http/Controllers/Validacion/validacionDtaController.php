@@ -21,7 +21,8 @@ class validacionDtaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $unidad = $request->get('busqueda_unidad');
         $mesSearch = $request->get('mesSearchE');
 
@@ -242,14 +243,15 @@ class validacionDtaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexRevision(Request $request) {
+    public function indexRevision(Request $request)
+    {
         $unidades_busqueda = $request->get('busqueda_unidad');
         $mesSearch = $request->get('mesSearchD');
 
         $ac = Carbon::now()->year; // año actual obtenido del servidor
 
         $cursos_validar = dataFormatoT2do($unidades_busqueda, ['REVISION_DTA'], null, $mesSearch, 'REVISION_DTA');
-            
+
         /* $inner_ = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
         $cursos_validar = tbl_curso::searchbydata($unidades_busqueda)->select(
             'tbl_cursos.id AS id_tbl_cursos',
@@ -490,213 +492,237 @@ class validacionDtaController extends Controller
             if (isset($validacion)) {
                 # hacemos un switch
                 switch ($validacion) {
-
                     case 'GenerarMemorandum':
                         $_SESSION['memo_retorno1'] = $nume_memo = $request->num_memo_devolucion;
                         # entramos a un loop y antes checamos que se haya seleccionado cursos para realizar esta operacion
-                        if (!empty($_POST['chkcursos'])) {
+                        $unidadSeleccionada = $request->get('unidadActual');
+                        if ($unidadSeleccionada != 'all') {
+                            if (!empty($_POST['chkcursos'])) {
+                                $unidadeSearch = \DB::table('tbl_unidades')->where('ubicacion', '=', $unidadSeleccionada)->pluck('unidad');
 
-                            $unidadSeleccionada = $request->get('unidadActual');
-                            $unidadeSearch = \DB::table('tbl_unidades')->where('ubicacion', '=', $unidadSeleccionada)->pluck('unidad');
+                                $cursosNul = \DB::table('tbl_cursos')
+                                    ->select('id', 'memos', 'observaciones_formato_t')
+                                    ->wherein('unidad', $unidadeSearch)
+                                    ->where('status', '=', 'TURNADO_DTA')
+                                    ->where('memos', '=', null)
+                                    ->where('observaciones_formato_t', '=', null)->get();
 
-                            $cursosNul = \DB::table('tbl_cursos')
-                                ->select('id', 'memos', 'observaciones_formato_t')
-                                ->wherein('unidad', $unidadeSearch)
-                                ->where('status', '=', 'TURNADO_DTA')
-                                ->where('memos', '=', null)
-                                ->where('observaciones_formato_t', '=', null)->get();
+                                if (count($cursosNul) > 0) {
+                                    foreach ($cursosNul as $key => $value) {
+                                        $memos1 = $value->memos != null ? json_decode($value->memos, true) : null;
+                                        $observaciones1 = $value->observaciones_formato_t != null ? json_decode($value->observaciones_formato_t, true) : null;
 
-                            if (count($cursosNul) > 0) {
-                                foreach ($cursosNul as $key => $value) {
-                                    $memos1 = $value->memos != null ? json_decode($value->memos, true) : null;
-                                    $observaciones1 = $value->observaciones_formato_t != null ? json_decode($value->observaciones_formato_t, true) : null;
-
-                                    $comentarios_envio_dta1 = [
-                                        'COMENTARIOS_UNIDAD' =>  ''
-                                    ];
-                                    $array_memosDTA1 = [
-                                        'TURNADO_DTA' => ''
-                                    ];
-
-                                    \DB::table('tbl_cursos')
-                                        ->where('id', '=', $value->id)
-                                        ->update([
-                                            'memos' => $memos1 != null ? $memos1 : \DB::raw("'" . json_encode($comentarios_envio_dta1) . "'::jsonb"),
-                                            'turnado' => 'DTA',
-                                            'observaciones_formato_t' => $observaciones1 != null ? $observaciones1 : \DB::raw("'" . json_encode($array_memosDTA1) . "'::jsonb"),
-                                        ]);
-                                }
-                            }
-
-                            // se reinician los cursos marcados anteriormente
-                            $cursosChecks = \DB::table('tbl_cursos')
-                                ->wherein('unidad', $unidadeSearch)
-                                ->where('status', '=', 'TURNADO_DTA')->update([
-                                    'memos->ENLACE_TURNADO_RETORNO' => '',
-                                    'turnado' => 'DTA'
-                                ]);
-
-                            /* if ($cursosChecks != null) {
-                                foreach ($cursosChecks as $value) {
-                                    $memos = $value->memos != null ? json_decode($value->memos, true) : null;
-                                    $observaciones_enlace = $value->observaciones_formato_t != null ? json_decode($value->observaciones_formato_t, true) : null;
-
-                                    if ($memos != null && $observaciones_enlace != null) {
-                                        foreach ($memos as $key => $value1) {
-                                            if ($key == 'ENLACE_TURNADO_RETORNO') {
-                                                unset($memos[$key]);
-                                            }
-                                        }
-
-                                        foreach ($observaciones_enlace as $key2 => $value2) {
-                                            if ($key2 == 'OBSERVACION_ENLACES_RETORNO_UNIDAD') {
-                                                unset($observaciones_enlace[$key2]);
-                                            }
-                                        }
+                                        $comentarios_envio_dta1 = [
+                                            'COMENTARIOS_UNIDAD' =>  ''
+                                        ];
+                                        $array_memosDTA1 = [
+                                            'TURNADO_DTA' => ''
+                                        ];
 
                                         \DB::table('tbl_cursos')
-                                        ->where('id', '=', $value->id)
-                                        ->update([
-                                            'memos' => $memos,
-                                            'turnado' => 'DTA',
-                                            'observaciones_formato_t' => $observaciones_enlace
-                                        ]);
+                                            ->where('id', '=', $value->id)
+                                            ->update([
+                                                'memos' => $memos1 != null ? $memos1 : \DB::raw("'" . json_encode($comentarios_envio_dta1) . "'::jsonb"),
+                                                'turnado' => 'DTA',
+                                                'observaciones_formato_t' => $observaciones1 != null ? $observaciones1 : \DB::raw("'" . json_encode($array_memosDTA1) . "'::jsonb"),
+                                            ]);
                                     }
                                 }
-                            } */
 
-                            $memos_retorno = [
-                                'NUMERO_MEMO' => $nume_memo,
-                                'FECHA' => $date
-                            ];
-
-                            # si no están vacios enviamos a un loop
-                            foreach (array_combine($_POST['chkcursos'], $_POST['comentarios_enlaces']) as $key => $value) {
-                                // $comentarios_retorno_unidad = [
-                                //     'OBSERVACION_ENLACES_RETORNO_UNIDAD' =>  $value
-                                // ];
-                                /**
-                                 * se actualizan los registros seleccionados para ver el curso
-                                 */
-                                \DB::table('tbl_cursos')
-                                    ->where('id', $key)
-                                    ->update([
-                                        'memos' => DB::raw("jsonb_set(memos, '{ENLACE_TURNADO_RETORNO}', '" . json_encode($memos_retorno) . "', true)"),
-                                        'turnado' => 'MEMO_TURNADO_RETORNO',
-                                        'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_ENLACES_RETORNO_UNIDAD}', '" . json_encode($value) . "', true)")
+                                // se reinician los cursos marcados anteriormente
+                                $cursosChecks = \DB::table('tbl_cursos')
+                                    ->wherein('unidad', $unidadeSearch)
+                                    ->where('status', '=', 'TURNADO_DTA')->update([
+                                        'memos->ENLACE_TURNADO_RETORNO' => '',
+                                        'turnado' => 'DTA'
                                     ]);
-                            }
 
-                            // $unidadSeleccionada = $request->get('unidadActual');
-                            $total = count($_POST['chkcursos']);
-                            $mes = '1';
+                                /* if ($cursosChecks != null) {
+                                    foreach ($cursosChecks as $value) {
+                                        $memos = $value->memos != null ? json_decode($value->memos, true) : null;
+                                        $observaciones_enlace = $value->observaciones_formato_t != null ? json_decode($value->observaciones_formato_t, true) : null;
 
-                            $reg_cursos = DB::table('tbl_cursos')
-                                ->select(
-                                    DB::raw("case when EXTRACT( Month FROM termino) = '1' then 'ENERO' when EXTRACT( Month FROM termino) = '2' then 'FEBRERO' when EXTRACT( Month FROM termino) = '3' then 'MARZO' when EXTRACT( Month FROM termino) = '4' then 'ABRIL' when EXTRACT( Month FROM termino) = '5' then 'MAYO' when EXTRACT( Month FROM termino) = '6' then 'JUNIO' when EXTRACT( Month FROM termino) = '7' then 'JULIO' when EXTRACT( Month FROM termino) = '8' then 'AGOSTO' when EXTRACT( Month FROM termino) = '9' then 'SEPTIEMBRE' when EXTRACT( Month FROM termino) = '10' then 'OCTUBRE' when EXTRACT( Month FROM termino) = '11' then 'NOVIEMBRE' else 'DICIEMBRE' end AS mes"),
+                                        if ($memos != null && $observaciones_enlace != null) {
+                                            foreach ($memos as $key => $value1) {
+                                                if ($key == 'ENLACE_TURNADO_RETORNO') {
+                                                    unset($memos[$key]);
+                                                }
+                                            }
+
+                                            foreach ($observaciones_enlace as $key2 => $value2) {
+                                                if ($key2 == 'OBSERVACION_ENLACES_RETORNO_UNIDAD') {
+                                                    unset($observaciones_enlace[$key2]);
+                                                }
+                                            }
+
+                                            \DB::table('tbl_cursos')
+                                            ->where('id', '=', $value->id)
+                                            ->update([
+                                                'memos' => $memos,
+                                                'turnado' => 'DTA',
+                                                'observaciones_formato_t' => $observaciones_enlace
+                                            ]);
+                                        }
+                                    }
+                                } */
+
+                                $memos_retorno = [
+                                    'NUMERO_MEMO' => $nume_memo,
+                                    'FECHA' => $date
+                                ];
+
+                                # si no están vacios enviamos a un loop
+                                foreach (array_combine($_POST['chkcursos'], $_POST['comentarios_enlaces']) as $key => $value) {
+                                    // $comentarios_retorno_unidad = [
+                                    //     'OBSERVACION_ENLACES_RETORNO_UNIDAD' =>  $value
+                                    // ];
+                                    /**
+                                     * se actualizan los registros seleccionados para ver el curso
+                                     */
+                                    \DB::table('tbl_cursos')
+                                        ->where('id', $key)
+                                        ->update([
+                                            'memos' => DB::raw("jsonb_set(memos, '{ENLACE_TURNADO_RETORNO}', '" . json_encode($memos_retorno) . "', true)"),
+                                            'turnado' => 'MEMO_TURNADO_RETORNO',
+                                            'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{OBSERVACION_ENLACES_RETORNO_UNIDAD}', '" . json_encode($value) . "', true)")
+                                        ]);
+                                }
+
+                                // $unidadSeleccionada = $request->get('unidadActual');
+                                $total = count($_POST['chkcursos']);
+                                $mes = '1';
+
+                                $reg_cursos = DB::table('tbl_cursos')
+                                    ->select(
+                                        DB::raw("case when EXTRACT( Month FROM termino) = '1' then 'ENERO' when EXTRACT( Month FROM termino) = '2' then 'FEBRERO' when EXTRACT( Month FROM termino) = '3' then 'MARZO' when EXTRACT( Month FROM termino) = '4' then 'ABRIL' when EXTRACT( Month FROM termino) = '5' then 'MAYO' when EXTRACT( Month FROM termino) = '6' then 'JUNIO' when EXTRACT( Month FROM termino) = '7' then 'JULIO' when EXTRACT( Month FROM termino) = '8' then 'AGOSTO' when EXTRACT( Month FROM termino) = '9' then 'SEPTIEMBRE' when EXTRACT( Month FROM termino) = '10' then 'OCTUBRE' when EXTRACT( Month FROM termino) = '11' then 'NOVIEMBRE' else 'DICIEMBRE' end AS mes"),
+                                        'unidad',
+                                        'espe',
+                                        'curso',
+                                        'clave',
+                                        'status',
+                                        DB::raw("extract(year from termino) AS fecha_termino"),
+                                        DB::raw("observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno")
+                                    )
+                                    ->where(DB::raw("memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO'"), $nume_memo)
+                                    ->where('turnado', 'MEMO_TURNADO_RETORNO')
+                                    ->groupby(
+                                        'unidad',
+                                        'curso',
+                                        'mod',
+                                        'inicio',
+                                        'termino',
+                                        'nombre',
+                                        'clave',
+                                        'ciclo',
+                                        'memos->TURNADO_EN_FIRMA->FECHA',
+                                        DB::raw("observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD'"),
+                                        'espe',
+                                        'status'
+                                    )
+                                    ->orderby('mes')
+                                    ->get();
+
+
+                                // OTRO REGISTRO PARA CARGAR EL TOTAL DE REGISTROS
+                                $total_turnado_dta = DB::table('tbl_cursos')
+                                    ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_dta"))
+                                    ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                    ->WHEREIN('tbl_cursos.status', ['TURNADO_DTA', 'TURNADO_PLANEACION'])
+                                    ->WHEREIN('tbl_cursos.turnado', ['DTA', 'PLANEACION'])
+                                    ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
+                                    ->WHEREIN(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), ['MARZO', 'ABRIL'])
+                                    ->get();
+
+                                // ENVIADOS A PLANEACION
+                                /* $total_turnado_planeacion = DB::table('tbl_cursos')
+                                    ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_planeacion"))
+                                    ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                                    ->WHERE('tbl_cursos.status', '=', 'TURNADO_PLANEACION')
+                                    ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION')
+                                    ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
+                                    ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), '=', 'ABRIL')
+                                    ->get(); */
+
+                                $fechaTurnado = DB::table('tbl_cursos')->where('id', '=', $_POST['chkcursos'][0])->get();
+                                $total_turnado_planeacion = DB::table('tbl_cursos')
+                                    ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_planeacion"))
+                                    ->where('fecha_turnado', '=', $fechaTurnado[0]->fecha_turnado)
+                                    ->whereIn('turnado', ['DTA', 'MEMO_TURNADO_RETORNO'])
+                                    // ->where('turnado', '=', 'DTA')
+                                    // ->orWhere('turnado', '=', 'MEMO_TURNADO_RETORNO')
+                                    ->whereIn('unidad', $unidadeSearch)->get();
+
+                                // $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion + $total;
+                                $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion;
+                                $totalReportados = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion - $total;
+
+                                $mesReportado = Carbon::parse($fechaTurnado[0]->fecha_turnado);
+                                $mesReportado2 = $mesReportado->format("F");
+                                switch ($mesReportado2) {
+                                    case 'January':
+                                        $mesReportado2 = 'Enero';
+                                        break;
+                                    case 'February':
+                                        $mesReportado2 = 'Febrero';
+                                        break;
+                                    case 'March':
+                                        $mesReportado2 = 'Marzo';
+                                        break;
+                                    case 'April':
+                                        $mesReportado2 = 'Abril';
+                                        break;
+                                    case 'May':
+                                        $mesReportado2 = 'Mayo';
+                                        break;
+                                    case 'June':
+                                        $mesReportado2 = 'Junio';
+                                        break;
+                                    case 'July':
+                                        $mesReportado2 = 'Julio';
+                                        break;
+                                    case 'August':
+                                        $mesReportado2 = 'Agosto';
+                                        break;
+                                    case 'September':
+                                        $mesReportado2 = 'Septiembre';
+                                        break;
+                                    case 'October':
+                                        $mesReportado2 = 'Octubre';
+                                        break;
+                                    case 'November':
+                                        $mesReportado2 = 'Noviembre';
+                                        break;
+                                    case 'December':
+                                        $mesReportado2 = 'Diciembre';
+                                        break;
+                                }
+                                $fechaArray = explode('-', $mesReportado);
+                                $diaArray = explode(' ', $fechaArray[2]);
+
+                                $comentarios_enviados = $_POST['comentarios_enlaces'];
+                                $elabora = Auth::user()->name;
+                                $reg_unidad = DB::table('tbl_unidades')->select(
                                     'unidad',
-                                    'espe',
-                                    'curso',
-                                    'clave',
-                                    'status',
-                                    DB::raw("extract(year from termino) AS fecha_termino"),
-                                    DB::raw("observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno")
-                                )
-                                ->where(DB::raw("memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO'"), $nume_memo)
-                                ->where('turnado', 'MEMO_TURNADO_RETORNO')
-                                ->groupby(
-                                    'unidad',
-                                    'curso',
-                                    'mod',
-                                    'inicio',
-                                    'termino',
-                                    'nombre',
-                                    'clave',
-                                    'ciclo',
-                                    'memos->TURNADO_EN_FIRMA->FECHA',
-                                    DB::raw("observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD'"),
-                                    'espe',
-                                    'status'
-                                )
-                                ->orderby('mes')
-                                ->get();
-
-
-                            // OTRO REGISTRO PARA CARGAR EL TOTAL DE REGISTROS
-                            $total_turnado_dta = DB::table('tbl_cursos')
-                                ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_dta"))
-                                ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->WHEREIN('tbl_cursos.status', ['TURNADO_DTA', 'TURNADO_PLANEACION'])
-                                ->WHEREIN('tbl_cursos.turnado', ['DTA', 'PLANEACION'])
-                                ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
-                                ->WHEREIN(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), ['MARZO', 'ABRIL'])
-                                ->get();
-
-                            // ENVIADOS A PLANEACION
-                            /* $total_turnado_planeacion = DB::table('tbl_cursos')
-                                ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_planeacion"))
-                                ->JOIN('tbl_unidades','tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->WHERE('tbl_cursos.status', '=', 'TURNADO_PLANEACION')
-                                ->WHERE('tbl_cursos.turnado', '=', 'PLANEACION')
-                                ->WHERE('tbl_unidades.ubicacion', '=', $unidadSeleccionada)
-                                ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), '=', 'ABRIL')
-                                ->get(); */
-
-                            $fechaTurnado = DB::table('tbl_cursos')->where('id', '=', $_POST['chkcursos'][0])->get();
-                            $total_turnado_planeacion = DB::table('tbl_cursos')
-                                ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_planeacion"))
-                                ->where('fecha_turnado', '=', $fechaTurnado[0]->fecha_turnado)
-                                ->where('turnado', '!=', 'UNIDAD')
-                                ->whereIn('unidad', $unidadeSearch)->get();
-
-                            // $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion + $total;
-                            $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion;
-                            $totalReportados = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion -$total;
-
-                            $mesReportado = Carbon::parse($fechaTurnado[0]->fecha_turnado);
-                            $mesReportado2 = $mesReportado->format("F");
-                            switch ($mesReportado2) {
-                                case 'January': $mesReportado2 = 'Enero'; break;
-                                case 'February': $mesReportado2 = 'Febrero'; break;
-                                case 'March': $mesReportado2 = 'Marzo'; break;
-                                case 'April': $mesReportado2 = 'Abril'; break;
-                                case 'May': $mesReportado2 = 'Mayo'; break;
-                                case 'June': $mesReportado2 = 'Junio'; break;
-                                case 'July': $mesReportado2 = 'Julio'; break;
-                                case 'August': $mesReportado2 = 'Agosto'; break;
-                                case 'September': $mesReportado2 = 'Septiembre'; break;
-                                case 'October': $mesReportado2 = 'Octubre'; break;
-                                case 'November': $mesReportado2 = 'Noviembre'; break;
-                                case 'December': $mesReportado2 = 'Diciembre'; break;
+                                    'dunidad',
+                                    'academico',
+                                    'vinculacion',
+                                    'dacademico',
+                                    'pdacademico',
+                                    'pdunidad',
+                                    'pacademico',
+                                    'pvinculacion',
+                                    'jcyc',
+                                    'pjcyc',
+                                    'ubicacion'
+                                )->where('unidad', $unidadSeleccionada)->first();
+                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray'));
+                                return $pdf->download('Memo_Unidad.pdf');
+                            } else {
+                                return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
                             }
-                            $fechaArray = explode('-', $mesReportado);
-                            $diaArray = explode(' ', $fechaArray[2]);
-
-                            $comentarios_enviados = $_POST['comentarios_enlaces'];
-
-                            $elabora = Auth::user()->name;
-
-                            $reg_unidad = DB::table('tbl_unidades')->select(
-                                'unidad',
-                                'dunidad',
-                                'academico',
-                                'vinculacion',
-                                'dacademico',
-                                'pdacademico',
-                                'pdunidad',
-                                'pacademico',
-                                'pvinculacion',
-                                'jcyc',
-                                'pjcyc',
-                                'ubicacion'
-                            )->where('unidad', $unidadSeleccionada)->first();
-                            $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray'));
-                            return $pdf->download('Memo_Unidad.pdf');
                         } else {
-                            # hay cursos vacios, regresamos y mandamos un mensaje de error
-                            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
+                            return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE DEBE SELECCIONAR UNA UNIDAD ANTES DE GENERAR UN MEMORANDUM']);
                         }
-
                         break;
 
                     default:
@@ -892,7 +918,8 @@ class validacionDtaController extends Controller
         return $documentUrl;
     }
 
-    protected function entrega_planeacion(Request $request) {
+    protected function entrega_planeacion(Request $request)
+    {
         $valor = $request->get('validarDireccionDta');
         $mesUnity = $request->get('txtUnity');
         $totalCursos = $request->get('totalCursos');
@@ -953,7 +980,8 @@ class validacionDtaController extends Controller
         }
     }
 
-    private function generarMemorandumPlaneacion($num_memo_planeacion, $mesUnity, $totalCursos) {
+    private function generarMemorandumPlaneacion($num_memo_planeacion, $mesUnity, $totalCursos)
+    {
         if (isset($num_memo_planeacion)) {
             /**
              * obtener el mes de los cursos que se encuentran en el registro del módulo
@@ -966,7 +994,7 @@ class validacionDtaController extends Controller
                 ->orderBy(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), 'desc')
                 ->limit(1)
                 ->get(); */
-            
+
             # GENERAMOS EL DOCUMENTO EN PDF
             $value = 'JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO';
             $jefdepto = 'JEFE DE DEPARTAMENTO DE CERTIFICACION Y CONTROL';
@@ -1006,18 +1034,42 @@ class validacionDtaController extends Controller
             )->first();
 
             switch ($mesUnity) {
-                case '01': $mesUnity = 'ENERO'; break;
-                case '02': $mesUnity = 'FEBRERO'; break;
-                case '03': $mesUnity = 'MARZO'; break;
-                case '04': $mesUnity = 'ABRIL'; break;
-                case '05': $mesUnity = 'MAYO'; break;
-                case '06': $mesUnity = 'JUNIO'; break;
-                case '07': $mesUnity = 'JULIO'; break;
-                case '08': $mesUnity = 'AGOSTO'; break;
-                case '09': $mesUnity = 'SEPTIEMBRE'; break;
-                case '10': $mesUnity = 'OCTUBRE'; break;
-                case '11': $mesUnity = 'NOVIEMBRE'; break;
-                case '12': $mesUnity = 'DICIEMBRE'; break;
+                case '01':
+                    $mesUnity = 'ENERO';
+                    break;
+                case '02':
+                    $mesUnity = 'FEBRERO';
+                    break;
+                case '03':
+                    $mesUnity = 'MARZO';
+                    break;
+                case '04':
+                    $mesUnity = 'ABRIL';
+                    break;
+                case '05':
+                    $mesUnity = 'MAYO';
+                    break;
+                case '06':
+                    $mesUnity = 'JUNIO';
+                    break;
+                case '07':
+                    $mesUnity = 'JULIO';
+                    break;
+                case '08':
+                    $mesUnity = 'AGOSTO';
+                    break;
+                case '09':
+                    $mesUnity = 'SEPTIEMBRE';
+                    break;
+                case '10':
+                    $mesUnity = 'OCTUBRE';
+                    break;
+                case '11':
+                    $mesUnity = 'NOVIEMBRE';
+                    break;
+                case '12':
+                    $mesUnity = 'DICIEMBRE';
+                    break;
             }
 
             $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
@@ -1068,7 +1120,8 @@ class validacionDtaController extends Controller
         return $dias;
     }
 
-    protected function xlsExportReporteFormatotEnlacesUnidad(Request $request) {
+    protected function xlsExportReporteFormatotEnlacesUnidad(Request $request)
+    {
         $anio_actual = Carbon::now()->year;
         $unidadActual = $request->unidad_;
         $mesSearch = $request->mes_;
@@ -1298,7 +1351,8 @@ class validacionDtaController extends Controller
     /**
      * funcion protegida hecha para exportar el reporte T de formato para Directores de la dirección DTA
      */
-    protected function xlsExportReporteFormatoTDirectorDTA(Request $request) {
+    protected function xlsExportReporteFormatoTDirectorDTA(Request $request)
+    {
         $anioActual = Carbon::now()->year;
 
         $reporteDirectorDTA = dataFormatoT2do($request->unidadD, ['REVISION_DTA'], null, $request->mesSearch, 'REVISION_DTA');
@@ -1525,9 +1579,10 @@ class validacionDtaController extends Controller
     /**
      * funciones de aperturado en el indice de reporte de apertura
      */
-    protected function ReporteAperturaIndexDta(Request $request) {
+    protected function ReporteAperturaIndexDta(Request $request)
+    {
         $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
-        
+
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
         $mesActual = $meses[($fecha->format('n')) - 1];
@@ -1536,7 +1591,7 @@ class validacionDtaController extends Controller
         $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
         $mesEntrega = $meses[($convertfEAc->format('n')) - 1];
         $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
-       
+
         $diasParaEntrega = $this->getFechaDiff();
 
         return view('reportes.reportes_aperturado', compact('fechaEntregaFormatoT', 'diasParaEntrega'));
@@ -1545,13 +1600,14 @@ class validacionDtaController extends Controller
     /***
      * generar reporte de apertura en excel
      */
-    protected function generarreporteapertura(Request $request) {
+    protected function generarreporteapertura(Request $request)
+    {
 
         $fecha_inicio = $request->get('fechainicio');
         $fecha_fin = $request->get('fechatermino');
 
         // dd($fecha_inicio.'   '.$fecha_fin);
-        
+
         if ($fecha_inicio != null && $fecha_fin != null) {
             // fecha inicio
             $fechaini = explode("-", $fecha_inicio);
