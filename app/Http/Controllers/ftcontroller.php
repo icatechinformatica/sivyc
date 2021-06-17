@@ -455,7 +455,8 @@ class ftcontroller extends Controller
                                     'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"), 
                                     'status' => 'TURNADO_DTA', 
                                     'turnado' => 'DTA',
-                                    'fecha_turnado' => $formatFechaActual
+                                    'fecha_turnado' => $formatFechaActual,
+                                    'fecha_envio' => $date
                                 ]);
                         }
                         // dd(DB::getQueryLog());
@@ -498,6 +499,7 @@ class ftcontroller extends Controller
                                     'status' => 'TURNADO_DTA', 
                                     'turnado' => 'DTA',
                                     'fecha_turnado' => $formatFechaSiguiente,
+                                    'fecha_envio' => $date
                                 ]);
                         }
                         // dd(DB::getQueryLog());
