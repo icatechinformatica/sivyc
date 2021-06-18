@@ -149,6 +149,15 @@
                                         <i class="fa fa-history"></i>
                                     </button>
                                 @endcan
+                                @can('folio.modificar')
+                                    <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                        data-toggle="modal" data-placement="top"
+                                        data-target="#modfolioModal"
+                                        data-id='{{$itemData->id}}'
+                                        title="Otorgar Permiso de Modificacion a Folio Validado">
+                                        <i class="fa fa-history"></i>
+                                    </button>
+                                @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
@@ -282,6 +291,42 @@
                     <div class="form-group col-md-2"></div>
                 </div>
             </div>
+        </div>
+    </div>
+<!-- END -->
+<!-- Modal -->
+<div class="modal fade" id="modfolioModal" role="dialog">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Seleccione el Folio de Validación</b></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="form-row">
+                    <div class="form-group col-md-4"></div>
+                        <div class="form-group col-md-4">
+                            <label for="unidad" class="control-label">Folio de Validación </label>
+                            <select name="folios" id="folios" class="form-control">
+                            <option value="sin especificar">SIN ESPECIFICAR</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-primary" >Aceptar</button>
+                        </div>
+                        <div class="form-group col-md-2"></div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 <!-- END -->

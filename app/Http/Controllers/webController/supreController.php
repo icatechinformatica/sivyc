@@ -434,6 +434,7 @@ class supreController extends Controller
 
         return $json;
     }
+
     protected function gettipocurso(Request $request)
     {
         $claveCurso = $request->valor;
@@ -484,6 +485,39 @@ class supreController extends Controller
 
         return $json;
     }
+
+    protected function getfoliostatsmodal(Request $request)
+    {
+        if (isset($request->valor))
+        {
+            $folio = folio::SELECT('id_folios', 'folio_validacion')
+            ->WHERE('id_supre', '=', $request->valor)
+            ->GET();
+            if($folio == NULL)
+            {
+                $folio = 'N/A';
+            }
+        }
+        else
+        {
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+            $json=json_encode($folio);
+
+
+        return $json;
+    }
+
+    public function dar_permiso_folio(Request $request)
+    {
+        $folio = folio::find($request->folios);
+        $folio->permiso_editar = TRUE;
+        $folio->save();
+
+        return redirect()->route('supre-inicio')
+                    ->with('success','Permiso Otorgado');
+    }
+
 
     public function doc_valsupre_upload(Request $request)
     {
