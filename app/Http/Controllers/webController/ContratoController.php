@@ -31,24 +31,14 @@ class ContratoController extends Controller
 {
     public function prueba()
     {
-        $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio')
-                                    ->WHERE('clave', '=', '852')->FIRST();
-                $inicio = date("m-d-Y", strtotime($Cursos->inicio));
-                $date1 = "2021-05-01";
-                $date1 = date("m-d-Y", strtotime($date1));
-
-                if ($date1 <= $inicio) {
-
-                    $ze2 = 'ze2_2021 AS monto';
-                    $ze3 = 'ze3_2021 AS monto';
-                    dd($ze2);
-                }else{
-
-                    $ze2 = 'monto_hora_ze2 AS monto';
-                    $ze3 = 'monto_hora_ze3 AS monto';
-                    dd($ze2);
-                }
+        $id = folio::select('id_folios')->WHERE('id_folios', '!=', '0')->GET();
+        foreach($id as $item)
+        {
+            $folio = folio::find($item->id_folios);
+            $folio->permiso_editar = FALSE;
+            $folio->save();
+            dd('hola');
+        }
     }
     public function index(Request $request)
     {
