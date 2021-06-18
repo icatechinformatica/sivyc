@@ -85,26 +85,6 @@ class calificacionesController extends Controller
             foreach($request->calificacion as $key=>$val){
                 if(!is_numeric($val) OR $val<6 )  $val = "NP";
                 $result = DB::table('tbl_inscripcion')->where('id_curso',$id_curso)->where('id', $key)->update(['calificacion' => $val,'iduser_updated'=>Auth::user()->id]);
-                //var_dump($result);exit;
-                /**REGISTRO TEMPORAL EN SICE tbl_calificaciones **/
-                if($val!='NP'){ $acreditado = "X"; $noacreditado = "N";}
-                else{ $acreditado = "N"; $noacreditado = "X";}
-
-                $a = DB::table('tbl_inscripcion as i')->select('i.*','c.id as id_curso',DB::raw('right(c.clave,4) as grupo'),'c.area','c.espe','c.curso','c.mod','c.nombre as instructor', 'c.inicio','c.termino','c.hini', 'c.hfin', 'c.dura','c.ciclo', DB::raw('EXTRACT(MONTH FROM c.termino)  as mes_termino'))
-                    ->Join('tbl_cursos as c', function($join){
-                        $join->on('c.id', '=', 'i.id_curso');                        
-                    })->where('i.id',$key)->where('i.id_curso',$id_curso)->where('i.status','INSCRITO')->orderby('i.alumno')->first();
-                if($a){
-                    $result2 = DB::table('tbl_calificaciones')->updateOrInsert(
-                        ['idcurso' => $a->id_curso, 'matricula' => $a->matricula],
-                        ['unidad' => $a->unidad, 'matricula'=>$a->matricula, 'alumno'=>$a->alumno,
-                        'acreditado'=> $acreditado,'noacreditado' =>$noacreditado,'idcurso' => $a->id_curso,'idgrupo' => $a->grupo,'area'=> $a->area,
-                        'espe' => $a->espe,'curso' => $a->curso,'mod' => $a->mod,'instructor' => $a->instructor, 'inicio' => $a->inicio,'termino' => $a->termino,
-                        'hini' => $a->hini,'hfin'=> $a->hfin,'dura' => $a->dura,'ciclo' => $a->ciclo,'periodo' => $this->periodo[$a->mes_termino],'calificacion' => $val,'realizo' =>Auth::user()->name,'valido'=> Auth::user()->name                    
-                    ]);
-                }
-                /**fin registro en SICE**/
-
             }
             if($result) $message = "Operacion exitosa!!";        
         }else $message = "No existen cambios que guardar.";

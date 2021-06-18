@@ -219,14 +219,15 @@ class ftcontroller extends Controller
         return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad'));    
     }
 
-    public function cursos(Request $request) {
+    /* public function cursos(Request $request) {
         $año=$request->get("año");
         if ($año)
         { 
             return $this->busqueda($año);
         }
-    }
-    public function busqueda($año) {
+    } */
+    
+    /* public function busqueda($año) {
         $id_user = Auth::user()->id;
         //var_dump($id_user);exit;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
@@ -335,7 +336,7 @@ class ftcontroller extends Controller
 
         return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega'));
                 
-    }
+    } */
 
     /**
      * enviar a validación enlaces DTA - envía los cursos para su validación de las unidades a los enlaces DTA
@@ -454,7 +455,8 @@ class ftcontroller extends Controller
                                     'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"), 
                                     'status' => 'TURNADO_DTA', 
                                     'turnado' => 'DTA',
-                                    'fecha_turnado' => $formatFechaActual
+                                    'fecha_turnado' => $formatFechaActual,
+                                    'fecha_envio' => $date
                                 ]);
                         }
                         // dd(DB::getQueryLog());
@@ -497,6 +499,7 @@ class ftcontroller extends Controller
                                     'status' => 'TURNADO_DTA', 
                                     'turnado' => 'DTA',
                                     'fecha_turnado' => $formatFechaSiguiente,
+                                    'fecha_envio' => $date
                                 ]);
                         }
                         // dd(DB::getQueryLog());

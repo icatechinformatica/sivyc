@@ -42,6 +42,17 @@
             </div>
             <div class="form-row">
                     <div class="form-group col-md-4">
+                        <label for="inputeremite">Nombre de Remitente</label>
+                        <input id="remitente" name="remitente" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Remitente</label>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" required>
+                        <input id="id_remitente" name="id_remitente" hidden required>
+                    </div>
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
                         <label for="inputelaboro">Nombre de Quien Elabora</label>
                         <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" required>
                     </div>

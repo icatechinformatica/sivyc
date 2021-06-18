@@ -63,32 +63,24 @@
 </head>
 @section('content')
     <section class="container g-pt-50">
-        <form action="{{ route('planeacion.reportepdf') }}" method="post" id="registercontrato">
+        <form action="{{ route('planeacion.reporte-canceladospdf') }}" method="post" id="registercontrato">
             @csrf
             <div class="text-center">
-                <h1>Reporte de Suficiencias Presupuestales</h1>
+                <h1>Reporte de Folios Cancelados</h1>
             </div>
             <br>
-            <h2>Filtrar Suficiencias Presupuestales Por:</h2>
+            <h2>Filtrar Folios Cancelados Por:</h2>
             <br>
             <table  id="table-instructor" class="table table-responsive-md">
                 <tbody>
                     <tr>
                         <td class="custom-radio radio-xl" id='choice-td'>
-                            <input type="radio" class="custom-control-input"  id="general" name="filtro" value="general">
+                            <input type="radio" checked  class="custom-control-input"  id="general" name="filtro" value="general">
                             <label for="general" class="custom-control-label"><h4>General</h4></label>
-                        </td>
-                        <td class="custom-radio radio-xl" id='choice-td'>
-                            <input type="radio" class="custom-control-input"  id="curso" name="filtro" value="curso">
-                            <label for="curso" class="custom-control-label"><h4>Curso</h4></label>
                         </td>
                         <td class="custom-radio radio-xl" id='choice-td'>
                             <input type="radio" class="custom-control-input"  id="unidad" name="filtro" value="unidad">
                             <label for="unidad" class="custom-control-label"><h4>Unidad</h4></label>
-                        </td>
-                        <td class="custom-radio radio-xl" id='choice-td'>
-                            <input type="radio" class="custom-control-input"  id="instructor" name="filtro" value="instructor">
-                            <label for="instructor" class="custom-control-label"><h4>Instructor</h4></label>
                         </td>
                     </tr>
                 </tbody>
@@ -104,40 +96,6 @@
                 <div class="form-group col-md-3">
                     <label for="inputid_curso"><h3>Hasta:</h3></label>
                     <input type="date" name="fecha2" id="fecha2" class="form-control" required>
-                </div>
-            </div>
-
-            {{-- envio de los botones de descargaa --}}
-            @if (isset($filtrotipo))
-                <div class="row">
-                    <div class="col-md-9">
-                        <a class="btn btn-danger" href="{{ route('planeacion.generar.reporte.supre.pdf', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}">
-                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp; Reporte Pdf
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ route('planeacion.generar.reporte.supre.xls', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}" class="btn btn-success" style="background-color:transparent;">
-                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp; reporte Excel
-                        </a>
-                    </div>
-                </div>
-            @endif
-            {{-- comment --}}
-
-            <div id="div_curso" class="form-row d-none d-print-none">
-                <div class="form-group col-md-2"></div>
-                <div class="form-group col-md-6">
-                    <label for="inputid_curso"><h3>Nombre del Curso</h3></label>
-                    <input type="text" name="cursoaut" id="cursoaut" class="form-control" required>
-                    <input type="text" name="id_curso" id="id_curso" class="form-control" hidden required>
-                </div>
-            </div>
-            <div id="div_instructor" class="form-row d-none d-print-none">
-                <div class="form-group col-md-2"></div>
-                <div class="form-group col-md-6">
-                    <label for="inputid_instructor"><h3>Nombre del Instructor</h3></label>
-                    <input type="text" name="instructoraut" id="instructoraut" class="form-control" required>
-                    <input type="text" name="id_instructor" id="id_instructor" class="form-control" hidden  required>
                 </div>
             </div>
             <div id="div_unidad" class="form-row d-none d-print-none">
@@ -173,6 +131,26 @@
     </section>
 @endsection
 @section('script_content_js')
-<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
-<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script>
+    $(function(){
+    //metodo
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $( document ).on('input', function(){
+            if(document.getElementById('general') != null || document.getElementById('unidad') != null)
+            {
+                if (document.getElementById('general').checked) {
+                    $('#div_unidad').prop("class", "form-row d-none d-print-none")
+                }
+                else if (document.getElementById('unidad').checked) {
+                    $('#div_unidad').prop("class", "form-row")
+                }
+            }
+        });
+});
+</script>
 @endsection

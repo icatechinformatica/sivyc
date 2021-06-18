@@ -114,13 +114,14 @@
                         <a class="dropdown-item" href="https://datastudio.google.com/reporting/512e11eb-babf-4476-8827-8d4243e2c219" target="_blank">STATUS PAGO INSTRUCTORES</a> --}}
                         {{-- <a class="dropdown-item" href="{{route('reportes.formatoT')}}">Reporte de Formato T</a>                         --}}
                         @can('academicos.arc')
-                            <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">Apertura ARC01</a>
+                            <a class="dropdown-item" href="{{route('reportes.vista_arc')}}">Solicitudes ARC01 y ARC02 </a>
                         @endcan
                         @can('reportes.cursos')
                             <a class="dropdown-item" href="{{route('reportes.cursos.index')}}">Cursos Autorizados</a>
                         @endcan
                         @can('planeacion.reporte')
                             <a class="dropdown-item" href="{{route('planeacion.reporte')}}">Suficiencias Presupuestales</a>
+                            <a class="dropdown-item" href="{{route('planeacion.reporte-cancelados')}}">Folios Cancelados</a>
                         @endcan
                         @can('financieros.reporte')
                             <a class="dropdown-item" href="{{route('financieros.reporte')}}">Estado de Contratos y Pagos</a>
@@ -129,7 +130,7 @@
                             <a class="dropdown-item" href="{{route('cursosvinculador.reporte')}}">Alumno por Vinculador</a>
                         @endcan
                         @can('reportes.911')
-                            <a class="dropdown-item" href="{{route('reportes.911.showForm')}}">REPORTE 911</a>
+                            <a class="dropdown-item" href="{{route('reportes.911.showForm')}}">Reporte 911</a>
                         @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
@@ -188,7 +189,7 @@
                                 <a href="{{ route('checar.memorandum.dta.mes') }}" class="dropdown-item">Memorandums Enviados a DTA</a>
                             @endcan
                             {{-- agregar nuevo elemento a menu END --}}
-                            @can('vista.formatot.unidades.indice')
+                            {{--@can('vista.formatot.unidades.indice')
                                 <a href="{{ route('cursos.reportados.historico.index') }}" class="dropdown-item">Cursos Reportados de Meses Anteriores Para la Unidad</a>
                             @endcan
                             @can('vista.validacion.enlaces.dta')
@@ -199,7 +200,7 @@
                             @endcan
                             @can('vista.revision.validacion.planeacion.indice')
                                 <a href="{{ route('cursos.reportados.historico.planeacion.index') }}" class="dropdown-item">Cursos Reportados de Meses Anteriores Para la Unidad</a>
-                            @endcan
+                            @endcan--}}
                                 <a class="dropdown-item" href="{{route('seguimento.avance.unidades.formatot.ejecutiva.index')}}">Seguimiento Ejecutivo a Unidades Para el Formato T</a>
                         </div>
                     </li>

@@ -90,11 +90,11 @@
         <div align="justify" style="font-size:16px;">
            <p>
             De acuerdo a la información estadistica reportada mediante el Formato T, recibido por
-            medio del Sistema Integral de Vinculación y Capacitación (SIVyC), con cierre al mes de <b>Marzo</b>,
+            medio del Sistema Integral de Vinculación y Capacitación (SIVyC), con cierre al mes de <b>{{$mesReport}}</b>,
             me permito informarle que una vez revisada la información relativa a los números
             absolutos de las variables cualitativas y cuantitativas; esta Dirección a través del
             Departamento de Programación y Presupuesto da por concluido el cierre estadístico del mes
-            de marzo del 2021.
+            de {{$mesReport}} del 2021.
            </p>
         </div>
         <br>
@@ -111,11 +111,11 @@
             <div style="font-size:11px;"> <b>C.P. {{ $directorPlaneacion->nombre." ".$directorPlaneacion->apellidoPaterno." ".$directorPlaneacion->apellidoMaterno }} </b> </div>
             <div style="font-size:11px;"> <b> {{ $directorPlaneacion->puesto }} </b> </div>
             <br><br><br>
-            <div style="font-size:11px;"> <b>C.c.p  {{ $reg_unidad->dgeneral }}  , {{ $reg_unidad->pdgeneral }} . Edificio.</b> </div>
-            <div style="font-size:11px"><b>C.c. Ing. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} . Edificio.</b></div>
-            <div style="font-size:11px;"> <b>Archivo: Minutario.</b> </div>
-            <div style="font-size:11px;"> <b>Validó:  Ing. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} .</b> </div>
-            <div style="font-size:11px;"> <b>Elaboró:  Lic. Vianey Soledad Ríos Cruz. - Analista Técnico Especializado.</b></div>
+            <div style="font-size:10px;"> <b>C.C.P  {{ $reg_unidad->dgeneral }}  , {{ $reg_unidad->pdgeneral }} . EDIFICIO.</b> </div>
+            <div style="font-size:10px"><b>C.C. ING. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} . EDIFICIO.</b></div>
+            <div style="font-size:9px;"> <b>ARCHIVO: MINUTARIO.</b> </div>
+            <div style="font-size:9px;"> <b>VALIDÓ:  ING. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} .</b> </div>
+            <div style="font-size:9px;"> <b>ELABORÓ:  LIC. VIANEY SOLEDAD RÍOS CRUZ. - ANALISTA TÉCNICO ESPECIALIZADO.</b></div>
             <br><br>
         </div>
         

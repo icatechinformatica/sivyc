@@ -517,7 +517,8 @@ class ContratoController extends Controller
         $pago->save();
 
         contrato_directorio::where('id_contrato', '=', $request->id_contrato)
-        ->update(['solpa_elaboro' => $request->id_elabora,
+        ->update(['solpa_iddirector' => $request->id_remitente,
+                  'solpa_elaboro' => $request->id_elabora,
                   'solpa_para' => $request->id_destino,
                   'solpa_ccp1' => $request->id_ccp1,
                   'solpa_ccp2' => $request->id_ccp2,
@@ -565,13 +566,20 @@ class ContratoController extends Controller
         $datap = pago::WHERE('id_contrato', '=', $datac->id_contrato)->FIRST();
         $directorio = contrato_directorio::where('id_contrato', '=', $datac->id_contrato)->FIRST();
         $elaboro = directorio::WHERE('id', '=', $directorio->solpa_elaboro)->FIRST();
-        $director = directorio::WHERE('id', '=', $directorio->contrato_iddirector)->FIRST();
+        if(isset($directorio->solpa_iddirector))
+        {
+            $director = directorio::WHERE('id', '=', $directorio->solpa_iddirector)->FIRST();
+        }
+        else
+        {
+            $director = directorio::WHERE('id', '=', $directorio->contrato_iddirector)->FIRST();
+        }
         $para = directorio::WHERE('id', '=', $directorio->solpa_para)->FIRST();
         $ccp1 = directorio::WHERE('id', '=', $directorio->solpa_ccp1)->FIRST();
         $ccp2 = directorio::WHERE('id', '=', $directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $directorio->solpa_ccp3)->FIRST();
 
-        return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3'));
+        return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3','director'));
     }
 
     public function save_mod_solpa(Request $request){
@@ -602,7 +610,8 @@ class ContratoController extends Controller
         $pago->save();
 
         contrato_directorio::where('id_contrato', '=', $request->id_contrato)
-        ->update(['solpa_elaboro' => $request->id_elabora,
+        ->update(['solpa_iddirector' => $request->id_remitente,
+                  'solpa_elaboro' => $request->id_elabora,
                   'solpa_para' => $request->id_destino,
                   'solpa_ccp1' => $request->id_ccp1,
                   'solpa_ccp2' => $request->id_ccp2,
@@ -838,7 +847,14 @@ class ContratoController extends Controller
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $data->id_contrato)->FIRST();
         $elaboro = directorio::WHERE('id', '=', $data_directorio->solpa_elaboro)->FIRST();
-        $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        if(isset($data_directorio->solpa_iddirector))
+        {
+            $director = directorio::WHERE('id', '=', $data_directorio->solpa_iddirector)->FIRST();
+        }
+        else
+        {
+            $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        }
         $para = directorio::WHERE('id', '=', $data_directorio->solpa_para)->FIRST();
         $ccp1 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp1)->FIRST();
         $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();

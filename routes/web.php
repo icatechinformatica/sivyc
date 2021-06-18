@@ -519,6 +519,7 @@ Route::get('/planeacion/reporte/cancelados', 'webController\supreController@canc
 Route::post('/planeacion/reporte/pdf','webController\supreController@planeacion_reportepdf')->name('planeacion.reportepdf');
 Route::post('/directorio/getcurso','webController\supreController@get_curso')->name('get-curso');
 Route::post('/directorio/getins','webController\supreController@get_ins')->name('get-ins');
+Route::post('/planeacion/reporte-cancelados/pdf','webController\supreController@planeacion_reporte_canceladospdf')->name('planeacion.reporte-canceladospdf');
 
 /* Modulo CERSS 11012021 */
 Route::get('/cerss/inicio', 'webController\CerssController@index')->name('cerss.inicio')
