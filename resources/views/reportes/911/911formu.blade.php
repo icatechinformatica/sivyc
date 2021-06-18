@@ -1,5 +1,3 @@
-
-<!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
 @section('title', 'Reportes | SIVyC Icatech')
 @section('content')

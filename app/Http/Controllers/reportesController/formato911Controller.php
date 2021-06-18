@@ -58,36 +58,35 @@ class formato911Controller extends Controller
         $turno= $request->turno; //dd($turno);
         $fecha_inicio=$request->fecha_inicio;
         $fecha_termino=$request->fecha_termino;
-        $a='0';
-        $b='0';
-        if($turno=='MATUTINO'){
-            $a='06:00 a.m.';
-            $b='13:00 p.m.';
-        }elseif($turno=='VESPERTINO'){
-            $a='02:00 p.m.';
-            $b='12:00 a.m.';
-        }
+        $encabezado='0';
+        $consulta_inscritos='0';
+        
 //dd($b);
-        $encabezado= DB::table('tbl_cursos as tc')
+        $sql= DB::table('tbl_cursos as tc')
         ->join('cursos as c','tc.id_curso','=','c.id')
         ->join('especialidades as e','c.id_especialidad','=','e.id')
         ->select(DB::raw('count(e.id)'), 'e.clave','e.nombre as especialidad')
-        ->where('termino','>=',$fecha_inicio)
-        ->where('termino','<=',$fecha_termino)
-        ->where('unidad','=',$unidades)
-        ->where('tc.hini','>=',$a)
-        ->where('tc.hini','<=',$b)
+        //->select('tc.clave')
+        ->where('tc.termino','>=',$fecha_inicio)
+        ->where('tc.termino','<=',$fecha_termino)
+        ->where('tc.unidad','=',$unidades)
+        //->where('tc.hini','>=',$a)
+        //->where('tc.hini','<=',$b)
         ->where('tc.status_curso', '!=', 'CANCELADO')
         ->where('tc.status', '=', 'REPORTADO')
         ->groupBy('e.id')
         ->groupByRaw('e.clave, e.nombre')
-        ->orderByRaw('e.nombre')
-        ->get();
+        ->orderByRaw('e.nombre');
+        //->orderBy('tc.clave');
+        //->get();
         //dd($encabezado);
 
-        $consulta_inscritos=DB::table('tbl_cursos as tc')
+        $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+        
+        $consulta=DB::table('tbl_cursos as tc')
         ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
-        ->join('alumnos_registro as ar', function($join)
+        //SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia
+        ->join($temptblinner, function($join)
                     {
                         $join->on('tc.id_curso','=','ar.id_curso');
                         $join->on('i.matricula','=','ar.no_control');
@@ -142,14 +141,46 @@ class formato911Controller extends Controller
         ->where('tc.termino','>=',$fecha_inicio)
         ->where('tc.termino','<=',$fecha_termino)
         ->where('tc.unidad','=',$unidades)
-        ->where('tc.hini','>=',$a)
-        ->where('tc.hini','<=',$b)
+        //->where('tc.hini','>=',$a)
+        //->where('tc.hini','<=',$b)
         ->where('tc.status_curso', '!=', 'CANCELADO')
         ->where('tc.status', '=', 'REPORTADO')
         ->groupBy('tc.espe')
-        ->orderBy('tc.espe')
-        ->get();
+        ->orderBy('tc.espe');
+        //->get();
         //dd($consulta_inscritos);
+
+        if($turno=='MATUTINO'){
+            $encabezado=$sql->where(function ($query) {
+                $query->where('tc.hini', 'like', '%a.m.%')
+                      ->orWhere('tc.hini', 'like', '%01:00 p.m.%')
+                      ->orWhere('tc.hini', 'like', '%01:30 p.m.%')
+                      ->orWhere('tc.hini', 'like', '%12:30 p.m.%')
+                      ->orWhere('tc.hini', 'like', '%12:00 p.m.%');})->get();
+            $consulta_inscritos=$consulta->where(function ($query) {
+                $query->where('tc.hini', 'like', '%a.m.%')
+                      ->orWhere('tc.hini', 'like', '%01:00 p.m.%')
+                      ->orWhere('tc.hini', 'like', '%01:30 p.m.%')
+                      ->orWhere('tc.hini', 'like', '%12:30 p.m.%')
+                      ->orWhere('tc.hini', 'like', '%12:00 p.m.%');})->get();
+
+        }elseif($turno=='VESPERTINO'){
+            $encabezado=$sql->where(function ($query) {
+                $query->where('tc.hini', 'like', '%p.m.%')
+                      ->Where('tc.hini', 'not like', '%01:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ;})
+                      ->get();
+            $consulta_inscritos=$consulta->where(function ($query) {
+                $query->where('tc.hini', 'like', '%p.m.%')
+                      ->Where('tc.hini', 'not like', '%01:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ;})
+                      ->get();
+
+        }
+        
+       // dd($encabezado);
 
 
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));

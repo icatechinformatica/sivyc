@@ -87,15 +87,15 @@ $gpo=0;
                 <tr>
                     <td class='variable5'></td>
                     <td class='variable5'>INSCRIPCIÓN TOTAL</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos1}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos2}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos3}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos4}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos5}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos6}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos7}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos8}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh1}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh2}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh3}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh4}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh5}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh6}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh7}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh8}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insh9}}</td>
                 </tr>
                 <tr>
                     <td class='variable5'>HOMBRES</td>
@@ -126,15 +126,15 @@ $gpo=0;
                 <tr>
                     <td class='variable5'></td>
                     <td class='variable5'>INSCRIPCIÓN TOTAL</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos1}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos2}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos3}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos4}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos5}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos6}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos7}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos8}}</td>
-                    <td class='variable'>{{$consulta_inscritos[$key]->total_inscritos}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm1}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm2}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm3}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm4}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm5}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm6}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm7}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm8}}</td>
+                    <td class='variable'>{{$consulta_inscritos[$key]->insm9}}</td>
                     
                 </tr>
                 <tr>
@@ -197,15 +197,15 @@ $gpo=0;
                 <tr>
                     <td></td>
                     <td>INSCRIPCIÓN TOTAL</td> 
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value1 += $consulta_inscritos[$key]->total_inscritos1; @endphp@endforeach{{$value1}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value2 += $consulta_inscritos[$key]->total_inscritos2; @endphp@endforeach{{$value2}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value3 += $consulta_inscritos[$key]->total_inscritos3; @endphp@endforeach{{$value3}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value4 += $consulta_inscritos[$key]->total_inscritos4; @endphp@endforeach{{$value4}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value5 += $consulta_inscritos[$key]->total_inscritos5; @endphp@endforeach{{$value5}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value6 += $consulta_inscritos[$key]->total_inscritos6; @endphp@endforeach{{$value6}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value7 += $consulta_inscritos[$key]->total_inscritos7; @endphp@endforeach{{$value7}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value8 += $consulta_inscritos[$key]->total_inscritos8; @endphp@endforeach{{$value8}}</td>
-                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value += $consulta_inscritos[$key]->total_inscritos; @endphp@endforeach{{$value}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value1 += $consulta_inscritos[$key]->insh1; @endphp@endforeach{{$value1}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value2 += $consulta_inscritos[$key]->insh2; @endphp@endforeach{{$value2}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value3 += $consulta_inscritos[$key]->insh3; @endphp@endforeach{{$value3}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value4 += $consulta_inscritos[$key]->insh4; @endphp@endforeach{{$value4}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value5 += $consulta_inscritos[$key]->insh5; @endphp@endforeach{{$value5}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value6 += $consulta_inscritos[$key]->insh6; @endphp@endforeach{{$value6}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value7 += $consulta_inscritos[$key]->insh7; @endphp@endforeach{{$value7}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value8 += $consulta_inscritos[$key]->insh8; @endphp@endforeach{{$value8}}</td>
+                    <td class='variable'>@foreach($encabezado as $key=>$item)@php $value += $consulta_inscritos[$key]->insh9; @endphp@endforeach{{$value}}</td>
                 </tr>
                 <tr>
                     <td>HOMBRES</td>
@@ -236,20 +236,6 @@ $gpo=0;
                 <tr>
                     <td></td>
                     <td>INSCRIPCIÓN TOTAL</td>
-                    <td class='variable'>{{$value1}}</td>
-                    <td class='variable'>{{$value2}}</td>
-                    <td class='variable'>{{$value3}}</td>
-                    <td class='variable'>{{$value4}}</td>
-                    <td class='variable'>{{$value5}}</td>
-                    <td class='variable'>{{$value6}}</td>
-                    <td class='variable'>{{$value7}}</td>
-                    <td class='variable'>{{$value8}}</td>
-                    <td class='variable'>{{$value}}</td>
-                    
-                </tr>
-                <tr>
-                    <td>MUJERES</td>
-                    <td>EXISTENCIA</td>
                     <td class='variable'>@foreach($encabezado as $key=>$item)@php $im1 += $consulta_inscritos[$key]->insm1; @endphp@endforeach{{$im1}}</td>
                     <td class='variable'>@foreach($encabezado as $key=>$item)@php $im2 += $consulta_inscritos[$key]->insm2; @endphp@endforeach{{$im2}}</td>
                     <td class='variable'>@foreach($encabezado as $key=>$item)@php $im3 += $consulta_inscritos[$key]->insm3; @endphp@endforeach{{$im3}}</td>
@@ -259,6 +245,20 @@ $gpo=0;
                     <td class='variable'>@foreach($encabezado as $key=>$item)@php $im7 += $consulta_inscritos[$key]->insm7; @endphp@endforeach{{$im7}}</td>
                     <td class='variable'>@foreach($encabezado as $key=>$item)@php $im8 += $consulta_inscritos[$key]->insm8; @endphp@endforeach{{$im8}}</td>
                     <td class='variable'>@foreach($encabezado as $key=>$item)@php $im9 += $consulta_inscritos[$key]->insm9; @endphp@endforeach{{$im9}}</td>
+                    
+                </tr>
+                <tr>
+                    <td>MUJERES</td>
+                    <td>EXISTENCIA</td>
+                    <td class='variable'>{{$im1}}</td>
+                    <td class='variable'>{{$im2}}</td>
+                    <td class='variable'>{{$im3}}</td>
+                    <td class='variable'>{{$im4}}</td>
+                    <td class='variable'>{{$im5}}</td>
+                    <td class='variable'>{{$im6}}</td>
+                    <td class='variable'>{{$im7}}</td>
+                    <td class='variable'>{{$im8}}</td>
+                    <td class='variable'>{{$im9}}</td>
                 </tr>
                 <tr>
                     <td></td>
