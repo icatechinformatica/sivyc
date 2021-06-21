@@ -558,6 +558,74 @@ class supreController extends Controller
         return view('layouts.pages.vstareporteplaneacion', compact('unidades'));
     }
 
+    public function folio_edicion_especial($id)
+    {
+        $getdestino = null;
+        $getremitente = null;
+        $getvalida = null;
+        $getelabora = null;
+        $getccp1 = null;
+        $getccp2 = null;
+
+        $folio = folio::WHERE('id_folios', '=', $id)->FIRST();
+        $supre = supre::WHERE('id', '=', $folio->id_supre)->FIRST();
+        $clave = tbl_curso::SELECT('clave')->WHERE('id', '=', $folio->id_cursos)->FIRST();
+
+        $directorio = supre_directorio::WHERE('id_supre', '=', $supre->id)->FIRST();
+        $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $supre->unidad_capacitacion)->FIRST();
+        $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $supre->unidad_capacitacion)->GET();
+
+        $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
+        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
+        $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
+        $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
+        $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
+
+
+        return view('layouts.pages.modespecialfolio',compact('supre','folio','clave','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio', 'unidadsel','unidadlist'));
+    }
+
+    public function folio_edicion_especial_save(Request $request)
+    {
+        //dd($request);
+        $curso_validado = new tbl_curso();
+        $clave = $request->addmore[0]['clavecurso'];
+        $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
+                ->WHERE('tbl_cursos.clave', '=', $clave)
+                ->FIRST();
+        $importe = $request->addmore[0]['importe']/1.16;
+        $importe_hora = $importe / $hora->dura;
+
+        supre::where('id', '=', $request->id_supre)
+        ->update(['unidad_capacitacion' => $request->unidad,
+                  'no_memo' => $request->no_memo,
+                  'fecha' => $request->fecha,
+                  'fecha_status' => carbon::now()]);
+
+        supre_directorio::where('id', '=', $request->id_directorio)
+        ->update(['supre_dest' => $request->id_destino,
+                  'supre_rem' => $request->id_remitente,
+                  'supre_valida' => $request->id_valida,
+                  'supre_elabora' => $request->id_elabora,
+                  'supre_ccp1' => $request->id_ccp1,
+                  'supre_ccp2' => $request->id_ccp2,]);
+
+        folio::where('id_folios', '=', $request->id_folio)
+        ->update(['folio_validacion' => $request->addmore[0]['folio'],
+                  'iva' => $request->addmore[0]['iva'],
+                  'comentario' => $request->addmore[0]['comentario'],
+                  'importe_hora' => $importe_hora,
+                  'importe_total' => $request->addmore[0]['importe'],
+                  'id_supre' => $request->id_supre,
+                  'id_cursos' => $hora->id,
+                  'permiso_editar' => FALSE]);
+
+
+        return redirect()->route('supre-inicio')
+                        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+    }
+
     public function planeacion_reportepdf(Request $request)
     {
 
@@ -908,6 +976,7 @@ class supreController extends Controller
                            'tbl_cursos.mujer')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
+                           ->WHERE('folios.status', '!=', 'Cancelado')
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -923,6 +992,7 @@ class supreController extends Controller
                            'tbl_cursos.mujer')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
+                           ->WHERE('folios.status', '!=', 'Cancelado')
                            ->WHERE('tbl_cursos.id', '=', $idcurso)
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -939,6 +1009,7 @@ class supreController extends Controller
                            'tbl_cursos.mujer')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
+                           ->WHERE('folios.status', '!=', 'Cancelado')
                            ->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -956,6 +1027,7 @@ class supreController extends Controller
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('instructores.id', '=', $idInstructor)
+                           ->WHERE('folios.status', '!=', 'Cancelado')
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -1018,6 +1090,7 @@ class supreController extends Controller
                     'folios.comentario AS observaciones')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
+                           ->WHERE('folios.status', '!=', 'Cancelado')
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -1045,6 +1118,7 @@ class supreController extends Controller
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('tbl_cursos.id', '=', $idcurso)
+                           ->WHERE('folios.status', '!=', 'Cancelado')
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -1068,6 +1142,7 @@ class supreController extends Controller
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)
+                           ->WHERE('folios.status', '!=', 'Cancelado')
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')

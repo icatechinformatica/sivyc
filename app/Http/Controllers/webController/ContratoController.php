@@ -82,7 +82,7 @@ class ContratoController extends Controller
                                 ->orderBy('contratos.created_at', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
                                     'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
@@ -105,7 +105,7 @@ class ContratoController extends Controller
                                 ->orderBy('contratos.created_at', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
                                     'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
@@ -128,7 +128,7 @@ class ContratoController extends Controller
                                 ->orderBy('contratos.created_at', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
                                     'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
@@ -151,7 +151,7 @@ class ContratoController extends Controller
                                 ->orderBy('contratos.created_at', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
                                     'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
@@ -176,7 +176,7 @@ class ContratoController extends Controller
                                 ->orderBy('contratos.created_at', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
                                     'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
@@ -201,7 +201,7 @@ class ContratoController extends Controller
                                 ->orderBy('contratos.created_at', 'desc')
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status',
+                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
                                     'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
@@ -233,7 +233,7 @@ class ContratoController extends Controller
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','contratos.created_at',
-                                    'folios.status','folios.id_folios', 'folios.folio_validacion',
+                                    'folios.status','folios.id_folios', 'folios.folio_validacion','folios.permiso_editar',
                                     'tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
                                     'contratos.fecha_status','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
