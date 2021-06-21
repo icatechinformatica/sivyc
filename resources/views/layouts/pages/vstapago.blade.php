@@ -138,6 +138,13 @@
                                             <i class="fa fa-window-close"></i>
                                         </button>
                                     @endcan
+                                    @if($itemData->permiso_editar == TRUE)
+                                        @can('folio.especialedit')
+                                            <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                    @endif
                                 @break
                                 @case('Pago_Verificado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
@@ -160,6 +167,13 @@
                                             <i class="fa fa-history"></i>
                                         </button>
                                     @endcan
+                                    @if($itemData->permiso_editar == TRUE)
+                                        @can('folio.especialedit')
+                                            <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                    @endif
                                 @break
                                 @case('Pago_Rechazado')
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
@@ -188,6 +202,13 @@
                                             <i class="fa fa-window-close"></i>
                                         </button>
                                     @endcan
+                                    @if($itemData->permiso_editar == TRUE)
+                                        @can('folio.especialedit')
+                                            <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                    @endif
                                 @break
                                 @case('Finalizado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
