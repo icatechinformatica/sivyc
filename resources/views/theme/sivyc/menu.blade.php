@@ -132,6 +132,9 @@
                         @can('reportes.911')
                             <a class="dropdown-item" href="{{route('reportes.911.showForm')}}">Reporte 911</a>
                         @endcan
+                        @can('reportes.rdcd08')
+                            <a class="dropdown-item" href="{{route('reportes.rdcd08.index')}}">Reporte RDCD-08</a>
+                        @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
