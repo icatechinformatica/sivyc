@@ -190,4 +190,46 @@ $(function(){
         var id = button.data('id');
         document.getElementById('idf').value = id;
     });
+
+    //Modal de modificacion de folio validado de supre
+    $('#modfolioModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var valor = button.data('id');
+        var datos = {valor: valor};
+        var url = '/supre/busqueda/folios/modal';
+        var request = $.ajax
+        ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+
+        request.done(( respuesta) =>
+        {
+            const $select = document.querySelector("#folios")
+
+            for (let i = $select.options.length; i >= 0; i--)
+            {
+                $select.remove(i);
+            }
+
+            respuesta.forEach( function(valor, indice, array)
+            {
+                console.log("En el índice " + indice + " hay este valor: " + valor['id_folios']);
+                const option = document.createElement('option');
+                option.value = valor['id_folios'];
+                option.text = valor['folio_validacion'];
+                $select.appendChild(option)
+            });
+            //console.log(respuesta['1']['id_folios']);
+            /*const $select = document.querySelector("#folios");
+            option.value = valor;
+            option.text = valor;
+            $select.appendChild(option);*/
+        });
+
+        //$('#confirm_restart').attr("href","/supre/reiniciar/" + id);
+    });
+
 });

@@ -140,7 +140,7 @@ class AlumnoController extends Controller
                 $anio = trim($request->anio);
                 $fecha_nacimiento = $anio."-".$mes."-".$dia;
 
-                //estados
+                //estados a
                 $nombre_estado = DB::table('estados')->where('id', $request->input('estado'))->select('nombre')->first();
 
                 $AlumnoPreseleccion = new Alumnopre;
