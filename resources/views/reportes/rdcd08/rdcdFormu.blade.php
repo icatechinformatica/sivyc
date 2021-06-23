@@ -87,6 +87,11 @@ $i=1;
                  <td><a type="button" class="btn btn-primary" href="{{route('nombre',['id'=>$item->id])}}" target="_blank">PDF</a></td>                
             </tr>
         @endforeach
+        <tr>
+            <td colspan="12" >
+               {{ $actas->render() }}
+             </td>
+        </tr>
         </table>
     </div>
 @endsection
