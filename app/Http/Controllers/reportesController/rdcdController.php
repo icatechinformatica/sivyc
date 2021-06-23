@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Auth;
 class rdcdController extends Controller
 {
     public function index(){
-        $id_user = 1;//dd($id_user);
-        $id_unidad= 1;
+        $id_user = Auth::user()->id;//dd($id_user);
+        $id_unidad= Auth::user()->unidad;
 
         $unidades = $unidad = NULL;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
