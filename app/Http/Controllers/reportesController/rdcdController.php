@@ -47,12 +47,13 @@ class rdcdController extends Controller
         }
         //dd($tipo);
         if($tipo =='string'){
-            $actas=DB::table('tbl_banco_folios')->select('id','unidad','mod','finicial','ffinal','total','facta')->where('unidad','=',$unidades)->orderby('id','DESC')->get();
+            $actas=DB::table('tbl_banco_folios')->select('id','unidad','mod','finicial','ffinal','total','facta')->where('unidad','=',$unidades);
         }
         else{
-            $actas=DB::table('tbl_banco_folios as tb')->select('id','tb.unidad','tb.mod','tb.finicial', 'tb.ffinal', 'tb.total', 'tb.facta')->whereIn('unidad',$unidades)->get();
+            $actas=DB::table('tbl_banco_folios as tb')->select('id','tb.unidad','tb.mod','tb.finicial', 'tb.ffinal', 'tb.total', 'tb.facta')->whereIn('unidad',$unidades);
         }
         //dd($actas);
+        $actas=$actas->orderby('id','DESC')->paginate(10);
         return view('reportes.rdcd08.rdcdFormu', compact('unidades','tipo','actas'));
         
     }
