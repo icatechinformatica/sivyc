@@ -60,7 +60,7 @@ class formato911Controller extends Controller
         $fecha_termino=$request->fecha_termino;
         $encabezado='0';
         $consulta_inscritos='0';
-        
+
 //dd($b);
         $sql= DB::table('tbl_cursos as tc')
         ->join('cursos as c','tc.id_curso','=','c.id')
@@ -82,7 +82,7 @@ class formato911Controller extends Controller
         //dd($encabezado);
 
         $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
-        
+
         $consulta=DB::table('tbl_cursos as tc')
         ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
         //SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia
@@ -179,7 +179,7 @@ class formato911Controller extends Controller
                       ->get();
 
         }
-        
+
        // dd($encabezado);
 
 
