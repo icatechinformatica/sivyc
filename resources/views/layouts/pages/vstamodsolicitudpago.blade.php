@@ -46,7 +46,7 @@
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto de Remitente</label>
                         <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$director->puesto}}" required>
-                        <input id="id_remitente" name="id_remitente" hidden required>
+                        <input id="id_remitente" name="id_remitente" value="{{$director->id}}" hidden required>
                     </div>
             </div>
             <div class="form-row">
@@ -178,7 +178,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp3">Nombre</label>
-                        <input id="ccp3" name="ccp3" type="text" class="form-control" value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}">>
+                        <input id="ccp3" name="ccp3" type="text" class="form-control" value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
