@@ -133,7 +133,15 @@
                             <a class="dropdown-item" href="{{route('reportes.911.showForm')}}">Reporte 911</a>
                         @endcan
                         @can('reportes.rdcd08')
-                            <a class="dropdown-item" href="{{route('reportes.rdcd08.index')}}">Reporte RDCD-08</a>
+                            <a class="dropdown-item" href="{{route('reportes.rdcd08.index')}}">RDCD-08</a>
+                        @endcan
+                        @can('financieros.reportevalrec')
+                        <a class="dropdown-item" data-toggle="modal" data-placement="top"
+                                data-target="#ModalFinanciero">Reporte R8</a>
+                            <!--<button type="button" class="dropdown-item"
+                                data-toggle="modal" data-placement="top"
+                                data-target="#ModalFinanciero"> Reporte Financiero
+                            </button>-->
                         @endcan
                         @can('financieros.reportevalrec')
                         <a class="dropdown-item" data-toggle="modal" data-placement="top"

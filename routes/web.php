@@ -403,7 +403,7 @@ Route::middleware(['auth'])->group(function () {
     /*REPORTE RDCD-08*/
     Route::get('reportes/rdcd08','reportesController\rdcdController@index')->name('reportes.rdcd08.index')->middleware('can:reportes.rdcd08');
     Route::get('reportes/rdcd08/{id}','reportesController\rdcdController@none')->name('nombre');
-    Route::post('reportes/rdcd08','reportesController\rdcdController@store')->name('lolipop');
+    Route::post('reportes/rdcd08','reportesController\rdcdController@index')->name('lolipop');
 
     Route::get('reportes/formato_t_reporte/index', function () {
         return view('layouts.pages.reportes.formato_t_reporte');
