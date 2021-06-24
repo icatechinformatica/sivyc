@@ -13,57 +13,37 @@ $i=1;
 
     </div>
     <div class="card card-body" >
-        <br />
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-10">
-                    <br>
-                    <form action="{{route('lolipop')}}" method="POST" id="cacahuate" target="_blank">
-                        <div class="row form-inline">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <div class="form-group">
-                                            <select name="unidades" class="form-control" placeholder="Seleciona una Unidad" id="unidades">
-                                                <option value=0 selected disabled="">Selecciona una Unidad</option>
-                                                @if($tipo=='string')
-                                                <option>{{$unidades}}</option>
-                                                @else
-                                                @foreach($unidades as $unidad)
-                                                <option>{{$unidad}}</option>
-                                                @endforeach
-                                                @endif
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <select name="modalidad" class="form-control" placeholder="Selecciona una Modalidad" id="modalidad">
-                                                <option selected disabled="">Selecciona una Modalidad</option>
-                                                <option>CAE</option>
-                                                <option>EXT</option>
-                                                <option>GRAL</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <input type="date" name="fecha_acta" class="form-control" id="fecha_acta" placeholder="Fecha de acta">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <input type="submit" value="Generar PDF" class="btn">
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        {{csrf_field()}}
-                    </form>
+        <form action="{{route('lolipop')}}" method="POST" id="cacahuate">
+            <div class="row form-inline">
+                <div class="form-group">
+                    <select name="unidades" class="form-control" placeholder=" " id="unidades">
+                        <option value=0 selected disabled="">Selecciona una Unidad</option>
+                        <option value="TODO">TODO</option>
+                        @if($tipo=='string')
+                        <option value={{$unidades}}>{{$unidades}}</option>
+                        @else
+                        @foreach($unidades as $unidad)
+                        <option value={{$unidad}}>{{$unidad}}</option>
+                        @endforeach
+                        @endif
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="modalidad" class="form-control" placeholder=" " id="modalidad">
+                        <option value="0" selcted disable="">Seleciona una Modalidad</option>
+                        <option value="TODO">TODO</option>
+                        <option value="CAE">CAE</option>
+                        <option value="EXT">EXT</option>
+                        <option value="GRAL">GENERAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="FILTRAR" class="btn">
                 </div>
             </div>
-        </div>
+            {{csrf_field()}}
+        </form>
+        <br />
         <table class="table">
             <tr>
                 <td>#</td>
@@ -73,9 +53,10 @@ $i=1;
                 <td>FOLIO FINAL</td>
                 <td>MODALIDAD</td>
                 <td>TOTAL</td>
+                <td>EXISTENTES</td>
                 <td> </td>
             </tr>
-            @foreach ($actas as $item)
+            @foreach ($actas as $key => $item)
             <tr>     
                  <td>{{ $i++ }}</td>          
                  <td>{{ $item->unidad }}</td>
@@ -84,32 +65,12 @@ $i=1;
                  <td>{{ $item->ffinal }}</td>
                  <td>{{ $item->mod }}</td>
                  <td>{{ $item->total }}</td>
+                 <td>
+                    {{$cuerpo2[$key][0]->expedidos}}
+                 </td>
                  <td><a type="button" class="btn btn-primary" href="{{route('nombre',['id'=>$item->id])}}" target="_blank">PDF</a></td>                
             </tr>
         @endforeach
-        <tr>
-            <td colspan="12" >
-               {{ $actas->render() }}
-             </td>
-        </tr>
         </table>
     </div>
-@endsection
-@section('script_content_js')
-<script language="javascript">
-    $( function() {
-        $('#cacahuate').validate({
-            rules: {
-                unidades: { required: true },
-                modalidad: {required: true },
-                fecha_acta: {required: true }
-            },
-            messages: {
-                unidades: { required: 'Por favor ingrese la unidad' },
-                modalidad: { required: 'Por favor ingrese la modalidad' },
-                fecha_acta: { required: 'Por favor ingrese la fecha del acta' }
-            }
-        });
-    });
-</script>
 @endsection
