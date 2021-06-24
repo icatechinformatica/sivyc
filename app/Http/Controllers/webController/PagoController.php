@@ -246,6 +246,11 @@ class PagoController extends Controller
         return view('layouts.pages.vsthistorialvalidarpago', compact('contratos','director','datapago'));
     }
 
+    public function  reporte_validados_recepcionados()
+    {
+
+    }
+
     public function mostrar_pago($id)
     {
         $data = contratos::SELECT('instructores.numero_control','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
