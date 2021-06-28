@@ -13,6 +13,7 @@ class formato911Controller extends Controller
     public function showForm(){
         $id_user = Auth::user()->id;//dd($id_user);
         $id_unidad= Auth::user()->unidad;
+        //$id_unidad= "7";
 
         $unidades = $unidad = NULL;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
@@ -27,14 +28,14 @@ class formato911Controller extends Controller
                 $tipo= gettype($unidades);
                 //dd($unidades);
                 //var_dump($unidades);
-                return view('reportes.911.911formu', compact('unidades','tipo'));
+
             }
             else{
                 //var_dump($uni->unidad);
                 $unidades=$uni->unidad;
                 $tipo= gettype($unidades);
                 //dd($tipo);
-                return view('reportes.911.911formu', compact('unidades', 'tipo'));
+
             }
 
         } else {
@@ -43,8 +44,9 @@ class formato911Controller extends Controller
             $tipo= gettype($unidades);//dd($tipo);
             //dd($unidades);
             //var_dump($unidades);
-            return view('reportes.911.911formu', compact('unidades','tipo'));
+
         }
+        return view('reportes.911.911formu', compact('unidades','tipo'));
     }
 
     public function store(Request $request){
@@ -58,13 +60,19 @@ class formato911Controller extends Controller
         $turno= $request->turno; //dd($turno);
         $fecha_inicio=$request->fecha_inicio;
         $fecha_termino=$request->fecha_termino;
+
         $encabezado='0';
         $consulta_inscritos='0';
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> c27b1dd7 (modificacion 911)
 //dd($b);
         $sql= DB::table('tbl_cursos as tc')
         ->join('cursos as c','tc.id_curso','=','c.id')
-        ->join('especialidades as e','c.id_especialidad','=','e.id')
+        ->join('especialidades as e','tc.espe','=','e.nombre')
         ->select(DB::raw('count(e.id)'), 'e.clave','e.nombre as especialidad')
         //->select('tc.clave')
         ->where('tc.termino','>=',$fecha_inicio)
@@ -72,26 +80,25 @@ class formato911Controller extends Controller
         ->where('tc.unidad','=',$unidades)
         //->where('tc.hini','>=',$a)
         //->where('tc.hini','<=',$b)
-        ->where('tc.status_curso', '!=', 'CANCELADO')
+        //->where('tc.status_curso', '!=', 'CANCELADO')
         ->where('tc.status', '=', 'REPORTADO')
-        ->groupBy('e.id')
-        ->groupByRaw('e.clave, e.nombre')
-        ->orderByRaw('e.nombre');
-        //->orderBy('tc.clave');
+        ->groupBy('e.id','e.clave','e.nombre')
+        //->groupByRaw('e.clave, e.nombre')
+        ->orderBy('e.nombre');
+        //->orderBy('tc.clave')
         //->get();
-        //dd($encabezado);
+        //dd($sql);
 
         $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
-
+//dd($temptblinner);
         $consulta=DB::table('tbl_cursos as tc')
-        ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
-        //SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia
-        ->join($temptblinner, function($join)
+        ->leftjoin('tbl_inscripcion as i','tc.id','=','i.id_curso')
+        ->leftjoin($temptblinner, function($join)
                     {
                         $join->on('tc.id_curso','=','ar.id_curso');
                         $join->on('i.matricula','=','ar.no_control');
                     })
-        ->join('alumnos_pre as ap','ap.id','=','ar.id_pre')
+        ->leftjoin('alumnos_pre as ap','ap.id','=','ar.id_pre')
         ->select(DB::raw("count(extract(year from (age(tc.termino,ap.fecha_nacimiento)))) as total_inscritos"), 'tc.espe as especialidad',
         DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) < '15' then 1 else 0 end) as total_inscritos1"),
         DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) between '15' and '19' then 1 else 0 end) as total_inscritos2"),
@@ -148,7 +155,7 @@ class formato911Controller extends Controller
         ->groupBy('tc.espe')
         ->orderBy('tc.espe');
         //->get();
-        //dd($consulta_inscritos);
+        //dd($consulta);
 
         if($turno=='MATUTINO'){
             $encabezado=$sql->where(function ($query) {
@@ -179,13 +186,21 @@ class formato911Controller extends Controller
                       ->get();
 
         }
+<<<<<<< HEAD
 
        // dd($encabezado);
+=======
+        // dd($consulta_inscritos);
+        if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
+    //    dd($encabezado);
+>>>>>>> c27b1dd7 (modificacion 911)
 
 
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
-    	$pdf->setPaper('A4', 'landscape');
+        $pdf->setPaper('A4', 'landscape');
     	//portrait
+
+        //return view('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
     	return $pdf-> stream('forna.pdf');
 
     }

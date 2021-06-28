@@ -12,6 +12,12 @@
     <div class="card card-body" >
         <br />
         <div class="container">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success">
+                    <p>{{$message}}</p>
+                </div>
+            @endif
+
             <div class="row justify-content-center">
                 <div class="col-md-5">
                     <br>
