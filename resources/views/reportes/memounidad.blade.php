@@ -170,7 +170,7 @@
                 <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
                 <br><br><br>
                 <div style="font-size:11px;"> <b>DR. ERICH ARMANDO CRUZ CASTELLANOS</b> </div>
-                <div style="font-size:11px;"> <b>DIRECTOR TECNICO ACADEMICO</b> </div>
+                <div style="font-size:11px;"> <b>DIRECTOR DE TÉCNICA ACADÉMICA</b> </div>
                 <br><br><br>
                 <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div>
                 <div style="font-size:9px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
