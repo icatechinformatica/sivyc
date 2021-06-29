@@ -192,9 +192,3 @@ class formato911Controller extends Controller
         $pdf->setPaper('A4', 'landscape');
     	//portrait
 
-        //return view('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
-    	return $pdf-> stream('forna.pdf');
-
-    }
-
-}
