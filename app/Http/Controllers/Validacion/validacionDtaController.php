@@ -646,11 +646,13 @@ class validacionDtaController extends Controller
                                 $fechaTurnado = DB::table('tbl_cursos')->where('id', '=', $_POST['chkcursos'][0])->get();
                                 $total_turnado_planeacion = DB::table('tbl_cursos')
                                     ->select(DB::raw("COUNT(tbl_cursos.id) AS total_cursos_turnado_planeacion"))
+                                    ->whereIn('unidad', $unidadeSearch)
                                     ->where('fecha_turnado', '=', $fechaTurnado[0]->fecha_turnado)
-                                    ->whereIn('turnado', ['DTA', 'MEMO_TURNADO_RETORNO'])
+                                    ->where('fecha_envio', '=', $fechaTurnado[0]->fecha_envio)
+                                    ->get();
+                                    // ->whereIn('turnado', ['DTA', 'MEMO_TURNADO_RETORNO'])
                                     // ->where('turnado', '=', 'DTA')
                                     // ->orWhere('turnado', '=', 'MEMO_TURNADO_RETORNO')
-                                    ->whereIn('unidad', $unidadeSearch)->get();
 
                                 // $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion + $total;
                                 $sum_total = $total_turnado_planeacion[0]->total_cursos_turnado_planeacion;
