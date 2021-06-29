@@ -110,7 +110,7 @@ class CursosController extends Controller
              */
             $consulta_curso_existente = DB::table('cursos')
                 ->where([
-                    ['memo_actualizacion', '=', trim($request->memo_actualizacion)], 
+                    ['memo_actualizacion', '=', trim($request->memo_actualizacion)],
                     ['memo_validacion', '=', trim($request->memo_validacion)],
                     ['tipo_curso', '=', trim($request->tipo_curso)],
                     ['nombre_curso', 'LIKE', '%'.trim($request->nombrecurso).'%']
@@ -192,7 +192,7 @@ class CursosController extends Controller
                 return redirect()->route('curso-inicio')->with('success', 'Nuevo Curso Agregado!');
 
             }
-            
+
         } catch (Exception $e) {
             return Redirect::back()->withErrors($e->getMessage());
         }
