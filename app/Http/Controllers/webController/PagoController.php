@@ -246,9 +246,31 @@ class PagoController extends Controller
         return view('layouts.pages.vsthistorialvalidarpago', compact('contratos','director','datapago'));
     }
 
-    public function  reporte_validados_recepcionados()
+    public function  reporte_validados_recepcionados(Request $request)
     {
-
+        $now = Carbon::now();
+        $mi = Carbon::parse($now->year . '-' . $request->fini . '-01');
+        $fi = Carbon::parse($now->year . '-' . $request->ffin . '-01');
+        $dym = $fi->daysInMonth;
+        $fi = Carbon::parse($now->year . '-' . $request->ffin . '-' . $dym);
+        //dd($request);
+        $data = folio::select('tbl_unidades.ubicacion',
+            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado''Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Sivyc"),
+            DB::raw("sum(case when folios.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS Fisico"),
+            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS PorEntregar"),
+            DB::raw("sum(case when folios.status in ('Finalizado')  then 1 else 0 end) AS Pagado"),
+            DB::raw("sum(case when folios.status in ('Pago_Verificado')  then 1 else 0 end) AS PorPagar"),
+            DB::raw("sum(case when folios.status in ('Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Observados")
+        )
+        ->WHERE('folios.created_at', '>=', $mi)
+        ->WHERE('folios.created_at', '<=', $fi)
+        //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
+        ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+        ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+        ->groupBy('tbl_unidades.ubicacion')
+        ->orderBy('tbl_unidades.ubicacion')
+        ->GET();
+        dd($data);
     }
 
     public function mostrar_pago($id)

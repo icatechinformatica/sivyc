@@ -138,18 +138,6 @@
                         @can('financieros.reportevalrec')
                         <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalFinanciero">Reporte R8</a>
-                            <!--<button type="button" class="dropdown-item"
-                                data-toggle="modal" data-placement="top"
-                                data-target="#ModalFinanciero"> Reporte Financiero
-                            </button>-->
-                        @endcan
-                        @can('financieros.reportevalrec')
-                        <a class="dropdown-item" data-toggle="modal" data-placement="top"
-                                data-target="#ModalFinanciero">Reporte R8</a>
-                            <!--<button type="button" class="dropdown-item"
-                                data-toggle="modal" data-placement="top"
-                                data-target="#ModalFinanciero"> Reporte Financiero
-                            </button>-->
                         @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
