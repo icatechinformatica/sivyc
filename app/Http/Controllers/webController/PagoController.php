@@ -248,29 +248,61 @@ class PagoController extends Controller
 
     public function  reporte_validados_recepcionados(Request $request)
     {
+        $i = $request->fini;
         $now = Carbon::now();
         $mi = Carbon::parse($now->year . '-' . $request->fini . '-01');
         $fi = Carbon::parse($now->year . '-' . $request->ffin . '-01');
         $dym = $fi->daysInMonth;
-        $fi = Carbon::parse($now->year . '-' . $request->ffin . '-' . $dym);
+        $fin = $now->year . '-' . $request->ffin . '-' . $dym;
+
+
         //dd($request);
+        do {
+            $nomval = "mes" . $i;
+            $inicial = Carbon::parse($now->year . '-' . $i . '-01');
+            $dym = $inicial->daysInMonth;
+            $final = Carbon::parse($now->year . '-' . $i . '-' . $dym . ' 23:59:00');
+            printf($inicial . ' - ' . $final . ' // ');
+            $cab1 = "sivyc" . $i;
+            $cab2 = "fisico" . $i;
+            $cab3 = "PorEntregar" . $i;
+            $query1 = "sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado') then 1 else 0 end) AS " . $cab1;
+            $query2 = "sum(case when folios.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS " . $cab2;
+            $query3 = "sum(case when folios.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS " . $cab3;
+            //dd($inicial);
+            $$nomval = $data = folio::select('tbl_unidades.ubicacion',
+                DB::raw($query1),
+                DB::raw($query2),
+                DB::raw($query3),
+                )
+                ->WHERE('folios.created_at', '>=', $inicial)
+                ->WHERE('folios.created_at', '<=', $final)
+                //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
+                ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+                ->groupBy('tbl_unidades.ubicacion')
+                ->orderBy('tbl_unidades.ubicacion')
+                ->GET();
+
+            $i++;
+        } while ($i <= $request->ffin);
         $data = folio::select('tbl_unidades.ubicacion',
-            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado''Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Sivyc"),
+            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Sivyc"),
             DB::raw("sum(case when folios.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS Fisico"),
             DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS PorEntregar"),
             DB::raw("sum(case when folios.status in ('Finalizado')  then 1 else 0 end) AS Pagado"),
             DB::raw("sum(case when folios.status in ('Pago_Verificado')  then 1 else 0 end) AS PorPagar"),
             DB::raw("sum(case when folios.status in ('Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Observados")
-        )
-        ->WHERE('folios.created_at', '>=', $mi)
-        ->WHERE('folios.created_at', '<=', $fi)
-        //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
-        ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-        ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
-        ->groupBy('tbl_unidades.ubicacion')
-        ->orderBy('tbl_unidades.ubicacion')
-        ->GET();
-        dd($data);
+            )
+            ->WHERE('folios.created_at', '>=', $mi)
+            ->WHERE('folios.created_at', '<=', $fin)
+            //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
+            ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+            ->groupBy('tbl_unidades.ubicacion')
+            ->orderBy('tbl_unidades.ubicacion')
+            ->GET();
+            dd($mes01,$mes2,$mes3,$mes4,$mes5,$mes6,$data);
     }
 
     public function mostrar_pago($id)
