@@ -397,8 +397,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reportes/const/xls', 'reportesController\cursosController@xlsConst')->name('reportes.const.xls');
 
     /*REPORTE 911 AGC*/
-    Route::get('/reportes/911', 'reportesController\formato911Controller@showForm')->name('reportes.911.showForm')->middleware('can:reportes.911');
-    Route::post('/reportes/911/pdf', 'reportesController\formato911Controller@store')->name('contacto');
+    Route::get('/reportes/911', 'reportesController\for911Controller@showForm')->name('reportes.911.showForm')->middleware('can:reportes.911');
+    Route::post('/reportes/911/pdf', 'reportesController\for911Controller@store')->name('contacto');
 
     /*REPORTE RDCD-08*/
     Route::get('reportes/rdcd08','reportesController\rdcdController@index')->name('reportes.rdcd08.index')->middleware('can:reportes.rdcd08');

@@ -63,10 +63,6 @@ class formato911Controller extends Controller
         $consulta_inscritos='0';
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 855280a6 (29062021 01 continue reporte finc)
 //dd($b);
         $sql= DB::table('tbl_cursos as tc')
         ->join('cursos as c','tc.id_curso','=','c.id')
@@ -187,10 +183,6 @@ class formato911Controller extends Controller
         // dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
     //    dd($encabezado);
-<<<<<<< HEAD
-
-=======
->>>>>>> 855280a6 (29062021 01 continue reporte finc)
 
 
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
