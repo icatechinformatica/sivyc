@@ -1,4 +1,4 @@
- <?php
+<?php
 
 namespace App\Http\Controllers\reportesController;
 
@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class formato911Controller extends Controller
+class for911Controller extends Controller
 {
     public function showForm(){
         $id_user = Auth::user()->id;//dd($id_user);
@@ -61,6 +61,7 @@ class formato911Controller extends Controller
 
         $encabezado='0';
         $consulta_inscritos='0';
+
 
 //dd($b);
         $sql= DB::table('tbl_cursos as tc')
@@ -182,6 +183,7 @@ class formato911Controller extends Controller
         // dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
     //    dd($encabezado);
+
 
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
         $pdf->setPaper('A4', 'landscape');
