@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\reportesController;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\faCADE as PDF;
@@ -14,7 +13,7 @@ class formato911Controller extends Controller
     public function showForm(){
         $id_user = Auth::user()->id;//dd($id_user);
         $id_unidad= Auth::user()->unidad;
-        //$id_unidad= "7";//rollos
+        //$id_unidad= "7";
 
         $unidades = $unidad = NULL;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
@@ -29,12 +28,14 @@ class formato911Controller extends Controller
                 $tipo= gettype($unidades);
                 //dd($unidades);
                 //var_dump($unidades);
+
             }
             else{
                 //var_dump($uni->unidad);
                 $unidades=$uni->unidad;
                 $tipo= gettype($unidades);
                 //dd($tipo);
+
             }
 
         } else {
@@ -43,6 +44,7 @@ class formato911Controller extends Controller
             $tipo= gettype($unidades);//dd($tipo);
             //dd($unidades);
             //var_dump($unidades);
+
         }
         return view('reportes.911.911formu', compact('unidades','tipo'));
     }
@@ -188,9 +190,4 @@ class formato911Controller extends Controller
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
         $pdf->setPaper('A4', 'landscape');
     	//portrait
-        //return view('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
-    	return $pdf-> stream('forna.pdf');
 
-    }
-
-}
