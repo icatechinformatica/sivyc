@@ -1,6 +1,7 @@
-<?php
+ <?php
 
 namespace App\Http\Controllers\reportesController;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\faCADE as PDF;
@@ -13,7 +14,7 @@ class formato911Controller extends Controller
     public function showForm(){
         $id_user = Auth::user()->id;//dd($id_user);
         $id_unidad= Auth::user()->unidad;
-        //$id_unidad= "7";
+        //$id_unidad= "7";//rollos
 
         $unidades = $unidad = NULL;
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
@@ -28,14 +29,12 @@ class formato911Controller extends Controller
                 $tipo= gettype($unidades);
                 //dd($unidades);
                 //var_dump($unidades);
-
             }
             else{
                 //var_dump($uni->unidad);
                 $unidades=$uni->unidad;
                 $tipo= gettype($unidades);
                 //dd($tipo);
-
             }
 
         } else {
@@ -44,7 +43,6 @@ class formato911Controller extends Controller
             $tipo= gettype($unidades);//dd($tipo);
             //dd($unidades);
             //var_dump($unidades);
-
         }
         return view('reportes.911.911formu', compact('unidades','tipo'));
     }
@@ -63,7 +61,6 @@ class formato911Controller extends Controller
 
         $encabezado='0';
         $consulta_inscritos='0';
-
 
 //dd($b);
         $sql= DB::table('tbl_cursos as tc')
@@ -185,9 +182,17 @@ class formato911Controller extends Controller
         // dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
     //    dd($encabezado);
+<<<<<<< HEAD:app/Http/Controllers/reportesController/formato911Controller.php
+=======
 
+>>>>>>> 3a1c9ba040969bb40f393e58597190d067859d73:app/Http/Controllers/reportesController/mato911Controller.php
 
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
         $pdf->setPaper('A4', 'landscape');
     	//portrait
+        //return view('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
+    	return $pdf-> stream('forna.pdf');
 
+    }
+
+}
