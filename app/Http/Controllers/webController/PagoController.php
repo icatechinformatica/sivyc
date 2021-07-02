@@ -388,7 +388,7 @@ class PagoController extends Controller
 
     }
 
-    protected function monthToString($month)
+   /* protected function monthToString($month)
     {
         switch ($month)
         {
@@ -440,5 +440,5 @@ class PagoController extends Controller
                 return 'DICIEMBRE';
             break;
         }
-    }
+    }*/
 }
