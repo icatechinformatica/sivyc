@@ -34,5 +34,9 @@ class AuthServiceProvider extends ServiceProvider
             'api' => 'User Type',
             'api_sice' => 'sice User type',
         ]);
+
+        \Illuminate\Support\Facades\Auth::provider('customuserprovider', function($app, array $config) {
+            return new AuthValidateStatusServiceProvider($app['hash'], $config['model']);
+        });
     }
 }

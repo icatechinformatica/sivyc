@@ -248,29 +248,77 @@ class PagoController extends Controller
 
     public function  reporte_validados_recepcionados(Request $request)
     {
+        $mes1 = null; $mes2 = null; $mes3 = null; $mes4 = null; $mes5 = null; $mes6 = null; $mes7 = null; $mes8 = null;
+        $mes9 = null; $mes10 = null; $mes11 = null; $mes12 = null;
+        $i = $request->fini;
         $now = Carbon::now();
         $mi = Carbon::parse($now->year . '-' . $request->fini . '-01');
         $fi = Carbon::parse($now->year . '-' . $request->ffin . '-01');
         $dym = $fi->daysInMonth;
-        $fi = Carbon::parse($now->year . '-' . $request->ffin . '-' . $dym);
+        $fin = $now->year . '-' . $request->ffin . '-' . $dym;
+        $nombremesini = $this->monthToString($request->fini);
+        $nombremesfin = $this->monthToString($request->ffin);
+
+
         //dd($request);
+        do {
+            if(substr($i, -2, 1) == '0')
+            {
+                $nomval = "mes" . substr($i, -1);
+            }
+            else
+            {
+                $nomval = "mes" . $i;
+            }
+            //dd($nomval);
+            $inicial = Carbon::parse($now->year . '-' . $i . '-01');
+            $dym = $inicial->daysInMonth;
+            $final = Carbon::parse($now->year . '-' . $i . '-' . $dym . ' 23:59:00');
+            printf($inicial . ' - ' . $final . ' // ');
+            $cab1 = "sivyc" . $i;
+            $cab2 = "fisico" . $i;
+            $cab3 = "PorEntregar" . $i;
+            $query1 = "sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado') then 1 else 0 end) AS " . $cab1;
+            $query2 = "sum(case when folios.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS " . $cab2;
+            $query3 = "sum(case when folios.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS " . $cab3;
+            //dd($inicial);
+            $$nomval = $data = folio::select('tbl_unidades.ubicacion',
+                DB::raw($query1),
+                DB::raw($query2),
+                DB::raw($query3),
+                )
+                ->WHERE('folios.created_at', '>=', $inicial)
+                ->WHERE('folios.created_at', '<=', $final)
+                //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
+                ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+                ->groupBy('tbl_unidades.ubicacion')
+                ->orderBy('tbl_unidades.ubicacion')
+                ->GET();
+
+            $i++;
+        } while ($i <= $request->ffin);
         $data = folio::select('tbl_unidades.ubicacion',
-            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado''Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Sivyc"),
+            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Sivyc"),
             DB::raw("sum(case when folios.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS Fisico"),
             DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS PorEntregar"),
             DB::raw("sum(case when folios.status in ('Finalizado')  then 1 else 0 end) AS Pagado"),
             DB::raw("sum(case when folios.status in ('Pago_Verificado')  then 1 else 0 end) AS PorPagar"),
             DB::raw("sum(case when folios.status in ('Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Observados")
-        )
-        ->WHERE('folios.created_at', '>=', $mi)
-        ->WHERE('folios.created_at', '<=', $fi)
-        //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
-        ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-        ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
-        ->groupBy('tbl_unidades.ubicacion')
-        ->orderBy('tbl_unidades.ubicacion')
-        ->GET();
-        dd($data);
+            )
+            ->WHERE('folios.created_at', '>=', $mi)
+            ->WHERE('folios.created_at', '<=', $fin)
+            //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
+            ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+            ->groupBy('tbl_unidades.ubicacion')
+            ->orderBy('tbl_unidades.ubicacion')
+            ->GET();
+
+            $pdf = PDF::loadView('layouts.pages.reportescontrarosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
+            return $pdf->download('medium.pdf');
+
+            //dd($mes01,$mes2,$mes3,$mes4,$mes5,$mes6,$data);
     }
 
     public function mostrar_pago($id)
@@ -338,5 +386,59 @@ class PagoController extends Controller
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
 
+    }
+
+    protected function monthToString($month)
+    {
+        switch ($month)
+        {
+            case 01:
+                return 'ENERO';
+            break;
+
+            case 02:
+                return 'FEBRERO';
+            break;
+
+            case 03:
+                return 'MARZO';
+            break;
+
+            case 04:
+                return 'ABRIL';
+            break;
+
+            case 05:
+                return 'MAYO';
+            break;
+
+            case 06:
+                return 'JUNIO';
+            break;
+
+            case 07:
+                return 'JULIO';
+            break;
+
+            case 08:
+                return 'AGOSTO';
+            break;
+
+            case 09:
+                return 'SEPTIEMBRE';
+            break;
+
+            case 10:
+                return 'OCTUBRE';
+            break;
+
+            case 11:
+                return 'NOVIEMBRE';
+            break;
+
+            case 12:
+                return 'DICIEMBRE';
+            break;
+        }
     }
 }

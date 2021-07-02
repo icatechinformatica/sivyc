@@ -64,6 +64,9 @@ class InstitutoController extends Controller
         $instituto->distintivo = $request->distintivo;
         $instituto->updated_at = $date;
         $instituto->iduser_updated = Auth::user()->id;
+        $instituto->titular = $request->titular;
+        $instituto->cargo = $request->cargo;
+        $instituto->correo_titular = $request->email_titular;
 
         $instituto->save();
         return redirect()->route('instituto.inicio');
