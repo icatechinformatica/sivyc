@@ -1,5 +1,6 @@
 <?php
 $i=1;
+$a=0;
 ?>
 @extends('theme.sivyc.layout')
 @section('title', 'Reportes | SIVyC Icatech')
@@ -66,9 +67,9 @@ $i=1;
                  <td>{{ $item->mod }}</td>
                  <td>{{ $item->total }}</td>
                  <td>
-                    {{$cuerpo2[$key][0]->expedidos}}
+                    @php $a= $item->total - ($cuerpo2[$key][0]->expedidos); @endphp {{$a}}
                  </td>
-                 <td><a type="button" class="btn btn-primary" href="{{route('nombre',['id'=>$item->id])}}" target="_blank">PDF</a></td>                
+                 <td><a type="button" class="btn {{$item->total == $a ? 'btn btn-success' : 'btn-danger'}}" href="{{route('nombre',['id'=>$item->id])}}" target="_blank">PDF</a></td>                
             </tr>
         @endforeach
         </table>
