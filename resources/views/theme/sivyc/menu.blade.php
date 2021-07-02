@@ -135,6 +135,9 @@
                         @can('reportes.rdcd08')
                             <a class="dropdown-item" href="{{route('reportes.rdcd08.index')}}">RDCD-08</a>
                         @endcan
+                        @can('reportes.rcdod11')
+                            <a class="dropdown-item" href="{{route('reportes.rcdod11.index')}}">RCDOD-11</a>
+                        @endcan
                         @can('financieros.reportevalrec')
                         <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalFinanciero">Reporte R8</a>
