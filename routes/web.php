@@ -405,6 +405,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reportes/rdcd08/{id}','reportesController\rdcdController@none')->name('nombre');
     Route::post('reportes/rdcd08','reportesController\rdcdController@index')->name('lolipop');
 
+    /*RDCOD-11*/
+    Route::get('reportes/rcdod11','reportesController\rcdod11Controller@index')->name('reportes.rcdod11.index')->middleware('can:reportes.rcdod11');
+    Route::post('reportes/rcdod11','reportesController\rcdod11Controller@index')->name('carter');
+    Route::post('reportes/rcdod11/pdf','reportesController\rcdod11Controller@pdf')->name('carter.pdf');
+
     Route::get('reportes/formato_t_reporte/index', function () {
         return view('layouts.pages.reportes.formato_t_reporte');
     })->name('reportes.formatoT');

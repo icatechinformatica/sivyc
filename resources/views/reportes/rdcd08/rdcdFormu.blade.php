@@ -20,10 +20,10 @@ $i=1;
                         <option value=0 selected disabled="">Selecciona una Unidad</option>
                         <option value="TODO">TODO</option>
                         @if($tipo=='string')
-                        <option value={{$unidades}}>{{$unidades}}</option>
+                        <option value="{{$unidades}}">{{$unidades}}</option>
                         @else
                         @foreach($unidades as $unidad)
-                        <option value={{$unidad}}>{{$unidad}}</option>
+                        <option value="{{$unidad}}">{{$unidad}}</option>
                         @endforeach
                         @endif
                     </select>
