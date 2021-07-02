@@ -673,7 +673,7 @@ class supreController extends Controller
         $date = strtotime($data_supre->fecha);
         $D = date('d', $date);
         $MO = date('m',$date);
-        $M = $this->monthToString(date('m',$date));
+        $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
         $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion')
