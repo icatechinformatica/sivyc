@@ -74,7 +74,7 @@ class rcdod11Controller extends Controller
 
         if($unidad==null||$unidad=='TODO'){return redirect()->route('carter')->with('success', 'Selecione una unidad');}
         if($finicio==null||$ftermino==null){return redirect()->route('carter')->with('success', 'Selecione un rango de fecha');}
-        $sq=DB::table('tbl_unidades')->select('unidad','cct','plantel')->where('unidad',$unidad)->get();//dd($sq);
+        $sq=DB::table('tbl_unidades')->select('unidad','cct','plantel','dunidad')->where('unidad',$unidad)->get();//dd($sq);
 
         $consulta=DB::table('tbl_cursos as tc')
             ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
