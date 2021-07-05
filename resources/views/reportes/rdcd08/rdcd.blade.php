@@ -33,10 +33,17 @@ switch( $mes){
     div{font_size: 12px;}
     .p{text-decoration: overline;}
     .variable{text-align: center;border: 1px solid black;}
+    img.izquierda {
+        float: left;
+        width: 120;
+        height: 50;
+      }
 </style>
 <body>
-    <div align='left'><img src="img/sep.png" width="120" height="50"></div>
-    <div align='right'><p class="centrado">SUBSECRETARIA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>REPORTE DE DIPLOMAS O COSTANCIAS EXPEDIDOS <br>(RDCD-08)</p></div>
+    <div>
+        <img src="img/sep.png" class="izquierda">
+        <p style="font_size: 14px;width:50%;padding:8px;margin:auto; text-align:center;">SUBSECRETARIA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>REPORTE DE DIPLOMAS O COSTANCIAS EXPEDIDOS <br>(RDCD-08)</p>
+    </div>
     <div class="tabla_madre">
         <div class="centrado"><p>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNILÓGICA DEL ESTADO DE CHIAPAS</p></div>
         <div >
@@ -116,17 +123,19 @@ switch( $mes){
                 <td class="variable">@php $total= $total- ($item->expedidos + $item->cancelados); @endphp {{$total}}</td>
             </tr>
             @endforeach
+            @foreach($fcancelados as $alo)
             <tr>
-                <td colspan="6" class="variable">FOLIOS CANCELADOS: @foreach($fcancelados as $alo){{$alo->cance}} POR {{$alo->motivo}},@endforeach</td>
+                <td colspan="6" class="variable">FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},</td>
             </tr>
+            @endforeach
         </table>
     </div>
-    <br><br><br><br><br><br><br><br><br>
+    <div><br><br><br><br><br><br><br><br><br><br></div>
     <div>
         <table class="table">
             <tr>
-                <td><p class="p" align='left'> NOMBRE Y FIRMA DEL DIRECTOR(A) DE LA UNIDAD {{$unidad}}</p></td>
-                <td><p class="p" align='right'>SELLO</p></td>
+                <td style="align: left"> {{$cct->dunidad}} <br><p class="p"> NOMBRE Y FIRMA DEL DIRECTOR(A) DE LA UNIDAD {{$unidad}}</p></td>
+                <td><p class="p">SELLO</p></td>
             </tr>
         </table>
     </div>

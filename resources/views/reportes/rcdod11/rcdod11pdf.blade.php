@@ -81,8 +81,8 @@ $anioSi = date('Y', strtotime('+1 year')) ;
     <div>
         <table class="table">
             <tr>
-                <td><p class="p" align='left'> NOMBRE Y FIRMA DEL DIRECTOR DE LA UNIDAD</p></td>
-                <td><p align='right'>SELLO</p></td>
+                <td style="align: left">{{$sq[0]->dunidad}} <br> <p class="p"> NOMBRE Y FIRMA DEL DIRECTOR DE LA UNIDAD</p></td>
+                <td><p class="p">SELLO</p></td>
             </tr>
         </table>
     </div>
