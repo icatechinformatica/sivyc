@@ -67,13 +67,25 @@ class ftcontroller extends Controller
                 $desertoresEsc = $value->naesm1 + $value->naesh1 + $value->naesm2 + $value->naesh2 +
                     $value->naesm3 + $value->naesh3 + $value->naesm4 + $value->naesh4 + $value->naesm5 + $value->naesh5 +
                     $value->naesm6 + $value->naesh6 + $value->naesm7 + $value->naesh7 + $value->naesm8 + $value->naesh8 +
-                    $value->naesm9 + $value->naesh9; 
+                    $value->naesm9 + $value->naesh9;
+                $sumaHM = $value->ihombre + $value->imujer;
+                $sumaED = $value->egresado + $value->desertado;
+                $sumaEmDe = $value->empleado + $value->desempleado;
+                $sumaEgresados = $value->emujer + $value->ehombre;  
 
                 $value->inscritosEdad = $inscritosEdad;
                 $value->inscritosEsc = $inscritosEsc;
                 $value->acreditadosEsc = $acreditadosEsc;
                 $value->desertoresEsc = $desertoresEsc; 
+                $value->sumaHM = $sumaHM;
+                $value->sumaED = $sumaED;
+                $value->sumaEmDe = $sumaEmDe;
+                $value->sumaEgresados = $sumaEgresados;
             }
+            // $var_cursos[20]->tinscritos = 20;
+            // $var_cursos[25]->inscritosEdad = 25;
+            // $var_cursos[25]->tinscritos = 5;
+            // dd($var_cursos[20]);
 
             /*$var_cursos = DB::table('tbl_cursos as c')
                 ->select('c.id AS id_tbl_cursos', 'c.status AS estadocurso' ,'c.unidad','c.plantel','c.espe','c.curso','c.clave','c.mod','c.dura',
