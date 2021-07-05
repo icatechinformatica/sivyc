@@ -27,6 +27,7 @@ switch( $mes){
     <title>Reporte RCDC08</title>
 </head>
 <style type="text/ccs">
+    @page{margin: 20px 30px 40px}
     .tabla_madre{border: 1px solid black;}
     .table{width: 100%; text-align: center; border-collapse: collapse;}
     .centrado{width:50%;padding:8px;margin:auto; text-align:center;}
@@ -123,11 +124,11 @@ switch( $mes){
                 <td class="variable">@php $total= $total- ($item->expedidos + $item->cancelados); @endphp {{$total}}</td>
             </tr>
             @endforeach
-            @foreach($fcancelados as $alo)
+            
             <tr>
-                <td colspan="6" class="variable">FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},</td>
+                 <td colspan="6" class="variable">@foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach</td>
             </tr>
-            @endforeach
+            
         </table>
     </div>
     <div><br><br><br><br><br><br><br><br><br><br></div>

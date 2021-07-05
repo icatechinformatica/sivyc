@@ -14,33 +14,39 @@
             justify-content: center;
             align-items: center;
         }
+
         #spinner::after {
-        content: "";
-        width: 80px;
-        height: 80px;
-        border: 2px solid #f3f3f3;
-        border-top: 3px solid #f25a41;
-        border-radius: 100%;
-        will-change: transform;
-        animation: spin 1s infinite linear
+            content: "";
+            width: 80px;
+            height: 80px;
+            border: 2px solid #f3f3f3;
+            border-top: 3px solid #f25a41;
+            border-radius: 100%;
+            will-change: transform;
+            animation: spin 1s infinite linear
         }
+
         @keyframes spin {
             from {
                 transform: rotate(0deg);
             }
+
             to {
                 transform: rotate(360deg);
             }
         }
+
         .content {
             padding: 0 20px 20px 17px;
             margin-top: 0;
         }
+
         @media (min-width: 1200px) {
-            .container{
+            .container {
                 width: 1400px;
             }
         }
+
     </style>
 @endsection
 <!--seccion-->
@@ -48,13 +54,14 @@
     <div class="container-fluid px-5 g-pt-30">
         {{-- información sobre la entrega del formato t para unidades --}}
         <div class="alert {{ $diasParaEntrega <= 5 ? 'alert-warning' : 'alert-info' }}" role="alert">
-            <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
+            <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL
+                <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
         </div>
         {{-- información sobre la entrega del formato t para unidades END --}}
         <div class="alert"></div>
-        @if($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger">
-                {{$errors->first()}}
+                {{ $errors->first() }}
             </div>
         @endif
         @if ($message = Session::get('success'))
@@ -62,7 +69,7 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
-        
+
         <div class="row">
             <div class="col-lg-8 margin-tb">
                 <div>
@@ -90,7 +97,7 @@
                 
             </div>
         {!! Form::close() !!} --}}
-            
+
         <hr style="border-color:dimgray">
         @if (count($var_cursos) > 0)
             <form action="{{ route('reportes.formatot.unidad.xls') }}" method="POST">
@@ -109,27 +116,32 @@
                 @csrf
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-2">
-                        <input type="text" class="form-control mr-sm-1" name="numero_memo" id="numero_memo" placeholder="NÚMERO DE MEMORANDUM">
+                        <input type="text" class="form-control mr-sm-1" name="numero_memo" id="numero_memo"
+                            placeholder="NÚMERO DE MEMORANDUM">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group mb-2">
-                        <button input type="submit" id="generarMemoAFirma" name="generarMemoAFirma"  class="btn btn-danger my-2 my-sm-0 waves-effect waves-light">
+                        <button input type="submit" id="generarMemoAFirma" name="generarMemoAFirma"
+                            class="btn btn-danger my-2 my-sm-0 waves-effect waves-light">
                             <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>
                             GENERAR MEMORANDUM
-                        </button> 
+                        </button>
                     </div>
 
                     <div class="form-group mb-2 mb-2">
-                        <button input type="button" id="enviarDTA" name="enviarDTA"  class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
+                        <button input type="button" id="enviarDTA" name="enviarDTA"
+                            class="btn btn-success my-2 my-sm-0 waves-effect waves-light">
                             <i class="fa fa-paper-plane fa-2x" aria-hidden="true"></i>
                             ENVIAR A VALIDACIÓN DE DTA
-                        </button> 
+                        </button>
                     </div>
-                    
+
                     @if ($retornoUnidad->count() > 0)
                         <div class="form-group mb-2 mb-2">
-                            <button type="button" id="mod_format" name="mod_format" style="{{ $retornoUnidad->isEmpty() ? 'display: none' : '' }}"  class="btn btn-warning my-2 my-sm-0 waves-effect waves-light">
+                            <button type="button" id="mod_format" name="mod_format"
+                                style="{{ $retornoUnidad->isEmpty() ? 'display: none' : '' }}"
+                                class="btn btn-warning my-2 my-sm-0 waves-effect waves-light">
                                 <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
                                 Modificar Campos
                             </button>
@@ -140,15 +152,16 @@
                 <div class="form-row">
                     <div class="table-responsive container-fluid mt-2">
                         <div class="col-sm-12">
-                            <table  id="table-911" class="table" style='width: 100%; margin-left: -1.8em;'>
-                                <caption>CURSOS A ENVIAR POR UNIDADES</caption>         
+                            <table id="table-911" class="table" style='width: 100%; margin-left: -1.8em;'>
+                                <caption>CURSOS A ENVIAR POR UNIDADES</caption>
                                 <thead class="thead-dark">
                                     <tr align="center">
                                         <th scope="col">N°</th>
                                         <th scope="col">
-                                            <div style = "width:100px; word-wrap: break-word">
+                                            <div style="width:100px; word-wrap: break-word">
                                                 SELECCIONAR
-                                                <input type="checkbox" id="selectAll" {{ $retornoUnidad->isEmpty() ? '' : 'disabled'  }}/>
+                                                <input type="checkbox" id="selectAll"
+                                                    {{ $retornoUnidad->isEmpty() ? '' : 'disabled' }} />
                                             </div>
                                         </th>
                                         <th scope="col">UNIDAD DE CAPACITACION</th>
@@ -197,6 +210,7 @@
                                         <th scope="col">ETNIA</th>
                                         <th scope="col">PROGRAMA ESTRATEGICO</th>
                                         <th scope="col">MUNICIPIO</th>
+                                        <th scope="col">ZE</th>
                                         <th scope="col">DEPENDENCIA BENEFICIADA</th>
                                         <th scope="col">CONVENIO GENERAL</th>
                                         <th scope="col">CONV SEC PUB O PRIV</th>
@@ -273,25 +287,45 @@
                                         <th scope="col">DESC ESCOL H9</th>
                                         <th scope="col" WIDTH="500">OBSERVACIONES</th>
                                         <th scope="col" width="500">COMENTARIOS</th>
-                                        <th scope="col" width="500">COMENTARIOS ENLACES DTA</th>                                  
+                                        <th scope="col" width="500">COMENTARIOS ENLACES DTA</th>
+                                        <th scope="col" width="500">OBSERVACIONES AUTOMATICAS</th>
                                     </tr>
                                 </thead>
                                 <tbody style="height: 300px; overflow-y: auto">
                                     @foreach ($var_cursos as $key => $datas)
-                                        <tr align="center" 
-                                            style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F ' : '' }} 
-                                                {{ ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) ? '' : '#808080' }}" >
-                                            <td>{{$key + 1}}</td>
+                                        <tr class="text-center"
+                                            {{-- style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }} {{ ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) ? '' : '#808080' }}" --}}
+                                            {{-- $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' 
+                                                :  --}}
+                                                {{-- $datas->inscritosEdad - $datas->tinscritos != 0 || $datas->inscritosEsc - $datas->tinscritos != 0 
+                                                || $datas->acreditadosEsc - $datas->egresado != 0 || $datas->desertoresEsc - $datas->desertado != 0 --}}
+                                            style="background-color: 
+                                                {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }} 
+                                                {{ (($datas->inscritosEdad - $datas->tinscritos) !=0 
+                                                    || ($datas->inscritosEsc - $datas->tinscritos) != 0 
+                                                    || ($datas->acreditadosEsc - $datas->egresado) != 0 
+                                                    || ($datas->desertoresEsc - $datas->desertado) != 0) ? '#ff8282' : '' }}">
+                                            <td>{{ $key + 1 }}</td>
                                             <td>
-                                                @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad)
-                                                    <input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}" class="checkbx" name="chkcursos_list[]" value="{{  $datas->id_tbl_cursos }}" {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }} {{ $datas->estadocurso == 'EN_FIRMA' ? 'checked' : '' }}/>
+                                                {{-- @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad) --}}
+                                                @if ($datas->inscritosEdad - $datas->tinscritos == 0 && $datas->inscritosEsc - $datas->tinscritos == 0
+                                                    && $datas->acreditadosEsc - $datas->egresado == 0 && $datas->desertoresEsc - $datas->desertado == 0)
+                                                    <input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}"
+                                                        class="checkbx" name="chkcursos_list[]"
+                                                        value="{{ $datas->id_tbl_cursos }}"
+                                                        {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}
+                                                        {{ $datas->estadocurso == 'EN_FIRMA' ? 'checked' : '' }} />
                                                 @endif
                                             </td>
                                             <td>{{ $datas->unidad }}</td>
                                             <td>{{ $datas->plantel }}</td>
                                             <td>{{ $datas->espe }}</td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->curso }}</div></td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->clave }}</div></td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->curso }}</div>
+                                            </td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->clave }}</div>
+                                            </td>
                                             <td>{{ $datas->mod }}</td>
                                             <td>{{ $datas->dura }}</td>
                                             <td>{{ $datas->turno }}</td>
@@ -301,8 +335,13 @@
                                             <td>{{ $datas->mest }}</td>
                                             <td>{{ $datas->pfin }}</td>
                                             <td>{{ $datas->horas }}</td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->dia }}</div></td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->horario }}</div></td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->dia }}</div>
+                                            </td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->horario }}
+                                                </div>
+                                            </td>
                                             <td>{{ $datas->tinscritos }}</td>
                                             <td>{{ $datas->imujer }}</td>
                                             <td>{{ $datas->ihombre }}</td>
@@ -316,10 +355,22 @@
                                             <td>{{ $datas->ethombre }}</td>
                                             <td>{{ $datas->epmujer }}</td>
                                             <td>{{ $datas->ephombre }}</td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->cespecifico }}</div></td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->mvalida }}</div></td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->efisico }}</div></td>
-                                            <td><div style = "width:200px; word-wrap: break-word">{{ $datas->nombre }}</div></td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->cespecifico }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->mvalida }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->efisico }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="width:200px; word-wrap: break-word">{{ $datas->nombre }}
+                                                </div>
+                                            </td>
                                             <td>{{ $datas->grado_profesional }}</td>
                                             <td>{{ $datas->estatus }}</td>
                                             <td>{{ $datas->sexo }}</td>
@@ -333,7 +384,10 @@
                                             <td>{{ $datas->etnia }}</td>
                                             <td>{{ $datas->programa }}</td>
                                             <td>{{ $datas->muni }}</td>
-                                            <td><div style = "width:300px; word-wrap: break-word">{{ $datas->depen }}</div></td>
+                                            <td>{{ $datas->ze }}</td>
+                                            <td>
+                                                <div style="width:300px; word-wrap: break-word">{{ $datas->depen }}</div>
+                                            </td>
                                             <td>{{ $datas->cgeneral }}</td>
                                             <td>{{ $datas->sector }}</td>
                                             <td>{{ $datas->mpaqueteria }}</td>
@@ -407,21 +461,38 @@
                                             <td>{{ $datas->naesh8 }}</td>
                                             <td>{{ $datas->naesm9 }}</td>
                                             <td>{{ $datas->naesh9 }}</td>
-                                            <td><div style = "width:800px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
+                                            <td>
+                                                <div style="width:800px; word-wrap: break-word">{{ $datas->tnota }}
+                                                </div>
+                                            </td>
                                             <td>
                                                 @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer)
-                                                    <textarea name="comentarios_unidad[]" id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3" {{ $datas->estadocurso == 'EN_FIRMA' ? '' : 'disabled' }} >{{ json_decode($datas->observaciones_firma, JSON_UNESCAPED_SLASHES) }}</textarea>
+                                                    <textarea name="comentarios_unidad[]"
+                                                        id="comentario_{{ $datas->id_tbl_cursos }}" cols="45" rows="3"
+                                                        {{ $datas->estadocurso == 'EN_FIRMA' ? '' : 'disabled' }}>{{ json_decode($datas->observaciones_firma, JSON_UNESCAPED_SLASHES) }}</textarea>
                                                 @endif
                                             </td>
-                                            <td><div style = "width:600px; word-wrap: break-word" align="justify">{{ json_decode($datas->observaciones_enlaces, JSON_UNESCAPED_SLASHES) }}</div></td>
+                                            <td>
+                                                <div style="width:600px; word-wrap: break-word" align="justify">
+                                                    {{ json_decode($datas->observaciones_enlaces, JSON_UNESCAPED_SLASHES) }}
+                                                </div>
+                                            </td>
+                                            <td class="text-white">
+                                                <div style="width:600px; word-wrap: break-word" align="justify">
+                                                    {{ ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD NO COINCIDE CON EL TOTAL DE INSCRITOS' : '' }} <br>
+                                                    {{ ($datas->inscritosEsc - $datas->tinscritos) != 0 ? '* LA SUMATORIA DE INSCRITOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE INSCRITOS' : '' }} <br>
+                                                    {{ ($datas->acreditadosEsc - $datas->egresado) != 0 ? '* LA SUMATORIA DE ACREDITADOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE EGRESADOS' : '' }} <br>
+                                                    {{ ($datas->desertoresEsc - $datas->desertado) != 0 ? '* LA SUMATORIA DE DESERTORES POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE DESERCIÓN' : '' }} <br>
+                                                </div>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>   
+                        </div>
                     </div>
                 </div>
-            </form>  
+            </form>
         @else
             <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
         @endif
@@ -432,247 +503,252 @@
     <div hidden id="spinner"></div>
     <!--MODAL ENDS-->
     <!--MODAL FORMULARIO-->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-info" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y ENVIAR A VALIDACIÓN DTA</b></h5>
-            </div>
-            <form id="formSendDta" enctype="multipart/form-data" method="POST" action="{{ route('formatot.seguimiento.paso2') }}">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <input type="file" name="cargar_archivo_formato_t" id="cargar_archivo_formato_t" class="form-control">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="enviar_cursos_dta"><b>ADJUNTAR Y ENVIAR A VALIDACIÓN DTA</b></h5>
+                </div>
+                <form id="formSendDta" enctype="multipart/form-data" method="POST"
+                    action="{{ route('formatot.seguimiento.paso2') }}">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <input type="file" name="cargar_archivo_formato_t" id="cargar_archivo_formato_t"
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <input type="hidden" name="check_cursos_dta" id="check_cursos_dta">
+                        <input type="hidden" name="numero_memo" id="numero_memo">
+                        <div class="field_wrapper">
                         </div>
                     </div>
-                    <input type="hidden" name="check_cursos_dta" id="check_cursos_dta">
-                    <input type="hidden" name="numero_memo" id="numero_memo">
-                    <div class="field_wrapper">
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
+                        <button type="button" id="close_btn_modal_send_dta" class="btn btn-danger">CERRAR</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                <button type="submit" class="btn btn-success" id="send_to_dta">ENVIAR</button>
-                <button type="button" id="close_btn_modal_send_dta" class="btn btn-danger">CERRAR</button>
-                </div>
-            </form>
-          </div>
+                </form>
+            </div>
         </div>
     </div>
     <!--MODAL FORMULARIO ENDS-->
-    
+
 @endsection
 @section('script_content_js')
-<script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
-<script type="text/javascript">
-    $(function(){
-        //$('input[type=checkbox]').attr('disabled', 'disabled'); //disable
-        $('#mod_format').on('click', function name() {
-            $('input[type=checkbox]').removeAttr('disabled');
-        });
-        document.querySelector('#spinner').setAttribute('hidden', '');
-        $.validator.addMethod('filesize', function (value, element, param) {
-            return this.optional(element) || (element.files[0].size <= param)
-        }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
-        $('#generarMemoAFirma').click(function(){
-            $('#dtaformGetDocument').validate({
-                rules: {
-                    numero_memo : {
-                        required: true
+    <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
+    <script type="text/javascript">
+        $(function() {
+            //$('input[type=checkbox]').attr('disabled', 'disabled'); //disable
+            $('#mod_format').on('click', function name() {
+                $('input[type=checkbox]').removeAttr('disabled');
+            });
+            document.querySelector('#spinner').setAttribute('hidden', '');
+            $.validator.addMethod('filesize', function(value, element, param) {
+                return this.optional(element) || (element.files[0].size <= param)
+            }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
+            $('#generarMemoAFirma').click(function() {
+                $('#dtaformGetDocument').validate({
+                    rules: {
+                        numero_memo: {
+                            required: true
+                        },
                     },
-                },
-                messages: {
-                    numero_memo: {
-                        required: "CAMPO REQUERIDO"
+                    messages: {
+                        numero_memo: {
+                            required: "CAMPO REQUERIDO"
+                        },
+                    }
+                    // ,submitHandler: function(forms, e){
+                    //     e.preventDefault();
+                    //     var check_cursos = new Array();
+                    //     $('input[name="chkcursos_list[]"]:checked').each(function() {
+                    //         check_cursos.push(this.value);
+                    //     });
+                    //     /***
+                    //     * memorandum_validacion
+                    //     */
+                    //     var formData = new FormData(forms);
+                    //     formData.append("check_cursos_dta", check_cursos);
+                    //     var _url = "{{ route('formatot.send.dta') }}";
+                    //     var requested = $.ajax
+                    //     ({
+                    //         url: _url,
+                    //         method: 'POST',
+                    //         data: formData,
+                    //         dataType: 'json',
+                    //         cache: false,
+                    //         contentType: false,
+                    //         processData: false,
+                    //         xhrFields: {
+                    //             responseType: 'blob'
+                    //         },
+                    //         beforeSend: function(){
+                    //             document.querySelector("#spinner").removeAttribute('hidden');
+                    //         },
+                    //         success: function(response){
+                    //             $("#dtaformGetDocument").trigger("reset");
+                    //             $( ".alert" ).addClass( "alert-warning");
+                    //             $(".alert").append( "<b>DOCUMENTO DE MEMORANDUM CREADO EXITOSAMENTE, EN ESPERA DE FIRMA PARA ENVÍO A VALIDACIÓN A DTA</b>" )
+                    //             var blob = new Blob([response]);
+                    //             var link = document.createElement('a');
+                    //             link.href = window.URL.createObjectURL(blob);
+                    //             link.download = "Sample.pdf";
+                    //             link.click();
+                    //         },
+                    //         complete:function(data){
+                    //             // escondemos el modales
+                    //             document.querySelector('#spinner').setAttribute('hidden', '');
+                    //         },
+                    //         error: function(jqXHR, textStatus){
+                    //             console.log(jqXHR.responseText);
+                    //             alert( "Hubo un error: " + jqXHR.status );
+                    //         }
+                    //     });
+                    //     $.when(requested).then(function(data, textStatus, jqXHR ){
+                    //         if (jqXHR.status === 200) {
+                    //             document.querySelector('#spinner').setAttribute('hidden', '');
+                    //         }
+                    //     });
+                    // }
+                });
+            });
+            // 
+
+            $('#send_to_dta').click(function() {
+                $('#formSendDta').validate({
+                    rules: {
+                        "cargar_archivo_formato_t": {
+                            required: true,
+                            extension: "pdf",
+                            filesize: 10000000
+                        }
                     },
-                }
-                // ,submitHandler: function(forms, e){
-                //     e.preventDefault();
-                //     var check_cursos = new Array();
-                //     $('input[name="chkcursos_list[]"]:checked').each(function() {
-                //         check_cursos.push(this.value);
-                //     });
-                //     /***
-                //     * memorandum_validacion
-                //     */
-                //     var formData = new FormData(forms);
-                //     formData.append("check_cursos_dta", check_cursos);
-                //     var _url = "{{route('formatot.send.dta')}}";
-                //     var requested = $.ajax
-                //     ({
-                //         url: _url,
-                //         method: 'POST',
-                //         data: formData,
-                //         dataType: 'json',
-                //         cache: false,
-                //         contentType: false,
-                //         processData: false,
-                //         xhrFields: {
-                //             responseType: 'blob'
-                //         },
-                //         beforeSend: function(){
-                //             document.querySelector("#spinner").removeAttribute('hidden');
-                //         },
-                //         success: function(response){
-                //             $("#dtaformGetDocument").trigger("reset");
-                //             $( ".alert" ).addClass( "alert-warning");
-                //             $(".alert").append( "<b>DOCUMENTO DE MEMORANDUM CREADO EXITOSAMENTE, EN ESPERA DE FIRMA PARA ENVÍO A VALIDACIÓN A DTA</b>" )
-                //             var blob = new Blob([response]);
-                //             var link = document.createElement('a');
-                //             link.href = window.URL.createObjectURL(blob);
-                //             link.download = "Sample.pdf";
-                //             link.click();
-                //         },
-                //         complete:function(data){
-                //             // escondemos el modales
-                //             document.querySelector('#spinner').setAttribute('hidden', '');
-                //         },
-                //         error: function(jqXHR, textStatus){
-                //             console.log(jqXHR.responseText);
-                //             alert( "Hubo un error: " + jqXHR.status );
-                //         }
-                //     });
-                //     $.when(requested).then(function(data, textStatus, jqXHR ){
-                //         if (jqXHR.status === 200) {
-                //             document.querySelector('#spinner').setAttribute('hidden', '');
-                //         }
-                //     });
-                // }
-             });
-        });
-        // 
-        
-        $('#send_to_dta').click(function(){
-            $('#formSendDta').validate({
-                rules: {
-                    "cargar_archivo_formato_t": {
-                        required: true, 
-                        extension: "pdf", 
-                        filesize: 10000000
+                    messages: {
+                        "cargar_archivo_formato_t": {
+                            required: "ARCHIVO REQUERIDO",
+                            accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
+                        }
+                    },
+                    // submitHandler: function(form, event){
+                    //     event.preventDefault();
+                    //     var check_cursos = new Array();
+                    //     var comentario_unidad = new Array();
+                    //     $('input[name="chkcursos_list[]"]:checked').each(function() {
+                    //         check_cursos.push(this.value);
+                    //     });
+                    //     $('textarea[name="comentarios_unidad[]"]').each(function(){
+                    //         comentario_unidad.push(this.value);
+                    //     });
+                    //     var numero_memo = $('#numero_memo').val();
+                    //     /***
+                    //     * cargar_archivo_formato_t
+                    //     */
+                    //     var formData = new FormData(form);
+                    //     formData.append("check_cursos_dta", check_cursos);
+                    //     formData.append("numero_memo", numero_memo);
+                    //     formData.append("comentarios_unidad", comentario_unidad);
+                    //     var _url = "{{ route('formatot.seguimiento.paso2') }}";
+                    //     var requested = $.ajax
+                    //     ({
+                    //         url: _url,
+                    //         method: 'POST',
+                    //         data: formData,
+                    //         dataType: 'json',
+                    //         cache: false,
+                    //         contentType: false,
+                    //         processData: false,
+                    //         beforeSend: function(){
+                    //             $("#exampleModalCenter").modal("hide");
+                    //             document.querySelector("#spinner").removeAttribute('hidden');
+                    //         },
+                    //         success: function(response){
+                    //             if (response === 1) {
+                    //                 $("#dtaform").trigger("reset");
+                    //                 $( ".alert" ).addClass("alert-success");
+                    //                 $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
+                    //                 // redireccionar después de 5 segundos
+                    //                 setTimeout(function(){ 
+                    //                     window.location.href = "{{ route('vista_formatot') }}";
+                    //                  }, 3000);
+                    //             }
+                    //         },
+                    //         complete:function(data){
+                    //             // escondemos el modales
+                    //             document.querySelector('#spinner').setAttribute('hidden', '');
+                    //         },
+                    //         error: function(jqXHR, textStatus){
+                    //             //jsonValue = jQuery.parseJSON( jqXHR.responseText );
+                    //             //document.querySelector('#spinner').setAttribute('hidden', '');
+                    //             console.log(jqXHR.responseText);
+                    //             alert( "Hubo un error: " + jqXHR.status );
+                    //         }
+                    //     });
+                    //     $.when(requested).then(function(data, textStatus, jqXHR ){
+                    //         if (jqXHR.status === 200) {
+                    //             document.querySelector('#spinner').setAttribute('hidden', '');
+                    //         }
+                    //     });
+                    // }
+                }); // configurar el validador
+            });
+            $('#close_btn_modal_send_dta').click(function() {
+                $("#exampleModalCenter").modal("hide");
+            });
+            $("#selectAll").click(function() {
+                $("input[type=checkbox]").not(this).prop("checked", this.checked);
+                $("input[type=checkbox]").each(function() {
+                    if ($(this).is(":checked")) {
+                        if ($(this).attr("id") != 'selectAll') {
+                            var id = $(this).attr("id").split("_");
+                            id = id[id.length - 1];
+                            $('#comentario_' + id).attr('disabled', false);
+                        }
+                    } else {
+                        if ($(this).attr("id") != 'selectAll') {
+                            var id = $(this).attr("id").split("_");
+                            id = id[id.length - 1];
+                            $('#comentario_' + id).attr('disabled', true);
+                        }
                     }
-                },
-                messages: {
-                    "cargar_archivo_formato_t": {
-                        required: "ARCHIVO REQUERIDO",
-                        accept: "SÓLO SE ACEPTAN DOCUMENTOS PDF"
-                    }
-                },
-                // submitHandler: function(form, event){
-                //     event.preventDefault();
-                //     var check_cursos = new Array();
-                //     var comentario_unidad = new Array();
-                //     $('input[name="chkcursos_list[]"]:checked').each(function() {
-                //         check_cursos.push(this.value);
-                //     });
-                //     $('textarea[name="comentarios_unidad[]"]').each(function(){
-                //         comentario_unidad.push(this.value);
-                //     });
-                //     var numero_memo = $('#numero_memo').val();
-                //     /***
-                //     * cargar_archivo_formato_t
-                //     */
-                //     var formData = new FormData(form);
-                //     formData.append("check_cursos_dta", check_cursos);
-                //     formData.append("numero_memo", numero_memo);
-                //     formData.append("comentarios_unidad", comentario_unidad);
-                //     var _url = "{{route('formatot.seguimiento.paso2')}}";
-                //     var requested = $.ajax
-                //     ({
-                //         url: _url,
-                //         method: 'POST',
-                //         data: formData,
-                //         dataType: 'json',
-                //         cache: false,
-                //         contentType: false,
-                //         processData: false,
-                //         beforeSend: function(){
-                //             $("#exampleModalCenter").modal("hide");
-                //             document.querySelector("#spinner").removeAttribute('hidden');
-                //         },
-                //         success: function(response){
-                //             if (response === 1) {
-                //                 $("#dtaform").trigger("reset");
-                //                 $( ".alert" ).addClass("alert-success");
-                //                 $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
-                //                 // redireccionar después de 5 segundos
-                //                 setTimeout(function(){ 
-                //                     window.location.href = "{{ route('vista_formatot')}}";
-                //                  }, 3000);
-                //             }
-                //         },
-                //         complete:function(data){
-                //             // escondemos el modales
-                //             document.querySelector('#spinner').setAttribute('hidden', '');
-                //         },
-                //         error: function(jqXHR, textStatus){
-                //             //jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                //             //document.querySelector('#spinner').setAttribute('hidden', '');
-                //             console.log(jqXHR.responseText);
-                //             alert( "Hubo un error: " + jqXHR.status );
-                //         }
-                //     });
-                //     $.when(requested).then(function(data, textStatus, jqXHR ){
-                //         if (jqXHR.status === 200) {
-                //             document.querySelector('#spinner').setAttribute('hidden', '');
-                //         }
-                //     });
-                // }
-            }); // configurar el validador
-        });
-        $('#close_btn_modal_send_dta').click(function(){
-            $("#exampleModalCenter").modal("hide");
-        });
-        $("#selectAll").click(function() {
-            $("input[type=checkbox]").not(this).prop("checked", this.checked);
-            $("input[type=checkbox]").each(function(){
-                if ($(this).is(":checked")) {
-                    if ($(this).attr("id") != 'selectAll') {
-                        var id = $(this).attr("id").split("_");
-                        id = id[id.length-1];
-                        $('#comentario_' + id).attr('disabled', false);
-                    }
+                })
+            });
+            // trabajar con el checkbox
+            $("input.checkbx").change(function() {
+                if (this.checked) {
+                    var id = $(this).attr("id").split("_");
+                    id = id[id.length - 1];
+                    $('#comentario_' + id).attr('disabled', false);
                 } else {
-                    if ($(this).attr("id") != 'selectAll') {
-                        var id = $(this).attr("id").split("_");
-                        id = id[id.length-1];
-                        $('#comentario_' + id).attr('disabled', true);
+                    var id = $(this).attr("id").split("_");
+                    id = id[id.length - 1];
+                    $('#comentario_' + id).attr('disabled', true);
+                }
+            });
+            // cargar el modal al arbrirlo
+            $('#enviarDTA').click(function() {
+                var check_cursos = new Array();
+                // var comentario_unidad = new Array();
+                var wrapper = $('.field_wrapper'); //Input field wrapper
+                var numero_memo = $('#numero_memo').val();
+                $('input[name="chkcursos_list[]"]:checked').each(function() {
+                    check_cursos.push(this.value);
+                });
+                $('textarea[name="comentarios_unidad[]"]').each(function() {
+                    if (!$(this).prop('disabled')) {
+                        var fieldHTML =
+                            '<input type="hidden" name="comentarios_unidad_to_dta[]" id="comentarios_unidad_to_dta" value="' +
+                            this.value + '">';
+                        $(wrapper).append(fieldHTML); // Add field html
+                        // comentario_unidad.push();
                     }
-                }
-            })
-        });
-        // trabajar con el checkbox
-        $("input.checkbx").change(function(){
-            if (this.checked) {
-                var id = $(this).attr("id").split("_");
-                id = id[id.length-1];
-                $('#comentario_' + id).attr('disabled', false);
-            } else {
-                var id = $(this).attr("id").split("_");
-                id = id[id.length-1];
-                $('#comentario_' + id).attr('disabled', true);
-            }
-        });
-        // cargar el modal al arbrirlo
-        $('#enviarDTA').click(function(){
-            var check_cursos = new Array();
-            // var comentario_unidad = new Array();
-            var wrapper = $('.field_wrapper'); //Input field wrapper
-            var numero_memo = $('#numero_memo').val();
-            $('input[name="chkcursos_list[]"]:checked').each(function() {
-                check_cursos.push(this.value);
+                });
+                $('.modal-body #numero_memo').val(numero_memo);
+                $('.modal-body #check_cursos_dta').val(check_cursos);
+                // $('.modal-body #comentarios_unidad_to_dta').val(comentario_unidad);
+                $("#exampleModalCenter").modal("show");
             });
-            $('textarea[name="comentarios_unidad[]"]').each(function(){
-                if (!$(this).prop('disabled')) {
-                    var fieldHTML = '<input type="hidden" name="comentarios_unidad_to_dta[]" id="comentarios_unidad_to_dta" value="'+this.value+'">';
-                    $(wrapper).append(fieldHTML); // Add field html
-                    // comentario_unidad.push();
-                }
-            });
-            $('.modal-body #numero_memo').val(numero_memo);
-            $('.modal-body #check_cursos_dta').val(check_cursos);
-            // $('.modal-body #comentarios_unidad_to_dta').val(comentario_unidad);
-            $("#exampleModalCenter").modal("show");
         });
-    });
-</script>
+    </script>
 @endsection

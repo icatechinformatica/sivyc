@@ -52,7 +52,28 @@ class ftcontroller extends Controller
 
             // $var_cursos = DB::select('SELECT * FROM formato_t(?,?,?)', [$_SESSION['unidad'], '{NO REPORTADO, EN_FIRMA, RETORNO_UNIDAD}', null]);
             $var_cursos = dataFormatoT($_SESSION['unidad'], ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
-            // dd($var_cursos);
+            foreach ($var_cursos as $value) {
+                $inscritosEdad = $value->iem1 + $value->ieh1 + $value->iem2 + $value->ieh2 + $value->iem3 + $value->ieh3 +
+                    $value->iem4 + $value->ieh4 + $value->iem5 + $value->ieh5 + $value->iem6 + $value->ieh6 +
+                    $value->iem7 + $value->ieh7 + $value->iem8 + $value->ieh8;
+                $inscritosEsc = $value->iesm1 + $value->iesh1 + $value->iesm2 + $value->iesh2 + 
+                    $value->iesm3 + $value->iesh3 + $value->iesm4 + $value->iesh4 + $value->iesm5 + $value->iesh5 +
+                    $value->iesm6 + $value->iesh6 + $value->iesm7 + $value->iesh7 + $value->iesm8 + $value->iesh8 +
+                    $value->iesm9 + $value->iesh9;
+                $acreditadosEsc = $value->aesm1 + $value->aesh1 + $value->aesm2 + $value->aesh2 +
+                    $value->aesm3 + $value->aesh3 + $value->aesm4 + $value->aesh4 + $value->aesm5 + $value->aesh5 +
+                    $value->aesm6 + $value->aesh6 + $value->aesm7 + $value->aesh7 + $value->aesm8 + $value->aesh8 + 
+                    $value->aesm9 + $value->aesh9;
+                $desertoresEsc = $value->naesm1 + $value->naesh1 + $value->naesm2 + $value->naesh2 +
+                    $value->naesm3 + $value->naesh3 + $value->naesm4 + $value->naesh4 + $value->naesm5 + $value->naesh5 +
+                    $value->naesm6 + $value->naesh6 + $value->naesm7 + $value->naesh7 + $value->naesm8 + $value->naesh8 +
+                    $value->naesm9 + $value->naesh9; 
+
+                $value->inscritosEdad = $inscritosEdad;
+                $value->inscritosEsc = $inscritosEsc;
+                $value->acreditadosEsc = $acreditadosEsc;
+                $value->desertoresEsc = $desertoresEsc; 
+            }
 
             /*$var_cursos = DB::table('tbl_cursos as c')
                 ->select('c.id AS id_tbl_cursos', 'c.status AS estadocurso' ,'c.unidad','c.plantel','c.espe','c.curso','c.clave','c.mod','c.dura',
@@ -912,7 +933,7 @@ class ftcontroller extends Controller
             'UNIDAD DE CAPACITACION','TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)','ESPECIALIDAD','CURSO','CLAVE DEL GRUPO','MODALIDAD','DURACION TOTAL EN HORAS','TURNO','DIA INICIO','MES INICIO','DIA TERMINO','MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC',
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION TOTAL MUJERES', 'EXONERACION TOTAL HOMBRES', 'EXONERACION PARCIAL MUJERES', 'EXONERACION PARCIAL HOMBRES', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
             'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'STATUS', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS',  'MIGRANTES',
-            'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 
+            'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 
             'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 
