@@ -103,46 +103,284 @@
                             <td scope="col" rowspan="2"><small style="font-size: 8px;">UNIDADES DE CAPACITACION</small></td>
                             <td scope="col" colspan="3"><small style="font-size: 8px;">MES: {{$nombremesini}}</small></td>
                         </tr>
+                        <tr>
                             <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
                             <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
                             <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
-                        <tr>
-
                         </tr>
-
                     </thead>
                     <tbody>
-                        @foreach ($data as $key=>$item)
-                            <tr>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$key}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->no_memo}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->suf}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->fecha}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->unidad_capacitacion}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->curso}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->clave}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->ze}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->dura}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->importe_hora}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$iva[$key]}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">12101 Honorarios</td>
-                                @if ($recursos[$key] == "Federal")
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$cantidad[$key]}}</td>
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;"></td>
-                                @else
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;"></td>
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$cantidad[$key]}}</td>
-                                @endif
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$risr[$key]}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$riva[$key]}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->folio_validacion}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->fecha_validacion}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->comentario}}</small></td>
-                            </tr>
+                        <?php
+                            $x = 1;
+                            do
+                            {
+                                $a = 'mes' . $x;
+                                $x++;
+                            }while($$a == NULL);
+                        ?>
+                        @foreach ($$a as $item)
+                        <tr>
+                            <td scope="col"><small style="font-size: 8px;">{{$item->ubicacion}}</small></td>
+                            <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                            <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                            <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
+                @if($mes2 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: FEBRERO</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes2 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes3 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: MARZO</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes3 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes4 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: ABRIL</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes4 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes5 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: MAYO</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes5 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes6 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: JUNIO</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes6 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes7 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: JULIO</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes7 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes8 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: AGOSTO</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes8 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes9 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: SEPTIEMBRE</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes9 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes10 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: OCTUBRE</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes10 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes11 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: NOVIEMBRE</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes11 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+                @if($mes12 != NULL)
+                    <table width="700" class="table table-striped" id="table-one">
+                        <thead>
+                            <tr>
+                                <td scope="col" colspan="3"><small style="font-size: 8px;">MES: DICIEMBRE</small></td>
+                            </tr>
+                            <tr>
+                                <td scope="col"><small style="font-size: 8px;">VALIDADOS EN EL SIVYC</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES PRESENTADOS POR UNIDAD</small></td>
+                                <td scope="col"><small style="font-size: 8px;">TRAMITES POR ENTREGAR</small></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($mes12 as $item)
+                                <tr>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->sivyc}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->fisico}}</small></td>
+                                    <td scope="col"><small style="font-size: 8px;">{{$item->porentregar}}</small></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
                 <br>
             </div>
         </div>
