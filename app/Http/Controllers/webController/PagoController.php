@@ -273,25 +273,27 @@ class PagoController extends Controller
             //dd($nomval);
             $inicial = Carbon::parse($now->year . '-' . $i . '-01');
             $dym = $inicial->daysInMonth;
-            $final = Carbon::parse($now->year . '-' . $i . '-' . $dym . ' 23:59:00');
-            printf($inicial . ' - ' . $final . ' // ');
-            $cab1 = "sivyc" . $i;
-            $cab2 = "fisico" . $i;
-            $cab3 = "PorEntregar" . $i;
-            $query1 = "sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado') then 1 else 0 end) AS " . $cab1;
-            $query2 = "sum(case when folios.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS " . $cab2;
-            $query3 = "sum(case when folios.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS " . $cab3;
+            $inicial00 = $now->year . '-' . $i . '-01';
+            //dd($inicial00);
+            $final = Carbon::parse($now->year . '-' . $i . '-' . $dym . ' 23:59:59');
+            //printf($inicial . ' - ' . $final . ' // ');
+            $cab1 = "sivyc";
+            $cab2 = "fisico";
+            $cab3 = "PorEntregar";
+            $query1 = "sum(case when b.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado') then 1 else 0 end) AS " . $cab1;
+            $query2 = "sum(case when b.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS " . $cab2;
+            $query3 = "sum(case when b.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS " . $cab3;
             //dd($inicial);
-            $$nomval = $data = folio::select('tbl_unidades.ubicacion',
+            $$nomval = $data = db::table(DB::raw("(SELECT * from FOLIOS WHERE folios.created_at >=  '$inicial'  and folios.created_at <= '$final' ) AS B"))->select('tbl_unidades.ubicacion',
                 DB::raw($query1),
                 DB::raw($query2),
                 DB::raw($query3),
                 )
-                ->WHERE('folios.created_at', '>=', $inicial)
-                ->WHERE('folios.created_at', '<=', $final)
+                //->WHERE('folios.created_at', '>=', $inicial)
+                //->WHERE('folios.created_at', '<=', $final)
                 //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
-                ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+                ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'b.id_supre')
+                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
                 ->groupBy('tbl_unidades.ubicacion')
                 ->orderBy('tbl_unidades.ubicacion')
                 ->GET();
@@ -314,11 +316,13 @@ class PagoController extends Controller
             ->groupBy('tbl_unidades.ubicacion')
             ->orderBy('tbl_unidades.ubicacion')
             ->GET();
+            //dd($mes1,$mes2,$mes3,$mes4,$mes5,$mes6,$data);
 
-            $pdf = PDF::loadView('layouts.pages.reportescontrarosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
-            return $pdf->download('medium.pdf');
+            //return view('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
 
-            //dd($mes01,$mes2,$mes3,$mes4,$mes5,$mes6,$data);
+            $pdf = PDF::loadView('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
+            $pdf->setPaper('legal', 'Landscape');
+            return $pdf->stream('medium.pdf');
     }
 
     public function mostrar_pago($id)
@@ -337,7 +341,6 @@ class PagoController extends Controller
 
         //return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
         $pdf = PDF::loadView('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
-
         return $pdf->download('medium.pdf');
     }
 
@@ -388,43 +391,43 @@ class PagoController extends Controller
 
     }
 
-   /* protected function monthToString($month)
+    protected function monthToString($month)
     {
         switch ($month)
         {
-            case 01:
+            case 1:
                 return 'ENERO';
             break;
 
-            case 02:
+            case 2:
                 return 'FEBRERO';
             break;
 
-            case 03:
+            case 3:
                 return 'MARZO';
             break;
 
-            case 04:
+            case 4:
                 return 'ABRIL';
             break;
 
-            case 05:
+            case 5:
                 return 'MAYO';
             break;
 
-            case 06:
+            case 6:
                 return 'JUNIO';
             break;
 
-            case 07:
+            case 7:
                 return 'JULIO';
             break;
 
-            case 08:
+            case 8:
                 return 'AGOSTO';
             break;
 
-            case 09:
+            case 9:
                 return 'SEPTIEMBRE';
             break;
 
@@ -440,5 +443,5 @@ class PagoController extends Controller
                 return 'DICIEMBRE';
             break;
         }
-    }*/
+    }
 }
