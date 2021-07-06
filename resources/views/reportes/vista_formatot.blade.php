@@ -299,17 +299,30 @@
                                                 :  --}}
                                                 {{-- $datas->inscritosEdad - $datas->tinscritos != 0 || $datas->inscritosEsc - $datas->tinscritos != 0 
                                                 || $datas->acreditadosEsc - $datas->egresado != 0 || $datas->desertoresEsc - $datas->desertado != 0 --}}
+                                                {{-- {{ (($datas->imujer + $datas->ihombre) - $datas->tinscritos) != 0 
+                                                    ? '#ff8282' : '' }} --}}
                                             style="background-color: 
-                                                {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }} 
-                                                {{ (($datas->inscritosEdad - $datas->tinscritos) !=0 
+                                                {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }}
+                                                {{ (($datas->inscritosEdad - $datas->tinscritos) != 0 
                                                     || ($datas->inscritosEsc - $datas->tinscritos) != 0 
                                                     || ($datas->acreditadosEsc - $datas->egresado) != 0 
-                                                    || ($datas->desertoresEsc - $datas->desertado) != 0) ? '#ff8282' : '' }}">
+                                                    || ($datas->desertoresEsc - $datas->desertado) != 0
+                                                    || ($datas->sumaHM - $datas->tinscritos) != 0
+                                                    || ($datas->sumaED - $datas->tinscritos) != 0
+                                                    || ($datas->sumaEmDe - $datas->tinscritos) != 0
+                                                    || ($datas->sumaEgresados - $datas->egresado) != 0) 
+                                                    ? '#ff8282' : '' }}">
                                             <td>{{ $key + 1 }}</td>
                                             <td>
                                                 {{-- @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad) --}}
-                                                @if ($datas->inscritosEdad - $datas->tinscritos == 0 && $datas->inscritosEsc - $datas->tinscritos == 0
-                                                    && $datas->acreditadosEsc - $datas->egresado == 0 && $datas->desertoresEsc - $datas->desertado == 0)
+                                                @if ($datas->inscritosEdad - $datas->tinscritos == 0 
+                                                    && $datas->inscritosEsc - $datas->tinscritos == 0
+                                                    && $datas->acreditadosEsc - $datas->egresado == 0 
+                                                    && $datas->desertoresEsc - $datas->desertado == 0
+                                                    && $datas->sumaHM - $datas->tinscritos == 0
+                                                    && $datas->sumaED - $datas->tinscritos == 0
+                                                    && $datas->sumaEmDe - $datas->tinscritos == 0
+                                                    && $datas->sumaEgresados - $datas->egresado == 0)
                                                     <input type="checkbox" id="cbk_{{ $datas->id_tbl_cursos }}"
                                                         class="checkbx" name="chkcursos_list[]"
                                                         value="{{ $datas->id_tbl_cursos }}"
@@ -479,10 +492,14 @@
                                             </td>
                                             <td class="text-white">
                                                 <div style="width:600px; word-wrap: break-word" align="justify">
-                                                    {{ ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD NO COINCIDE CON EL TOTAL DE INSCRITOS' : '' }} <br>
-                                                    {{ ($datas->inscritosEsc - $datas->tinscritos) != 0 ? '* LA SUMATORIA DE INSCRITOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE INSCRITOS' : '' }} <br>
-                                                    {{ ($datas->acreditadosEsc - $datas->egresado) != 0 ? '* LA SUMATORIA DE ACREDITADOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE EGRESADOS' : '' }} <br>
-                                                    {{ ($datas->desertoresEsc - $datas->desertado) != 0 ? '* LA SUMATORIA DE DESERTORES POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE DESERCIÓN' : '' }} <br>
+                                                    {!! ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->inscritosEsc - $datas->tinscritos) != 0 ? '* LA SUMATORIA DE INSCRITOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->acreditadosEsc - $datas->egresado) != 0 ? '* LA SUMATORIA DE ACREDITADOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!} 
+                                                    {!! ($datas->desertoresEsc - $datas->desertado) != 0 ? '* LA SUMATORIA DE DESERTORES POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE DESERCIÓN <br>' : '' !!}
+                                                    {!! ($datas->sumaHM - $datas->tinscritos) != 0 ? '* LA SUMA  DE HOMBRES Y MUJERES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->sumaED - $datas->tinscritos) != 0 ? '* LA SUMA  DE EGRESADOS Y DESERTORES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->sumaEmDe - $datas->tinscritos) != 0 ? '* LA SUMA  DE EMPLEADOS Y DESEMPLEADOS NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->sumaEgresados - $datas->egresado) != 0 ? '* LA SUMA  DE EGRESADOS FEMENINOS Y MASCULINOS NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
                                                 </div>
                                             </td>
                                         </tr>
