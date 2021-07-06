@@ -318,10 +318,11 @@ class PagoController extends Controller
             ->GET();
             //dd($mes1,$mes2,$mes3,$mes4,$mes5,$mes6,$data);
 
-            return view('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
+            //return view('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
 
             $pdf = PDF::loadView('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
-            return $pdf->download('medium.pdf');
+            $pdf->setPaper('legal', 'Landscape');
+            return $pdf->stream('medium.pdf');
     }
 
     public function mostrar_pago($id)
@@ -340,7 +341,6 @@ class PagoController extends Controller
 
         //return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
         $pdf = PDF::loadView('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
-
         return $pdf->download('medium.pdf');
     }
 

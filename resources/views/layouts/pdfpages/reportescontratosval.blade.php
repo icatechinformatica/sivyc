@@ -97,7 +97,7 @@
                 <br>TRAMITES VALIDADOS EN EL SIVYC Y RECEPCIONADOS EN EL DEPARTAMENTO DE RECURSOS FINANCIEROS - EJERCICIO 2021
             </div>
             <div class="form-row">
-                <table width="700" class="table table-striped" id="table-one">
+                <table width="700" class="table table-bordered" id="table-one">
                     <thead>
                         <tr>
                             <td scope="col" rowspan="2"><small style="font-size: 8px;">UNIDADES DE CAPACITACION</small></td>
