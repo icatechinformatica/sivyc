@@ -252,6 +252,7 @@ class PagoController extends Controller
         $mes9 = null; $mes10 = null; $mes11 = null; $mes12 = null;
         $i = $request->fini;
         $now = Carbon::now();
+        $monthnow = $this->monthToString($now->month);
         $mi = Carbon::parse($now->year . '-' . $request->fini . '-01');
         $fi = Carbon::parse($now->year . '-' . $request->ffin . '-01');
         $dym = $fi->daysInMonth;
@@ -280,7 +281,7 @@ class PagoController extends Controller
             $cab1 = "sivyc";
             $cab2 = "fisico";
             $cab3 = "PorEntregar";
-            $query1 = "sum(case when b.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado') then 1 else 0 end) AS " . $cab1;
+            $query1 = "sum(case when b.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado') then 1 else 0 end) AS " . $cab1;
             $query2 = "sum(case when b.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS " . $cab2;
             $query3 = "sum(case when b.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS " . $cab3;
             //dd($inicial);
@@ -300,27 +301,27 @@ class PagoController extends Controller
 
             $i++;
         } while ($i <= $request->ffin);
-        $data = folio::select('tbl_unidades.ubicacion',
-            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado','Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Sivyc"),
-            DB::raw("sum(case when folios.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS Fisico"),
-            DB::raw("sum(case when folios.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS PorEntregar"),
-            DB::raw("sum(case when folios.status in ('Finalizado')  then 1 else 0 end) AS Pagado"),
-            DB::raw("sum(case when folios.status in ('Pago_Verificado')  then 1 else 0 end) AS PorPagar"),
-            DB::raw("sum(case when folios.status in ('Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Observados")
+        $data = db::table(DB::raw("(SELECT * from FOLIOS WHERE folios.created_at >=  '$mi'  and folios.created_at <= '$fin' ) AS B"))->select('tbl_unidades.ubicacion',
+            DB::raw("sum(case when b.status in ('Contratado','Verificando_Pago','Pago_Verificado','Finalizado')  then 1 else 0 end) AS Sivyc"),
+            DB::raw("sum(case when b.status in ('Pago_Verificado','Finalizado')  then 1 else 0 end) AS Fisico"),
+            DB::raw("sum(case when b.status in ('Contratado','Verificando_Pago')  then 1 else 0 end) AS PorEntregar"),
+            DB::raw("sum(case when b.status in ('Finalizado')  then 1 else 0 end) AS Pagado"),
+            DB::raw("sum(case when b.status in ('Pago_Verificado')  then 1 else 0 end) AS PorPagar"),
+            DB::raw("sum(case when b.status in ('Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Observados")
             )
-            ->WHERE('folios.created_at', '>=', $mi)
-            ->WHERE('folios.created_at', '<=', $fin)
+            //->WHERE('folios.created_at', '>=', $mi)
+            //->WHERE('folios.created_at', '<=', $fin)
             //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
-            ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+            ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'b.id_supre')
+            ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
             ->groupBy('tbl_unidades.ubicacion')
             ->orderBy('tbl_unidades.ubicacion')
             ->GET();
-            //dd($mes1,$mes2,$mes3,$mes4,$mes5,$mes6,$data);
+            //dd($monthnow);
 
             //return view('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
 
-            $pdf = PDF::loadView('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin'));
+            $pdf = PDF::loadView('layouts.pdfpages.reportescontratosval', compact('mes1','mes2','mes3','mes4','mes5','mes6','mes7','mes8','mes9','mes10','mes11','mes12','data','nombremesini','nombremesfin','now','monthnow'));
             $pdf->setPaper('legal', 'Landscape');
             return $pdf->stream('medium.pdf');
     }
