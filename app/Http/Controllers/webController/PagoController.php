@@ -310,7 +310,7 @@ class PagoController extends Controller
             DB::raw("sum(case when b.status in ('Contrato_Rechazado','Pago_Rechazado')  then 1 else 0 end) AS Observados")
             )
             //->WHERE('folios.created_at', '>=', $mi)
-            //->WHERE('folios.created_at', '<=', $fin)
+            //->WHERE('folios.created_at', '<=', $fin) a
             //->WHERE('tbl_unidades.ubicacion', '=', 'TUXTLA')
             ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'b.id_supre')
             ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
