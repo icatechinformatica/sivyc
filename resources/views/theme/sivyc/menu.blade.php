@@ -142,6 +142,13 @@
                         <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>
                         @endcan
+                        @can('planeacion.grupos.vulnerables')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.grupos_vulnerables')}}">Grupos Vulnerables</a>
+                        @endcan
+                        @can('planeacion.ingresos.propios')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
+                        @endcan
+                        
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
