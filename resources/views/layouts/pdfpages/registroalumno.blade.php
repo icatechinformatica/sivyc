@@ -251,7 +251,7 @@
                 <td colspan="3" style="text-align: center;">EL ASPIRANTE SE COMPROMETE A CUMPLIR CON LAS NORMAS Y DISPOSICIONES DICTADAS POR LAS AUTORIDADES DE LA UNIDAD</td>
             </tr>
         </table>
-        <br><br>
+        <br><br><br>
         <table class="table1">
             <tr>
                 <td>{{ $alumnos->apellido_paterno }} {{ $alumnos->apellido_materno }} {{ $alumnos->nombrealumno }}</td>
