@@ -142,6 +142,13 @@
                         <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>
                         @endcan
+                        @can('planeacion.grupos.vulnerables')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.grupos_vulnerables')}}">Grupos Vulnerables</a>
+                        @endcan
+                        @can('planeacion.ingresos.propios')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
+                        @endcan
+
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
@@ -250,6 +257,9 @@
                         @endcan
                         @can('academico.catalogocursos')
                             <a class="dropdown-item" href="{{route('academico.exportar.cursos')}}">Exportar Cursos</a>
+                        @endcan
+                        @can('academico.catalogoinstructores')
+                            <a class="dropdown-item" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
                         @endcan
                     </div>
              </li>

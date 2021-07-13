@@ -926,5 +926,26 @@ class InstructorController extends Controller
             'path' => Paginator::resolveCurrentPath()
         ]);
     }
+
+    public function exportar_instructores()
+    {
+        $data = instructor::SELECT('numero_control','apellidoPaterno','apellidoMaterno','nombre','rfc','curp',
+                'sexo','estado_civil','fecha_nacimiento','entidad','municipio','asentamiento','domicilio','telefono',
+                'correo','banco','no_cuenta','interbancaria','folio_ine','tipo_honorario','status','clave_unidad',
+                'motivo','unidades_disponible','estado')
+                ->ORDERBY('apellidoPaterno', 'ASC')
+                ->GET();
+
+        $cabecera = ['NUMERO_COTROL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','RFC','CURP','SEXO','ESTADO_CIVIL',
+                    'FECHA_NACIMIENTO','ENTIDAD','MUNICIPIO','ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','BANCO',
+                    'NO_CUENTA','INTERBANCARIA','FOLIO INE','TIPO DE HONORARIO','STATUS','CLAVE DE UNIDAD','MOTIVO',
+                    'UNIDADES DISPONIBLE','ESTADO'];
+
+        $nombreLayout = "Catalogo de instructores.xlsx";
+        $titulo = "Catalogo de instructores";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
+    }
 }
 
