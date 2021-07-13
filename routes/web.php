@@ -626,3 +626,6 @@ Route::get('/GruposVulnerablesReporteXls/reporte', 'Validacion\ReportesPlaneacio
 Route::get('/IngresosPropios/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexIngresos')->name('reportes.planeacion.ingresos_propios');
 Route::get('/IngresosPropiosReporte/reporte', 'Validacion\ReportesPlaneacionFormatoT@ingresosCreatePdf')->name('reportes.planeacion.ingresos_propiosPdf');
 Route::get('/IngresosPropiosReporteXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@ingresosCreateXls')->name('reportes.planeacion.ingresos_propiosXls');
+
+//exportar catalogos de cursos e instructores08072021
+Route::get('academico/catalogo/exportar/cursos', 'webController\CursosController@exportar_cursos')->name('academico.exportar.cursos');

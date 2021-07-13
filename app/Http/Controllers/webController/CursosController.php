@@ -17,6 +17,8 @@ use App\Models\tbl_unidades;
 use App\Models\criterio_pago;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FormatoTReport;
 
 class CursosController extends Controller
 {
@@ -460,6 +462,36 @@ class CursosController extends Controller
         $available = $av->unidades_disponible;
 
         return view('layouts.pages.vstaltabajacur', compact('id','available'));
+    }
+
+    public function exportar_cursos()
+    {
+        $data = curso::SELECT('cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+                        'cursos.costo','cursos.duracion','cursos.objetivo','cursos.perfil',
+                        'cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
+                        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil',
+                        'cursos.descripcion','cursos.no_convenio','especialidades.nombre as especialidad','cursos.area',
+                        'cursos.cambios_especialidad','cursos.nivel_estudio','cursos.categoria',
+                        'cursos.documento_solicitud_autorizacion','cursos.documento_memo_actualizacion',
+                        'cursos.documento_memo_validacion','cursos.unidades_disponible','cursos.estado',)
+                        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
+                        ->ORDERBY('especialidades.nombre', 'ASC')
+                        ->ORDERBY('cursos.nombre_curso', 'ASC')
+                        ->GET();
+                        //dd($data[0]);
+
+        $cabecera = [
+            'NOMBRE','MODALIDAD','HORAS','CLASIFICACION','COSTO','DURACION','OBJETIVO','PERFIL',
+            'SOLICITUD DE AUTORIZAICON','FECHA DE VALIDACION','MEMO DE VALIDACION','MEMO DE ACTUALIZACION',
+            'FECHA DE ACTUALIZACION','UNIDAD MOVIL','DESCRIPCION','NUMERO DE CONVENIO','ESPECIALIDAD','AREA',
+            'CAMBIO DE ESPECIALIDAD','NIVEL DE ESTUDIO','CATEGORIA','SOLICITUD DE AUTORIZACION',
+            'MEMO DE ACTUALIZACION','MEMO DE VALIDACION','DISPONIBLE EN UNIDADES','ESTADO'
+        ];
+        $nombreLayout = "Catalogo de cursos.xlsx";
+        $titulo = "Catalogo de cursos";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
     }
 
     public function alta_baja_save(Request $request)
