@@ -192,10 +192,10 @@ class AlumnoRegistradoController extends Controller
                             ->FIRST(['alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
                             'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo','alumnos_pre.chk_acta_nacimiento','alumnos_pre.chk_curp','alumnos_pre.chk_comprobante_domicilio','alumnos_pre.chk_fotografia',
                             'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio','alumnos_pre.fotografia', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio','alumnos_pre.chk_ine','alumnos_pre.chk_pasaporte_licencia',
-                            'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
+                            'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.ultimo_grado_estudios','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
                             'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
                             'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id',
-                            'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct AS unidades', 'alumnos_registro.cerrs',
+                            'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct AS unidades', 'alumnos_registro.cerrs','cursos.tipo_curso',
                             'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo']);
         $edad = Carbon::parse($alumnos->fecha_nacimiento)->age;
         $date = carbon::now()->toDateString();
@@ -210,9 +210,9 @@ class AlumnoRegistradoController extends Controller
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg'));
         // (Optional) Setup the paper size and orientation
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->download('documento_sid_'.$alumnos->no_control.'.pdf');
+        return $pdf->stream('documento_sid_'.$alumnos->no_control.'.pdf');
 
-        //return view('layouts.pdfpages.registroalumno', compact('alumnos','edad','date'));
+        //return view('layouts.pdfpages.registroalumno', compact('alumnos','edad','date','pathimg'));
     }
 
     protected function getDocumentoCerrsSid($nocontrol) {
