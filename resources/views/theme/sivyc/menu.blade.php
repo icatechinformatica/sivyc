@@ -148,7 +148,7 @@
                         @can('planeacion.ingresos.propios')
                             <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
                         @endcan
-                        
+
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
@@ -258,6 +258,12 @@
                         @can('academico.catalogocursos')
                             <a class="dropdown-item" href="{{route('academico.exportar.cursos')}}">Exportar Cursos</a>
                         @endcan
+<<<<<<< HEAD
+=======
+                        @can('academico.catalogoinstructores')
+                            <a class="dropdown-item" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
+                        @endcan
+>>>>>>> b9ef4913ce099457bcfc8336a9f5adf528203176
                     </div>
              </li>
 
