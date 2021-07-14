@@ -64,7 +64,7 @@ class pdfcontroller extends Controller
         $fecha_memo=date('d-m-Y',strtotime($fecha_termino));
 
         $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
-            'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion');
+            'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso');
         if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
         $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
 
