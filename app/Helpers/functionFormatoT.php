@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
+use Mockery\Undefined;
+use PhpParser\Node\Stmt\Foreach_;
 
 function dataFormatoT($unidad, $status, $fecha)
 {
@@ -230,6 +232,8 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
             'c.curso',
             'c.clave',
             'c.mod',
+            DB::raw("array(select folio from tbl_folios where id_curso = c.id order by folio) as folios"),
+            DB::raw("array(select movimiento from tbl_folios where id_curso = c.id order by folio) as movimientos"),
             'c.dura',
             'c.turnado AS turnados_enlaces', //new
             DB::raw("case when extract(hour from to_timestamp(c.hini,'HH24:MI a.m.')::time)<14 then 'MATUTINO' else 'VESPERTINO' end as turno"),
@@ -336,7 +340,6 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='FEMENINO' and ins.calificacion != 'NP' then 1 else 0 end) as aesm9"),
             DB::raw("sum(case when ap.ultimo_grado_estudios='POSTGRADO' and ap.sexo='MASCULINO' and ins.calificacion != 'NP' then 1 else 0 end) as aesh9"),
 
-
             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='FEMENINO' and ins.calificacion = 'NP' then 1 else 0 end) as naesm1"),
             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA INCONCLUSA' and ap.sexo='MASCULINO' and ins.calificacion = 'NP' then 1 else 0 end) as naesh1"),
             DB::raw("sum(case when ap.ultimo_grado_estudios='PRIMARIA TERMINADA' and ap.sexo='FEMENINO' and ins.calificacion = 'NP' then 1 else 0 end) as naesm2"),
@@ -437,8 +440,13 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
         } else {
             $var_cursos2 = $var_cursos->get();
         }
- 
-        // ->get();
+
+        if ($status != 'TURNADO_DTA') {
+            foreach ($var_cursos2 as $value) {
+                unset($value->folios);
+                unset($value->movimientos);
+            }
+        }
 
     return $var_cursos2;
 }
