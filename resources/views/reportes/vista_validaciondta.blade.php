@@ -149,7 +149,6 @@
                 </div>
             </form>
 
-
             <form id="formSendDtaTo" method="POST" action="{{ route('enviar.cursos.validacion.dta') }}" target="_self">
                 @csrf
                 <div class="form-row">
@@ -227,6 +226,8 @@
                                     <th scope="col">CURSO</th>
                                     <th scope="col">CLAVE</th>
                                     <th scope="col">MOD</th>
+                                    <th scope="col">FOLIOS</th>
+                                    <th scope="col">FOLIOS CANCELADOS</th>
                                     <th scope="col">DURACIÓN TOTAL EN HORAS</th>
                                     <th scope="col">TURNO</th>
                                     <th scope="col">DIA INICIO</th>
@@ -381,6 +382,10 @@
                                             <div style="width:200px; word-wrap: break-word">{{ $datas->clave }}</div>
                                         </td>
                                         <td>{{ $datas->mod }}</td>
+                                        <td>
+                                            <div style="width: 150px">{{ $datas->bloques_folios }}</div>
+                                        </td>
+                                        <td>{{ $datas->folios_cancelados }}</td>
                                         <td>{{ $datas->dura }}</td>
                                         <td>{{ $datas->turno }}</td>
                                         <td>{{ $datas->diai }}</td>
