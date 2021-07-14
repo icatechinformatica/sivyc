@@ -36,8 +36,8 @@
     img.izquierda{float:left}
     img.derecha {
         float: right;
-        width: 90;
-        height: 70;
+        width: 2.5cm;
+        height: 2.5cm;
       }
 </style>
 <body>
