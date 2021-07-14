@@ -23,7 +23,9 @@ class Alumno extends Model
         'realizo',
         'cerrs',
         'etnia',
-        'estatus_modificacion'
+        'estatus_modificacion',
+        'costo',
+        'tinscripcion'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
