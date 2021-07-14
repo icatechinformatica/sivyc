@@ -422,7 +422,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
     Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
     Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
-
     /*Grupos RPN*/
     //Calificaciones
     Route::get('/grupos/calificaciones', 'Grupos\calificacionesController@index')->name('grupos.calificaciones')->middleware('can:grupos.calificaciones');
@@ -500,7 +499,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/preinscripcion/show', 'Preinscripcion\buscarController@show')->name('preinscripcion.show');
 
     /*Solucitud Unidad Depto Académico*/
-    /*Solicitud de Apertura ARC01*/
+    /*Solicitud de Apertura ARC01 y ARC02 RPN*/
     Route::get('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
     Route::post('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
     Route::get('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
@@ -511,10 +510,30 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/solicitud/apertura/guardar', 'Solicitud\aperturaController@store')->name('solicitud.apertura.guardar')->middleware('can:solicitud.apertura.guardar');
     Route::post('/solicitud/apertura/turnar', 'Solicitud\aperturaController@turnar')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
     Route::get('/solicitud/apertura/turnar', 'Solicitud\aperturaController@turnar')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
+    Route::post('/solicitud/apertura/regresar', 'Solicitud\aperturaController@regresar')->name('solicitud.apertura.regresar')->middleware('can:solicitud.apertura.regresar');
+    Route::get('/solicitud/apertura/regresar', 'Solicitud\aperturaController@regresar')->name('solicitud.apertura.regresar')->middleware('can:solicitud.apertura.regresar');
 
     Route::post('/solicitud/apertura/aceptar', 'Solicitud\aperturaController@aperturar')->name('solicitud.apertura.aceptar')->middleware('can:solicitud.apertura.aceptar');
     Route::get('/solicitud/apertura/aceptar', 'Solicitud\aperturaController@aperturar')->name('solicitud.apertura.aceptar')->middleware('can:solicitud.apertura.aceptar');
 
+    Route::post('/solicitud/apertura/turnar', 'Solicitud\turnarAperturaController@index')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
+    Route::get('/solicitud/apertura/turnar', 'Solicitud\turnarAperturaController@index')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
+    Route::post('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
+    Route::get('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
+
+    Route::post('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->name('solicitud.apertura.modificar')->middleware('can:solicitud.apertura.modificar');
+    Route::get('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->name('solicitud.apertura.modificar')->middleware('can:solicitud.apertura.modificar');
+    Route::post('/solicitud/apertura/modguardar', 'Solicitud\modificarAperturaController@store')->name('solicitud.apertura.modguardar')->middleware('can:solicitud.apertura.modguardar');
+    Route::get('/solicitud/apertura/modguardar', 'Solicitud\modificarAperturaController@store')->name('solicitud.apertura.modguardar')->middleware('can:solicitud.apertura.modguardar');
+
+    Route::post('/solicitud/apertura/moddeshacer', 'Solicitud\modificarAperturaController@reverse')->name('solicitud.apertura.moddeshacer')->middleware('can:solicitud.apertura.moddeshacer');
+    Route::get('/solicitud/apertura/moddeshacer', 'Solicitud\modificarAperturaController@reverse')->name('solicitud.apertura.moddeshacer')->middleware('can:solicitud.apertura.moddeshacer');
+
+    Route::post('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01')->middleware('can:solicitud.generar.arc01');
+    Route::get('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01')->middleware('can:solicitud.generar.arc01');
+
+    Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02')->middleware('can:solicitud.generar.arc02');
+    Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02')->middleware('can:solicitud.generar.arc02');
 
 });
 
