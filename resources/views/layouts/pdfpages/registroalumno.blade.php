@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <style type="text/css">
-    @page{margin: 60px 30px 20px; font-size: 11px}
+    @page{margin: 60px 30px 20px; font-size: 9px}
     @font-face {
         font-family: "Baby sweet";           
         src: url("/fonts/gotham-light.ttf") format("truetype");
@@ -25,6 +25,7 @@
     td{
         padding: 0px;
         padding-left: 5px;
+        padding-bottom: 3px;
     }
     .p{
         text-decoration: overline;
