@@ -41,7 +41,7 @@ class grupoController extends Controller
         $unidades = $this->data['unidades'];
         $unidad = $this->data['unidad'];
         $message = NULL;
-        if($_SESSION['folio_grupo']){  //echo $_SESSION['folio_grupo'];exit;
+        if(isset($_SESSION['folio_grupo'])){  //echo $_SESSION['folio_grupo'];exit;
             $anio_hoy = date('y');
             $alumnos = DB::table('alumnos_registro')->select('alumnos_registro.id as id_reg','alumnos_pre.*','alumnos_registro.*','turnado',
                 DB::raw("substring(curp,11,1) as sex"),                     
