@@ -170,15 +170,20 @@ class aperturaController extends Controller
    
 
    public function store(Request $request, \Illuminate\Validation\Factory $validate){  
+        $message = 'Operación fallida, vuelva a intentar..';
         $validator = $validate->make($request->all(), $this->validationRules,$this->validationMessages);
         if ($validator->fails()) {    
                 $message = 'Operación inválida, vuelva a intentar..';            
                 return redirect('solicitud/apertura')->with('message',$message)
                     ->withErrors($validator)
                     ->withInput();
-        }else{
-                $message = 'Operación fallida, vuelva a intentar..';
-                if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
+        }elseif($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
+                
+                /*CALCULANDO LAS HORAS POR DIA*/
+                $dif = strtotime($request->hfin)-strtotime($request->hini);
+                $horas = date("g.i",$dif)*1;
+
+                if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){               
                     $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
                     $alumnos = $_SESSION['alumnos'];   //var_dump($alumnos);exit;
                     $unidad = DB::table('tbl_unidades')->select('cct','plantel')->where('unidad',$grupo->unidad)->first();
@@ -200,17 +205,15 @@ class aperturaController extends Controller
                         ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
                         ->first();
                    // var_dump($instructor);exit;
-                    /*CALCULANDO LAS HORAS POR DIA*/
-                    if($instructor){                   
-                        $dif = strtotime($request->hfin)-strtotime($request->hini);
-                        $horas = date("g.i",$dif)*1;
+                    
+                    if($instructor){                      
                         
                         /*CALCULANDO CICLO*/            
                         $mes_dia1 = date("m-d",strtotime(date("Y-m-d")));
                         $mes_dia2 = date("m-d",strtotime(date("Y"). "-07-01"));
                         
-                        if($mes_dia1 >= $mes_dia2)  $ciclo = date("Y")."-".date("Y",strtotime(date("Y"). "+ 1 year"));//sumas a�o
-                        else $ciclo = date("Y",strtotime(date("Y"). "- 1 year"))."-".date("Y"); //restar a�o
+                        if($mes_dia1 >= $mes_dia2)  $ciclo = date("Y")."-".date("Y",strtotime(date("Y"). "+ 1 year"));//sumas año
+                        else $ciclo = date("Y",strtotime(date("Y"). "- 1 year"))."-".date("Y"); //restar año
                             
                         /*REGISTRANDO COSTO Y TIPO DE INSCRIPCION*/
                         $total_pago = 0;
@@ -250,6 +253,16 @@ class aperturaController extends Controller
                         if(!$ID) $ID = $PRE.'0001';
                         if($request->cespecifico) $cespecifico = strtoupper($request->cespecifico);
                         else $cespecifico = 0;
+
+                        if($request->tcurso=="CERTIFICACION"){
+                            $dura = 10;
+                            $termino =  $tcurso = $request->inicio;
+                        }else{
+                            $dura = $grupo->dura;
+                            $termino =  $tcurso = $request->termino;
+                        }
+
+
                         $result = tbl_curso::updateOrCreate(
                             ['folio_grupo' => $_SESSION['folio']],
                             ['id'=>$ID, 'cct' => $unidad->cct,
@@ -264,9 +277,9 @@ class aperturaController extends Controller
                             'espe' => $grupo->espe,
                             'curso' => $grupo->curso,
                             'inicio' => $request->inicio,
-                            'termino' => $request->termino,
+                            'termino' => $termino,
                             'dia' => $request->dia,
-                            'dura' => $grupo->dura,
+                            'dura' => $dura,
                             'hini' => $hini,
                             'hfin' => $hfin,
                             'horas' => $horas,
@@ -311,7 +324,7 @@ class aperturaController extends Controller
                             'pdf_curso' => null,
                             'turnado' => "UNIDAD",
                             'fecha_turnado' => null,
-                            'tipo_curso' => $request->tcurso,
+                            'tipo_curso' => $tcurso,
                             'clave_especialidad' => $grupo->clave_especialidad,
                             'id_especialidad' => $grupo->id_especialidad,
                             'instructor_escolaridad' => $instructor->escolaridad,
@@ -325,8 +338,8 @@ class aperturaController extends Controller
                     );
                     if($result)$message = 'Operación Exitosa!!';
                 }else $message = 'Instructor no válido.';
-            }        
-            
+                 
+            }else $message  = "Si es una CERTIFICACIÓN, corrobore que cubra 10 horas.";
             
         }
         return redirect('solicitud/apertura')->with('message',$message);
