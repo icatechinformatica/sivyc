@@ -89,7 +89,7 @@ trait catApertura
             ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')
             ->whereJsonContains('unidades_disponible', [$unidad])
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
-            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',DB::raw("TO_DATE('2021-07-13','YYYY-MM-DD')"))
+            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
             ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
             //->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
             ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
