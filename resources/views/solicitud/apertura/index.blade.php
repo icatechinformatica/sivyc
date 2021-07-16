@@ -158,7 +158,7 @@
             <div class="form-row" >
                 <div class="form-group col-md-2">
                     <label>Servicio:</label>
-                    {{ Form::select('tcurso', $tcurso, null, ['id'=>'tcurso','class' => 'form-control mr-sm-2'] ) }}
+                    {{ Form::select('tcurso', $tcurso, $grupo->tipo_curso, ['id'=>'tcurso','class' => 'form-control mr-sm-2'] ) }}
                 </div> 
                 <div class="form-group col-md-2">
                      <label>Medio Virtual:</label>
