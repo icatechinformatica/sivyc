@@ -72,7 +72,7 @@ class aperturaController extends Controller
                 'tc.hini','tc.hfin','tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),
                 'tc.id_municipio','tc.status_curso','tc.dia','tc.inicio','tc.termino','tc.plantel',               
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc')
+                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso')
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
                 ->join('cursos as c','ar.id_curso','c.id')
                 ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
@@ -84,7 +84,7 @@ class aperturaController extends Controller
                 'ar.unidad','ar.horario','e.nombre','a.formacion_profesional','c.id_especialidad','c.memo_validacion',
                 'tc.hini','tc.hfin','tc.nota','tc.clave','tc.id_municipio','tc.status_curso','tc.dia','tc.inicio','tc.termino','tc.plantel',               
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave')
+                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave','tc.tipo_curso')
                 ->first();
             
              //var_dump($grupo);exit; 
@@ -169,7 +169,10 @@ class aperturaController extends Controller
   
    
 
-   public function store(Request $request, \Illuminate\Validation\Factory $validate){  
+   public function store(Request $request, \Illuminate\Validation\Factory $validate){  /*
+    $dif = strtotime($request->hfin)-strtotime($request->hini);
+    echo $horas = date("g.i",$dif)*1;
+    exit;
         $message = 'Operación fallida, vuelva a intentar..';
         $validator = $validate->make($request->all(), $this->validationRules,$this->validationMessages);
         if ($validator->fails()) {    
@@ -177,13 +180,15 @@ class aperturaController extends Controller
                 return redirect('solicitud/apertura')->with('message',$message)
                     ->withErrors($validator)
                     ->withInput();
-        }elseif($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
+        }else
+        */
+        if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
                 
                 /*CALCULANDO LAS HORAS POR DIA*/
                 $dif = strtotime($request->hfin)-strtotime($request->hini);
-                $horas = date("g.i",$dif)*1;
+                $horas = date("g.i",$dif)*1; 
 
-                if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){               
+                if($request->tcurso == "CERTIFICACION" OR $request->tcurso == "CURSO"){               
                     $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
                     $alumnos = $_SESSION['alumnos'];   //var_dump($alumnos);exit;
                     $unidad = DB::table('tbl_unidades')->select('cct','plantel')->where('unidad',$grupo->unidad)->first();
@@ -219,12 +224,12 @@ class aperturaController extends Controller
                         $total_pago = 0;
                         $abrinscri = $this->abrinscri();
                         foreach($request->costo as $key=>$pago){
-                            echo $pago;
+                            
                             $diferencia = $grupo->costo_individual - $pago;                 
                             if($pago == 0 ) $tinscripcion = "EXONERACION TOTAL DE PAGO";
                             elseif($diferencia > 0) $tinscripcion = "EXONERACION PARCIAL DE PAGO";
                             else $tinscripcion = "PAGO DE INSCRIPCION";
-                            $total_pago += $pago; 
+                            $total_pago += $pago*1; 
                             $abrins = $abrinscri[$tinscripcion];
                             Alumno::where('id',$key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
                         }                
@@ -241,8 +246,8 @@ class aperturaController extends Controller
                         $alumnos = json_decode(json_encode($alumnos), true);
                         $total_sexo = array_count_values(array_column($alumnos, 'sexo'));             
                         if(count($total_sexo)>0){     
-                        $hombres = $total_sexo['H'];
-                        $mujeres = $total_sexo['M']; 
+                            if(isset($total_sexo['H']))$hombres = $total_sexo['H'];
+                            if(isset($total_sexo['M']))$mujeres = $total_sexo['M']; 
                         }
                             
                         
@@ -255,11 +260,11 @@ class aperturaController extends Controller
                         else $cespecifico = 0;
 
                         if($request->tcurso=="CERTIFICACION"){
-                            $dura = 10;
-                            $termino =  $tcurso = $request->inicio;
+                            $horas = $dura = 10;
+                            $termino =  $request->inicio;
                         }else{
                             $dura = $grupo->dura;
-                            $termino =  $tcurso = $request->termino;
+                            $termino =  $request->termino;
                         }
 
 
@@ -324,7 +329,7 @@ class aperturaController extends Controller
                             'pdf_curso' => null,
                             'turnado' => "UNIDAD",
                             'fecha_turnado' => null,
-                            'tipo_curso' => $tcurso,
+                            'tipo_curso' => $request->tcurso,
                             'clave_especialidad' => $grupo->clave_especialidad,
                             'id_especialidad' => $grupo->id_especialidad,
                             'instructor_escolaridad' => $instructor->escolaridad,
