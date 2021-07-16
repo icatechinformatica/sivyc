@@ -107,7 +107,7 @@
                         </tr>
                         @foreach($reg_cursos as $a)         
                             <tr>
-                                <th>{{$a->tipo_curso}}</th>
+                                <th>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION EXTRAORDINARIA';} @endphp</th>
                                 <th style="width: 20%;">{{ $a->curso }}</th>
                                 <th>{{ $a->mod }}</th>                           
                                 <th>@if($a->tcapacitacion=="PRESENCIAL"){{ "X" }}@endif</th>
