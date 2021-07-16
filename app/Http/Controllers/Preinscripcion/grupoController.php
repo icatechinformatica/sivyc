@@ -61,7 +61,7 @@ class grupoController extends Controller
                 $cursos= DB::table('cursos')
                  ->where('tipo_curso',$tipo)
                  ->where('cursos.estado',true)
-                 ->whereJsonContains('unidades_disponible', [$unidad])->orderby('cursos.nombre_curso')->pluck(DB::raw("CONCAT(cursos.nombre_curso,' - ',cursos.id) as nombre_curso"),'cursos.id');
+                 ->whereJsonContains('unidades_disponible', [$unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso','cursos.id');
              
         }else{
             $_SESSION['folio_grupo'] = NULL;
@@ -84,7 +84,7 @@ class grupoController extends Controller
     {         
         //$request->unidad = 'TUXTLA';
         if (isset($request->tipo) and isset($request->unidad)){
-            $cursos= DB::table('cursos')->select('cursos.id',DB::raw("CONCAT(cursos.nombre_curso,' - ',cursos.id) as nombre_curso"))
+            $cursos= DB::table('cursos')->select('cursos.id','nombre_curso')
              ->where('tipo_curso',$request->tipo)
              ->where('cursos.estado',true)
              ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('cursos.nombre_curso')->get();              
