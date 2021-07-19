@@ -169,11 +169,9 @@ class aperturaController extends Controller
   
    
 
-   public function store(Request $request, \Illuminate\Validation\Factory $validate){  /*
-    $dif = strtotime($request->hfin)-strtotime($request->hini);
-    echo $horas = date("g.i",$dif)*1;
-    exit;
+   public function store(Request $request, \Illuminate\Validation\Factory $validate){      
         $message = 'Operación fallida, vuelva a intentar..';
+        /*
         $validator = $validate->make($request->all(), $this->validationRules,$this->validationMessages);
         if ($validator->fails()) {    
                 $message = 'Operación inválida, vuelva a intentar..';            
@@ -182,13 +180,9 @@ class aperturaController extends Controller
                     ->withInput();
         }else
         */
-        if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
-                
-                /*CALCULANDO LAS HORAS POR DIA*/
-                $dif = strtotime($request->hfin)-strtotime($request->hini);
-                $horas = date("g.i",$dif)*1; 
-
-                if($request->tcurso == "CERTIFICACION" OR $request->tcurso == "CURSO"){               
+        if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){                                
+                $horas = (strtotime($request->hfin)-strtotime($request->hini))/3600;
+                if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){               
                     $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
                     $alumnos = $_SESSION['alumnos'];   //var_dump($alumnos);exit;
                     $unidad = DB::table('tbl_unidades')->select('cct','plantel')->where('unidad',$grupo->unidad)->first();
