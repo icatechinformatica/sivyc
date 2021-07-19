@@ -63,6 +63,7 @@ function dataFormatoT($unidad, $status, $fecha)
             'c.programa',
             'c.muni',
             'c.ze',
+            'm.region',
             'c.depen',
             'c.cgeneral',
             'c.sector',
@@ -173,6 +174,7 @@ function dataFormatoT($unidad, $status, $fecha)
         })
         ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
+        ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
         ->WHERE('u.ubicacion', '=', $unidad)
         ->WHEREIN('c.status', $status)
         ->where('ins.status', '=', 'INSCRITO')
@@ -209,7 +211,8 @@ function dataFormatoT($unidad, $status, $fecha)
             'i.sexo',
             'ei.memorandum_validacion',
             'ip.grado_profesional',
-            'ip.estatus'
+            'ip.estatus',
+            'm.region'
         )
         ->distinct()
         ->get();
@@ -280,6 +283,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
             'c.programa',
             'c.muni',
             'c.ze',
+            'm.region',
             'c.depen',
             'c.cgeneral',
             'c.sector',
@@ -394,6 +398,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
         })
         ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
+        ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
         ->whereMonth('c.fecha_turnado', $mesSearch) // new
         ->WHERE('c.status', '=', $status) // new
         ->WHEREIN('c.turnado', $turnado)
@@ -431,7 +436,8 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
             'i.sexo',
             'ei.memorandum_validacion',
             'ip.grado_profesional',
-            'ip.estatus'
+            'ip.estatus',
+            'm.region'
         )
         ->distinct();
 
