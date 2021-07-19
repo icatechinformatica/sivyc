@@ -169,20 +169,19 @@ class aperturaController extends Controller
   
    
 
-   public function store(Request $request, \Illuminate\Validation\Factory $validate){  
+   public function store(Request $request, \Illuminate\Validation\Factory $validate){      
         $message = 'Operación fallida, vuelva a intentar..';
+        /*
         $validator = $validate->make($request->all(), $this->validationRules,$this->validationMessages);
         if ($validator->fails()) {    
                 $message = 'Operación inválida, vuelva a intentar..';            
                 return redirect('solicitud/apertura')->with('message',$message)
                     ->withErrors($validator)
                     ->withInput();
-        }elseif($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
-                
-                /*CALCULANDO LAS HORAS POR DIA*/
-                $dif = strtotime($request->hfin)-strtotime($request->hini);
-                $horas = date("g.i",$dif)*1;
-
+        }else
+        */
+        if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){                                
+                $horas = (strtotime($request->hfin)-strtotime($request->hini))/3600;
                 if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){               
                     $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
                     $alumnos = $_SESSION['alumnos'];   //var_dump($alumnos);exit;
