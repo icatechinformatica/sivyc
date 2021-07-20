@@ -19,7 +19,7 @@ class ReportesPlaneacionFormatoT extends Controller {
             session(['fechaInicio' => $fechaInicio]);
             session(['fechaTermino' => $fechaTermino]);
         }
-        $subConsulta = DB::raw("(SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia, alumnos_registro.cerrs FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia, alumnos_registro.cerrs) as ar");
+        $subConsulta = DB::raw("(SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia) as ar");
 
         // madres solteras, centras
         $cursos = DB::table('tbl_cursos as c')->select(
@@ -31,7 +31,7 @@ class ReportesPlaneacionFormatoT extends Controller {
             DB::raw("SUM(CASE WHEN ar.indigena = 'true' THEN 1 ELSE 0 END) as indigena"),
             DB::raw("SUM(CASE WHEN ap.discapacidad <> 'NINGUNA' THEN 1 ELSE 0 END) as discapacidad"),
             DB::raw("SUM(CASE WHEN ar.migrante = 'true' THEN 1 ELSE 0 END) as migrante"),
-            DB::raw("SUM(CASE WHEN ar.cerrs = 'true' THEN 1 ELSE 0 END) as cerrs"),
+            DB::raw("SUM(CASE WHEN ins.id_cerss IS NOT NULL THEN 1 ELSE 0 END) as cerrs"),
             DB::raw("SUM(CASE WHEN EXTRACT(year from (age(c.inicio,ap.fecha_nacimiento))) >= 65 THEN 1 ELSE 0 END) as adultosMayores"),
         )->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
         ->JOIN($subConsulta, function ($join) {
