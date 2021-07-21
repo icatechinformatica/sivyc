@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="row my-4">
-            <div class="col d-flex justify-content-center"><h4><strong>REPORTE DE ESTADISTICAS DEL FORMATO T</strong></h4></div>
+            <div class="col d-flex justify-content-center"><h4><strong>REPORTE ESTADISTICO DEL FORMATO T</strong></h4></div>
         </div>
 
         <form id="formFechas" action="{{route('reportes.planeacion.estadisticas')}}" method="get">
@@ -39,54 +39,54 @@
         <table class="table table-bordered table-striped mt-4">
             <thead>
                 <tr>
-                    <th>Categoria</th>
+                    <th style="width: 600px">Categoria</th>
                     <th>Resultado</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>Cursos Realizados</td>
-                    <td></td>
+                    <td>{{$totalCursos}}</td>
                 </tr> 
                 <tr>
                     <td>Total de Beneficiarios</td>
-                    <td></td>
+                    <td>{{$beneficiarios}}</td>
                 </tr> 
                 <tr>
                     <td>Total de Horas</td>
-                    <td></td>
+                    <td>{{$horas}}</td>
                 </tr> 
                 <tr>
                     <td>Total de Mujeres</td>
-                    <td></td>
+                    <td>{{$mujeres}}</td>
                 </tr> 
                 <tr>
                     <td>Total de Hombres</td>
-                    <td></td>
-                </tr>  
-                <tr>
-                    <td>Total de Inscritos</td>
-                    <td></td>
+                    <td>{{$hombres}}</td>
                 </tr>
                 <tr>
                     <td>Total de Egresados</td>
-                    <td></td>
+                    <td>{{$egresados}}</td>
                 </tr>
                 <tr>
-                    <td>Curso EXT</td>
-                    <td></td>
+                    <td>Total de Deserción</td>
+                    <td>{{$desercion}}</td>
                 </tr>
                 <tr>
-                    <td>Curso CAE</td>
-                    <td></td>
+                    <td>Cursos EXT</td>
+                    <td>{{$ext}}</td>
                 </tr>
                 <tr>
-                    <td>Curso EMP</td>
-                    <td></td>
+                    <td>Cursos CAE</td>
+                    <td>{{$cae}}</td>
+                </tr>
+                <tr>
+                    <td>Cursos EMP</td>
+                    <td>{{$emp}}</td>
                 </tr>
                 <tr>
                     <td>Municipios Atendidos</td>
-                    <td></td>
+                    <td>{{$totalMunicipios}}</td>
                 </tr>   
                 
             </tbody>
@@ -94,10 +94,10 @@
 
         <div class="row d-flex justify-content-end">
             <button id="btnReporteXls" type="button" class="btn btn-success mb-4">Generar Reporte XLS</button>
-            <form target="_blank" id="formReporteXls" action="{{ route('reportes.planeacion.grupos_vulnerablesXls') }}" method="get">@csrf</form>
+            <form target="_blank" id="formReporteXls" action="{{ route('reportes.planeacion.estadisticasXls') }}" method="get">@csrf</form>
 
             <button id="btnReporteCronograma" type="button" class="btn btn-info mb-4">Generar Reporte PDF</button>
-            <form target="_blank" id="formReporteCronograma" action="{{ route('reportes.planeacion.grupos_vulnerablesPdf') }}" method="get">@csrf</form>
+            <form target="_blank" id="formReporteCronograma" action="{{ route('reportes.planeacion.estadisticasPdf') }}" method="get">@csrf</form>
         </div>
 
         <!-- Modal -->

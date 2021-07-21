@@ -652,4 +652,6 @@ Route::get('/IngresosPropiosReporte/reporte', 'Validacion\ReportesPlaneacionForm
 Route::get('/IngresosPropiosReporteXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@ingresosCreateXls')->name('reportes.planeacion.ingresos_propiosXls');
 // estadisticas
 Route::get('/Estadisticas/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexEstadisticas')->name('reportes.planeacion.estadisticas');
+Route::get('/Estadisticas/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreatePdf')->name('reportes.planeacion.estadisticasPdf');
+Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreateXls')->name('reportes.planeacion.estadisticasXls');
 
