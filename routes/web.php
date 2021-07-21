@@ -650,3 +650,6 @@ Route::get('/GruposVulnerablesReporteXls/reporte', 'Validacion\ReportesPlaneacio
 Route::get('/IngresosPropios/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexIngresos')->name('reportes.planeacion.ingresos_propios');
 Route::get('/IngresosPropiosReporte/reporte', 'Validacion\ReportesPlaneacionFormatoT@ingresosCreatePdf')->name('reportes.planeacion.ingresos_propiosPdf');
 Route::get('/IngresosPropiosReporteXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@ingresosCreateXls')->name('reportes.planeacion.ingresos_propiosXls');
+// estadisticas
+Route::get('/Estadisticas/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexEstadisticas')->name('reportes.planeacion.estadisticas');
+

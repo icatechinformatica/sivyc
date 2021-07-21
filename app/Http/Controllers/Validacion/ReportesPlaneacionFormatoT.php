@@ -64,7 +64,7 @@ class ReportesPlaneacionFormatoT extends Controller {
         $fechaInicio = session('fechaInicio');
         $fechaTermino = session('fechaTermino');
 
-        $subConsulta = DB::raw("(SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia, alumnos_registro.cerrs FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia, alumnos_registro.cerrs) as ar");
+        $subConsulta = DB::raw("(SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia) as ar");
 
         $cursos = DB::table('tbl_cursos as c')->select(
             'c.id',
@@ -75,7 +75,7 @@ class ReportesPlaneacionFormatoT extends Controller {
             DB::raw("SUM(CASE WHEN ar.indigena = 'true' THEN 1 ELSE 0 END) as indigena"),
             DB::raw("SUM(CASE WHEN ap.discapacidad <> 'NINGUNA' THEN 1 ELSE 0 END) as discapacidad"),
             DB::raw("SUM(CASE WHEN ar.migrante = 'true' THEN 1 ELSE 0 END) as migrante"),
-            DB::raw("SUM(CASE WHEN ar.cerrs = 'true' THEN 1 ELSE 0 END) as cerrs"),
+            DB::raw("SUM(CASE WHEN ins.id_cerss IS NOT NULL THEN 1 ELSE 0 END) as cerrs"),
             DB::raw("SUM(CASE WHEN EXTRACT(year from (age(c.inicio,ap.fecha_nacimiento))) >= 65 THEN 1 ELSE 0 END) as adultosMayores"),
         )->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
         ->JOIN($subConsulta, function ($join) {
@@ -110,7 +110,7 @@ class ReportesPlaneacionFormatoT extends Controller {
         $fechaInicio = session('fechaInicio');
         $fechaTermino = session('fechaTermino');
 
-        $subConsulta = DB::raw("(SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia, alumnos_registro.cerrs FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia, alumnos_registro.cerrs) as ar");
+        $subConsulta = DB::raw("(SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia) as ar");
         $cursos = DB::table('tbl_cursos as c')->select(
             'c.id',
             'c.clave',
@@ -120,7 +120,7 @@ class ReportesPlaneacionFormatoT extends Controller {
             DB::raw("SUM(CASE WHEN ar.indigena = 'true' THEN 1 ELSE 0 END) as indigena"),
             DB::raw("SUM(CASE WHEN ap.discapacidad <> 'NINGUNA' THEN 1 ELSE 0 END) as discapacidad"),
             DB::raw("SUM(CASE WHEN ar.migrante = 'true' THEN 1 ELSE 0 END) as migrante"),
-            DB::raw("SUM(CASE WHEN ar.cerrs = 'true' THEN 1 ELSE 0 END) as cerrs"),
+            DB::raw("SUM(CASE WHEN ins.id_cerss IS NOT NULL THEN 1 ELSE 0 END) as cerrs"),
             DB::raw("SUM(CASE WHEN EXTRACT(year from (age(c.inicio,ap.fecha_nacimiento))) >= 65 THEN 1 ELSE 0 END) as adultosMayores"),
         )->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
         ->JOIN($subConsulta, function ($join) {
@@ -388,6 +388,60 @@ class ReportesPlaneacionFormatoT extends Controller {
         $nombreLayout = "INGRESOS PROPIOS".".xlsx";
         $titulo = "INGRESOS PROPIOS";
         return Excel::download(new FormatoTReport($totalesPeriodoActual,$head, $titulo), $nombreLayout);
+    }
+
+    // estadisticas
+    public function indexEstadisticas(Request $request) {
+        $fechaInicio = $request->fecha_inicio;
+        $fechaTermino = $request->fecha_termino;
+
+        $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, alumnos_registro.migrante, alumnos_registro.indigena, alumnos_registro.etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, alumnos_registro.migrante,alumnos_registro.indigena,alumnos_registro.etnia) as ar");
+
+        $cursosRealizados = DB::table('tbl_cursos as c')->select(
+            'c.id',
+            'c.clave',
+            'c.status',
+            'c.fecha_turnado',
+            DB::raw('count(distinct(ins.id)) as inscritos'),
+            'c.dura as horas',
+            DB::raw("SUM(CASE WHEN ap.sexo='FEMENINO' THEN 1 ELSE 0 END) as imujeres"),
+            DB::raw("SUM(CASE WHEN ap.sexo='MASCULINO' THEN 1 ELSE 0 END) as ihombres"),
+            DB::raw("SUM(CASE WHEN ins.calificacion <> 'NP' THEN 1 ELSE 0 END) as egresados"),
+            'c.mod as modalidad',
+            'c.muni as municipio'
+        )->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
+        ->JOIN($temptblinner, function ($join) {
+            $join->on('ins.matricula', '=', 'ar.no_control');
+            $join->on('c.id_curso', '=', 'ar.id_curso');
+        })
+        ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
+        ->where('c.status', '=', 'REPORTADO')
+        ->whereBetween('c.fecha_turnado', [$fechaInicio, $fechaTermino])
+        ->where('c.clave', '!=', 'null')
+        ->where('ins.status', '=', 'INSCRITO')
+        ->groupBy('c.id')
+        ->get();
+
+        // dd($cursosRealizados);
+        $totalCursos = count($cursosRealizados); 
+        $beneficiarios=0; $horas=0; $mujeres=0; $hombres=0; $egresados=0; $ext=0; $cae=0; $emp=0; $municipios=[];
+        foreach ($cursosRealizados as $value) {
+            $beneficiarios += $value->inscritos;
+            $horas += $value->horas;
+            $mujeres += $value->imujeres;
+            $hombres += $value->ihombres;
+            $egresados += $value->egresados;
+            switch ($value->modalidad) {
+                case 'EXT': $ext += 1; break;
+                case 'CAE': $cae += 1; break;
+                case 'EMP': $emp += 1; break;
+            }
+            array_push($municipios, $value->municipio); 
+        }
+        $totalMunicipios = count(array_unique($municipios));
+
+        return view('reportes.vista_planeacion_reportes_estadisticas', compact('fechaInicio','fechaTermino', 'totalCursos', 
+            'beneficiarios', 'horas', 'mujeres', 'hombres', 'egresados', 'ext', 'cae', 'emp', 'totalMunicipios'));
     }
 
 }

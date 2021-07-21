@@ -143,6 +143,9 @@
                                 data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>
                         @endcan
                         @can('planeacion.grupos.vulnerables')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.estadisticas')}}">Estadisticas</a>
+                        @endcan
+                        @can('planeacion.grupos.vulnerables')
                             <a class="dropdown-item" href="{{route('reportes.planeacion.grupos_vulnerables')}}">Grupos Vulnerables</a>
                         @endcan
                         @can('planeacion.ingresos.propios')
