@@ -247,6 +247,6 @@ class AlumnoRegistradoController extends Controller
         $pathimg = substr($alumnos->fotografia ,33);
 
         return PDF::loadView('layouts.pdfpages.registroalumno_cerss', compact('alumnos', 'edad','date','pathimg'))
-                ->setPaper('A4', 'portrait')->download('documento_sid_cerrs'.$alumnos->no_control.'.pdf');
+                ->setPaper('A4', 'portrait')->stream('documento_sid_cerrs'.$alumnos->no_control.'.pdf');
     }
 }
