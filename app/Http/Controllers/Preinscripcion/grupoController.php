@@ -43,13 +43,14 @@ class grupoController extends Controller
         $message = NULL;
         if(isset($_SESSION['folio_grupo'])){  //echo $_SESSION['folio_grupo'];exit;
             $anio_hoy = date('y');
-            $alumnos = DB::table('alumnos_registro')->select('alumnos_registro.id as id_reg','alumnos_pre.*','alumnos_registro.*','turnado',
+            $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ar.turnado','ap.nombre','apellido_paterno','apellido_materno',
+                'ar.id_curso','ar.tipo_curso','ar.id_cerss','ar.horario','ap.ultimo_grado_estudios','ar.tinscripcion','ar.unidad','ar.folio_grupo','ap.curp',
                 DB::raw("substring(curp,11,1) as sex"),                     
                 DB::raw("CASE WHEN substring(curp,5,2) <='".$anio_hoy."' 
                 THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
                 ELSE CONCAT('19',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2)) 
                 END AS fnacimiento")
-                )->join('alumnos_pre','alumnos_pre.id','alumnos_registro.id_pre')->where('folio_grupo',$_SESSION['folio_grupo'] )->where('eliminado',false)->get();
+                )->join('alumnos_pre as ap','ap.id','ar.id_pre')->where('ar.folio_grupo',$_SESSION['folio_grupo'] )->where('ar.eliminado',false)->get();
             //var_dump($alumnos);exit;
                 $id_curso = $alumnos[0]->id_curso; 
                 $tipo = $alumnos[0]->tipo_curso;
@@ -104,8 +105,7 @@ class grupoController extends Controller
             $alumno = DB::table('alumnos_pre')->select('id as id_pre','matricula')->where('curp',$curp)->where('activo',true)->first();
             if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();           
           
-            if($alumno){       
-                 
+            if($alumno){                  
                     //EXTRAER MATRICULA Y GUARDAR
                     $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado',false)->where('curp', $curp)->value('no_control');            
                     
@@ -136,17 +136,19 @@ class grupoController extends Controller
                     }
                     if($id_cerss) $cerrs = true;
                     else $cerrs = NULL;
-                    $result = DB::table('alumnos_registro')->UpdateOrInsert(
-                            [ 'id_pre' => $alumno->id_pre, 'folio_grupo' => $_SESSION['folio_grupo']],
-                            [  'id_unidad' =>  $id_unidad, 'id_curso' => $id_curso, 'id_especialidad' =>  $id_especialidad, 
-                               'horario' => $request->horario,'unidad' => $unidad,'tipo_curso' => $tipo, 
-                               'cct' => $this->data['cct_unidad'],'realizo' => $this->realizo,'no_control' => $matricula,'ejercicio' => $this->ejercicio,
-                               'folio_grupo' => $_SESSION['folio_grupo'],'iduser_created' => $this->id_user, 
-                               'created_at' => date('Y-m-d H:i:s'),'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs,
-                               'grupo' => $_SESSION['folio_grupo'],'eliminado' => false
-                            ]
-                        );
-                     if($result) $message = "Operacion Exitosa!!";
+                    if($_SESSION['folio_grupo']){
+                        $result = DB::table('alumnos_registro')->UpdateOrInsert(
+                                [ 'id_pre' => $alumno->id_pre, 'folio_grupo' => $_SESSION['folio_grupo']],
+                                [  'id_unidad' =>  $id_unidad, 'id_curso' => $id_curso, 'id_especialidad' =>  $id_especialidad, 
+                                'horario' => $request->horario,'unidad' => $unidad,'tipo_curso' => $tipo, 
+                                'cct' => $this->data['cct_unidad'],'realizo' => $this->realizo,'no_control' => $matricula,'ejercicio' => $this->ejercicio,
+                                'folio_grupo' => $_SESSION['folio_grupo'],'iduser_created' => $this->id_user, 
+                                'created_at' => date('Y-m-d H:i:s'),'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs,
+                                'grupo' => $_SESSION['folio_grupo'],'eliminado' => false
+                                ]
+                            );
+                        if($result) $message = "Operación Exitosa!!";
+                    }else $message = "Operación no permitida!";
               }else $message = "Alumno no registrado ".$curp.".";
               
                 
@@ -163,12 +165,14 @@ class grupoController extends Controller
             if($request->cerss) $cerrs = true;
             else $cerrs = NULL;
             $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->Update(
-                        [ 'id_unidad' =>  $id_unidad, 'id_curso' => $request->id_curso,
-                          'id_especialidad' =>  $id_especialidad, 'horario' => $request->horario,'unidad' => $request->unidad,'tipo_curso' => $request->tipo,
-                          'iduser_updated' => $this->id_user,'updated_at' => date('Y-m-d H:i:s'),'fecha' => date('Y-m-d'), 
-                          'id_cerss' => $request->cerss, 'cerrs' => $cerrs
-                        ]
+                [ 'id_unidad' =>  $id_unidad, 'id_curso' => $request->id_curso,
+                        'id_especialidad' =>  $id_especialidad, 'horario' => $request->horario,'unidad' => $request->unidad,'tipo_curso' => $request->tipo,
+                        'iduser_updated' => $this->id_user,'updated_at' => date('Y-m-d H:i:s'),'fecha' => date('Y-m-d'), 
+                        'id_cerss' => $request->cerss, 'cerrs' => $cerrs
+                ]
              );
+             //Si hay cambios y esta registrado en tbl_cursos se elimina el instructor para validarlo nuevamente
+             DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('clave','0')->update(['nombre' =>null, 'curp'=> null, 'rfc'=> null]);
 
         }else $message = "La acción no se ejecuto correctamente";
         return redirect()->route('preinscripcion.grupo');
@@ -204,7 +208,7 @@ class grupoController extends Controller
            //$result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id',$id)->update(['eliminado'=>true,'iduser_updated'=>$this->id_user]);
            $result = DB::table('alumnos_registro')->where('id',$id)->delete();
         }else $result = false;
-        echo $result; exit;
+        //echo $result; exit;
         return $result;
     }   
    
