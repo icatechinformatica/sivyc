@@ -44,9 +44,9 @@
                         @can('alumno.inscripcion-documento')
                             <th scope="col">DOCUMENTOS</th>
                         @endcan
-                        @can('alumnos.inscripcion-paso3')
+                        {{-- @can('alumnos.inscripcion-paso3')
                             <th scope="col">ACCIONES</th>
-                        @endcan
+                        @endcan --}}
                         @can('alumnos.inscripcion-paso2')
                             <th scope="col">MODIFICAR</th>
                         @endcan
@@ -71,13 +71,13 @@
                             @endcan
 
 
-                            @can('alumnos.inscripcion-paso3')
+                            {{-- @can('alumnos.inscripcion-paso3')
                                 <td>
                                     <a href="{{route('alumnos.presincripcion-paso2', ['id' => base64_encode($itemData->id)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="INSCRIBIR">
                                         <i class="fa fa-gears" aria-hidden="true"></i>
                                     </a>
                                 </td>
-                            @endcan
+                            @endcan --}}
 
 
                             @can('alumnos.inscripcion-paso2')
