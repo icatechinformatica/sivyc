@@ -17,7 +17,7 @@ trait catUnidades
         if($rol){
             $uni = DB::table('tbl_unidades')->select(DB::raw('SUBSTR(cct,1,5) as clave'),DB::raw('SUBSTR(cct,6,10) as cct'),'ubicacion','unidad')->where('id',$id_unidad)->first();
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$uni->unidad)->pluck('unidad','unidad');         
-            if(count($unidades)==0) $unidades =[$uni->unidad];  
+            if(count($unidades)==0)$unidades = DB::table('tbl_unidades')->where('unidad',$uni->unidad)->pluck('unidad','unidad');
             
             if($uni->clave == '07EIC')$cct= $uni->cct;
             else $cct = DB::table('tbl_unidades')->where('unidad',$uni->ubicacion)->value(DB::raw('SUBSTR(cct,6,10) as cct'));
