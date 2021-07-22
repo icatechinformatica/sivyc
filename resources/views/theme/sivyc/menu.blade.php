@@ -146,6 +146,18 @@
                     </div>
                 </li>
 
+                @can('preinscripcion.grupo')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Preinscripci&oacute;n
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                            <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
+                            <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
+                        </div>
+                    </li>
+                @endcan
+
                 {{-- Grupo calificaciones --}}
                 @can('grupos.calificaciones')
                     <li class="nav-item g-mx-5--lg dropdown">
