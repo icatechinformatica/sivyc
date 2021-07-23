@@ -45,7 +45,7 @@
                     if(!$a->tinscripcion) $turnar=false;
               ?>
           @endforeach     
-      endif                                                                                         
+      @endif                                                                                         
     </tbody>
 </table> 
     <div class="col-md-12 text-right">
