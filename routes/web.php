@@ -486,12 +486,12 @@ Route::middleware(['auth'])->group(function () {
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/
     Route::get('/preinscripcion/grupo', 'Preinscripcion\grupoController@index')->name('preinscripcion.grupo')->middleware('can:preinscripcion.grupo');
     Route::get('/preinscripcion/grupo/cmbcursos', 'Preinscripcion\grupoController@cmbcursos')->name('preinscripcion.grupo.cmbcursos');
-    Route::post('/preinscripcion/grupo/guardar', 'Preinscripcion\grupoController@save')->name('preinscripcion.grupo.save');
-    Route::post('/preinscripcion/grupo/update', 'Preinscripcion\grupoController@update')->name('preinscripcion.grupo.update');
+    Route::post('/preinscripcion/grupo/guardar', 'Preinscripcion\grupoController@save')->name('preinscripcion.grupo.save')->middleware('can:preinscripcion.grupo.save');
+    Route::post('/preinscripcion/grupo/update', 'Preinscripcion\grupoController@update')->name('preinscripcion.grupo.update')->middleware('can:preinscripcion.grupo.update');
     Route::get('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@nuevo')->name('preinscripcion.grupo.nuevo');
     Route::post('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@nuevo')->name('preinscripcion.grupo.nuevo');
-    Route::post('/preinscripcion/grupo/turnar', 'Preinscripcion\grupoController@turnar')->name('preinscripcion.grupo.turnar');
-    Route::get('/preinscripcion/grupo/eliminar', 'Preinscripcion\grupoController@delete')->name('preinscripcion.grupo.eliminar');
+    Route::post('/preinscripcion/grupo/turnar', 'Preinscripcion\grupoController@turnar')->name('preinscripcion.grupo.turnar')->middleware('can:preinscripcion.grupo.turnar');
+    Route::get('/preinscripcion/grupo/eliminar', 'Preinscripcion\grupoController@delete')->name('preinscripcion.grupo.eliminar')->middleware('can:preinscripcion.grupo.eliminar');
 
     /*VINCULACION->PREINSCRIPCION=> BUSCAR GRUPO RPN*/
     Route::get('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');
