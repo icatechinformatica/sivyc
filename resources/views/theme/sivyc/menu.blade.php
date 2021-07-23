@@ -158,6 +158,19 @@
                     </li>
                 @endcan
 
+                @can('solicitud.apertura')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Solicitud
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                            <a class="dropdown-item" href="{{route('solicitud.apertura')}}">Clave de Apertura ARC01</a>
+                            <a class="dropdown-item" href="{{route('solicitud.apertura.modificar')}}">Modificaci&oacute;n Apertura ARC02</a>
+                            <a class="dropdown-item" href="{{route('solicitud.apertura.turnar')}}">Turnar Solicitud</a>
+                        </div>
+                    </li>
+                @endcan
+
                 {{-- Grupo calificaciones --}}
                 @can('grupos.calificaciones')
                     <li class="nav-item g-mx-5--lg dropdown">
