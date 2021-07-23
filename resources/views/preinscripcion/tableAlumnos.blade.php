@@ -14,36 +14,38 @@
       </tr>
     </thead>                                    
     <tbody>
-      @foreach($alumnos as $a)                               
-          <tr id="{{$a->id_reg}}">
-            <th scope="row"> {{ $consec++ }} </th>
-            <th>{{ $a->curp }}</th>
-            <th>{{ $a->apellido_paterno }} {{ $a->apellido_materno }} {{ $a->nombre }}</th> 
-            <th>{{ $a->sex }}</th>
-            <th>{{ $a->fnacimiento }}</th>
-            <th>{{ $a->ultimo_grado_estudios }}</th>
-            <th class="text-center">
-              @if($activar)
-                <a class="nav-link" ><i class="fa fa-remove  fa-2x fa-lg text-danger" onclick="eliminar({{$a->id_reg}},'{{ route('preinscripcion.grupo.eliminar') }}');" title="Eliminar"></i></a>
-              @endif
-            </th>                                                                                                                                        
-            <th class="text-center">
-              @if($a->id_cerss)
-                <a target="_blank" href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>              
-              @else  
-                <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
-              @endif
-            </th>
-            <!--
-              <th class="text-center">
-              <a class="nav-link" ><i class="fa fa-upload  fa-2x fa-lg text-danger" title="Cargar SID"></i></a>
-              </th>
-            --> 
-          </tr>
-          <?php
-                if(!$a->tinscripcion) $turnar=false;
-          ?>
-      @endforeach                                                                                              
+      @if(count($alumnos)>0)
+          @foreach($alumnos as $a)                               
+              <tr id="{{$a->id_reg}}">
+                <th scope="row"> {{ $consec++ }} </th>
+                <th>{{ $a->curp }}</th>
+                <th>{{ $a->apellido_paterno }} {{ $a->apellido_materno }} {{ $a->nombre }}</th> 
+                <th>{{ $a->sex }}</th>
+                <th>{{ $a->fnacimiento }}</th>
+                <th>{{ $a->ultimo_grado_estudios }}</th>
+                <th class="text-center">
+                  @if($activar)
+                    <a class="nav-link" ><i class="fa fa-remove  fa-2x fa-lg text-danger" onclick="eliminar({{$a->id_reg}},'{{ route('preinscripcion.grupo.eliminar') }}');" title="Eliminar"></i></a>
+                  @endif
+                </th>                                                                                                                                        
+                <th class="text-center">
+                  @if($a->id_cerss)
+                    <a target="_blank" href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>              
+                  @else  
+                    <a target="_blank" href="{{route('documento.sid', ['nocontrol' => base64_encode($a->id_reg)])}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir SID"></i></a>
+                  @endif
+                </th>
+                <!--
+                  <th class="text-center">
+                  <a class="nav-link" ><i class="fa fa-upload  fa-2x fa-lg text-danger" title="Cargar SID"></i></a>
+                  </th>
+                --> 
+              </tr>
+              <?php
+                    if(!$a->tinscripcion) $turnar=false;
+              ?>
+          @endforeach     
+      endif                                                                                         
     </tbody>
 </table> 
     <div class="col-md-12 text-right">

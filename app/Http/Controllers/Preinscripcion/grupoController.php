@@ -52,6 +52,7 @@ class grupoController extends Controller
                 END AS fnacimiento")
                 )->join('alumnos_pre as ap','ap.id','ar.id_pre')->where('ar.folio_grupo',$_SESSION['folio_grupo'] )->where('ar.eliminado',false)->get();
             //var_dump($alumnos);exit;
+            if(count($alumnos)>0){
                 $id_curso = $alumnos[0]->id_curso; 
                 $tipo = $alumnos[0]->tipo_curso;
                 if($alumnos[0]->turnado == 'VINCULACION')$this->activar = true;
@@ -63,6 +64,12 @@ class grupoController extends Controller
                  ->where('tipo_curso',$tipo)
                  ->where('cursos.estado',true)
                  ->whereJsonContains('unidades_disponible', [$unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso','cursos.id');
+            
+                }else{ 
+                    $message = "No hay registro qwue mostrar para Grupo No.".$_SESSION['folio_grupo'];
+                    $_SESSION['folio_grupo'] = NULL;
+                    $this->activar = true;      
+               }
              
         }else{
             $_SESSION['folio_grupo'] = NULL;
@@ -206,7 +213,7 @@ class grupoController extends Controller
         $id = $request->id;
         if($id){
            //$result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id',$id)->update(['eliminado'=>true,'iduser_updated'=>$this->id_user]);
-           $result = DB::table('alumnos_registro')->where('id',$id)->delete();
+           $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id',$id)->delete();
         }else $result = false;
         //echo $result; exit;
         return $result;
