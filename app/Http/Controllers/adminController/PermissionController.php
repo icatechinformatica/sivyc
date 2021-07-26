@@ -8,6 +8,8 @@ use App\Models\Permission;
 use App\Models\Rol;
 use App\Models\PermisosRol;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PermissionController extends Controller
 {
@@ -19,8 +21,10 @@ class PermissionController extends Controller
     public function index()
     {
         //
-        $permisos = Permission::PAGINATE(3);
+        
+        $permisos = Permission::PAGINATE(15);
         return  view('layouts.pages_admin.permissions_roles', compact('permisos'));
+        
     }
 
     /**
@@ -172,7 +176,7 @@ class PermissionController extends Controller
     }
 
     public function permiso_rol(){
-        $rol = Rol::PAGINATE(5, ['id', 'name', 'slug', 'description']);
+        $rol = Rol::PAGINATE(15, ['id', 'name', 'slug', 'description']);
         // $permisos = Permission::PAGINATE(5);
         return  view('layouts.pages_admin.permiso_rol', compact('rol'));
     }

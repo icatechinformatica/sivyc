@@ -73,7 +73,8 @@ Route::post('/instructor/espec-ins/guardar','webController\InstructorController@
 Route::post('/instructor/espec-ins/modificacion/guardar','webController\InstructorController@especval_mod_save')->name('especinstructor-modguardar');
 Route::post('/instructor/mod/perfilinstructor/guardar', 'webController\InstructorController@modperfilinstructor_save')->name('modperfilinstructor-guardar');
 Route::post('/instructor/alta-baja/save','webController\InstructorController@alta_baja_save')->name('instructor-alta-baja-save');
-
+Route::middleware(['auth'])->group(function(){
+Route::middleware(['admin'])->group(function () {
 Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegistradoModificarController@index')->name('alumno_registrado.modificar.index');
 Route::get('/alumnos_registrados/modificar/show/{id}', 'adminController\AlumnoRegistradoModificarController@edit')->name('alumno_registrado.modificar.show');
 Route::put('/alumnos_registrados/modificar/update/{id}', 'adminController\AlumnoRegistradoModificarController@update')->name('alumno_registrado.modificar.update');
@@ -85,6 +86,8 @@ Route::get('/registrados/consecutivos/index', 'adminController\AlumnoRegistradoM
 Route::get('/administracion/index', function () {
     return view('layouts.pages_admin.index');
 })->name('administracion.index');
+});
+});
 /**
 * UNIDADES DE CAPACITACION
 */
@@ -93,32 +96,36 @@ Route::get('/unidades/unidad_by_ubicacion/{ubicacion}', 'webController\UnidadCon
 /***
  * modificación de roles y permisos -- nuevos registros
  */
-Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
-Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
-Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
-Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
-Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
-Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');
-Route::get('/roles/create', 'adminController\RolesController@create')->name('roles.create');
-Route::get('/permisos/create', 'adminController\PermissionController@create')->name('permisos.crear');
-Route::get('/permisos/edit/{id}', 'adminController\PermissionController@edit')->name('permisos.editar');
-Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
-Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
-Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
-Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
-Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
-Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
-Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
-Route::put('/usuarios/profile/update/{id}', 'adminController\userController@update')->name('usuarios_permisos.update');
-Route::post('/permisos/store', 'adminController\PermissionController@storePermission')->name('permission.store');
-Route::put('/permisos/update/{id}', 'adminController\PermissionController@update')->name('permiso.update');
-Route::put('/usuarios/permisos/perfil/rol/{id}', 'adminController\userController@updateRol')->name('usuarios_permisos.rol.edit');
-Route::get('/personal/index', 'adminController\PersonalController@index')->name('personal.index');
-Route::get('/personal/create', 'adminController\PersonalController@create')->name('personal.crear');
-Route::post('/personal/store', 'adminController\PersonalController@store')->name('personal.store');
-Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
-Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
-Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
+Route::middleware(['auth'])->group(function(){
+Route::middleware(['admin'])->group(function(){
+    Route::get('/usuarios/permisos/index', 'adminController\userController@index')->name('usuario_permisos.index');
+    Route::get('/usuarios/permisos/perfil/{id}', 'adminController\userController@show')->name('usuarios_permisos.show');
+    Route::get('/usuarios/profile/{id}', 'adminController\userController@edit')->name('usuarios.perfil.modificar');
+    Route::get('/permisos/index', 'adminController\PermissionController@index')->name('permisos.index');
+    Route::get('/roles/index', 'adminController\RolesController@index')->name('roles.index');
+    Route::get('/roles/modificacion/{id}', 'adminController\RolesController@edit')->name('roles.edit');
+    Route::get('/roles/create', 'adminController\RolesController@create')->name('roles.create');
+    Route::get('/permisos/create', 'adminController\PermissionController@create')->name('permisos.crear');
+    Route::get('/permisos/edit/{id}', 'adminController\PermissionController@edit')->name('permisos.editar');
+    Route::get('/permisos/roles/index', 'adminController\PermissionController@permiso_rol')->name('permisos.roles.index');
+    Route::get('/gestor/permisos/roles/profile/{id}', 'adminController\PermissionController@gestorPermisosRoles')->name('gestor.permisos.roles');
+    Route::get('/usuarios/profile/create/new', 'adminController\userController@create')->name('usuarios.perfil.crear');
+    Route::post('/usuarios/profile/store', 'adminController\userController@store')->name('usuarios.perfil.store');
+    Route::post('/gestor/permisos/roles/profile/add', 'adminController\PermissionController@store')->name('gestor.permisos.roles.create');
+    Route::post('/roles/create/store', 'adminController\RolesController@store')->name('roles.store');
+    Route::put('/roles/modificacion/update/{id}', 'adminController\RolesController@update')->name('roles.update');
+    Route::put('/usuarios/profile/update/{id}', 'adminController\userController@update')->name('usuarios_permisos.update');
+    Route::post('/permisos/store', 'adminController\PermissionController@storePermission')->name('permission.store');
+    Route::put('/permisos/update/{id}', 'adminController\PermissionController@update')->name('permiso.update');
+    Route::put('/usuarios/permisos/perfil/rol/{id}', 'adminController\userController@updateRol')->name('usuarios_permisos.rol.edit');
+    Route::get('/personal/index', 'adminController\PersonalController@index')->name('personal.index');
+    Route::get('/personal/create', 'adminController\PersonalController@create')->name('personal.crear');
+    Route::post('/personal/store', 'adminController\PersonalController@store')->name('personal.store');
+    Route::get('/organo/organo_administrativo/{id}', 'adminController\PersonalController@getAdscripcion');
+    Route::get('/personal/edit/{id}', 'adminController\PersonalController@edit')->name('personal.edit');
+    Route::put('/personal/update/{id}', 'adminController\PersonalController@update')->name('personal.update');
+});
+});
 /**
  * UNIDADES DE CAPACITACION
  */
@@ -186,8 +193,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')
         ->name('alumnos.index')->middleware('can:alumnos.index');
 
-    Route::get('alumnos/sid', 'webController\AlumnoController@create')
+        Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
+        Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.csid');
+        Route::get('alumnos/sid', 'webController\AlumnoController@create')
         ->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
+    Route::get('alumnos/municipio_nov', 'webController\AlumnoController@showlm');
     Route::get('alumnos/sid/cerss', 'webController\AlumnoController@createcerss')->name('preinscripcion.cerss');
     Route::post('alumnos/sid/cerss/save', 'webController\AlumnoController@storecerss')->name('preinscripcion.cerss.save'); // guardar preiscripcion cerss
     Route::get('alumnos/sid/cerss/show/{id}', 'webController\AlumnoController@showCerss')->name('preinscripcion.cerss.show');
@@ -209,7 +219,7 @@ Route::middleware(['auth'])->group(function () {
     // modificar la preinscripcion
     Route::get('alumnos/modificar/sid/{id}', 'webController\AlumnoController@showUpdate')->name('alumnos.presincripcion-modificar');
     Route::get('alumnos/modificar/jefe-unidad/sid/{id}', 'webController\AlumnoController@modifyUpdateChief')->name('alumnos.modificar-jefe-unidad');
-    Route::put('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
+    Route::post('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
     Route::put('alumnos/sid/modificar/jefe-unidad/{idAspirante}', 'webController\AlumnoController@updateSidJefeUnidad')->name('sid.modificar-jefe-unidad')->middleware('can:alumnos.inscripcion-jefe-unidad-update');
     Route::get('alumnos/sid/documento/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoSid')->name('documento.sid');
     Route::get('alumnos/sid/documento/cerrs/{nocontrol}', 'webController\AlumnoRegistradoController@getDocumentoCerrsSid')->name('documento.sid_cerrs');

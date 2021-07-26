@@ -1,5 +1,5 @@
 <!--Creado por Daniel Méndez Cruz-->
-@extends('theme.principal.dashboard')
+@extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
 @section('title', 'PERSONAL RECURSOS HUMANOS | Sivyc Icatech')
 <!--seccion css-->
