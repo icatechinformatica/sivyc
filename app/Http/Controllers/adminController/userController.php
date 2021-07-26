@@ -20,7 +20,7 @@ class userController extends Controller
     public function index()
     {
         //
-        $usuarios = User::PAGINATE(25);
+        $usuarios = User::PAGINATE(20);
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
