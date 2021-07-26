@@ -210,7 +210,7 @@ class aperturaController extends Controller
                         //VALIDANDO INSTRUCTOR
                        $existe_instructor = DB::table('tbl_cursos')->where('folio_grupo','<>',$_SESSION['folio'])->where('curp', $instructor->curp)
                             ->where('inicio',$request->inicio)->where('termino',$request->termino)->where('hini',$hini)->where('hfin',$hfin)
-                            ->where('dia', trim($request->dia))
+                            ->where('dia', trim($request->dia))->where('status_curso','<>','CANCELADO')
                             ->exists();
                         
                         if(!$existe_instructor){                            
