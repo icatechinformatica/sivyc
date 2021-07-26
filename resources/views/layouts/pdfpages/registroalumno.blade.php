@@ -95,14 +95,14 @@
             
                 <tr>
                     <td colspan="2" style="padding-top: 5px;"><b> NOMBRE DEL ASPIRANTE: </b></td>
-                    <td colspan="2" style="padding-top: 5px;">{{ $alumnos->apellido_paterno }} <br><b> PRIMER APELLIDO</b></td>
-                    <td colspan="2" style="padding-top: 5px;">{{ $alumnos->apellido_materno }} <br><B> SEGUNDO APELLIDO</B></td>
-                    <td style="padding-top: 5px;">{{ $alumnos->nombrealumno }} <br><B> NOMBRE(S)</B></td>
+                    <td colspan="2" style="padding-top: 5px;">{{ strtoupper($alumnos->apellido_paterno) }} <br><b> PRIMER APELLIDO</b></td>
+                    <td colspan="2" style="padding-top: 5px;">{{ strtoupper($alumnos->apellido_materno) }} <br><B> SEGUNDO APELLIDO</B></td>
+                    <td style="padding-top: 5px;">{{ strtoupper($alumnos->nombrealumno) }} <br><B> NOMBRE(S)</B></td>
                 </tr>
                 <tr>
                     <td><b>SEXO: @php if($alumnos->sexo=="FEMENINO"){echo "M(X) H( )";} else {echo"M( ) H(X)";} @endphp</b></td>
                     <td><b>CURP:</b></td>
-                    <td>{{$alumnos->curp_alumno }}</td>
+                    <td>{{strtoupper($alumnos->curp_alumno) }}</td>
                     <td><b>EDAD:</b> </td>
                     <td>{{$edad}} AÑOS</td>
                     <td><b>TELEFONO:</b></td>
@@ -110,17 +110,17 @@
                 </tr>
                 <tr>
                     <td><b>DOMICILIO: </b></td>
-                    <td colspan="2">{{ $alumnos->domicilio }}</td>
+                    <td colspan="2">{{ strtoupper($alumnos->domicilio) }}</td>
                     <td colspan="2"><b>COLONIA O LOCALIDAD: </b></td>
-                    <td colspan="2">{{ $alumnos->colonia }}</td>
+                    <td colspan="2">{{ strtoupper($alumnos->colonia) }}</td>
                 </tr>
                 <tr>
                     <td><b>C.P.: </b></td>
                     <td>{{ $alumnos->cp }}</td>
                     <td colspan="2"><b>MUNICIPIO: </b> </td>
-                    <td>{{ $alumnos->municipio }}</td>
+                    <td>{{strtoupper($alumnos->municipio)  }}</td>
                     <td><b>ESTADO: </b></td>
-                    <td>{{ $alumnos->estado }}</td>
+                    <td>{{ strtoupper($alumnos->estado) }}</td>
                 </tr>
                 <tr>
                     <td colspan="7"><b>ESTADO CIVIL:</b> @php if($alumnos->estado_civil=="SOLTERO"){echo "SOLTERO(X) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
@@ -156,13 +156,13 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="padding-top: 5px;">ESPECIALIDAD A LA QUE DESEAN INSCRIBIRSE:</td>
-                    <td colspan="2" style="padding-top: 5px;">{{ $alumnos->especialidad }}</td>
+                    <td colspan="2" style="padding-top: 5px;">{{ strtoupper($alumnos->especialidad) }}</td>
                 </tr>
                 <tr>
                     <td>CURSO:</td>
-                    <td>{{ $alumnos->nombre_curso }}</td>
+                    <td>{{ strtoupper($alumnos->nombre_curso) }}</td>
                     <td>TIPO:</td>
-                    <td>{{$alumnos->tipo_curso}}</td>
+                    <td>{{strtoupper($alumnos->tipo_curso)}}</td>
                 </tr>
                 <tr>
                     <td>HORARIO: </td>
@@ -172,7 +172,7 @@
                 </tr>
                 <tr>
                     <td>ÚLTIMO GRADO DE ESTUDIOS:</td>
-                    <td colspan="3">{{$alumnos->ultimo_grado_estudios}}</td>
+                    <td colspan="3">{{strtoupper($alumnos->ultimo_grado_estudios)}}</td>
                 </tr>
                 <tr>
                     <td colspan="4"><b>DOCUMENTACIÓN ENTREGADA: </b><br>
@@ -188,15 +188,15 @@
                 </tr>
                 <tr>
                     <td><b>EMPRESA DONDE TRABAJA: </b></td>
-                    <td>{{ $alumnos->empresa_trabaja }}</td>
+                    <td>{{ strtoupper($alumnos->empresa_trabaja) }}</td>
                     <td><b>PUESTO: </b></td>
-                    <td>{{ $alumnos->puesto_empresa }}</td>
+                    <td>{{strtoupper($alumnos->puesto_empresa) }}</td>
                 </tr>
                 <tr>
                     <td><b>ANTIGUEDAD: </b></td>
                     <td>{{ $alumnos->antiguedad }}</td>
                     <td><b>DIRECCIÓN: </b></td>
-                    <td>{{ $alumnos->direccion_empresa }}</td>
+                    <td>{{ strtoupper($alumnos->direccion_empresa) }}</td>
                 </tr>
                 <tr>
                     <td colspan="4" style="font_size: 8px;border: 1px solid black;border-collapse: collapse;">NOTA: LA DOCUMENTACIÓN DEBERA ENTREGARSE EN ORIGINAL Y COPIA PARA SU COTEJO.</td>
@@ -255,9 +255,9 @@
         <br><br><br>
         <table class="table1">
             <tr>
-                <td>{{ $alumnos->apellido_paterno }} {{ $alumnos->apellido_materno }} {{ $alumnos->nombrealumno }}</td>
+                <td>{{ strtoupper($alumnos->apellido_paterno) }} {{ strtoupper($alumnos->apellido_materno) }} {{ strtoupper($alumnos->nombrealumno) }}</td>
                 <td></td>
-                <td align="right" style="text-align: center">{{ $alumnos->realizo }}</td>
+                <td align="right" style="text-align: center">{{ strtoupper($alumnos->realizo) }}</td>
             </tr>
             <tr>
                 <td class="p"><b> NOMBRE Y FIRMA DEL ASPIRANTE</b></td>
@@ -299,11 +299,11 @@
             <table>
                 <tr>
                     <td style="padding-top: 5px;"><b>ASPIRANTE:</b></td>
-                    <td colspan="5" style="padding-top: 5px;">{{ $alumnos->apellido_paterno }} {{ $alumnos->apellido_materno }} {{ $alumnos->nombrealumno }}</td>
+                    <td colspan="5" style="padding-top: 5px;">{{ strtoupper($alumnos->apellido_paterno) }} {{ strtoupper($alumnos->apellido_materno) }} {{ strtoupper($alumnos->nombrealumno) }}</td>
                 </tr>
                 <tr>
                     <td><b>CURSO:</b></td>
-                    <td>{{ $alumnos->nombre_curso }}</td>
+                    <td>{{ strtoupper($alumnos->nombre_curso) }}</td>
                     <td><b>HORARIO:</b></td>
                     <td>{{$alumnos->horario }}</td>
                     <td><b>GRUPO:</b></td>
@@ -313,7 +313,7 @@
             <br><br>
             <table>
                 <tr>
-                    <td><b>{{ $alumnos->realizo }}</b></td>
+                    <td><b>{{ strtoupper($alumnos->realizo) }}</b></td>
                     <td></td>
                     <td></td>
                 </tr>
