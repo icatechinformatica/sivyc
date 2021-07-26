@@ -136,7 +136,7 @@
                 <tr>
                     <td colspan="2">@php if($alumnos->discapacidad=="VISUAL"){echo "VISUAL(X)";}else{echo "VISUAL( )";} @endphp</td>
                     <td colspan="2"> @php if($alumnos->discapacidad=="AUDITIVA"){echo "AUDITIVA(X)";}else{echo "AUDITIVA( )";} @endphp</td>
-                    <td colspan="2">@php if($alumnos->discapacidad=="DE COMUNICACION"){echo "DE COMUNICACION(X)";}else{echo "DE COMUNICACION( )";} @endphp</td>
+                    <td colspan="2">@php if($alumnos->discapacidad=="DE COMUNICACIÓN"){echo "DE COMUNICACIÓN(X)";}else{echo "DE COMUNICACIÓN( )";} @endphp</td>
                     <td></td>
                 </tr>
                 <tr>
@@ -213,7 +213,7 @@
             </tr>
             <tr>
                 <td><b>@if($alumnos->medio_entero=="PRENSA") (X) @else() ( ) @endif PRENSA </b></td>
-                <td><b>@if($alumnos->medio_entero=="TELEVISION") (X) @else() ( )  @endif TELEVISION</b></td>
+                <td><b>@if($alumnos->medio_entero=="TELEVISIÓN") (X) @else() ( )  @endif TELEVISIÓN</b></td>
                 <td><b>@if($alumnos->medio_entero=="FOLLETOS,CARTELES,VOLANTE") (X)  @else() ( ) @endif FOLLETOS,CARTELES,VOLANTES</b></td>
             </tr>
             <tr>
@@ -222,9 +222,9 @@
                 <td></td>
             </tr>
             <tr>
-                <td><b>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISION"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") (X)  @else() ( ) @endif OTROS</b></td>
+                <td><b>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISIÓN"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") (X)  @else() ( ) @endif OTROS</b></td>
                 <td><b>ESPECIFIQUE:</b></td>
-                <td>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISION"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") {{$alumnos->medio_entero}} @else() @endif</td>
+                <td>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISIÓN"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") {{$alumnos->medio_entero}} @else() @endif</td>
             </tr>
             <tr>
                 <td colspan="3"><b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</b></td>
@@ -232,21 +232,21 @@
             <tr>
                 <td><b> @if($alumnos->sistema_capacitacion_especificar=="EMPLEARSE O AUTOEMPLEARSE") (X) @else() ( ) @endif PARA EMPLEARSE O AUTOEMPLEARSE </b></td>
                 <td></td>
-                <td><b> @if($alumnos->sistema_capacitacion_especificar=="MEJORAR SU SITUACION EN EL TRABAJO") (X) @else() ( ) @endif PARA MEJORAR SU SITUACION EN EL TRABAJO</b></td>
+                <td><b> @if($alumnos->sistema_capacitacion_especificar=="MEJORAR SU SITUACIÓN EN EL TRABAJO") (X) @else() ( ) @endif PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</b></td>
             </tr>
             <tr>
                 <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="AHORRAR GASTOS AL INGRESO FAMILIAR") (X) @else() ( ) @endif PARA AHORRAR GASTOS AL INGRESO FAMILIAR</b></td>
             </tr>
             <tr>
-                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCION EDUCATIVA") (X) @else() ( ) @endif POR ESTAR EN ESPERA DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA</b></td>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA") (X) @else() ( ) @endif POR ESTAR EN ESPERA DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA</b></td>
             </tr>
             <tr>
-                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="DISPOSICION DE TIEMPO LIBRE") (X) @else() ( ) @endif POR DISPOSICIÓN DE TIEMPO LIBRE</b></td>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif POR DISPOSICIÓN DE TIEMPO LIBRE</b></td>
             </tr>
             <tr>
-                <td><b>@if($alumnos->sistema_capacitacion_especificar!="EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="MEJORAR SU SITUACION EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCION EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="DISPOSICION DE TIEMPO LIBRE") (X) @else() ( ) @endif OTROS</b></td>
+                <td><b>@if($alumnos->sistema_capacitacion_especificar!="EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif OTROS</b></td>
                 <td><b>ESPECIFIQUE:</b></td>
-                <td>@if($alumnos->sistema_capacitacion_especificar!="EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="MEJORAR SU SITUACION EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCION EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="DISPOSICION DE TIEMPO LIBRE") {{$alumnos->sistema_capacitacion_especificar}} @else() @endif</td>
+                <td>@if($alumnos->sistema_capacitacion_especificar!="EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="DISPOSICIÓN DE TIEMPO LIBRE") {{$alumnos->sistema_capacitacion_especificar}} @else() @endif</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: center;">EL ASPIRANTE SE COMPROMETE A CUMPLIR CON LAS NORMAS Y DISPOSICIONES DICTADAS POR LAS AUTORIDADES DE LA UNIDAD</td>
