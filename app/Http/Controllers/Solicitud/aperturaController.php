@@ -423,14 +423,14 @@ class aperturaController extends Controller
    }
    
    public function genera_matricula($curp, $cct){ 
-        $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado',true)->where('curp',$curp)->value('no_control');
+        $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado',false)->where('curp',$curp)->value('no_control');
         $matricula = NULL;
         if(!$matricula_sice){ 
             $matricula_pre = DB::table('alumnos_pre')->where('curp',$curp)->value('matricula');
             if(!$matricula_pre){
                 $anio = date('y');
                 $clave = $anio.substr($cct,0,2).substr($cct,5,9);
-                $max_sice = DB::table('registro_alumnos_sice')->where('eliminado',true)->where('no_control','like',$clave.'%')->max(DB::raw('no_control'));
+                $max_sice = DB::table('registro_alumnos_sice')->where('no_control','like',$clave.'%')->max(DB::raw('no_control'));
                 $max_pre = DB::table('alumnos_pre')->where('matricula','like',$clave.'%')->max('matricula');
                     
                 if($max_sice > $max_pre) $maX = $max_sice;
@@ -440,7 +440,10 @@ class aperturaController extends Controller
                 $max =  str_pad(intval(substr($max,9,13))+1, 4, "0", STR_PAD_LEFT);
                 $matricula = $clave.$max;
             }else $matricula = $matricula_pre;
-        }else $matricula = $matricula_sice;
+        }else{
+            $matricula = $matricula_sice;
+            DB::table('registro_alumnos_sice')->where('curp',$curp)->update(['eliminado'=>true]);
+        } 
         return $matricula;
     }
 }
