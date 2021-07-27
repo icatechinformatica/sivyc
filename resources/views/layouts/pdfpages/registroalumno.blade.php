@@ -230,23 +230,23 @@
                 <td colspan="3"><b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</b></td>
             </tr>
             <tr>
-                <td><b> @if($alumnos->sistema_capacitacion_especificar=="EMPLEARSE O AUTOEMPLEARSE") (X) @else() ( ) @endif PARA EMPLEARSE O AUTOEMPLEARSE </b></td>
+                <td><b> @if($alumnos->sistema_capacitacion_especificar=="PARA EMPLEARSE O AUTOEMPLEARSE") (X) @else() ( ) @endif PARA EMPLEARSE O AUTOEMPLEARSE </b></td>
                 <td></td>
-                <td><b> @if($alumnos->sistema_capacitacion_especificar=="MEJORAR SU SITUACIÓN EN EL TRABAJO") (X) @else() ( ) @endif PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</b></td>
+                <td><b> @if($alumnos->sistema_capacitacion_especificar=="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO") (X) @else() ( ) @endif PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</b></td>
             </tr>
             <tr>
-                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="AHORRAR GASTOS AL INGRESO FAMILIAR") (X) @else() ( ) @endif PARA AHORRAR GASTOS AL INGRESO FAMILIAR</b></td>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="PARA AHORRAR GASTOS AL INGRESO FAMILIAR") (X) @else() ( ) @endif PARA AHORRAR GASTOS AL INGRESO FAMILIAR</b></td>
             </tr>
             <tr>
-                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA") (X) @else() ( ) @endif POR ESTAR EN ESPERA DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA</b></td>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA") (X) @else() ( ) @endif POR ESTAR EN ESPERA DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA</b></td>
             </tr>
             <tr>
-                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif POR DISPOSICIÓN DE TIEMPO LIBRE</b></td>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif POR DISPOSICIÓN DE TIEMPO LIBRE</b></td>
             </tr>
             <tr>
-                <td><b>@if($alumnos->sistema_capacitacion_especificar!="EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif OTROS</b></td>
+                <td><b>@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif OTROS</b></td>
                 <td><b>ESPECIFIQUE:</b></td>
-                <td>@if($alumnos->sistema_capacitacion_especificar!="EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="DISPOSICIÓN DE TIEMPO LIBRE") {{$alumnos->sistema_capacitacion_especificar}} @else() @endif</td>
+                <td>@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") {{$alumnos->sistema_capacitacion_especificar}} @else() @endif</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: center;">EL ASPIRANTE SE COMPROMETE A CUMPLIR CON LAS NORMAS Y DISPOSICIONES DICTADAS POR LAS AUTORIDADES DE LA UNIDAD</td>
