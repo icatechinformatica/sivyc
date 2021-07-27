@@ -38,7 +38,7 @@
             <img class="izquierda" src='img/logohorizontalica1.jpg'>
             <img class="derecha" src='img/chiapas.png'>
             <br>
-            <h6>"2021, AÑO DE LA INDEPENDENCIA"</h6>
+            <h6>{{$leyenda}}</h6>
     </header>
     <footer>  
         <script type="text/php">

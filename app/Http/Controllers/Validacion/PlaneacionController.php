@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Validacion;
 
-use App\Http\Controllers\Controller;
+use PDF;
+use Carbon\Carbon;
+use App\Models\Instituto;
+use App\Models\tbl_curso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use PDF;
-use App\Models\tbl_curso;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 
 class PlaneacionController extends Controller
@@ -319,6 +320,8 @@ class PlaneacionController extends Controller
         }        
         if (isset($generarMemo)) {
             # hacemos un switch...
+            $leyenda = Instituto::first();
+            $leyenda = $leyenda->distintivo;
             switch ($generarMemo) {
                 case 'memorandumPositivo':
                     # generamos un switch
@@ -363,7 +366,7 @@ class PlaneacionController extends Controller
                     $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
                     $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
                     $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport'));
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport', 'leyenda'));
                     return $pdf->stream('Memorandum_respuesta_satisfactorio_planeacion.pdf');
                     break;
                 case 'memorandumNegativo':
@@ -409,7 +412,7 @@ class PlaneacionController extends Controller
                     $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
                     $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
                     $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport'));
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport', 'leyenda'));
                     return $pdf->stream('Memorandum_termino_negativo_planeacion.pdf');
                     break;
                 default:

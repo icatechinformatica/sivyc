@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Validacion;
 
-use App\Http\Controllers\Controller;
+use PDF;
+use Carbon\Carbon;
+use App\Models\Instituto;
+use App\Models\tbl_curso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use function GuzzleHttp\json_decode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use PDF;
-use App\Models\tbl_curso;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
-use PhpParser\Node\Stmt\Foreach_;
-
-use function GuzzleHttp\json_decode;
 
 class validacionDtaController extends Controller
 {
@@ -414,7 +413,9 @@ class validacionDtaController extends Controller
                                     'pjcyc',
                                     'ubicacion'
                                 )->where('unidad', $unidadSeleccionada)->first();
-                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray'));
+                                $leyenda = Instituto::first();
+                                $leyenda = $leyenda->distintivo;
+                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda'));
                                 return $pdf->download('Memo_Unidad.pdf');
                             } else {
                                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
@@ -774,7 +775,9 @@ class validacionDtaController extends Controller
             $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
             $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
             $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos'));
+            $leyenda = Instituto::first();
+            $leyenda = $leyenda->distintivo;
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos', 'leyenda'));
             // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
             return $pdf->download('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {

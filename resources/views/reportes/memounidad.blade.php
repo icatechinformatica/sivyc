@@ -38,7 +38,7 @@
             <img class="izquierda" src="{{ public_path('img/logohorizontalica1.jpg') }}">
             <img class="derecha" src='img/chiapas.png'>
             <br>
-            <h6>"2021, AÑO DE LA INDEPENDENCIA"</h6>
+            <h6>{{$leyenda}}</h6>
     </header>
     <footer>  
         <script type="text/php">
@@ -58,13 +58,13 @@
         </script>
         <table class="tablad" bgcolor="black">
                 <tr>
-                    <td colspan="4" style="color:white;"><b>AV. PASO LIMON NO. 1581 JUNTO AL COLEGIO LAURELES </b></td>
+                    <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td>
                 </tr> 
                 <tr>
-                    <td colspan="4" style="color:white;"><b>COL. COMISION FEDERAL DE ELECTRICIDAD C.P. 29049.</b></td>
+                    <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="color:white;"><b>TUXTLA GUTIERREZ, CHIAPAS</b></td>
+                    <td colspan="4" style="color:white;"><b>Email: dtecnicaacademica@gmail.com</b></td>
                 </tr>
         </table>
                

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
+use App\Models\Instituto;
 use App\Models\tbl_curso;
 use Hamcrest\Core\HasToString;
 
@@ -633,7 +634,9 @@ class ftcontroller extends Controller
                     ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA', DB::raw("observaciones_formato_t->'OBSERVACION_PARA_FIRMA'->>'OBSERVACION_FIRMA'"), 'arc', 'nota', 'observaciones')->get();
                     $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico',
                     'pvinculacion','jcyc','pjcyc', 'direccion', 'ubicacion', 'codigo_postal')->where('unidad',$_SESSION['unidad'])->whereNotIn('direccion', ['N/A', 'null'])->first();
-                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'elaboro'));
+                    $leyenda = Instituto::first();
+                    $leyenda = $leyenda->distintivo;
+                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'elaboro', 'leyenda'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
