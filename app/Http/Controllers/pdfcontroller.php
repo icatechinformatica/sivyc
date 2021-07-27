@@ -46,6 +46,7 @@ class pdfcontroller extends Controller
         $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
             DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
             'motivo','cp','ze','tcapacitacion','tipo_curso');
+        $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); //dd($distintivo);
         if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
         $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
 
@@ -54,7 +55,7 @@ class pdfcontroller extends Controller
             if($_SESSION['unidad'])$reg_unidad = $reg_unidad->where('unidad',$_SESSION['unidad']);
             $reg_unidad = $reg_unidad->first();
 
-            $pdf = PDF::loadView('reportes.arc01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura'));
+            $pdf = PDF::loadView('reportes.arc01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('apertura.pdf');
         }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
@@ -62,6 +63,7 @@ class pdfcontroller extends Controller
 
     public function ape02($memo_apertura,$fecha_termino) {
         $fecha_memo=date('d-m-Y',strtotime($fecha_termino));
+        $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
 
         $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
             'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso');
@@ -73,7 +75,7 @@ class pdfcontroller extends Controller
             if($_SESSION['unidad'])$reg_unidad = $reg_unidad->where('unidad',$_SESSION['unidad']);
             $reg_unidad = $reg_unidad->first();
 
-            $pdf = PDF::loadView('reportes.arc02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura'));
+            $pdf = PDF::loadView('reportes.arc02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('apertura.pdf');
         }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;

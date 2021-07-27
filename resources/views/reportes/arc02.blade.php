@@ -52,6 +52,7 @@
                 <div align=center><br> 
                     <font size=1><b>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
                     <font size=1>DEPARTAMENTO ACADEMICO</font><br/>
+                    <font size=1>{{$distintivo}}</font><br/>
                     <font size=1>ARC-02</font><br/>                                              
                 </div><br>
             </div>
