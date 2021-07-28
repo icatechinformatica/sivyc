@@ -89,7 +89,7 @@ class aperturaController extends Controller
             
             // var_dump($grupo);exit; 
             if($grupo){
-                $_SESSION['folio'] = $grupo->folio_grupo;
+                if($grupo->clave==0) $_SESSION['folio'] = $grupo->folio_grupo;
                 $anio_hoy = date('y');
 
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"))->where('i.folio_grupo',$valor)->get();                
@@ -180,7 +180,7 @@ class aperturaController extends Controller
                     ->withInput();
         }else
         */
-
+        
         if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){                                
                 $horas = (strtotime($request->hfin)-strtotime($request->hini))/3600;
                 if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){               
@@ -267,9 +267,10 @@ class aperturaController extends Controller
                                 $dura = $grupo->dura;
                                 $termino =  $request->termino;
                             }
+                            
 
-
-                            $result = tbl_curso::updateOrCreate(
+                            //$result = tbl_curso::updateOrCreate(
+                            $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
                                 ['folio_grupo' => $_SESSION['folio']],
                                 ['id'=>$ID, 'cct' => $unidad->cct,
                                 'unidad' => $grupo->unidad,
@@ -355,9 +356,11 @@ class aperturaController extends Controller
    }
    
    public function aperturar(Request $request){///PROCESO DE INSCRIPCION        
-        $message = NULL;
-        if($_SESSION['alumnos']){
-                $grupo = DB::table('tbl_cursos as c')->where('c.folio_grupo',$_SESSION['folio'])->first();                
+        $result =  NULL;
+        $message = "No hay datos para Aperturar.";
+        if($_SESSION['alumnos'] AND $_SESSION['folio']){
+            $grupo = DB::table('tbl_cursos as c')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('c.folio_grupo',$_SESSION['folio'])->first();
+            if($grupo){
                 $abrinscri = $this->abrinscri();                
                 $result = false;               
                 $bandera=0;    
@@ -376,7 +379,7 @@ class aperturaController extends Controller
                             DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',$_SESSION['folio'])->update(['no_control'=>$matricula]);
                         
                         $result = Inscripcion::updateOrCreate(
-                        ['matricula' =>  $matricula, 'id_curso' =>  $grupo->id],        
+                        ['matricula' =>  $matricula, 'id_curso' =>  $grupo->id, 'folio_grupo' =>  $grupo->folio_grupo],        
                         ['unidad' => $grupo->unidad,                    
                         'alumno' =>  $a->alumno,                    
                         'curso' =>  $grupo->curso,
@@ -391,8 +394,7 @@ class aperturaController extends Controller
                         'costo' =>  $a->costo,
                         'motivo' =>  null,
                         'status' =>  'INSCRITO',
-                        'realizo' =>  $this->realizo,
-                        'folio_grupo' =>  $grupo->folio_grupo,
+                        'realizo' =>  $this->realizo,                        
                         'id_pre' =>  $a->id_pre,
                         'id_cerss' =>  $a->id_cerss,
                         'fecha_nacimiento' =>  $a->fecha_nacimiento,
@@ -416,8 +418,8 @@ class aperturaController extends Controller
                         ]);
                     }
                 }
-                
-        }else $message = "No hay datos para Aperturar.";        
+            }                
+        }
         
         if($result) $message = "Operación Exitosa.";
         return redirect('solicitud/apertura')->with('message',$message);

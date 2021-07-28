@@ -69,7 +69,7 @@
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
                         <td class="text-center"> {{ $g->tcapacitacion }} </td>                                                
                         <td class="text-center"> {{ $g->turnado_solicitud }} </td>
-                        <td class="text-center"> {{ $g->status_curso }} </td>
+                        <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif </td>
                         <td> {{ $g->efisico }} </td>
                         <td class="text-left">
                             <div style="width:900px;">
