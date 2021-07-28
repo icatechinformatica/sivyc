@@ -19,7 +19,8 @@ class tbl_curso extends Model
     'modinstructor','nmunidad','nmacademico','observaciones','status','realizo','valido','arc',
     'tcapacitacion','status_curso','fecha_apertura','fecha_modificacion','costo','motivo_correccion',
     'pdf_curso','json_supervision','turnado','fecha_turnado','tipo_curso','id_especialidad','instructor_escolaridad',
-    'instructor_titulo','instructor_sexo','instructor_mespecialidad','medio_virtual','link_virtual','folio_grupo','id_municipio','clave_especialidad','id_cerss'
+    'instructor_titulo','instructor_sexo','instructor_mespecialidad','medio_virtual','link_virtual','folio_grupo',
+    'id_municipio','clave_especialidad','id_cerss','tdias'
 ];
 
     protected $hidden = ['created_at', 'updated_at'];

@@ -72,7 +72,7 @@ class aperturaController extends Controller
                 'tc.hini','tc.hfin','tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),
                 'tc.id_municipio','tc.status_curso','tc.dia','tc.inicio','tc.termino','tc.plantel',               
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss')
+                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','tc.tdias')
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
                 ->join('cursos as c','ar.id_curso','c.id')
                 ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
@@ -84,7 +84,7 @@ class aperturaController extends Controller
                 'ar.unidad','ar.horario','e.nombre','a.formacion_profesional','c.id_especialidad','c.memo_validacion',
                 'tc.hini','tc.hfin','tc.nota','tc.clave','tc.id_municipio','tc.status_curso','tc.dia','tc.inicio','tc.termino','tc.plantel',               
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave','tc.tipo_curso','ar.id_cerss')
+                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave','tc.tipo_curso','ar.id_cerss','tc.tdias')
                 ->first();
             
             // var_dump($grupo);exit; 
@@ -284,7 +284,8 @@ class aperturaController extends Controller
                                 'curso' => $grupo->curso,
                                 'inicio' => $request->inicio,
                                 'termino' => $termino,
-                                'dia' => $request->dia,
+                                'tdias' => $request->tdias,
+                                'dia' => $request->dia,                                
                                 'dura' => $dura,
                                 'hini' => $hini,
                                 'hfin' => $hfin,

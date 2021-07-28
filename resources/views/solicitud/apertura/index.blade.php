@@ -81,11 +81,11 @@
                 </div>   
             @endif 
             <div class="form-row" >
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label>Memor&aacute;ndum de Apertura:</label>
                     <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($munidad){{$munidad}}@else{{old('nombre')}}@endif"/>
                 </div>                
-                <div class="d-flex flex-row">
+                <div class="d-flex flex-row ">
                   <div class="p-2">HORARIO: <br /><input type="time" name='hini' id='hini' type="text" class="form-control" aria-required="true" value="{{$grupo->hini}}"/></div>
                   <div class="p-2"><br />A</div>
                   <div class="p-2"><br /><input type="time" name='hfin' id='hfin' type="text" class="form-control" aria-required="true" value="{{$grupo->hfin}}"/></div>
@@ -102,6 +102,10 @@
                 <div class="form-group col-md-2">
                     <label>Fecha T&eacute;rmino:</label>
                     <input type="date" id="termino" name="termino" value="{{ $grupo->termino }}" class="form-control" >
+                </div>
+                <div class="form-group col-md-1">
+                    <label>TOTAL DIAS:</label>
+                    <input name='tdias' id='tdias' type="text" class="form-control" aria-required="true" value="{{$grupo->tdias}}"/>
                 </div>
             </div>   
             <div class="form-row" >             
