@@ -177,8 +177,8 @@
                     <input name='efisico' id='efisico' type="text" class="form-control"  value="{{$grupo->efisico}}"/>
                 </div>
                 <div class="form-group col-md-5">
-                    <label>INSTRUCTOR VIGENTE:</label>
-                    {{ Form::select('instructor', $instructor, $grupo->id_instructor, ['id'=>'instructor','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -','disabled'=>$disabled] ) }}
+                    <label>INSTRUCTOR DISPONIBLE:</label>
+                    {{ Form::select('instructor', $instructor, $grupo->id_instructor, ['id'=>'instructor','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>                
             </div>
             <div class="form-row" >            
