@@ -23,9 +23,10 @@
                 <th scope="col" class="text-center">MUNICIPIO</th> 
                 <th scope="col" class="text-center">ZE</th> 
                 <th scope="col" class="text-center">DEPENDENCIA</th> 
-                <th scope="col" class="text-center">TIPO</th>                 
+                <th scope="col" class="text-center">TIPO</th>
                 <th scope="col" class="text-center">TURNADO</th>
-                <th scope="col" class="text-center">ESTATUS</th>          
+                <th scope="col" class="text-center">SOLICITUD</th>
+                <th scope="col" class="text-center">ESTATUS</th>
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
             </tr>
@@ -40,14 +41,14 @@
                 ?>
                 @foreach($grupos as $g)
                     <?php 
-                    if( $g->turnado_solicitud != 'UNIDAD' ) $activar = false;  
+                    if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) OR ($g->option =='ARC02'AND ($g->status_curso!='AUTORIZADO' OR $g->status!='NO REPORTADO' OR $g->turnado!='UNIDAD'))) $activar = false;  
                     
                     if( $g->turnado_solicitud == 'VINCULACION'  )$rojo = true; 
                     else $rojo = false                    
 
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
-                        <td class="text-center"> {{ $consec++ }}</td>
+                        <td class="text-center"> {{ $consec++ }}{{$g->status}}</td>
                         <td class="text-center"><div style="width:128px;"> {{ $g->folio_grupo}} </div> </td>
                         <td><div style="width:128px;"> {{ $g->clave}} </div> </td>              
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
@@ -70,6 +71,7 @@
                         <td class="text-center"> {{ $g->tcapacitacion }} </td>                                                
                         <td class="text-center"> {{ $g->turnado_solicitud }} </td>
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif </td>
+                        <td class="text-center"> {{ $g->status }} </td>
                         <td> {{ $g->efisico }} </td>
                         <td class="text-left">
                             <div style="width:900px;">
