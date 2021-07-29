@@ -70,7 +70,8 @@ class turnarAperturaController extends Controller
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
-            $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);            
+            $result = DB::table('alumnos_registro')->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
+            ->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);            
             //$_SESSION['folio'] = null;
            // unset($_SESSION['folio']);
            if($result){ 
@@ -97,13 +98,13 @@ class turnarAperturaController extends Controller
                             $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
                             $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);                    
                             if($alumnos){
-                                $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
+                                $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
                                 ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]);                                
                                               
                             }else $message = "Error al turnar la solictud, volver a intentar.";
                         break;
                         case "ARC02":    
-                            $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
+                            $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])->where('status_curso','AUTORIZADO')->where('turnado','UNIDAD')->where('status','NO REPORTADO')
                             ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc02' => $url_file]);    
                             //echo $result; exit;                      
                         break;
@@ -147,11 +148,12 @@ class turnarAperturaController extends Controller
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
                 
             if(count($reg_cursos)>0){     
+                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
                 $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');
                 if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);                            
                 $reg_unidad = $reg_unidad->first();            
                 
-                $pdf = PDF::loadView('solicitud.turnar.pdfARC01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura'));
+                $pdf = PDF::loadView('reportes.arc01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC01.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
@@ -170,14 +172,14 @@ class turnarAperturaController extends Controller
             $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
                 
             if(count($reg_cursos)>0){
-                $instituto = DB::table('tbl_instituto')->first();
+                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
                // var_dump($instituto);exit;
 
                 $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');                
                 if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);           
                 $reg_unidad = $reg_unidad->first();                
                     
-                $pdf = PDF::loadView('solicitud.turnar.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','instituto'));
+                $pdf = PDF::loadView('reportes.arc02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC02.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;   
