@@ -180,6 +180,7 @@ function dataFormatoT($unidad, $status, $fecha)
         ->where('ins.status', '=', 'INSCRITO')
         ->WHERE('c.clave', '!=', 'null')
         ->where('ins.calificacion', '>', '0')
+        ->where('m.id_estado', '=', '7')
         ->groupby(
             'c.id',
             'c.status',
@@ -405,6 +406,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
         ->where('ins.status', '=', 'INSCRITO')
         ->WHERE('c.clave', '!=', 'null')
         ->where('ins.calificacion', '>', '0')
+        ->where('m.id_estado', '=', '7')
         ->groupby(
             'c.id',
             'c.status',
@@ -437,7 +439,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
             'ei.memorandum_validacion',
             'ip.grado_profesional',
             'ip.estatus',
-            'm.region'
+            'm.region',
         )
         ->distinct();
 
@@ -635,6 +637,7 @@ function dataFormatoTSaveData($id)
         ->where('ins.status', '=', 'INSCRITO')
         ->WHERE('c.clave', '!=', 'null')
         ->where('ins.calificacion', '>', '0')
+        ->where('m.id_estado', '=', '7')
         ->groupby(
             'c.id',
             'c.status',
