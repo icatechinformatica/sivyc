@@ -433,7 +433,7 @@ class aperturaController extends Controller
             if(!$matricula_pre){
                 $anio = date('y');
                 $clave = $anio.substr($cct,0,2).substr($cct,5,9);
-                $max_sice = DB::table('registro_alumnos_sice')->where('no_control','like',$clave.'%')->max(DB::raw('no_control'));
+                $max_sice = DB::table('registro_alumnos_sice')->where('eliminado',false)->where('no_control','like',$clave.'%')->max(DB::raw('no_control'));
                 $max_pre = DB::table('alumnos_pre')->where('matricula','like',$clave.'%')->max('matricula');
                     
                 if($max_sice > $max_pre) $maX = $max_sice;

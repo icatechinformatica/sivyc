@@ -20,7 +20,8 @@ $("#guardar" ).click(function() {
             tcurso: { required: true},
             medio_virtual: { required: true},
             link_virtual: { required: true},
-            instructor: { required: true}
+            instructor: { required: true},
+            tdias: { required: true}
         }
     }); 
 } ); 
