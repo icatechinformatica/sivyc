@@ -44,11 +44,11 @@
                 @endphp
             @endif  
             <div id="wrappertop">
-                <div align=center><br> 
-                    <font size=1><b>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }} <br/>
-                    <font size=1>DEPARTAMENTO ACADEMICO</font><br/>
-                    <font size=1>{{$distintivo}}</font><br/>
-                    <font size=1>ARC-01</font>                       
+                <div align=center><br>
+                    <font size=1><b>{{$distintivo}}</b></font><br/> 
+                    <font size=1><b>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}</b> <br/>
+                    <font size=1><b>DEPARTAMENTO ACADEMICO</b></font><br/>
+                    <font size=1><b>ARC-01</b></font>                       
                 </div><br><br><br>
             </div>
             <table class="tablag">

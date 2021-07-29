@@ -668,8 +668,18 @@ class supreController extends Controller
     public function supre_pdf($id){
         $supre = new supre();
         $folio = new folio();
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data_supre = $supre::WHERE('id', '=', $id)->FIRST();
-        $data_folio = $folio::WHERE('id_supre', '=', $id)->WHERE('status', '!=', 'Cancelado')->GET();
+        $uj= supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
+                        'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso')
+                    ->WHERE('id_supre', '=', $id )
+                    ->WHERE('folios.status', '!=', 'Cancelado')
+                    ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                    ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                    ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                    ->GET();
+        $data_folio = $folio::WHERE('id_supre', '=', $id)->WHERE('status', '!=', 'Cancelado')->GET();   //dd($data_supre);
         $date = strtotime($data_supre->fecha);
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -693,7 +703,7 @@ class supreController extends Controller
         $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
         $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio','unidad'));
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio','unidad','distintivo','uj'));
         return  $pdf->stream('medium.pdf');
     }
 
@@ -743,9 +753,10 @@ class supreController extends Controller
     public function tablasupre_pdf($id){
         $supre = new supre;
         $curso = new tbl_curso;
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -771,7 +782,7 @@ class supreController extends Controller
         $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','distintivo'));
         $pdf->setPaper('A4', 'Landscape');
 
         return $pdf->stream('download.pdf');
@@ -786,7 +797,7 @@ class supreController extends Controller
         $i = 0;
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer')
+                        'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -794,7 +805,7 @@ class supreController extends Controller
                     ->LEFTJOIN('cursos','cursos.id','=','tbl_cursos.id_curso')
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
-        $data2 = supre::WHERE('id', '=', $id)->FIRST();
+        $data2 = supre::WHERE('id', '=', $id)->FIRST(); //dd($data[0]->tipo_curso);
 
         $cadwell = folio::SELECT('id_cursos')->WHERE('id_supre', '=', $id)
             ->WHERE('folios.status', '!=', 'Cancelado')
@@ -829,6 +840,7 @@ class supreController extends Controller
         $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
         $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
@@ -837,7 +849,7 @@ class supreController extends Controller
         $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
         $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos','distintivo'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 

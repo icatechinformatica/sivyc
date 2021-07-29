@@ -807,7 +807,8 @@ class ContratoController extends Controller
 
     public function solicitudpago_pdf($id){
 
-        $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio',
+        $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso',
                               'tbl_cursos.termino','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
                               'instructores.apellidoPaterno','instructores.apellidoMaterno', 'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
@@ -850,8 +851,8 @@ class ContratoController extends Controller
         $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp3)->FIRST();
         //dd($data);
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director'));
-
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director','distintivo'));
+        $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 
     }
