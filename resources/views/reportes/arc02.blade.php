@@ -50,10 +50,10 @@
         @endif  
             <div id="wrappertop">
                 <div align=center><br> 
-                    <font size=1><b>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
-                    <font size=1>DEPARTAMENTO ACADEMICO</font><br/>
-                    <font size=1>{{$distintivo}}</font><br/>
-                    <font size=1>ARC-02</font><br/>                                              
+                    <font size=1><b>{{$distintivo}}</b></font><br/>
+                    <font size=1><b>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}</b><br/>
+                    <font size=1><b>DEPARTAMENTO ACADEMICO</b></font><br/>
+                    <font size=1><b>ARC-02</b></font><br/>                                              
                 </div><br>
             </div>
             <table class="tablag">
@@ -83,7 +83,7 @@
             </table>
             
             
-            <br><br><br>
+            <br>
             <div class="table-responsive-sm">
                 <table class="tablas">
                     <tbody>                        
@@ -101,6 +101,7 @@
                             <th rowspan="2">ESPACIO FISICO</th>
                             <th rowspan="2">MOTIVO</th>
                             <th rowspan="2">SOLICITA</th>
+                            <th rowspan="2">OBSERVACIONES</th>
                         </tr>  
                         <tr> 
                             <th >PRES<br>EN</th>                 
@@ -109,19 +110,20 @@
                         @foreach($reg_cursos as $a)         
                             <tr>
                                 <th>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION EXTRAORDINARIA';} @endphp</th>
-                                <th style="width: 20%;">{{ $a->curso }}</th>
+                                <th style="width: 15%;">{{ $a->curso }}</th>
                                 <th>{{ $a->mod }}</th>                           
                                 <th>@if($a->tcapacitacion=="PRESENCIAL"){{ "X" }}@endif</th>
                                 <th>@if($a->tcapacitacion=="A DISTANCIA"){{ "X" }}@endif</th>
                                 <th>{{ $a->dura }}</th>
                                 <th style="width:10%;">{{ $a->clave }}</th>
                                 <th style="width: 5%;">{{ $a->mvalida }}</th>
-                                <th style="width: 20%;">{{ $a->nombre }}</th>    
+                                <th style="width: 15%;">{{ $a->nombre }}</th>    
                                 <th style="width: 5%;">{{ $a->inicio }}</th>                           
                                 <th style="width: 5%;">{{ $a->termino }}</th>                           
                                 <th style="width:5%;">{{ $a->efisico }}</th>
                                 <th>{{ $a->motivo }}</th>
-                                <th>{{ $a->realizo }}</th>                          
+                                <th>{{ $a->realizo }}</th> 
+                                <th>{{$a->observaciones}}</th>                         
                             </tr> 
                         @endforeach
                     </tbody>                                               
