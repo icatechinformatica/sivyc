@@ -1,5 +1,5 @@
 <?php
-if ($data[0]->tipo_curso=='CURSO'){
+if ($data[0]->tipo_curso=='CERTIFICACION'){
     $tipo='CERTIFICACIÓN_EXTRAORDINARIA';
 }
 else{
