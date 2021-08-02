@@ -55,7 +55,7 @@ class grupoController extends Controller
             if(count($alumnos)>0){
                 $id_curso = $alumnos[0]->id_curso; 
                 $tipo = $alumnos[0]->tipo_curso;
-                if($alumnos[0]->turnado == 'VINCULACION')$this->activar = true;
+                if($alumnos[0]->turnado == 'VINCULACION' AND isset($this->data['cct_unidad']))$this->activar = true;
                 else $this->activar = false;
                 
                 if($alumnos) $curso = DB::table('cursos')->where('id',$id_curso)->first();
