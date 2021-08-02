@@ -107,7 +107,7 @@ class grupoController extends Controller
     
     public function save(Request $request){
         $curp = $request->busqueda;    
-        $matricula = $message = NULL;            
+        $matricula = $message = NULL;
         if($curp){
             $alumno = DB::table('alumnos_pre')->select('id as id_pre','matricula')->where('curp',$curp)->where('activo',true)->first();
             if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();           

@@ -29,6 +29,7 @@
                 <th scope="col" class="text-center">ESTATUS</th>
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
+                <th scope="col" class="text-center">AVISO</th>
             </tr>
         </thead>
         @if(count($grupos)>0) 
@@ -38,17 +39,28 @@
                     $activar = true; 
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
+                    $rojo = null;
                 ?>
                 @foreach($grupos as $g)
                     <?php 
-                    if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) OR ($g->option =='ARC02'AND ($g->status_curso!='AUTORIZADO' OR $g->status!='NO REPORTADO' OR $g->turnado!='UNIDAD'))) $activar = false;  
-                    
-                    if( $g->turnado_solicitud == 'VINCULACION'  )$rojo = true; 
-                    else $rojo = false                    
+                    $aviso = NULL;
+                    if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) 
+                        OR ($g->option =='ARC02'AND ($g->status_curso!='AUTORIZADO' OR $g->status!='NO REPORTADO' OR $g->turnado!='UNIDAD'))){
+                        $activar = false;                        
+                        $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
+                    }else if( $g->turnado_solicitud == 'VINCULACION'  ){
+                        $activar = false;
+                        $rojo = true; 
+                        $aviso = "GRUPO TURNADO A VINCULACIOÓN"; 
+                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion == null)) { 
+                        $activar = false;
+                        $rojo = true;                         
+                        $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
+                    }else $rojo = false;                   
 
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
-                        <td class="text-center"> {{ $consec++ }}{{$g->status}}</td>
+                        <td class="text-center"> {{ $consec++ }}</td>
                         <td class="text-center"><div style="width:128px;"> {{ $g->folio_grupo}} </div> </td>
                         <td><div style="width:128px;"> {{ $g->clave}} </div> </td>              
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
@@ -79,6 +91,7 @@
                                 @elseif($g->option =='ARC02') {{ $g->observaciones }} @endif
                             </div>    
                         </td>
+                        <td> <div style="width:200px;"> {{ $aviso }} </div></td>
                     </tr>
                  @endforeach                       
             </tbody>                   
