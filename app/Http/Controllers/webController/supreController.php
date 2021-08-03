@@ -176,10 +176,10 @@ class supreController extends Controller
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
-        if($directorio->supre_dest != NULL)
+        /*if($directorio->supre_dest != NULL)
         {
             $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
-        }
+        }*/
         if($directorio->supre_rem != NULL)
         {
             $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
@@ -192,21 +192,21 @@ class supreController extends Controller
         {
             $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         }
-        if($directorio->supre_ccp1 != NULL)
+       /* if($directorio->supre_ccp1 != NULL)
         {
             $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
         }
         if($directorio->supre_ccp2 != NULL)
         {
             $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
-        }
+        }*/
 
 
 
 
 
 
-        return view('layouts.pages.modsupre',compact('getsupre','getfolios','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio', 'unidadsel','unidadlist'));
+        return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist'));
     }
 
     public function solicitud_mod_guardar(Request $request)
