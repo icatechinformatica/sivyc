@@ -102,7 +102,7 @@ else{
         margin-bottom: 0px;
         }
         #wrapperbot {
-        
+
         background-position: 5px 10px;
         background-repeat: no-repeat;
         background-size: 32px;
@@ -184,48 +184,48 @@ else{
                 <table width="700"  class="table table-striped" id="table-one">
                     <thead>
                         <tr class="active">
-                            <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
-                            <td width="10px"><small style="font-size: 10px;">UNIDAD/ A.M. DE CAP.</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">SERVICIO</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">NOMBRE</small></td>
-                            <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
-                            <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
-                            <td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
-                            <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
-                            <td scope="col"><small style="font-size: 10px;">Fuente de Financiamiento</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">OBSERVACION</small></td>
+                            <td scope="col"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR</small></td>
+                            <td width="10px"><small style="font-size: 8px;">UNIDAD/ A.M. DE CAP.</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">SERVICIO</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">NOMBRE</small></td>
+                            <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
+                            <td scope="col"><small style="font-size: 8px;">HSM (horas)</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
+                            <td scope="col"><small style="font-size: 8px;">IVA 16%</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
+                            <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>
+                            <td scope="col"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
+                            <td scope="col" ><small style="font-size: 8px;">OBSERVACION</small></td>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $key=>$item)
                             <tr>
-                                <td><small style="font-size: 10px;">{{$item->folio_validacion}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->fecha}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->unidad}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->folio_validacion}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->fecha}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->unidad}}</small></td>
                                 @if ($item->tipo_curso=='CERTIFICACION')
-                                    <td><small style="font-size: 10px;">CERTIFICACIÓN_EXTRAORDINARIA</small></td>
+                                    <td><small style="font-size: 8px;">CERTIFICACIÓN EXTRAORDINARIA</small></td>
                                 @else
-                                    <td><small style="font-size: 10px;">CURSO</small></td>
+                                    <td><small style="font-size: 8px;">CURSO</small></td>
                                 @endif
-                                <td><small style="font-size: 10px;">{{$item->curso_nombre}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->clave}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->ze}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->dura}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->importe_hora}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->iva}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->curso_nombre}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->clave}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->ze}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->dura}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->importe_hora}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->iva}}</small></td>
                                 <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
                                 <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                <td><small style="font-size: 10px;">12101 Honorarios</small></td>
-                                <td><small style="font-size: 10px;">{{$item->importe_total}}</small></td>
+                                <td><small style="font-size: 8px;">12101 Honorarios</small></td>
+                                <td><small style="font-size: 8px;">{{$item->importe_total}}</small></td>
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
-                                <td style="text-align: center"><small>{{$recursos[$key]}}</small></td>
-                                <td><small style="font-size: 10px;">{{$item->comentario}}</small></td>
+                                <td style="text-align: center; font-size: 10px;"><small>{{$recursos[$key]}}</small></td>
+                                <td><small style="font-size: 8px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -234,18 +234,18 @@ else{
         </div>
         <div id="wrapperbot">
             <div align=center>
-                <small>{{$getfirmante->nombre}} {{$getfirmante->apellidoPaterno}} {{$getfirmante->apellidoMaterno}}</small>
+                <small>LUIS ALFONSO CRUZ VELASCO</small>
                 <br>________________________________________<br/>
-                <br><small>{{$getfirmante->puesto}}</small></b>
+                <br><small>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO</small></b>
             </div>
             <div><br><br><br>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Para su conocimiento</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-mismo fin</FONT><br/>
-                <FONT SIZE=0><b>C.c.p.</b>{{$getccp3->nombre}} {{$getccp3->apellidoPaterno}} {{$getccp3->apellidoMaterno}}.-{{$getccp3->puesto}}.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>FABIOLA LIZBETH ASTUDILLO REYES.-DIRECTORA GENERAL.-Para su conocimiento</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>SALVADOR BETANZOS SOLIS.-DIRECTOR DE PLANEACION.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-mismo fin</FONT><br/>
                 <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br>
                 <FONT SIZE=0><b>C.c.p.</b>Archivo/ Minutario</FONT>
-            </div> 
-        </div>     
+            </div>
+        </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
             <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
