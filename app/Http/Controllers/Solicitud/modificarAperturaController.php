@@ -67,8 +67,8 @@ class modificarAperturaController extends Controller
             $result = tbl_curso::where('id',$id_curso)->update(
                 ['nmunidad' => strtoupper($request->nmunidad),
                 'opcion' => $request->opcion,
-                'arc' => '02',                
-                'status_curso' => null,                
+                'motivo' => $request->opcion,
+                'arc' => '02',                               
                 'observaciones' => strtoupper($request->observaciones)
                 ]
             );

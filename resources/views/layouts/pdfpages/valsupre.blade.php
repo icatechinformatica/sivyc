@@ -1,3 +1,11 @@
+<?php
+if ($data[0]->tipo_curso=='CERTIFICACION'){
+    $tipo='CERTIFICACIÓN_EXTRAORDINARIA';
+}
+else{
+    $tipo='CURSO';
+}
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -7,22 +15,27 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style type="text/css">
-* {
+       *{
         box-sizing: border-box;
         }
 
         @page {
-            margin: 120px 40px 110px;
+            margin: 110px 40px 80px;
             }
             header { position: fixed;
-            left: 0px;
-            top: -90px;
-            right: 0px;
-            height: 60px;
-            background-color: white;
-            color: black;
-            text-align: center;
-            line-height: 60px;
+                left: 0px;
+                top: -80px;
+                right: 0px;
+                height: 60px;
+                background-color: white;
+                color: black;
+                text-align: center;
+                line-height: 60px;
+            }
+            body{
+                font-family: sans-serif;
+                font-size: 1.3em;
+                margin: 10px;
             }
             header h1{
             margin: 10px 0;
@@ -31,18 +44,15 @@
             margin: 0 0 10px 0;
             }
             footer {
-            position: fixed;
-            left: 0px;
-            bottom: -90px;
-            right: 0px;
-            height: 60px;
-            background-color: white;
-            color: black;
-            text-align: center;
-            line-height: 35px;
-            }
-            footer .page:after {
-                content: counter(page);
+                position: fixed;
+                left: 0px;
+                bottom: -40px;
+                right: 0px;
+                height: 60px;
+                background-color: white;
+                color: black;
+                text-align: center;
+                line-height: 60px;
             }
             footer table {
                 width: 100%;
@@ -81,19 +91,18 @@
 
         #wrappertop {
         margin-top: 0%;
-        background-image: url('img/search.png');
         background-position: 5px 10px;
         background-repeat: no-repeat;
         background-size: 32px;
         width: 100%;
         line-height: 60%;
         font-size: 16px;
-        padding: 12px 20px 12px 40px;
+        padding: 0px;
         border: 1px solid transparent;
         margin-bottom: 0px;
         }
         #wrapperbot {
-        background-image: url('img/search.png');
+        
         background-position: 5px 10px;
         background-repeat: no-repeat;
         background-size: 32px;
@@ -142,38 +151,35 @@
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <br><h6>"2021, Año de la Independencia"</h6>
         </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
-        </footer>
-        <div id="wrappertop">
-            <div align=center> <FONT SIZE=0><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS<br/>
-                <FONT SIZE=0>DIRECCION DE PLANEACION</FONT><br/>
-                <FONT SIZE=0>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO</FONT><br/>
-                <FONT SIZE=0>FORMATO DE VALIDACIÓN DE SUFICIENCIA PRESUPUESTAL</FONT><br/>
-                <FONT SIZE=0>EN ATENCIÓN AL MEMORÁNDUM {{$data2->no_memo}}</FONT></p>
-            </div>
-            <div class="c"><FONT SIZE=0>Folio de Validación: {{$data2->folio_validacion}}<br/>
-            Fecha: {{$Dv}} de {{$Mv}} del {{$Yv}}</FONT>
-            </div>
-            <div class="b"> <FONT SIZE=0>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}}</font><br/>
-                <FONT SIZE=0><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b></FONT><br/>
-                <FONT SIZE=0><b>{{$getremitente->puesto}}</b></FONT><br/>
-                <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
-                <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
-                    <font size=0>La Secretaria de hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2021, en ese sentido, con Fundamento en el Art. 13 del decreto de presupuesto
-                    de egresos del estado de Chiapas para el Ejercicio Fiscal 2021 y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de capacitación, al Padrón de Instructores del ICATECH
-                    y a la clave de autorización de apertura de cursos y demás disposiciones normativas aplicables vigentes; le informo que una vez revisada su solicitud y la información descrita en el formato de Validación de Suficiencia Presupuestal, se otorga la Validación
-                    Presupuestal, con el fin de que conforme a lo indicado en la normatividad aplicable vigente se continúe y se cumpla con los procedimientos administrativos que correspondan, observando además el contrato de prestación de servicios profesionales por honorarios en su
-                    modalidad de Horas-Curso que celebran el ICATECH con el prestador de servicio.<br/></font>
-                    <br><font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documental, debidamente validado presupuestalmente.<br/></font>
-                    <font size=0>La presente validación presupuestal no implica ninguna autorización de pago de recursos, si no que únicamente se refiere a la verificación de la disponibilidad presupuestal, No omito manifestarle que, en estricto apego a la normatividad vigente establecida,
-                    el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
+        <div>
+            <div id="wrappertop">
+                <div align=center><font size=0><b>{{$distintivo}}</b></font><br/>
+                    <FONT SIZE=0><b>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA DEL ESTADO DE CHIAPAS<br/>
+                    <FONT SIZE=0>DIRECCION DE PLANEACION</FONT><br/>
+                    <FONT SIZE=0>DEPARTAMENTO DE PROGRAMACIÓN Y PRESUPUESTO</FONT><br/>
+                    <FONT SIZE=0>FORMATO DE VALIDACIÓN DE SUFICIENCIA PRESUPUESTAL</FONT><br/>
+                    <FONT SIZE=0>EN ATENCIÓN AL MEMORÁNDUM {{$data2->no_memo}}</FONT></p>
                 </div>
-            <br>
-        </div>
+                <div class="c"><FONT SIZE=0>Folio de Validación: {{$data2->folio_validacion}}<br/>
+                Fecha: {{$Dv}} de {{$Mv}} del {{$Yv}}</FONT>
+                </div>
+                <div class="b"> <FONT SIZE=0>UNIDAD DE CAPACITACIÓN {{$data2->unidad_capacitacion}}</font><br/>
+                    <FONT SIZE=0><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b></FONT><br/>
+                    <FONT SIZE=0><b>{{$getremitente->puesto}}</b></FONT><br/>
+                    <FONT SIZE=0><b>PRESENTE</b></FONT><br/></div>
+                    <div class="d"> <FONT SIZE=0>En atención a su solicitud con memorándum No.{{$data2->no_memo}} de fecha {{$D}} de {{$M}} del {{$Y}}; me permito comunicarle lo siguiente:<br/></font>
+                        <font size=0>La Secretaria de Hacienda aprobó el presupuesto del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas, en lo general para el Ejercicio Fiscal 2021, en ese sentido, con Fundamento en el Art. 13 del decreto de presupuesto
+                        de egresos del Estado de Chiapas para el Ejercicio Fiscal 2021 y en apego al tabulador de pagos del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas por servicios de @if($tipo=='CURSO') Capacitación @else Certificación Extraordinaria @endif, al Padrón de Instructores del ICATECH
+                        y a la clave de autorización de apertura de cursos y certificación, y demás disposiciones normativas aplicables vigentes; le informo que una vez revisada su solicitud y la información descrita en el formato de Validación de Suficiencia Presupuestal, se otorga la Validación
+                        Presupuestal, con el fin de que conforme a lo indicado en la normatividad aplicable vigente se continúe y se cumpla con los procedimientos administrativos que correspondan, observando además el contrato de prestación de servicios profesionales por honorarios en su
+                        modalidad de @if($tipo=='CURSO') Horas-Curso @else Certificación Extraordinaria @endif que celebran el ICATECH con el prestador de servicio.<br/></font>
+                        <br><font size=0>Por lo anterior, me permito remitir a usted el original de la solicitud, así como su respectivo respaldo documental, debidamente validado presupuestalmente.<br/></font>
+                        <font size=0>La presente validación presupuestal no implica ninguna autorización de pago de recursos, si no que únicamente se refiere a la verificación de la disponibilidad presupuestal, No omito manifestarle que, en estricto apego a la normatividad vigente establecida,
+                        el área administrativa solicitante, es responsable de la correcta aplicación de los recursos públicos validados, en tal sentido el ejercicio y comprobación del gasto, deberá sujetarse a las disposiciones legales aplicables para tal efecto.<br/></font>
+                    </div>
+                <br>
+            </div>
             <div class="form-row">
                 <table width="700"  class="table table-striped" id="table-one">
                     <thead>
@@ -182,7 +188,8 @@
                             <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
                             <td width="10px"><small style="font-size: 10px;">UNIDAD/ A.M. DE CAP.</small></td>
-                            <td scope="col" ><small style="font-size: 10px;">CURSO</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">SERVICIO</small></td>
+                            <td scope="col" ><small style="font-size: 10px;">NOMBRE</small></td>
                             <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
                             <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
                             <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
@@ -201,6 +208,11 @@
                                 <td><small style="font-size: 10px;">{{$item->fecha}}</small></td>
                                 <td><small style="font-size: 10px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
                                 <td><small style="font-size: 10px;">{{$item->unidad}}</small></td>
+                                @if ($item->tipo_curso=='CERTIFICACION')
+                                    <td><small style="font-size: 10px;">CERTIFICACIÓN_EXTRAORDINARIA</small></td>
+                                @else
+                                    <td><small style="font-size: 10px;">CURSO</small></td>
+                                @endif
                                 <td><small style="font-size: 10px;">{{$item->curso_nombre}}</small></td>
                                 <td><small style="font-size: 10px;">{{$item->clave}}</small></td>
                                 <td><small style="font-size: 10px;">{{$item->ze}}</small></td>
@@ -219,18 +231,24 @@
                     </tbody>
                 </table>
             </div>
+        </div>
         <div id="wrapperbot">
             <div align=center>
                 <small>{{$getfirmante->nombre}} {{$getfirmante->apellidoPaterno}} {{$getfirmante->apellidoMaterno}}</small>
                 <br>________________________________________<br/>
                 <br><small>{{$getfirmante->puesto}}</small></b>
             </div>
-            <br><br><br><p><FONT SIZE=1><b>C.c.p.</b>{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Para su conocimiento<br/>
-                <FONT SIZE=1><b>C.c.p.</b>{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b>C.c.p.</b>{{$getccp3->nombre}} {{$getccp3->apellidoPaterno}} {{$getccp3->apellidoMaterno}}.-{{$getccp3->puesto}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br/>
-                <FONT SIZE=1><b>C.c.p.</b>Archivo/ Minutario</FONT><br/>
-                </p>
-        </div>
+            <div><br><br><br>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Para su conocimiento</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp3->nombre}} {{$getccp3->apellidoPaterno}} {{$getccp3->apellidoMaterno}}.-{{$getccp3->puesto}}.-mismo fin</FONT><br/>
+                <FONT SIZE=0><b>C.c.p.</b>{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}.-{{$getccp4->puesto}}.-mismo fin</FONT><br>
+                <FONT SIZE=0><b>C.c.p.</b>Archivo/ Minutario</FONT>
+            </div> 
+        </div>     
+        <footer>
+            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
+            <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
+        </footer>
     </body>
 </html>

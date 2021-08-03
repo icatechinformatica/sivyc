@@ -39,7 +39,7 @@ class buscarController extends Controller
         
         if($this->data['slug']=='vinculadores_administrativo')$data = $data->where('iduser_created',$this->id_user);
         if($_SESSION['unidades']) $data = $data->whereIn('ar.unidad',$_SESSION['unidades']);
-        $data = $data->where('folio_grupo','<>',null)->distinct()->paginate(15);        
+        $data = $data->where('folio_grupo','<>',null)->groupby('ar.folio_grupo','ar.turnado','c.nombre_curso')->paginate(15);        
         
         $activar = $this->activar;
         return view('preinscripcion.buscar.index',compact('data','activar'));        

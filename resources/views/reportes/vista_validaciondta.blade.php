@@ -269,6 +269,7 @@
                                     <th scope="col">PROGRAMA ESTRATEGICO</th>
                                     <th scope="col">MUNICIPIO</th>
                                     <th scope="col">ZE</th>
+                                    <th scope="col">REGION</th>
                                     <th scope="col">DEPENDENCIA BENEFICIADA</th>
                                     <th scope="col">CONVENIO GENERAL</th>
                                     <th scope="col">CONV SEC PUB O PRIV</th>
@@ -440,6 +441,7 @@
                                         <td>{{ $datas->programa }}</td>
                                         <td>{{ $datas->muni }}</td>
                                         <td>{{ $datas->ze }}</td>
+                                        <td>{{ $datas->region }}</td>
                                         <td>
                                             <div style="width:300px; word-wrap: break-word">{{ $datas->depen }}</div>
                                         </td>

@@ -42,7 +42,7 @@
         <img class="izquierda" src='img/logohorizontalica1.jpg'>
         <img class="derecha" src='img/chiapas.png'>
         <br>
-        <h6><b></b>"2021, AÑO DE LA INDEPENDENCIA"</h6>
+        <h6><b></b>{{$leyenda}}</h6>
     </header>
     {{-- SECCIÓN DE LA CABECERA FIN --}}
     {{-- SECCIÓN DE PIE DE PÁGINA --}}

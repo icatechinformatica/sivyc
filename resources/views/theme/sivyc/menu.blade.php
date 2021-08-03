@@ -142,16 +142,34 @@
                         <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>
                         @endcan
-                        @can('planeacion.grupos.vulnerables')
-                            <a class="dropdown-item" href="{{route('reportes.planeacion.grupos_vulnerables')}}">Grupos Vulnerables</a>
-                        @endcan
-                        @can('planeacion.ingresos.propios')
-                            <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
-                        @endcan
-
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
+
+                @can('preinscripcion.grupo')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Preinscripci&oacute;n
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                            <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
+                            <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
+                        </div>
+                    </li>
+                @endcan
+
+                @can('solicitud.apertura')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Solicitud
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                            <a class="dropdown-item" href="{{route('solicitud.apertura')}}">Clave de Apertura ARC01</a>
+                            <a class="dropdown-item" href="{{route('solicitud.apertura.modificar')}}">Modificaci&oacute;n Apertura ARC02</a>
+                            <a class="dropdown-item" href="{{route('solicitud.apertura.turnar')}}">Turnar Solicitud</a>
+                        </div>
+                    </li>
+                @endcan
 
                 {{-- Grupo calificaciones --}}
                 @can('grupos.calificaciones')
@@ -260,6 +278,15 @@
                         @endcan
                         @can('academico.catalogoinstructores')
                             <a class="dropdown-item" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
+                        @endcan
+                        @can('planeacion.estadisticas')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.estadisticas')}}">Estadisticas del Formato T</a>
+                        @endcan
+                        @can('planeacion.grupos.vulnerables')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.grupos_vulnerables')}}">Grupos Vulnerables</a>
+                        @endcan
+                        @can('planeacion.ingresos.propios')
+                            <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
                         @endcan
                     </div>
              </li>

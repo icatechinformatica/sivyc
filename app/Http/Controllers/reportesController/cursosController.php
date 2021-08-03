@@ -282,23 +282,27 @@ class cursosController extends Controller
         $clave = $request->get('clave');
         
         if($clave){
-            $curso = DB::table('tbl_cursos as c')->select('c.id','c.curso','c.dura','c.cct','c.unidad',
-            DB::raw("trim(substring(u.dunidad , position('.' in u.dunidad)+1,char_length(u.dunidad))) as dunidad"),'c.id_curso',
-            DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),DB::raw('EXTRACT(YEAR FROM termino)  as anio_termino') )
-            ->where('c.clave',$clave);
+            $curso = DB::table('tbl_cursos as tc')->select('tc.id','tc.curso','tc.dura','tc.cct','tc.unidad',
+            DB::raw("trim(substring(u.dunidad , position('.' in u.dunidad)+1,char_length(u.dunidad))) as dunidad"),'tc.id_curso',
+            DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),DB::raw('EXTRACT(YEAR FROM termino)  as anio_termino'),'c.duracion as horas_certificacion','tc.tipo_curso as servicio')
+            ->where('tc.clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
-            $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','c.unidad')            
+            $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tc.unidad') 
+            ->leftjoin('cursos as c','c.id','tc.id_curso') 
             ->first(); 
+
             //var_dump($curso);exit;
             //echo $curso->id; exit;
             if($curso){
                 $consec_curso = $curso->id_curso; 
-                
+                if($curso->servicio == "CERTIFICACION") $duracion = $curso->horas_certificacion;               
+                else $duracion = $curso->dura;
+
                 $data = DB::table('tbl_inscripcion as i')
                     ->select('a_pre.apellido_paterno','a_pre.apellido_materno','a_pre.nombre','a_pre.curp',
                         DB::raw("'".$curso->curso."' as nombre_curso"),
                         DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha"),
-                        DB::raw($curso->dura.' as horas'),
+                        DB::raw( $duracion.' as horas'),
                         DB::raw("'".$curso->cct."' as cct"),
                         DB::raw("'".$curso->unidad."' as unidad"),
                         DB::raw("'CHIAPAS' as estado"),
@@ -324,7 +328,7 @@ class cursosController extends Controller
                 //var_dump($data); exit;
                 if(count($data)==0){ return "NO TIENEN FOLIOS ASIGNADOS";exit;}
                                 
-                $head = ['APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE(S)','CURP','CURSO','FECHA','HORAS','CLAVE UNIDAD','CIUDAD','ESTADO','DIRECTOR','MES',utf8_encode('AÑO')];
+                $head = ['APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE(S)','CURP','CURSO','FECHA','HORAS','CLAVE UNIDAD','CIUDAD','ESTADO','DIRECTOR','MES','AÑO'];
                 $nombreLayout = $clave.".xlsx";
 
                 if(count($data)>0){  

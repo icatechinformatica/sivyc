@@ -81,11 +81,11 @@
                 </div>   
             @endif 
             <div class="form-row" >
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label>Memor&aacute;ndum de Apertura:</label>
                     <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($munidad){{$munidad}}@else{{old('nombre')}}@endif"/>
                 </div>                
-                <div class="d-flex flex-row">
+                <div class="d-flex flex-row ">
                   <div class="p-2">HORARIO: <br /><input type="time" name='hini' id='hini' type="text" class="form-control" aria-required="true" value="{{$grupo->hini}}"/></div>
                   <div class="p-2"><br />A</div>
                   <div class="p-2"><br /><input type="time" name='hfin' id='hfin' type="text" class="form-control" aria-required="true" value="{{$grupo->hfin}}"/></div>
@@ -103,6 +103,10 @@
                     <label>Fecha T&eacute;rmino:</label>
                     <input type="date" id="termino" name="termino" value="{{ $grupo->termino }}" class="form-control" >
                 </div>
+                <div class="form-group col-md-1">
+                    <label>TOTAL DIAS:</label>
+                    <input name='tdias' id='tdias' type="text" class="form-control" aria-required="true" value="{{$grupo->tdias}}"/>
+                </div>
             </div>   
             <div class="form-row" >             
                 <div class="form-group col-md-3">
@@ -114,14 +118,11 @@
                     <label>Sector:</label>
                     {{ Form::select('sector', $sector, $grupo->sector, ['id'=>'sector','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-5">
                     <label>Programa Estrat&eacute;gico:</label>
                     {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>                
-                <div class="form-group col-md-3">
-                    <label>Lugar o Espacio F&iacute;sico:</label>
-                    <input name='efisico' id='efisico' type="text" class="form-control"  value="{{$grupo->efisico}}"/>
-                </div>
+                
             </div>
             <div class="form-row" >
                 <div class="form-group col-md-3">
@@ -164,15 +165,22 @@
                      <label>Medio Virtual:</label>
                      {{ Form::select('medio_virtual', $medio_virtual, $grupo->medio_virtual, ['id'=>'medio_virtual','class' => 'form-control mr-sm-2','disabled'=>$disabled] ) }}
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-8">
                      <label>Link Virtual:</label>
                      <input name='link_virtual' id='link_virtual' type="url" class="form-control" aria-required="true" value="{{$grupo->link_virtual}}" {{$disabled}} />
                 </div>
-                <div class="form-group col-md-5">
-                    <label>INSTRUCTOR:</label>
-                    {{ Form::select('instructor', $instructor, $grupo->id_instructor, ['id'=>'instructor','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -','disabled'=>$disabled] ) }}
+                
+            </div>
+            <div class="form-row" > 
+                <div class="form-group col-md-7">
+                    <label>Lugar o Espacio F&iacute;sico:</label>
+                    <input name='efisico' id='efisico' type="text" class="form-control"  value="{{$grupo->efisico}}"/>
                 </div>
-             </div>
+                <div class="form-group col-md-5">
+                    <label>INSTRUCTOR DISPONIBLE:</label>
+                    {{ Form::select('instructor', $instructor, $grupo->id_instructor, ['id'=>'instructor','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                </div>                
+            </div>
             <div class="form-row" >            
                 <div class="form-group col-md-12">
                     <label>Observaciones:</label>
