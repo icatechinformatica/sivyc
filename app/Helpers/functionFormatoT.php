@@ -637,7 +637,7 @@ function dataFormatoTSaveData($id)
         ->where('ins.status', '=', 'INSCRITO')
         ->WHERE('c.clave', '!=', 'null')
         ->where('ins.calificacion', '>', '0')
-        ->where('m.id_estado', '=', '7')
+        // ->where('m.id_estado', '=', '7')
         ->groupby(
             'c.id',
             'c.status',
