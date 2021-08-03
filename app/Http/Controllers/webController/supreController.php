@@ -692,7 +692,7 @@ class supreController extends Controller
         $unidad->cct = substr($unidad->cct, 0, 4);
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
-        $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
+        //$getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
         $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
                                     'directorio.puesto','directorio.area_adscripcion_id','area_adscripcion.area')
                                     ->WHERE('directorio.id', '=', $directorio->supre_rem)
@@ -700,10 +700,10 @@ class supreController extends Controller
                                     ->FIRST();
         $getvalida = directorio::WHERE('id', '=', $directorio->supre_valida)->FIRST();
         $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
-        $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
-        $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
+        //$getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
+        //$getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getdestino','getremitente','getvalida','getelabora','getccp1','getccp2','directorio','unidad','distintivo','uj'));
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getremitente','getvalida','getelabora','directorio','unidad','distintivo','uj'));
         return  $pdf->stream('medium.pdf');
     }
 
@@ -844,12 +844,12 @@ class supreController extends Controller
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
         $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
-        $getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
-        $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
-        $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
+        //$getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
+        //$getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
+        //$getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
         $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos','distintivo'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 
