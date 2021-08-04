@@ -89,7 +89,7 @@ class aperturaController extends Controller
             
             // var_dump($grupo);exit; 
             if($grupo){
-                if($grupo->clave==0) $_SESSION['folio'] = $grupo->folio_grupo;
+                $_SESSION['folio'] = $grupo->folio_grupo;
                 $anio_hoy = date('y');
 
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"))->where('i.folio_grupo',$valor)->get();                
