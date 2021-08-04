@@ -201,11 +201,7 @@ class supreController extends Controller
             $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
         }*/
 
-
-
-
-
-
+        //dd($getfolios);
         return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist'));
     }
 
