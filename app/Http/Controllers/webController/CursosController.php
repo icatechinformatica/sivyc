@@ -466,26 +466,26 @@ class CursosController extends Controller
 
     public function exportar_cursos()
     {
-        $data = curso::SELECT('cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
-                        'cursos.costo','cursos.duracion','cursos.objetivo','cursos.perfil',
-                        'cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
-                        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil',
-                        'cursos.descripcion','cursos.no_convenio','especialidades.nombre as especialidad','cursos.area',
-                        'cursos.cambios_especialidad','cursos.nivel_estudio','cursos.categoria',
-                        'cursos.documento_solicitud_autorizacion','cursos.documento_memo_actualizacion',
-                        'cursos.documento_memo_validacion','cursos.unidades_disponible','cursos.estado',)
+        $data = curso::SELECT('area.formacion_profesional','especialidades.nombre as especialidad',
+                        'cursos.nombre_curso','cursos.tipo_curso','cursos.modalidad','cursos.categoria',
+                        'cursos.clasificacion','cursos.horas','cursos.objetivo','cursos.perfil','cursos.nivel_estudio',
+                        DB::raw("(case when cursos.solicitud_autorizacion <> 'FALSE' then 'SI' else 'NO' end) as etnia"),
+                        'cursos.memo_validacion','cursos.fecha_validacion',
+                        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.rango_criterio_pago_minimo',
+                        'cursos.rango_criterio_pago_maximo','cursos.unidad_amovil')
+                        ->WHERE('cursos.estado', '=', 'TRUE')
                         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
+                        ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
                         ->ORDERBY('especialidades.nombre', 'ASC')
                         ->ORDERBY('cursos.nombre_curso', 'ASC')
                         ->GET();
                         //dd($data[0]);
 
         $cabecera = [
-            'NOMBRE','MODALIDAD','HORAS','CLASIFICACION','COSTO','DURACION','OBJETIVO','PERFIL',
-            'SOLICITUD DE AUTORIZAICON','FECHA DE VALIDACION','MEMO DE VALIDACION','MEMO DE ACTUALIZACION',
-            'FECHA DE ACTUALIZACION','UNIDAD MOVIL','DESCRIPCION','NUMERO DE CONVENIO','ESPECIALIDAD','AREA',
-            'CAMBIO DE ESPECIALIDAD','NIVEL DE ESTUDIO','CATEGORIA','SOLICITUD DE AUTORIZACION',
-            'MEMO DE ACTUALIZACION','MEMO DE VALIDACION','DISPONIBLE EN UNIDADES','ESTADO'
+            'CAMPO','ESPECIALIDAD','NOMBRE','TIPO CURSO','MODALIDAD','CATEGORIA','CLASIFICACION','HORAS','OBJETIVO',
+            'PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','MEMO DE VALIDACION','FECHA DE VALIDACION',
+            'MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','CRITERIO DE PAGO MINIMO','CRITERIO DE PAGO MAXIMO',
+            'UNIDAD MOVIL'
         ];
         $nombreLayout = "Catalogo de cursos.xlsx";
         $titulo = "Catalogo de cursos";
