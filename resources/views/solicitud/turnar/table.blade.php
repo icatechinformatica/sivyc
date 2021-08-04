@@ -3,7 +3,7 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th scope="col" class="text-center">#</th>           
+                <th scope="col" class="text-center">ID</th>           
                 <th scope="col" class="text-center" >No. GRUPO</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <th scope="col" class="text-center">SERVICIO</th>
@@ -60,7 +60,7 @@
 
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
-                        <td class="text-center"> {{ $consec++ }}</td>
+                        <td class="text-center"> {{ $g->id }}</td>
                         <td class="text-center"><div style="width:128px;"> {{ $g->folio_grupo}} </div> </td>
                         <td><div style="width:128px;"> {{ $g->clave}} </div> </td>              
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
