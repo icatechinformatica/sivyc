@@ -121,7 +121,7 @@
                                 <th style="width: 5%;">{{ $a->inicio }}</th>                           
                                 <th style="width: 5%;">{{ $a->termino }}</th>                           
                                 <th style="width:5%;">{{ $a->efisico }}</th>
-                                <th>{{ $a->motivo }}</th>
+                                <th>@isset($a->motivo){{ $a->motivo }}@else {{$a->opcion}}@endisset</th>
                                 <th>{{ $a->realizo }}</th> 
                                 <th>{{$a->observaciones}}</th>                         
                             </tr> 
