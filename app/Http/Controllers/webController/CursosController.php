@@ -466,12 +466,13 @@ class CursosController extends Controller
 
     public function exportar_cursos()
     {
-        $data = curso::SELECT('area.formacion_profesional','especialidades.nombre as especialidad',
+        $data = curso::SELECT('cursos.id','area.formacion_profesional','especialidades.nombre as especialidad',
                         'cursos.nombre_curso','cursos.tipo_curso','cursos.modalidad','cursos.categoria',
-                        'cursos.clasificacion','cursos.costo','cursos.horas','cursos.objetivo','cursos.perfil','cursos.nivel_estudio',
+                        'cursos.clasificacion','cursos.costo','cursos.horas','cursos.objetivo','cursos.perfil',
+                        'cursos.nivel_estudio',
                         DB::raw("(case when cursos.solicitud_autorizacion <> 'FALSE' then 'SI' else 'NO' end) as etnia"),
-                        'cursos.memo_validacion','cursos.fecha_validacion',
-                        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.rango_criterio_pago_minimo',
+                        'cursos.memo_validacion','cursos.fecha_validacion','cursos.memo_actualizacion',
+                        'cursos.fecha_actualizacion','cursos.rango_criterio_pago_minimo',
                         'cursos.rango_criterio_pago_maximo','cursos.unidad_amovil')
                         ->WHERE('cursos.estado', '=', 'TRUE')
                         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
@@ -482,10 +483,10 @@ class CursosController extends Controller
                         //dd($data[0]);
 
         $cabecera = [
-            'CAMPO','ESPECIALIDAD','NOMBRE','TIPO CURSO','MODALIDAD','CATEGORIA','CLASIFICACION','COSTO','HORAS',
-            'OBJETIVO','PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','MEMO DE VALIDACION','FECHA DE VALIDACION',
-            'MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','CRITERIO DE PAGO MINIMO','CRITERIO DE PAGO MAXIMO',
-            'UNIDAD MOVIL'
+            'ID','CAMPO','ESPECIALIDAD','NOMBRE','TIPO CURSO','MODALIDAD','CATEGORIA','CLASIFICACION','COSTO','HORAS',
+            'OBJETIVO','PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','MEMO DE VALIDACION',
+            'FECHA DE VALIDACION','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','CRITERIO DE PAGO MINIMO',
+            'CRITERIO DE PAGO MAXIMO','UNIDAD MOVIL'
         ];
         $nombreLayout = "Catalogo de cursos.xlsx";
         $titulo = "Catalogo de cursos";
