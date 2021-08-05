@@ -768,7 +768,7 @@ class ContratoController extends Controller
         {
             $pdf = PDF::loadView('layouts.pdfpages.precontratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
         }
-
+/A
         return $pdf->stream('Contrato Instructor.pdf');
     }
 
