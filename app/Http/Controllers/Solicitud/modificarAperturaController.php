@@ -44,7 +44,7 @@ class modificarAperturaController extends Controller
             $tcuota = $this->tcuota();
             $motivo = $this->motivo_arc02();
 
-            $grupo =  DB::table('tbl_cursos')->where('clave',$clave)->where('status','NO REPORTADO')->where('turnado','UNIDAD');
+            $grupo =  DB::table('tbl_cursos')->where('clave',$clave)->where('status','NO REPORTADO')->wherein('turnado',('UNIDAD','RETORNO_UNIDAD'));
             if($_SESSION['unidades']) $grupo = $grupo->whereIn('unidad',$_SESSION['unidades']);
             $grupo = $grupo->first();
             if($grupo){
@@ -52,7 +52,7 @@ class modificarAperturaController extends Controller
                 $_SESSION['id_curso'] = $grupo->id;                
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"))->where('i.id_curso', $_SESSION['id_curso'])->get();
                 $tcuota = $tcuota[$grupo->tipo];
-            }
+            }else  $message = "Clave de Curso no válido para el usuario.";
         }         
         //var_dump($grupo);exit;
         if(session('message')) $message = session('message');
