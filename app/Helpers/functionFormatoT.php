@@ -147,10 +147,8 @@ function dataFormatoT($unidad, $status, $fecha)
             DB::raw("case when c.arc='01' then nota else observaciones end as tnota"),
             // DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD'->>'OBSERVACION_RETORNO' AS observaciones_enlaces"),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_FIRMA' AS observaciones_firma"),
-            DB::raw("count( ar.id_pre) AS totalinscripciones"),
-            // DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
+            DB::raw("(c.hombre + c.mujer) AS totalinscripciones"),
             'c.hombre as masculinocheck', 
-            // DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
             'c.mujer as femeninocheck',
             DB::raw("COALESCE(sum( case when EXTRACT( year from (age(c.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='   ' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(YEAR FROM (AGE(c.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO' 
                 THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END )) + COALESCE(sum( Case When EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 25 and 34 
@@ -367,9 +365,9 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status)
             DB::raw("case when c.arc='01' then nota else observaciones end as tnota"),
             // DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD'->>'OBSERVACION_RETORNO' AS observaciones_enlaces"),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_FIRMA' AS observaciones_firma"),
-            DB::raw("count( ar.id_pre) AS totalinscripciones"),
-            DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
-            DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
+            DB::raw("(c.hombre + c.mujer) AS totalinscripciones"),
+            'c.hombre as masculinocheck',
+            'c.mujer as femeninocheck',
             DB::raw("to_char(c.fecha_turnado, 'TMMONTH') AS fechaturnado"), // new
             DB::raw("c.observaciones_formato_t->'COMENTARIOS_UNIDAD' AS observaciones_unidad"), // new
             DB::raw("c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' AS numero_memo_retorno1"), //new
@@ -603,10 +601,9 @@ function dataFormatoTSaveData($id)
             DB::raw("case when c.arc='01' then nota else observaciones end as tnota"),
             // DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD'->>'OBSERVACION_RETORNO' AS observaciones_enlaces"),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_FIRMA' AS observaciones_firma"),
-            DB::raw("count( ar.id_pre) AS totalinscripciones"),
-            DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
-            DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
-            // DB::raw("to_char(c.fecha_turnado, 'TMMONTH') AS fechaturnado"), // new
+            DB::raw("(c.hombre + c.mujer) AS totalinscripciones"),
+            'c.hombre as masculinocheck',
+            'c.mujer as femeninocheck',
             DB::raw("c.observaciones_formato_t->'COMENTARIOS_UNIDAD' AS observaciones_unidad"), // new
             DB::raw("c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' AS numero_memo_retorno1"), //new
             DB::raw("c.observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno"), //new
