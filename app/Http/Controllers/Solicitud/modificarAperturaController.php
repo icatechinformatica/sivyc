@@ -44,7 +44,7 @@ class modificarAperturaController extends Controller
             $tcuota = $this->tcuota();
             $motivo = $this->motivo_arc02();
 
-            $grupo =  DB::table('tbl_cursos')->where('clave',$clave)->where('status','NO REPORTADO')->wherein('turnado',('UNIDAD','RETORNO_UNIDAD'));
+            $grupo =  DB::table('tbl_cursos')->where('clave',$clave)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->where('turnado','UNIDAD');
             if($_SESSION['unidades']) $grupo = $grupo->whereIn('unidad',$_SESSION['unidades']);
             $grupo = $grupo->first();
             if($grupo){
