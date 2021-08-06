@@ -88,7 +88,7 @@ trait catApertura
             ->select('instructores.id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')
-            ->whereJsonContains('unidades_disponible', [$unidad])
+            //->whereJsonContains('unidades_disponible', [$unidad])
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
