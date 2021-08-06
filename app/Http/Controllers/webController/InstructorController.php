@@ -931,17 +931,26 @@ class InstructorController extends Controller
 
     public function exportar_instructores()
     {
-        $data = instructor::SELECT('numero_control','apellidoPaterno','apellidoMaterno','nombre','rfc','curp',
-                'sexo','estado_civil','fecha_nacimiento','entidad','municipio','asentamiento','domicilio','telefono',
-                'correo','banco','no_cuenta','interbancaria','folio_ine','tipo_honorario','status','clave_unidad',
-                'motivo','unidades_disponible','estado')
+        $data = instructor::SELECT('instructores.nombre','instructores.apellidoPaterno as apellido paterno','instructores.apellidoMaterno as apellido materno',
+                'instructores.numero_control','especialidades.nombre as especialidad','especialidades.clave',
+                'especialidad_instructores.criterio_pago_id as criterio pago','instructor_perfil.grado_profesional',
+                'instructor_perfil.estatus','instructor_perfil.area_carrera','instructor_perfil.nombre_institucion',
+                'instructores.rfc','instructores.curp','instructores.sexo','instructores.estado_civil',
+                'instructores.asentamiento','instructores.domicilio','instructores.telefono','instructores.correo',
+                'tbl_unidades.unidad','especialidad_instructores.memorandum_validacion',
+                'especialidad_instructores.fecha_validacion','especialidad_instructores.observacion')
+                ->LEFTJOIN('instructor_perfil','instructor_perfil.numero_control', '=', 'instructores.id')
+                ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
-        $cabecera = ['NUMERO_COTROL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','RFC','CURP','SEXO','ESTADO_CIVIL',
-                    'FECHA_NACIMIENTO','ENTIDAD','MUNICIPIO','ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','BANCO',
-                    'NO_CUENTA','INTERBANCARIA','FOLIO INE','TIPO DE HONORARIO','STATUS','CLAVE DE UNIDAD','MOTIVO',
-                    'UNIDADES DISPONIBLE','ESTADO'];
+        $cabecera = ['NOMBRE','APELLIDO PATERNO','APELLIDO MATERNO','NUMERO_COTROL','ESPECIALIDAD','CLAVE',
+                    'CRITERIO PAGO','GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD',
+                    'PERFIL PROFESIONAL CON EL QUE SE VALIDO','FORMACION PROFESIONAL CON EL QUE SE VALIDO',
+                    'INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL','ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO',
+                    'UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION','FECHA DE VALIDACION','OBSERVACION'];
 
         $nombreLayout = "Catalogo de instructores.xlsx";
         $titulo = "Catalogo de instructores";
