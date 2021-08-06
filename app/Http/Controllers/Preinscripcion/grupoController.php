@@ -110,6 +110,7 @@ class grupoController extends Controller
         $matricula = $message = NULL;
         if($curp){
             $alumno = DB::table('alumnos_pre')->select('id as id_pre','matricula')->where('curp',$curp)->where('activo',true)->first();
+            if($_SESSION['folio_grupo'] AND DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','<>','VINCULACION')->exists() == true) $_SESSION['folio_grupo'] = NULL;
             if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();           
           
             if($alumno){                  
@@ -187,7 +188,7 @@ class grupoController extends Controller
     }
     
     public function genera_folio(){
-         $consec = DB::table('alumnos_registro')->where('ejercicio',$this->ejercicio)->where('cct',$this->data['cct_unidad'])->where('eliminado',false)->value(DB::RAW('count(distinct(folio_grupo))'))+1;
+         $consec = DB::table('alumnos_registro')->where('ejercicio',$this->ejercicio)->where('cct',$this->data['cct_unidad'])->where('eliminado',false)->value(DB::RAW('max(cast(substring(folio_grupo,7,4) as int))'))+1;
          $consec = str_pad($consec, 4, "0", STR_PAD_LEFT);                            
          $folio = $this->data['cct_unidad']."-".$this->ejercicio.$consec;
          
