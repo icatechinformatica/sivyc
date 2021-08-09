@@ -82,7 +82,6 @@
                               <input type="text" id="inputNombre" name="inputNombre" class="form-control">
                             </div>
                           </div>
-
                         </div>
                         <div class="row">
                           <div class="col-lg-6">
@@ -95,6 +94,20 @@
                             <div class="form-group">
                               <label class="form-control-label" for="inputApellidoMaterno">APELLIDO MATERNO</label>
                               <input type="text" id="inputApellidoMaterno" name="inputApellidoMaterno" class="form-control">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="inputCurp">CURP</label>
+                              <input type="text" id="inputCurp" name="inputCurp" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="inputEmail">EMAIL</label>
+                              <input type="text" id="inputEmail" name="inputEmail" class="form-control">
                             </div>
                           </div>
                         </div>
