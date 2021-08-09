@@ -295,8 +295,9 @@ class cursosController extends Controller
             //echo $curso->id; exit;
             if($curso){
                 $consec_curso = $curso->id_curso; 
-                if($curso->servicio == "CERTIFICACION") $duracion = $curso->horas_certificacion;               
-                else $duracion = $curso->dura;
+                /*if($curso->servicio == "CERTIFICACION") $duracion = $curso->horas_certificacion;               
+                else */
+                $duracion = $curso->dura;
 
                 $data = DB::table('tbl_inscripcion as i')
                     ->select('a_pre.apellido_paterno','a_pre.apellido_materno','a_pre.nombre','a_pre.curp',
