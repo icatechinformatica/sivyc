@@ -11,7 +11,7 @@ class Personal extends Model
 
     protected $fillable = [
         'id', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto', 'numero_enlace', 'categoria' , 'area_adscripcion_id',
-        'activo', 'qr_generado'
+        'activo', 'qr_generado','curp','email'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
