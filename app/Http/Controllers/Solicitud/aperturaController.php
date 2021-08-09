@@ -72,7 +72,7 @@ class aperturaController extends Controller
                 'tc.hini','tc.hfin','tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),
                 'tc.id_municipio','tc.status_curso','tc.dia','tc.inicio','tc.termino','tc.plantel',               
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','tc.tdias')
+                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','tc.tdias','c.rango_criterio_pago_maximo as cp')
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
                 ->join('cursos as c','ar.id_curso','c.id')
                 ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
@@ -80,12 +80,7 @@ class aperturaController extends Controller
                 ->where('ar.turnado','<>','VINCULACION')
                 ->where('ar.folio_grupo',$valor);
             if($_SESSION['unidades']) $grupo = $grupo->whereIn('ar.unidad',$_SESSION['unidades']);
-            $grupo = $grupo->groupby('ar.id_curso','ar.folio_grupo','ar.tipo_curso','c.nombre_curso','c.modalidad','ar.horario','c.horas','c.costo',
-                'ar.unidad','ar.horario','e.nombre','a.formacion_profesional','c.id_especialidad','c.memo_validacion',
-                'tc.hini','tc.hfin','tc.nota','tc.clave','tc.id_municipio','tc.status_curso','tc.dia','tc.inicio','tc.termino','tc.plantel',               
-                'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave','tc.tipo_curso','ar.id_cerss','tc.tdias')
-                ->first();
+            $grupo = $grupo->groupby('ar.id','e.id','a.formacion_profesional','tc.id','c.id')->first();
             
             // var_dump($grupo);exit; 
             if($grupo){
@@ -214,7 +209,11 @@ class aperturaController extends Controller
                             ->where('dia', trim($request->dia))->where('status_curso','<>','CANCELADO')
                             ->exists();
                         
-                        if(!$existe_instructor){                            
+                        if(!$existe_instructor){       
+                            /** CRITERIO DE PAGO */
+                            if($instructor->cp > $grupo->cp)$cp = $grupo->cp;
+                            else $cp = $instructor->cp;
+
                             /*CALCULANDO CICLO*/            
                             $mes_dia1 = date("m-d",strtotime(date("Y-m-d")));
                             $mes_dia2 = date("m-d",strtotime(date("Y"). "-07-01"));
@@ -269,6 +268,9 @@ class aperturaController extends Controller
                                 $termino =  $request->termino;
                             }
                             
+                            if(!$request->cespecifico) $request->cespecifico = 0;
+                            if(!$request->mexoneracion) $request->mexoneracion = 0;
+                            if(!$request->cgeneral) $request->cgeneral = 0;
 
                             //$result = tbl_curso::updateOrCreate(
                             $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
@@ -312,7 +314,7 @@ class aperturaController extends Controller
                                 'fcgen' => $request->fcgen,
                                 'opcion' => 'NINGUNO',
                                 'motivo' => 'NINGUNO',
-                                'cp' => $instructor->cp,
+                                'cp' => $cp,
                                 'ze' => $municipio->ze,
                                 'id_curso' => $grupo->id_curso,
                                 'id_instructor' => $instructor->id,
@@ -343,7 +345,8 @@ class aperturaController extends Controller
                                 'medio_virtual' => $request->medio_virtual,
                                 'link_virtual' => $request->link_virtual,
                                 'id_municipio' => $request->id_municipio,
-                                'id_cerss' => $grupo->id_cerss
+                                'id_cerss' => $grupo->id_cerss,
+                                'created_at'=>date('Y-m-d H:i:s')                                
                             ]
                         );
                         if($result)$message = 'Operación Exitosa!!';
