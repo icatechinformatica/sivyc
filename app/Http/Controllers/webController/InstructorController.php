@@ -931,7 +931,8 @@ class InstructorController extends Controller
 
     public function exportar_instructores()
     {
-        $data = instructor::SELECT('instructores.nombre','instructores.apellidoPaterno as apellido paterno','instructores.apellidoMaterno as apellido materno',
+        $data = instructor::SELECT('instructores.id','instructores.nombre',
+                'instructores.apellidoPaterno as apellido paterno','instructores.apellidoMaterno as apellido materno',
                 'instructores.numero_control','especialidades.nombre as especialidad','especialidades.clave',
                 'especialidad_instructores.criterio_pago_id as criterio pago','instructor_perfil.grado_profesional',
                 'instructor_perfil.estatus','instructor_perfil.area_carrera','instructor_perfil.nombre_institucion',
@@ -946,7 +947,7 @@ class InstructorController extends Controller
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
-        $cabecera = ['NOMBRE','APELLIDO PATERNO','APELLIDO MATERNO','NUMERO_COTROL','ESPECIALIDAD','CLAVE',
+        $cabecera = ['ID','NOMBRE','APELLIDO PATERNO','APELLIDO MATERNO','NUMERO_COTROL','ESPECIALIDAD','CLAVE',
                     'CRITERIO PAGO','GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD',
                     'PERFIL PROFESIONAL CON EL QUE SE VALIDO','FORMACION PROFESIONAL CON EL QUE SE VALIDO',
                     'INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL','ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO',
