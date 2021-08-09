@@ -167,7 +167,7 @@
                 </div>
                 <div class="form-group col-md-8">
                      <label>Link Virtual:</label>
-                     <input name='link_virtual' id='link_virtual' type="url" class="form-control" aria-required="true" value="{{$grupo->link_virtual}}" {{$disabled}} />
+                     <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual}}" {{$disabled}} />
                 </div>
                 
             </div>
