@@ -22,7 +22,7 @@
         </div>
         <form method="POST" id="sid_registro_modificacion" action="{{ route('sid.modificar', ['idAspirante' => base64_encode($alumno->id) ]) }}">
             @csrf
-            @method('PUT')
+            {{-- @method('PUT') --}}
             <div class="form-row">
                 <!-- apellido paterno -->
                 <div class="form-group col-md-3">
