@@ -78,16 +78,15 @@
     <div class="col-md-12">
         <div class="main-card mb-3 card">
             <div class="card-header">
-                {!! Form::open(['route' => 'personal.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                    <select name="tipo_busqueda_personal" class="form-control mr-sm-2" id="tipo_busqueda_personal">
-                        <option value="">BUSCAR POR TIPO</option>
-                        <option value="numero_enlace">NÚMERO DE ENLACE</option>
+                {!! Form::open(['route' => 'usuario_permisos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    {{--<select name="tipo_busqueda_personal" class="form-control mr-sm-2" id="tipo_busqueda_personal">
                         <option value="nombres">NOMBRE COMPLETO</option>
-                    </select>
+                    </select>--}}
 
-                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'NOMBRE', 'aria-label' => 'BUSCAR']) !!}
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                 {!! Form::close() !!}
+                <br>
                 <div class="btn-actions-pane-right">
                     <div role="group" class="btn-group-sm btn-group">
                         <a href="{{route('usuarios.perfil.crear')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>

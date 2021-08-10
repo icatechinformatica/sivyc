@@ -17,10 +17,12 @@ class userController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $usuarios = User::PAGINATE(20);
+        $tipo='nombres';
+        $busqueda=strtoupper($request->busquedaPersonal);   
+        $usuarios = User::busquedapor($tipo,$busqueda)->PAGINATE(20);
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
