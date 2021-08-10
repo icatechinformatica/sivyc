@@ -18,8 +18,7 @@ $("#guardar" ).click(function() {
             id_municipio: { required: true},
             depen: { required: true},
             tcurso: { required: true},
-            medio_virtual: { required: true},
-            link_virtual: { required: true},
+            medio_virtual: { required: true},            
             instructor: { required: true},
             tdias: { required: true}
         }

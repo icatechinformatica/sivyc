@@ -80,7 +80,8 @@ class aperturaController extends Controller
                 ->where('ar.turnado','<>','VINCULACION')
                 ->where('ar.folio_grupo',$valor);
             if($_SESSION['unidades']) $grupo = $grupo->whereIn('ar.unidad',$_SESSION['unidades']);
-            $grupo = $grupo->groupby('ar.id','e.id','a.formacion_profesional','tc.id','c.id')->first();
+            $grupo = $grupo->groupby('ar.id_curso','ar.unidad','ar.horario', 'ar.folio_grupo','ar.tipo_curso','ar.horario','tc.arc','ar.id_cerss',
+                'e.id','a.formacion_profesional','tc.id','c.id')->first();
             
             // var_dump($grupo);exit; 
             if($grupo){
