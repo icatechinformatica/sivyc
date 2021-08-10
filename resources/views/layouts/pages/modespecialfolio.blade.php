@@ -38,17 +38,17 @@
                 <input class="form-control" name="fecha" type="date" aria-required="true" value="{{ $supre->fecha }}" id="fecha">
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-6"> <!-- Destinatario -->
+        <!--<div class="form-row">
+            <div class="form-group col-md-6"> <-- Destinatario ->
                 <label for="iddestino" class="control-label">Destinatario</label>
-                <input type="text" class="form-control" aria-required="true" value="{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
+                <input type="text" class="form-control" aria-required="true" value="{getdestino->nombre}} {getdestino->apellidoPaterno}} {getdestino->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
             </div>
-            <div class="form-group col-md-6"> <!-- Puesto-->
+            <div class="form-group col-md-6"> <!- Puesto->
                 <label for="idpuesto" class="control-label">Puesto</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{$getdestino->puesto}}" onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
-                <input id="id_destino" name="id_destino" type="text" value="{{$getdestino->id}}" hidden>
+                <input type="text" class="form-control" disabled aria-required="true" value="{getdestino->puesto}}" onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
+                <input id="id_destino" name="id_destino" type="text" value="{getdestino->id}}" hidden>
             </div>
-        </div>
+        </div>-->
         <div class="field_wrapper">
             <table class="table table-bordered" id="dynamicTablemodsupre">
                 <tr>
@@ -104,20 +104,20 @@
                 <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden>
             </div>
         </div>
-        <hr style="border-color:dimgray">
-        <!-- START CCP -->
+        <!--<hr style="border-color:dimgray">
+        <- START CCP ->
             <label for="inputccp"><h3>Con Copia Para</h3></label>
             <br>
             <label><h4>Copia 1</h4></label>
             <div class="form-row">
-                <div class="form-group col-md-4"> <!-- copia 1 -->
+                <div class="form-group col-md-4"> <-- copia 1 ->
                     <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" aria-required="true" value="{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
+                    <input type="text" class="form-control" aria-required="true" value="{getccp1->nombre}} {getccp1->apellidoPaterno}} {getccp1->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
                 </div>
-                <div class="form-group col-md-4"> <!--  -->
+                <div class="form-group col-md-4"> <--  ->
                     <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getccp1->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
-                    <input id="id_ccp1" name="id_ccp1" type="text" value="{{$getccp1->id}}" hidden>
+                    <input type="text" class="form-control" disabled aria-required="true" value="{getccp1->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
+                    <input id="id_ccp1" name="id_ccp1" type="text" value="{getccp1->id}}" hidden>
                 </div>
             </div>
             <br>
@@ -125,20 +125,20 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" aria-required="true" value="{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
+                    <input type="text" class="form-control" aria-required="true" value="{getccp2->nombre}} {getccp2->apellidoPaterno}} {getccp2->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
                 </div>
-                <div class="form-group col-md-4"> <!--  -->
+                <div class="form-group col-md-4"> <--  ->
                     <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getccp2->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
-                    <input id="id_ccp2" name="id_ccp2" type="text" value="{{$getccp2->id}}" hidden >
+                    <input type="text" class="form-control" disabled aria-required="true" value="{getccp2->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
+                    <input id="id_ccp2" name="id_ccp2" type="text" value="{getccp2->id}}" hidden >
                 </div>
             </div>
-        <!--END CCP-->
+        <-END CCP-->
         <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}">
         <br>
         <div class="row">
-            <input hidden id=id_supre name="id_supre" value={{$supre->id}}>
-            <input hidden id=id_folio name="id_folio" value={{$supre->id_folios}}>
+            <input hidden id=id_supre name="id_supre" value="{{$supre->id}}">
+            <input hidden id=id_folio name="id_folio" value="{{$folio->id_folios}}">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
