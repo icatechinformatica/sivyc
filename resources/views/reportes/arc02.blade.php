@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ARC02</title>
     <style>      
-        body{font-family: sans-serif}
-        @page {margin: 30px 30px 10px 30px;}
+        body{font-family: sans-serif;
+            margin: 30px 10px 50px ;}
             header { position: fixed; left: 0px; top: 10px; right: 0px; text-align: center;}
             header h1{height:0; line-height: 14px; padding: 9px; margin: 0;}
             header h2{margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
@@ -117,7 +117,7 @@
                                 <th>{{ $a->dura }}</th>
                                 <th style="width:10%;">{{ $a->clave }}</th>
                                 <th style="width: 5%;">{{ $a->mvalida }}</th>
-                                <th style="width: 15%;">{{ $a->nombre }}</th>    
+                                <th style="width: 10%;">{{ $a->nombre }}</th>    
                                 <th style="width: 5%;">{{ $a->inicio }}</th>                           
                                 <th style="width: 5%;">{{ $a->termino }}</th>                           
                                 <th style="width:5%;">{{ $a->efisico }}</th>
