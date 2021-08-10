@@ -25,6 +25,7 @@
                     <label for="unidad" class="control-label">UNIDAD DE CAPACITACIÓN</label>
                     <select name="unidad" id="unidad" class="custom-select">
                         <option value="">SELECCIONE UNA UNIDAD</option>
+                        <option value="0">TODAS LAS UNIDADES</option>
                         @foreach ($unidades as $unidad)
                             <option value="{{ $unidad->id }}">{{ $unidad->unidad }}</option>
                         @endforeach
@@ -170,9 +171,9 @@
                 municipioE: {
                     required: true
                 },
-                localidad: {
-                    required: true
-                },
+                // localidad: {
+                //     required: true
+                // },
                 fecha_memorandum: {
                     required: true
                 },
@@ -205,9 +206,9 @@
                 municipioE: {
                     required: 'El municipio es requerido'
                 },
-                localidad: {
-                    required: 'La localidad es requerida'
-                },
+                // localidad: {
+                //     required: 'La localidad es requerida'
+                // },
                 fecha_memorandum: {
                     required: 'La fecha del memorandum es requerida'
                 },
@@ -250,8 +251,8 @@
                     } else {
                         if (!respuesta.hasOwnProperty('error')) {
                             $("#municipioE").empty();
-                            $("#municipioE").append(
-                                '<option value="" selected="selected">--SELECCIONAR--</option>');
+                            $("#municipioE").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                            $("#municipioE").append('<option value="0">TODOS LOS MUNICIPIOS</option>');
                             $.each(respuesta, (k, v) => {
                                 $('#municipioE').append('<option value="' + v.id + '">' + v.muni + '</option>');
                             });
@@ -269,7 +270,7 @@
             defaultDate: "+1w",
             changeMonth: true,
             numberOfMonths: 1,
-            dateFormat: 'yy-mm-dd'
+            dateFormat: 'yy-mm-dd',
         })
 
     </script>
