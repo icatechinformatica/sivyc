@@ -584,6 +584,7 @@ class supreController extends Controller
 
     public function folio_edicion_especial_save(Request $request)
     {
+        //dd($request->id_folio);
         //dd($request);
         $curso_validado = new tbl_curso();
         $clave = $request->addmore[0]['clavecurso'];
@@ -600,12 +601,13 @@ class supreController extends Controller
                   'fecha_status' => carbon::now()]);
 
         supre_directorio::where('id', '=', $request->id_directorio)
-        ->update(['supre_dest' => $request->id_destino,
+        ->update([//'supre_dest' => $request->id_destino,
                   'supre_rem' => $request->id_remitente,
                   'supre_valida' => $request->id_valida,
                   'supre_elabora' => $request->id_elabora,
-                  'supre_ccp1' => $request->id_ccp1,
-                  'supre_ccp2' => $request->id_ccp2,]);
+                  //'supre_ccp1' => $request->id_ccp1,
+                  //'supre_ccp2' => $request->id_ccp2,
+                ]);
 
         folio::where('id_folios', '=', $request->id_folio)
         ->update(['folio_validacion' => $request->addmore[0]['folio'],
