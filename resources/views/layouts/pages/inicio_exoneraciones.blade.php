@@ -61,7 +61,7 @@
                 @foreach ($exoneraciones as $exoneracion)
                     <tr>
                         <td>{{$exoneracion->no_memorandum}}</td>
-                        <td>{{$exoneracion->unidad_capacitacion}}</td>
+                        <td>{{$exoneracion->unidad_capacitacion == null ? 'TODAS LAS UNIDADES' : $exoneracion->unidad_capacitacion}}</td>
                         <td>{{$exoneracion->fecha_memorandum}}</td>
                         <td>{{$exoneracion->tipo_exoneracion}}</td>
                         <td>{{$exoneracion->no_convenio}}</td>

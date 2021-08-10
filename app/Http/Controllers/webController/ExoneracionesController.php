@@ -16,11 +16,20 @@ class ExoneracionesController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $exoneraciones = Exoneraciones::Busqueda($request->get('busqueda'), $request->get('busqueda_exoneracionpor'))
-            ->leftjoin('tbl_unidades', 'exoneraciones.id_unidad_capacitacion', '=', 'tbl_unidades.id')
-            ->select('exoneraciones.*', 'tbl_unidades.unidad as unidad_capacitacion')
-            ->orderByDesc('exoneraciones.id')
-            ->paginate(15, ['exoneraciones.*', 'tbl_unidades.unidad as unidad_capacitacion']);
+        if ($request->busqueda_exoneracionpor != 'TODAS LAS UNIDADES') {
+            $exoneraciones = Exoneraciones::Busqueda($request->get('busqueda'), $request->get('busqueda_exoneracionpor'))
+                ->leftjoin('tbl_unidades', 'exoneraciones.id_unidad_capacitacion', '=', 'tbl_unidades.id')
+                ->select('exoneraciones.*', 'tbl_unidades.unidad as unidad_capacitacion')
+                ->orderByDesc('exoneraciones.id')
+                ->paginate(15, ['exoneraciones.*', 'tbl_unidades.unidad as unidad_capacitacion']);
+        } else {
+            $exoneraciones = Exoneraciones::Busqueda($request->get('busqueda'), '')
+                ->leftjoin('tbl_unidades', 'exoneraciones.id_unidad_capacitacion', '=', 'tbl_unidades.id')
+                ->select('exoneraciones.*', 'tbl_unidades.unidad as unidad_capacitacion')
+                ->orderByDesc('exoneraciones.id')
+                ->paginate(15, ['exoneraciones.*', 'tbl_unidades.unidad as unidad_capacitacion']);
+        }
+        
         return view('layouts.pages.inicio_exoneraciones', compact('exoneraciones'));
     }
 
