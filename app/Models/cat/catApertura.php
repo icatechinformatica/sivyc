@@ -57,12 +57,12 @@ trait catApertura
     }
     
     protected function exoneracion($id_unidad){  
-        $exoneracion = DB::table('exoneraciones')->where('activo','true')->where('id_unidad_capacitacion',$id_unidad)->orderby('no_memorandum')->pluck('no_memorandum','no_memorandum');        
+        $exoneracion = DB::table('exoneraciones')->where('activo','true')->whereIn('id_unidad_capacitacion',[$id_unidad,0])->orderby('no_memorandum')->pluck('no_memorandum','no_memorandum');        
         return $exoneracion;       
     }
 
     protected function programa(){  
-        $programa = DB::table('tbl_cursos')->where('programa','!=','0')
+        $programa = DB::table('tbl_cursos')->where('programa','!=','0')->where('programa','!=','N')->where('programa', 'not like', '%21%')
         ->where('programa','!=','NINGUNA')->distinct()->orderby('programa')->pluck('programa','programa');    
         return $programa;       
     }

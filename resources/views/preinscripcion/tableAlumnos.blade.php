@@ -2,8 +2,9 @@
     <thead>
       <tr>
         <th class="h6" scope="col">#</th>            
-        <th class="h6" scope="col">Curp</th>               
+        <th class="h6" scope="col">Curp</th>                       
         <th class="h6" scope="col">Nombre</th>
+        <th class="h6" scope="col">Matricula</th>
         <th class="h6" scope="col">Sexo</th>
         <th class="h6" scope="col" width="8%">Fec. Nac.</th>
         <th class="h6" scope="col">Escolaridad</th>
@@ -20,6 +21,7 @@
                 <th scope="row"> {{ $consec++ }} </th>
                 <th>{{ $a->curp }}</th>
                 <th>{{ $a->apellido_paterno }} {{ $a->apellido_materno }} {{ $a->nombre }}</th> 
+                <th>{{ $a->no_control }}</th>
                 <th>{{ $a->sex }}</th>
                 <th>{{ $a->fnacimiento }}</th>
                 <th>{{ $a->ultimo_grado_estudios }}</th>
