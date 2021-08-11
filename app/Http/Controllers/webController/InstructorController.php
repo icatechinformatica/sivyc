@@ -931,27 +931,54 @@ class InstructorController extends Controller
 
     public function exportar_instructores()
     {
-        $data = instructor::SELECT('instructores.id','instructores.nombre',
-                'instructores.apellidoPaterno as apellido paterno','instructores.apellidoMaterno as apellido materno',
-                'instructores.numero_control','especialidades.nombre as especialidad','especialidades.clave',
-                'especialidad_instructores.criterio_pago_id as criterio pago','instructor_perfil.grado_profesional',
-                'instructor_perfil.estatus','instructor_perfil.area_carrera','instructor_perfil.nombre_institucion',
+        $data = instructor::SELECT('instructores.id',
+                DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") AS NOMBRE'),
+                'instructores.numero_control',
+                DB::raw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
+                DB::raw("array(select especialidades.clave from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as clave"),
+                DB::raw("array(select criterio_pago_id from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as criteriopago"),
+                DB::raw("array(select grado_profesional from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as grado"),
+                DB::raw("array(select estatus from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as estatus"),
+                DB::raw("array(select area_carrera from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as area"),
+                DB::raw("array(select nombre_institucion from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as institucion"),
                 'instructores.rfc','instructores.curp','instructores.sexo','instructores.estado_civil',
                 'instructores.asentamiento','instructores.domicilio','instructores.telefono','instructores.correo',
-                'tbl_unidades.unidad','especialidad_instructores.memorandum_validacion',
-                'especialidad_instructores.fecha_validacion','especialidad_instructores.observacion')
-                ->LEFTJOIN('instructor_perfil','instructor_perfil.numero_control', '=', 'instructores.id')
-                ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                'tbl_unidades.unidad',
+                DB::raw("array(select memorandum_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
+                DB::raw("array(select fecha_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as fechaval"),
+                DB::raw("array(select observacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
+                ->WHERE('instructores.estado', '=', TRUE)
+                ->whereRaw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
-        $cabecera = ['ID','NOMBRE','APELLIDO PATERNO','APELLIDO MATERNO','NUMERO_COTROL','ESPECIALIDAD','CLAVE',
-                    'CRITERIO PAGO','GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD',
-                    'PERFIL PROFESIONAL CON EL QUE SE VALIDO','FORMACION PROFESIONAL CON EL QUE SE VALIDO',
-                    'INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL','ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO',
-                    'UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION','FECHA DE VALIDACION','OBSERVACION'];
+        $cabecera = ['ID','NOMBRE','NUMERO COTROL','ESPECIALIDAD','CLAVE','CRITERIO PAGO',
+                    'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
+                    'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION',
+                    'FECHA DE VALIDACION','OBSERVACION'];
 
         $nombreLayout = "Catalogo de instructores.xlsx";
         $titulo = "Catalogo de instructores";
