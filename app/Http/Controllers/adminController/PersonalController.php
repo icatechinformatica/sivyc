@@ -21,7 +21,7 @@ class PersonalController extends Controller
         $tipoPersonal = $request->get('tipo_busqueda_personal');
         $busquedaPersonal = $request->get('busquedaPersonal');
         //
-        $directorio = Personal::busqueda($tipoPersonal, $busquedaPersonal)->PAGINATE(25);
+        $directorio = Personal::busqueda($tipoPersonal, $busquedaPersonal)->orderBy('apellidoPaterno')->PAGINATE(25);
         return view('layouts.pages_admin.personal_index', compact('directorio'));
     }
 
