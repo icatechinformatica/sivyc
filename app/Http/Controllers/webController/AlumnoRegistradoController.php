@@ -15,6 +15,7 @@ use App\Models\especialidad;
 use App\Models\curso;
 use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 // reference the Dompdf namespace
 use PDF;
 
@@ -111,6 +112,10 @@ class AlumnoRegistradoController extends Controller
         $curso = new curso();
         //$cursos = $curso->all();
         //
+        $id_user = Auth::user()->id;    //dd($id_user);
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+        ->WHERE('role_user.user_id', '=', $id_user)
+            ->value('roles.slug');  //dd($rol);
         $id_alumno_registro = base64_decode($id);
         $alumnos = Alumno::WHERE('alumnos_registro.id', '=', $id_alumno_registro)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
@@ -138,7 +143,7 @@ class AlumnoRegistradoController extends Controller
 
 
 
-        return view('layouts.pages.alumno_registro_modificar', compact('alumnos', 'especialidades', 'municipios', 'estados', 'dia_nac', 'mes_nac', 'anio_nac', 'cursos', 'unidad_seleccionada', 'ubicacion'));
+        return view('layouts.pages.alumno_registro_modificar', compact('alumnos', 'especialidades', 'municipios', 'estados', 'dia_nac', 'mes_nac', 'anio_nac', 'cursos', 'unidad_seleccionada', 'ubicacion','rol'));
     }
 
     /**

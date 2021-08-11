@@ -60,7 +60,7 @@
             <tbody>
                 <tr>
                     <td style="text-decoration: underline;">{{$date}}</td>
-                    <td>{{$alumnos->no_control.$alumnos->id}}</td>
+                    <td>{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
                 </tr>
                 <tr>
                     <td>FECHA</td>

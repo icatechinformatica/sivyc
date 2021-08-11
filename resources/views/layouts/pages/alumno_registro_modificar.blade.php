@@ -108,11 +108,13 @@
                     <div class="pull-left">
                         <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                     </div>
-                    @can('alumno.inscrito.update')
+                    @if ($rol=='admin')
+                        @can('alumno.inscrito.update')
                         <div class="pull-right">
                             <button type="submit" class="btn btn-primary" >Modificar</button>
                         </div>
-                    @endcan
+                        @endcan
+                    @endif
                 </div>
             </div>
             <input type="hidden" name="no_control_update" id="no_control_update" value="{{$alumnos->no_control}}">
