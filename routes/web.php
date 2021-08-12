@@ -669,3 +669,7 @@ Route::get('/Estadisticas/inicio', 'Validacion\ReportesPlaneacionFormatoT@indexE
 Route::get('/Estadisticas/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreatePdf')->name('reportes.planeacion.estadisticasPdf');
 Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@estadisticasCreateXls')->name('reportes.planeacion.estadisticasXls');
 
+//armando
+Route::get('/password/new','passwordController@index')->name('password.view')->middleware('can:password.update');
+Route::post('/password/update','passwordController@updatePassword')->name('update.password');
+
