@@ -52,7 +52,9 @@ trait catApertura
     }
     
     protected function convenio($unidad,$tipo){  
-        $convenio = DB::table('convenios')->where('tipo_convenio',$tipo)->where('activo','true')->where('unidades','like','%'.$unidad.'%')->orderby('no_convenio')->pluck('no_convenio','id');    
+        $convenio = DB::table('convenios')->where('tipo_convenio',$tipo)->where('activo','true')
+        ->WHERE('fecha_vigencia','>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
+        ->where('unidades','like','%'.$unidad.'%')->orderby('no_convenio')->pluck('no_convenio','id');    
         return $convenio;       
     }
     

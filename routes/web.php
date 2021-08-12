@@ -523,6 +523,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitud/apertura/regresar', 'Solicitud\aperturaController@regresar')->name('solicitud.apertura.regresar')->middleware('can:solicitud.apertura.regresar');
     Route::get('/solicitud/apertura/regresar', 'Solicitud\aperturaController@regresar')->name('solicitud.apertura.regresar')->middleware('can:solicitud.apertura.regresar');
 
+    Route::get('/solicitud/rezago', 'Solicitud\rezagoController@index')->name('solicitud.rezago');
+    Route::post('/solicitud/rezago', 'Solicitud\rezagoController@index')->name('solicitud.rezago');
+    Route::post('/solicitud/rezago/guardar', 'Solicitud\rezagoController@store')->name('solicitud.rezago.guardar');
+    Route::get('/solicitud/rezago/guardar', 'Solicitud\rezagoController@store')->name('solicitud.rezago.guardar');
+
     Route::post('/solicitud/apertura/aceptar', 'Solicitud\aperturaController@aperturar')->name('solicitud.apertura.aceptar')->middleware('can:solicitud.apertura.aceptar');
     Route::get('/solicitud/apertura/aceptar', 'Solicitud\aperturaController@aperturar')->name('solicitud.apertura.aceptar')->middleware('can:solicitud.apertura.aceptar');
 
