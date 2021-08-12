@@ -47,7 +47,7 @@
                         <a class="btn btn-success btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
                     @endcan
                     @can('icatalogoinstructores')
-                        <a class="btn btn-info btn-lg" href="{{route('academico.catalogoinstructores')}}">Exportar Instructores</a>
+                        <a class="btn btn-info btn-lg" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
                     @endcan
                 </div>
             </div>
