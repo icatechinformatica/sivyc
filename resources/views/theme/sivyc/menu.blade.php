@@ -311,6 +311,9 @@
                                                 document.getElementById('logout-form').submit();">
                                 {{ __('Cerrar Sesión') }}
                         </a>
+                        @can('password.update')
+                            <a class="dropdown-item" href="{{route('password.view')}}">Cambiar Contraseña</a>
+                        @endcan
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
