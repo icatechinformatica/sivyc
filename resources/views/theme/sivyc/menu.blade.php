@@ -54,10 +54,7 @@
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
-                        <!--alumnos.index-->
-                        @can('alumnos.index')
-                            <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
-                        @endcan
+                        
                         @can('alumnos.inscritos.index')
                             <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         @endcan
@@ -143,6 +140,19 @@
                                 data-target="#ModalFinanciero">Reporte R8</a>
                         @endcan
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
+                    </div>
+                </li>
+                <li class="nav-item g-mx-5--lg dropdown">
+                    <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Preinscripci&oacute;n
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"> 
+                        <!--alumnos.index-->
+                        @can('alumnos.index')
+                            <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
+                        @endcan                           
+                        <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
+                        <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
                     </div>
                 </li>
 
@@ -266,14 +276,14 @@
                         <a class="dropdown-item" href="#">
                             {{ Auth::user()->name }}
                         </a>
+                        @can('password.update')
+                            <a class="dropdown-item" href="{{route('password.view')}}">Cambiar Contraseña</a>
+                        @endcan
                         <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                                 document.getElementById('logout-form').submit();">
                                 {{ __('Cerrar Sesión') }}
                         </a>
-                        @can('password.update')
-                            <a class="dropdown-item" href="{{route('password.view')}}">Cambiar Contraseña</a>
-                        @endcan
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
