@@ -22,6 +22,8 @@ use App\Models\Unidad;
 use Illuminate\Support\Facades\DB;
 use SebastianBergmann\Environment\Console;
 use App\Models\AlumnosSice;
+use App\Models\cerss_a;
+use PharIo\Manifest\Author;
 
 class AlumnoController extends Controller
 {
@@ -33,12 +35,26 @@ class AlumnoController extends Controller
     public function index(Request $request)
     {
         //
-        $buscar_aspirante = $request->get('busqueda_aspirantepor');
+        $buscar_aspirante = $request->get('busqueda_aspirantepor'); //dd(gettype($buscar_aspirante));
 
-        $tipoaspirante = $request->get('busqueda_aspirante');
-        $retrieveAlumnos = Alumnopre::busquedapor($tipoaspirante, $buscar_aspirante)
-        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso']);
-        $contador = $retrieveAlumnos->count();
+        $tipoaspirante = $request->get('busqueda_aspirante');   //dd(ctype_alpha($buscar_aspirante));
+        $tipo=null;
+        if(isset($buscar_aspirante)){
+            if(ctype_alpha($buscar_aspirante)){
+                $tipo='nombre_aspirante';
+            }else{
+                $cay= str_split($buscar_aspirante);
+                $cay= $cay[0].$cay[1].$cay[2].$cay[3];    //dd($cay);
+                if(ctype_alpha($cay)){
+                    $tipo='curp_aspirante';
+                }else{
+                    $tipo='matricula_aspirante';
+                }
+            }
+        }
+        $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)->orderBy('apellido_paterno')
+        ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso','matricula']);
+        $contador = $retrieveAlumnos->count();//dd($retrieveAlumnos);
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
 
@@ -47,7 +63,553 @@ class AlumnoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function showl(Request $request)     //vista inscripción aspirante
+    {
+        $curp = strtoupper($request->input('curp_val'));    //dd($curp);
+        if($curp) {
+            
+            $curp_d=str_split($curp);
+            $sexo=$curp_d[10];
+            $hoy=date('y');
+            $anio=0;
+            if($curp_d[4].$curp_d[5]<=$hoy){
+                $i=20;
+                $anio= $i.$curp_d[4].$curp_d[5]; 
+            }
+            else{
+                $i=19;
+                $anio= $i.$curp_d[4].$curp_d[5];    
+            }
+            $año=date_create_from_format('Y', $anio)->format("Y"); //dd($año);
+            $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
+            $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d');
+            $fecha=  $año.$mes.$dia;
+            
+            $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd($fecha_t);
+            $grado_estudio = [
+                'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+                'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+                'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+                'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+                'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+                'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+                'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+                'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+                'POSTGRADO' => 'POSTGRADO'
+            ];
+            //$estado = new Estado();
+            //$estado = estado::get();
+            $estado=DB::table('estados')->select('id','nombre')->get(); //dd($estado);
+            foreach($estado as $item){
+                $estados[$item->id]= $item->nombre;
+            }
+             //dd($estados);
+            $estado_civil=DB::table('estado_civil')->orderby('nombre','ASC')->pluck('nombre');
+            $etnia=$this->etnia= ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
+            $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DEL HABLA"=>"DEL HABLA","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
+            // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
+            $curp_formateada = trim($curp);//dd($curp_formateada);
+            /**
+            * checamos la base de datos para saber si ya se encuentra registrada
+            */
+            $alumnoPre = DB::table('alumnos_pre')->select('curp','id')->where('curp','=', $curp_formateada)->first(); //dd($alumnoPre);
+            /**
+            * se checa si la consulta arroja un resultado o es nulo,
+            * en dado caso de ser nulo se tiene que agregar completamente
+            */
+            if(is_null($alumnoPre)){
+                $a=false;
+            return view('layouts.pages.valcurp', compact('estados', 'grado_estudio','estado_civil','etnia','discapacidad','curp','sexo','fecha_t','a'));
+            }else {
+            # ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
+            /**
+            * checamos la función básica para comparar dos cadenas a nivel binario
+            * Tiene en cuenta mayúsculas y minúsculas.
+            * Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
+            */
+            if (strcmp($curp_formateada, $alumnoPre->curp) === 0)
+            {
+            # si coinciden hay que mandar directo un mensaje de que no funciona
+                
+                $id= $alumnoPre->id; //dd($id);
+                return redirect()->route('alumnos.presincripcion-modificar',['id'=>base64_encode($id)])
+                ->withErrors(sprintf('LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
+            }}
+        }
+        return view('layouts.pages.valcurp', compact('curp'));
+    }
+    public function showlm(Request $request)    //obtención municipios
+    {
+        //dd($request->ajax());
+        if($request->ajax()){
+            //dd($request->estado_id);
+            $id= DB::table('estados')->select('id')->where(DB::RAW('TRIM(nombre)'),'=', $request->estado_id)->get(); //dd($id[0]->id);
+            
+            //$id=$request->estado_id;
+
+            $municipio = municipio::where('id_estado','=',$id[0]->id)->get(); //dd($titular_cerss); 
+            foreach($municipio as $titular){
+                $municipioArray[$titular->id]= $titular->muni;
+            }
+            //dd($municipioArray);
+            return response()->json($municipioArray);
+        }
+    }
+    public function showlf(Request $request)    //obtención fecha_nac y sexo por curp
+    {
+        //dd($request->fa);
+        $curp_d=str_split($request->fa);
+        $sexo=$curp_d[10];
+        if($sexo=='H'){
+            $sexo='HOMBRE';
+        }
+        else{
+            $sexo='MUJER';
+        }
+        $hoy=date('y');
+        $anio=0;
+        if($curp_d[4].$curp_d[5]<=$hoy){
+                $i=20;
+                $anio= $i.$curp_d[4].$curp_d[5]; 
+        }
+        else{
+                $i=19;
+                $anio= $i.$curp_d[4].$curp_d[5];    
+        }
+        $año=date_create_from_format('Y', $anio)->format("Y"); //dd($año);
+        $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
+        $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d');
+        $fecha=  $año.$mes.$dia; 
+        $fecha_t=date("Y-m-d ", strtotime($fecha));
+        $low['fecha']=$fecha_t;
+        $low['sexo']=$sexo;
+            //dd($low);
+        return response()->json($low);
+
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */     //insercción de aspiratntes a alumnos_pre//
+    public function store(Request $request)
+    {
+            //dd($request->all());
+        $curp= $request->curp; //dd($curp);
+        // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
+        $curp_formateada = trim($curp); 
+        /**
+         * checamos la base de datos para saber si ya se encuentra registrada
+         */
+        $alumnoPre = DB::table('alumnos_pre')->where('curp', $curp_formateada)->select('curp')->first();
+        if (isset($request->empresa)) {
+            $empresa = $request->empresa;
+        }else{
+            $empresa = 'DESEMPLEADO';
+        }
+            //dd($alumnoPre);
+        /**
+         * se checa si la consulta arroja un resultado o es nulo,
+         * en dado caso de ser nulo se tiene que agregar completamente
+         */
+        if (is_null($alumnoPre)) {
+            # SI ES VERDADERO ESTÁ NULA LA CONSULTA, PROCEDEMOS A INSERTAR EL REGISTRO
+            // obtener el usuario que agrega
+            $usuario = Auth::user()->name;
+            # si la consulta está vacía hacemos la inserción
+            $validator = Validator::make($request->all(), [
+                'curp'=>'required'
+            ]);
+            //dd($validator);
+            if ($validator->fails()) {
+                return redirect('alumnos/valsid')
+                            ->withErrors($validator)
+                            ->withInput();
+            }else{
+                #CONSULTAMOS SI HAY REGISTRO EN registro_alumnos-sice, SI HAY SE CAPTURA LA MATRICULA Y LA AGREGAMOS AL NUEVO REGISTRO
+                $matricula = DB::table('registro_alumnos_sice')->where('curp','=',$curp_formateada)->where('eliminado','=',false)->select('no_control as matricula')->first() ;    //dd($matricula); 
+                #CONTUINAMOS CON LA CAPTURA
+                $usuarioUnidad = Auth::user()->unidad;
+                $id_user = Auth::user()->id;
+                $hoy=date('Y-m-d H:i:s');   //dd($hoy);
+                //dd($arregloDocs);
+                $arc = $request->file('customFile'); //dd($arc);
+                $fotografia=$request->file('fotografia'); //dd($fotografia);
+                $AlumnoPreseleccion = new Alumnopre;
+                $AlumnoPreseleccion->id_unidad = $usuarioUnidad;
+                if($request->cerss_chk == null){
+                    $AlumnoPreseleccion->es_cereso = false;
+                }else{$AlumnoPreseleccion->es_cereso = $request->cerss_chk;}
+                //$AlumnoPreseleccion->es_cereso = $request->cerss_chk;
+                if($request->trabajo==null){$AlumnoPreseleccion->empleado=false;}else{$AlumnoPreseleccion->empleado=$request->trabajo;}
+                $AlumnoPreseleccion->numero_expediente = $request->num_expediente_cerss;
+                $AlumnoPreseleccion->curp = $curp_formateada;
+                $AlumnoPreseleccion->nombre = $request->nombre;
+                $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
+                $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
+                $AlumnoPreseleccion->fecha_nacimiento = $request->fecha_nacimiento;
+                $AlumnoPreseleccion->sexo = $request->sexo;
+                if(isset($fotografia)){$AlumnoPreseleccion->chk_fotografia=true;}
+                $AlumnoPreseleccion->nacionalidad = $request->nacionalidad;
+                $AlumnoPreseleccion->telefono_casa = $request->telefono_casa;
+                $AlumnoPreseleccion->telefono_personal = $request->telefono_cel;
+                $AlumnoPreseleccion->correo = $request->correo;
+                $AlumnoPreseleccion->facebook = $request->facebook;
+                $AlumnoPreseleccion->twitter = $request->twitter;
+                $AlumnoPreseleccion->recibir_publicaciones = $request->recibir_publicaciones;
+                $AlumnoPreseleccion->domicilio = $request->domicilio;
+                $AlumnoPreseleccion->colonia = $request->colonia;
+                $AlumnoPreseleccion->cp = $request->cp;
+                $AlumnoPreseleccion->estado = $request->estado;
+                $AlumnoPreseleccion->municipio = $request->municipio;
+                $AlumnoPreseleccion->estado_civil = $request->estado_civil;
+                $AlumnoPreseleccion->discapacidad = $request->discapacidad;
+                $AlumnoPreseleccion->madre_soltera = $request->madre_soltera;
+                $AlumnoPreseleccion->familia_migrante = $request->familia_migrante;
+                $AlumnoPreseleccion->indigena = $request->indigena;
+                $AlumnoPreseleccion->inmigrante = $request->inmigrante;
+                $AlumnoPreseleccion->etnia = $request->etnia;
+                $AlumnoPreseleccion->ultimo_grado_estudios = $request->ultimo_grado_estudios;
+                $AlumnoPreseleccion->medio_entero = ($request->input('medio_entero') === "0") ? $request->input('medio_entero_especificar') : $request->input('medio_entero');
+                $AlumnoPreseleccion->sistema_capacitacion_especificar = ($request->input('motivos_eleccion_sistema_capacitacion') === "0") ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion');
+                $AlumnoPreseleccion->empresa_trabaja = $empresa;
+                $AlumnoPreseleccion->puesto_empresa = $request->puesto_empresa;
+                $AlumnoPreseleccion->antiguedad = $request->antiguedad;
+                $AlumnoPreseleccion->direccion_empresa = $request->direccion_empresa;
+                $AlumnoPreseleccion->chk_acta_nacimiento = $request->chk_acta;
+                $AlumnoPreseleccion->chk_curp = $request->chk_curp;
+                $AlumnoPreseleccion->chk_comprobante_ultimo_grado = $request->chk_escolaridad;
+                $AlumnoPreseleccion->chk_comprobante_calidad_migratoria = $request->chk_comprobante_migratorio;
+                $AlumnoPreseleccion->activo = true;
+                $AlumnoPreseleccion->realizo = $usuario;
+                $AlumnoPreseleccion->iduser_created=$id_user;
+                $AlumnoPreseleccion->tiene_documentacion = true;
+                $AlumnoPreseleccion->created_at= $hoy;
+                if(isset($matricula)){
+                    $AlumnoPreseleccion->matricula= $matricula->matricula;
+                }
+                //$AlumnoPreseleccion->acta_nacimiento = $request->file('customFile');
+                $AlumnoPreseleccion->save();
+                // generamos url para carga de archivo
+                $consulta= DB::table('alumnos_pre')->where('curp','=',$curp)->select('id','nombre')->first();
+                //dd($consulta);
+                $idPre = $consulta->id;
+                $url_documento = $this->uploaded_file($arc, $idPre, 'requisitos'); #invocamos el método
+                //dd($url_documento);
+                $arregloDocs = [
+                    'documento'=>$url_documento,
+                    'chk_curp' => $request->chk_curp,
+                    'chk_acta_nacimiento' => $request->chk_acta,
+                    'chk_escolaridad'=>$request->chk_escolaridad,
+                    'chk_comprobante_migracion'=>$request->chk_comprobante_migracion,
+                    'fecha_expedicion_acta_nacimiento'=>$request->fecha_expedicion_acta_nacimiento,
+                    'fecha_expedicion_curp'=>$request->fecha_expedicion_curp,
+                    'fecha_vigencia_migratorio'=>$request->fecha_vigencia_migratorio
+                ];
+                //$resultado = json_encode($arregloDocs, true, 2);
+                //dd($resultado);
+                //dd($arregloDocs);
+                $affected = DB::table('alumnos_pre')->where('id', $idPre)->update(['requisitos' => $arregloDocs]);
+                
+                if(isset($fotografia)){
+                    $url_fotografia=$this->uploaded_file($fotografia,$idPre,'fotografia');  //dd($url_fotografia);
+                    $opss= DB::table('alumnos_pre')->where('id',$idPre)->update(['fotografia'=>$url_fotografia]);
+                }
+                // redireccionamos con un mensaje de éxito
+                return redirect()->route('alumnos.valid')->with('success', sprintf('Nuevo Aspirante Agregado Exitosamente!'));
+                //return redirect()->action('webController\AlumnoController@updateDoc')->compact('curp_fotmateada');
+            }
+           
+        } else {
+            # ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
+            /**
+             * checamos la función básica para comparar dos cadenas a nivel binario
+             * Tiene en cuenta mayúsculas y minúsculas.
+             * Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
+             */
+            if (strcmp($curp_formateada, $alumnoPre->curp) === 0)
+            {
+                # si coinciden hay que mandar directo un mensaje de que no funciona
+                return redirect()->route('alumnos.valid')
+                    ->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
+            }
+        }
+    }
+        //vista modificación de aspirantes Catalogo aspirantes
+    protected function showUpdate($id)
+    {
+        $id_user = Auth::user()->id;    //dd($id_user);
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+        ->WHERE('role_user.user_id', '=', $id_user)
+            ->value('roles.slug');  //dd($rol);
+        //$rol='unidad_vinculacion';
+        $grado_estudio = [
+            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO' => 'POSTGRADO',
+            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
+        ];
+        $estado = estado::get();
+        foreach($estado as $item){
+            $estados[$item->id]= $item->nombre;
+        }
+        $estado_civil=DB::table('estado_civil')->orderBy('nombre','ASC')->pluck('nombre');
+        $etnia=$this->etnia= ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
+        $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DEL HABLA"=>"DEL HABLA","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
+        $idpre = base64_decode($id);
+        $alumnos = new Alumnopre();
+        $alumno = $alumnos->findOrfail($idpre);     //dd($alumno->curp);
+        $requisitos= json_decode($alumno->requisitos); //dd($requisitos);
+        //obtención de vigencia de los rquisitos ingresados en la BD para su actualización
+        $vigencia_curp='';
+        $vigencia_acta= '';
+        $vigencia_migracion='';
+        if (isset($requisitos)) {
+            $vigencia_doc_curp = $requisitos->fecha_expedicion_curp;
+            $vigencia_doc= date('Y-m-d',strtotime($vigencia_doc_curp));
+            $vigencia_doc= date_create($vigencia_doc);
+            $hoy = date('Y-m-d');  // dd($hoy);
+            $hoy= date_create($hoy);
+            $vigencia_curp= date_diff($vigencia_doc, $hoy);
+            $vigencia_curp= $vigencia_curp->days;
+            $vigencia_acta= date('Y-m-d',strtotime($requisitos->fecha_expedicion_acta_nacimiento));
+            $vigencia_acta= date_create($vigencia_acta);
+            $vigencia_acta= date_diff($vigencia_acta, $hoy);
+            $vigencia_acta= $vigencia_acta->days;
+            $vigencia_migracion= strtotime($requisitos->fecha_vigencia_migratorio);
+            $hoys= strtotime(date("Y-m-d",time()));; //dd($vigencia_migracion);
+            if ($vigencia_migracion<$hoys) {
+                $vigencia_migracion= true;
+            }else{$vigencia_migracion=false;}
+            $vigencia_migracion= $vigencia_migracion; //dd($vigencia_migracion);
+        }/*else{
+            $vigencia_doc=explode('/',$alumno->acta_nacimiento);    
+            $vigencia_doc = $vigencia_doc[7];
+            $vigencia_doc = explode('_',$vigencia_doc);
+            $vigencia_doc= str_split($vigencia_doc[2],8);
+            $vigencia_doc= $vigencia_doc[0];
+        }*/
+        //dd($vigencia_doc);
+        $fecha_nac = explode("-", $alumno->fecha_nacimiento);   //dd($alumno);
+        $anio_nac = $fecha_nac[0];
+        $mes_nac = $fecha_nac[1];
+        $dia_nac = $fecha_nac[2];
+        $a=true;
+        $curp= $alumno->curp;
+        return view('layouts.pages.valcurp', compact('alumno', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio','estado_civil','etnia','discapacidad','requisitos','vigencia_curp','vigencia_acta','vigencia_migracion','rol','a','curp'));
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+        // modificación de aspirantes en alumnos_pre
+        public function updateSid(Request $request, $idAspirante) {
+                //dd($request->all());
+            //dd($request->file('customFile'));
+            if (isset($idAspirante)) {
+                # code...
+                //$AlumnoPre = new Alumnopre();   //dd($AlumnoPre);
+                $hoy=date('Y-m-d H:i:s');   //dd($hoy);
+                //obtener el valor de la empresa
+                if (!empty($request->empresa_mod)) {
+                    # si no está vacio tenemos que cargar el dato puro
+                    $empresa = trim($request->empresa_mod);
+                } else {
+                    # si está vacio tenemos que checar lo siguiente
+                    $empresa = 'DESEMPLEADO';
+                }
+                if(is_null($request->cerss_chk_mod)){$chk_cerss=false;}else{$chk_cerss=$request->cerss_chk_mod;}
+                if(is_null($request->trabajo_mod)){$empleado=false;}else{$empleado=$request->trabajo_mod;}       
+                    //dd($chk_cerss);
+                    $AspiranteId = base64_decode($idAspirante);
+                if($request->sexo_mod=='HOMBRE'){
+                    $sexo='MASCULINO';
+                }
+                if($request->sexo_mod=='MUJER'){
+                    $sexo='FEMENINO';
+                }
+                    
+                $array = [
+                    'id_unidad'=>Auth::user()->unidad,
+                    'es_cereso'=>$chk_cerss,
+                    'numero_expediente'=>$request->num_expediente_cerss_mod,
+                    'curp'=>$request->curp_mod,
+                    'empleado'=>$empleado,
+                    'nombre' => $request->nombre_mod,
+                    'apellido_paterno' => trim($request->apellidoPaterno_mod),
+                    'apellido_materno' => trim($request->apellidoMaterno_mod),
+                    'sexo' => $sexo,
+                    'fecha_nacimiento' =>$request->fecha_nacimiento_mod,
+                    'nacionalidad'=>trim($request->nacionalidad_mod),
+                    'telefono_casa' => $request->telefono_casa_mod,
+                    'telefono_personal'=>$request->telefono_cel_mod,
+                    'correo'=>$request->correo_mod,
+                    'facebook'=>$request->facebook_mod,
+                    'twitter'=>$request->twitter_mod,
+                    'recibir_publicaciones'=>$request->recibir_publicaciones_mod,
+                    'domicilio' => trim($request->domicilio_mod),
+                    'colonia'=>trim($request->colonia_mod),
+                    'cp' => $request->cp_mod,
+                    'estado' => $request->estados_mod,
+                    'municipio' => $request->municipios_mod,
+                    'estado_civil' => $request->estado_civil_mod,
+                    'discapacidad' => $request->discapacidad_mod,
+                    'madre_soltera'=>$request->madre_soltera_mod,
+                    'familia_migrante'=>$request->familia_migrante_mod,
+                    'indigena'=>$request->indigena_mod,
+                    'inmigrante'=>$request->inmigrante_mod,
+                    'etnia'=>$request->etnia_mod,
+                    'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
+                    'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_especificar_mod') : $request->input('medio_entero_mod'),
+                    'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('motivo_sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
+                    'empresa_trabaja' => $empresa,
+                    'antiguedad' => trim($request->antiguedad_mod),
+                    'puesto_empresa' => trim($request->puesto_empresa_mod),
+                    'direccion_empresa' => trim($request->direccion_empresa_mod),
+                    'chk_acta_nacimiento'=>$request->chk_acta_mod,
+                    'chk_curp'=>$request->chk_curp_mod,
+                    'chk_comprobante_ultimo_grado'=>$request->chk_escolaridad_mod,
+                    'chk_comprobante_calidad_migratoria'=>$request->chk_comprobante_migratorio_mod,
+                    
+                    'iduser_updated'=>Auth::user()->id,
+                    'tiene_documentacion'=> true,
+                    'updated_at'=>$hoy
+                ];
+
+                     //dd($array);
+
+                $AlumnoPre_mod=DB::table('alumnos_pre')->WHERE('id', '=', $AspiranteId)->UPDATE($array);
+                //si se pretende cargar nuevos archivos
+                if (isset($request->customFile_mod)) {
+                    $arc = $request->file('customFile_mod'); //dd($arc);
+                    $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); #invocamos el método
+                    $arregloDocs = [
+                        'documento'=>$url_documento,
+                        'chk_curp' => $request->chk_curp_mod,
+                        'chk_acta_nacimiento' => $request->chk_acta_mod,
+                        'chk_escolaridad'=>$request->chk_escolaridad_mod,
+                        'chk_comprobante_migracion'=>$request->chk_comprobante_migracion_mod,
+                        'fecha_expedicion_acta_nacimiento'=>$request->fecha_expedicion_acta_nacimiento_mod,
+                        'fecha_expedicion_curp'=>$request->fecha_expedicion_curp_mod,
+                        'fecha_vigencia_comprobante_migratorio'=>$request->fecha_vigencia_migratorio_mod
+                    ];
+                    $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => $arregloDocs]);
+                }
+                if(isset($request->fotografia_mod)){
+                    $url=$request->fotografia_mod;
+                    $url_fotografia_mod= $this->uploaded_file($url,$AspiranteId,'fotografia');
+                    $opps = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['fotografia' => $url_fotografia_mod,'chk_fotografia'=>true]);
+                }
+
+                $curpAlumno = $request->curp_mod;
+                return redirect()->route('alumnos.index')
+                    ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
+            }
+    }
+    public function updateSidJefeUnidad(Request $request, $idAspirante){
+            //dd($request->all());
+        if (isset($idAspirante)) {
+            # code...
+            $AlumnoPre = new Alumnopre();   //dd($idAspirante);
+            $hoy=date('Y-m-d H:i:s');   //dd($hoy);
+            //obtener el valor de la empresa
+            if (!empty($request->empresa_vin_mod)) {
+                # si no está vacio tenemos que cargar el dato puro
+                $empresa = trim($request->empresa_vin_mod);
+            } else {
+                # si está vacio tenemos que checar lo siguiente
+                $empresa = 'DESEMPLEADO';
+            }
+            if(is_null($request->cerss_chk_vin_mod)){$chk_cerss=false;}else{$chk_cerss=$request->cerss_chk_vin_mod;}
+            if(is_null($request->trabajo_vin_mod)){$empleado=false;}else{$empleado=$request->trabajo_vin_mod;}       
+                //dd($empresa);
+            $array = [
+                'id_unidad'=>Auth::user()->unidad,
+                'es_cereso'=>$chk_cerss,
+                'numero_expediente'=>$request->num_expediente_cerss_vin_mod,
+                'empleado'=>$empleado,
+                'nombre' => trim($request->nombre_vin_mod),
+                'apellido_paterno' => trim($request->apellidoPaterno_vin_mod),
+                'apellido_materno' => trim($request->apellidoMaterno_vin_mod),
+                'nacionalidad'=>trim($request->nacionalidad_vin_mod),
+                'telefono_casa' => $request->telefono_casa_vin_mod,
+                'telefono_personal'=>$request->telefono_cel_vin_mod,
+                'correo'=>$request->correo_vin_mod,
+                'facebook'=>$request->facebook_vin_mod,
+                'twitter'=>$request->twitter_vin_mod,
+                'recibir_publicaciones'=>$request->recibir_publicaciones_vin_mod,
+                'domicilio' => trim($request->domicilio_vin_mod),
+                'colonia'=>trim($request->colonia_vin_mod),
+                'cp' => $request->cp_vin_mod,
+                'estado' => trim($request->estado_vin_mod),
+                'municipio' => trim($request->municipio_vin_mod),
+                'estado_civil' => trim($request->estado_civil_vin_mod),
+                'discapacidad' => trim($request->discapacidad_vin_mod),
+                'madre_soltera'=>$request->madre_soltera_vin_mod,
+                'familia_migrante'=>$request->familia_migrante_vin_mod,
+                'indigena'=>$request->indigena_vin_mod,
+                'inmigrante'=>$request->inmigrante_vin_mod,
+                'etnia'=>$request->etnia_vin_mod,
+                'ultimo_grado_estudios' => $request->ultimo_grado_estudios_vin_mod,
+                'medio_entero' => ($request->input('medio_entero_vin_mod') === "0") ? $request->input('medio_entero_especificar_vin_mod') : $request->input('medio_entero_vin_mod'),
+                'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_vin_mod') === "0") ? $request->input('sistema_capacitacion_especificar_vin_mod') : $request->input('motivos_eleccion_sistema_capacitacion_vin_mod'),
+                'empresa_trabaja' => $empresa,
+                'antiguedad' => trim($request->antiguedad_vin_mod),
+                'puesto_empresa' => trim($request->puesto_empresa_vin_mod),
+                'direccion_empresa' => trim($request->direccion_empresa_vin_mod),
+                'chk_acta_nacimiento'=>$request->chk_acta_vin_mod,
+                'chk_curp'=>$request->chk_curp_vin_mod,
+                'chk_comprobante_ultimo_grado'=>$request->chk_escolaridad_vin_mod,
+                'chk_comprobante_calidad_migratoria'=>$request->chk_comprobante_migratorio_vin_mod,
+                
+                'iduser_updated'=>Auth::user()->id,
+                'tiene_documentacion'=> true,
+                'updated_at'=>$hoy
+            ];
+
+            $AspiranteId = base64_decode($idAspirante);     //dd($AspiranteId);
+
+            $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
+            //si se pretende cargar nuevos archivos
+            if (isset($request->customFile_vin_mod)) {
+                $arc = $request->file('customFile_vin_mod'); //dd($arc);
+                $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); #invocamos el método
+                $arregloDocs = [
+                    'documento'=>$url_documento,
+                    'chk_curp' => $request->chk_curp_vin_mod,
+                    'chk_acta_nacimiento' => $request->chk_acta_vin_mod,
+                    'chk_escolaridad'=>$request->chk_escolaridad_vin_mod,
+                    'chk_comprobante_migracion'=>$request->chk_comprobante_migracion_vin_mod,
+                    'fecha_expedicion_acta_nacimiento'=>$request->fecha_expedicion_acta_nacimiento_vin_mod,
+                    'fecha_expedicion_curp'=>$request->fecha_expedicion_curp_vin_mod,
+                    'fecha_vigencia_comprobante_migratorio'=>$request->fecha_vigencia_migratorio_vin_mod
+                ];
+                $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => $arregloDocs]);
+            }
+            if(isset($request->fotografia_vin_mod)){
+                $url=$request->fotografia_vin_mod;  //dd($url);
+                $url_fotografia_mod= $this->uploaded_file($url,$AspiranteId,'fotografia');
+                $opps = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['fotografia' => $url_fotografia_mod,'chk_fotografia'=>true]);
+            }
+            
+
+            $curpAlumno = $request->curp_vin_mod;
+            return redirect()->route('alumnos.index')
+                ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
+        }
+    }
+
+    public function create(Request $request)
     {
         //
         $grado_estudio = [
@@ -61,11 +623,51 @@ class AlumnoController extends Controller
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
             'POSTGRADO' => 'POSTGRADO'
         ];
-        $estado = new Estado();
-        $estados = $estado->all(['id', 'nombre']);
-        return view('layouts.pages.sid', compact('estados', 'grado_estudio'));
+        //$estado = new Estado();
+        $estado = estado::get();
+        foreach($estado as $item){
+            $estados[$item->id]= $item->nombre;
+        }
+        // dd($estados);
+        $estado_civil=DB::table('estado_civil')->select('nombre')->orderby('nombre','ASC')->get();
+        $etnia=$this->etnia= ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
+        $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DEL HABLA"=>"DEL HABLA","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
+        $curp = strtoupper($request->input('curp'));//dd($curp);
+        $curp_d=str_split($curp);
+        $sexo=$curp_d[10];
+        $año=date_create_from_format('y', $curp_d[4].$curp_d[5])->format("Y"); //dd($año);
+        $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
+        $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d'); 
+        $fecha=  $año.$mes.$dia; 
+        $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd(gettype($fecha_t));
+        //dd($sexo);
+        // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
+        $curp_formateada = trim($curp);//dd($curp_formateada);
+        /**
+         * checamos la base de datos para saber si ya se encuentra registrada
+         */
+        $alumnoPre = DB::table('alumnos_pre')->select('curp')->where('curp','=', $curp_formateada)->first(); //dd($alumnoPre);
+        /**
+         * se checa si la consulta arroja un resultado o es nulo,
+         * en dado caso de ser nulo se tiene que agregar completamente
+         */
+        if(is_null($alumnoPre)){
+            return view('layouts.pages.sid', compact('estados', 'grado_estudio','estado_civil','etnia','discapacidad','curp','sexo','fecha_t'));
+        }else {
+        # ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
+        /**
+         * checamos la función básica para comparar dos cadenas a nivel binario
+         * Tiene en cuenta mayúsculas y minúsculas.
+         * Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
+         */
+        if (strcmp($curp_formateada, $alumnoPre->curp) === 0)
+        {
+            # si coinciden hay que mandar directo un mensaje de que no funciona
+            return redirect()->route('alumnos.valid')
+                ->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
+        }}
+        
     }
-
     public function createcerss()
     {
         // nueva modificacion
@@ -84,110 +686,6 @@ class AlumnoController extends Controller
         $estados = $estado->all(['id', 'nombre']);
 
         return view('layouts.pages.sid_cerss', compact('estados', 'grado_estudio'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $curp = strtoupper($request->input('curp'));
-        // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
-        $curp_formateada = trim($curp);
-        /**
-         * checamos la base de datos para saber si ya se encuentra registrada
-         */
-        $alumnoPre = DB::table('alumnos_pre')->where('curp', $curp_formateada)->select('curp')->first();
-        /**
-         * se checa si la consulta arroja un resultado o es nulo,
-         * en dado caso de ser nulo se tiene que agregar completamente
-         */
-        if (is_null($alumnoPre)) {
-            # SI ES VERDADERO ESTÁ NULA LA CONSULTA, PROCEDEMOS A INSERTAR EL REGISTRO
-            // obtener el usuario que agrega
-            $usuario = Auth::user()->name;
-            # si la consulta está vacía hacemos la inserción
-            $validator =  Validator::make($request->all(), [
-                'nombre' => 'required',
-                'apellidoPaterno' => 'required',
-                'sexo' => 'required',
-                'curp' => 'required',
-                'domicilio' => 'required',
-                'colonia' => 'required',
-                'cp' => 'required',
-                'estado' => 'required',
-                'municipio' => 'required',
-                'estado_civil' => 'required',
-                'discapacidad' => 'required',
-            ]);
-            if ($validator->fails()) {
-                # devolvemos un error
-                //dd($validator);
-                return redirect('/alumnos/sid')
-                        ->withErrors($validator)
-                        ->withInput();
-            } else {
-
-                /**
-                 * formar el formato fecha para fecha de nacimiento
-                 */
-                $usuarioUnidad = Auth::user()->unidad;
-                $dia = trim($request->dia);
-                $mes = trim($request->mes);
-                $anio = trim($request->anio);
-                $fecha_nacimiento = $anio."-".$mes."-".$dia;
-
-                //estados a
-                $nombre_estado = DB::table('estados')->where('id', $request->input('estado'))->select('nombre')->first();
-
-                $AlumnoPreseleccion = new Alumnopre;
-                $AlumnoPreseleccion->id_unidad = $usuarioUnidad;
-                $AlumnoPreseleccion->nombre = $request->nombre;
-                $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
-                $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
-                $AlumnoPreseleccion->sexo = $request->sexo;
-                $AlumnoPreseleccion->curp = $curp_formateada;
-                $AlumnoPreseleccion->fecha_nacimiento = $fecha_nacimiento;
-                $AlumnoPreseleccion->telefono = $request->telefonosid;
-                $AlumnoPreseleccion->domicilio = $request->domicilio;
-                $AlumnoPreseleccion->colonia = $request->colonia;
-                $AlumnoPreseleccion->cp = $request->cp;
-                $AlumnoPreseleccion->estado = $nombre_estado->nombre;
-                $AlumnoPreseleccion->municipio = $request->municipio;
-                $AlumnoPreseleccion->estado_civil = $request->estado_civil;
-                $AlumnoPreseleccion->discapacidad = $request->discapacidad;
-                $AlumnoPreseleccion->ultimo_grado_estudios = $request->ultimo_grado_estudios;
-                $AlumnoPreseleccion->medio_entero = ($request->input('medio_entero') === "0") ? $request->input('medio_entero_especificar') : $request->input('medio_entero');
-                $AlumnoPreseleccion->puesto_empresa = $request->puesto_empresa;
-                $AlumnoPreseleccion->sistema_capacitacion_especificar = ($request->input('motivos_eleccion_sistema_capacitacion') === "0") ? $request->input('sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion');
-                $AlumnoPreseleccion->empresa_trabaja = (!empty($request->empresa)) ? $request->empresa : 'DESEMPLEADO';
-                $AlumnoPreseleccion->antiguedad = $request->antiguedad;
-                $AlumnoPreseleccion->direccion_empresa = $request->direccion_empresa;
-                $AlumnoPreseleccion->realizo = $usuario;
-                $AlumnoPreseleccion->tiene_documentacion = false;
-                $AlumnoPreseleccion->es_cereso = false;
-                $AlumnoPreseleccion->save();
-
-                // redireccionamos con un mensaje de éxito
-                return redirect()->route('alumnos.index')->with('success', 'NUEVO ASPIRANTE AGREGADO EXITOSAMENTE!');
-            }
-        } else {
-            # ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
-            /**
-             * checamos la función básica para comparar dos cadenas a nivel binario
-             * Tiene en cuenta mayúsculas y minúsculas.
-             * Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
-             */
-            if (strcmp($curp_formateada, $alumnoPre->curp) === 0)
-            {
-                # si coinciden hay que mandar directo un mensaje de que no funciona
-                return redirect()->route('alumnos.preinscripcion')
-                    ->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
-            }
-        }
     }
 
     /**
@@ -260,7 +758,7 @@ class AlumnoController extends Controller
                 } else {
                     $fecha_nacimiento = $anio."-".$mes."-".$dia;
                 }
-//A
+                 //A
                 $id_alumnos_pre = DB::table('alumnos_pre')->insertGetId([
                     'id_unidad' => $usuarioUnidad,
                     'nombre' => $request->input('nombre_aspirante_cerss'),
@@ -402,6 +900,7 @@ class AlumnoController extends Controller
 
     protected function update_pregistro(Request $request)
     {
+        //dd($request->all());
         if (isset($request->tipoDocumento)) {
             $idPre = $request->alumno_id;
             # validamos que haya un tipo de documento iniciado, es decir la variable
@@ -473,7 +972,7 @@ class AlumnoController extends Controller
                                 }
                             }
 
-                            $documento_curp = $request->file('customFile'); # obtenemos el archivo
+                            $documento_curp = $request->file('customFile'); # obtenemos el archivo 
                             $url_documento = $this->uploaded_file($documento_curp, $idPre, 'documento_curp'); #invocamos el método
                             $chk_documento = true;
                             // creamos un arreglo
@@ -1066,34 +1565,7 @@ class AlumnoController extends Controller
         $documentUrl = Storage::url('/uploadFiles/alumnos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
-
-    protected function showUpdate($id)
-    {
-        $grado_estudio = [
-            'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
-            'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
-            'SECUNDARIA INCONCLUSA' => 'SECUNDARIA INCONCLUSA',
-            'SECUNDARIA TERMINADA' => 'SECUNDARIA TERMINADA',
-            'NIVEL MEDIO SUPERIOR INCONCLUSO' => 'NIVEL MEDIO SUPERIOR INCONCLUSO',
-            'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
-            'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
-            'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO',
-            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
-        ];
-        $idpre = base64_decode($id);
-        $alumnos = new Alumnopre();
-        $municipio = new Municipio();
-        $estado = new Estado();
-        $municipios = $municipio->all();
-        $estados = $estado->all();
-        $alumno = $alumnos->findOrfail($idpre);
-        $fecha_nac = explode("-", $alumno->fecha_nacimiento);
-        $anio_nac = $fecha_nac[0];
-        $mes_nac = $fecha_nac[1];
-        $dia_nac = $fecha_nac[2];
-        return view('layouts.pages.sid-modificacion', compact('alumno', 'municipios', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio'));
-    }
+    
 
     protected function modifyUpdateChief($id){
         $grado_estudio = [
@@ -1121,72 +1593,6 @@ class AlumnoController extends Controller
         $dia_nac = $fecha_nac[2];
         return view('layouts.pages.sid-modificacion-jefe', compact('alumno', 'municipios', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio'));
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
-    public function updateSid(Request $request, $idAspirante) {
-            if (isset($idAspirante)) {
-                # code...
-                $AlumnoPre = new Alumnopre();
-
-                $dia = trim($request->dia_mod);
-                $mes = trim($request->mes_mod);
-                $anio = trim($request->anio_mod);
-                $fecha_nacimiento = $anio."-".$mes."-".$dia;
-
-                //obtener el estado
-                $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
-
-                //obtener el valor de la empresa
-                if (!empty($request->empresa_mod)) {
-                    # si no está vacio tenemos que cargar el dato puro
-                    $empresa = trim($request->empresa_mod);
-                } else {
-                    # si está vacio tenemos que checar lo siguiente
-                    $empresa = 'DESEMPLEADO';
-                }
-
-
-            # code...
-                $array = [
-                    'nombre' => trim($request->nombre_alum_mod),
-                    'apellido_paterno' => trim($request->apellido_pat_mod),
-                    'apellido_materno' => trim($request->apellido_mat_mod),
-                    'sexo' => trim($request->sexo_mod),
-                    'fecha_nacimiento' => trim($fecha_nacimiento),
-                    'telefono' => trim($request->telefono_mod),
-                    'domicilio' => trim($request->domicilio_mod),
-                    'colonia' => trim($request->colonia_mod),
-                    'cp' => trim($request->codigo_postal_mod),
-                    'estado' => trim($nombre_estado_mod[0]->nombre),
-                    'municipio' => trim($request->municipio_mod),
-                    'estado_civil' => trim($request->estado_civil_mod),
-                    'discapacidad' => trim($request->discapacidad_mod),
-                    'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
-                    'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
-                    'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
-                    'empresa_trabaja' => $empresa,
-                    'antiguedad' => trim($request->antiguedad_mod),
-                    'puesto_empresa' => trim($request->puesto_empresa_mod),
-                    'direccion_empresa' => trim($request->direccion_empresa_mod)
-                ];
-
-                $AspiranteId = base64_decode($idAspirante);
-
-                $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
-
-                $curpAlumno = $request->curp_alumno;
-                return redirect()->route('alumnos.index')
-                    ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
-            }
-    }
-
     /**
      * Actualización preinscripcion cerss.
      *
@@ -1292,133 +1698,6 @@ class AlumnoController extends Controller
             $numeroExpediente = $request->input('numero_expediente_cerss');
             return redirect()->route('alumnos.index')
                 ->with('success', sprintf('ASPIRANTE CON EXPEDIENTE %s  MODIFICADO EXTIOSAMENTE!', $numeroExpediente));
-        }
-    }
-
-    public function updateSidJefeUnidad(Request $request, $idAspirante){
-        if (isset($idAspirante)) {
-            $match_actual_curp = \DB::table('alumnos_pre')->select('curp')->where('id', base64_decode($idAspirante))->first();
-            if (strcmp($match_actual_curp->curp, $request->curp_mod) === 0) {
-                # tiene que hacer el update - porque el input de curp no fue modificado
-                # código
-                $AlumnoPre = new Alumnopre();
-
-                $dia = trim($request->dia_mod);
-                $mes = trim($request->mes_mod);
-                $anio = trim($request->anio_mod);
-                $fecha_nacimiento = $anio."-".$mes."-".$dia;
-
-                //obtener el estado
-                $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
-
-                //obtener el valor de la empresa
-                if (!empty($request->empresa_mod)) {
-                    # si no está vacio tenemos que cargar el dato puro
-                    $empresa = trim($request->empresa_mod);
-                } else {
-                    # si está vacio tenemos que checar lo siguiente
-                    $empresa = 'DESEMPLEADO';
-                }
-
-                # code...
-                $array = [
-                    'nombre' => trim($request->nombre_alum_mod),
-                    'apellido_paterno' => trim($request->apellido_pat_mod),
-                    'apellido_materno' => trim($request->apellido_mat_mod),
-                    'sexo' => trim($request->sexo_mod),
-                    'fecha_nacimiento' => trim($fecha_nacimiento),
-                    'telefono' => trim($request->telefono_mod),
-                    'domicilio' => trim($request->domicilio_mod),
-                    'colonia' => trim($request->colonia_mod),
-                    'cp' => trim($request->codigo_postal_mod),
-                    'estado' => trim($nombre_estado_mod[0]->nombre),
-                    'municipio' => trim($request->municipio_mod),
-                    'estado_civil' => trim($request->estado_civil_mod),
-                    'discapacidad' => trim($request->discapacidad_mod),
-                    'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
-                    'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
-                    'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
-                    'empresa_trabaja' => $empresa,
-                    'antiguedad' => trim($request->antiguedad_mod),
-                    'puesto_empresa' => trim($request->puesto_empresa_mod),
-                    'direccion_empresa' => trim($request->direccion_empresa_mod),
-                    'curp' => trim($request->curp_mod)
-                ];
-
-                $AspiranteId = base64_decode($idAspirante);
-
-                $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
-
-                $curpAlumno = $request->curp_mod;
-                return redirect()->route('alumnos.index')
-                    ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
-            } else {
-                // quitarle los espacios de los lados
-                $curpMod = trim($request->curp_mod);
-                # tiene que volver a buscarse en la base de datos debido a que el input de la curp fue modificado
-                $busquedaCurpRep = \DB::table('alumnos_pre')->where('curp', $curpMod)->get();
-                if (count($busquedaCurpRep) > 0) {
-                    # si la consulta regresa con algún registro se procede a mandar un mensaje de error con lo siguiente
-                    return redirect()->back()->withErrors(sprintf('LO SENTIMOS, LA CURP QUE SE ESTÁ MODIFICANDO: %s YA SE ENCUENTRA REGISTRADA, BUSCAR EN ASPIRANTES', $request->curp_mod));
-
-                } else {
-                    # si la consulta regresa en cero se tiene que actualizar todos los registros del formulario
-                    # tiene que hacer el update - porque el input de curp no fue modificado
-                    # código
-                    $AlumnoPre = new Alumnopre();
-
-                    $dia = trim($request->dia_mod);
-                    $mes = trim($request->mes_mod);
-                    $anio = trim($request->anio_mod);
-                    $fecha_nacimiento = $anio."-".$mes."-".$dia;
-
-                    //obtener el estado
-                    $nombre_estado_mod = Estado::WHERE('id', '=', $request->estado_mod)->GET();
-
-                    //obtener el valor de la empresa
-                    if (!empty($request->empresa_mod)) {
-                        # si no está vacio tenemos que cargar el dato puro
-                        $empresa = trim($request->empresa_mod);
-                    } else {
-                        # si está vacio tenemos que checar lo siguiente
-                        $empresa = 'DESEMPLEADO';
-                    }
-
-                    # code...
-                    $array = [
-                        'nombre' => trim($request->nombre_alum_mod),
-                        'apellido_paterno' => trim($request->apellido_pat_mod),
-                        'apellido_materno' => trim($request->apellido_mat_mod),
-                        'sexo' => trim($request->sexo_mod),
-                        'fecha_nacimiento' => trim($fecha_nacimiento),
-                        'telefono' => trim($request->telefono_mod),
-                        'domicilio' => trim($request->domicilio_mod),
-                        'colonia' => trim($request->colonia_mod),
-                        'cp' => trim($request->codigo_postal_mod),
-                        'estado' => trim($nombre_estado_mod[0]->nombre),
-                        'municipio' => trim($request->municipio_mod),
-                        'estado_civil' => trim($request->estado_civil_mod),
-                        'discapacidad' => trim($request->discapacidad_mod),
-                        'ultimo_grado_estudios' => $request->ultimo_grado_estudios_mod,
-                        'medio_entero' => ($request->input('medio_entero_mod') === "0") ? $request->input('medio_entero_especificar_mod') : $request->input('medio_entero_mod'),
-                        'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion_mod') === "0") ? $request->input('sistema_capacitacion_especificar_mod') : $request->input('motivos_eleccion_sistema_capacitacion_mod'),
-                        'empresa_trabaja' => $empresa,
-                        'antiguedad' => trim($request->antiguedad_mod),
-                        'puesto_empresa' => trim($request->puesto_empresa_mod),
-                        'direccion_empresa' => trim($request->direccion_empresa_mod),
-                        'curp' => trim($request->curp_mod)
-                    ];
-
-                    $AspiranteId = base64_decode($idAspirante);
-
-                    $AlumnoPre->WHERE('id', '=', $AspiranteId)->UPDATE($array);
-
-                    $curpAlumno = $request->curp_mod;
-                    return redirect()->route('alumnos.index')
-                        ->with('success', sprintf('ASPIRANTE %s  MODIFICADO EXTIOSAMENTE!', $curpAlumno));
-                }
-
-            }
         }
     }
     /***

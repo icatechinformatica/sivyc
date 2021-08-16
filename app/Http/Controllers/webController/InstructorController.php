@@ -989,7 +989,7 @@ class InstructorController extends Controller
 
     public function exportar_instructoresByEspecialidad()
     {
-        $data = instructor::SELECT('instructores.id',
+        $data = Especialidad::SELECT('especialidades.id','especialidades.nombre',
                 DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") AS NOMBRE'),
                 'instructores.numero_control',
                 DB::raw("array(select especialidades.nombre from especialidad_instructores
@@ -1032,7 +1032,7 @@ class InstructorController extends Controller
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
-        $cabecera = ['ID','NOMBRE','NUMERO COTROL','ESPECIALIDAD','CLAVE','CRITERIO PAGO',
+        $cabecera = ['ID','ESPECIALIDAD','NOMBRE','NUMERO COTROL','CLAVE','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
                     'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL',
                     'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION',
