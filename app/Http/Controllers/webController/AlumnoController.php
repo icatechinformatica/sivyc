@@ -383,7 +383,8 @@ class AlumnoController extends Controller
             $vigencia_acta= date_create($vigencia_acta);
             $vigencia_acta= date_diff($vigencia_acta, $hoy);
             $vigencia_acta= $vigencia_acta->days;
-            $vigencia_migracion= strtotime($requisitos->fecha_vigencia_migratorio);
+            if(isset($requisitos->fecha_vigencia_comprobante_migratorio)){$vigencia_migracion= strtotime($requisitos->fecha_vigencia_comprobante_migratorio);}
+            if(isset($requisitos->fecha_vigencia_migratorio)){$vigencia_migracion= strtotime($requisitos->fecha_vigencia_migratorio);}
             $hoys= strtotime(date("Y-m-d",time()));; //dd($vigencia_migracion);
             if ($vigencia_migracion<$hoys) {
                 $vigencia_migracion= true;
