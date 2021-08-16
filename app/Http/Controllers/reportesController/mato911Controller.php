@@ -182,10 +182,6 @@ class formato911Controller extends Controller
         // dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
     //    dd($encabezado);
-<<<<<<< HEAD:app/Http/Controllers/reportesController/formato911Controller.php
-=======
-
->>>>>>> 3a1c9ba040969bb40f393e58597190d067859d73:app/Http/Controllers/reportesController/mato911Controller.php
 
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
         $pdf->setPaper('A4', 'landscape');
