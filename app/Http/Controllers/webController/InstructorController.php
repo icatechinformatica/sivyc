@@ -989,21 +989,13 @@ class InstructorController extends Controller
 
     public function exportar_instructoresByEspecialidad()
     {
-        $data = Especialidad::SELECT('especialidades.id','especialidades.nombre',
+        $data = Especialidad::SELECT('especialidades.id','especialidades.nombre','especialidades.clave',
                 DB::raw('Array( SELECT CONCAT(instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno", '."' '".' ,
                 instructores.nombre) from especialidad_instructores ei
                 inner join instructor_perfil ip on ip.id = ei.perfilprof_id
                 inner join instructores i on i.id = ip.numero_control
-                where ei.especialidad_id = es.id) AS NOMBRE'),
-                'instructores.numero_control',
-                DB::raw("array(select especialidades.nombre from especialidad_instructores
-                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
-                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
-                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
-                DB::raw("array(select especialidades.clave from especialidad_instructores
-                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
-                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
-                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as clave"),
+                where ei.especialidad_id = es.id) AS NOMBRE'))
+                /*'instructores.numero_control',
                 DB::raw("array(select criterio_pago_id from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as criteriopago"),
@@ -1031,12 +1023,12 @@ class InstructorController extends Controller
                 ->whereRaw("array(select especialidades.nombre from especialidad_instructores
                 LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
                 LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
-                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
+                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")*/
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
-        $cabecera = ['ID','ESPECIALIDAD','NOMBRE','NUMERO COTROL','CLAVE','CRITERIO PAGO',
+        $cabecera = ['ID','ESPECIALIDAD','CLAVE','NOMBRE','NUMERO COTROL','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
                     'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL',
                     'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION',
