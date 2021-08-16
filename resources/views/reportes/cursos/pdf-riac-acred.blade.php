@@ -141,7 +141,7 @@
                     @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
                     @if($a->edad )<td>{{ $a->edad  }}</td>
                     @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif                                     
-                    @if(isset($escolaridad[$a->ultimo_grado_estudios]))<td> {{ $escolaridad[$a->ultimo_grado_estudios] }}</td>
+                    @if(isset($escolaridad[$a->escolaridad]))<td> {{ $escolaridad[$a->escolaridad] }}</td>
                     @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
                     <td>@if($a->acreditado=="X"){{ $a->acreditado }}@endif</td>
                     <td></td>
