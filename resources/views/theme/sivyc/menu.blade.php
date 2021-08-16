@@ -54,7 +54,7 @@
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
-                        
+
                         @can('convenios.index')
                             <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                         @endcan
@@ -145,14 +145,14 @@
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Preinscripci&oacute;n
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"> 
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <!--alumnos.index-->
                             @can('alumnos.index')
                                 <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
-                            @endcan   
+                            @endcan
                             @can('alumnos.inscritos.index')
                                 <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
-                            @endcan                        
+                            @endcan
                             <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
                             <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
                         </div>
@@ -164,7 +164,7 @@
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitud
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="{{route('solicitud.apertura')}}">Clave de Apertura ARC01</a>
                             <a class="dropdown-item" href="{{route('solicitud.apertura.modificar')}}">Modificaci&oacute;n Apertura ARC02</a>
                             <a class="dropdown-item" href="{{route('solicitud.apertura.turnar')}}">Turnar Solicitud</a>
@@ -307,9 +307,9 @@
                         <a class="dropdown-item" href="#">
                             {{ Auth::user()->name }}
                         </a>
-                        @can('password.update')
+                        <!--can('password.update')-->
                             <a class="dropdown-item" href="{{route('password.view')}}">Cambiar Contraseña</a>
-                        @endcan
+                        <!--endcan-->
                         <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                                 document.getElementById('logout-form').submit();">
