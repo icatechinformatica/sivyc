@@ -990,7 +990,11 @@ class InstructorController extends Controller
     public function exportar_instructoresByEspecialidad()
     {
         $data = Especialidad::SELECT('especialidades.id','especialidades.nombre',
-                DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") AS NOMBRE'),
+                DB::raw('Array( SELECT CONCAT(instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno", '."' '".' ,
+                instructores.nombre) from especialidad_instructores ei
+                inner join instructor_perfil ip on ip.id = ei.perfilprof_id
+                inner join instructores i on i.id = ip.numero_control
+                where ei.especialidad_id = es.id) AS NOMBRE'),
                 'instructores.numero_control',
                 DB::raw("array(select especialidades.nombre from especialidad_instructores
                 LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
