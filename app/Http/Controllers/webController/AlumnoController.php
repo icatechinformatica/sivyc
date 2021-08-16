@@ -502,7 +502,7 @@ class AlumnoController extends Controller
                         'chk_comprobante_migracion'=>$request->chk_comprobante_migracion_mod,
                         'fecha_expedicion_acta_nacimiento'=>$request->fecha_expedicion_acta_nacimiento_mod,
                         'fecha_expedicion_curp'=>$request->fecha_expedicion_curp_mod,
-                        'fecha_vigencia_comprobante_migratorio'=>$request->fecha_vigencia_migratorio_mod
+                        'fecha_vigencia_migratorio'=>$request->fecha_vigencia_migratorio_mod
                     ];
                     $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => $arregloDocs]);
                 }

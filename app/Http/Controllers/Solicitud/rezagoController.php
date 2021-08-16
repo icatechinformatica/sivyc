@@ -171,6 +171,7 @@ class rezagoController extends Controller
             
             
         }
+        $_SESSION['folio'] = NULL;
         return redirect('solicitud/rezago')->with('message',$message);
    }
 }
