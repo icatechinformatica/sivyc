@@ -83,22 +83,13 @@ else{$tipo='CURSO';}
             <br>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO.
             <br><br>Presente.
 
-<<<<<<< HEAD
-            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de 
-=======
             <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de
->>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
             @if ($uj[0]->tipo_curso=='CERTIFICACION')
                 certificación extraordinaria
             @else
                 curso
-<<<<<<< HEAD
-            @endif 
-            de la    
-=======
             @endif
             de la
->>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
             @if ($unidad->cct == '07EI')
                     Unidad de Capacitación <b>{{$unidad->ubicacion}}</b>,
             @else
