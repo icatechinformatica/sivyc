@@ -78,6 +78,10 @@ class Alumnopre extends Model
             if (!empty(trim($buscar))) {
                 # empezamos
                 switch ($tipo) {
+                    case 'matricula_aspirante':
+                        # code...
+                        return $query->where('matricula', '=', $buscar);
+                        break;
                     case 'curp_aspirante':
                         # code...
                         return $query->where('curp', '=', $buscar);
