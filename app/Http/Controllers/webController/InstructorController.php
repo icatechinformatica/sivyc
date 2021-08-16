@@ -991,12 +991,15 @@ class InstructorController extends Controller
     {
         $data = Especialidad::SELECT('especialidades.id','especialidades.nombre','especialidades.clave',
                 DB::raw('Array( SELECT CONCAT(instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno", '."' '".' ,
-                instructores.nombre) from especialidad_instructores ei
-                inner join instructor_perfil ip on ip.id = ei.perfilprof_id
-                inner join instructores i on i.id = ip.numero_control
-                where ei.especialidad_id = es.id) AS NOMBRE'))
-                /*'instructores.numero_control',
-                DB::raw("array(select criterio_pago_id from especialidad_instructores
+                instructores.nombre) from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS ins'),
+                DB::raw('Array( SELECT instructores.numero_control from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS numero_control'))
+                /*DB::raw("array(select criterio_pago_id from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as criteriopago"),
                 DB::raw("array(select grado_profesional from instructor_perfil
@@ -1024,8 +1027,8 @@ class InstructorController extends Controller
                 LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
                 LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = ip.id) != '{}'")*/
-                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-                ->ORDERBY('apellidoPaterno', 'ASC')
+                //->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+                //->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
         $cabecera = ['ID','ESPECIALIDAD','CLAVE','NOMBRE','NUMERO COTROL','CRITERIO PAGO',
