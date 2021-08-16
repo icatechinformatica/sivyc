@@ -117,16 +117,21 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <table>
                     <tbody>
                         <tr>
+<<<<<<< HEAD
                             <td>Nombre: {{$data->curso}}</td>
                             <td>Clave: {{$data->clave}}</td>
+=======
+                            <td><small> {{$data->curso}}</small></td>
+                            <td><small>Clave: {{$data->clave}}</small></td>
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
                         </tr>
                         <tr>
-                            <td>Especialidad: {{$data->espe}}</td>
-                            <td>Modalidad: {{$data->mod}}</td>
+                            <td><small>Especialidad: {{$data->espe}}</small></td>
+                            <td><small>Modalidad: {{$data->mod}}</small></td>
                         </tr>
                         <tr>
-                            <td>Fecha de Inicio y Término: {{$data->inicio}} AL {{$data->termino}}</td>
-                            <td>Horario: {{$data->hini}} A {{$data->hfin}}</td>
+                            <td><small>Fecha de Inicio y Término: {{$data->inicio}} AL {{$data->termino}}</small></td>
+                            <td><small>Horario: {{$data->hini}} A {{$data->hfin}}</small></td>
                         </tr>
                     </tbody>
                 </table>
@@ -137,16 +142,21 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <table>
                     <tbody>
                         <tr>
+<<<<<<< HEAD
                             <td >Nombre: {{$data->nombre}} {{$data->apellidoPaterno}} {{$data->apellidoMaterno}}</td>
                             <td>Número de Contrato: {{$data->numero_contrato}}</td>
+=======
+                            <td><small>Nombre: {{$data->nombre}} {{$data->apellidoPaterno}} {{$data->apellidoMaterno}}</small></td>
+                            <td><small>Número de Contrato: {{$data->numero_contrato}}</small></td>
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
                         </tr>
                         <tr>
-                            <td>Registro STPS: NO APLICA</td>
-                            <td>Memorándum de Validación: {{$data->memorandum_validacion}}</td>
+                            <td><small>Registro STPS: NO APLICA</small></td>
+                            <td><small>Memorándum de Validación: {{$data->memorandum_validacion}}</small></td>
                         </tr>
                         <tr>
-                            <td>RFC: {{$data->rfc}}</td>
-                            <td>Importe: {{$data->liquido}}</td>
+                            <td><small>RFC: {{$data->rfc}}</small></td>
+                            <td><small>Importe: {{$data->liquido}}</small></td>
                         </tr>
                     </tbody>
                 </table>
@@ -157,13 +167,13 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <table>
                     <tbody>
                         <tr>
-                            <td>Banco: {{$data->banco}}</td>
+                            <td><small>Banco: {{$data->banco}}</small></td>
                         </tr>
                         <tr>
-                            <td>Número de Cuenta: {{$data->no_cuenta}}</td>
+                            <td><small>Número de Cuenta: {{$data->no_cuenta}}</small></td>
                         </tr>
                         <tr>
-                            <td>Clabe Interbancaria: {{$data->interbancaria}}</td>
+                            <td><small>Clabe Interbancaria: {{$data->interbancaria}}</small></td>
                         </tr>
                     </tbody>
                 </table>
@@ -188,17 +198,29 @@ if($data->tipo_curso=='CERTIFICACION'){
                         <td colspan="2"><div align="center">Director Administrativo</td></div>
                     </tr>
                 </table>
+<<<<<<< HEAD
                 <p><FONT SIZE=1><b>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento<br/>
                 <FONT SIZE=1><b>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin</FONT><br/>
                 <FONT SIZE=1><b>C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-Mismo fin</FONT><br/>
                 <FONT SIZE=1><b>C.c.p.</C></b>Archivo/ Minutario</FONT><br/>
                 <FONT SIZE=1><b>C.c.p.</C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}</FONT></p>
+=======
+                <p><FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimient</><br/>
+                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin</></FONT><br/>
+                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-Mismo fin</></FONT><br/>
+                <FONT SIZE=1><b><small>C.c.p.</C></b>Archivo/ Minutario<small></FONT><br/>
+                <FONT SIZE=1><b><small>C.c.p.</C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}</small></FONT></p>
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
             </div>
         </div>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
             <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
         </footer>
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
     </body>
 </html>

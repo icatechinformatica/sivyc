@@ -108,6 +108,20 @@
                             </div>
                           </div>
                         </div>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="inputCurp">CURP</label>
+                              <input type="text" id="inputCurp" name="inputCurp" class="form-control" value="{{ $directorioPersonal->curp}}">
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label class="form-control-label" for="inputEmail">EMAIL</label>
+                              <input type="text" id="inputEmail" name="inputEmail" class="form-control" value="{{ $directorioPersonal->email}}">
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <hr class="my-4" />
                       <!-- Address -->

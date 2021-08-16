@@ -1,0 +1,32 @@
+/* ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com*/
+
+/* RESULTADO DE LA VALIDACI�N DE LA CURP*/
+#resultado {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+#resultado.ok {
+    background-color: green;
+}
+#resultado.white{
+    background-color: white;
+}
+
+/*DE LA CAJA PARA CARGAR LA FOTOGRAF�A*/
+#add-photo-container input{
+    display: none;
+}
+
+#add-photo{
+    cursor: pointer;    
+    height:8rem;    
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+#add-photo-container img{
+   height: 8rem;
+   width: 8rem;
+}

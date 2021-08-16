@@ -58,4 +58,9 @@ class consultasController extends Controller
         $clave = $request->clave;        
         return redirect('grupos/asignarfolios')->with(['clave'=>$clave]);
     }
+
+    public function cancelarfolios(Request $request){
+        $clave = $request->clave;        
+        return redirect('grupos/cancelacionfolios')->with(['clave'=>$clave]);
+    }
 }

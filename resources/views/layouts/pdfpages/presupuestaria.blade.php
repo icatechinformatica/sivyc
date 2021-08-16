@@ -79,17 +79,26 @@ else{$tipo='CURSO';}
             <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
             <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><br><b>{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}.</b>
-            <br>{{$getdestino->puesto}}
+            <br><br><b>LUIS ALFONSO CRUZ VELASCO.</b>
+            <br>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO.
             <br><br>Presente.
 
+<<<<<<< HEAD
             <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de 
+=======
+            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
             @if ($uj[0]->tipo_curso=='CERTIFICACION')
                 certificación extraordinaria
             @else
                 curso
+<<<<<<< HEAD
             @endif 
             de la    
+=======
+            @endif
+            de la
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
             @if ($unidad->cct == '07EI')
                     Unidad de Capacitación <b>{{$unidad->ubicacion}}</b>,
             @else
@@ -123,8 +132,8 @@ else{$tipo='CURSO';}
                 <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
             @else
             @endif
-            <br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
+            <br><br><br><h6><small><b>C.c.p.  C.P. SALVADOR BETANZOS SOLIS.-DIRECTOR DE PLANEACION.-Mismo Fin</b></small></h6>
+            <h6><small><b>C.P. JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo/Minutario<b></small></h6>
             <br><br><small><b>Valido: {{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}.-{{$getvalida->puesto}}</b></small></h6>
             <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}</b></small></h6>

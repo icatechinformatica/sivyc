@@ -25,6 +25,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FormatoTReport;
 
 class InstructorController extends Controller
 {
@@ -362,7 +364,7 @@ class InstructorController extends Controller
         // consulta
         $validado = $instructor_perfil->SELECT('especialidades.nombre',
         'especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
-        'especialidad_instructores.memorandum_validacion')
+        'especialidad_instructores.memorandum_validacion','especialidad_instructores.criterio_pago_id')
                         ->WHERE('instructor_perfil.numero_control', '=', $id)
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
@@ -925,6 +927,122 @@ class InstructorController extends Controller
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
             'path' => Paginator::resolveCurrentPath()
         ]);
+    }
+
+    public function exportar_instructores()
+    {
+        $data = instructor::SELECT('instructores.id',
+                DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") AS NOMBRE'),
+                'instructores.numero_control',
+                DB::raw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
+                DB::raw("array(select especialidades.clave from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as clave"),
+                DB::raw("array(select criterio_pago_id from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as criteriopago"),
+                DB::raw("array(select grado_profesional from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as grado"),
+                DB::raw("array(select estatus from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as estatus"),
+                DB::raw("array(select area_carrera from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as area"),
+                DB::raw("array(select nombre_institucion from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as institucion"),
+                'instructores.rfc','instructores.curp','instructores.sexo','instructores.estado_civil',
+                'instructores.asentamiento','instructores.domicilio','instructores.telefono','instructores.correo',
+                'tbl_unidades.unidad',
+                DB::raw("array(select memorandum_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
+                DB::raw("array(select fecha_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as fechaval"),
+                DB::raw("array(select observacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
+                ->WHERE('instructores.estado', '=', TRUE)
+                ->whereRaw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
+                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+                ->ORDERBY('apellidoPaterno', 'ASC')
+                ->GET();
+
+        $cabecera = ['ID','NOMBRE','NUMERO COTROL','ESPECIALIDAD','CLAVE','CRITERIO PAGO',
+                    'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
+                    'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION',
+                    'FECHA DE VALIDACION','OBSERVACION'];
+
+        $nombreLayout = "Catalogo de instructores.xlsx";
+        $titulo = "Catalogo de instructores";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
+    }
+
+    public function exportar_instructoresByEspecialidad()
+    {
+        $data = Especialidad::SELECT('especialidades.id','especialidades.nombre',
+                DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") AS NOMBRE'),
+                'instructores.numero_control',
+                DB::raw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
+                DB::raw("array(select especialidades.clave from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as clave"),
+                DB::raw("array(select criterio_pago_id from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as criteriopago"),
+                DB::raw("array(select grado_profesional from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as grado"),
+                DB::raw("array(select estatus from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as estatus"),
+                DB::raw("array(select area_carrera from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as area"),
+                DB::raw("array(select nombre_institucion from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as institucion"),
+                'instructores.rfc','instructores.curp','instructores.sexo','instructores.estado_civil',
+                'instructores.asentamiento','instructores.domicilio','instructores.telefono','instructores.correo',
+                'tbl_unidades.unidad',
+                DB::raw("array(select memorandum_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
+                DB::raw("array(select fecha_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as fechaval"),
+                DB::raw("array(select observacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
+                ->WHERE('instructores.estado', '=', TRUE)
+                ->whereRaw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
+                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+                ->ORDERBY('apellidoPaterno', 'ASC')
+                ->GET();
+
+        $cabecera = ['ID','ESPECIALIDAD','NOMBRE','NUMERO COTROL','CLAVE','CRITERIO PAGO',
+                    'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
+                    'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION',
+                    'FECHA DE VALIDACION','OBSERVACION'];
+
+        $nombreLayout = "Catalogo de instructores.xlsx";
+        $titulo = "Catalogo de instructores";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
     }
 }
 

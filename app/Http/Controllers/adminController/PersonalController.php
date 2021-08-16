@@ -54,6 +54,8 @@ class PersonalController extends Controller
             'inputCategoria' => 'required',
             'inputOrganoAdministrativo' => 'required',
             'inputAreaAdscripcion' => 'required',
+            'inputCurp' => 'required',
+            'inputEmail' => 'required',
         ]);
         if ($validator->fails()) {
             # devolvemos un error
@@ -69,6 +71,9 @@ class PersonalController extends Controller
             $personal->puesto = trim($request->inputPuesto);
             $personal->categoria = trim($request->inputCategoria);
             $personal->area_adscripcion_id = trim($request->inputAreaAdscripcion);
+            $personal->curp = trim($request->inputCurp);
+            $personal->email = trim($request->inputEmail);
+            $personal->activo = TRUE;
             // guardar registro
             $personal->save();
 
@@ -109,7 +114,7 @@ class PersonalController extends Controller
                             ->LEFTJOIN('area_adscripcion', 'directorio.area_adscripcion_id', '=', 'area_adscripcion.id')
                             ->LEFTJOIN('organo_administrativo', 'area_adscripcion.organo_id', '=', 'organo_administrativo.id')
                             ->FIRST(['directorio.id', 'directorio.nombre', 'directorio.apellidoPaterno', 'directorio.apellidoMaterno', 'directorio.puesto',
-                            'directorio.categoria', 'directorio.numero_enlace', 'area_adscripcion.area', 'area_adscripcion.id AS idadscripcion', 'organo_administrativo.organo',
+                            'directorio.categoria', 'directorio.numero_enlace','directorio.activo','directorio.curp','directorio.email', 'area_adscripcion.area', 'area_adscripcion.id AS idadscripcion', 'organo_administrativo.organo',
                             'organo_administrativo.id AS idOrgano',
                             'directorio.activo']);
 

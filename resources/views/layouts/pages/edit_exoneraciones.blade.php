@@ -28,6 +28,7 @@
                     <label for="unidad" class="control-label">UNIDAD DE CAPACITACIÓN</label>
                     <select name="unidad" id="unidad" class="custom-select">
                         <option value="">SELECCIONE UNA UNIDAD</option>
+                        <option value="0" {{$exoneracion->id_unidad_capacitacion == 0 ? 'selected' : ''}}>TODAS LAS UNIDADES</option>
                         @foreach ($unidades as $unidad)
                             <option {{$unidad->id == $exoneracion->id_unidad_capacitacion ? 'selected' : ''}} 
                                 value="{{ $unidad->id }}">{{ $unidad->unidad }}</option>
@@ -59,6 +60,7 @@
                     <label for="municipioEx" class="control-label">MUNICIPIO</label>
                     <select name="municipioEx" id="municipioEx" class="custom-select">
                         <option value="">SELECCIONE UN MUNICIPIO</option>
+                        <option value="0" {{$exoneracion->id_municipio == 0 ? 'selected' : ''}}>TODOS LOS MUNICIPIOS</option>
                         @foreach ($municipios as $municipio)
                             <option {{ $municipio->id == $exoneracion->id_municipio ? 'selected' : '' }}
                                 value="{{ $municipio->id }}">{{ $municipio->muni }}</option>
@@ -198,9 +200,9 @@
                 municipioEx: {
                     required: true
                 },
-                localidad: {
-                    required: true
-                },
+                // localidad: {
+                //     required: true
+                // },
                 fecha_memorandum: {
                     required: true
                 },
@@ -233,9 +235,9 @@
                 municipioEx: {
                     required: 'El municipio es requerido'
                 },
-                localidad: {
-                    required: 'La localidad es requerida'
-                },
+                // localidad: {
+                //     required: 'La localidad es requerida'
+                // },
                 fecha_memorandum: {
                     required: 'La fecha del memorandum es requerida'
                 },

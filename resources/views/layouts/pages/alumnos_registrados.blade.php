@@ -23,6 +23,7 @@
                             <option value="no_control">N° DE CONTROL</option>
                             <option value="curso">CURSO</option>
                             <option value="nombres">NOMBRE</option>
+                            <option value="curp">CURP</option>
                         </select>
 
                         {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}

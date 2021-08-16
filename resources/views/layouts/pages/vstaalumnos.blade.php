@@ -30,9 +30,9 @@
                     {!! Form::close() !!}
                 </div>
                 <div class="pull-right">
-                    
+
                         <a class="btn btn-success btn-lg" href="{{route('alumnos.valid')}}" >Agregar Nuevo</a>
-                    
+
                 </div>
             </div>
         </div>
@@ -70,6 +70,8 @@
                             @endcan
 
                             
+
+
 
                         </tr>
                     @endforeach

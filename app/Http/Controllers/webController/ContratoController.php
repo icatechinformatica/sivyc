@@ -760,7 +760,14 @@ class ContratoController extends Controller
         $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
 
-        $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        if($data->tipo_curso == 'CURSO')
+        {
+            $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        }
+        else
+        {
+            $pdf = PDF::loadView('layouts.pdfpages.precontratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        }
 
         return $pdf->stream('Contrato Instructor.pdf');
     }
@@ -778,9 +785,10 @@ class ContratoController extends Controller
         $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
-        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
-                                  'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
-                                  'instructores.domicilio')
+        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
+                                  'tbl_cursos.tipo_curso','instructores.nombre','instructores.apellidoPaterno',
+                                  'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc',
+                                  'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                           ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -800,7 +808,14 @@ class ContratoController extends Controller
         $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
         $monto = explode(".",strval($data_contrato->cantidad_numero));
 
-        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        if($data->tipo_curso == 'CURSO')
+        {
+            $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        }
+        else
+        {
+            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        }
 
         return $pdf->stream('Contrato Instructor.pdf');
     }
@@ -854,6 +869,46 @@ class ContratoController extends Controller
         $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director','distintivo'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
+
+    }
+
+    public function contrato_certificacion_pdf($id)
+    {
+        $contrato = new contratos();
+
+        $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
+        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas','instructores.nombre','instructores.apellidoPaterno',
+                                  'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
+                                  'instructores.domicilio')
+                          ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
+                          ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                          ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                          ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                          ->FIRST();
+                          //nomes especialidad
+        $especialidad = especialidad_instructor::SELECT('especialidades.nombre')
+                                                ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
+                                                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                                                ->FIRST();
+        $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        $date = strtotime($data_contrato->fecha_firma);
+        $D = date('d', $date);
+        $M = $this->toMonth(date('m', $date));
+        $Y = date("Y", $date);
+
+        $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
+        $monto = explode(".",strval($data_contrato->cantidad_numero));
+
+        $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+
+        return $pdf->stream('Contrato Certificacion.pdf');
 
     }
 

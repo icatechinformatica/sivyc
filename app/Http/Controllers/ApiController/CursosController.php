@@ -9,6 +9,7 @@ use App\Models\api\Calificacion;
 use App\Models\api\Inscripcion;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class CursosController extends Controller
 {
@@ -168,16 +169,19 @@ class CursosController extends Controller
         try {
             //return response()->json($request->all(), 200);
             //exit;
-            $Cursos= new Curso();
-            $cursosArray = [
-                'cct' => trim($request->cct),
+            //$Cursos= new Curso();
+            //$cursosArray = 
+            
+                DB::table('tbl_cursos')->where('id', $id)->update(                
+                [
+                /*'cct' => trim($request->cct),
                 'unidad' => trim($request->unidad),
                 'nombre' => trim($request->nombre),
                 'curp' => trim($request->curp),
-                'rfc' => trim($request->rfc),
+                'rfc' => trim($request->rfc),*/
                 'clave' => trim($request->clave),
                 'mvalida' => trim($request->mvalida),
-                'mod' => trim($request->mod),
+                /*'mod' => trim($request->mod),
                 'area' => trim($request->area),
                 'espe' => trim($request->espe),
                 'curso' => trim($request->curso),
@@ -213,21 +217,21 @@ class CursosController extends Controller
                 'id_curso' => trim($request->id_curso),
                 'id_instructor' => trim($request->id_instructor),
                 'modinstructor' => trim($request->modinstructor),
-                'nmunidad' => trim($request->nmunidad),
+                'nmunidad' => trim($request->nmunidad),*/
                 'nmacademico' => trim($request->nmacademico),
-                'observaciones' => trim($request->observaciones),
+               // 'observaciones' => trim($request->observaciones),
                // 'status' => trim($request->status),
-                'realizo' => trim($request->realizo),
+               // 'realizo' => trim($request->realizo),
                 'valido' => trim($request->valido),
-                'arc' => trim($request->arc),
-                'tcapacitacion' => trim($request->tcapacitacion),
+               // 'arc' => trim($request->arc),
+              // 'tcapacitacion' => trim($request->tcapacitacion),
                'fecha_apertura' => $request->fecha_apertura,
                 'fecha_modificacion' => $request->fecha_modificacion,
-                'costo' => trim($request->costo),
-                'motivo_correccion' => trim($request->motivo_correccion),
+               // 'costo' => trim($request->costo),
+               // 'motivo_correccion' => trim($request->motivo_correccion),
                 'status_curso' => trim($request->status_curso)
-            ];
-            $Cursos->WHERE('id', $id)->update($cursosArray);
+            ]);
+            //$Cursos->WHERE('id', $id)->update($cursosArray);
 
             // validamos si hay archivos
             if ($request->hasFile('pdf_curso')) {

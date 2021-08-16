@@ -44,6 +44,10 @@
                 $("#clave").val(clave);
                 $('#frm').attr('action', "{{route('grupos.consultas.folios')}}"); $('#frm').submit();                 
             }
+            function cancelar(clave){
+                $("#clave").val(clave);
+                $('#frm').attr('action', "{{route('grupos.consultas.cancelarfolios')}}"); $('#frm').submit();                 
+            }
         </script>  
     @endsection
 @endsection
