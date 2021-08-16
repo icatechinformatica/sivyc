@@ -102,7 +102,6 @@ else{
         margin-bottom: 0px;
         }
         #wrapperbot {
-
         background-position: 5px 10px;
         background-repeat: no-repeat;
         background-size: 32px;

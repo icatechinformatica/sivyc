@@ -277,11 +277,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', function() {
         return view('layouts.pages.home');
     })->name('home');
-
     Route::get('/password/new','passwordController@index')->name('password.view')->middleware('can:password.update');
     Route::post('/password/update','passwordController@updatePassword')->name('update.password');
 
-    /*
+    /* a route
     Route::get('/', function () {
         return view('layouts.pages.home');
     });

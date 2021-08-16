@@ -55,9 +55,6 @@
                         @endcan
                         <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
                         
-                        @can('alumnos.inscritos.index')
-                            <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
-                        @endcan
                         @can('convenios.index')
                             <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                         @endcan
@@ -142,26 +139,20 @@
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
-                <li class="nav-item g-mx-5--lg dropdown">
-                    <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Preinscripci&oacute;n
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"> 
-                        <!--alumnos.index-->
-                        @can('alumnos.index')
-                            <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
-                        @endcan                           
-                        <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
-                        <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
-                    </div>
-                </li>
 
                 @can('preinscripcion.grupo')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Preinscripci&oacute;n
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                            
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"> 
+                            <!--alumnos.index-->
+                            @can('alumnos.index')
+                                <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
+                            @endcan   
+                            @can('alumnos.inscritos.index')
+                                <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
+                            @endcan                        
                             <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
                             <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
                         </div>

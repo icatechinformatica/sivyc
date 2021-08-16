@@ -101,6 +101,22 @@
                 <table width="700" class="table table-striped" id="table-one">
                     <thead>
                         <tr class="active">
+<<<<<<< HEAD
+                            <td scope="col"><small style="font-size: 12px;">No. DE SUFICIENCIA</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">FECHA</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">INSTRUCTOR</small></td>
+                            <td scope="col" width="10px"><small style="font-size: 12px;">UNIDAD/ A.M. DE CAP.</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">SERVICIO</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">NOMBRE</small></td>
+                            <td scope="col"><small style="font-size: 12px;">CLAVE DEL GRUPO</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">ZONA ECÓNOMICA</small></td>
+                            <td scope="col"><small style="font-size: 12px;">HSM (horas)</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">IMPORTE POR HORA</small></td>
+                            <td scope="col"><small style="font-size: 12px;">IVA 16%</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">PARTIDA/ CONCEPTO</small></td>
+                            <td scope="col"><small style="font-size: 12px;">IMPORTE</small></td>
+                            <td scope="col" ><small style="font-size: 12px;">OBSERVACION<small></td>
+=======
                             <td scope="col"><small style="font-size: 10px;">No. DE SUFICIENCIA</small></td>
                             <td scope="col" ><small style="font-size: 10px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 10px;">INSTRUCTOR</small></td>
@@ -115,20 +131,39 @@
                             <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
                             <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
                             <td scope="col" ><small style="font-size: 10px;">OBSERVACION<small></td>
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $key=>$item)
                             <tr>
+<<<<<<< HEAD
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->folio_validacion}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->fecha}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->unidad}}</small></td>
+=======
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->folio_validacion}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->fecha}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->unidad}}</small></td>
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
                                 @if ($item->tipo_curso=='CERTIFICACION')
                                     <td><small style="font-size: 10px;">CERTIFICACIÓN EXTRAORDINARIA</small></td>
                                 @else
                                     <td><small style="font-size: 10px;">CURSO</small></td>
                                 @endif
+<<<<<<< HEAD
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->curso_nombre}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->clave}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->ze}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->dura}}</small></td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->importe_hora}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->iva}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">12101 Honorarios</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->importe_total}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 12px;">{{$item->comentario}}</small></td>
+=======
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->curso_nombre}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->clave}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->ze}}</small></td>
@@ -138,6 +173,7 @@
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">12101 Honorarios</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->importe_total}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->comentario}}</small></td>
+>>>>>>> b9097b2decd30de0cf15459bb3adf1604687459e
                             </tr>
                         @endforeach
                     </tbody>
