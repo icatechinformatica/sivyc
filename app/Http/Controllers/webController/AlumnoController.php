@@ -37,7 +37,7 @@ class AlumnoController extends Controller
         //
         $buscar_aspirante = $request->get('busqueda_aspirantepor'); //dd(gettype($buscar_aspirante));
 
-        $tipoaspirante = $request->get('busqueda_aspirante');   //dd(ctype_alpha($buscar_aspirante));
+        $tipoaspirante = $request->get('busqueda_aspirante');   //dd(ctype_alnum($buscar_aspirante));
         $tipo=null;
         if(isset($buscar_aspirante)){
             if(ctype_alpha($buscar_aspirante)){
@@ -46,12 +46,15 @@ class AlumnoController extends Controller
                 $cay= str_split($buscar_aspirante);
                 $cay= $cay[0].$cay[1].$cay[2].$cay[3];    //dd($cay);
                 if(ctype_alpha($cay)){
-                    $tipo='curp_aspirante';
+            
+                    if(ctype_alnum($buscar_aspirante)){$tipo='curp_aspirante';}else{$tipo='nombre_aspirante';}
+                    
                 }else{
                     $tipo='matricula_aspirante';
                 }
             }
-        }
+        }   
+        //dd($tipo);
         $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)->orderBy('apellido_paterno')
         ->PAGINATE(25, ['id', 'nombre', 'apellido_paterno', 'apellido_materno', 'curp', 'es_cereso','matricula']);
         $contador = $retrieveAlumnos->count();//dd($retrieveAlumnos);
