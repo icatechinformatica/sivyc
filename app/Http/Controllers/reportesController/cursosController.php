@@ -180,7 +180,7 @@ class cursosController extends Controller
                 ->select(
                     'i.matricula','i.alumno','i.sexo','i.escolaridad','i.discapacidad','i.abrinscri',
                         DB::raw("EXTRACT(year from (age('".$fecha_termino."',i.fecha_nacimiento))) as edad"),
-                        DB::raw("(CASE WHEN i.calificacion!='NP' OR i.calificacion>'5' THEN 'X' END) as acreditado")
+                        DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado")
                 )->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
 
                //var_dump($alumnos); exit;
@@ -222,7 +222,7 @@ class cursosController extends Controller
                     ->select(
                         'i.matricula','i.alumno','i.sexo','i.escolaridad','i.discapacidad','i.abrinscri',
                             DB::raw("EXTRACT(year from (age('".$fecha_termino."',i.fecha_nacimiento))) as edad"),
-                            DB::raw("(CASE WHEN i.calificacion!='NP' OR i.calificacion>'5' THEN 'X' END) as acreditado"),'f.folio',DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha_expedicion")
+                            DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado"),'f.folio',DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha_expedicion")
                     )->leftjoin('tbl_folios as f','f.id','=','i.id_folio')
                     ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
 
