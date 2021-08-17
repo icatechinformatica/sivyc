@@ -274,12 +274,13 @@
                         @can('consultas.cursosaperturados')
                             <a class="dropdown-item" href="{{route('consultas.cursosaperturados')}}">Cursos Aperturados</a>
                         @endcan
-                        @can('academico.catalogocursos')
+                        <!--can('academico.catalogocursos')-->
                             <a class="dropdown-item" href="{{route('academico.exportar.cursos')}}">Exportar Cursos</a>
-                        @endcan
-                        @can('academico.catalogoinstructores')
-                            <a class="dropdown-item" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
-                        @endcan
+                        <!--endcan-->
+                        <!--can('academico.catalogoinstructores')-->
+                            <a class="dropdown-item" data-toggle="modal" data-placement="top"
+                                data-target="#ModalExpIns">Exportar Instructores</a>
+                        <!--endcan-->
                         @can('planeacion.estadisticas')
                             <a class="dropdown-item" href="{{route('reportes.planeacion.estadisticas')}}">Estadisticas del Formato T</a>
                         @endcan
@@ -389,6 +390,36 @@
                     <div class="form-group col-md-1"></div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+<!-- END -->
+<!-- Modal Cancel Folio -->
+<div class="modal fade" id="ModalExpIns" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><b>Exportar Instructores</b></h6>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-1"></div>
+                <div class="form-group col-md-5">
+                    <a class="btn btn-info" href="{{route('academico.exportar.instructores')}}">Exportar Por Instructor</a>
+                </div>
+                <div class="form-group col-md-5">
+                    <a class="btn btn-info" href="{{route('academico.exportar.instructoresByespecialidad')}}">Exportar Por Especialidad</a>
+                </div>
+                <div class="form-group col-md-1"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-5"></div>
+                <div class="form-group col-md-3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
