@@ -234,6 +234,8 @@ class CursosController extends Controller
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->GET();
 
+                    //dd($cursos[0]);
+
             $fechaVal = $curso->getMyDateFormat($cursos[0]->fecha_validacion);
             $fechaAct = $curso->getMyDateFormat($cursos[0]->fecha_actualizacion);
 

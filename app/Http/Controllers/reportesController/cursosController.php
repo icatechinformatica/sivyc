@@ -140,23 +140,11 @@ class cursosController extends Controller
            // var_dump($curso);exit;
             if($curso){
                 $consec_curso = $curso->id_curso; 
-                $fecha_termino = $curso->inicio;
-                $alumnos = DB::table('tbl_inscripcion as i')
-                    ->select('i.matricula','i.alumno', DB::raw("(CASE WHEN (left(a_pre.sexo,1)='F') THEN 'M' WHEN (left(a_pre.sexo,1)='M') THEN 'H' ELSE  '' END) as sexo"),'a_pre.ultimo_grado_estudios','a_pre.discapacidad',
-                        'i.abrinscri',DB::raw("to_char(i.created_at, 'YYYY-MM-DD') as fecha_creacion"),
-                        DB::raw("EXTRACT(year from (age('".$fecha_termino."',a_pre.fecha_nacimiento))) as edad"),'a_pre.fecha_nacimiento' )
-                    ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')                                      
-                    ->leftJoin('alumnos_registro as a_reg', function($join)use($consec_curso){                                        
-                        $join->on('a_reg.no_control', '=', 'i.matricula');
-                        $join->where('a_reg.id_curso', '=', $consec_curso);    
-                    }) 
-                    ->leftJoin('alumnos_pre as a_pre', function($join)use($consec_curso){
-                        $join->on('a_pre.id', '=', 'a_reg.id_pre');
-                    });                
-                $alumnos = $alumnos->groupby('i.matricula','i.alumno','i.created_at',
-                    'a_reg.id_pre','a_pre.fecha_nacimiento','a_pre.sexo','a_pre.ultimo_grado_estudios',
-                    'a_pre.discapacidad','i.abrinscri')->orderby('i.alumno')->get();
-               //var_dump($alumnos); exit;       
+                $fecha_inicio = $curso->inicio;
+                $alumnos = DB::table('tbl_inscripcion as i')->select(
+                    'i.matricula','i.alumno','i.sexo','i.escolaridad','i.discapacidad','i.abrinscri',
+                        DB::raw("EXTRACT(year from (age('".$fecha_inicio."',i.fecha_nacimiento))) as edad")
+                )->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
                 if(count($alumnos)==0){ return "NO ENCONTR&Oacute; REGISTROS DE ALUMNOS.";exit;} 
                 $discapacidad = $this->discapacidad;  
                 $escolaridad = $this->escolaridad;
@@ -171,8 +159,7 @@ class cursosController extends Controller
         return "Clave no v&aacute;lida";
     } 
     
-    public function riacAcred(Request $request){
-        
+    public function riacAcred(Request $request){        
         $clave = $request->get('clave');
         $file = "RIAC_ACREDITACION_$clave.PDF";
         if($clave){
@@ -190,21 +177,12 @@ class cursosController extends Controller
                 $consec_curso = $curso->id_curso; 
                 $fecha_termino = $curso->termino;
                 $alumnos = DB::table('tbl_inscripcion as i')
-                    ->select('i.matricula','i.alumno', DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado"),
-                        DB::raw("(CASE WHEN (left(a_pre.sexo,1)='F') THEN 'M' WHEN (left(a_pre.sexo,1)='M') THEN 'H' ELSE  '' END) as sexo"),'a_pre.ultimo_grado_estudios','a_pre.discapacidad',
-                        'i.abrinscri',DB::raw("to_char(i.created_at, 'YYYY-MM-DD') as fecha_creacion"),
-                        DB::raw("EXTRACT(year from (age('".$fecha_termino."',a_pre.fecha_nacimiento))) as edad"),'a_pre.fecha_nacimiento' )
-                    ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')                             
-                    ->leftJoin('alumnos_registro as a_reg', function($join)use($consec_curso){                                        
-                        $join->on('a_reg.no_control', '=', 'i.matricula');
-                        $join->where('a_reg.id_curso', '=', $consec_curso);    
-                    }) 
-                    ->leftJoin('alumnos_pre as a_pre', function($join){
-                        $join->on('a_pre.id', '=', 'a_reg.id_pre');
-                    });                
-                $alumnos = $alumnos->groupby('i.matricula','i.alumno','i.created_at','i.calificacion',
-                    'a_reg.id_pre','a_pre.fecha_nacimiento','a_pre.sexo','a_pre.ultimo_grado_estudios',
-                    'a_pre.discapacidad','i.abrinscri')->orderby('i.alumno')->get();                
+                ->select(
+                    'i.matricula','i.alumno','i.sexo','i.escolaridad','i.discapacidad','i.abrinscri',
+                        DB::raw("EXTRACT(year from (age('".$fecha_termino."',i.fecha_nacimiento))) as edad"),
+                        DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado")
+                )->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
+
                //var_dump($alumnos); exit;
                 if(count($alumnos)==0){ return "NO ENCONTR&Oacute; REGISTROS DE ALUMNOS.";exit;}       
                 $discapacidad = $this->discapacidad;  
@@ -241,27 +219,13 @@ class cursosController extends Controller
                 $consec_curso = $curso->id_curso; 
                 $fecha_termino = $curso->termino;
                 $alumnos = DB::table('tbl_inscripcion as i')
-                    ->select('i.matricula','i.alumno',DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado"),'f.folio',
-                        DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha_expedicion"),
-                        DB::raw("(CASE WHEN (left(a_pre.sexo,1)='F') THEN 'M' WHEN (left(a_pre.sexo,1)='M') THEN 'H' ELSE  '' END) as sexo"), 
-                        'a_pre.ultimo_grado_estudios','a_pre.discapacidad','i.abrinscri',
-                        DB::raw("to_char(i.created_at, 'YYYY-MM-DD') as fecha_creacion"),
-                        DB::raw("EXTRACT(year from (age('".$fecha_termino."',a_pre.fecha_nacimiento))) as edad"),'a_pre.fecha_nacimiento' )
-                    ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')                    
-                    ->leftJoin('tbl_folios as f', function($join){
-                        $join->on('f.id', '=', 'i.id_folio');
-                    })
-                    ->leftJoin('alumnos_registro as a_reg', function($join)use($consec_curso){                                       
-                        $join->on('a_reg.no_control', '=', 'i.matricula');                
-                        $join->where('a_reg.id_curso', '=', $consec_curso);     
-                    }) 
-                    ->leftJoin('alumnos_pre as a_pre', function($join){
-                        $join->on('a_pre.id', '=', 'a_reg.id_pre');
-                    });                
-                $alumnos = $alumnos->groupby('i.matricula','i.alumno','i.created_at','i.calificacion','f.folio',
-                    'f.fecha_expedicion','a_reg.id_pre','a_pre.fecha_nacimiento','a_pre.sexo','a_pre.ultimo_grado_estudios',
-                    'a_pre.discapacidad','i.abrinscri')->orderby('i.alumno')->get();
-               //var_dump($alumnos); exit;
+                    ->select(
+                        'i.matricula','i.alumno','i.sexo','i.escolaridad','i.discapacidad','i.abrinscri',
+                            DB::raw("EXTRACT(year from (age('".$fecha_termino."',i.fecha_nacimiento))) as edad"),
+                            DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado"),'f.folio',DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha_expedicion")
+                    )->leftjoin('tbl_folios as f','f.id','=','i.id_folio')
+                    ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
+
                 if(count($alumnos)==0){ return "NO ENCONTR&Oacute; REGISTROS DE ALUMNOS O NO TIENEN FOLIOS ASIGNADOS";exit;}
                 
                 $discapacidad = $this->discapacidad;  
