@@ -451,6 +451,7 @@ class ContratoController extends Controller
         $contrato->save();
 
         $folio = folio::find($request->idfolios);
+        $folio->fecha_rechazado = carbon::now();
         $folio->status = 'Contrato_Rechazado';
         $folio->save();
 

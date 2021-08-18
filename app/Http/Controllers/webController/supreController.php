@@ -272,6 +272,7 @@ class supreController extends Controller
         $supre = supre::find($request->id);
         $supre->observacion = $request->comentario_rechazo;
         $supre->fecha_status = carbon::now();
+        $supre->fecha_rechazado = carbon::now();
         $supre->status = 'Rechazado';
         //dd($supre);
         $supre->save();
