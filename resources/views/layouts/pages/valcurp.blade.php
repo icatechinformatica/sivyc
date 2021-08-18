@@ -369,7 +369,7 @@
                         </div> 
                 <hr style="border-color: dimgray">
                 {{--datos cerss--}}
-                <h5><b>DATOS CERESO</b></h5>
+                <h5><b>DATOS CERSS</b></h5>
                 <div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
@@ -1009,12 +1009,18 @@
         function fileValidation(){
             var fileInput = document.getElementById('fotografia');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos con extensión .jpeg/.jpg/.png/.gif ');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
@@ -1023,17 +1029,23 @@
                     };
                     reader.readAsDataURL(fileInput.files[0]);
                 }
-            }
+            }   
         }
         function fileValidationmod(){
             var fileInput = document.getElementById('fotografia_mod');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos con extensión .jpeg/.jpg/.png/.gif ');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
@@ -1048,12 +1060,18 @@
         function fileValidationpdf(){
             var fileInput = document.getElementById('customFile');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.pdf)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos pdf');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
@@ -1067,12 +1085,18 @@
         function fileValidationpdfmod(){
             var fileInput = document.getElementById('customFile_mod');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.pdf)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos pdf');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
