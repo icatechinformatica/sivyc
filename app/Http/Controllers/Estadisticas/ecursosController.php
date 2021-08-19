@@ -38,7 +38,7 @@ class ecursosController extends Controller
            
            if($unidad) $unidadess = DB::table('tbl_unidades')->where('ubicacion', $unidad)->pluck('unidad','unidad');
            
-           $cursos = $cursos->where('c.status_curso','AUTORIZADO')->where('c.clave','!=','0');
+          // $cursos = $cursos->where('c.status_curso','AUTORIZADO')->where('c.clave','!=','0');
                 if($unidadess) $cursos = $cursos->whereIn('c.unidad', $unidadess);
                 if($request->tcapacitacion AND $tcapacitacion!='TODOS') $cursos = $cursos->where('c.tcapacitacion',$request->tcapacitacion);
                 if($request->finicial) $cursos = $cursos->where('c.termino','>=',$request->finicial);
