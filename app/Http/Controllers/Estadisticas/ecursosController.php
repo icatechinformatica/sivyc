@@ -43,7 +43,7 @@ class ecursosController extends Controller
                 if($request->tcapacitacion AND $tcapacitacion!='TODOS') $cursos = $cursos->where('c.tcapacitacion',$request->tcapacitacion);
                 if($request->finicial) $cursos = $cursos->where('c.termino','>=',$request->finicial);
                 if($request->ffinal) $cursos = $cursos->where('c.termino','<=',$request->ffinal);
-                if($request->status_curso) $cursos = $cursos->where('c.status_curso','<=',$request->status_curso);
+                if($request->status_curso) $cursos = $cursos->where('c.status_curso',$request->status_curso);
                
                 if($curso AND $instructor) $cursos = $cursos->groupby('c.curso','c.nombre');
                 elseif($instructor) $cursos = $cursos->groupby('c.nombre');
@@ -76,12 +76,12 @@ class ecursosController extends Controller
            
            if($unidad) $unidadess = DB::table('tbl_unidades')->where('ubicacion', $unidad)->pluck('unidad','unidad');
            
-           $cursos = $cursos->where('c.status_curso','AUTORIZADO')->where('c.clave','!=','0');
+           //$cursos = $cursos->where('c.status_curso','AUTORIZADO')->where('c.clave','!=','0');
                 if($unidadess) $cursos = $cursos->whereIn('c.unidad', $unidadess);
                 if($request->tcapacitacion AND $tcapacitacion!='TODOS') $cursos = $cursos->where('c.tcapacitacion',$request->tcapacitacion);
                 if($request->finicial) $cursos = $cursos->where('c.termino','>=',$request->finicial);
                 if($request->ffinal) $cursos = $cursos->where('c.termino','<=',$request->ffinal);
-                if($request->status_curso) $cursos = $cursos->where('c.status_curso','<=',$request->status_curso);
+                if($request->status_curso) $cursos = $cursos->where('c.status_curso',$request->status_curso);
                
                 if($curso AND $instructor) $cursos = $cursos->groupby('c.curso','c.nombre');
                 elseif($instructor) $cursos = $cursos->groupby('c.nombre');
