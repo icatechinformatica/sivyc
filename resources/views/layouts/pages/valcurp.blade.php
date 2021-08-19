@@ -76,7 +76,7 @@
                                 <td>
                                     <span><i class="fa fa-camera-retro fa-3x" style="vertical-align: middle"></i></span>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="fotografia" name="fotografia" lang="es" onchange="fileValidation()">
+                                        <input type="file" class="custom-file-input" id="fotografia" name="fotografia" onchange="fileValidation()">
                                         <label class="custom-file-label" for="fotografia">Fotografía</label>
                                     </div>
                                 </td>
@@ -87,7 +87,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="curp" class="control-label">Curp Aspirante</label>
-                        {{ Form::text('curp', $curp, ['id'=>'curp', 'class' => 'form-control', 'placeholder' => 'CURP', 'readonly']) }}
+                        {{ Form::text('curp', $curp, ['id'=>'curp', 'class' => 'form-control', 'placeholder' => 'CURP', 'readonly'=>'true']) }}
                     </div>
                 </div>
                 <div class="form-row">
@@ -112,7 +112,7 @@
                     @php $ka= date('Y-m-d',strtotime($fecha_t)); @endphp
                     <div class="form-group col-md-2">
                         <label for="">Fecha de nacimiento</label>
-                        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control" value="{{$ka}}" readonly>
+                        <input type="date" readonly name="fecha" id="fecha"  class="form-control" value="{{$ka}}">
                     </div>
                     <div class="form-group col-md-2">
                         <label for="sexo" class="control-label">Genero</label>
@@ -1187,6 +1187,9 @@
                         required: true,
                         minlength: 2
                     },
+                    fecha: {
+                        required: true
+                    },
                     sexo: {
                         required: true
                     },
@@ -1253,6 +1256,9 @@
                     },
                     nacionalidad: {
                         required: 'Por favor ingrese su nacionalidad'
+                    },
+                    fecha: {
+                        required: 'Por favor ingrese fecha de nacimiento'
                     },
                     sexo: {
                         required: 'Por favor Elegir su genero'
