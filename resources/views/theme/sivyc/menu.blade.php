@@ -291,7 +291,18 @@
                             <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
                         @endcan
                     </div>
-             </li>
+                </li>
+
+                @can('estadisticas.ecursos')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Estadísticas
+                        </a>                    
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                        
+                                <a class="dropdown-item" href="{{route('estadisticas.ecursos')}}">Cursos</a>                       
+                        </div>                    
+                    </li> 
+                @endcan
 
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
