@@ -96,6 +96,10 @@ class PagoController extends Controller
                 # code...
                 $contratos_folios = $contratos_folios;
                 break;
+            case 'dta':
+                # code...
+                $contratos_folios = $contratos_folios;
+                break;
             default:
                 # code...
                 // obtener unidades
