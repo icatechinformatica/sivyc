@@ -43,11 +43,11 @@
                             <th scope="col" class="text-center" width="3%">TIPO</th> 
                             <th scope="col" class="text-center" width="2%">MOD</th> 
                             <th scope="col" class="text-center" width="2%">HOMBRES</th>                             
-                            <th scope="col" class="text-center" width="2%">MUJERES</th>  
-                            <th scope="col" class="text-center" width="5%">HORA_INI</th>
-                            <th scope="col" class="text-center" width="5%">HORA_FIN</th> 
+                            <th scope="col" class="text-center" width="2%">MUJERES</th>                              
                             <th scope="col" class="text-center" width="5%">INICIO</th>
                             <th scope="col" class="text-center" width="5%">TERMINO</th> 
+                            <th scope="col" class="text-center" width="5%">HORA_INI</th>
+                            <th scope="col" class="text-center" width="5%">HORA_FIN</th>
                             <th scope="col" class="text-center" width="7%">ESTATUS</th>                           
                         </tr>
                     </thead>
