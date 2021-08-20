@@ -20,11 +20,14 @@
                     {{ Form::select('unidad', $unidades, $unidad ,['id'=>'unidad','class' => 'form-control  mr-sm-4 mt-3','placeholder' => 'TODAS LAS UNIDADES','title' => 'TODAS LAS UNIDADES']) }}
                     {{ Form::select('tcapacitacion', ['A DISTANCIA'=>'A DISTANCIA','PRESENCIAL'=>'PRESENCIAL','TODOS'=>'TODOS'], $tcapacitacion ,array('id'=>'mod','class' => 'form-control  mr-sm-4 mt-3')) }}                    
                     {{ Form::date('finicial', $finicial , ['id'=>'finicial', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICAL', 'title' => 'FECHA INICIAL']) }}                                        
-                    {{ Form::date('ffinal', $ffinal , ['id'=>'ffinal', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA FINAL']) }}                                       
+                    {{ Form::date('ffinal', $ffinal , ['id'=>'ffinal', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL']) }}                                       
                     {{ Form::text('tregistros', $tregistros, ['id'=>'tregistros', 'class' => 'form-control mr-sm-4 mt-3 numero', 'placeholder' => 'TOTAL REGISTROS', 'title' => 'TOTAL REGISTROS','size' => 5]) }}
-                    {{ Form::select('status_curso', ['AUTORIZADO'=>'AUTORIZADO','EN FIRMA'=>'EN FIRMA','VALIDADO'=>'VALIDADO','CANCELADO'=>'CANCELADO'], $status_curso ,array('id'=>'mod','class' => 'form-control  mr-sm-4 mt-3')) }} 
+                    {{ Form::select('status_curso', ['AUTORIZADO'=>'AUTORIZADO','EN FIRMA'=>'EN FIRMA','VALIDADO'=>'VALIDADO','CANCELADO'=>'CANCELADO'], $status_curso ,array('id'=>'mod','class' => 'form-control  mr-sm-4 mt-3','title'=>'ESTATUS')) }} 
+                    {{ Form::select('categoria', $categorias, $categoria ,array('id'=>'categoria','class' => 'form-control  mr-sm-4 mt-3','title'=>'CATEGORIA')) }} 
                     
-                    
+                    <div class="form-check mt-3 mr-sm-4">UNIDAD &nbsp;
+                        <input class="form-check-input custom-checkbox checkbox-lg " type="checkbox" value="1"  name="uni" @if($uni){{'checked'}} @endif>
+                    </div>
                     <div class="form-check mt-3 mr-sm-4">CURSO &nbsp;
                         <input class="form-check-input custom-checkbox checkbox-lg " type="checkbox" value="1"  name="curso" @if($curso){{'checked'}} @endif>
                     </div>
@@ -42,7 +45,11 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            @if($curso)<th scope="col" class="text-center" width="5%">CURSO</th> @endif
+                            @if($uni)<th scope="col" class="text-center" width="2%">UNIDAD</th>@endif    
+                             @if($curso)
+                                <th scope="col" class="text-center" width="2%">CATEGORIA</th>
+                                <th scope="col" class="text-center" width="5%">CURSO</th>
+                             @endif
                             @if($instructor)<th scope="col" class="text-center" width="5%">INSTRUCTOR</th>@endif
                             <th scope="col" class="text-center" width="2%">TOTAL CURSO</th>                            
                         </tr>
@@ -51,8 +58,12 @@
                     <?php $n=1;   ?>
                     <tbody>                        
                         @foreach($cursos as $c)
-                            <tr>                        
-                            @if($curso)<td> {{ $c->curso }} </td>@endif
+                            <tr>   
+                            @if($uni) <td> {{ $c->unidad }}</td>@endif                     
+                            @if($curso)
+                                <td> {{ $c->categoria }} </td>
+                                <td> {{ $c->curso }} </td>
+                            @endif
                             @if($instructor) <td> {{ $c->instructor }}</td>@endif
                                 <td class="text-center"> {{ $c->total}} </td>                                                                                                                                  
                             </tr>                            
