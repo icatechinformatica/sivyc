@@ -152,7 +152,7 @@ class for911Controller extends Controller
         //dd($consulta);
 
         if($turno=='MATUTINO'){
-            $encabezado=$sql->where(function ($query) {
+            /*$encabezado=$sql->where(function ($query) {
                 $query->where('tc.hini', 'like', '%a.m.%')
                       ->orWhere('tc.hini', 'like', '%01:00 p.m.%')
                       ->orWhere('tc.hini', 'like', '%01:30 p.m.%')
@@ -163,24 +163,32 @@ class for911Controller extends Controller
                       ->orWhere('tc.hini', 'like', '%01:00 p.m.%')
                       ->orWhere('tc.hini', 'like', '%01:30 p.m.%')
                       ->orWhere('tc.hini', 'like', '%12:30 p.m.%')
-                      ->orWhere('tc.hini', 'like', '%12:00 p.m.%');})->get();
+                      ->orWhere('tc.hini', 'like', '%12:00 p.m.%');})->get();*/
+            $consulta_inscritos= $consulta->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+            $encabezado= $sql->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();          
 
         }elseif($turno=='VESPERTINO'){
-            $encabezado=$sql->where(function ($query) {
+            /*$encabezado=$sql->where(function ($query) {
                 $query->where('tc.hini', 'like', '%p.m.%')
                       ->Where('tc.hini', 'not like', '%01:00 p.m.%')
                       ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%12:30 p.m.%')
+                      ->where('tc.hini', 'not like', '%01:30 p.m.%')
                       ;})
                       ->get();
             $consulta_inscritos=$consulta->where(function ($query) {
                 $query->where('tc.hini', 'like', '%p.m.%')
                       ->Where('tc.hini', 'not like', '%01:00 p.m.%')
                       ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%01:30 p.m.%')
                       ;})
-                      ->get();
+                      ->get();*/
+            $consulta_inscritos=$consulta->whereRaw("cast(replace(hini, '.', '') as time) >= '14:00:00' and hini !=''")->get();
+            $encabezado=$sql->whereRaw("cast(replace(hini, '.', '') as time) >= '14:00:00' and hini !=''")->get();
 
         }
-        // dd($consulta_inscritos);
+         //dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
     //    dd($encabezado);
 
