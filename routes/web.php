@@ -677,3 +677,8 @@ Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@es
 //Route::get('/password/new','passwordController@index')->name('password.view')->middleware('can:password.update');
 //Route::post('/password/update','passwordController@updatePassword')->name('update.password');
 
+/**MODULO DE ESTADISTICAS */
+Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
+Route::post('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
+Route::post('/cestadisticas/ecursos/xls', 'Estadisticas\ecursosController@xls')->name('estadisticas.ecursos.xls');
+

@@ -251,7 +251,7 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->nombre = $request->nombre;
                 $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
                 $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
-                $AlumnoPreseleccion->fecha_nacimiento = $request->fecha_nacimiento;
+                $AlumnoPreseleccion->fecha_nacimiento = $request->fecha;
                 $AlumnoPreseleccion->sexo = $request->sexo;
                 if(isset($fotografia)){$AlumnoPreseleccion->chk_fotografia=true;}
                 $AlumnoPreseleccion->nacionalidad = $request->nacionalidad;
