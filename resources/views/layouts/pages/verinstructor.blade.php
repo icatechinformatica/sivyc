@@ -367,6 +367,7 @@
                         <tr>
                             <th scope="col">Especialidad</th>
                             <th scope="col">Memo. Validación</th>
+                            <th scope="col">Fecha de Validación</th>
                             <th scope="col">Criterio Pago</th>
                             <th scope="col">Obsevaciones</th>
                             <th width="85px">Acción</th>
@@ -377,6 +378,7 @@
                             <tr>
                                 <th scope="row">{{$item->nombre}}</th>
                                 <td>{{ $item->memorandum_validacion}}</td>
+                                <td>{{ $item->fecha_validacion}}</td>
                                 <td style="text-align: center;">{{ $item->criterio_pago_id }}</td>
                                 <td>{{ $item->observacion }}</td>
                                 <td>
