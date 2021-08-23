@@ -250,6 +250,9 @@
                             Solicitudes
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @can('solicitudes.aperturas')
+                                <a class="dropdown-item" href="{{route('solicitudes.aperturas')}}">Aperturas ARC01 y ARC02</a>
+                            @endcan
                             @can('solicitudes.folios')
                                 <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
                             @endcan
