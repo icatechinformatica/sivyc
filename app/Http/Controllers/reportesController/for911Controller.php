@@ -92,52 +92,51 @@ class for911Controller extends Controller
                         $join->on('tc.id_curso','=','ar.id_curso');
                         $join->on('i.matricula','=','ar.no_control');
                     })
-        ->leftjoin('alumnos_pre as ap','ap.id','=','ar.id_pre')
-        ->select(DB::raw("count(extract(year from (age(tc.termino,ap.fecha_nacimiento)))) as total_inscritos"), 'tc.espe as especialidad',
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) < '15' then 1 else 0 end) as total_inscritos1"),
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) between '15' and '19' then 1 else 0 end) as total_inscritos2"),
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) between '20' and '24' then 1 else 0 end) as total_inscritos3"),
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) between '25' and '34' then 1 else 0 end) as total_inscritos4"),
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) between '35' and '44' then 1 else 0 end) as total_inscritos5"),
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) between '45' and '54' then 1 else 0 end) as total_inscritos6"),
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) between '55' and '64' then 1 else 0 end) as total_inscritos7"),
-        DB::raw("sum(case when extract(year from (age(tc.termino,ap.fecha_nacimiento))) > '64' then 1 else 0 end) as total_inscritos8"),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) < '15' and ap.sexo='MASCULINO' then 1 else 0 end) as insh1 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '15' and '19' and ap.sexo='MASCULINO' then 1 else 0 end) as insh2 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' then 1 else 0 end) as insh3 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '25' and '34' and ap.sexo='MASCULINO' then 1 else 0 end) as insh4 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '35' and '44' and ap.sexo='MASCULINO' then 1 else 0 end) as insh5 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '45' and '54' and ap.sexo='MASCULINO' then 1 else 0 end) as insh6 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='MASCULINO' then 1 else 0 end) as insh7 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '64' and ap.sexo='MASCULINO' then 1 else 0 end) as insh8 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '0' and ap.sexo='MASCULINO' then 1 else 0 end) as insh9 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) < '15' and ap.sexo='FEMENINO' then 1 else 0 end) as insm1 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '15' and '19' and ap.sexo='FEMENINO' then 1 else 0 end) as insm2 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='FEMENINO' then 1 else 0 end) as insm3 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '25' and '34' and ap.sexo='FEMENINO' then 1 else 0 end) as insm4 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '35' and '44' and ap.sexo='FEMENINO' then 1 else 0 end) as insm5 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '45' and '54' and ap.sexo='FEMENINO' then 1 else 0 end) as insm6 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='FEMENINO' then 1 else 0 end) as insm7 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '64' and ap.sexo='FEMENINO' then 1 else 0 end) as insm8 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '0' and ap.sexo='FEMENINO' then 1 else 0 end) as insm9 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) < '15' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh1 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '15' and '19' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh2 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh3 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '25' and '34' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh4 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '35' and '44' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh5 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '45' and '54' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh6 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh7 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '64' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh8 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '0' and ap.sexo='MASCULINO' and i.calificacion !='NP' then 1 else 0 end) as iacreh9 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) < '15' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem1 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '15' and '19' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem2 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem3 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '25' and '34' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem4 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '35' and '44' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem5 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '45' and '54' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem6 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem7 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '64' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem8 "),
-        DB::raw("sum(case when extract(year from(age(tc.termino, ap.fecha_nacimiento))) > '0' and ap.sexo='FEMENINO' and i.calificacion !='NP' then 1 else 0 end) as iacrem9 ")
+        ->select(DB::raw("count(extract(year from (age(tc.termino,i.fecha_nacimiento)))) as total_inscritos"), 'tc.espe as especialidad',
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) < '15' then 1 else 0 end) as total_inscritos1"),
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) between '15' and '19' then 1 else 0 end) as total_inscritos2"),
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) between '20' and '24' then 1 else 0 end) as total_inscritos3"),
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) between '25' and '34' then 1 else 0 end) as total_inscritos4"),
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) between '35' and '44' then 1 else 0 end) as total_inscritos5"),
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) between '45' and '54' then 1 else 0 end) as total_inscritos6"),
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) between '55' and '64' then 1 else 0 end) as total_inscritos7"),
+        DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) > '64' then 1 else 0 end) as total_inscritos8"),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) < '15' and i.sexo='H' then 1 else 0 end) as insh1 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '15' and '19' and i.sexo='H' then 1 else 0 end) as insh2 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '20' and '24' and i.sexo='H' then 1 else 0 end) as insh3 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '25' and '34' and i.sexo='H' then 1 else 0 end) as insh4 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '35' and '44' and i.sexo='H' then 1 else 0 end) as insh5 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '45' and '54' and i.sexo='H' then 1 else 0 end) as insh6 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '55' and '64' and i.sexo='H' then 1 else 0 end) as insh7 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '64' and i.sexo='H' then 1 else 0 end) as insh8 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '0' and i.sexo='H' then 1 else 0 end) as insh9 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) < '15' and i.sexo='M' then 1 else 0 end) as insm1 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '15' and '19' and i.sexo='M' then 1 else 0 end) as insm2 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '20' and '24' and i.sexo='M' then 1 else 0 end) as insm3 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '25' and '34' and i.sexo='M' then 1 else 0 end) as insm4 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '35' and '44' and i.sexo='M' then 1 else 0 end) as insm5 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '45' and '54' and i.sexo='M' then 1 else 0 end) as insm6 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '55' and '64' and i.sexo='M' then 1 else 0 end) as insm7 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '64' and i.sexo='M' then 1 else 0 end) as insm8 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '0' and i.sexo='M' then 1 else 0 end) as insm9 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) < '15' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh1 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '15' and '19' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh2 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '20' and '24' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh3 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '25' and '34' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh4 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '35' and '44' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh5 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '45' and '54' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh6 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '55' and '64' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh7 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '64' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh8 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '0' and i.sexo='H' and i.calificacion !='NP' then 1 else 0 end) as iacreh9 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) < '15' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem1 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '15' and '19' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem2 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '20' and '24' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem3 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '25' and '34' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem4 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '35' and '44' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem5 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '45' and '54' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem6 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) between '55' and '64' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem7 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '64' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem8 "),
+        DB::raw("sum(case when extract(year from(age(tc.termino, i.fecha_nacimiento))) > '0' and i.sexo='M' and i.calificacion !='NP' then 1 else 0 end) as iacrem9 ")
         )
         ->where('tc.termino','>=',$fecha_inicio)
         ->where('tc.termino','<=',$fecha_termino)
@@ -152,7 +151,7 @@ class for911Controller extends Controller
         //dd($consulta);
 
         if($turno=='MATUTINO'){
-            $encabezado=$sql->where(function ($query) {
+            /*$encabezado=$sql->where(function ($query) {
                 $query->where('tc.hini', 'like', '%a.m.%')
                       ->orWhere('tc.hini', 'like', '%01:00 p.m.%')
                       ->orWhere('tc.hini', 'like', '%01:30 p.m.%')
@@ -163,24 +162,32 @@ class for911Controller extends Controller
                       ->orWhere('tc.hini', 'like', '%01:00 p.m.%')
                       ->orWhere('tc.hini', 'like', '%01:30 p.m.%')
                       ->orWhere('tc.hini', 'like', '%12:30 p.m.%')
-                      ->orWhere('tc.hini', 'like', '%12:00 p.m.%');})->get();
+                      ->orWhere('tc.hini', 'like', '%12:00 p.m.%');})->get();*/
+            $consulta_inscritos= $consulta->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();
+            $encabezado= $sql->whereRaw("cast(replace(hini, '.', '') as time) < '14:00:00' and hini !=''")->get();          
 
         }elseif($turno=='VESPERTINO'){
-            $encabezado=$sql->where(function ($query) {
+            /*$encabezado=$sql->where(function ($query) {
                 $query->where('tc.hini', 'like', '%p.m.%')
                       ->Where('tc.hini', 'not like', '%01:00 p.m.%')
                       ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%12:30 p.m.%')
+                      ->where('tc.hini', 'not like', '%01:30 p.m.%')
                       ;})
                       ->get();
             $consulta_inscritos=$consulta->where(function ($query) {
                 $query->where('tc.hini', 'like', '%p.m.%')
                       ->Where('tc.hini', 'not like', '%01:00 p.m.%')
                       ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%12:00 p.m.%')
+                      ->where('tc.hini', 'not like', '%01:30 p.m.%')
                       ;})
-                      ->get();
+                      ->get();*/
+            $consulta_inscritos=$consulta->whereRaw("cast(replace(hini, '.', '') as time) >= '14:00:00' and hini !=''")->get();
+            $encabezado=$sql->whereRaw("cast(replace(hini, '.', '') as time) >= '14:00:00' and hini !=''")->get();
 
         }
-        // dd($consulta_inscritos);
+         //dd($consulta_inscritos);
         if(count($encabezado)==0){return redirect()->route('reportes.911.showForm')->with('success', 'No existen registros');}
     //    dd($encabezado);
 
