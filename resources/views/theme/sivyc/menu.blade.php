@@ -50,8 +50,8 @@
                     Catálogos
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        @can('alumnos.index')
-                            <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
+                        @can('alumnos.inscritos.index')
+                            <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                         @endcan
                         @can('cursos.index')
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
