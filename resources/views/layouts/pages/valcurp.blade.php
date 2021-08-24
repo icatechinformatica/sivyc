@@ -430,7 +430,7 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        @if ($rol=='unidad_vinculacion')
+                        @if ($rol=='unidad_vinculacion'||$rol=='admin')
                         <div class="form-group col-md-4">
                             <label for="curp_mod" class="control-label">Curp Aspirante</label>
                             {{ Form::text('curp_mod',$alumno->curp , ['id'=>'curp_mod','name'=>'curp_mod', 'class' => 'form-control', 'placeholder' => 'CURP', 'oninput'=>"validarInputMod(this)"]) }}
@@ -465,16 +465,30 @@
                         <!-- apellido materno END-->
                         <div class="form-group col-md-2">
                             <label for="">Fecha de nacimiento</label>
+                            @if ($rol=='admin')
+                            <input type="date" name="fecha_nacimiento_mod" id="fecha_nacimiento_mod" class="form-control" value="{{$alumno->fecha_nacimiento}}">
+                            @else
                             <input type="date" name="fecha_nacimiento_mod" id="fecha_nacimiento_mod" class="form-control" value="{{$alumno->fecha_nacimiento}}" readonly>
+                            @endif
                         </div>
                         <div class="form-group col-md-2">
                             <label for="sexo_mod" class="control-label">Genero</label>
+                            @if ($rol=='admin')
+                            @if ($alumno->sexo=='MASCULINO')
+                            <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="HOMBRE" >
+                            @elseif ($alumno->sexo=='FEMENINO')
+                            <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="MUJER" >
+                            @else
+                            <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="{{$alumno->sexo}}">
+                            @endif
+                            @else
                             @if ($alumno->sexo=='MASCULINO')
                             <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="HOMBRE" readonly>
                             @elseif ($alumno->sexo=='FEMENINO')
                             <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="MUJER" readonly>
                             @else
                             <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="{{$alumno->sexo}}" readonly>
+                            @endif
                             @endif
                         </div>
                         <div class="form-group col-md-2">
