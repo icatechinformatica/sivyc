@@ -74,21 +74,25 @@ class AlumnoController extends Controller
             $curp_d=str_split($curp);
             $sexo=$curp_d[10];
             $hoy=date('y');
-            $anio=0;
-            if($curp_d[4].$curp_d[5]<=$hoy){
+            $anio=$curp_d[4].$curp_d[5];
+            if($anio<=$hoy){
                 $i=20;
-                $anio= $i.$curp_d[4].$curp_d[5]; 
+                $anio= $i.$anio; 
+            }
+            elseif($anio>=$hoy){
+                $i=19;
+                $anio= $i.$anio;    
             }
             else{
                 $i=19;
-                $anio= $i.$curp_d[4].$curp_d[5];    
+                $anio = $i.$anio;
             }
-            $año=date_create_from_format('Y', $anio)->format("Y"); //dd($año);
-            $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
-            $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d');
-            $fecha=  $año.$mes.$dia;
+            $año= $anio;
+            $mes= $curp_d[6].$curp_d[7];
+            $dia= $curp_d[8].$curp_d[9];
+            $fecha=  $año.'-'.$mes.'-'.$dia; //dd($fecha);
             
-            $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd($fecha_t);
+            $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd(gettype($fecha_t));
             $grado_estudio = [
                 'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
                 'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
@@ -170,20 +174,25 @@ class AlumnoController extends Controller
             $sexo='MUJER';
         }
         $hoy=date('y');
-        $anio=0;
-        if($curp_d[4].$curp_d[5]<=$hoy){
+            $anio=$curp_d[4].$curp_d[5];
+            if($anio<=$hoy){
                 $i=20;
-                $anio= $i.$curp_d[4].$curp_d[5]; 
-        }
-        else{
+                $anio= $i.$anio; 
+            }
+            elseif($anio>=$hoy){
                 $i=19;
-                $anio= $i.$curp_d[4].$curp_d[5];    
-        }
-        $año=date_create_from_format('Y', $anio)->format("Y"); //dd($año);
-        $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
-        $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d');
-        $fecha=  $año.$mes.$dia; 
-        $fecha_t=date("Y-m-d ", strtotime($fecha));
+                $anio= $i.$anio;    
+            }
+            else{
+                $i=19;
+                $anio = $i.$anio;
+            }
+            $año= $anio;
+            $mes= $curp_d[6].$curp_d[7];
+            $dia= $curp_d[8].$curp_d[9];
+            $fecha=  $año.'-'.$mes.'-'.$dia; //dd($fecha);
+            
+            $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd(gettype($fecha_t));
         $low['fecha']=$fecha_t;
         $low['sexo']=$sexo;
             //dd($low);
