@@ -50,6 +50,9 @@
                     Catálogos
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        @can('alumnos.index')
+                            <a class="dropdown-item" href="{{ route('alumnos.index') }}">Aspirantes</a>
+                        @endcan
                         @can('cursos.index')
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         @endcan
@@ -248,17 +251,17 @@
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitudes
-                        </a>                     
+                        </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitudes.aperturas')
                                 <a class="dropdown-item" href="{{route('solicitudes.aperturas')}}">Aperturas ARC01 y ARC02</a>
-                            @endcan 
+                            @endcan
                             @can('solicitudes.folios')
                                 <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>
-                            @endcan                       
+                            @endcan
                             @can('solicitudes.cancelacionfolios')
                                 <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n Folios</a>
-                            @endcan                       
+                            @endcan
                         </div>
                     </li>
                 @endcan
@@ -300,11 +303,11 @@
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Estadísticas
-                        </a>                    
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">                        
-                                <a class="dropdown-item" href="{{route('estadisticas.ecursos')}}">Cursos</a>                       
-                        </div>                    
-                    </li> 
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" href="{{route('estadisticas.ecursos')}}">Cursos</a>
+                        </div>
+                    </li>
                 @endcan
 
             </ul>
