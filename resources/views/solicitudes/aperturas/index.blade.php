@@ -65,11 +65,10 @@
                 });
                 
                 //MOSTRAR BOTONES CONFORME AL MOVIMIENTO
-                if('{{$opt}}'=="ARC01"){
-                    $("#mrespuesta").hide();
-                    $("#fecha").hide();                    
-                    $("#file").hide();
-                }
+                $("#mrespuesta").hide();
+                $("#fecha").hide();                    
+                $("#file").hide();
+                
                 $("#movimiento").change(function(){ 
                     switch($("#movimiento").val()){
                         case "RETORNADO":
@@ -99,8 +98,7 @@
                                 $('#frm').attr('action', "{{route('solicitudes.aperturas.retornar')}}");
                                 $('#frm').attr('target', '_self').submit();                            
                             }                            
-                        break;
-                    
+                        break;                    
                     }
                 });
                 $("#generar" ).click(function(){
