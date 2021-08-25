@@ -23,7 +23,7 @@ class aperturasController extends Controller
         $this->path_pdf = "/UNIDAD/arc01/";        
         $this->path_files = env("APP_URL").'/storage/uploadFiles';    
     $this->movARC01 = ['RETORNADO'=>'RETORNAR A UNIDAD'/*,'EN FIRMA'=>'ASIGNAR CLAVES','AUTORIZADO'=>'ENVIAR AUTORIZACION'*/];
-    $this->movARC02 = [/*"CANCELADO"=>"CANCELAR APERTURA", "EN CORRECCION"=>"EN CORRECCION" ,"AUTORIZADO" => "ENVIAR AUTORIZACION"*/];
+    $this->movARC02 = ['RETORNADO'=>'RETORNAR A UNIDAD'/*"CANCELADO"=>"CANCELAR APERTURA", "EN CORRECCION"=>"EN CORRECCION" ,"AUTORIZADO" => "ENVIAR AUTORIZACION"*/];
 
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
@@ -82,23 +82,36 @@ class aperturasController extends Controller
     public function retornar(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['memo']){ 
-            $result = DB::table('tbl_cursos')
-            ->where('clave','0')
-           ->where('turnado','UNIDAD')
-            ->where('status_curso','SOLICITADO')
-            ->where('status','NO REPORTADO')
-            ->where('munidad',$_SESSION['memo'])->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s')]);
-            
-            if($result){ 
-                $folios = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->pluck('folio_grupo');     
-                //var_dump($folios);exit;           
-                $rest = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "UNIDAD",'fecha_turnado' => date('Y-m-d')]);   
-                if($rest)$message = "La solicitud retonado a la Unidad.";
-                unset($_SESSION['memo']);
+            switch($_SESSION['opt'] ){
+                case "ARC01":
+                    $result = DB::table('tbl_cursos')
+                    ->where('clave','0')
+                    ->where('turnado','UNIDAD')
+                    ->where('status_curso','SOLICITADO')
+                    ->where('status','NO REPORTADO')
+                    ->where('munidad',$_SESSION['memo'])->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s')]);                    
+                    if($result){ 
+                        $folios = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->pluck('folio_grupo');     
+                        //var_dump($folios);exit;           
+                        $rest = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "UNIDAD",'fecha_turnado' => date('Y-m-d')]);   
+                        if($rest)$message = "La solicitud retonado a la Unidad.";
+                        unset($_SESSION['memo']);
+                     }
+                break;
+                case "ARC02": 
+                    $result = DB::table('tbl_cursos')
+                    ->where('arc','02')
+                    ->where('turnado','UNIDAD')
+                    ->where('status_curso','SOLICITADO')
+                    ->wherein('status',['NO REPORTADO','RETORNO_UNIDAD'])
+                    ->where('nmunidad',$_SESSION['memo'])->update(['status_curso' => 'AUTORIZADO','updated_at'=>date('Y-m-d H:i:s')]); 
+                   // echo "pasa";exit;
+                    if($result)$message = "La solicitud retonado a la Unidad."; 
+                    //unset($_SESSION['memo']);            
+                break;
             }
         }
-        return redirect('solicitudes/aperturas')->with('message',$message);
-        
+        return redirect('solicitudes/aperturas')->with('message',$message);        
    }
    /*
    public function enviar(Request $request){            
