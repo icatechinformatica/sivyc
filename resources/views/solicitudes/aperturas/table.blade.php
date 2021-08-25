@@ -4,9 +4,6 @@
         <thead>
             <tr>
                 <th scope="col" class="text-center">#</th> 
-                @if($opt=="ARC02")               
-                    <th scope="col" class="text-center" >SELEC</th>
-                @endif
                 <th scope="col" class="text-center" >MOTIVO</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <th scope="col" class="text-center">SERVICIO</th>
@@ -55,17 +52,17 @@
                     if( $g->turnado_solicitud == 'VINCULACION'  )$rojo = true; 
                     else $rojo = false;
                     */
-                    if($g->status_curso<>'SOLICITADO' OR $g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                    switch($opt){
+                        case "ARC01":
+                            if($g->status_curso<>'SOLICITADO' OR $g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                        break;
+                        case "ARC02":
+                            if($g->status_curso<>'SOLICITADO' OR ($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD' ) OR $g->turnado<>'UNIDAD' ) $activar=false;
+                        break;
+                    }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
                         <td class="text-center"> {{ $consec++ }}</td>
-                        @if($opt == "ARC02")
-                            <td class='text-center'>    
-                                <div class="form-check">
-                                    <input class="form-check-input custom-checkbox checkbox-lg" type="checkbox" value="{{$g->id}}"  name="ids[]" id="check + {{ $g->id }}">
-                                </div>                        
-                            </td>
-                        @endif
                         <td class="text-center"><div style="width:450px;">
                             <!--<textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>-->
                         </div> </td>
@@ -88,7 +85,14 @@
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
                         <td class="text-center"> {{ $g->tcapacitacion }} </td>                                                
-                        <td class="text-center"> {{ $g->turnado_solicitud }} </td>
+                        <td class="text-center"> 
+                            @if($opt=="ARC01")
+                            {{ $g->turnado_solicitud }} 
+                            @else
+                            {{ $g->turnado }} 
+                            @endif
+                        
+                        </td>
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif</td>
                         <td> {{ $g->efisico }} </td>
                         <td class="text-left">
