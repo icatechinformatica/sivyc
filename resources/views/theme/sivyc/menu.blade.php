@@ -280,6 +280,9 @@
                         @can('consultas.cursosaperturados')
                             <a class="dropdown-item" href="{{route('consultas.cursosaperturados')}}">Cursos Aperturados</a>
                         @endcan
+                        @can('consultas.instructor')
+                            <a class="dropdown-item" href="{{route('consultas.instructor')}}">Instructores</a>
+                        @endcan
                         <!--can('academico.catalogocursos')-->
                             <a class="dropdown-item" href="{{route('academico.exportar.cursos')}}">Exportar Cursos</a>
                         <!--endcan-->
