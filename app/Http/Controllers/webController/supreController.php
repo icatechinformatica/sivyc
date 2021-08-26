@@ -346,6 +346,40 @@ class supreController extends Controller
                     ->with('success','Suficiencia Presupuestal Reiniciada');
     }
 
+    public function reporte_solicitados(Request $request)
+    {
+        //dd($request->all());
+        $fecha_inicio = $request->fecha_inicio;
+        $fecha_termino = $request->fecha_termino;
+        $consulta = DB::table('tbl_unidades')
+        ->join('tabla_supre','tabla_supre.unidad_capacitacion','=','tbl_unidades.unidad')
+        ->join('folios','folios.id_supre', '=', 'tabla_supre.id');
+        if(isset($fecha_inicio)){
+            if(isset($fecha_termino)){
+                /*$consulta = $consulta->where(function ($query,$fecha_inicio,$fecha_termino) {
+                                        $query->where('tc.inicio', '>=', $fecha_inicio)
+                                              ->Where('tc.termino', '<=', $fecha_termino);})
+                                    ->orWhere(function ($query,$fecha_inicio,$fecha_termino) {
+                                        $query->where('tc.inicio','>=', $fecha_inicio)
+                                              ->where('tc.inicio','<=', $fecha_termino);})
+                                    ->orWhere(function ($query,$fecha_inicio,$fecha_termino) {
+                                        $query->where('tc.termino','>=', $fecha_inicio)
+                                              ->where('tc.termino','<=', $fecha_termino);
+                                    });*/
+                $consulta = $consulta->where('tc.inicio','>=',$fecha_inicio)
+                                     ->where('tc.inicio','<=',$fecha_termino)
+                                     ->where('tc.termino','>=',$fecha_inicio);
+            }else{
+                return redirect()->route('consultas.instructor')
+                ->withErrors(sprintf('INGRESE UNA FECHA DE TERMINO'));
+            }
+        }
+
+        $consulta = $consulta->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.id')->paginate(15, ['tbl_unidades.unidad',DB::raw('COUNT(*) as supre_total'),DB::raw("COUNT(CASE WHEN tabla_supre.status = 'En_Proceso' THEN 1 END) as supre_proceso")]);//[DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") as nombre')]);
+        dd($consulta);
+        return view('layouts.pages.vstareportesolicitados',compact('consulta'));
+    }
+
     public function cancelFolio(Request $request)
     {
         $userName = Auth::user()->name;
