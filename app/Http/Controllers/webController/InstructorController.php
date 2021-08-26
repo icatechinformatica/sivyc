@@ -932,9 +932,8 @@ class InstructorController extends Controller
 
     public function exportar_instructores()
     {
-        $data = instructor::SELECT('instructores.id','tbl_unidades.unidad',
-                DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") AS NOMBRE'),
-                'instructores.curp','instructores.rfc','instructores.numero_control',
+        $data = instructor::SELECT('instructores.id','tbl_unidades.unidad','instructores.apellidoPaterno',
+                'instructores.apellidoMaterno','instructores.nombre',
                 DB::raw("array(select especialidades.nombre from especialidad_instructores
                 LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
@@ -974,7 +973,7 @@ class InstructorController extends Controller
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
-        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
+        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
                     'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','SEXO','ESTADO_CIVIL',
                     'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION',

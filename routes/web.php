@@ -57,6 +57,7 @@ Route::post('/supre/folio/modificacion-especial','webController\SupreController@
 Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
 Route::get('/supre/reiniciar/{id}', 'webController\SupreController@restartSupre')->name('restart-supre');
 Route::get('/folio/edicion_especial/{id}', 'webController\SupreController@folio_edicion_especial')->name('folio_especialedit');
+Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_solicitados')->name('reporte-solicitados');
 
 //Ruta Instructor
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
@@ -689,4 +690,6 @@ Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@es
 Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
 Route::post('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
 Route::post('/cestadisticas/ecursos/xls', 'Estadisticas\ecursosController@xls')->name('estadisticas.ecursos.xls');
+
+//Ruta
 
