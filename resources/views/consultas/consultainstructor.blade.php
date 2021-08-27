@@ -10,6 +10,15 @@
     </div>
     <div class="card card-body" >
         <br />
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div> <br>
+        @endif
         <form action="{{route('consultas.instructor')}}" method="GET" id="cacahuate">
             <div class="form-row">
                 <div class="from-group col-md-2">
