@@ -409,8 +409,10 @@ class supreController extends Controller
 
         $consulta1 = $consulta1->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
         $consulta2 = $consulta2->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
-        //dd($consulta2);
-        return view('layouts.pages.vstareportesolicitados',compact('consulta1','consulta2','fecha_inicio','fecha_termino'));
+
+        $unidades = DB::table('tbl_unidades')->SELECT('unidad')->orderBy('unidad','asc')->GET();
+        //dd($unidades);
+        return view('layouts.pages.vstareportesolicitados',compact('consulta1','consulta2','fecha_inicio','fecha_termino','unidades'));
     }
 
     public function cancelFolio(Request $request)
