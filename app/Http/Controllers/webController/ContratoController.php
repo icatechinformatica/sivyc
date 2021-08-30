@@ -241,6 +241,7 @@ class ContratoController extends Controller
                                 ]);
             break;
         }
+        //dd($querySupre);
         return view('layouts.pages.vstacontratoini', compact('querySupre','unidades'));
     }
 
