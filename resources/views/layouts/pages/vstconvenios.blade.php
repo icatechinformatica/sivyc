@@ -54,6 +54,7 @@
                     <option value="institucion">INSTITUCIÓN</option>
                     <option value="tipo_convenio">TIPO DE CONVENIO</option>
                     <option value="sector">SECTOR</option>
+                    <option value="dependencia">DEPENDENCIA</option>
                 </select>
 
                 {!! Form::text('busqueda_conveniopor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
