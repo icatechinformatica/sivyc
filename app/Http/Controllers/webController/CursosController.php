@@ -78,7 +78,7 @@ class CursosController extends Controller
         $especialidad = new especialidad();
         $especialidades = $especialidad->all();
         $unidades = new tbl_unidades();
-        $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
+        $unidadesMoviles = $unidades->SELECT('ubicacion')->orderBy('ubicacion', 'asc')->GROUPBY('ubicacion')->GET();
         $criterioPago = new criterio_pago;
         $cp = $criterioPago->all();
         $area = new Area();
