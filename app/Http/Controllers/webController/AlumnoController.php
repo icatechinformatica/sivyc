@@ -436,14 +436,23 @@ class AlumnoController extends Controller
                 //obtener el valor de la empresa
                 if (!empty($request->empresa_mod)) {
                     # si no está vacio tenemos que cargar el dato puro
-                    $empresa = trim($request->empresa_mod);
+                    if( $request->trabajo_mod== true && $request->empresa_mod!='DESEMPLEADO'){
+                        $empresa = trim($request->empresa_mod);
+                    }else{
+                        $empresa = '';
+                    }
                 } else {
                     # si está vacio tenemos que checar lo siguiente
-                    $empresa = 'DESEMPLEADO';
+                    if(is_null($request->trabajo_mod)){
+                        $empresa = 'DESEMPLEADO';
+                    }else{
+                        $empresa = '';
+                    }
+                    
                 }
                 if(is_null($request->cerss_chk_mod)){$chk_cerss=false;}else{$chk_cerss=$request->cerss_chk_mod;}
                 if(is_null($request->trabajo_mod)){$empleado=false;}else{$empleado=$request->trabajo_mod;}       
-                    //dd($chk_cerss);
+                    //dd($request->trabajo_mod);
                     $AspiranteId = base64_decode($idAspirante);
                 if($request->sexo_mod=='HOMBRE'){
                     $sexo='MASCULINO';
