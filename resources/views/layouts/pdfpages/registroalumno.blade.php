@@ -190,7 +190,7 @@
                 </tr>
                 <tr>
                     <td><b>EMPRESA DONDE TRABAJA: </b></td>
-                    <td>{{ strtoupper($alumnos->empresa_trabaja) }}</td>
+                    <td>@php if($alumnos->empleado==true){echo(strtoupper($alumnos->empresa_trabaja));}else{echo"";}                    @endphp</td>
                     <td><b>PUESTO: </b></td>
                     <td>{{strtoupper($alumnos->puesto_empresa) }}</td>
                 </tr>
