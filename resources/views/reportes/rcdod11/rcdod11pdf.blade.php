@@ -38,7 +38,7 @@ $anioSi = date('Y', strtotime('+1 year')) ;
     <div>
         <div><img src="img/sep3.png" class="izquierda"></div>
         <div><img src="img/gobLogo.jpg" class="derecha"></div>
-        <p class="centrado" style="font_size: 14px">SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br> DIRECCIÓN GENERAL DE CENTROS DE FROMACIÓN PARA EL TRABAJO <br> REGISTRO Y CONTROL DE DUPLICADOS OTORGADOS <br> (RCDOD-11)</p>
+        <p class="centrado" style="font_size: 14px">SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br> DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br> REGISTRO Y CONTROL DE DUPLICADOS OTORGADOS <br> (RCDOD-11)</p>
     </div>
     <div class="tabla_madre">
         <table class="table">
