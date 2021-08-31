@@ -408,7 +408,7 @@ class aperturaController extends Controller
                         'escolaridad' =>  $a->escolaridad,
                         'nacionalidad' =>  $a->nacionalidad,
                         'etnia' =>  $a->etnia,
-                        'indigena' =>  $a->etnia,
+                        'indigena' =>  $a->indigena,
                         'inmigrante' =>  $a->inmigrante,
                         'madre_soltera' =>  $a->madre_soltera,
                         'familia_migrante' =>  $a->familia_migrante,
