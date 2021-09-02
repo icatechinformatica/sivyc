@@ -406,13 +406,18 @@ class supreController extends Controller
                 ->withErrors(sprintf('INGRESE UNA FECHA DE INICIO Y TERMINO'));
             }
         }
+        else
+        {
+            $fecha_inicio = 0;
+            $fecha_termino = 0;
+        }
 
         $consulta1 = $consulta1->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
         $consulta2 = $consulta2->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
 
         $unidades = DB::table('tbl_unidades')->SELECT('unidad')->orderBy('unidad','asc')->GET();
         //dd($unidades);
-        return view('layouts.pages.vstareportesolicitados',compact('consulta1','consulta2','fecha_inicio','fecha_termino','unidades'));
+        return view('layouts.pages.vstareportesolicitados',compact('consulta1','consulta2','fecha_inicio','fecha_termino','unidades','fecha_inicio','fecha_termino'));
     }
 
     public function cancelFolio(Request $request)
