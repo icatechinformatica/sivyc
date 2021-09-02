@@ -145,6 +145,7 @@ class for911Controller extends Controller
         //->where('tc.hini','<=',$b)
         ->where('tc.status_curso', '!=', 'CANCELADO')
         ->where('tc.status', '=', 'REPORTADO')
+        ->where('i.status','=','INSCRITO')
         ->groupBy('tc.espe')
         ->orderBy('tc.espe');
         //->get();
