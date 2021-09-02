@@ -728,6 +728,7 @@ class InstructorController extends Controller
         $espec_save->observacion = $request->observaciones;
         $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
         $espec_save->lastUserId = $userId;
+        $espec_save->activo = TRUE;
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
         $especialidadInstrcutorId = $espec_save->id;
@@ -740,7 +741,8 @@ class InstructorController extends Controller
             if(isset($value['check_cursos']))
             {
                 $arreglos = [
-                    'curso_id' => $value['check_cursos']
+                    'curso_id' => $value['check_cursos'],
+                    'activo' => TRUE
                 ];
                 array_push($pila, $arreglos);
             }
