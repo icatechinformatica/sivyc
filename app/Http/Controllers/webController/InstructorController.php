@@ -362,10 +362,10 @@ class InstructorController extends Controller
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
         // consulta
-        $validado = $instructor_perfil->SELECT('especialidades.nombre',
+        $validado = $instructor_perfil->SELECT('especialidades.nombre', 'especialidad_instructores.id as espinid',
         'especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
         'especialidad_instructores.memorandum_validacion','especialidad_instructores.criterio_pago_id',
-        'especialidad_instructores.fecha_validacion')
+        'especialidad_instructores.fecha_validacion','especialidad_instructores.activo')
                         ->WHERE('instructor_perfil.numero_control', '=', $id)
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
@@ -497,12 +497,31 @@ class InstructorController extends Controller
                 ->with('success','Instructor Modificado');
     }
 
-    public function edit_especval($id,$idins)
+    /*public function edit_especval($id,$idins)
     {
         $idesp = $id;
         $idins = $idins;
         $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
         return view('layouts.pages.modcursoimpartir', compact('data_especialidad','idesp','idins'));
+    }*/
+
+    public function edit_especval($id,$idins)
+    {
+        $especvalid = especialidad_instructor::WHERE('id', '=', $id)->FIRST();
+        $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
+        $data_pago = criterio_pago::ALL();
+        $data_unidad = tbl_unidades::ALL();
+        $nomesp = especialidad::ALL();
+        $catcursos = curso::WHERE('id_especialidad', '=', $especvalid->especialidad_id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+        $listacursos= DB::table('especialidad_instructor_curso')->SELECT('especialidad_instructor_curso.activo',
+                'cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.objetivo','cursos.costo',
+                'cursos.duracion','cursos.objetivo','cursos.tipo_curso','cursos.id_especialidad',
+                'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
+                ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
+                ->WHERE('id_especialidad_instructor', '=', $id)->GET();
+        //dd($listacursos);
+
+        return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'id','idins','nomesp', 'catcursos','listacursos'));
     }
 
     public function edit_especval2($id, $idins, $idesp)
@@ -625,7 +644,7 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
 
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
-        $espec_mod->especialidad_id = $request->idesp;
+        //$espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;
         $espec_mod->unidad_solicita = $request->unidad_validacion;
         $espec_mod->memorandum_validacion = $request->memorandum;
@@ -633,18 +652,49 @@ class InstructorController extends Controller
         $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_mod->observacion = $request->observaciones;
         $espec_mod->criterio_pago_id = $request->criterio_pago_mod;
+        if(isset($request->estado))
+        {
+            $espec_mod->activo = TRUE;
+        }
+        else
+        {
+            $espec_mod->activo = FALSE;
+        }
         $espec_mod->lastUserId = $userId;
         $espec_mod->save();
         // declarar un arreglo
-        $pila_edit = array();
+        //$pila_edit = array();
         // se trabajará en el loop
-        $cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+        //$cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+        $listacursos = DB::table('especialidad_instructor_curso')
+        ->WHERE('id_especialidad_instructor', '=', $request->idespec)->GET();
         // eliminar registros previamente
-        $cursos_mod->cursos()->detach();
+        //$cursos_mod->cursos()->detach();
+        foreach ($listacursos as $cadwell)
+        {
+            foreach ($request->itemEdit as $new)
+            {
+                //dd($new['check_cursos_edit']);
+                if($cadwell->curso_id == $new['check_cursos_edit'])
+                {
+                    DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
+                        ->where('id_especialidad_instructor', '=', $request->idespec)
+                        ->update(['activo' => TRUE]);
+                    break;
+                }
+                else
+                {
+                    DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
+                        ->where('id_especialidad_instructor', '=', $request->idespec)
+                        ->update(['activo' => FALSE]);
+                }
+            }
+        }
 
         //dd($request->itemEdit);
+        //dd($request->itemEdit);
 
-        foreach ( (array) $request->itemEdit as $key => $value) {
+        /*foreach ( (array) $request->itemEdit as $key => $value) {
             # iteramos en el loop para cargar los datos seleccionados
             if(isset($value['check_cursos_edit']))
             {
@@ -654,11 +704,11 @@ class InstructorController extends Controller
                 array_push($pila_edit, $arreglos_edit);
             }
 
-        }
+        }*/
 
-        $cursos_mod->cursos()->attach($pila_edit);
+        //$cursos_mod->cursos()->attach($pila_edit);
         // Eliminar todos los elementos del array
-        unset($pila_edit);
+        //unset($pila_edit);
 
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');

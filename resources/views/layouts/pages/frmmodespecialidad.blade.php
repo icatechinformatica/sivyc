@@ -70,6 +70,75 @@
 
         .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
         .toggle.ios .toggle-handle { border-radius: 20px; }
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 90px;
+          height: 34px;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(50px);
+          -ms-transform: translateX(50px);
+          transform: translateX(50px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
 	</style>
 @endsection
 @section('title', 'Modificación de Especialidad Validada a Impartir | Sivyc Icatech')
@@ -89,7 +158,11 @@
             @csrf
                 <div class="text-center">
                     <h1>Modificar Especialidad Validada a Impartir</h1>
-                    <br><h2>Especialidad Seleccionada: {{$nomesp->nombre}}</h2>
+                    @foreach($nomesp as $data)
+                        @if($data->id == $especvalid->especialidad_id)
+                            <br><h2>Especialidad Seleccionada: {{$data->nombre}}</h2>
+                        @endif
+                    @endforeach
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4">
@@ -135,6 +208,24 @@
                         <input type="text" name="memorandum_modificacion" id="memorandum_modificacion" class="form-control" aria-required="true" value="{{$especvalid->memorandum_modificacion}}">
                     </div>
                 </div>
+                <label for="inputexp_doc"><h2>Alta/baja de Especialidad Validada</h2></label>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @if ($especvalid->activo == true)
+                            <label class="switch">
+                                <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
+                                <span class="slider round"></span>
+                            </label>
+                            <h5><p id="text1">Especialidad Validada Activa</p><p id="text2" style="display:none">Especialidad Validada Inactiva</p></h5>
+                        @else
+                            <label class="switch">
+                                <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
+                                <span class="slider round"></span>
+                            </label>
+                            <h5><p id="text1" style="display:none">Especialidad Validada Activa</p><p id="text2">Especialidad Validada Inactiva</p></h5>
+                        @endif
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="inputexp_doc"><h2>OBSERVACIONES</h2></label>
@@ -166,7 +257,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @foreach ($catcursos as $itemDataCatCurso)
+                        @foreach ($listacursos as $key=>$itemDataCatCurso)
                         <div class="row" role="row">
                             <div class="col-md-3" role="gridcell">
                                 <label><h5>NOMBRE</h5></label>
@@ -191,9 +282,9 @@
                                 <div class="form-control-plaintext text-truncate">
 
                                     <input type="checkbox"
-                                        @foreach ($itemDataCatCurso->especialidadinstructor as $itemCatCurso)
-                                            {{ ($itemCatCurso->pivot->curso_id == $itemDataCatCurso->id) ? 'checked' : '' }}
-                                        @endforeach
+                                        @if($itemDataCatCurso->activo == TRUE)
+                                            checked
+                                        @endif
 
                                         data-toggle="toggle"
                                         data-style="ios"
@@ -224,8 +315,22 @@
                 <input type="hidden" name="idesp" id="idesp" value="{{ $id }}">
                 <input type="hidden" name="idins" id="idins" value="{{ $idins }}">
                 <input type="hidden" name="idespec" id="idespec" value="{{$especvalid->id}}">
-                <input type="hidden" name="especialidad" id="especialidad" value="{{ $idesp }}">
+                <!--<input type="hidden" name="especialidad" id="especialidad" value="{ idesp }}">-->
         </form>
+        <script>
+            function leyenda() {
+              var checkBox = document.getElementById("estado");
+              var text1 = document.getElementById("text1");
+              var text2 = document.getElementById("text2");
+              if (checkBox.checked == true){
+                text1.style.display = "block";
+                text2.style.display = "none";
+              } else {
+                 text1.style.display = "none";
+                 text2.style.display = "block";
+              }
+            }
+        </script>
     </section>
 @stop
 @section('script_content_js')

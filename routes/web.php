@@ -63,6 +63,7 @@ Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
 Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');
 Route::get('/instructor/editar/especialidad-validada/{id}/{idins}', 'webController\InstructorController@edit_especval')->name('instructor-editespectval');
+//Route::get('/instructor/editar/especialidad-validadap/{id}/{idins}', 'webController\InstructorController@edit_especvalp')->name('instructor-editespectvalp');
 Route::get('/instructor/editar/especialidad-valid/{id}/{idins}/{idesp}', 'webController\InstructorController@edit_especval2')->name('instructor-editespectval2');
 Route::get('/instructor/mod/perfil-profesional/{id}/{idins}', 'webController\InstructorController@mod_perfil')->name('instructor-perfilmod');
 Route::get('/instructor/alta-baja/{id}', 'webController\InstructorController@alta_baja')->name('instructor-alta_baja');

@@ -12,7 +12,7 @@ class especialidad_instructor extends Model
 
     protected $fillable = [
         'id','especialidad_id','perfilprof_id','unidad_solicita','memorandum_valdidacion',
-        'fecha_validacion','memorandum_modificacion','observacion', 'criterio_pago_id','lastUserId'
+        'fecha_validacion','memorandum_modificacion','observacion', 'criterio_pago_id','lastUserId','activo'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
