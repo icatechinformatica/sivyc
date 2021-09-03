@@ -112,7 +112,7 @@ class aperturaController extends Controller
                 $plantel = $this->plantel();
                 $depen = $this->dependencia($grupo->unidad);
                 $depen["ICATECH"] = "ICATECH";
-                $depen["GRUPO INDEPENDIENTE"] = "GRUPO INDEPENDIENTE";
+                $depen["CAPACITACION ABIERTA"] = "CAPACITACION ABIERTA";
 
                 $sector = $this->sector();
                 $programa = $this->programa();
