@@ -263,6 +263,7 @@ class ContratoController extends Controller
 
         $perfil_prof = $perfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
                                 ->WHERE('instructor_perfil.numero_control', '=', $data->id)
+                                ->WHERE('especialidad_instructores.activo', '=', TRUE)
                                 ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
@@ -357,6 +358,7 @@ class ContratoController extends Controller
         $perfil_prof = $perfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
                                 ->WHERE('instructor_perfil.numero_control', '=', $data->id)
                                 ->WHERE('especialidad_instructores.id', '!=', $perfil_sel->id_espins)
+                                ->WHERE('especialidad_instructores.activo', '=', TRUE)
                                 ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
