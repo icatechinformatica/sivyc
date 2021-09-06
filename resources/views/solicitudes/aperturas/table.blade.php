@@ -43,7 +43,7 @@
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
                     $status_curso = $grupos[0]->status_curso; 
-                    $mvalida = $grupos[0]->mvalida;             
+                    $pdf_curso = $grupos[0]->pdf_curso;             
                 ?>
                 @foreach($grupos as $g)
                     <?php 
@@ -134,7 +134,7 @@
         @endif
         {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-4']) }}  
     @endif
-    @if($mvalida)
-        <a href="{{$mvalida}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
+    @if($pdf_curso)
+        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
     @endif
 </div>
