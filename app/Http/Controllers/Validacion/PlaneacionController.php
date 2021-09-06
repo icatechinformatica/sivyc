@@ -234,9 +234,9 @@ class PlaneacionController extends Controller
                              * en esta parte vamos a generar la consulta con el id y vamos a obtener todos los registros a un insert
                              * de otra tabla, generamos un método para mostrar toda la info
                              */
-                            $getvalueOfTblCursos = dataFormatoTSaveData($key);
-                            // $getvalueOfTblCursos = $this->cierrePlaneacion($key);
-                            \DB::table('tbl_cierre_formato_t')->insert([
+                            
+                            // $getvalueOfTblCursos = dataFormatoTSaveData($key);
+                            /*\DB::table('tbl_cierre_formato_t')->insert([
                                 'id_tbl_cursos' => $getvalueOfTblCursos->id_tbl_cursos,
                                 'fechaturnado' => $getvalueOfTblCursos->fechaturnado,
                                 'unidad' => $getvalueOfTblCursos->unidad, 'plantel' => $getvalueOfTblCursos->plantel,
@@ -277,7 +277,7 @@ class PlaneacionController extends Controller
                                 'naesh5' => $getvalueOfTblCursos->naesh5, 'naesm6' => $getvalueOfTblCursos->naesm6, 'naesh6' => $getvalueOfTblCursos->naesh6, 'naesm7' => $getvalueOfTblCursos->naesm7,
                                 'naesh7' => $getvalueOfTblCursos->naesh7, 'naesm8' => $getvalueOfTblCursos->naesm8, 'naesh8' => $getvalueOfTblCursos->naesh8, 'naesm9' => $getvalueOfTblCursos->naesm9,
                                 'naesh9' => $getvalueOfTblCursos->naesh9, 'tnota' => $getvalueOfTblCursos->tnota, 'fecha_terminado' => $fechaTermino, 'ze' => $getvalueOfTblCursos->ze,
-                            ]);
+                            ]); */
                         }
                     }
 
