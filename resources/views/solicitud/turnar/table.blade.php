@@ -39,6 +39,7 @@
                     $activar = true; 
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
+                    $mvalida = $grupos[0]->mvalida;
                     $rojo = null;
                 ?>
                 @foreach($grupos as $g)
@@ -56,7 +57,8 @@
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
-                    }else $rojo = false;                   
+                    }else $rojo = false;         
+                           
 
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
@@ -115,5 +117,8 @@
             @elseif($g->option =='ARC02') {{$nmunidad}} @endif
             .PDF
         </a>              
-    @endif    
+    @endif 
+    @if($mvalida)
+        <a href="{{$mvalida}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
+    @endif
 </div>
