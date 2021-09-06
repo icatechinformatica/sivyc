@@ -42,7 +42,8 @@
                     $activar = true; 
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
-                    $status_curso = $grupos[0]->status_curso;                     
+                    $status_curso = $grupos[0]->status_curso; 
+                    $mvalida = $grupos[0]->mvalida;             
                 ?>
                 @foreach($grupos as $g)
                     <?php 
@@ -118,8 +119,9 @@
         @endif
     </table>
 </div>
-@if($activar==true)
-    <div class="form-inline  col-md-12 mt-4 justify-content-end align-items-end"> 
+
+<div class="form-inline  col-md-12 mt-4 justify-content-end align-items-end"> 
+    @if($activar==true)
         MOVIMIENTO: {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control col-md-2  mx-4' ] ) }}
         {{ Form::text('mrespuesta', null, ['id'=>'mrespuesta', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM RESPUESTA',  'required' => 'required', 'size' => 25]) }}
         {{ form::date('fecha', date('Y-m-d'), [ 'id'=>'fecha', 'class'=>'form-control mx-4']) }}    
@@ -131,5 +133,8 @@
             {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
         @endif
         {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-4']) }}  
-    </div>
-@endif
+    @endif
+    @if($mvalida)
+        <a href="{{$mvalida}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
+    @endif
+</div>
