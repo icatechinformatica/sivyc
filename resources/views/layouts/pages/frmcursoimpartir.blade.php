@@ -30,9 +30,12 @@
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr>
-                        </tr>
-                    </tfoot>
+                    <tr>
+                        <td colspan="8">
+                            {{ $data_especialidad->appends(request()->query())->links() }}
+                        </td>
+                    </tr>
+                </tfoot>
                 </table>
                 <br>
                 <div class="form-row" style="text-align: right;width:0%">

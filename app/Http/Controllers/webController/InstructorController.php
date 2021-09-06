@@ -625,7 +625,7 @@ class InstructorController extends Controller
     public function add_cursoimpartir($id)
     {
         $idins = $id;
-        $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
+        $data_especialidad = especialidad::where('id', '!=', '0')->orderBy('nombre','asc')->paginate(20);
         return view('layouts.pages.frmcursoimpartir', compact('data_especialidad','idins'));
     }
 
@@ -679,14 +679,16 @@ class InstructorController extends Controller
                 {
                     DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
                         ->where('id_especialidad_instructor', '=', $request->idespec)
-                        ->update(['activo' => TRUE]);
+                        ->update(['activo' => TRUE,
+                                  'id_especialidad_instructor'  => $request->valido_perfil]);
                     break;
                 }
                 else
                 {
                     DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
                         ->where('id_especialidad_instructor', '=', $request->idespec)
-                        ->update(['activo' => FALSE]);
+                        ->update(['activo' => FALSE,
+                                  'id_especialidad_instructor'  => $request->valido_perfil]);
                 }
             }
         }
@@ -717,7 +719,7 @@ class InstructorController extends Controller
     public function espec_val_save(Request $request)
     {
         $userId = Auth::user()->id;
-
+        //dd($request);
         $espec_save = new especialidad_instructor;
         $espec_save->especialidad_id = $request->idespec;
         $espec_save->perfilprof_id = $request->valido_perfil;
@@ -735,8 +737,38 @@ class InstructorController extends Controller
         // declarar un arreglo
         $pila = array();
 
-        // se trabajará en un loop
-        foreach( (array) $request->itemAdd as $key => $value)
+        $listacursos = DB::table('cursos')->WHERE('id_especialidad', '=', $request->idespec)->GET();
+        // eliminar registros previamente
+        //$cursos_mod->cursos()->detach();
+
+        foreach ($listacursos as $cadwell)
+        {
+            print('que pedo ' . $cadwell->id . ' **** ');
+            foreach ($request->itemAdd as $key=>$new)
+            {
+                print('ahi va '. $new['check_cursos']. ' -_-_- ');
+                if($cadwell->id == $new['check_cursos'])
+                {
+                    print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                    DB::table('especialidad_instructor_curso')
+                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                  'curso_id' => $cadwell->id,
+                                  'activo' => TRUE]);
+                    break;
+                }
+                else if(array_key_last($request->itemAdd) == $key)
+                {
+                    print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                    DB::table('especialidad_instructor_curso')
+                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                  'curso_id' => $cadwell->id,
+                                  'activo' => FALSE]);
+                    break;
+                }
+            }
+        }
+        //dd($especialidadInstrcutorId);
+        /*foreach( (array) $request->itemAdd as $key => $value)
         {
             if(isset($value['check_cursos']))
             {
@@ -747,14 +779,14 @@ class InstructorController extends Controller
                 array_push($pila, $arreglos);
             }
         }
-        // hacemos la llamada al módelo
+         hacemos la llamada al módelo
         $instructorEspecialidad = new especialidad_instructor();
         $especialidadesInstructoresCurso = $instructorEspecialidad->findOrFail($especialidadInstrcutorId);
 
         $especialidadesInstructoresCurso->cursos()->attach($pila);
 
-        // limpiar array
-        unset($pila);
+         limpiar array
+        unset($pila);*/
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');
