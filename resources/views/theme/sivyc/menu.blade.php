@@ -313,6 +313,22 @@
                     </li>
                 @endcan
 
+                @can('firma.firmar')
+                    <li class="nav-item g-mx-5--lg dropdown">
+                        <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Firma Electronica
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            @can('firma.agregar.documento')
+                                <a class="dropdown-item" href="#">Agregar Documentos</a>
+                            @endcan
+                            @can('firma.firmar')
+                                <a class="dropdown-item" href="{{route('firma.inicio')}}">Firmar</a>
+                            @endcan
+                        </div>
+                    </li>
+                @endcan
+                
             </ul>
             <ul class="navbar-nav ml-auto nav-flex-icons">
                 <li class="nav-item g-mx-5--lg">

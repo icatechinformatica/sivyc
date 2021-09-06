@@ -22,7 +22,12 @@
         "laravelcollective/html": "^6.0",
         "lcobucci/jwt": "3.3.3",
         "maatwebsite/excel": "^3.1",
-        "revolution/laravel-google-sheets": "^5.0"
+        "revolution/laravel-google-sheets": "^5.0",
+        "spatie/array-to-xml": "^2.15",
+        "vyuldashev/xml-to-array": "^1.0",
+        "setasign/fpdf": "1.8.*",
+        "setasign/fpdi": "^2.0",
+        "aferrandini/phpqrcode": "1.0.1"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

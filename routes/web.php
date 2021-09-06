@@ -692,5 +692,8 @@ Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name
 Route::post('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
 Route::post('/cestadisticas/ecursos/xls', 'Estadisticas\ecursosController@xls')->name('estadisticas.ecursos.xls');
 
-//Ruta
-
+//firma electronica
+Route::get('/firma/inicio', 'FirmaElectronica\FirmarController@index')->name('firma.inicio');
+Route::post('/firma/update', 'FirmaElectronica\FirmarController@update')->name('firma.update');
+Route::post('/firma/sellar', 'FirmaElectronica\FirmarController@sellar')->name('firma.sellar');
+Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->name('firma.generarPdf');
