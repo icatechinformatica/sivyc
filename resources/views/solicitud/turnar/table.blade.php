@@ -39,7 +39,7 @@
                     $activar = true; 
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
-                    $mvalida = $grupos[0]->mvalida;
+                    $pdf_curso = $grupos[0]->pdf_curso;
                     $rojo = null;
                 ?>
                 @foreach($grupos as $g)
@@ -118,7 +118,7 @@
             .PDF
         </a>              
     @endif 
-    @if($mvalida)
-        <a href="{{$mvalida}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
+    @if($pdf_curso)
+        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
     @endif
 </div>
