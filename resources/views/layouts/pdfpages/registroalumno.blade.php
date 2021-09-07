@@ -127,7 +127,7 @@
                         if($alumnos->estado_civil=="CASADO (A)"||$alumnos->estado_civil=="CASADO"){echo "SOLTERO( ) CASADO(X) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
                         if($alumnos->estado_civil=="VIUDO (A)"||$alumnos->estado_civil=="VIUDO"){echo "SOLTERO( ) CASADO( ) VIUDO(X) DIVORCIADO( ) UNION LIBRE( )";}
                         if($alumnos->estado_civil=="DIVORCIADO (A)"||$alumnos->estado_civil=="DIVORCIADO"){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO(X) UNION LIBRE( )";}
-                        if($alumnos->estado_civil=="UNION LIBRE"){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE(X)";}
+                        if($alumnos->estado_civil=="UNION LIBRE"||$alumnos->estado_civil=='UNIÓN LIBRE'){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE(X)";}
                        if($alumnos->estado_civil==" "){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
                        if($alumnos->estado_civil==null){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
                        if($alumnos->estado_civil=="NO ESPECIFICA"){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";} @endphp</td>
