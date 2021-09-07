@@ -76,7 +76,7 @@
                                 <td>
                                     <span><i class="fa fa-camera-retro fa-3x" style="vertical-align: middle"></i></span>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="fotografia" name="fotografia" lang="es" onchange="fileValidation()">
+                                        <input type="file" class="custom-file-input" id="fotografia" name="fotografia" onchange="fileValidation()">
                                         <label class="custom-file-label" for="fotografia">Fotografía</label>
                                     </div>
                                 </td>
@@ -87,7 +87,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="curp" class="control-label">Curp Aspirante</label>
-                        {{ Form::text('curp', $curp, ['id'=>'curp', 'class' => 'form-control', 'placeholder' => 'CURP', 'readonly']) }}
+                        {{ Form::text('curp', $curp, ['id'=>'curp', 'class' => 'form-control', 'placeholder' => 'CURP', 'readonly'=>'true']) }}
                     </div>
                 </div>
                 <div class="form-row">
@@ -112,7 +112,7 @@
                     @php $ka= date('Y-m-d',strtotime($fecha_t)); @endphp
                     <div class="form-group col-md-2">
                         <label for="">Fecha de nacimiento</label>
-                        <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control" value="{{$ka}}" readonly>
+                        <input type="date" readonly name="fecha" id="fecha"  class="form-control" value="{{$ka}}">
                     </div>
                     <div class="form-group col-md-2">
                         <label for="sexo" class="control-label">Genero</label>
@@ -369,7 +369,7 @@
                         </div> 
                 <hr style="border-color: dimgray">
                 {{--datos cerss--}}
-                <h5><b>DATOS CERESO</b></h5>
+                <h5><b>DATOS CERSS</b></h5>
                 <div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
@@ -430,7 +430,7 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        @if ($rol=='unidad_vinculacion')
+                        @if ($rol=='unidad_vinculacion'||$rol=='admin')
                         <div class="form-group col-md-4">
                             <label for="curp_mod" class="control-label">Curp Aspirante</label>
                             {{ Form::text('curp_mod',$alumno->curp , ['id'=>'curp_mod','name'=>'curp_mod', 'class' => 'form-control', 'placeholder' => 'CURP', 'oninput'=>"validarInputMod(this)"]) }}
@@ -465,16 +465,30 @@
                         <!-- apellido materno END-->
                         <div class="form-group col-md-2">
                             <label for="">Fecha de nacimiento</label>
+                            @if ($rol=='admin')
+                            <input type="date" name="fecha_nacimiento_mod" id="fecha_nacimiento_mod" class="form-control" value="{{$alumno->fecha_nacimiento}}">
+                            @else
                             <input type="date" name="fecha_nacimiento_mod" id="fecha_nacimiento_mod" class="form-control" value="{{$alumno->fecha_nacimiento}}" readonly>
+                            @endif
                         </div>
                         <div class="form-group col-md-2">
                             <label for="sexo_mod" class="control-label">Genero</label>
+                            @if ($rol=='admin')
+                            @if ($alumno->sexo=='MASCULINO')
+                            <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="HOMBRE" >
+                            @elseif ($alumno->sexo=='FEMENINO')
+                            <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="MUJER" >
+                            @else
+                            <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="{{$alumno->sexo}}">
+                            @endif
+                            @else
                             @if ($alumno->sexo=='MASCULINO')
                             <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="HOMBRE" readonly>
                             @elseif ($alumno->sexo=='FEMENINO')
                             <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="MUJER" readonly>
                             @else
                             <input type="text" class="form-control" id="sexo_mod" name="sexo_mod" value="{{$alumno->sexo}}" readonly>
+                            @endif
                             @endif
                         </div>
                         <div class="form-group col-md-2">
@@ -1009,12 +1023,18 @@
         function fileValidation(){
             var fileInput = document.getElementById('fotografia');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos con extensión .jpeg/.jpg/.png/.gif ');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
@@ -1023,17 +1043,23 @@
                     };
                     reader.readAsDataURL(fileInput.files[0]);
                 }
-            }
+            }   
         }
         function fileValidationmod(){
             var fileInput = document.getElementById('fotografia_mod');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.jpg|.jpeg|.png|.gif)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos con extensión .jpeg/.jpg/.png/.gif ');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
@@ -1048,12 +1074,18 @@
         function fileValidationpdf(){
             var fileInput = document.getElementById('customFile');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.pdf)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos pdf');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
@@ -1067,12 +1099,18 @@
         function fileValidationpdfmod(){
             var fileInput = document.getElementById('customFile_mod');
             var filePath = fileInput.value;
+            var fileSize = fileInput.files[0].size;
             var allowedExtensions = /(.pdf)$/i;
             if(!allowedExtensions.exec(filePath)){
                 alert('Por favor solo cargar archivos pdf');
                 fileInput.value = '';
                 return false;
             }else{
+                if(fileSize>5000000){
+                    alert('Por favor el archivo debe pesar menos de 5MB');
+                    fileInput.value = '';
+                    return false;
+                }
                 //Image preview
                 if (fileInput.files && fileInput.files[0]) {
                     var reader = new FileReader();
@@ -1163,6 +1201,9 @@
                         required: true,
                         minlength: 2
                     },
+                    fecha: {
+                        required: true
+                    },
                     sexo: {
                         required: true
                     },
@@ -1229,6 +1270,9 @@
                     },
                     nacionalidad: {
                         required: 'Por favor ingrese su nacionalidad'
+                    },
+                    fecha: {
+                        required: 'Por favor ingrese fecha de nacimiento'
                     },
                     sexo: {
                         required: 'Por favor Elegir su genero'

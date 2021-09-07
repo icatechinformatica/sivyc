@@ -57,11 +57,13 @@ Route::post('/supre/folio/modificacion-especial','webController\SupreController@
 Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
 Route::get('/supre/reiniciar/{id}', 'webController\SupreController@restartSupre')->name('restart-supre');
 Route::get('/folio/edicion_especial/{id}', 'webController\SupreController@folio_edicion_especial')->name('folio_especialedit');
+Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_solicitados')->name('reporte-solicitados');
 
 //Ruta Instructor
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
 Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');
 Route::get('/instructor/editar/especialidad-validada/{id}/{idins}', 'webController\InstructorController@edit_especval')->name('instructor-editespectval');
+//Route::get('/instructor/editar/especialidad-validadap/{id}/{idins}', 'webController\InstructorController@edit_especvalp')->name('instructor-editespectvalp');
 Route::get('/instructor/editar/especialidad-valid/{id}/{idins}/{idesp}', 'webController\InstructorController@edit_especval2')->name('instructor-editespectval2');
 Route::get('/instructor/mod/perfil-profesional/{id}/{idins}', 'webController\InstructorController@mod_perfil')->name('instructor-perfilmod');
 Route::get('/instructor/alta-baja/{id}', 'webController\InstructorController@alta_baja')->name('instructor-alta_baja');
@@ -463,6 +465,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/grupos/consultas/cancelarfolios', 'Grupos\consultasController@cancelarfolios')->name('grupos.consultas.cancelarfolios')->middleware('can:grupos.consultas');
 
     /*Solicitudes(DTA) RPN*/
+    /*Asignación de Clave de Aperturas*/
+    Route::get('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
+    Route::post('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
+    Route::post('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
+    Route::get('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
+
     //Folios
     Route::get('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
     Route::post('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
@@ -486,6 +494,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
     Route::post('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
     Route::post('/consultas/lotes/xls', 'Consultas\lotesController@xls')->name('consultas.lotes.xls');
+    /*CONSULTA INSTRUCTORES */
+    Route::get('/consultas/instructores', 'Consultas\instructorconsuController@index')->name('consultas.instructor')->middleware('can:consultas.instructor');
 
    /*CURSOS FINALIZADOS*/
     Route::get('/consultas/cursosfinalizados', 'Consultas\cursosfinalizadosController@index')->name('consultas.cursosfinalizados')->middleware('can:consultas.cursosfinalizados');
@@ -677,3 +687,13 @@ Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@es
 //Route::get('/password/new','passwordController@index')->name('password.view')->middleware('can:password.update');
 //Route::post('/password/update','passwordController@updatePassword')->name('update.password');
 
+/**MODULO DE ESTADISTICAS */
+Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
+Route::post('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
+Route::post('/cestadisticas/ecursos/xls', 'Estadisticas\ecursosController@xls')->name('estadisticas.ecursos.xls');
+
+//firma electronica
+Route::get('/firma/inicio', 'FirmaElectronica\FirmarController@index')->name('firma.inicio');
+Route::post('/firma/update', 'FirmaElectronica\FirmarController@update')->name('firma.update');
+Route::post('/firma/sellar', 'FirmaElectronica\FirmarController@sellar')->name('firma.sellar');
+Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->name('firma.generarPdf');

@@ -96,6 +96,10 @@ class PagoController extends Controller
                 # code...
                 $contratos_folios = $contratos_folios;
                 break;
+            case 'dta':
+                # code...
+                $contratos_folios = $contratos_folios;
+                break;
             default:
                 # code...
                 // obtener unidades
@@ -199,7 +203,8 @@ class PagoController extends Controller
     public function rechazar_pago(Request $request)
     {
         folio::WHERE('id_folios', '=', $request->idfolios)
-        ->update(['status' => 'Pago_Rechazado']);
+        ->update(['status' => 'Pago_Rechazado',
+                  'fecha_rechazado' => carbon::now()]);
 
         pago::where('id', '=', $request->idPago)
         ->update(['observacion' => $request->observaciones,

@@ -367,8 +367,10 @@
                         <tr>
                             <th scope="col">Especialidad</th>
                             <th scope="col">Memo. Validación</th>
+                            <th scope="col">Fecha de Validación</th>
                             <th scope="col">Criterio Pago</th>
                             <th scope="col">Obsevaciones</th>
+                            <th scope="col">Activo</th>
                             <th width="85px">Acción</th>
                         </tr>
                     </thead>
@@ -377,11 +379,20 @@
                             <tr>
                                 <th scope="row">{{$item->nombre}}</th>
                                 <td>{{ $item->memorandum_validacion}}</td>
+                                <td>{{ $item->fecha_validacion}}</td>
                                 <td style="text-align: center;">{{ $item->criterio_pago_id }}</td>
                                 <td>{{ $item->observacion }}</td>
                                 <td>
+                                    @if ($item->activo == TRUE)
+                                        ACTIVO
+                                    @else
+                                        INACTIVO
+                                    @endif
+                                </td>
+                                <td>
                                     @can('instructor.editar_fase2')
-                                        <a class="btn btn-info" href="{{ route('instructor-editespectval', ['id' => $item->especialidadinsid,'idins' => $datains->id]) }}">Modificar</a>
+                                        <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
+                                        <a class="btn btn-info" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $datains->id]) }}">Modificar</a>
                                     @endcan
                                 </td>
                             </tr>

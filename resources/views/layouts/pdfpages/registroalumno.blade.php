@@ -106,7 +106,7 @@
                     <td><b>EDAD:</b> </td>
                     <td>{{$edad}} AÑOS</td>
                     <td><b>TELEFONO:</b></td>
-                    <td>{{$alumnos->telefono}}</td>
+                    <td>@php if($alumnos->telefono){echo ($alumnos->telefono); }else{if($alumnos->telefono_casa){echo($alumnos->telefono_casa);}else{echo($alumnos->telefono_personal);} } @endphp</td>
                 </tr>
                 <tr>
                     <td><b>DOMICILIO: </b></td>
@@ -190,7 +190,7 @@
                 </tr>
                 <tr>
                     <td><b>EMPRESA DONDE TRABAJA: </b></td>
-                    <td>{{ strtoupper($alumnos->empresa_trabaja) }}</td>
+                    <td>@php if($alumnos->empleado==true){echo(strtoupper($alumnos->empresa_trabaja));}else{echo"";}                    @endphp</td>
                     <td><b>PUESTO: </b></td>
                     <td>{{strtoupper($alumnos->puesto_empresa) }}</td>
                 </tr>

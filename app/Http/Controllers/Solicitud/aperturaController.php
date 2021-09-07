@@ -112,7 +112,7 @@ class aperturaController extends Controller
                 $plantel = $this->plantel();
                 $depen = $this->dependencia($grupo->unidad);
                 $depen["ICATECH"] = "ICATECH";
-                $depen["GRUPO INDEPENDIENTE"] = "GRUPO INDEPENDIENTE";
+                $depen["CAPACITACION ABIERTA"] = "CAPACITACION ABIERTA";
 
                 $sector = $this->sector();
                 $programa = $this->programa();
@@ -408,7 +408,7 @@ class aperturaController extends Controller
                         'escolaridad' =>  $a->escolaridad,
                         'nacionalidad' =>  $a->nacionalidad,
                         'etnia' =>  $a->etnia,
-                        'indigena' =>  $a->etnia,
+                        'indigena' =>  $a->indigena,
                         'inmigrante' =>  $a->inmigrante,
                         'madre_soltera' =>  $a->madre_soltera,
                         'familia_migrante' =>  $a->familia_migrante,

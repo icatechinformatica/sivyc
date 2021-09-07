@@ -74,21 +74,25 @@ class AlumnoController extends Controller
             $curp_d=str_split($curp);
             $sexo=$curp_d[10];
             $hoy=date('y');
-            $anio=0;
-            if($curp_d[4].$curp_d[5]<=$hoy){
+            $anio=$curp_d[4].$curp_d[5];
+            if($anio<=$hoy){
                 $i=20;
-                $anio= $i.$curp_d[4].$curp_d[5]; 
+                $anio= $i.$anio; 
+            }
+            elseif($anio>=$hoy){
+                $i=19;
+                $anio= $i.$anio;    
             }
             else{
                 $i=19;
-                $anio= $i.$curp_d[4].$curp_d[5];    
+                $anio = $i.$anio;
             }
-            $año=date_create_from_format('Y', $anio)->format("Y"); //dd($año);
-            $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
-            $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d');
-            $fecha=  $año.$mes.$dia;
+            $año= $anio;
+            $mes= $curp_d[6].$curp_d[7];
+            $dia= $curp_d[8].$curp_d[9];
+            $fecha=  $año.'-'.$mes.'-'.$dia; //dd($fecha);
             
-            $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd($fecha_t);
+            $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd(gettype($fecha_t));
             $grado_estudio = [
                 'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
                 'PRIMARIA TERMINADA' => 'PRIMARIA TERMINADA',
@@ -170,20 +174,25 @@ class AlumnoController extends Controller
             $sexo='MUJER';
         }
         $hoy=date('y');
-        $anio=0;
-        if($curp_d[4].$curp_d[5]<=$hoy){
+            $anio=$curp_d[4].$curp_d[5];
+            if($anio<=$hoy){
                 $i=20;
-                $anio= $i.$curp_d[4].$curp_d[5]; 
-        }
-        else{
+                $anio= $i.$anio; 
+            }
+            elseif($anio>=$hoy){
                 $i=19;
-                $anio= $i.$curp_d[4].$curp_d[5];    
-        }
-        $año=date_create_from_format('Y', $anio)->format("Y"); //dd($año);
-        $mes=date_create_from_format('m', $curp_d[6].$curp_d[7])->format('m');
-        $dia=date_create_from_format('d', $curp_d[8].$curp_d[9])->format('d');
-        $fecha=  $año.$mes.$dia; 
-        $fecha_t=date("Y-m-d ", strtotime($fecha));
+                $anio= $i.$anio;    
+            }
+            else{
+                $i=19;
+                $anio = $i.$anio;
+            }
+            $año= $anio;
+            $mes= $curp_d[6].$curp_d[7];
+            $dia= $curp_d[8].$curp_d[9];
+            $fecha=  $año.'-'.$mes.'-'.$dia; //dd($fecha);
+            
+            $fecha_t=date("Y-m-d ", strtotime($fecha)); //dd(gettype($fecha_t));
         $low['fecha']=$fecha_t;
         $low['sexo']=$sexo;
             //dd($low);
@@ -247,14 +256,14 @@ class AlumnoController extends Controller
                 //$AlumnoPreseleccion->es_cereso = $request->cerss_chk;
                 if($request->trabajo==null){$AlumnoPreseleccion->empleado=false;}else{$AlumnoPreseleccion->empleado=$request->trabajo;}
                 $AlumnoPreseleccion->numero_expediente = $request->num_expediente_cerss;
-                $AlumnoPreseleccion->curp = $curp_formateada;
-                $AlumnoPreseleccion->nombre = $request->nombre;
-                $AlumnoPreseleccion->apellido_paterno = $request->apellidoPaterno;
-                $AlumnoPreseleccion->apellido_materno = $request->apellidoMaterno;
-                $AlumnoPreseleccion->fecha_nacimiento = $request->fecha_nacimiento;
+                $AlumnoPreseleccion->curp = strtoupper($curp_formateada);
+                $AlumnoPreseleccion->nombre = strtoupper($request->nombre);
+                $AlumnoPreseleccion->apellido_paterno = strtoupper($request->apellidoPaterno);
+                $AlumnoPreseleccion->apellido_materno = strtoupper($request->apellidoMaterno);
+                $AlumnoPreseleccion->fecha_nacimiento = $request->fecha;
                 $AlumnoPreseleccion->sexo = $request->sexo;
                 if(isset($fotografia)){$AlumnoPreseleccion->chk_fotografia=true;}
-                $AlumnoPreseleccion->nacionalidad = $request->nacionalidad;
+                $AlumnoPreseleccion->nacionalidad = strtoupper($request->nacionalidad);
                 $AlumnoPreseleccion->telefono_casa = $request->telefono_casa;
                 $AlumnoPreseleccion->telefono_personal = $request->telefono_cel;
                 $AlumnoPreseleccion->correo = $request->correo;
@@ -427,14 +436,23 @@ class AlumnoController extends Controller
                 //obtener el valor de la empresa
                 if (!empty($request->empresa_mod)) {
                     # si no está vacio tenemos que cargar el dato puro
-                    $empresa = trim($request->empresa_mod);
+                    if( $request->trabajo_mod== true && $request->empresa_mod!='DESEMPLEADO'){
+                        $empresa = trim($request->empresa_mod);
+                    }else{
+                        $empresa = '';
+                    }
                 } else {
                     # si está vacio tenemos que checar lo siguiente
-                    $empresa = 'DESEMPLEADO';
+                    if(is_null($request->trabajo_mod)){
+                        $empresa = 'DESEMPLEADO';
+                    }else{
+                        $empresa = '';
+                    }
+                    
                 }
                 if(is_null($request->cerss_chk_mod)){$chk_cerss=false;}else{$chk_cerss=$request->cerss_chk_mod;}
                 if(is_null($request->trabajo_mod)){$empleado=false;}else{$empleado=$request->trabajo_mod;}       
-                    //dd($chk_cerss);
+                    //dd($request->trabajo_mod);
                     $AspiranteId = base64_decode($idAspirante);
                 if($request->sexo_mod=='HOMBRE'){
                     $sexo='MASCULINO';
@@ -447,14 +465,14 @@ class AlumnoController extends Controller
                     'id_unidad'=>Auth::user()->unidad,
                     'es_cereso'=>$chk_cerss,
                     'numero_expediente'=>$request->num_expediente_cerss_mod,
-                    'curp'=>$request->curp_mod,
+                    'curp'=>strtoupper($request->curp_mod),
                     'empleado'=>$empleado,
-                    'nombre' => $request->nombre_mod,
-                    'apellido_paterno' => trim($request->apellidoPaterno_mod),
-                    'apellido_materno' => trim($request->apellidoMaterno_mod),
+                    'nombre' => strtoupper(trim($request->nombre_mod)),
+                    'apellido_paterno' => strtoupper(trim($request->apellidoPaterno_mod)),
+                    'apellido_materno' => strtoupper(trim($request->apellidoMaterno_mod)),
                     'sexo' => $sexo,
                     'fecha_nacimiento' =>$request->fecha_nacimiento_mod,
-                    'nacionalidad'=>trim($request->nacionalidad_mod),
+                    'nacionalidad'=>strtoupper(trim($request->nacionalidad_mod)),
                     'telefono_casa' => $request->telefono_casa_mod,
                     'telefono_personal'=>$request->telefono_cel_mod,
                     'correo'=>$request->correo_mod,
