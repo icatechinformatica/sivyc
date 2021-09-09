@@ -23,6 +23,7 @@
                             <option value="no_control">N° DE CONTROL</option>
                             <option value="curso">CURSO</option>
                             <option value="nombres">NOMBRE</option>
+                            <option value="curp">CURP</option>
                         </select>
 
                         {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
@@ -71,11 +72,11 @@
 
                             <td>
                                 @if ($itemData->es_cereso == true)
-                                    <a href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" download="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID DE CERSS" targer="_blank">
+                                    <a href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID DE CERSS" target="_blank">
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                 @else
-                                    <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" download="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID">
+                                    <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID" target="_blank">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 @endif

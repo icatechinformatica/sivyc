@@ -278,7 +278,7 @@
                 <select class="form-control" id="criterio_pago_minimo_edit" name="criterio_pago_minimo_edit">
                     <option value="">--SELECCIONAR--</option>
                     @foreach ($criterio_pago as $item_criterio_pago_minimo)
-                        <option {{ ($cursos[0]->rango_criterio_pago_minimo == $item_criterio_pago_minimo->id)}}
+                        <option {{($cursos[0]->rango_criterio_pago_minimo == $item_criterio_pago_minimo->id) ? 'selected' : ''}}
                             value="{{$item_criterio_pago_minimo->id}}">
                                 {{$item_criterio_pago_minimo->perfil_profesional}}
                         </option>
@@ -290,7 +290,7 @@
                 <select class="form-control" id="criterio_pago_maximo_edit" name="criterio_pago_maximo_edit">
                     <option value="">--SELECCIONAR--</option>
                     @foreach ($criterio_pago as $item_criterio_pago_maximo)
-                        <option {{ ($cursos[0]->rango_criterio_pago_maximo == $item_criterio_pago_maximo->id)}}
+                        <option {{ ($cursos[0]->rango_criterio_pago_maximo == $item_criterio_pago_maximo->id) ? 'selected' : ''}}
                             value="{{$item_criterio_pago_maximo->id}}">
                                 {{$item_criterio_pago_maximo->perfil_profesional}}
                         </option>
@@ -350,3 +350,4 @@
     }
 </script>
 @endsection
+<!--a-->

@@ -62,8 +62,9 @@
         <div class="row">
             @include('solicitudes.folios.table')
         </div>
-    </div>    
-    @section('script_content_js')        
+    </div>
+@endsection
+@section('script_content_js')        
         <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>                
         <script language="javascript">
             $('#cancelar').click(function (){  
@@ -117,7 +118,5 @@
             $('.numero').keyup(function (){                    
                     this.value = (this.value + '').replace(/[^0-9NP]/g, '');
             });
-    </script>  
-    @endsection
+        </script>  
 @endsection
-

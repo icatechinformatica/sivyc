@@ -61,19 +61,39 @@
                     <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono"
                         name="telefono" placeholder="telefono" value="{{ $convenios->telefono }}">
                 </div>
+                <!-- email -->
+                <div class="form-group col">
+                    <label for="correo_ins" class="control-label">CORREO DE LA INSTITUCIÓN</label>
+                    <input type="email" class="form-control" onkeypress="return solonumeros(event)" id="correo_ins"
+                        name="correo_ins" placeholder="{{$convenios->correo_institucion != null ? $convenios->correo_institucion : 'NO AGREGADO'}}"
+                        value="{{$convenios->correo_institucion}}">
+                </div>
             </div>
 
             <div class="form-row">
                 {{-- direccion --}}
                 <div class="form-group col">
                     <label for="direccion" class="control-label">DIRECCIÓN</label>
-                    <textarea name="direccion" class="form-control" id="direccion">{{ $convenios->direccion }}</textarea>
+                    <input type="text" name="direccion" class="form-control" id="direccion" value="{{ $convenios->direccion }}"/>
                 </div>
                 <!--poblacion-->
                 <div class="form-group col">
                     <label for="poblacion" class="control-label">POBLACIÓN</label>
                     <input type='text' id="poblacion" name="poblacion" class="form-control"
                         value="{{ $convenios->poblacion }}" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <!--estados-->
+                <div class="form-group col">
+                    <label for="estadoG" class="control-label">ESTADO</label>
+                    <select name="estadoG" id="estadoG" class="custom-select">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($estados as $estado)
+                            <option {{ $estado->id == $convenios->id_estado ? 'selected' : '' }} value="{{ $estado->id }}">{{ $estado->nombre }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <!--municipio-->
                 <div class="form-group col">
@@ -85,9 +105,6 @@
                                 value="{{ $municipio->id }}">{{ $municipio->muni }}</option>
                         @endforeach
                     </select>
-                    {{-- <label for="municipio" class="control-label">MUNICIPIO</label> --}}
-                    {{-- <input type='text' id="municipio" name="municipio" class="form-control" --}}
-                    {{-- value="{{ $convenios->municipio }}" /> --}}
                 </div>
             </div>
 
@@ -138,11 +155,13 @@
                     <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly" name="fecha_firma"
                         value="{{ $convenios->fecha_firma }}" class="form-control datepicker" />
                 </div>
-                <!-- Fecha conclusion -->
+                <!-- Fecha termino -->
                 <div class="form-group col">
                     <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
                     <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly" name="fecha_termino"
-                        value="{{ $convenios->fecha_vigencia }}" class="form-control datepicker" />
+                        placeholder="{{ $convenios->fecha_vigencia !=null ? $convenios->fecha_vigencia : 'INDEFINIDO' }}"
+                        class="form-control datepicker"
+                        value="{{$convenios->fecha_vigencia !=null ? $convenios->fecha_vigencia :''}}" />
                 </div>
             </div>
 
@@ -158,6 +177,13 @@
                     <label for="telefono_enlace" class="control-label">TELEFONO DEL ENLACE</label>
                     <input type='text' id="telefono_enlace" name="telefono_enlace" class="form-control"
                         value="{{ $convenios->telefono_enlace == null ? 'NO DEFINIDO' : $convenios->telefono_enlace }}" />
+                </div>
+                <!-- email enlace -->
+                <div class="form-group col">
+                    <label for="correo_en" class="control-label">CORREO DEL ENLACE</label>
+                    <input type="email" class="form-control" onkeypress="return solonumeros(event)" id="correo_en"
+                        name="correo_en" placeholder="{{$convenios->correo_enlace != null ? $convenios->correo_enlace : 'NO AGREGADO'}}"
+                        value="{{$convenios->correo_enlace}}">
                 </div>
             </div>
 
@@ -180,7 +206,7 @@
                             @if (isset($convenios->archivo_convenio))
                                 <a href="{{ $convenios->archivo_convenio }}" target="_blank"
                                     rel="{{ $convenios->archivo_convenio }}">
-                                    <img src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
+                                    <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
                                         height="50px">
                                 </a>
                             @else
@@ -264,31 +290,31 @@
         <br>
     </div>
 
-    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> --}}
-
 @endsection
 
 @section('script_content_js')
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <script>
         $(function() {
-            var dateFormat = "mm/dd/yy",
+            var dateFormat = "dd-mm-yy",
                 from = $("#fecha_firma")
                 .datepicker({
                     defaultDate: "+1w",
                     changeMonth: true,
-                    numberOfMonths: 1
+                    numberOfMonths: 1,
+                    dateFormat: 'dd-mm-yy'
                 })
                 .on("change", function() {
-                    to.datepicker("option", "minDate", getDate(this));
+                    // to.datepicker("option", "minDate", getDate(this));
                 }),
                 to = $("#fecha_termino").datepicker({
                     defaultDate: "+1w",
                     changeMonth: true,
-                    numberOfMonths: 1
+                    numberOfMonths: 1,
+                    dateFormat: 'dd-mm-yy'
                 })
                 .on("change", function() {
-                    from.datepicker("option", "maxDate", getDate(this));
+                    // from.datepicker("option", "maxDate", getDate(this));
                 });
 
             function getDate(element) {
@@ -317,7 +343,6 @@
                 return this.optional(element) || (element.files[0].size <= param)
             });
 
-
             $('#conveniosForm').validate({
                 rules: {
                     no_convenio: {
@@ -331,7 +356,6 @@
                     },
                     telefono: {
                         required: true,
-                        phoneMX: true
                     },
                     sector: {
                         required: true
@@ -339,12 +363,9 @@
                     fecha_firma: {
                         required: true
                     },
-                    fecha_termino: {
-                        required: true
-                    },
                     archivo_convenio: {
                         extension: "pdf",
-                        filesize: 2000000
+                        filesize: 3000000
                     },
                     tipo_convenio: {
                         required: true
@@ -356,6 +377,9 @@
                         required: true
                     },
                     status: {
+                        required: true
+                    },
+                    estadoG: {
                         required: true
                     }
                 },
@@ -370,8 +394,7 @@
                         required: 'el campo tipo es requerido.'
                     },
                     telefono: {
-                        required: 'el telefono es requerido',
-                        phoneMX: 'no es un número telefonico dado.'
+                        required: 'el telefono es requerido'
                     },
                     sector: {
                         required: 'seleccione el tipo de sector.'
@@ -379,12 +402,9 @@
                     fecha_firma: {
                         required: 'la fecha de la firma es requerida'
                     },
-                    fecha_termino: {
-                        required: 'La fecha de termino es requerida.'
-                    },
                     archivo_convenio: {
                         accept: "No es una extensión valida, son aceptado pdf.",
-                        filesize: "El tamaño del archivo debe de ser menor a 2 Mb."
+                        filesize: "El tamaño del archivo debe de ser menor a 3 Mb."
                     },
                     tipo_convenio: {
                         required: 'El tipo de convenio es requerido'
@@ -397,6 +417,9 @@
                     },
                     status: {
                         required: 'El status es requerido'
+                    },
+                    estadoG: {
+                        required: "Campo requerido"
                     }
                 }
             });
@@ -414,6 +437,42 @@
                     checked = false;
                     $('#btnMarcar').html('Marcar todos');
                 }
+            });
+
+            $('#estadoG').on("change", () => {
+                var IdEstado = $('#estadoG').val();
+                $('#estadoG option:selected').each(() => {
+                    var datos = {idEst: IdEstado, _token: "{{ csrf_token() }}"};
+                    var url = '/convenios/sid/municipios';
+
+                    var request = $.ajax
+                    ({
+                        url: url,
+                        method: 'POST',
+                        data: datos,
+                        dataType: 'json'
+                    });
+
+                    request.done((respuesta) => {
+                        if (respuesta.length < 1) {
+                            $("#municipio").empty();
+                            $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        } else {
+                            if(!respuesta.hasOwnProperty('error')){
+                                $("#municipio").empty();
+                                $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                $.each(respuesta, (k, v) => {
+                                    $('#municipio').append('<option value="' + v.id + '">' + v.muni + '</option>');
+                                });
+                                $("#municipio").focus();
+                            }
+                        }
+                    });
+
+                    request.fail(( jqXHR, textStatus) => {
+                        alert( "Ocurrio un error: " + textStatus );
+                    });
+                });
             });
         });
 

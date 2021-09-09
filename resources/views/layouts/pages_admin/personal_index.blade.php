@@ -1,5 +1,5 @@
 <!--Creado por Daniel Méndez Cruz-->
-@extends('theme.principal.dashboard')
+@extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
 @section('title', 'PERSONAL RECURSOS HUMANOS | Sivyc Icatech')
 <!--seccion css-->
@@ -124,17 +124,17 @@
                                 @foreach ($directorio as $directorioItem)
                                     <div class="row" role="row">
                                         <div class="col-md-4" role="gridcell">
-                                            <label><h5>NÚMERO DE ENLACE</h5></label>
+                                            
                                             <div class="form-control-plaintext text-truncate">{{ $directorioItem->numero_enlace }}</div>
                                         </div>
                                         <div class="col-md-4" role="gridcell">
-                                            <label><h5>NOMBRE</h5></label>
+                                            
                                             <div class="form-control-plaintext text-truncate">
                                                 {{ $directorioItem->apellidoPaterno}} {{ $directorioItem->apellidoMaterno}} {{$directorioItem->nombre}}
                                             </div>
                                         </div>
                                         <div class="col-md-4" role="gridcell">
-                                            <label><h5>DETALLES</h5></label>
+                                            
                                             <div class="form-control-plaintext text-truncate">
                                                 <a href="{{route('personal.edit', ['id' => base64_encode($directorioItem->id)])}}"
                                                     class="btn btn-info btn-circle m-1 btn-circle-sm"

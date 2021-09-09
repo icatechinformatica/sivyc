@@ -1,3 +1,7 @@
+<?php
+if ($uj[0]->tipo_curso=='CERTIFICACION'){$tipo='CERTIFICACIÓN EXTRAORDINARIA';}
+else{$tipo='CURSO';}
+?>
 <html>
     <head>
         <meta charset="utf-8">
@@ -33,7 +37,7 @@
             footer {
             position: fixed;
             left: 0px;
-            bottom: -40px;
+            bottom: -10px;
             right: 0px;
             height: 60px;
             text-align: center;
@@ -68,22 +72,30 @@
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <br><h6>"2021, Año de la Independencia"</h6>
+            <br><h6>{{$distintivo}}</h6>
         </header>
-        <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
-        </footer>
         <div class= "container g-pt-30">
-            <div align=right> <b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}</b> </div>
+            <div align=right> <b>Unidad de Capacitación {{$unidad->ubicacion}}</b> </div>
             <div align=right> <b>Memorandum No. {{$data_supre->no_memo}}</b></div>
             <div align=right> <b>{{$data_supre->unidad_capacitacion}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
-            <br><br><b>{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}.</b>
-            <br>{{$getdestino->puesto}}
+            <br><br><b>LUIS ALFONSO CRUZ VELASCO.</b>
+            <br>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO.
             <br><br>Presente.
 
-            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de cursos de la Unidad de Capacitación <b>{{$data_supre->unidad_capacitacion}}</b>, de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
+            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 Honorarios, para la contratación de instructores para la impartición de
+            @if ($uj[0]->tipo_curso=='CERTIFICACION')
+                certificación extraordinaria
+            @else
+                curso
+            @endif
+            de la
+            @if ($unidad->cct == '07EI')
+                    Unidad de Capacitación <b>{{$unidad->ubicacion}}</b>,
+            @else
+                    Acción Movil <b>{{$data_supre->unidad_capacitacion}}</b>,
+            @endif
+                 de acuerdo a los números de folio que se indican en el cuadro analítico siguiente y acorde a lo que se describe en el formato anexo.</p>
             <br><div align=justify><b>Números de Folio</b></div>
 
             <table class="table table-bordered">
@@ -105,14 +117,22 @@
             <br><p class="text-left"><p>Sin más por el momento, aprovecho la ocasión para enviarle un cordial saludo.</p></p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <br><br><b>{{$getremitente->nombre}} {{$getremitente->apellidoPaterno}} {{$getremitente->apellidoMaterno}}</b>
-            <br><b>{{$getremitente->puesto}} {{$getremitente->area}}</b>
-            <br><b>Unidad de Capacitación {{$data_supre->unidad_capacitacion}}.</b>
-            <br><br><br><h6><small><b>C.c.p. C.P. {{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}.-{{$getccp1->puesto}}.-Mismo Fin</b></small></h6>
-            <h6><small><b>C.P. {{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}.-{{$getccp2->puesto}}.-Mismo Fin</b></small></h6>
+            <br><b>{{$getremitente->puesto}} <br> <font style="text-transform: uppercase;">{{$getremitente->area}}</font> </b>
+            <!--<br><b>Unidad de Capacitación {$unidad->ubicacion}}.</b>-->
+            @if ($unidad->cct != '07EI')
+                <br><b>Acción Movil {{$data_supre->unidad_capacitacion}}.</b>
+            @else
+            @endif
+            <br><br><br><h6><small><b>C.c.p.  C.P. SALVADOR BETANZOS SOLIS.-DIRECTOR DE PLANEACION.-Mismo Fin</b></small></h6>
+            <h6><small><b>C.P. JORGE LUIS BARRAGAN LOPEZ.-JEFE DE DEPARTAMENTO DE RECURSOS FINANCIEROS.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo/Minutario<b></small></h6>
             <br><br><small><b>Valido: {{$getvalida->nombre}} {{$getvalida->apellidoPaterno}} {{$getvalida->apellidoMaterno}}.-{{$getvalida->puesto}}</b></small></h6>
             <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}</b></small></h6>
         </div>
+        <footer>
+            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
+            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
+        </footer>
     </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

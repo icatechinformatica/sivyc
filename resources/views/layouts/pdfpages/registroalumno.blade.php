@@ -1,598 +1,331 @@
-<html>
-    <!--pdf registro para alumnos-->
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style type="text/css">
+    @page{margin: 60px 30px 20px; font-size: 9px}
+    @font-face {
+        font-family: "Baby sweet";           
+        src: url("/fonts/gotham-light.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
 
-  <style>
+    }  
     body{
-      font-family: sans-serif;
-      font-size: 1.3em;
-      margin: 10px;
-    }
-    @page {
-        margin: 20px 20px;
-    }
-    small {
-        font-size: .7em
-    }
-    sa {
-        text-decoration-line: overline;
-    }
-    se {
-        text-decoration-line: underline;
+        font-family: sans-serif;
     }
     table {
-        margin-top: .6em;
-        margin-bottom: 0.5em;
-        padding: 0; margin: 0;
-        border: 0.8px solid black; //Cualquier otro tipo de borde como bottom que es el inferior o ninguno
-    }
-    table, td {
-        border-style: none;
-        padding: 0;
-        border: 1px solid black; //Cualquier otro tipo de borde como bottom que es el inferior o ninguno
-    }
-    .dashed {
-        border: 1px dashed black;
-    }
-
-    .tds{
-        border: hidden;
-    }
-
-    td.tres { width: calc(100%/2); }
-    td.cuatro { width: calc(100%/4); }
-    small.sml {
-        font-size: .5em
+        width: 100%;
+        border-collapse: collapse; 
     }
     td{
-        padding: 2em 3px;
+        padding: 0px;
+        padding-left: 5px;
+        padding-bottom: 3px;
     }
-    div.centrado {
+    .p{
+        text-decoration: overline;
+    }
+    .variable{
         text-align: center;
+        border: 1px solid black;
     }
-    small.texto-centrado {
-        font-size: .8em
-    }
-    .linea {
-        border-top: 1px solid black;
-        height: 2px;
-        max-width: 200px;
-        padding: 0;
-        margin: 5px auto 0 auto;
-      }
-
-      .centrados{
-          text-align: center;
-      }
-      .left-algn{
-        text-align: right;
-      }
-      img.izquierda {
-        float: left;
-      }
-
-      img.derecha {
+    img.izquierda{float:left}
+    img.derecha {
         float: right;
-        width: 100px;
-        height: 100px;
+        width: 2.5cm;
+        height: 2.5cm;
       }
-  </style>
-</head>
- <body>
-    <div class="container g-pt-90">
-        <p>
-            <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
-            <!--aqui va img-->
-            <small>
-                <div class="centrados">
-                <b>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR
-                DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO
-                SOLICITUD DE INSCRIPCIÓN ( SID - 01 ).</b>
-                </div>
-            </small>
-        </p>
-        <table class="table tds">
-            <colgroup>
-                <col style="width: 33%"/>
-                <col style="width: 33%"/>
-                <col style="width: 33%"/>
-            </colgroup>
+</style>
+<body>
+    <div>
+        <div><img class="izquierda" src="{{ public_path('img/sep1.png') }}"></div>
+        <div>
+           @if ($alumnos->chk_fotografia == TRUE)
+           <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
+           @else
+           <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
+           @endif
+        </div>
+        <div style="text-align:center;" class="demo"><b>SUBSECRETARIA DE EDUCACIÓN MEDIA SUPERIOR <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>SOLICITUD DE INSCRIPCIÓN <br> ( SID - 01 )</b></div>
+    </div>
+    <br>
+    <div>
+        <table style="text-align: center; width:80%;">
+            <thead></thead>
             <tbody>
                 <tr>
-                    <td style="border: hidden">
-                        <small>
-                            <div class="centrados">
-                                {{$date}}
-                                <div class="linea"></div>
-                                <br>FECHA
-                            </div>
-                        </small>
-                    </td>
-                    <td style="border: hidden">
-                        <small>
-                            <div class="centrados">
-                                {{ $alumnos->no_control }}
-                                <div class="linea"></div>
-                                N°. DE CONTROL
-                            </div>
-                        </small>
-                    </td>
-                    <td style="border: hidden">
-                        <small>
-                            <div class="centrados">
-                                {{$alumnos->no_control}}{{$alumnos->id}}
-                                <div class="linea"></div>
-                                NÚMERO DE SOLICITUD
-                            </div>
-                        </small>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        @if ($alumnos->chk_fotografia == TRUE)
-            <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
-        @else
-            <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
-        @endif
-        <table class="table td">
-            <colgroup>
-				<col style="width: 30%"/>
-				<col style="width: 70%"/>
-			</colgroup>
-            <thead>
-              <tr>
-                <td scope="col" colspan="2">
-                    <div align="center">
-                        <b>DATOS DE LA UNIDAD DE CAPACITACIÓN</b>
-                    </div>
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2" style='border-bottom:none'>
-                    <small>
-                        <b>INSTITUTO:</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <se>
-                            <b>INSTITUTO DE CAPACITACIÓN Y VINCULACION TECNÓLOGICA DEL ESTADO DE CHIAPAS "ICATECH"</b>
-                        </se>
-                    </small>
-                </td>
-              </tr>
-              <tr>
-                <td scope="row" class="tres" style='border-right:none;border-top:none'>
-                    <small>
-                        <b> UNIDAD DE CAPACITACIÓN: &nbsp;&nbsp; {{ $alumnos->unidad }}</b>
-                    </small>
-
-                </td>
-                <td scope="row" class="tres" style='border-left:none;border-top:none'>
-                   <small>
-                       <b> CLAVE CCT:  {{$alumnos->unidades }}</b>
-                   </small>
-                </td>
-              </tr>
-            </tbody>
-        </table>
-        <table class="table td">
-            <colgroup>
-				<col style="width: 25%"/>
-                <col style="width: 25%"/>
-                <col style="width: 25%"/>
-                <col style="width: 25%"/>
-			</colgroup>
-            <thead>
-                <tr>
-                  <td scope="col" colspan="4">
-                      <div align="center">
-                          <b>DATOS PERSONALES</b>
-                      </div>
-                  </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
-                        <small>
-                            <b> PRIMER APELLIDO: &nbsp;&nbsp; </b>
-                            <se>{{ $alumnos->apellido_paterno }}</se>
-                        </small>
-                    </td>
-                    <td scope="row" style='border-right:none;border-left:none; border-bottom:none;'>
-                        <small>
-                            <b> SEGUNDO APELLIDO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->apellido_materno }}</se>
-                        </small>
-                    </td>
-                    <td scope="row" colspan="2" style='border-left:none; border-bottom:none;'>
-                        <small>
-                            <b> NOMBRE(S): &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->nombrealumno }}</se>
-                        </small>
-                    </td>
+                    <td style="text-decoration: underline;">{{$date}}</td>
+                    <td>{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
                 </tr>
                 <tr>
-                    <td style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>SEXO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->sexo }}</se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>CURP: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->curp_alumno }}</se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>EDAD: &nbsp;&nbsp;</b>
-                            <se>{{ $edad }} AÑOS </se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>TELEFONO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->telefono }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>DOMICILIO: &nbsp;&nbsp;</b>
-                            <se>
-                                {{ $alumnos->domicilio }}
-                            </se>
-                        </small>
-                    </td>
-                    <td colspan="2" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>COLONIA O LOCALIDAD: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->colonia }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>C.P.: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->cp }}</se>
-                        </small>
-                    </td>
-                    <td style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>MUNICIPIO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->municipio }}</se>
-                        </small>
-                    </td>
-                    <td colspan="2" style='border-left:none; border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>ESTADO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->estado }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>ESTADO CIVIL: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->estado_civil }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style='border-right:none; border-top:none;'>
-                        <small>
-                            <b>DISCAPACIDAD QUE PRESENTA: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->discapacidad }}</se>
-                        </small>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table td" cellspacing="0" cellpadding="0">
-            <colgroup>
-				<col style="width: 50%"/>
-                <col style="width: 50%"/>
-			</colgroup>
-            <thead>
-                <tr>
-                  <td scope="col" colspan="2">
-                      <div align="center">
-                          <b>DATOS GENERALES</b>
-                      </div>
-                  </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2" scope="row" style='border-left:none; border-right:none; border-bottom:none;'>
-                        <small>
-                            <b> ESPECIALIDAD A LA QUE DESEAN INSCRIBIRSE: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->especialidad }}</se>
-                         </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>CURSO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->nombre_curso }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>HORARIO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->horario }}</se>
-                        </small>
-                    </td>
-                    <td scope="row" class="tres" style='border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>GRUPO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->grupo }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>DOCUMENTACIÓN ENTREGADA: &nbsp;&nbsp;</b>
-                            <se><br>
-                                @if($alumnos->chk_acta_nacimiento == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;@if($alumnos->chk_ine == TRUE)(X) @else() ( ) @endif COPIA DE LA CREDENCIAL DEL ELECTOR (INE) O IDENTIFICACIÓN OFICIAL
-                            <p>@if($alumnos->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE LA CURP;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos->chk_pasaporte_licencia == TRUE)(X) @else() ( ) @endif PASAPORTE, LICENCIA DE MANEJO O CARTILLA MILITAR
-                            <br>@if($alumnos->chk_comprobante_domicilio == TRUE)(X) @else() ( ) @endif COPIA DE COMPROBANTE DE DOMICILIO&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS
-                            <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA </se>
-
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>EXTRANJEROS ANEXAR: &nbsp;&nbsp;</b>
-                            <se><p>@if($alumnos->chk_comprobante_calidad_migratoria == TRUE)(X) @else() ( ) @endif COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>EMPRESA DONDE TRABAJA: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->empresa_trabaja }}</se>
-                        </small>
-                    </td>
-                    <td style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>PUESTO: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->puesto_empresa }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td style='border-right:none; border-top:none;'>
-                        <small>
-                            <b>ANTIGUEDAD: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->antiguedad }}</se>
-                        </small>
-                    </td>
-                    <td style='border-right:none; border-left:none; border-top:none;'>
-                        <small>
-                            <b>DIRECCIÓN: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->direccion_empresa }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none; border-top:none;'>
-                        <small class="sml">
-                            <b>NOTA: LA DOCUMENTACIÓN DEBERA ENTREGARSE EN ORIGINAL Y COPIA PARA SU COTEJO.</b>
-                        </small>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p><p><p> <p><p><p> <br><br><br><br><br>
-        <table class="table td" cellspacing="0" cellpadding="0">
-            <colgroup>
-				<col style="width: 50%"/>
-                <col style="width: 50%"/>
-            </colgroup>
-            <tbody>
-                <tr>
-                    <td scope="col" colspan="2">
-                        <div align="center">
-                            <b>DATOS PARA LA UNIDAD DE CAPACITACIÓN</b>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none; border-top:none;  border-bottom:none;'>
-                        <small>
-                            <b>MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->medio_entero }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN: &nbsp;&nbsp;</b>
-                            <se>{{ $alumnos->sistema_capacitacion_especificar }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <div class="centrado">
-                            <small>
-                                EL ASPIRANTE SE COMPROMETE A CUMPLIR CON LAS NORMAS Y DISPOSICIONES DICTADAS POR LAS AUTORIDADES DE LA UNIDAD.
-                            </small>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td scope="row" class="tres" style='border-right:none;border-top:none; border-bottom:none;'>
-                        <small>
-                            <div class="centrados">
-                                <b> {{ $alumnos->apellido_paterno }} {{ $alumnos->apellido_materno }} {{ $alumnos->nombrealumno }}</b>
-                                <div class="linea"></div>
-                            </div>
-                        </small>
-                    </td>
-                    <td scope="row" class="tres" style='border-left:none;border-top:none; border-bottom:none;'>
-                       <small>
-                            <div class="centrados">
-                                <b> {{ $alumnos->realizo }} </b>
-                                <div class="linea"></div>
-                            </div>
-                       </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td scope="row" class="tres" style='border-right:none;border-top:none'>
-                        <small>
-                            <div class="centrados">
-                                <b> NOMBRE Y FIRMA DEL ASPIRANTE</b>
-                            </div>
-                        </small>
-                    </td>
-                    <td scope="row" class="tres" style='border-left:none;border-top:none'>
-                       <small>
-                            <div class="centrados">
-                                <b> NOMBRE Y FIRMA DE LA PERSONA QUE INSCRIBE </b>
-                            </div>
-                       </small>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <table class="table dashed" cellspacing="0" cellpadding="0">
-            <colgroup>
-				<col style="width: 25%"/>
-                <col style="width: 25%"/>
-                <col style="width: 25%"/>
-                <col style="width: 25%"/>
-            </colgroup>
-            <thead>
-                <tr>
-                    <td colspan="4" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <div class="left-algn">
-                            <small>
-                                <b>COMPROBANTE PARA EL INSTITUTO</b>
-                            </small>
-                        </div>
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2" scope="row" class="tres" style='border-right:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>FECHA:</b>
-                            <se>{{$date}}</se>
-                        </small>
-                    </td>
-                    <td colspan="2" scope="row" class="tres" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>NÚMERO DE SOLICITUD:</b>
-                            <se>{{$alumnos->no_control}}{{$alumnos->id}}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style='border-right:none; border-left:none; border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>NOMBRE DEL ASPIRANTE:</b>
-                            <se>{{ $alumnos->apellido_paterno }} {{ $alumnos->apellido_materno }} {{ $alumnos->nombrealumno }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="cuatro" style='border-right:none;border-top:none; border-bottom:none;'>
-                        <small>
-                            <b>CURSO:</b>
-                            <se>{{ $alumnos->nombre_curso }}</se>
-                        </small>
-                    </td>
-                    <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <b>HORARIO:</b>
-                            <se>{{ $alumnos->horario }}</se>
-                        </small>
-                    </td>
-                    <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <b>GRUPO:</b>
-                            <se>{{ $alumnos->grupo }}</se>
-                        </small>
-                    </td>
-                    <td class="cuatro" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <b>COSTO:$</b>
-                            <se>{{ $alumnos->costo }}</se>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <div class="centrados">
-                                <b> {{ $alumnos->realizo }} </b>
-                                <div class="linea"></div>
-                            </div>
-                        </small>
-                    </td>
-                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <div class="centrados">
-                                &nbsp;&nbsp;
-                                <div class="linea"></div>
-                            </div>
-                        </small>
-                    </td>
-                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <div class="centrados">
-                                &nbsp;&nbsp;
-                                <div class="linea"></div>
-                            </div>
-                        </small>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <div class="centrados">
-                                <b> NOMBRE Y FIRMA DE LA PERSONA QUE RECIBE </b>
-                            </div>
-                        </small>
-                    </td>
-                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <div class="centrados">
-                                <b>SELLO</b>
-                            </div>
-                        </small>
-                    </td>
-                    <td style='border-right:none;border-top:none; border-left:none; border-bottom:none;'>
-                        <small>
-                            <div class="centrados">
-                                <b>FIRMA DEL ASPIRANTE</b>
-                            </div>
-                        </small>
-                    </td>
+                    <td>FECHA</td>
+                    <td class="p">NÚMERO DE SOLICITUD</td>
                 </tr>
             </tbody>
         </table>
     </div>
-
- </body>
+    <br>
+    <div style="border: 1px solid black;">
+        <table>
+            <tr>
+                <td colspan="4" class="variable"><b>DATOS DE LA UNIDAD DE CAPACITACIÓN</b></td>
+            </tr>
+            <tr>
+              <td colspan="4" style="padding-top: 5px;"><b>INSTITUTO:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INSTITUTO DE CAPACITACIÓN Y VINCULACION TECNÓLOGICA DEL ESTADO DE CHIAPAS</b></td>
+            </tr>
+            <tr>
+              <td><b> UNIDAD DE CAPACITACIÓN: {{ $alumnos->unidad }}</b></td>
+              <td></td>
+              <td><b> CLAVE CCT:  {{$alumnos->unidades }}</b></td>
+              <td></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div style="border: 1px solid black;">
+        <table>
+            
+                <tr><td colspan="7" class="variable"><b>DATOS PERSONALES</b></td></tr>
+            
+            
+                <tr>
+                    <td colspan="2" style="padding-top: 5px;"><b> NOMBRE DEL ASPIRANTE: </b></td>
+                    <td colspan="2" style="padding-top: 5px;">{{ strtoupper($alumnos->apellido_paterno) }} <br><b> PRIMER APELLIDO</b></td>
+                    <td colspan="2" style="padding-top: 5px;">{{ strtoupper($alumnos->apellido_materno) }} <br><B> SEGUNDO APELLIDO</B></td>
+                    <td style="padding-top: 5px;">{{ strtoupper($alumnos->nombrealumno) }} <br><B> NOMBRE(S)</B></td>
+                </tr>
+                <tr>
+                    <td><b>SEXO: @php if($alumnos->sexo=="FEMENINO"){echo "M(X) H( )";} else {echo"M( ) H(X)";} @endphp</b></td>
+                    <td><b>CURP:</b></td>
+                    <td>{{strtoupper($alumnos->curp_alumno) }}</td>
+                    <td><b>EDAD:</b> </td>
+                    <td>{{$edad}} AÑOS</td>
+                    <td><b>TELEFONO:</b></td>
+                    <td>@php if($alumnos->telefono){echo ($alumnos->telefono); }else{if($alumnos->telefono_casa){echo($alumnos->telefono_casa);}else{echo($alumnos->telefono_personal);} } @endphp</td>
+                </tr>
+                <tr>
+                    <td><b>DOMICILIO: </b></td>
+                    <td colspan="2">{{ strtoupper($alumnos->domicilio) }}</td>
+                    <td colspan="2"><b>COLONIA O LOCALIDAD: </b></td>
+                    <td colspan="2">{{ strtoupper($alumnos->colonia) }}</td>
+                </tr>
+                <tr>
+                    <td><b>C.P.: </b></td>
+                    <td>{{ $alumnos->cp }}</td>
+                    <td colspan="2"><b>MUNICIPIO: </b> </td>
+                    <td>{{strtoupper($alumnos->municipio)  }}</td>
+                    <td><b>ESTADO: </b></td>
+                    <td>{{ strtoupper($alumnos->estado) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="7"><b>ESTADO CIVIL:</b> @php if($alumnos->estado_civil=="SOLTERO (A)"||$alumnos->estado_civil=="SOLTERO"){echo "SOLTERO(X) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
+                        if($alumnos->estado_civil=="CASADO (A)"||$alumnos->estado_civil=="CASADO"){echo "SOLTERO( ) CASADO(X) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
+                        if($alumnos->estado_civil=="VIUDO (A)"||$alumnos->estado_civil=="VIUDO"){echo "SOLTERO( ) CASADO( ) VIUDO(X) DIVORCIADO( ) UNION LIBRE( )";}
+                        if($alumnos->estado_civil=="DIVORCIADO (A)"||$alumnos->estado_civil=="DIVORCIADO"){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO(X) UNION LIBRE( )";}
+                        if($alumnos->estado_civil=="UNION LIBRE"||$alumnos->estado_civil=='UNIÓN LIBRE'){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE(X)";}
+                       if($alumnos->estado_civil==" "){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
+                       if($alumnos->estado_civil==null){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";}
+                       if($alumnos->estado_civil=="NO ESPECIFICA"){echo "SOLTERO( ) CASADO( ) VIUDO( ) DIVORCIADO( ) UNION LIBRE( )";} @endphp</td>
+                </tr>
+                <tr>
+                    <td colspan="7"><b>DISCAPACIDAD QUE PRESENTA: </b></td>
+                </tr>
+                <tr>
+                    <td colspan="2">@php if($alumnos->discapacidad=="VISUAL"){echo "VISUAL(X)";}else{echo "VISUAL( )";} @endphp</td>
+                    <td colspan="2"> @php if($alumnos->discapacidad=="AUDITIVA"){echo "AUDITIVA(X)";}else{echo "AUDITIVA( )";} @endphp</td>
+                    <td colspan="2">@php if($alumnos->discapacidad=="DE COMUNICACIÓN"){echo "DE COMUNICACIÓN(X)";}else{echo "DE COMUNICACIÓN( )";} @endphp</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <TD colspan="2">@php if($alumnos->discapacidad=="MOTRIZ"){echo "MOTRIZ(X)";}else{echo "MOTRIZ( )";} @endphp</TD>
+                    <TD colspan="2">@php if($alumnos->discapacidad=="INTELECTUAL"){echo "INTELECTUAL(X)";}else{echo "INTELECTUAL( )";} @endphp</TD>
+                    <TD colspan="2"></TD>
+                    <TD></TD>
+                </tr>
+            
+        </table>
+    </div>
+    <br>
+    <div style="border: 1px solid black;">
+        <table class="table">
+                <tr>
+                  <td colspan="4" class="variable"><b>DATOS GENERALES</b></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-top: 5px;">ESPECIALIDAD A LA QUE DESEAN INSCRIBIRSE:</td>
+                    <td colspan="2" style="padding-top: 5px;">{{ strtoupper($alumnos->especialidad) }}</td>
+                </tr>
+                <tr>
+                    <td>CURSO:</td>
+                    <td>{{ strtoupper($alumnos->nombre_curso) }}</td>
+                    <td>TIPO:</td>
+                    <td>{{strtoupper($alumnos->tipo_curso)}}</td>
+                </tr>
+                <tr>
+                    <td>HORARIO: </td>
+                    <td>{{ $alumnos->horario }} </td>
+                    <td>GRUPO: </td>
+                    <td>{{ $alumnos->grupo }}</td>
+                </tr>
+                <tr>
+                    <td>ÚLTIMO GRADO DE ESTUDIOS:</td>
+                    <td colspan="3">{{strtoupper($alumnos->ultimo_grado_estudios)}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"><b>DOCUMENTACIÓN ENTREGADA: </b><br>
+                                @if($alumnos->chk_acta_nacimiento == TRUE || $alumnos->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO (NO MAYOR A 2 AÑOS) O CURP (VIGENCIA UN AÑO)
+                            <br>@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS EN CASO DE CONTAR CON EL
+                            <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA DIGITAL O IMPRESA</se> 
+                </tr>
+                <tr>
+                    <td colspan="4"><b>EXTRANJEROS ANEXAR</b></td>
+                </tr>
+                <tr>
+                    <td colspan="4">@if($alumnos->chk_comprobante_calidad_migratoria == TRUE)(X) @else() ( ) @endif COMPROBANTE DE CALIDAD MIGRATORIA CON LA QUE SE ENCUENTRA EN EL TERRITORIO NACIONAL</td>
+                </tr>
+                <tr>
+                    <td><b>EMPRESA DONDE TRABAJA: </b></td>
+                    <td>@php if($alumnos->empleado==true){echo(strtoupper($alumnos->empresa_trabaja));}else{echo"";}                    @endphp</td>
+                    <td><b>PUESTO: </b></td>
+                    <td>{{strtoupper($alumnos->puesto_empresa) }}</td>
+                </tr>
+                <tr>
+                    <td><b>ANTIGUEDAD: </b></td>
+                    <td>{{ $alumnos->antiguedad }}</td>
+                    <td><b>DIRECCIÓN: </b></td>
+                    <td>{{ strtoupper($alumnos->direccion_empresa) }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="font_size: 8px;border: 1px solid black;border-collapse: collapse;">NOTA: LA DOCUMENTACIÓN DEBERA ENTREGARSE EN ORIGINAL Y COPIA PARA SU COTEJO.</td>
+                </tr>
+        </table>
+    </div>
+    <div style="border: 1px solid black;">
+        <table>
+            <tr>
+                <td colspan="3" class="variable"><b>DATOS PARA LA UNIDAD DE CAPACITACIÓN</b></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="padding-top: 5px;"><b>MEDIO POR EL QUE SE ENTERÓ DEL SISTEMA:</b></td>
+            </tr>
+            <tr>
+                <td><b>@if($alumnos->medio_entero=="PRENSA") (X) @else() ( ) @endif PRENSA </b></td>
+                <td><b>@if($alumnos->medio_entero=="TELEVISIÓN") (X) @else() ( )  @endif TELEVISIÓN</b></td>
+                <td><b>@if($alumnos->medio_entero=="FOLLETOS,CARTELES,VOLANTE") (X)  @else() ( ) @endif FOLLETOS,CARTELES,VOLANTES</b></td>
+            </tr>
+            <tr>
+                <td><b>@if($alumnos->medio_entero=="RADIO") (X)  @else() ( ) @endif RADIO</b></td>
+                <td><b>@if($alumnos->medio_entero=="INTERNET") (X)  @else() ( ) @endif INTERNET</b></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><b>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISIÓN"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") (X)  @else() ( ) @endif OTROS</b></td>
+                <td><b>ESPECIFIQUE:</b></td>
+                <td>@if($alumnos->medio_entero!="PRENSA"&&$alumnos->medio_entero!="TELEVISIÓN"&&$alumnos->medio_entero!="FOLLETOS,CARTELES,VOLANTE"&&$alumnos->medio_entero!="RADIO"&&$alumnos->medio_entero!="INTERNET") {{$alumnos->medio_entero}} @else() @endif</td>
+            </tr>
+            <tr>
+                <td colspan="3"><b>MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</b></td>
+            </tr>
+            <tr>
+                <td><b> @if($alumnos->sistema_capacitacion_especificar=="PARA EMPLEARSE O AUTOEMPLEARSE") (X) @else() ( ) @endif PARA EMPLEARSE O AUTOEMPLEARSE </b></td>
+                <td></td>
+                <td><b> @if($alumnos->sistema_capacitacion_especificar=="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO") (X) @else() ( ) @endif PARA MEJORAR SU SITUACIÓN EN EL TRABAJO</b></td>
+            </tr>
+            <tr>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="PARA AHORRAR GASTOS AL INGRESO FAMILIAR") (X) @else() ( ) @endif PARA AHORRAR GASTOS AL INGRESO FAMILIAR</b></td>
+            </tr>
+            <tr>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA") (X) @else() ( ) @endif POR ESTAR EN ESPERA DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA</b></td>
+            </tr>
+            <tr>
+                <td colspan="3"><b>@if($alumnos->sistema_capacitacion_especificar=="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif POR DISPOSICIÓN DE TIEMPO LIBRE</b></td>
+            </tr>
+            <tr>
+                <td><b>@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") (X) @else() ( ) @endif OTROS</b></td>
+                <td><b>ESPECIFIQUE:</b></td>
+                <td>@if($alumnos->sistema_capacitacion_especificar!="PARA EMPLEARSE O AUTOEMPLEARSE"&&$alumnos->sistema_capacitacion_especificar!="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO"&&$alumnos->sistema_capacitacion_especificar!="PARA AHORRAR GASTOS AL INGRESO FAMILIAR"&&$alumnos->sistema_capacitacion_especificar!="POR ESTAR EN ESPERA  DE INCORPORARSE EN OTRA INSTITUCIÓN EDUCATIVA"&&$alumnos->sistema_capacitacion_especificar!="POR DISPOSICIÓN DE TIEMPO LIBRE") {{$alumnos->sistema_capacitacion_especificar}} @else() @endif</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: center;">EL ASPIRANTE SE COMPROMETE A CUMPLIR CON LAS NORMAS Y DISPOSICIONES DICTADAS POR LAS AUTORIDADES DE LA UNIDAD</td>
+            </tr>
+        </table>
+        <br><br><br>
+        <table class="table1">
+            <tr>
+                <td>{{ strtoupper($alumnos->apellido_paterno) }} {{ strtoupper($alumnos->apellido_materno) }} {{ strtoupper($alumnos->nombrealumno) }}</td>
+                <td></td>
+                <td align="right" style="text-align: center">{{ strtoupper($alumnos->realizo) }}</td>
+            </tr>
+            <tr>
+                <td class="p"><b> NOMBRE Y FIRMA DEL ASPIRANTE</b></td>
+                <td></td>
+                <td class="p" align="right" style="text-align: center"><b> NOMBRE Y FIRMA DE LA PERSONA QUE INSCRIBE </b></td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div>
+        <div style="font_size: 8px;"><b>AVISO DE PRIVACIDAD:</b>LOS DATOS PERSONALES CONTENIDOS EN ESTA SID-01 DE INSCRICIÓN, SERÁN PROTEGIDOS CONFORME A LO DISPUESTO POR LA LEY GENERAL DE PROTECCIÓN DE DATOS PERSONALES EN POSESIÓN DE SUJETOS OBLIGADOS, Y DEMÁS NORMATIVIDAD QUE RESULTE APLICABLE</div>
+    </div>
+    <br>
+    <div style="border: 1px solid black;"></div>
+    <br>
+    <div style="border-style: dotted;border-width: 1px;"></div>
+    <br>
+    <div>
+        <div>
+            <table >
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><B>COMPROBANTE DEL ASPIRANTE</B></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>FECHA:</b> {{$date}}</td>
+                       <td><b>NÚMERO DE SOLICITUD:</b> {{$alumnos->no_control.$alumnos->id}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div style="border: 1px solid black;">
+            <table>
+                <tr>
+                    <td style="padding-top: 5px;"><b>ASPIRANTE:</b></td>
+                    <td colspan="5" style="padding-top: 5px;">{{ strtoupper($alumnos->apellido_paterno) }} {{ strtoupper($alumnos->apellido_materno) }} {{ strtoupper($alumnos->nombrealumno) }}</td>
+                </tr>
+                <tr>
+                    <td><b>CURSO:</b></td>
+                    <td>{{ strtoupper($alumnos->nombre_curso) }}</td>
+                    <td><b>HORARIO:</b></td>
+                    <td>{{$alumnos->horario }}</td>
+                    <td><b>GRUPO:</b></td>
+                    <td>{{ $alumnos->grupo }}</td>
+                </tr>
+            </table>
+            <br><br>
+            <table>
+                <tr>
+                    <td><b>{{ strtoupper($alumnos->realizo) }}</b></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="p"><b> NOMBRE Y FIRMA DE LA PERSONA QUE RECIBE</b></td>
+                    <td><b>SELLO</b></td>
+                    <td></b></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
 </html>
-

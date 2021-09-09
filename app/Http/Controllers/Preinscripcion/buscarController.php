@@ -34,12 +34,12 @@ class buscarController extends Controller
     public function index(Request $request){
         $valor_buscar = $request->valor_buscar;
         
-        $data = DB::table('alumnos_registro as ar')->select('ar.folio_grupo','ar.turnado','c.nombre_curso as curso')->join('cursos as c','ar.id_curso','c.id');
+        $data = DB::table('alumnos_registro as ar')->select('ar.folio_grupo','ar.turnado','c.nombre_curso as curso','ar.unidad')->join('cursos as c','ar.id_curso','c.id');
         if($valor_buscar) $data = $data->where(DB::raw("CONCAT(ar.folio_grupo,c.nombre_curso)"),'like','%'.$valor_buscar.'%');
         
         if($this->data['slug']=='vinculadores_administrativo')$data = $data->where('iduser_created',$this->id_user);
         if($_SESSION['unidades']) $data = $data->whereIn('ar.unidad',$_SESSION['unidades']);
-        $data = $data->where('folio_grupo','<>',null)->groupby('ar.folio_grupo','ar.turnado','c.nombre_curso')->paginate(15);        
+        $data = $data->where('folio_grupo','<>',null)->groupby('ar.folio_grupo','ar.turnado','c.nombre_curso','ar.unidad')->paginate(15);        
         
         $activar = $this->activar;
         return view('preinscripcion.buscar.index',compact('data','activar'));        

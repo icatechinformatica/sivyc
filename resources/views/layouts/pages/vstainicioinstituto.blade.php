@@ -67,6 +67,31 @@
                 </div>
             </div>
 
+            {{-- new campos --}}
+            <div class="row py-2">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="titular" class="control-label">Titular</label>
+                        <input type="text" class="form-control" id="titular" name="titular" placeholder="Nombre del titular"
+                            value="{{ $instituto != null ? $instituto->titular : '' }}" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="cargo" class="control-label">Cargo</label>
+                        <input type="text" class="form-control" id="cargo" name="cargo" placeholder="Cargo del titular"
+                            value="{{ $instituto != null ? $instituto->cargo : '' }}" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="email_titular" class="control-label">Email del titular</label>
+                        <input type="email" class="form-control" id="email_titular" name="email_titular" placeholder="Email del titular"
+                            value="{{ $instituto != null ? $instituto->correo_titular : '' }}" required>
+                    </div>
+                </div>
+            </div>
+
             {{-- actualizado y fechas --}}
             <hr>
             <div class="row">

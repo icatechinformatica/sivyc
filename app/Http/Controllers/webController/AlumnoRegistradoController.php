@@ -13,7 +13,9 @@ use App\Models\Municipio;
 use App\Models\Estado;
 use App\Models\especialidad;
 use App\Models\curso;
+use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 // reference the Dompdf namespace
 use PDF;
 
@@ -24,8 +26,7 @@ class AlumnoRegistradoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $buscar = $request->get('busquedapor');
 
         $tipo = $request->get('tipo_busqueda');
@@ -101,17 +102,20 @@ class AlumnoRegistradoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $Especialidad = new especialidad;
-        $especialidades = $Especialidad->all();
+        $especialidades = $Especialidad->SELECT('id','nombre')->orderBy('nombre', 'asc')->GET();
         $municipio = new Municipio();
         $estado = new Estado();
         $municipios = $municipio->all();
         $estados = $estado->all();
         $curso = new curso();
-        $cursos = $curso->all();
+        //$cursos = $curso->all();
         //
+        $id_user = Auth::user()->id;    //dd($id_user);
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+        ->WHERE('role_user.user_id', '=', $id_user)
+            ->value('roles.slug');  //dd($rol);
         $id_alumno_registro = base64_decode($id);
         $alumnos = Alumno::WHERE('alumnos_registro.id', '=', $id_alumno_registro)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
@@ -128,6 +132,10 @@ class AlumnoRegistradoController extends Controller
                         'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_registro.id_especialidad', 'alumnos_registro.id_curso'
                     ]);
 
+        $ubicacion = tbl_unidades::SELECT('ubicacion')->WHERE('unidad', '=', $alumnos->unidad)->FIRST();
+        $unidad_seleccionada = '["'.$ubicacion->ubicacion.'"]';
+        $cursos = $curso->select('id','nombre_curso')->where([['tipo_curso', '=', $alumnos->tipo_curso], ['id_especialidad', '=', $alumnos->id_especialidad], ['estado', '=', true]])->orderBy('nombre_curso', 'asc')->get();
+
         $fecha_nac = explode("-", $alumnos->fecha_nacimiento);
         $anio_nac = $fecha_nac[0];
         $mes_nac = $fecha_nac[1];
@@ -135,7 +143,7 @@ class AlumnoRegistradoController extends Controller
 
 
 
-        return view('layouts.pages.alumno_registro_modificar', compact('alumnos', 'especialidades', 'municipios', 'estados', 'dia_nac', 'mes_nac', 'anio_nac', 'cursos'));
+        return view('layouts.pages.alumno_registro_modificar', compact('alumnos', 'especialidades', 'municipios', 'estados', 'dia_nac', 'mes_nac', 'anio_nac', 'cursos', 'unidad_seleccionada', 'ubicacion','rol'));
     }
 
     /**
@@ -156,6 +164,7 @@ class AlumnoRegistradoController extends Controller
             'grupo' => trim($request->input('grupo_mod')),
             'tipo_curso' => trim($request->input('tipo_curso_mod'))
         ];
+
         $alumnoId = base64_decode($idregistrado);
 
         $Alumno->WHERE('id', '=', $alumnoId)->UPDATE($array_solicitud);
@@ -184,16 +193,16 @@ class AlumnoRegistradoController extends Controller
                             ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                             ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
                             ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
-                            ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.cct')
-                            ->FIRST(['alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono',
+                            ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.unidad')
+                            ->FIRST(['alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono','alumnos_pre.telefono_casa','alumnos_pre.telefono_personal',
                             'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo','alumnos_pre.chk_acta_nacimiento','alumnos_pre.chk_curp','alumnos_pre.chk_comprobante_domicilio','alumnos_pre.chk_fotografia',
                             'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio','alumnos_pre.fotografia', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio','alumnos_pre.chk_ine','alumnos_pre.chk_pasaporte_licencia',
-                            'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
-                            'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
+                            'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.ultimo_grado_estudios','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
+                            'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad','alumnos_pre.empleado',
                             'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id',
-                            'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.unidad AS unidades', 'alumnos_registro.cerrs',
+                            'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct AS unidades', 'alumnos_registro.cerrs','cursos.tipo_curso',
                             'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo']);
-        $edad = Carbon::parse($alumnos->fecha_nacimiento)->age;
+        $edad = Carbon::parse($alumnos->fecha_nacimiento)->age; //dd($alumnos);
         $date = carbon::now()->toDateString();
         set_time_limit(300);
 
@@ -205,10 +214,10 @@ class AlumnoRegistradoController extends Controller
 
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg'));
         // (Optional) Setup the paper size and orientation
-        $pdf->setPaper('A4', 'portrait');
-        return $pdf->download('documento_sid_'.$alumnos->no_control.'.pdf');
+        $pdf->setPaper('Letter', 'portrait');
+        return $pdf->stream('documento_sid_'.$alumnos->no_control.'.pdf');
 
-        //return view('layouts.pdfpages.registroalumno', compact('alumnos','edad','date'));
+        //return view('layouts.pdfpages.registroalumno', compact('alumnos','edad','date','pathimg'));
     }
 
     protected function getDocumentoCerrsSid($nocontrol) {
@@ -243,6 +252,6 @@ class AlumnoRegistradoController extends Controller
         $pathimg = substr($alumnos->fotografia ,33);
 
         return PDF::loadView('layouts.pdfpages.registroalumno_cerss', compact('alumnos', 'edad','date','pathimg'))
-                ->setPaper('A4', 'portrait')->download('documento_sid_cerrs'.$alumnos->no_control.'.pdf');
+                ->setPaper('Letter', 'portrait')->stream('documento_sid_cerrs'.$alumnos->no_control.'.pdf');
     }
 }

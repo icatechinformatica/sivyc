@@ -33,9 +33,31 @@
                     <label for="inputno_memo">Numero de Memorandum</label>
                     <input id="no_memo" name="no_memo" type="text" class="form-control" value="{{$datap->no_memo}}">
                 </div>
+                <div class="form-group col-md-3">
+                    <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
+                    <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control" value="{{$datap->solicitud_fecha}}">
+                </div>
+            </div>
+            <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputeremite">Nombre de Remitente</label>
+                        <input id="remitente" name="remitente" type="text" class="form-control" value="{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputpuesto_para">Puesto de Remitente</label>
+                        <input id="remitente_puesto" readonly name="remitente_puesto" type="text" class="form-control" value="{{$director->puesto}}" required>
+                        <input id="id_remitente" name="id_remitente" value="{{$director->id}}" hidden required>
+                    </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputelaboro">Nombre de Quien Elabora</label>
                     <input id="nombre_elabora" name="nombre_elabora" type="text" class="form-control" value="{{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}">
+
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputpuesto_para">Puesto de Quien Elabora</label>
+                    <input id="puesto_elabora" readonly name="puesto_elabora" type="text" class="form-control" value="{{$para->puesto}}">
                     <input id="id_elabora" name="id_elabora" hidden value="{{$directorio->solpa_elaboro}}">
                 </div>
             </div>
@@ -58,16 +80,10 @@
                 <br>favor de subir la indicada, de lo contrario dejar sin seleccionar archivos en las opciones</h6>
             </label>
             <div class="form-row">
-                @if($datac->arch_factura == NULL)
                     <div class="form-group col-md-3">
                         <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
                     </div>
-                @else
-                <div class="form-group col-md-3">
-                    <label for="input arch_factura" class="control-label"><h4>La Factura de Instructor ya fue Cargada.</h4></label>
-                </div>
-                @endif
                 <div class="form-group col-md-3">
                     <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
                     <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
@@ -119,15 +135,15 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre_banco" class="control-label">Nombre de Banco</label>
-                    <input type="text" name="nombre_banco" id="nombre_banco" class="form-control" disabled>
+                    <input type="text" name="nombre_banco" id="nombre_banco" class="form-control" value="{{$bancario->banco}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputnumero_cuenta" class="control-label">Número de Cuenta</label>
-                    <input type="text" name="numero_cuenta" id="numero_cuenta" class="form-control" disabled>
+                    <input type="text" name="numero_cuenta" id="numero_cuenta" class="form-control" value="{{$bancario->no_cuenta}}" disabled>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe" class="control-label">Clabe Interbancaria</label>
-                    <input type="text" name="clabe" id="clabe" class="form-control" disabled>
+                    <input type="text" name="clabe" id="clabe" class="form-control" value="{{$bancario->interbancaria}}" disabled>
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -162,7 +178,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp3">Nombre</label>
-                        <input id="ccp3" name="ccp3" type="text" class="form-control" value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}">>
+                        <input id="ccp3" name="ccp3" type="text" class="form-control" value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
@@ -186,7 +202,9 @@
         <br>
     </div>
 @endsection
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
 <script>
     $(function(){
 
@@ -213,3 +231,5 @@
         });
     });
 </script>
+@endsection
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

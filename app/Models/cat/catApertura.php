@@ -52,17 +52,19 @@ trait catApertura
     }
     
     protected function convenio($unidad,$tipo){  
-        $convenio = DB::table('convenios')->where('tipo_convenio',$tipo)->where('activo','true')->where('unidades','like','%'.$unidad.'%')->orderby('no_convenio')->pluck('no_convenio','id');    
+        $convenio = DB::table('convenios')->where('tipo_convenio',$tipo)->where('activo','true')
+        ->WHERE('fecha_vigencia','>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
+        ->where('unidades','like','%'.$unidad.'%')->orderby('no_convenio')->pluck('no_convenio','id');    
         return $convenio;       
     }
     
     protected function exoneracion($id_unidad){  
-        $exoneracion = DB::table('exoneraciones')->where('activo','true')->where('id_unidad_capacitacion',$id_unidad)->orderby('no_memorandum')->pluck('no_memorandum','no_memorandum');        
+        $exoneracion = DB::table('exoneraciones')->where('activo','true')->whereIn('id_unidad_capacitacion',[$id_unidad,0])->orderby('no_memorandum')->pluck('no_memorandum','no_memorandum');        
         return $exoneracion;       
     }
 
     protected function programa(){  
-        $programa = DB::table('tbl_cursos')->where('programa','!=','0')
+        $programa = DB::table('tbl_cursos')->where('programa','!=','0')->where('programa','!=','N')->where('programa', 'not like', '%21%')
         ->where('programa','!=','NINGUNA')->distinct()->orderby('programa')->pluck('programa','programa');    
         return $programa;       
     }
@@ -88,7 +90,7 @@ trait catApertura
             ->select('instructores.id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')
-            ->whereJsonContains('unidades_disponible', [$unidad])
+            //->whereJsonContains('unidades_disponible', [$unidad])
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')

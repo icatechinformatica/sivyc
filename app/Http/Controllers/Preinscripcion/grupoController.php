@@ -43,7 +43,7 @@ class grupoController extends Controller
         $message = NULL;
         if(isset($_SESSION['folio_grupo'])){  //echo $_SESSION['folio_grupo'];exit;
             $anio_hoy = date('y');
-            $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ar.turnado','ap.nombre','apellido_paterno','apellido_materno',
+            $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ar.no_control','ar.turnado','ap.nombre','apellido_paterno','apellido_materno',
                 'ar.id_curso','ar.tipo_curso','ar.id_cerss','ar.horario','ap.ultimo_grado_estudios','ar.tinscripcion','ar.unidad','ar.folio_grupo','ap.curp',
                 DB::raw("substring(curp,11,1) as sex"),                     
                 DB::raw("CASE WHEN substring(curp,5,2) <='".$anio_hoy."' 
@@ -110,6 +110,7 @@ class grupoController extends Controller
         $matricula = $message = NULL;
         if($curp){
             $alumno = DB::table('alumnos_pre')->select('id as id_pre','matricula')->where('curp',$curp)->where('activo',true)->first();
+            if($_SESSION['folio_grupo'] AND DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','<>','VINCULACION')->exists() == true) $_SESSION['folio_grupo'] = NULL;
             if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();           
           
             if($alumno){                  
@@ -187,7 +188,7 @@ class grupoController extends Controller
     }
     
     public function genera_folio(){
-         $consec = DB::table('alumnos_registro')->where('ejercicio',$this->ejercicio)->where('cct',$this->data['cct_unidad'])->where('eliminado',false)->value(DB::RAW('count(distinct(folio_grupo))'))+1;
+         $consec = DB::table('alumnos_registro')->where('ejercicio',$this->ejercicio)->where('cct',$this->data['cct_unidad'])->where('eliminado',false)->value(DB::RAW('max(cast(substring(folio_grupo,7,4) as int))'))+1;
          $consec = str_pad($consec, 4, "0", STR_PAD_LEFT);                            
          $folio = $this->data['cct_unidad']."-".$this->ejercicio.$consec;
          

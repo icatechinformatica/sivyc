@@ -61,17 +61,19 @@ class asignarfoliosController extends Controller
             $num_folio = $acta->num_inicio+$acta->contador; //echo $num_folio;exit;
             $fecha_expedicion = $curso->termino;
             
-            $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','f.folio','f.fecha_expedicion','f.movimiento','f.motivo')
+            $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','f.folio','f.fecha_expedicion','f.movimiento','f.motivo',
+            DB::raw('(select count(id) from tbl_folios where i.id_curso = tbl_folios.id_curso and i.matricula = tbl_folios.matricula) as total_expedidos'))
                     ->where('i.status','INSCRITO')->leftjoin('tbl_folios as f','f.id','i.id_folio');
                     if($matricula)$alumnos = $alumnos->where('i.matricula',$matricula);                             
                     $alumnos = $alumnos->where('i.id_curso',$id_curso)->orderby('i.alumno')->get();
+            
                    // var_dump($alumnos);exit;
             foreach($alumnos as $a){  //var_dump($a);exit;
                 if($num_folio<=$acta->num_fin){
                     if((!$a->folio AND $a->calificacion !="NP") OR ($a->movimiento=="CANCELADO" AND $a->reexpedicion==false))  {
                         
                         $motivo= "ACREDITADO";
-                        if($a->movimiento=="CANCELADO"){
+                        if($a->total_expedidos>=1){
                             $reexpedicion=true;
                             if($a->motivo=='ROBO O EXTRAVIO' OR $a->motivo=='NO SOLICITADO')$movimiento='DUPLICADO';
                             else $movimiento='REEXPEDIDO';                            
@@ -138,14 +140,17 @@ class asignarfoliosController extends Controller
                     }
                // var_dump($acta);exit;
                 ///ALUMNOS REGISTRADOS
-                $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','i.id_folio as id_folioi','f.folio','f.fecha_expedicion','f.movimiento','f.motivo','f.id as id_foliof')
+                $alumnos = DB::table('tbl_inscripcion as i')->select('i.id','i.matricula','i.alumno','i.calificacion','i.reexpedicion','i.id_folio as id_folioi','f.folio','f.fecha_expedicion','f.movimiento','f.motivo','f.id as id_foliof',
+                    DB::raw('(select count(id) from tbl_folios where i.id_curso = tbl_folios.id_curso and i.matricula = tbl_folios.matricula) as total_expedidos'))
                     ->where('i.status','INSCRITO');
-                    if($matricula)$alumnos = $alumnos->where('i.matricula',$matricula);
+                    
+                    if($matricula)$alumnos = $alumnos->where('i.matricula',$matricula);                    
                     $alumnos = $alumnos->leftJoin('tbl_folios as f', function($join){                                        
                         $join->on('f.id_curso', '=', 'i.id_curso');
                         $join->on('f.matricula', '=', 'i.matricula');
-                    }); 
-                    $alumnos = $alumnos->where('i.id_curso',$curso->id)->orderby('i.alumno')->get();                  
+                    });                     
+                    $alumnos = $alumnos->where('i.id_curso',$curso->id)->orderby('i.alumno')->orderby('f.folio','DESC')->get();                    
+                                      
                //var_dump($alumnos);exit;
                 if(count($alumnos)==0) $message = "El curso no tiene alumnos registrados. ";
                 elseif(count($alumnos)>0) if(!$alumnos[0]->calificacion)$message = "No hay registro de calificaciones, no podrá asignar folios. ";

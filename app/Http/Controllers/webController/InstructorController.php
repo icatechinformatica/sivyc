@@ -24,6 +24,9 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FormatoTReport;
 
 class InstructorController extends Controller
 {
@@ -39,12 +42,28 @@ class InstructorController extends Controller
     public function index(Request $request)
     {
         $busquedaInstructor = $request->get('busquedaPorInstructor');
-
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
 
-        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->where('id', '!=', '0')->PAGINATE(25, [
-            'nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id'
-        ]);
+        $unidadUser = Auth::user()->unidad;
+
+        $userId = Auth::user()->id;
+
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', $userId)
+            ->GET();
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor')
+        {
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+        }
+        else
+        {
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            ->WHERE('estado' ,'=', true)
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+        }
         return view('layouts.pages.initinstructor', compact('data'));
     }
 
@@ -63,6 +82,7 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
+        $userId = Auth::user()->id;
 
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
         if(is_null($verify) == TRUE)
@@ -90,6 +110,7 @@ class InstructorController extends Controller
             $saveInstructor->domicilio = $request->domicilio;
             $saveInstructor->numero_control = "Pendiente";
             $saveInstructor->status = "En Proceso";
+            $saveInstructor->lastUserId = $userId;
 
             if ($request->file('arch_ine') != null)
             {
@@ -176,9 +197,12 @@ class InstructorController extends Controller
 
     public function rechazo_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $saveInstructor = instructor::find($request->id);
         $saveInstructor->rechazo = $request->comentario_rechazo;
         $saveInstructor->status = "Rechazado";
+        $saveInstructor->lastUserId = $userId;
         $saveInstructor->save();
 
         return redirect()->route('instructor-inicio')
@@ -187,6 +211,7 @@ class InstructorController extends Controller
 
     public function validado_save(Request $request)
     {
+        $userId = Auth::user()->id;
         $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
         'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
         'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
@@ -211,6 +236,7 @@ class InstructorController extends Controller
         $instructor->status = "Validado";
         $instructor->estado = TRUE;
         $instructor->unidades_disponible = $unidades;
+        $instructor->lastUserId = $userId;
 
         //Creacion de el numero de control
         $uni = substr($request->unidad_registra, -2);
@@ -235,6 +261,7 @@ class InstructorController extends Controller
 
     public function guardar_mod(Request $request)
     {
+        $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
 
         $modInstructor->nombre = trim($request->nombre);
@@ -245,6 +272,7 @@ class InstructorController extends Controller
         $modInstructor->no_cuenta = $request->numero_cuenta;
         $modInstructor->domicilio = $request->domicilio;
         $modInstructor->status = "En Proceso";
+        $modInstructor->lastUserId = $userId;
 
         if ($request->file('arch_ine') != null)
         {
@@ -334,9 +362,10 @@ class InstructorController extends Controller
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
         // consulta
-        $validado = $instructor_perfil->SELECT('especialidades.nombre',
+        $validado = $instructor_perfil->SELECT('especialidades.nombre', 'especialidad_instructores.id as espinid',
         'especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
-        'especialidad_instructores.memorandum_validacion')
+        'especialidad_instructores.memorandum_validacion','especialidad_instructores.criterio_pago_id',
+        'especialidad_instructores.fecha_validacion','especialidad_instructores.activo')
                         ->WHERE('instructor_perfil.numero_control', '=', $id)
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
@@ -346,7 +375,7 @@ class InstructorController extends Controller
 
     public function save_ins(Request $request)
     {
-
+        $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
 
         $old = $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno . ' ' . $modInstructor->nombre;
@@ -386,6 +415,7 @@ class InstructorController extends Controller
         $modInstructor->interbancaria = $request->clabe;
         $modInstructor->no_cuenta = $request->numero_cuenta;
         $modInstructor->domicilio = $request->domicilio;
+        $modInstructor->lastUserId = $userId;
 
 
         if ($request->file('arch_ine') != null)
@@ -458,20 +488,40 @@ class InstructorController extends Controller
         //$affecttbl_cursos = DB::table("tbl_cursos")->WHERE('nombre', $old)->update(['nombre' =>$new]);
 
         Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
-        Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
+        //Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
         tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
+        tbl_curso::where('id_instructor', '=', $request->id)->update(['curp' => $request->curp]);
 
 
         return redirect()->route('instructor-inicio')
                 ->with('success','Instructor Modificado');
     }
 
-    public function edit_especval($id,$idins)
+    /*public function edit_especval($id,$idins)
     {
         $idesp = $id;
         $idins = $idins;
         $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
         return view('layouts.pages.modcursoimpartir', compact('data_especialidad','idesp','idins'));
+    }*/
+
+    public function edit_especval($id,$idins)
+    {
+        $especvalid = especialidad_instructor::WHERE('id', '=', $id)->FIRST();
+        $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
+        $data_pago = criterio_pago::ALL();
+        $data_unidad = tbl_unidades::ALL();
+        $nomesp = especialidad::ALL();
+        $catcursos = curso::WHERE('id_especialidad', '=', $especvalid->especialidad_id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+        $listacursos= DB::table('especialidad_instructor_curso')->SELECT('especialidad_instructor_curso.activo',
+                'cursos.id','cursos.nombre_curso','cursos.modalidad','cursos.objetivo','cursos.costo',
+                'cursos.duracion','cursos.objetivo','cursos.tipo_curso','cursos.id_especialidad',
+                'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
+                ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
+                ->WHERE('id_especialidad_instructor', '=', $id)->GET();
+        //dd($listacursos);
+
+        return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'id','idins','nomesp', 'catcursos','listacursos'));
     }
 
     public function edit_especval2($id, $idins, $idesp)
@@ -510,6 +560,8 @@ class InstructorController extends Controller
 
     public function modperfilinstructor_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $perfilInstructor = InstructorPerfil::find($request->id);
         #proceso de guardado
         $perfilInstructor->grado_profesional = trim($request->grado_prof); //
@@ -530,6 +582,7 @@ class InstructorController extends Controller
         $perfilInstructor->experiencia_laboral = trim($request->exp_lab);
         $perfilInstructor->experiencia_docente = trim($request->exp_doc);
         $perfilInstructor->numero_control = trim($request->idInstructor);
+        $perfilInstructor->lastUserId = $userId;
         $perfilInstructor->save(); // guardar registro
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
@@ -539,6 +592,8 @@ class InstructorController extends Controller
 
     public function perfilinstructor_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $perfilInstructor = new InstructorPerfil();
         #proceso de guardado
         $perfilInstructor->grado_profesional = trim($request->grado_prof); //
@@ -559,6 +614,7 @@ class InstructorController extends Controller
         $perfilInstructor->experiencia_laboral = trim($request->exp_lab);
         $perfilInstructor->experiencia_docente = trim($request->exp_doc);
         $perfilInstructor->numero_control = trim($request->idInstructor);
+        $perfilInstructor->lastUserId = $userId;
         $perfilInstructor->save(); // guardar registro
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
@@ -569,13 +625,13 @@ class InstructorController extends Controller
     public function add_cursoimpartir($id)
     {
         $idins = $id;
-        $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
+        $data_especialidad = especialidad::where('id', '!=', '0')->orderBy('nombre','asc')->paginate(20);
         return view('layouts.pages.frmcursoimpartir', compact('data_especialidad','idins'));
     }
 
     public function cursoimpartir_form($id, $idins)
     {
-        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional']);
+        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
         $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
@@ -585,8 +641,10 @@ class InstructorController extends Controller
 
     public function especval_mod_save(Request $request)
     {
+        $userId = Auth::user()->id;
+
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
-        $espec_mod->especialidad_id = $request->idesp;
+        //$espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;
         $espec_mod->unidad_solicita = $request->unidad_validacion;
         $espec_mod->memorandum_validacion = $request->memorandum;
@@ -594,17 +652,51 @@ class InstructorController extends Controller
         $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_mod->observacion = $request->observaciones;
         $espec_mod->criterio_pago_id = $request->criterio_pago_mod;
+        if(isset($request->estado))
+        {
+            $espec_mod->activo = TRUE;
+        }
+        else
+        {
+            $espec_mod->activo = FALSE;
+        }
+        $espec_mod->lastUserId = $userId;
         $espec_mod->save();
         // declarar un arreglo
-        $pila_edit = array();
+        //$pila_edit = array();
         // se trabajará en el loop
-        $cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+        //$cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+        $listacursos = DB::table('especialidad_instructor_curso')
+        ->WHERE('id_especialidad_instructor', '=', $request->idespec)->GET();
         // eliminar registros previamente
-        $cursos_mod->cursos()->detach();
+        //$cursos_mod->cursos()->detach();
+        foreach ($listacursos as $cadwell)
+        {
+            foreach ($request->itemEdit as $new)
+            {
+                //dd($new['check_cursos_edit']);
+                if($cadwell->curso_id == $new['check_cursos_edit'])
+                {
+                    DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
+                        ->where('id_especialidad_instructor', '=', $request->idespec)
+                        ->update(['activo' => TRUE,
+                                  'id_especialidad_instructor'  => $request->valido_perfil]);
+                    break;
+                }
+                else
+                {
+                    DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
+                        ->where('id_especialidad_instructor', '=', $request->idespec)
+                        ->update(['activo' => FALSE,
+                                  'id_especialidad_instructor'  => $request->valido_perfil]);
+                }
+            }
+        }
 
         //dd($request->itemEdit);
+        //dd($request->itemEdit);
 
-        foreach ( (array) $request->itemEdit as $key => $value) {
+        /*foreach ( (array) $request->itemEdit as $key => $value) {
             # iteramos en el loop para cargar los datos seleccionados
             if(isset($value['check_cursos_edit']))
             {
@@ -614,11 +706,11 @@ class InstructorController extends Controller
                 array_push($pila_edit, $arreglos_edit);
             }
 
-        }
+        }*/
 
-        $cursos_mod->cursos()->attach($pila_edit);
+        //$cursos_mod->cursos()->attach($pila_edit);
         // Eliminar todos los elementos del array
-        unset($pila_edit);
+        //unset($pila_edit);
 
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
@@ -626,6 +718,8 @@ class InstructorController extends Controller
 
     public function espec_val_save(Request $request)
     {
+        $userId = Auth::user()->id;
+        //dd($request);
         $espec_save = new especialidad_instructor;
         $espec_save->especialidad_id = $request->idespec;
         $espec_save->perfilprof_id = $request->valido_perfil;
@@ -635,31 +729,64 @@ class InstructorController extends Controller
         $espec_save->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_save->observacion = $request->observaciones;
         $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
+        $espec_save->lastUserId = $userId;
+        $espec_save->activo = TRUE;
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
         $especialidadInstrcutorId = $espec_save->id;
         // declarar un arreglo
         $pila = array();
 
-        // se trabajará en un loop
-        foreach( (array) $request->itemAdd as $key => $value)
+        $listacursos = DB::table('cursos')->WHERE('id_especialidad', '=', $request->idespec)->GET();
+        // eliminar registros previamente
+        //$cursos_mod->cursos()->detach();
+
+        foreach ($listacursos as $cadwell)
+        {
+            print('que pedo ' . $cadwell->id . ' **** ');
+            foreach ($request->itemAdd as $key=>$new)
+            {
+                print('ahi va '. $new['check_cursos']. ' -_-_- ');
+                if($cadwell->id == $new['check_cursos'])
+                {
+                    print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                    DB::table('especialidad_instructor_curso')
+                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                  'curso_id' => $cadwell->id,
+                                  'activo' => TRUE]);
+                    break;
+                }
+                else if(array_key_last($request->itemAdd) == $key)
+                {
+                    print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                    DB::table('especialidad_instructor_curso')
+                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                  'curso_id' => $cadwell->id,
+                                  'activo' => FALSE]);
+                    break;
+                }
+            }
+        }
+        //dd($especialidadInstrcutorId);
+        /*foreach( (array) $request->itemAdd as $key => $value)
         {
             if(isset($value['check_cursos']))
             {
                 $arreglos = [
-                    'curso_id' => $value['check_cursos']
+                    'curso_id' => $value['check_cursos'],
+                    'activo' => TRUE
                 ];
                 array_push($pila, $arreglos);
             }
         }
-        // hacemos la llamada al módelo
+         hacemos la llamada al módelo
         $instructorEspecialidad = new especialidad_instructor();
         $especialidadesInstructoresCurso = $instructorEspecialidad->findOrFail($especialidadInstrcutorId);
 
         $especialidadesInstructoresCurso->cursos()->attach($pila);
 
-        // limpiar array
-        unset($pila);
+         limpiar array
+        unset($pila);*/
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');
@@ -885,6 +1012,148 @@ class InstructorController extends Controller
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, [
             'path' => Paginator::resolveCurrentPath()
         ]);
+    }
+
+    public function exportar_instructores()
+    {
+        $data = instructor::SELECT('instructores.id','tbl_unidades.unidad','instructores.apellidoPaterno',
+                'instructores.apellidoMaterno','instructores.nombre',
+                DB::raw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
+                DB::raw("array(select fecha_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as fechaval"),
+                DB::raw("array(select especialidades.clave from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as clave"),
+                DB::raw("array(select criterio_pago_id from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as criteriopago"),
+                DB::raw("array(select grado_profesional from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as grado"),
+                DB::raw("array(select estatus from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as estatus"),
+                DB::raw("array(select area_carrera from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as area"),
+                DB::raw("array(select nombre_institucion from instructor_perfil
+                where instructores.id = instructor_perfil.numero_control )as institucion"),
+                'instructores.sexo','instructores.estado_civil',
+                'instructores.asentamiento','instructores.domicilio','instructores.telefono','instructores.correo',
+                DB::raw("array(select memorandum_validacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
+                DB::raw("array(select observacion from especialidad_instructores
+                LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
+                ->WHERE('instructores.estado', '=', TRUE)
+                ->whereRaw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
+                ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+                ->ORDERBY('apellidoPaterno', 'ASC')
+                ->GET();
+
+        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
+                    'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
+                    'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','SEXO','ESTADO_CIVIL',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION',
+                    'OBSERVACION'];
+
+        $nombreLayout = "Catalogo de instructores.xlsx";
+        $titulo = "Catalogo de instructores";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
+    }
+
+    public function exportar_instructoresByEspecialidad()
+    {
+        $data = Especialidad::SELECT('especialidades.id','especialidades.nombre','especialidades.clave',
+                DB::raw('Array( SELECT CONCAT(instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno", '."' '".' ,
+                instructores.nombre) from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS ins'),
+                DB::raw('Array( SELECT instructores.numero_control from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS numero_control'),
+                DB::raw("array(select especialidad_instructores.criterio_pago_id from especialidad_instructores
+                where especialidad_instructores.especialidad_id = especialidades.id) as criteriopago"),
+                DB::raw("array(select instructor_perfil.grado_profesional from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                where especialidad_instructores.especialidad_id = especialidades.id) as gradoprof"),
+                DB::raw("array(select instructor_perfil.estatus from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                where especialidad_instructores.especialidad_id = especialidades.id) as estatus"),
+                DB::raw("array(select instructor_perfil.area_carrera from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                where especialidad_instructores.especialidad_id = especialidades.id) as area"),
+                DB::raw("array(select instructor_perfil.nombre_institucion from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                where especialidad_instructores.especialidad_id = especialidades.id) as institucion"),
+                DB::raw('Array( SELECT instructores.rfc from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS rfc'),
+                DB::raw('Array( SELECT instructores.curp from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS curp'),
+                DB::raw('Array( SELECT instructores.sexo from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS sexo'),
+                DB::raw('Array( SELECT instructores.estado_civil from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS estado_civil'),
+                DB::raw('Array( SELECT instructores.asentamiento from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS asentamiento'),
+                DB::raw('Array( SELECT instructores.domicilio from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS domicilio'),
+                DB::raw('Array( SELECT instructores.telefono from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS telefono'),
+                DB::raw('Array( SELECT instructores.correo from especialidad_instructores
+                inner join instructor_perfil on instructor_perfil.id = especialidad_instructores.perfilprof_id
+                inner join instructores on instructores.id = instructor_perfil.numero_control
+                where especialidad_instructores.especialidad_id = especialidades.id) AS correo'),
+                DB::raw("array(select especialidad_instructores.memorandum_validacion from especialidad_instructores
+                where especialidad_instructores.especialidad_id = especialidades.id) as memo"),
+                DB::raw("array(select especialidad_instructores.fecha_validacion from especialidad_instructores
+                where especialidad_instructores.especialidad_id = especialidades.id) as fechaval"),
+                DB::raw("array(select especialidad_instructores.observacion from especialidad_instructores
+                where especialidad_instructores.especialidad_id = especialidades.id) as observacion"))
+                /*
+                ->WHERE('instructores.estado', '=', TRUE)
+                ->whereRaw("array(select especialidades.nombre from especialidad_instructores
+                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
+                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")*/
+                //->ORDERBY('apellidoPaterno', 'ASC')
+                ->GET();
+
+        $cabecera = ['ID','ESPECIALIDAD','CLAVE','NOMBRE','NUMERO COTROL','CRITERIO PAGO',
+                    'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
+                    'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','RFC','CURP','SEXO','ESTADO_CIVIL',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','UNIDAD DE CAPACITACION','MEMORANDUM DE VALIDACION',
+                    'FECHA DE VALIDACION','OBSERVACION'];
+
+        $nombreLayout = "Catalogo de instructores.xlsx";
+        $titulo = "Catalogo de instructores";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
     }
 }
 

@@ -167,7 +167,7 @@
                             <label class="custom-control-label" for="chk_san_cristobal"></label>
                         </td>
                         @foreach ( $available as $data)
-                            @if ($data == 'SAN_CRISTOBAL')
+                            @if ($data == 'SAN CRISTOBAL')
                                 <script type="text/javascript">determinador("chk_san_cristobal");</script>
                             @endif
                         @endforeach
@@ -178,7 +178,7 @@
                             <label class="custom-control-label" for="chk_chiapa_de_corzo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            @if ($data == 'CHIAPA_DE_CORZO')
+                            @if ($data == 'CHIAPA DE CORZO')
                                 <script type="text/javascript">determinador("chk_chiapa_de_corzo");</script>
                             @endif
                         @endforeach
@@ -234,7 +234,7 @@
                             <label class="custom-control-label" for="chk_la_concordia"></label>
                         </td>
                         @foreach ( $available as $data)
-                        @if ($data == 'LA_CONCORDIA')
+                        @if ($data == 'LA CONCORDIA')
                         <script type="text/javascript">determinador("chk_la_concordia");</script>
                     @endif
                         @endforeach
@@ -246,7 +246,7 @@
                             <label class="custom-control-label" for="chk_venustiano_carranza"></label>
                         </td>
                         @foreach ( $available as $data)
-                            @if ($data == 'VENUSTIANO_CARRANZA')
+                            @if ($data == 'VENUSTIANO CARRANZA')
                                 <script type="text/javascript">determinador("chk_venustiano_carranza");</script>
                             @endif
                         @endforeach
@@ -324,7 +324,7 @@
                             <label class="custom-control-label" for="chk_angel_albino_corzo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            @if ($data == 'ANGEL_ALBINO_CORZO')
+                            @if ($data == 'ANGEL ALBINO CORZO')
                                 <script type="text/javascript">determinador("chk_angel_albino_corzo");</script>
                             @endif
                         @endforeach
@@ -392,7 +392,7 @@
                             <label class="custom-control-label" for="chk_villa_corzo"></label>
                         </td>
                         @foreach ( $available as $data)
-                            @if ($data == 'VILLA_CORZO')
+                            @if ($data == 'VILLA CORZO')
                                 <script type="text/javascript">determinador("chk_villa_corzo");</script>
                             @endif
                         @endforeach
@@ -414,7 +414,7 @@
                             <label class="custom-control-label" for="chk_once_de_abril"></label>
                         </td>
                         @foreach ( $available as $data)
-                            @if ($data == 'ONCE_DE_ABRIL')
+                            @if ($data == 'ONCE DE ABRIL')
                                 <script type="text/javascript">determinador("chk_once_de_abril");</script>
                             @endif
                         @endforeach
@@ -426,7 +426,7 @@
                             <label class="custom-control-label" for="chk_tuxtla_chico"></label>
                         </td>
                         @foreach ( $available as $data)
-                            @if ($data == 'TUXTLA_CHICO')
+                            @if ($data == 'TUXTLA CHICO')
                                 <script type="text/javascript">determinador("chk_tuxtla_chico");</script>
                             @endif
                         @endforeach

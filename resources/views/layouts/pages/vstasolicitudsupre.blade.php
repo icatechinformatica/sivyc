@@ -33,8 +33,26 @@
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha">FECHA</option>
                         </select>
-
-                        {!! Form::text('busquedaporSuficiencia', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        <Div id="divunidades" name="divunidades" class="d-none d-print-none">
+                            <select name="unidad" class="form-control mr-sm-2" id="unidad">
+                                <option value="">SELECCIONE UNIDAD</option>
+                                @foreach ($unidades as $cadwell)
+                                    <option value="{{$cadwell->unidad}}">{{$cadwell->unidad}}</option>
+                                @endforeach
+                            </select>
+                        </Div>
+                        <div id="divcampo" name="divcampo">
+                            {!! Form::text('busquedaporSuficiencia', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                        </div>
+                        <Div id="divstat" name="divstat">
+                            <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
+                                <option value="">BUSQUEDA POR STATUS</option>
+                                <option value="En_Proceso">EN PROCESO</option>
+                                <option value="Validado">VALIDADO</option>
+                                <option value="Contratado">CONTRATADO</option>
+                                <option value="Rechazado">RECHAZADO</option>
+                            </select>
+                        </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
                 </div>
@@ -122,6 +140,24 @@
                                         </button>
                                     @endcan
                                 @endif
+                                @can('supre.restart')
+                                    <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                        data-toggle="modal" data-placement="top"
+                                        data-target="#restartModal"
+                                        data-id='{{$itemData->id}}'
+                                        title="Reiniciar Suficiencia Presupuestal">
+                                        <i class="fa fa-history"></i>
+                                    </button>
+                                @endcan
+                                @can('folio.modificar')
+                                    <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                        data-toggle="modal" data-placement="top"
+                                        data-target="#modfolioModal"
+                                        data-id='{{$itemData->id}}'
+                                        title="Otorgar Permiso de Modificacion a Folio Validado">
+                                        <i class="fa fa-history"></i>
+                                    </button>
+                                @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
@@ -234,6 +270,70 @@
             </div>
         </div>
     <!-- END -->
+    <!-- Modal -->
+    <div class="modal fade" id="restartModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <a class="btn btn-success" id="confirm_restart" name="confirm_restart" href="#">Aceptar</a>
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- END -->
+<!-- Modal -->
+<div class="modal fade" id="modfolioModal" role="dialog">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Seleccione el Folio de Validación</b></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="form-row">
+                    <div class="form-group col-md-4"></div>
+                        <div class="form-group col-md-4">
+                            <label for="unidad" class="control-label">Folio de Validación </label>
+                            <select name="folios" id="folios" class="form-control">
+                            <option value="sin especificar">SIN ESPECIFICAR</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-primary" >Aceptar</button>
+                        </div>
+                        <div class="form-group col-md-2"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+<!-- END -->
     </div>
     <br>
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/modals.js") }}"></script>
+<script src="{{ asset("js/validate/filtersupre.js") }}"></script>
 @endsection

@@ -3,6 +3,15 @@
 @section('title', 'Registro de Pago | SIVyC Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div> <br>
+        @endif
         <div style="text-align: right;width:60%">
             <label><h1>Registro de Pago</h1></label>
         </div>
@@ -88,4 +97,8 @@
         </form>
     </section>
     <br>
-@stop
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+@endsection

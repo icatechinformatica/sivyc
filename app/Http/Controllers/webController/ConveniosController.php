@@ -5,17 +5,16 @@ namespace App\Http\Controllers\webController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Convenio;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 // use Illuminate\Support\Facades\File;
 use App\Models\Municipio;
 use App\Models\convenioAvailable;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToArray;
 use PhpParser\Node\Stmt\Foreach_;
 use SebastianBergmann\Environment\Console;
-use Illuminate\Support\Facades\DB;
 
 use function Complex\add;
 
@@ -42,9 +41,9 @@ class ConveniosController extends Controller
      */
     public function create() {
         // mostrar formulario de convenio
-        $municipios = DB::table('tbl_municipios')->get();
-        $unidades = DB::table('tbl_unidades')->get();
-        return view('layouts.pages.frmconvenio', compact('municipios', 'unidades'));
+        $unidades = \DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
+        $estados = \DB::table('estados')->orderBy('estados.id')->get();
+        return view('layouts.pages.frmconvenio', compact('estados', 'unidades'));
     }
 
     /**
@@ -84,7 +83,12 @@ class ConveniosController extends Controller
 
         $convenios['telefono'] = trim($request->input('telefono'));
         $convenios['fecha_firma'] = $convenios->getMyDateFormat($request->input('fecha_firma'));
-        $convenios['fecha_vigencia'] = $convenios->getMyDateFormat($request->input('fecha_termino'));
+
+        $convenios['fecha_vigencia'] = null;
+        if ($request->input('fecha_termino') != null) {
+            $convenios['fecha_vigencia'] = $convenios->getMyDateFormat($request->input('fecha_termino'));
+        }
+
         $convenios['poblacion'] = trim($request->input('poblacion'));
         $convenios['municipio'] = trim($request->input('municipio'));
         $convenios['nombre_titular'] = trim($request->input('nombre_titular'));
@@ -96,6 +100,16 @@ class ConveniosController extends Controller
         $convenios['tipo_convenio'] = trim($request->input('tipo_convenio'));
         $convenios['telefono_enlace'] = trim($request->input('telefono_enlace'));
         $convenios['id_municipio'] = trim($request->input('municipio'));
+
+        $convenios['correo_institucion'] = null;
+        if ($request->input('correo_ins') != null) {
+            $convenios['correo_institucion'] = trim($request->input('correo_ins'));
+        }
+        $convenios['correo_enlace'] = null;
+        if ($request->input('correo_en') != null) {
+            $convenios['correo_enlace'] = trim($request->input('correo_en'));
+        }
+        $convenios['id_estado'] = trim($request->input('estadoG'));
 
         $publicar = 'false';
         if ($request->input('publicar') != null) {
@@ -178,9 +192,10 @@ class ConveniosController extends Controller
         //
         $idConvenio = base64_decode($id);
         $convenios = Convenio::findOrfail($idConvenio);
-        $municipios = DB::table('tbl_municipios')->get();
-        $unidades = DB::table('tbl_unidades')->get();
-        return view('layouts.pages.editconvenio', ['convenios' => $convenios, 'municipios' => $municipios, 'unidades' => $unidades]);
+        $municipios = \DB::table('tbl_municipios')->where('tbl_municipios.id_estado', '=', $convenios->id_estado)->get();
+        $unidades = \DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
+        $estados = \DB::table('estados')->orderBy('estados.id')->get();
+        return view('layouts.pages.editconvenio', ['convenios'=>$convenios, 'unidades'=>$unidades, 'municipios'=>$municipios, 'estados'=>$estados]);
     }
 
     /**
@@ -218,13 +233,15 @@ class ConveniosController extends Controller
                 'nombre_enlace' => trim($request->nombre_enlace),
                 'direccion' => trim($request->direccion),
                 'telefono' => trim($request->telefono),
-
                 'tipo_convenio' => trim($request->tipo_convenio),
                 'nombre_firma' => trim($request->nombre_firma),
                 'telefono_enlace' => trim($request->telefono_enlace),
                 'id_municipio' => trim($request->id_municipio),
                 'activo' => trim($publicar),
                 'sector' => trim($request->tipo),
+                'correo_institucion' => $request->correo_ins,
+                'correo_enlace' => $request->correo_en,
+                'id_estado' => $request->estadoG,
                 'unidades' => json_encode($unity)
             ];
 
@@ -246,7 +263,7 @@ class ConveniosController extends Controller
                 }
 
                 $archivo_convenio = $request->file('archivo_convenio'); # obtenemos el archivo
-                $url_archivo_convenio = $this->uploaded_file($archivo_convenio, $idConvenio, 'arcivo_convenio'); #invocamos el método
+                $url_archivo_convenio = $this->uploaded_file($archivo_convenio, $idConvenio, 'archivo_convenio'); #invocamos el método
                 // guardamos en la base de datos
                 $convenioUpdate = Convenio::findOrfail($idConvenio);
                 $convenioUpdate->update([
@@ -406,17 +423,38 @@ class ConveniosController extends Controller
         return $stat;
     }
 
+    /* protected function uploaded_file($file, $id, $name) {
+        $tamanio = $file->getSize(); 
+        $extensionFile = $file->getClientOriginalExtension();
+        $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
+        $path = 'convenios/' . $id . '/' . $documentFile;
+        Storage::disk('mydisk')->put($path, file_get_contents($file));
+        $documentUrl = Storage::disk('mydisk')->url('/uploadFiles/convenios/' . $id . "/" . $documentFile);
+        return $documentUrl;
+    } */
+
+    protected function getmunicipios(Request $request) {
+        if (isset($request->idEst)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $idEstado=$request->idEst;
+            $municipio = new municipio();
+            $municipios = $municipio->WHERE('id_estado', '=', $idEstado)->GET();
+
+            /*Usamos un nuevo método que habremos creado en la clase municipio: getByDepartamento*/
+            $json=json_encode($municipios);
+        } else {
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+        return $json;
+    }
+
     protected function uploaded_file($file, $id, $name) {
         $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
-        $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
-        //$path = $file->storeAs('/filesUpload/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
-        //$documentUrl = $documentFile;
-        $path = 'convenios/' . $id . '/' . $documentFile;
-        Storage::disk('mydisk')->put($path, file_get_contents($file));
-        //$path = storage_path('app/filesUpload/alumnos/'.$id.'/'.$documentFile);
-        $documentUrl = Storage::disk('mydisk')->url('/uploadFiles/convenios/' . $id . "/" . $documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $documentFile = trim($name."".date('YmdHis')."".$id.".".$extensionFile);
+        $file->storeAs('/uploadFiles/convenios/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
+        $documentUrl = Storage::url('/uploadFiles/convenios/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
 }

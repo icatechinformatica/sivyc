@@ -343,6 +343,55 @@
                 }
             });
 
+            $('#cerss_estado').on("change", () => {
+                var IdEst =$('#cerss_estado').val();
+                $("#cerss_estado option:selected").each( () => {
+                    var IdEst = $('#cerss_estado').val();
+                    var datos = {idEst: IdEst,  _token: "{{ csrf_token() }}"};
+                    var url = "{{route('alumnos.sid.municipios')}}";
+
+                    var request = $.ajax
+                    ({
+                        url: url,
+                        method: 'POST',
+                        data: datos,
+                        dataType: 'json'
+                    });
+
+                    /*
+                        *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
+                        *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
+                        *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
+                        *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
+                    */
+
+
+                    request.done(( respuesta ) =>
+                    {
+                        if (respuesta.length < 1) {
+                            $("#cerss_municipio").empty();
+                            $("#cerss_municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                        } else {
+                            if(!respuesta.hasOwnProperty('error')){
+                                $("#cerss_municipio").empty();
+                                $("#cerss_municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
+                                $.each(respuesta, (k, v) => {
+                                    $('#cerss_municipio').append('<option value="' + v.muni + '">' + v.muni + '</option>');
+                                });
+                                $("#cerss_municipio").focus();
+                            }else{
+
+                                //Puedes mostrar un mensaje de error en algún div del DOM
+                            }
+                        }
+                    });
+                    request.fail(( jqXHR, textStatus ) =>
+                    {
+                        alert( "Hubo un error: " + textStatus );
+                    });
+                });
+            });
+
             /**
             * validación nueva del SID
             */
@@ -422,6 +471,7 @@
 
                 $.ajax({
                     url: "{{ route('alumnos.sid.cerss.consecutivos') }}",
+                    data: {_token: "{{ csrf_token() }}"},
                     type:  'POST',
                     dataType : 'json',
                     success:  function (response) {
@@ -451,56 +501,6 @@
                 if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
                     return false;
                 }
-            });
-
-
-            $('#cerss_estado').on("change", () => {
-                var IdEst =$('#cerss_estado').val();
-                $("#cerss_estado option:selected").each( () => {
-                    var IdEst = $('#cerss_estado').val();
-                    var datos = {idEst: IdEst};
-                    var url = '/alumnos/sid/municipios';
-
-                    var request = $.ajax
-                    ({
-                        url: url,
-                        method: 'POST',
-                        data: datos,
-                        dataType: 'json'
-                    });
-
-                    /*
-                        *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                        *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                        *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                        *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-                    */
-
-
-                    request.done(( respuesta ) =>
-                    {
-                        if (respuesta.length < 1) {
-                            $("#cerss_municipio").empty();
-                            $("#cerss_municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        } else {
-                            if(!respuesta.hasOwnProperty('error')){
-                                $("#cerss_municipio").empty();
-                                $("#cerss_municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                                $.each(respuesta, (k, v) => {
-                                    $('#cerss_municipio').append('<option value="' + v.muni + '">' + v.muni + '</option>');
-                                });
-                                $("#cerss_municipio").focus();
-                            }else{
-
-                                //Puedes mostrar un mensaje de error en algún div del DOM
-                            }
-                        }
-                    });
-                    request.fail(( jqXHR, textStatus ) =>
-                    {
-                        alert( "Hubo un error: " + textStatus );
-                    });
-                });
             });
 
         });

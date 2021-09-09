@@ -114,4 +114,31 @@ class tbl_curso extends Model
             return $query->orderBy('inicio', 'DESC');
         }
     }
+
+    protected function scopeSearchByData($query, $unidades){
+        if ($unidades) {
+            # generamos la consulta del scope
+            $query->where('u.ubicacion', '=', $unidades);
+            return $query;
+        }
+    }
+
+    protected function scopeSearchByUnidadMes($query, $unidad, $mes){
+        /**
+         * SCOPE BUSCADOR PARA UNIDAD Y MES .- DISEÑADO POR MIS. DANIEL MÉNDEZ CRUZ
+         */
+        if (!empty($unidad) AND !empty($mes)) {
+            # checamos que no haya vacios
+            $query->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $mes)->WHERE('tblU.ubicacion', $unidad);
+           return $query;
+        }
+    }
+
+    protected function scopeSearchByMesUnidadAnio($query, $mesoptenido){
+        if (!empty($mesoptenido)) {
+            # se cumple culquiera de las condiciones
+            $query->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $mesoptenido);
+            return $query;
+        }
+    }
 }

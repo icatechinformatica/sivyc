@@ -75,8 +75,21 @@
                     <input type="text" class="form-control" id="id_director" name="id_director" value="{{$director->id}}" hidden>
                 </div>
                 <div class="form-group col-md-4">
+                    <label for="inputpuesto_testigo1" class="control-label">Puesto del Director/Encargado de Unidad de Capacitación</label>
+                    <input readonly type="text" class="form-control" id="puesto_director" name="puesto_director" value="{{$director->puesto}}">
+                </div>
+                <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
-                    <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion" value="{{$datacon->unidad_capacitacion}}" >
+                    <select class="form-control" name="unidad_capacitacion"  id="unidad_capacitacion">
+                        @if ($unidadsel != null)
+                            <option value="{{$unidadsel->unidad}}">{{$unidadsel->unidad}}</option>
+                        @else
+                            <option value="">SELECCIONE UNIDAD</option>
+                        @endif
+                        @foreach ( $unidadlist as $cadwell )
+                            <option value="{{$cadwell->unidad}}">{{$cadwell->unidad}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>
@@ -137,4 +150,8 @@
         </form>
         <br>
     </div>
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
 @endsection

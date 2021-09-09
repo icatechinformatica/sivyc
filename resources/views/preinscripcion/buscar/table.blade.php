@@ -6,6 +6,7 @@
             <tr>
                 <th scope="col">GRUPO</th>                
                 <th scope="col">CURSO</th>                
+                <th scope="col">UNIDAD</th>    
                 <th scope="col">TURNADO A</th>
                 <th scope="col" class="text-center">OPCIONES</th>
             </tr>
@@ -13,15 +14,10 @@
         <tbody>
             @foreach ($data as $item)
                 <tr>                
-                    <td>
-                        {{ $item->folio_grupo }}
-                    </td>
-                    <td>
-                        {{ $item->curso }}
-                    </td>
-                    <td>
-                        {{ $item->turnado }}
-                    </td>
+                    <td>{{ $item->folio_grupo }}</td>
+                    <td>{{ $item->curso }}</td>
+                    <td>{{ $item->unidad }}</td>
+                    <td>{{ $item->turnado }}</td>
                     <td class="text-center">
                         @if($item->turnado == 'VINCULACION')                       
                             <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$item->folio_grupo}}')"></i></a>

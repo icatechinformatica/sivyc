@@ -106,6 +106,24 @@
                     <input type="date" name="fecha2" id="fecha2" class="form-control" required>
                 </div>
             </div>
+
+            {{-- envio de los botones de descargaa --}}
+            @if (isset($filtrotipo))
+                <div class="row">
+                    <div class="col-md-9">
+                        <a class="btn btn-danger" href="{{ route('planeacion.generar.reporte.supre.pdf', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}">
+                            <i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i>&nbsp; Reporte Pdf
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ route('planeacion.generar.reporte.supre.xls', [$filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2]) }}" class="btn btn-success" style="background-color:transparent;">
+                            <i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i>&nbsp; reporte Excel
+                        </a>
+                    </div>
+                </div>
+            @endif
+            {{-- comment --}}
+
             <div id="div_curso" class="form-row d-none d-print-none">
                 <div class="form-group col-md-2"></div>
                 <div class="form-group col-md-6">
@@ -154,30 +172,7 @@
         </div>
     </section>
 @endsection
-<!--section('script_content_js')
-    <script type="text/javascript">
-        $(function(){
-           /* $('#submit').click(function(){
-                var state = document.readyState
-                $(".modal").show();
-                console.log(state);
-                document.onreadystatechange = function () {
-                    var state = document.readyState
-                    if (state == 'interactive') {
-                    } else if (state == 'complete') {
-                        setTimeout(function(){
-                            $(".modal").hide();
-                        },1000);
-                    }
-                }
-            });*/
-            $('#registercontrato').submit(function() {
-            $('.modal').show();
-            $.post('/planeacion/reporte/pdf', function() {
-                $('.modal').hide();
-            });
-            return false;
-            });
-        });
-    </script>
-endsection-->
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+@endsection

@@ -16,7 +16,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $rol = Rol::PAGINATE(3, ['id', 'name', 'slug', 'description']);
+        $rol = Rol::PAGINATE(15, ['id', 'name', 'slug', 'description']);
         //
         return view('layouts.pages_admin.roles_indice', compact('rol'));
     }

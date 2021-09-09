@@ -137,14 +137,14 @@
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->ze}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->dura}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->importe_hora}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->iva}}</td>
+                                <td scope="col" class="text-center"><small style="font-size: 8px;">{{$iva[$key]}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">12101 Honorarios</td>
                                 @if ($recursos[$key] == "Federal")
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->importe_total}}</td>
+                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$cantidad[$key]}}</td>
                                     <td scope="col" class="text-center"><small style="font-size: 8px;"></td>
                                 @else
                                     <td scope="col" class="text-center"><small style="font-size: 8px;"></td>
-                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->importe_total}}</td>
+                                    <td scope="col" class="text-center"><small style="font-size: 8px;">{{$cantidad[$key]}}</td>
                                 @endif
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$risr[$key]}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$riva[$key]}}</td>
