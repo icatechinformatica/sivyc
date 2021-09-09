@@ -46,6 +46,9 @@ class Convenio extends Model
                     case 'sector':
                         return $query->where('convenios.sector', '=', $buscar);
                         break;
+                    case 'dependencia':
+                        return $query->where('convenios.institucion', '=', $buscar);
+                        break;
                 }
             }
         }

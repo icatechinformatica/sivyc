@@ -3,8 +3,8 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th scope="col" class="text-center">ID</th>           
-                <th scope="col" class="text-center" >No. GRUPO</th>
+                <th scope="col" class="text-center">#</th> 
+                <th scope="col" class="text-center" >MOTIVO</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <th scope="col" class="text-center">SERVICIO</th>
                 <th scope="col" class="text-center">ESPECIALIDAD</th>
@@ -23,13 +23,16 @@
                 <th scope="col" class="text-center">MUNICIPIO</th> 
                 <th scope="col" class="text-center">ZE</th> 
                 <th scope="col" class="text-center">DEPENDENCIA</th> 
-                <th scope="col" class="text-center">TIPO</th>
+                <th scope="col" class="text-center">TIPO</th>                 
                 <th scope="col" class="text-center">TURNADO</th>
-                <th scope="col" class="text-center">SOLICITUD</th>
-                <th scope="col" class="text-center">ESTATUS</th>
+                <th scope="col" class="text-center">ESTATUS</th>          
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
-                <th scope="col" class="text-center">AVISO</th>
+                @if($opt=="ARC02")
+                    <th scope="col" class="text-center" >EDIT</th>                    
+                @else
+                <th scope="col" class="text-center" >VER</th>
+                @endif
             </tr>
         </thead>
         @if(count($grupos)>0) 
@@ -39,31 +42,31 @@
                     $activar = true; 
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
-                    $pdf_curso = $grupos[0]->pdf_curso;
-                    $rojo = null;
+                    $status_curso = $grupos[0]->status_curso; 
+                    $pdf_curso = $grupos[0]->pdf_curso;             
                 ?>
                 @foreach($grupos as $g)
                     <?php 
-                    $aviso = NULL;
-                    if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) 
-                        OR ($g->option =='ARC02'AND ($g->status_curso!='AUTORIZADO' OR $g->status!='NO REPORTADO' OR $g->turnado!='UNIDAD'))){
-                        $activar = false;                        
-                        $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
-                    }else if( $g->turnado_solicitud == 'VINCULACION'  ){
-                        $activar = false;
-                        $rojo = true; 
-                        $aviso = "GRUPO TURNADO A VINCULACIOÓN"; 
-                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion == null)) { 
-                        $activar = false;
-                        $rojo = true;                         
-                        $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
-                    }else $rojo = false;         
-                           
-
+                    $rojo=null;
+                    /*
+                    if( $g->turnado_solicitud != 'DTA' ) $activar = false;                      
+                    if( $g->turnado_solicitud == 'VINCULACION'  )$rojo = true; 
+                    else $rojo = false;
+                    */
+                    switch($opt){
+                        case "ARC01":
+                            if($g->status_curso<>'SOLICITADO' OR $g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                        break;
+                        case "ARC02":
+                            if($g->status_curso<>'SOLICITADO' OR ($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD' ) OR $g->turnado<>'UNIDAD' ) $activar=false;
+                        break;
+                    }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
-                        <td class="text-center"> {{ $g->id }}</td>
-                        <td class="text-center"><div style="width:128px;"> {{ $g->folio_grupo}} </div> </td>
+                        <td class="text-center"> {{ $consec++ }}</td>
+                        <td class="text-center"><div style="width:450px;">
+                            <!--<textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>-->
+                        </div> </td>
                         <td><div style="width:128px;"> {{ $g->clave}} </div> </td>              
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
                         <td> {{ $g->espe }} </td>
@@ -83,9 +86,15 @@
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
                         <td class="text-center"> {{ $g->tcapacitacion }} </td>                                                
-                        <td class="text-center"> {{ $g->turnado_solicitud }} </td>
-                        <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif </td>
-                        <td class="text-center"> {{ $g->status }} </td>
+                        <td class="text-center"> 
+                            @if($opt=="ARC01")
+                            {{ $g->turnado_solicitud }} 
+                            @else
+                            {{ $g->turnado }} 
+                            @endif
+                        
+                        </td>
+                        <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif</td>
                         <td> {{ $g->efisico }} </td>
                         <td class="text-left">
                             <div style="width:900px;">
@@ -93,7 +102,15 @@
                                 @elseif($g->option =='ARC02') {{ $g->observaciones }} @endif
                             </div>    
                         </td>
-                        <td> <div style="width:200px;"> {{ $aviso }} </div></td>
+                        @if($opt == "ARC02")
+                            <td class='text-center'>
+                                <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
+                            </td>
+                        @else
+                            <td class='text-center'>
+                                <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-success" title="Ver detalle" onclick="show('{{$g->id}}')"></i></a>
+                            </td>
+                        @endif
                     </tr>
                  @endforeach                       
             </tbody>                   
@@ -103,21 +120,20 @@
     </table>
 </div>
 
-<div class="col-md-12 text-right  mt-4">       
-    @if($activar)
-        {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}        
-        <div class="custom-file col-md-3 mx-4 text-center">
+<div class="form-inline  col-md-12 mt-4 justify-content-end align-items-end"> 
+    @if($activar==true)
+        MOVIMIENTO: {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control col-md-2  mx-4' ] ) }}
+        {{ Form::text('mrespuesta', null, ['id'=>'mrespuesta', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM RESPUESTA',  'required' => 'required', 'size' => 25]) }}
+        {{ form::date('fecha', date('Y-m-d'), [ 'id'=>'fecha', 'class'=>'form-control mx-4']) }}    
+        <div class="custom-file col-md-3 mx-4 text-center" id="file">
             <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
             <label for="file_autorizacion" class="custom-file-label">PDF SOLICITUD FIRMADA</label>
         </div>    
-        {{ Form::button('ENVIAR A LA DTA >>', ['id'=>'enviar','class' => 'btn  bg-danger mx-4']) }}                
-    @elseif($file)
-        <a href="{{$file}}" target="_blank" class="btn  bg-warning">IMPRIMIR
-            @if($g->option =='ARC01')  {{$munidad}}
-            @elseif($g->option =='ARC02') {{$nmunidad}} @endif
-            .PDF
-        </a>              
-    @endif 
+        @if($status_curso == "EN FIRMA")
+            {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
+        @endif
+        {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-4']) }}  
+    @endif
     @if($pdf_curso)
         <a href="{{$pdf_curso}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
     @endif

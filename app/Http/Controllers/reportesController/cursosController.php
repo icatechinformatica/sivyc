@@ -246,9 +246,12 @@ class cursosController extends Controller
         $clave = $request->get('clave');
         
         if($clave){
-            $curso = DB::table('tbl_cursos as tc')->select('tc.id','tc.curso','tc.dura','tc.cct','tc.unidad',
+            $curso = DB::table('tbl_cursos as tc')->select('tc.id','tc.curso','tc.dura','tc.cct','tc.unidad','tc.depen',
             DB::raw("trim(substring(u.dunidad , position('.' in u.dunidad)+1,char_length(u.dunidad))) as dunidad"),'tc.id_curso',
-            DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),DB::raw('EXTRACT(YEAR FROM termino)  as anio_termino'),'c.duracion as horas_certificacion','tc.tipo_curso as servicio')
+            DB::raw('EXTRACT(DAY FROM termino)  as dia_termino'),
+            DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),
+            DB::raw('EXTRACT(YEAR FROM termino)  as anio_termino'),
+            'c.duracion as horas_certificacion','tc.tipo_curso as servicio')
             ->where('tc.clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tc.unidad') 
@@ -264,36 +267,30 @@ class cursosController extends Controller
                 $duracion = $curso->dura;
 
                 $data = DB::table('tbl_inscripcion as i')
-                    ->select('a_pre.apellido_paterno','a_pre.apellido_materno','a_pre.nombre','a_pre.curp',
-                        DB::raw("'".$curso->curso."' as nombre_curso"),
+                    ->select('i.alumno','i.curp',
+                        DB::raw("REPLACE('".$curso->curso."','.','') as nombre_curso"),
                         DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha"),
+                        DB::raw("LPAD('".$curso->dia_termino."',2,'0') as dia"),
+                        DB::raw("'".$this->mes[$curso->mes_termino]."' as mes"),
+                        DB::raw("'".$curso->anio_termino."' as anio"),
                         DB::raw( $duracion.' as horas'),
                         DB::raw("'".$curso->cct."' as cct"),
                         DB::raw("'".$curso->unidad."' as unidad"),
                         DB::raw("'CHIAPAS' as estado"),
-                        DB::raw("'C. ".$curso->dunidad."' as dunidad"),
-                        DB::raw("'".$this->mes[$curso->mes_termino]."' as mes"),
-                        DB::raw("'".$curso->anio_termino."' as anio")
+                        DB::raw("'C. ".$curso->dunidad."' as dunidad"),                        
+                        DB::raw("REPLACE('".$curso->depen."','.','') as depen")
                         )
                     ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')
                     ->where('i.calificacion','<>','NP')
                     
                     ->Join('tbl_folios as f', function($join){
                         $join->on('f.id', '=', 'i.id_folio');                
-                    })             
-                    ->Join('alumnos_registro as a_reg', function($join)use($consec_curso){                                        
-                        $join->on('a_reg.no_control', '=', 'i.matricula');
-                        $join->where('a_reg.id_curso', '=', $consec_curso);    
                     }) 
-                    ->Join('alumnos_pre as a_pre', function($join){
-                        $join->on('a_pre.id', '=', 'a_reg.id_pre');
-                    })
-                    ->groupby('a_pre.apellido_paterno','a_pre.apellido_materno','a_pre.nombre','a_pre.curp',
-                        'i.curso','f.fecha_expedicion','i.alumno')->orderby('i.alumno')->get();
+                    ->orderby('i.alumno')->get();
                 //var_dump($data); exit;
                 if(count($data)==0){ return "NO TIENEN FOLIOS ASIGNADOS";exit;}
                                 
-                $head = ['APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE(S)','CURP','CURSO','FECHA','HORAS','CLAVE UNIDAD','CIUDAD','ESTADO','DIRECTOR','MES','AÑO'];
+                $head = ['ALUMNO','CURP','CURSO','FECHA','DIA','MES','AÑO','HORAS','CLAVE UNIDAD','CIUDAD','ESTADO','DIRECTOR','DEPENDENCIA'];
                 $nombreLayout = $clave.".xlsx";
 
                 if(count($data)>0){  

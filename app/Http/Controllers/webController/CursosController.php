@@ -46,7 +46,7 @@ class CursosController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
-        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico')
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'auxiliar_cursos')
         {
         $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
@@ -78,7 +78,7 @@ class CursosController extends Controller
         $especialidad = new especialidad();
         $especialidades = $especialidad->all();
         $unidades = new tbl_unidades();
-        $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
+        $unidadesMoviles = $unidades->SELECT('ubicacion')->orderBy('ubicacion', 'asc')->GROUPBY('ubicacion')->GET();
         $criterioPago = new criterio_pago;
         $cp = $criterioPago->all();
         $area = new Area();

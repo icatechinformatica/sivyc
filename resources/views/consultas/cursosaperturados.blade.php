@@ -38,14 +38,16 @@
                         <tr>
                            <th scope="col" class="text-center" width="1%">#</th>
                             <th scope="col" class="text-center" width="5%">UNIDAD</th>
-                            <th scope="col" class="text-center" width="10%">CLAVE</th>
+                            <th scope="col" class="text-center" width="8%">CLAVE</th>
                             <th scope="col" class="text-center" width="20%">CURSO</th>
-                            <th scope="col" class="text-center" width="7%">TIPO</th> 
-                            <th scope="col" class="text-center" width="7%">MOD</th> 
+                            <th scope="col" class="text-center" width="3%">TIPO</th> 
+                            <th scope="col" class="text-center" width="2%">MOD</th> 
                             <th scope="col" class="text-center" width="2%">HOMBRES</th>                             
-                            <th scope="col" class="text-center" width="2%">MUJERES</th>  
+                            <th scope="col" class="text-center" width="2%">MUJERES</th>                              
                             <th scope="col" class="text-center" width="5%">INICIO</th>
-                            <th scope="col" class="text-center" width="5%">TERMNO</th> 
+                            <th scope="col" class="text-center" width="5%">TERMINO</th> 
+                            <th scope="col" class="text-center" width="5%">HORA_INI</th>
+                            <th scope="col" class="text-center" width="5%">HORA_FIN</th>
                             <th scope="col" class="text-center" width="7%">ESTATUS</th>                           
                         </tr>
                     </thead>
@@ -64,6 +66,8 @@
                                 <td class="text-center" >{{ $d->mujer }}</td>
                                 <td class="text-center" >{{ $d->inicio }}</td>
                                 <td class="text-center" >{{ $d->termino }}</td>
+                                <td class="text-center" >{{ $d->hini }}</td>
+                                <td class="text-center" >{{ $d->hfin }}</td>
                                 <td class="text-center" >{{ $d->status }}</td>
                             </tr>                            
                         @endforeach                       
