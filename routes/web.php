@@ -58,6 +58,7 @@ Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name
 Route::get('/supre/reiniciar/{id}', 'webController\SupreController@restartSupre')->name('restart-supre');
 Route::get('/folio/edicion_especial/{id}', 'webController\SupreController@folio_edicion_especial')->name('folio_especialedit');
 Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_solicitados')->name('reporte-solicitados');
+Route::get('/supre/reporte/solicitados/{un}/{ini}/{fin}', 'webController\supreController@reporte_solicitados_detail')->name('reporte-solicitados-detail');
 
 //Ruta Instructor
 Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');

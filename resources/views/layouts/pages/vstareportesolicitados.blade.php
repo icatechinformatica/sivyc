@@ -4,7 +4,12 @@
     <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
     <style>
         table tr th .nav-link {padding: 0; margin: 0;}
-
+        td a{
+            display: block;
+            box-sizing:border-box;
+            height: 100%;
+            width: 100%;
+        }
     </style>
     <div class="card-header">
         Consulta de Solicitados Mediante Suficiencias Presupuestales
@@ -34,21 +39,24 @@
         <br>
         <div class="row">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover fixed_header">
+                <table class="table table-bordered table-hover fixed_header">
                     <thead>
                         <tr>
-                            <th rowspan="3" style="text-align: center;"><br><br>UNIDADES</th>
-                            <th colspan="3" align="center">SUFICIENCIAS PRESUPUESTALES</th>
-                            <th colspan="3" align="center">CONTRATOS</th>
-                            <th colspan="4" align="center">PAGOS</th>
+                            <th rowspan="3" style="text-align: center;">UNIDADES</th>
+                            <th colspan="3" align="center">&emsp;&emsp;&emsp;SUFICIENCIAS PRESUPUESTALES</th>
+                            <th colspan="3" align="center">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;CONTRATOS</th>
+                            <th colspan="4" align="center">
+                                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                &emsp;&emsp;PAGOS
+                            </th>
                         </tr>
                         <tr>
                             <th rowspan="2" align="center"><br>Solicitado</th>
-                            <th colspan="2" align="center">Validación</th>
+                            <th colspan="2" align="center">&emsp;&emsp;&emsp;&emsp;Validación</th>
                             <th rowspan="2" align="center"><br>Solicitado</th>
-                            <th colspan="2" align="center">Validación</th>
+                            <th colspan="2" align="center">&emsp;&emsp;&emsp;&emsp;Validación</th>
                             <th rowspan="2" align="center"><br>Solicitado</th>
-                            <th colspan="3" align="center">Validación</th>
+                            <th colspan="3" align="center">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Validación</th>
                         </tr>
                         <tr>
                             <th align="center">Aceptado</th>
@@ -70,6 +78,17 @@
                                             <?php
                                                 $findit = TRUE; $key2 = $key + 1;
                                                 $dif = round($supre->supre_validados * 100 / $supre->supre_total, 2);
+                                                if($consulta2[$key]->contrato_total != 0)
+                                                {
+                                                    $dif2 = round($consulta2[$key]->contrato_validados * 100 / $consulta2[$key]->contrato_total, 2);
+                                                }
+                                                else
+                                                {
+                                                    $dif2 = 100;
+                                                }
+
+                                                $dif3 = round($consulta2[$key]->pago_finalizados * 100 / $consulta2[$key]->pago_total, 2);
+
                                                 if($dif == 100)
                                                 {
                                                     $color = '#c6efce';
@@ -82,20 +101,46 @@
                                                 {
                                                     $color = '#ffc7ce';
                                                 }
+                                                if($dif2 == 100)
+                                                {
+                                                    $color2 = '#c6efce';
+                                                }
+                                                else if($dif2 >= 50)
+                                                {
+                                                    $color2 = '#ffeb9c';
+                                                }
+                                                else
+                                                {
+                                                    $color2 = '#ffc7ce';
+                                                }
+                                                if($dif3 == 100)
+                                                {
+                                                    $color3 = '#c6efce';
+                                                }
+                                                else if($dif3 >= 50)
+                                                {
+                                                    $color3 = '#ffeb9c';
+                                                }
+                                                else
+                                                {
+                                                    $color3 = '#ffc7ce';
+                                                }
                                             ?>
-                                            <tr bgcolor= {{$color}}>
+                                            <tr>
 
-                                                <td align="center" >{{$supre->unidad}}</td>
-                                                <td align="center" >{{$supre->supre_proceso}}</td>
-                                                <td align="center" >{{$supre->supre_validados}}</td>
-                                                <td align="center" >{{$supre->supre_rechazados}}</td>
-                                                <td align="center" >{{$consulta2[$key]->contrato_proceso}}</td>
-                                                <td align="center" >{{$consulta2[$key]->contrato_validados}}</td>
-                                                <td align="center" >{{$consulta2[$key]->contrato_rechazados}}</td>
-                                                <td align="center" >{{$consulta2[$key]->pago_proceso}}</td>
-                                                <td align="center" >{{$consulta2[$key]->pago_validados}}</td>
-                                                <td align="center" >{{$consulta2[$key]->pago_finalizados}}</td>
-                                                <td align="center" >{{$consulta2[$key]->pago_rechazados}}</td>
+                                                <td align="center"><a href="{{ route('reporte-solicitados-detail', ['un' => $supre->unidad, 'ini' => $fecha_inicio, 'fin' => $fecha_termino]) }}">
+                                                    {{$supre->unidad}}</a>
+                                                </td>
+                                                <td align="center" bgcolor= {{$color}}>{{$supre->supre_proceso}}</td>
+                                                <td align="center" bgcolor= {{$color}}>{{$supre->supre_validados}}</td>
+                                                <td align="center" bgcolor= {{$color}}>{{$supre->supre_rechazados}}</td>
+                                                <td align="center" bgcolor= {{$color2}}>{{$consulta2[$key]->contrato_proceso}}</td>
+                                                <td align="center" bgcolor= {{$color2}}>{{$consulta2[$key]->contrato_validados}}</td>
+                                                <td align="center" bgcolor= {{$color2}}>{{$consulta2[$key]->contrato_rechazados}}</td>
+                                                <td align="center" bgcolor= {{$color3}}>{{$consulta2[$key]->pago_proceso}}</td>
+                                                <td align="center" bgcolor= {{$color3}}>{{$consulta2[$key]->pago_validados}}</td>
+                                                <td align="center" bgcolor= {{$color3}}>{{$consulta2[$key]->pago_finalizados}}</td>
+                                                <td align="center" bgcolor= {{$color3}}>{{$consulta2[$key]->pago_rechazados}}</td>
                                             </tr>
                                         @endif
                                     @endforeach

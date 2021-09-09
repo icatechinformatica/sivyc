@@ -402,6 +402,8 @@ class supreController extends Controller
                 $consulta2 = $consulta2->where('tabla_supre.fecha','>=',$fecha_inicio)
                                     ->where('tabla_supre.fecha','<=',$fecha_termino);
             }else{
+                $fecha_inicio = 0;
+                $fecha_termino = 0;
                 return redirect()->route('reporte-solicitados')
                 ->withErrors(sprintf('INGRESE UNA FECHA DE INICIO Y TERMINO'));
             }
@@ -418,6 +420,45 @@ class supreController extends Controller
         $unidades = DB::table('tbl_unidades')->SELECT('unidad')->orderBy('unidad','asc')->GET();
         //dd($unidades);
         return view('layouts.pages.vstareportesolicitados',compact('consulta1','consulta2','fecha_inicio','fecha_termino','unidades','fecha_inicio','fecha_termino'));
+    }
+
+    public function reporte_solicitados_detail($un, $ini, $fin)
+    {
+        //dd($fin);
+        $consulta1 = DB::table('tabla_supre')->SELECT('tbl_unidades.unidad',
+        DB::raw('SUM(CASE WHEN tabla_supre.id != 0 THEN 1 ELSE 0 END) as supre_total'),
+        DB::raw("SUM(CASE WHEN tabla_supre.status = 'En_Proceso' THEN 1 ELSE 0 END) as supre_proceso"),
+        DB::raw("SUM(CASE WHEN tabla_supre.status = 'Validado' THEN 1 ELSE 0 END) as supre_validados"),
+        DB::raw("SUM(CASE WHEN tabla_supre.status = 'Rechazado' THEN 1 ELSE 0 END) as supre_rechazados"),
+        DB::raw("ARRAY(SELECT tabla_supre.fecha_rechazado FROM tabla_supre WHERE status = 'Rechazado'
+                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_fecha_rechazo"),
+        DB::raw("ARRAY(SELECT tabla_supre.updated_at FROM tabla_supre WHERE status = 'Rechazado'
+                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_updated_rechazo"),
+        DB::raw("ARRAY(SELECT tabla_supre.no_memo FROM tabla_supre WHERE status = 'Rechazado'
+                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_memo_rechazo"),
+        DB::raw("ARRAY(SELECT tabla_supre.observacion FROM tabla_supre WHERE status = 'Rechazado'
+                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_observaciones"))
+        ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
+        ->join('tbl_unidades','tbl_unidades.unidad','=','tabla_supre.unidad_capacitacion');
+
+        if($ini != 0 && $fin != 0)
+        {
+            $consulta1 = $consulta1->where('tabla_supre.fecha','>=',$ini)
+                                    ->where('tabla_supre.fecha','<=',$fin);
+        }
+        $consulta1 = $consulta1->groupBy('tbl_unidades.unidad')->FIRST();
+
+        $separa = explode("-",$ini);
+        $ini = $separa[2] . ' DE ' .$this->monthToString($separa[1]) . ' ' . $separa[0];
+        $separa = explode("-",$fin);
+        $fin = $separa[2] . ' DE ' .$this->monthToString($separa[1]) . ' ' . $separa[0];
+
+        $consulta1->supre_memo_rechazo = explode(",",trim($consulta1->supre_memo_rechazo, "{}"));
+        $consulta1->supre_fecha_rechazo = str_replace('"', "", explode(",",trim($consulta1->supre_fecha_rechazo, "{}")));
+        $consulta1->supre_updated_rechazo =  str_replace('"', "", explode(",",trim($consulta1->supre_updated_rechazo, "{}")));
+        $consulta1->supre_observaciones = explode(",",trim($consulta1->supre_observaciones, "{}"));
+        //dd($consulta1->supre_updated_rechazo);
+        return view('layouts.pages.vstareportesolicitadosdetail',compact('consulta1','ini','fin','un'));
     }
 
     public function cancelFolio(Request $request)
