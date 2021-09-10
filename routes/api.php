@@ -72,3 +72,14 @@ Route::group([
         Route::post('logout', 'ApiController\Api\PassportController@logout');
     });
 });
+
+
+// apis del sistema de instructores
+// registro
+Route::get('instructores/{curp}', 'ApiController\ApisInstructores\RegistroController@getInstructor');
+// asistencia
+Route::get('instructores/asistencia/{clave}', 'ApiController\ApisInstructores\AsistenciaController@getCurso');
+Route::get('instructores/asistencia/alumnos/{idCurso}', 'ApiController\ApisInstructores\AsistenciaController@getAlumnos');
+Route::post('instructores/asistencia/alumnos/update', 'ApiController\ApisInstructores\AsistenciaController@updateAsistencias');
+Route::get('instructores/asistencia/pdf/{clave}', 'ApiController\ApisInstructores\AsistenciaController@getCursoAsistenciaPdf');
+Route::get('instructores/asistencia/curso/{id}', 'ApiController\ApisInstructores\AsistenciaController@updateAsisFinalizado');
