@@ -22,7 +22,8 @@
         ?>
         {{ Form::open(['method' => 'post','id'=>'frm', 'enctype' => 'multipart/form-data']) }} 
             <div class="row form-inline">
-                    {{ Form::select('unidad', $unidades, $unidad ,['id'=>'unidad','class' => 'form-control  mr-sm-4 mt-3','title' => 'UNIDAD','placeholder' => 'TODAS LAS UNIDADES']) }}
+                    {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'CLAVE APERTURA / MEMORÁNDUM ARC-01', 'size' => 38]) }}
+                    {{ Form::select('unidad', $unidades, $unidad ,['id'=>'unidad','class' => 'form-control  mr-sm-4 mt-3','title' => 'UNIDAD','placeholder' => '-SELECCIONAR-']) }}
                     {{ Form::select('opcion', ['INICIADOS'=>'CURSOS INICIADOS','TERMINADOS'=>'CURSOS TERMINADOS'], $opcion, ['id'=>'opcion', 'class' => 'form-control mr-sm-4 mt-3'] ) }}
                     {{ Form::date('fecha1', $fecha1 , ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}                                        
                     {{ Form::date('fecha2', $fecha2, ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}                                       
@@ -37,18 +38,20 @@
                     <thead>
                         <tr>
                            <th scope="col" class="text-center" width="1%">#</th>
-                            <th scope="col" class="text-center" width="5%">UNIDAD</th>
+                            <th scope="col" class="text-center" width="8%">UNIDAD</th>
                             <th scope="col" class="text-center" width="8%">CLAVE</th>
-                            <th scope="col" class="text-center" width="20%">CURSO</th>
-                            <th scope="col" class="text-center" width="3%">TIPO</th> 
+                            <th scope="col" class="text-center" width="8%">ESCPECIALIDAD</th>
+                            <th scope="col" class="text-center" width="12%">CURSO</th>
+                            <th scope="col" class="text-center" width="4%">TIPO</th> 
                             <th scope="col" class="text-center" width="2%">MOD</th> 
+                            <th scope="col" class="text-center" width="2%">DURA</th>
                             <th scope="col" class="text-center" width="2%">HOMBRES</th>                             
                             <th scope="col" class="text-center" width="2%">MUJERES</th>                              
                             <th scope="col" class="text-center" width="5%">INICIO</th>
                             <th scope="col" class="text-center" width="5%">TERMINO</th> 
                             <th scope="col" class="text-center" width="5%">HORA_INI</th>
                             <th scope="col" class="text-center" width="5%">HORA_FIN</th>
-                            <th scope="col" class="text-center" width="7%">ESTATUS</th>                           
+                            <th scope="col" class="text-center" width="6%">ESTATUS</th>                           
                         </tr>
                     </thead>
                     @if(isset($data))
@@ -59,9 +62,11 @@
                                 <td>{{ $i++ }}</td>  
                                 <td>{{ $d->unidad }}</td>
                                 <td>{{ $d->clave }}</td>
+                                <td>{{ $d->espe }}</td>
                                 <td>{{ $d->curso }}</td>
                                 <td class="text-center" >{{ $d->tcapacitacion }}</td>
                                 <td class="text-center" >{{ $d->mod }}</td>
+                                <td class="text-center" >{{ $d->dura }}</td>
                                 <td class="text-center" >{{ $d->hombre }}</td>
                                 <td class="text-center" >{{ $d->mujer }}</td>
                                 <td class="text-center" >{{ $d->inicio }}</td>

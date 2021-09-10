@@ -20,7 +20,7 @@ class cursosaperturadosController extends Controller
     
     public function index(Request $request){       
         $id_user = Auth::user()->id;
-        $message = $data = $unidad  = $fecha1 = $fecha2= NULL;
+        $message = $data = $unidad  = $fecha1 = $fecha2 =  $valor = NULL;
         
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
@@ -45,22 +45,31 @@ class cursosaperturadosController extends Controller
        $fecha1 = $request->fecha1;
        $fecha2 = $request->fecha2;
        $opcion = $request->opcion;
-       if($unidad OR $fecha1 OR $fecha2){                     
+       $valor = $request->valor;
+       
+
+       if($unidad OR $fecha1 OR $fecha2 OR $valor){                     
            $data = DB::table('tbl_cursos as c')->where('clave','!=','0');
+            if($valor){
+                $data = $data->where('c.clave','like','%' . $valor.'%')
+                ->orWhere('c.munidad', 'like','%'. $valor.'%');
+            }
            if($opcion == "TERMINADOS"){
              if($request->fecha1) $data = $data->where('c.termino','>=',$request->fecha1);
              if($request->fecha2) $data = $data->where('c.termino','<=',$request->fecha2);
+             $data =  $data->orderby('c.unidad')->orderby('c.termino','DESC');
            }else{
               if($request->fecha1) $data = $data->where('c.inicio','>=',$request->fecha1);
               if($request->fecha2) $data = $data->where('c.inicio','<=',$request->fecha2);
+              $data =  $data->orderby('c.unidad')->orderby('c.inicio','DESC');
            }
              if($request->unidad) $data = $data->where('c.unidad',$request->unidad); 
              if($_SESSION['unidades'])$data = $data->whereIn('c.unidad',$_SESSION['unidades']);                       
                 
-           $data = $data->orderby('c.unidad')->orderby('c.termino')->get();
+           $data = $data->get();
        }
         //var_dump($data);exit;
-        return view('consultas.cursosaperturados', compact('message','unidades','data','unidad', 'fecha1', 'fecha2','opcion'));     
+        return view('consultas.cursosaperturados', compact('message','unidades','data','unidad', 'fecha1', 'fecha2','opcion', 'valor'));     
     }  
     
     public function xls(Request $request){        
@@ -68,23 +77,31 @@ class cursosaperturadosController extends Controller
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
         $opcion = $request->opcion;
-        if($unidad OR $fecha1 OR $fecha2){    
+        $valor = $request->valor;
+        if($unidad OR $fecha1 OR $fecha2 OR $valor){    
             //$mes = [1=>"ENERO",2=>"FEBRERO",3=>"MARZO",4=>"ABRIL",5=>"MAYO",6=>"JUNIO",7=>"JULIO",8=>"AGOSTO",9=>"SEPTIEMBRE", 10=>"OCTUBRE", 11=>"NOVIEMBRE",12=>"DICIEMBRE"];
                       
             $data = DB::table('tbl_cursos as c')->where('clave','!=','0')->select('unidad','espe','clave','curso','mod','dura',
             'inicio', 'termino', DB::raw("To_char(termino, 'TMMONTH')"), DB::raw("CONCAT(hini,' A ',hfin) as horario"),'dia','horas',DB::raw("hombre+mujer as cupo"),'nombre',
             'cp','mujer','hombre','costo','tipo_curso','tipo','nota','muni','depen','munidad','mvalida','nmunidad','nmacademico','efisico','modinstructor','status','tcapacitacion','status_curso');
+            
+            if($valor){
+                $data = $data->where('c.clave','like','%' . $valor.'%')
+                ->orWhere('c.munidad', 'like','%'. $valor.'%');
+            }
             if($opcion == "TERMINADOS"){
                 if($request->fecha1) $data = $data->where('c.termino','>=',$request->fecha1);
                 if($request->fecha2) $data = $data->where('c.termino','<=',$request->fecha2);
+                $data =  $data->orderby('c.unidad')->orderby('c.termino','DESC');
             }else{
                 if($request->fecha1) $data = $data->where('c.inicio','>=',$request->fecha1);
                 if($request->fecha2) $data = $data->where('c.inicio','<=',$request->fecha2);
+                $data =  $data->orderby('c.unidad')->orderby('c.inicio','DESC');
             }
             if($request->unidad) $data = $data->where('c.unidad',$request->unidad); 
             if($_SESSION['unidades'])$data = $data->whereIn('c.unidad',$_SESSION['unidades']);                       
                 
-            $data = $data->orderby('c.unidad')->orderby('c.termino')->get();
+            $data = $data->get();
                 
             if(count($data)==0){ return "NO REGISTROS QUE MOSTRAR";exit;}
            
@@ -99,7 +116,7 @@ class cursosaperturadosController extends Controller
         
             if(count($data)>0)return Excel::download(new xls($data,$head, $title), $name);
              
-        }else echo "Seleccione un rango de fecha";
+        }else echo "Seleccione un dato para filtrar.";
                 
     } 
     
