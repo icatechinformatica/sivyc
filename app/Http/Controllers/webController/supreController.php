@@ -402,23 +402,29 @@ class supreController extends Controller
                 $consulta2 = $consulta2->where('tabla_supre.fecha','>=',$fecha_inicio)
                                     ->where('tabla_supre.fecha','<=',$fecha_termino);
             }else{
-                $fecha_inicio = 0;
-                $fecha_termino = 0;
+                $fidefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->FIRST();
+                $ftdefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->LATEST();
+                $fecha_inicio = $fidefault->fecha;
+                $fecha_termino = $ftdefault->fecha;
+                //dd($fidefault);
                 return redirect()->route('reporte-solicitados')
                 ->withErrors(sprintf('INGRESE UNA FECHA DE INICIO Y TERMINO'));
             }
         }
         else
         {
-            $fecha_inicio = 0;
-            $fecha_termino = 0;
+            $fidefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->FIRST();
+            $ftdefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->LATEST()->FIRST();
+            //dd($ftdefault);
+            $fecha_inicio = $fidefault->fecha;
+            $fecha_termino = $ftdefault->fecha;
         }
 
         $consulta1 = $consulta1->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
         $consulta2 = $consulta2->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
 
         $unidades = DB::table('tbl_unidades')->SELECT('unidad')->orderBy('unidad','asc')->GET();
-        //dd($unidades);
+        //dd($consulta2);
         return view('layouts.pages.vstareportesolicitados',compact('consulta1','consulta2','fecha_inicio','fecha_termino','unidades','fecha_inicio','fecha_termino'));
     }
 
@@ -465,6 +471,10 @@ class supreController extends Controller
                 INNER JOIN contratos ON contratos.id_folios = folios.id_folios
                 WHERE folios.status = 'Contrato_Rechazado'
                 AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_memo_rechazo"),
+        DB::raw("ARRAY(SELECT contratos.unidad_capacitacion FROM folios
+                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
+                WHERE folios.status = 'Contrato_Rechazado'
+                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_unidad_rechazo"),
         DB::raw("ARRAY(SELECT folios.updated_at FROM tabla_supre
                 INNER JOIN folios ON folios.id_supre = tabla_supre.id
                 WHERE folios.status = 'Validando_Contrato'
@@ -533,21 +543,27 @@ class supreController extends Controller
         ->join('tbl_unidades','tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion');
 
 
-        $cadwell = DB::table('tabla_supre')->SELECT('no_memo', 'updated_at')->WHERE('unidad_capacitacion', '=', $un)
+        $cadwell = DB::table('tabla_supre')->SELECT('no_memo', 'folio_validacion', 'updated_at')->WHERE('unidad_capacitacion', '=', $un)
         ->WHERE('status', '=', 'Validado');
 
-        $cadwell2 = DB::table('tabla_supre')->SELECT('folios.status','contratos.updated_at', 'contratos.numero_contrato')
+        $cadwell2 = DB::table('tabla_supre')->SELECT('folios.status','folios.iva','folios.importe_total',
+                    'contratos.updated_at', 'contratos.numero_contrato', 'contratos.observacion','tbl_cursos.unidad',
+                    'tbl_cursos.curso', 'tbl_cursos.nombre')
         ->JOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
         ->JOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+        ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
         ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
-        ->whereRaw("folios.status in ('Validando_Contrato', 'Contratado')");
+        ->whereRaw("folios.status in ('Validando_Contrato', 'Contratado', 'Contrato_Rechazado')");
 
-        $cadwell3 = DB::table('tabla_supre')->SELECT('folios.status','pagos.updated_at', 'pagos.no_memo')
+        $cadwell3 = DB::table('tabla_supre')->SELECT('folios.status','folios.iva','folios.importe_total',
+                        'pagos.observacion','pagos.updated_at','pagos.created_at', 'pagos.no_memo','pagos.liquido',
+                        'tbl_cursos.unidad')
         ->JOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
         ->JOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
         ->JOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+        ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
         ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
-        ->whereRaw("folios.status in ('Verificando_Pago', 'Pago_Verificado', 'Finalizado')");
+        ->whereRaw("folios.status in ('Verificando_Pago', 'Pago_Verificado', 'Finalizado', 'Pago_Rechazado')");
 
         if($ini != 0 ||  $fin != 0)
         {
@@ -591,6 +607,7 @@ class supreController extends Controller
         $consulta2->contrato_fecha_rechazo = str_replace('"', "", explode(",",trim($consulta2->contrato_fecha_rechazo, "{}")));
         $consulta2->contrato_observaciones = explode(",",trim($consulta2->contrato_observaciones, "{}"));
         $consulta2->contrato_memo_rechazo = explode(",",trim($consulta2->contrato_memo_rechazo, "{}"));
+        $consulta2->contrato_unidad_rechazo = explode(",",trim($consulta2->contrato_unidad_rechazo, "{}"));
         $consulta2->contrato_memo_proceso = explode(",",trim($consulta2->contrato_memo_proceso, "{}"));
         $consulta2->contrato_fecha_proceso = str_replace('"', "", explode(",",trim($consulta2->contrato_fecha_proceso, "{}")));
         $consulta2->contrato_memo_validado = explode(",",trim($consulta2->contrato_memo_validado, "{}"));
@@ -607,7 +624,7 @@ class supreController extends Controller
         $consulta2->pago_fecha_finalizado = str_replace('"', "", explode(",",trim($consulta2->pago_fecha_finalizado, "{}")));
 
         //if(empty($cadwell2['0'])){dd('entro');}
-        //dd($cadwell3);
+       // dd($consulta2);
         return view('layouts.pages.vstareportesolicitadosdetail',compact('consulta1','consulta2','ini','fin','un','cadwell','cadwell2', 'cadwell3'));
     }
 
