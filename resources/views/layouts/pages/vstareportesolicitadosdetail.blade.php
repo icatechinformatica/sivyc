@@ -20,6 +20,7 @@
             height:400px;
             overflow:auto;
             text-align: center;
+            padding: 10px;
         }
         .table-responsive2 {
             height:400px;
@@ -81,11 +82,13 @@
         }
     </style>
     <div class="card-header">
-        Consulta de Solicitados Mediante Suficiencias Presupuestales Unidad: {{$un}}
-
+        Solicitud de Reportes Solicitados Detallado
     </div>
     <div class="card card-body" >
         <br />
+        <div class="row justify-content-center">
+                <H2>Consulta de Solicitados Mediante Suficiencias Presupuestales Unidad: {{$un}}</H2>
+        </div>
         <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputccp"><h3>Filtrado Por Fechas</h3></label>
@@ -134,59 +137,19 @@
             <div class="row justify-content-center">
                 <H2>Suficiencias Presupuestales</H2>
             </div>
-            <div class="row">
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Rechazados</h3></label>
-                </div>
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Proceso</h3></label>
-                </div>
+            <div class="row justify-content-center">
+                <H2>Lista de Proceso</H2>
             </div>
             <div class="row">
-                @if($consulta1->supre_memo_rechazo[0] == "")
-                    <div class="container2" style="width:50%;">
-                        <div class="alert alert-warning child">
-                            <strong>Info!</strong> No hay Registros
-                        </div>
-                    </div>
-                @else
-                    <div class="table-responsive" style="width:50%;">
-                        <table class="table table-bordered table-striped" id='table_supre_cancelado'>
-                            <thead>
-                                <tr>
-                                    <th style="text-align: center;">No. Memorándum</th>
-                                    <th style="text-align: center;">Fecha de Rechazo</th>
-                                    <th style="text-align: center;">Observación</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($consulta1->supre_memo_rechazo as $key => $rechazo)
-                                        <tr>
-                                            <td align="center">{{$rechazo}}</td>
-                                            @if($consulta1->supre_fecha_rechazo[$key] != 'NULL')
-                                                <td align="center">{{$consulta1->supre_fecha_rechazo[$key]}}</td>
-                                            @else
-                                                <td align="center">{{$consulta1->supre_updated_rechazo[$key]}}</td>
-                                            @endif
-                                            @if($consulta1->supre_observaciones[$key] != 'NULL')
-                                                <td align="center">{{$consulta1->supre_observaciones[$key]}}</td>
-                                            @else
-                                                <td align="center">N/A</td>
-                                            @endif
-                                        </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
                 @if($consulta1->supre_memo_proceso[0] == "")
-                        <div class="container2" style="width:50%;">
-                            <div class="alert alert-warning child">
-                                    <strong>Info!</strong> No hay Registros
-                            </div>
+                    <div class="container2" style="width:95%;">
+                        <div class="alert alert-warning child">
+                                <strong>Info!</strong> No hay Registros
                         </div>
+                    </div>
+                    <br><br><br><br>
                 @else
-                    <div class="table-responsive" style="width:50%;">
+                    <div class="table-responsive" >
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -211,7 +174,7 @@
             </div>
             <div class="row">
                 @if($cadwell[0] == null)
-                    <div class="container2" style="width:100%;">
+                    <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
                             <strong>Info!</strong> No hay Registros
                         </div>
@@ -223,6 +186,7 @@
                                 <tr>
                                     <th style="text-align: center;">No. Memorándum</th>
                                     <th style="text-align: center;">Fecha de Validación</th>
+                                    <th style="text-align: center;">No. Memorándum de Validación</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -230,6 +194,7 @@
                                         <tr>
                                             <td align="center">{{$validado->no_memo}}</td>
                                             <td align="center">{{$validado->updated_at}}</td>
+                                            <td align="center">{{$validado->folio_validacion}}</td>
                                         </tr>
                                 @endforeach
                             </tbody>
@@ -237,52 +202,28 @@
                     </div>
                 @endif
             </div>
-        </div>
-        <div id="contratos" class="tabcontent">
-        <div class="row justify-content-center">
-                <H2>Contratos</H2>
+            <div class="row justify-content-center">
+                <H2>Lista de Rechazados</H2>
             </div>
             <div class="row">
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Cancelados</h3></label>
-                </div>
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Proceso</h3></label>
-                </div>
-            </div>
-            <div class="row">
-                @if($consulta2->contrato_memo_rechazo[0] == "")
-                    <div class="container2" style="width:50%;">
+                @if($consulta1->supre_memo_rechazo[0] == "")
+                    <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
                             <strong>Info!</strong> No hay Registros
                         </div>
                     </div>
+                    <br><br><br><br>
                 @else
-                    <div class="table-responsive" style="width:50%;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-striped" id='table_supre_cancelado'>
                             <thead>
                                 <tr>
-                                    <th style="text-align: center;">No. Contrato</th>
+                                    <th style="text-align: center;">No. Memorándum</th>
                                     <th style="text-align: center;">Fecha de Rechazo</th>
                                     <th style="text-align: center;">Observación</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($consulta2->contrato_memo_rechazo as $key => $rechazo)
-                                        <tr>
-                                            <td align="center">{{$rechazo}}</td>
-                                            @if($consulta2->contrato_fecha_rechazo[$key] != 'NULL')
-                                                <td align="center">{{$consulta2->contrato_fecha_rechazo[$key]}}</td>
-                                            @else
-                                                <td align="center">{{$consulta2->contrato_updated_rechazo[$key]}}</td>
-                                            @endif
-                                            @if($consulta2->contrato_observaciones[$key] != 'NULL')
-                                                <td align="center">{{$consulta2->contrato_observaciones[$key]}}</td>
-                                            @else
-                                                <td align="center">N/A</td>
-                                            @endif
-                                        </tr>
-                                @endforeach
                                 @foreach($consulta1->supre_memo_rechazo as $key => $rechazo)
                                         <tr>
                                             <td align="center">{{$rechazo}}</td>
@@ -302,19 +243,33 @@
                         </table>
                     </div>
                 @endif
+            </div>
+        </div>
+        <div id="contratos" class="tabcontent">
+        <div class="row justify-content-center">
+            <H2>Contratos</H2>
+        </div>
+        <div class="row justify-content-center">
+            <H2>Lista de Proceso</H2>
+        </div>
+            <div class="row">
                 <?php $chk= false; foreach($cadwell2 as $prob){if($prob->status == 'Validando_Contrato'){$chk = true;}}?>
                 @if(empty($cadwell2[0]) || $chk == false)
-                    <div class="container2" style="width:50%;">
+                    <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
                             <strong>Info!</strong> No hay Registros
                         </div>
                     </div>
+                    <br><br><br><br>
                 @else
-                    <div class="table-responsive" style="width:50%;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Contrato</th>
+                                    <th style="text-align: center;">Curso</th>
+                                    <th style="text-align: center;">Instructor</th>
                                     <th style="text-align: center;">Fecha de Creación</th>
                                 </tr>
                             </thead>
@@ -322,7 +277,10 @@
                                 @foreach($cadwell2 as $key => $proceso)
                                     @if($proceso->status == 'Validando_Contrato')
                                         <tr>
+                                            <td align="center">{{$proceso->unidad}}</td>
                                             <td align="center">{{$proceso->numero_contrato}}</td>
+                                            <td align="center">{{$proceso->curso}}</td>
+                                            <td align="center">{{$proceso->nombre}}</td>
                                             <td align="center">{{$proceso->updated_at}}</td>
                                         </tr>
                                     @endif
@@ -343,12 +301,16 @@
                             <strong>Info!</strong> No hay Registros
                         </div>
                     </div>
+                    <br><br><br><br>
                 @else
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Contrato</th>
+                                    <th style="text-align: center;">Curso</th>
+                                    <th style="text-align: center;">Instructor</th>
                                     <th style="text-align: center;">Fecha de Validación</th>
                                 </tr>
                             </thead>
@@ -356,8 +318,58 @@
                                 @foreach($cadwell2 as $key => $validado)
                                     @if($validado->status == 'Contratado')
                                         <tr>
+                                            <td align="center">{{$validado->unidad}}</td>
                                             <td align="center">{{$validado->numero_contrato}}</td>
+                                            <td align="center">{{$validado->curso}}</td>
+                                            <td align="center">{{$validado->nombre}}</td>
                                             <td align="center">{{$validado->updated_at}}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+            <div class="row justify-content-center">
+                <H2>Contratos Rechazados</H2>
+            </div>
+            <div class="row">
+                <?php $chk2= false; foreach($cadwell2 as $prob){if($prob->status == 'Contrato_Rechazado'){$chk2 = true;}}?>
+                @if(empty($cadwell2[0]) || $chk2 == false)
+                    <div class="container2" style="width:95%;">
+                        <div class="alert alert-warning child">
+                            <strong>Info!</strong> No hay Registros
+                        </div>
+                    </div>
+                    <br><br><br><br>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id='table_supre_cancelado'>
+                            <thead>
+                                <tr>
+                                <th style="text-align: center;">Unidad</th>
+                                    <th style="text-align: center;">No. Contrato</th>
+                                    <th style="text-align: center;">Curso</th>
+                                    <th style="text-align: center;">Instructor</th>
+                                    <th style="text-align: center;">Fecha de Cancelación</th>
+                                    <th style="text-align: center;">Observación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($cadwell2 as $key => $rechazo)
+                                    @if($rechazo->status == 'Contrato_Rechazado')
+                                        <tr>
+                                            <td align="center">{{$validado->unidad}}</td>
+                                            <td align="center">{{$rechazo->numero_contrato}}</td>
+                                            <td align="center">{{$rechazo->curso}}</td>
+                                            <td align="center">{{$rechazo->nombre}}</td>
+                                            <td align="center">{{$rechazo->updated_at}}</td>
+                                            @if($rechazo->observacion != NULL)
+                                                <td align="center">{{$rechazo->observacion}}</td>
+                                            @else
+                                                <td align="center">N/A</td>
+                                            @endif
                                         </tr>
                                     @endif
                                 @endforeach
@@ -371,73 +383,41 @@
             <div class="row justify-content-center">
                 <H2>pagos</H2>
             </div>
-            <div class="row">
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Rechazados</h3></label>
-                </div>
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Proceso</h3></label>
-                </div>
+            <div class="row justify-content-center">
+                <H2>Lista de Proceso</H2>
             </div>
             <div class="row">
-                @if($consulta2->pago_memo_rechazo[0] == "")
-                    <div class="container2" style="width:50%;">
-                        <div class="alert alert-warning child">
-                            <strong>Info!</strong> No hay Registros
-                        </div>
-                    </div>
-                @else
-                    <div class="table-responsive" style="width:50%;">
-                        <table class="table table-bordered table-striped" id='table_supre_cancelado'>
-                            <thead>
-                                <tr>
-                                    <th style="text-align: center;">No. Memorándum</th>
-                                    <th style="text-align: center;">Fecha de Rechazo</th>
-                                    <th style="text-align: center;">Observación</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($consulta2->pago_memo_rechazo as $key => $rechazo)
-                                        <tr>
-                                            <td align="center">{{$rechazo}}</td>
-                                            @if($consulta2->pago_fecha_rechazo[$key] != 'NULL')
-                                                <td align="center">{{$consulta2->pago_fecha_rechazo[$key]}}</td>
-                                            @else
-                                                <td align="center">{{$consulta2->pago_updated_rechazo[$key]}}</td>
-                                            @endif
-                                            @if($consulta2->pago_observaciones[$key] != 'NULL')
-                                                <td align="center">{{$consulta2->pago_observaciones[$key]}}</td>
-                                            @else
-                                                <td align="center">N/A</td>
-                                            @endif
-                                        </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
                 <?php $chk2= false; foreach($cadwell3 as $prob){if($prob->status == 'Verificando_Pago'){$chk2 = true;}}?>
                 @if(empty($cadwell3[0]) || $chk2 == false)
-                        <div class="container2" style="width:50%;">
+                        <div class="container2" style="width:95%;">
                             <div class="alert alert-warning child">
                                     <strong>Info!</strong> No hay Registros
                             </div>
                         </div>
+                        <br><br><br><br>
                 @else
-                    <div class="table-responsive" style="width:50%;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
                                     <th style="text-align: center;">Fecha de Creación</th>
+                                    <th style="text-align: center;">Líquido de Factura</th>
+                                    <th style="text-align: center;">Importe</th>
+                                    <th style="text-align: center;">IVA</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($cadwell3 as $key => $proceso)
                                     @if($proceso->status == 'Verificando_Pago')
                                         <tr>
+                                            <td align="center">{{$proceso->unidad}}</td>
                                             <td align="center">{{$proceso->no_memo}}</td>
-                                            <td align="center">{{$proceso->updated_at}}</td>
+                                            <td align="center">{{$proceso->created_at}}</td>
+                                            <td align="center">{{$proceso->liquido}}</td>
+                                            <td align="center">{{$proceso->importe_total}}</td>
+                                            <td align="center">{{$proceso->iva}}</td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -446,37 +426,41 @@
                     </div>
                 @endif
             </div>
-            <div class="row">
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Validados</h3></label>
-                </div>
-                <div style="width: 50%; text-align: center;">
-                    <label for="table_supre_cancelad"><h3>Lista de Pagados</h3></label>
-                </div>
+            <div class="row justify-content-center">
+                <H2>Lista de Validados</H2>
             </div>
             <div class="row">
             <?php $chk2= false; foreach($cadwell3 as $prob){if($prob->status == 'Pago_Verificado'){$chk2 = true;}}?>
                 @if(empty($cadwell3[0]) || $chk2 == false)
-                    <div class="container2" style="width:50%;">
+                    <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
                             <strong>Info!</strong> No hay Registros
                         </div>
                     </div>
+                    <br><br><br><br>
                 @else
-                    <div class="table-responsive" style="width:50%;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-striped" id='table_supre_cancelado'>
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
                                     <th style="text-align: center;">Fecha de Validación</th>
+                                    <th style="text-align: center;">Líquido de Factura</th>
+                                    <th style="text-align: center;">Importe</th>
+                                    <th style="text-align: center;">IVA</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($cadwell3 as $key => $validado)
                                     @if($validado->status == 'Pago_Verificado')
                                         <tr>
+                                            <td align="center">{{$validado->unidad}}</td>
                                             <td align="center">{{$validado->no_memo}}</td>
                                             <td align="center">{{$validado->updated_at}}</td>
+                                            <td align="center">{{$validado->liquido}}</td>
+                                            <td align="center">{{$validado->importe_total}}</td>
+                                            <td align="center">{{$validado->iva}}</td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -484,28 +468,91 @@
                         </table>
                     </div>
                 @endif
+            </div>
+            <div class="row justify-content-center">
+                <H2>Lista de Pagados</H2>
+            </div>
+            <div class="row">
                 <?php $chk2= false; foreach($cadwell3 as $prob){if($prob->status == 'Finalizado'){$chk2 = true;}}?>
                 @if(empty($cadwell3[0]) || $chk2 == false)
-                        <div class="container2" style="width:50%;">
-                            <div class="alert alert-warning child">
-                                    <strong>Info!</strong> No hay Registros
-                            </div>
+                    <div class="container2" style="width:95%;">
+                        <div class="alert alert-warning child">
+                                <strong>Info!</strong> No hay Registros
                         </div>
+                    </div>
+                    <br><br><br><br>
                 @else
-                    <div class="table-responsive" style="width:50%;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
-                                    <th style="text-align: center;">Fecha de Creación</th>
+                                    <th style="text-align: center;">Fecha de Pago</th>
+                                    <th style="text-align: center;">Líquido de Factura</th>
+                                    <th style="text-align: center;">Importe</th>
+                                    <th style="text-align: center;">IVA</th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach($cadwell3 as $key => $finalizado)
                                     @if($finalizado->status == 'Finalizado')
                                         <tr>
+                                            <td align="center">{{$finalizado->unidad}}</td>
                                             <td align="center">{{$finalizado->no_memo}}</td>
                                             <td align="center">{{$finalizado->updated_at}}</td>
+                                            <td align="center">{{$finalizado->liquido}}</td>
+                                            <td align="center">{{$finalizado->importe_total}}</td>
+                                            <td align="center">{{$finalizado->iva}}</td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+            <div class="row justify-content-center">
+                <H2>Lista de Rechazados</H2>
+            </div>
+            <div class="row">
+                <?php $chk2= false; foreach($cadwell3 as $prob){if($prob->status == 'Pago_Rechazado'){$chk2 = true;}}?>
+                @if(empty($cadwell3[0]) || $chk2 == false)
+                    <div class="container2" style="width:95%;">
+                        <div class="alert alert-warning child">
+                            <strong>Info!</strong> No hay Registros
+                        </div>
+                    </div>
+                    <br><br><br><br>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id='table_supre_cancelado'>
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">Unidad</th>
+                                    <th style="text-align: center;">No. Memorándum</th>
+                                    <th style="text-align: center;">Fecha de Rechazo</th>
+                                    <th style="text-align: center;">Líquido de Factura</th>
+                                    <th style="text-align: center;">Importe</th>
+                                    <th style="text-align: center;">IVA</th>
+                                    <th style="text-align: center;">Observación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($cadwell3 as $key => $rechazo)
+                                    @if($rechazo->status == 'Pago_Rechazado')
+                                        <tr>
+                                            <td align="center">{{$finalizado->unidad}}</td>
+                                            <td align="center">{{$finalizado->no_memo}}</td>
+                                            <td align="center">{{$finalizado->updated_at}}</td>
+                                            <td align="center">{{$finalizado->liquido}}</td>
+                                            <td align="center">{{$finalizado->importe_total}}</td>
+                                            <td align="center">{{$finalizado->iva}}</td>
+                                            @if($finalizado->observacion != NULL)
+                                                <td align="center">{{$finalizado->observacion}}</td>
+                                            @else
+                                                <td align="center">N/A</td>
+                                            @endif
                                         </tr>
                                     @endif
                                 @endforeach
