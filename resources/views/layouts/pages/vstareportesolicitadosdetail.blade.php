@@ -90,9 +90,9 @@
                 <H2>Consulta de Solicitados Mediante Suficiencias Presupuestales Unidad: {{$un}}</H2>
         </div>
         <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="inputccp"><h3>Filtrado Por Fechas</h3></label>
-                </div>
+            <div class="form-group col-md-4">
+                <label for="inputccp"><h3>Filtrado Por Fechas</h3></label>
+            </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -144,7 +144,7 @@
                 @if($consulta1->supre_memo_proceso[0] == "")
                     <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
-                                <strong>Info!</strong> No hay Registros
+                            <strong>Info!</strong> No hay Registros
                         </div>
                     </div>
                     <br><br><br><br>
@@ -159,10 +159,10 @@
                             </thead>
                             <tbody>
                                 @foreach($consulta1->supre_memo_proceso as $key => $proceso)
-                                        <tr>
-                                            <td align="center">{{$proceso}}</td>
-                                            <td align="center">{{$consulta1->supre_updated_proceso[$key]}}</td>
-                                        </tr>
+                                    <tr>
+                                        <td align="center">{{$proceso}}</td>
+                                        <td align="center">{{$consulta1->supre_updated_proceso[$key]}}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -191,11 +191,11 @@
                             </thead>
                             <tbody>
                                 @foreach($cadwell as $key => $validado)
-                                        <tr>
-                                            <td align="center">{{$validado->no_memo}}</td>
-                                            <td align="center">{{$validado->updated_at}}</td>
-                                            <td align="center">{{$validado->folio_validacion}}</td>
-                                        </tr>
+                                    <tr>
+                                        <td align="center">{{$validado->no_memo}}</td>
+                                        <td align="center">{{$validado->updated_at}}</td>
+                                        <td align="center">{{$validado->folio_validacion}}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -225,19 +225,19 @@
                             </thead>
                             <tbody>
                                 @foreach($consulta1->supre_memo_rechazo as $key => $rechazo)
-                                        <tr>
-                                            <td align="center">{{$rechazo}}</td>
-                                            @if($consulta1->supre_fecha_rechazo[$key] != 'NULL')
-                                                <td align="center">{{$consulta1->supre_fecha_rechazo[$key]}}</td>
-                                            @else
-                                                <td align="center">{{$consulta1->supre_updated_rechazo[$key]}}</td>
-                                            @endif
-                                            @if($consulta1->supre_observaciones[$key] != 'NULL')
-                                                <td align="center">{{$consulta1->supre_observaciones[$key]}}</td>
-                                            @else
-                                                <td align="center">N/A</td>
-                                            @endif
-                                        </tr>
+                                    <tr>
+                                        <td align="center">{{$rechazo}}</td>
+                                        @if($consulta1->supre_fecha_rechazo[$key] != 'NULL')
+                                            <td align="center">{{$consulta1->supre_fecha_rechazo[$key]}}</td>
+                                        @else
+                                            <td align="center">{{$consulta1->supre_updated_rechazo[$key]}}</td>
+                                        @endif
+                                        @if($consulta1->supre_observaciones[$key] != 'NULL')
+                                            <td align="center">{{$consulta1->supre_observaciones[$key]}}</td>
+                                        @else
+                                            <td align="center">N/A</td>
+                                        @endif
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -389,12 +389,12 @@
             <div class="row">
                 <?php $chk2= false; foreach($cadwell3 as $prob){if($prob->status == 'Verificando_Pago'){$chk2 = true;}}?>
                 @if(empty($cadwell3[0]) || $chk2 == false)
-                        <div class="container2" style="width:95%;">
-                            <div class="alert alert-warning child">
-                                    <strong>Info!</strong> No hay Registros
-                            </div>
+                    <div class="container2" style="width:95%;">
+                        <div class="alert alert-warning child">
+                            <strong>Info!</strong> No hay Registros
                         </div>
-                        <br><br><br><br>
+                    </div>
+                    <br><br><br><br>
                 @else
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
@@ -477,7 +477,7 @@
                 @if(empty($cadwell3[0]) || $chk2 == false)
                     <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
-                                <strong>Info!</strong> No hay Registros
+                            <strong>Info!</strong> No hay Registros
                         </div>
                     </div>
                     <br><br><br><br>

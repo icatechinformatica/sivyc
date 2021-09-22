@@ -1017,7 +1017,8 @@ class InstructorController extends Controller
     public function exportar_instructores()
     {
         $data = instructor::SELECT('instructores.id','tbl_unidades.unidad','instructores.apellidoPaterno',
-                'instructores.apellidoMaterno','instructores.nombre',
+                'instructores.apellidoMaterno','instructores.nombre','instructores.curp','instructores.rfc',
+                'instructores.numero_control',
                 DB::raw("array(select especialidades.nombre from especialidad_instructores
                 LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
