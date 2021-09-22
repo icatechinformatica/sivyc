@@ -25,10 +25,10 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-2">
-                    <input type="date" name="fecha_inicio" class="form-control" id="fecha_inicio" placeholder="Fecha inicio">
+                    <input type="date" name="fecha_inicio" class="form-control" id="fecha_inicio" placeholder="Fecha inicio" value="{{$fecha_inicio}}">
                 </div>
                 <div class="form-group col-md-2">
-                    <input type="date" name="fecha_termino" class="form-control" id="fecha_termino" placeholder="Fecha termino">
+                    <input type="date" name="fecha_termino" class="form-control" id="fecha_termino" placeholder="Fecha termino" value="{{$fecha_termino}}">
                 </div>
                 <div class="form-group col-md-1">
                     <input type="submit" value="BUSCAR" class="btn btn-green">
