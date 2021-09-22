@@ -397,6 +397,7 @@ class InstructorController extends Controller
         $modInstructor->correo = trim($request->correo);
         $modInstructor->tipo_honorario = trim($request->honorario);
         $modInstructor->clave_unidad = trim($request->unidad_registra);
+        $modInstructor->extracurricular = trim($request->extracurricular);
         if($request->estado != NULL)
         {
             $modInstructor->estado = TRUE;
