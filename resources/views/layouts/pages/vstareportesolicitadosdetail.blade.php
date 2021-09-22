@@ -144,7 +144,7 @@
                 @if($consulta1->supre_memo_proceso[0] == "")
                     <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
-                            <strong>Info!</strong> No hay Registros
+                                <strong>Info!</strong> No hay Registros
                         </div>
                     </div>
                     <br><br><br><br>
