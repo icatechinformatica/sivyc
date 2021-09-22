@@ -450,7 +450,19 @@ class ContratoController extends Controller
     public function rechazar_contrato(Request $request){
         $contrato = contratos::find($request->idContrato);
         $contrato->observacion = $request->observaciones;
+        $contrato->chk_rechazado = TRUE;
         $contrato->fecha_status = carbon::now();
+        if($contrato->fecha_rechazo == NULL)
+        {
+            $contrato->fecha_rechazo = array(array('fecha' => carbon::now()->toDateString(), 'observacion' => $request->observaciones));
+        }
+        else
+        {
+            $new = array('fecha' => carbon::now()->toDateString(), 'observacion' => $request->observaciones);
+            $old = $contrato->fecha_rechazo;
+            array_push($old, $new);
+            $contrato->fecha_rechazo = $old;
+        }
         $contrato->save();
 
         $folio = folio::find($request->idfolios);
