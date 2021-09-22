@@ -83,15 +83,15 @@ class for911Controller extends Controller
         //->get();
         //dd($sql);
 
-        $temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
+        //$temptblinner = DB::raw("(SELECT id_pre, no_control, id_curso, migrante, indigena, etnia FROM alumnos_registro GROUP BY id_pre, no_control, id_curso, migrante, indigena, etnia) as ar");
 //dd($temptblinner);
         $consulta=DB::table('tbl_cursos as tc')
         ->leftjoin('tbl_inscripcion as i','tc.id','=','i.id_curso')
-        ->leftjoin($temptblinner, function($join)
+        /*->leftjoin($temptblinner, function($join)
                     {
                         $join->on('tc.id_curso','=','ar.id_curso');
                         $join->on('i.matricula','=','ar.no_control');
-                    })
+                    })*/
         ->select(DB::raw("count(extract(year from (age(tc.termino,i.fecha_nacimiento)))) as total_inscritos"), 'tc.espe as especialidad',
         DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) < '15' then 1 else 0 end) as total_inscritos1"),
         DB::raw("sum(case when extract(year from (age(tc.termino,i.fecha_nacimiento))) between '15' and '19' then 1 else 0 end) as total_inscritos2"),
