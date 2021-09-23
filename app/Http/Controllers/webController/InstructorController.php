@@ -683,7 +683,7 @@ class InstructorController extends Controller
                     DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
                         ->where('id_especialidad_instructor', '=', $request->idespec)
                         ->update(['activo' => TRUE,
-                                  'id_especialidad_instructor'  => $request->valido_perfil]);
+                                  'id_especialidad_instructor'  => $request->idespec]);
                     break;
                 }
                 else
@@ -691,7 +691,7 @@ class InstructorController extends Controller
                     DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
                         ->where('id_especialidad_instructor', '=', $request->idespec)
                         ->update(['activo' => FALSE,
-                                  'id_especialidad_instructor'  => $request->valido_perfil]);
+                                  'id_especialidad_instructor'  => $request->idespec]);
                 }
             }
         }
