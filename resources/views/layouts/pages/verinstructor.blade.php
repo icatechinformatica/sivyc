@@ -271,6 +271,16 @@
                 </div>
                 <br>
                 <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="extracurricular"><h3>Registro de Capacitador Externo STPS</h3></label>
+                        <textarea name="stps" id="stps" cols="6" rows="4" class="form-control">{{$datains->stps}}</textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="extracurricular"><h3>Estandar CONOCER</h3></label>
+                        <textarea name="conocer" id="conocer" cols="6" rows="4" class="form-control">{{$datains->conocer}}</textarea>
+                    </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-12">
                         <label for="extracurricular"><h3>Datos Extracurriculares</h3></label>
                         <textarea name="extracurricular" id="extracurricular" cols="6" rows="10" class="form-control">{{$datains->extracurricular}}</textarea>

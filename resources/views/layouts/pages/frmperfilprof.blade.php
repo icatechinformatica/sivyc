@@ -79,7 +79,7 @@
                             <option value="NO">NO</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-3">
+                    <!-- <div class="form-group col-md-3">
                         <label for="inputconocer">Estandar CONOCER</label>
                         <select name="conocer" id="conocer" class="form-control">
                             <option value="sin especificar">SIN ESPECIFICAR</option>
@@ -94,9 +94,7 @@
                             <option value="SI">SI</option>
                             <option value="NO">NO</option>
                         </select>
-                    </div>
-                </div>
-                <div class="form-row">
+                    </div> -->
                     <div class="form-group col-md-3">
                         <label for="inputicapacitador_icatech">Capacitador ICATECH</label>
                         <select name="capacitador_icatech" id="capacitador_icatech" class="form-control">

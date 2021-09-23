@@ -79,7 +79,7 @@
                             @endif
                         </select>
                     </div>
-                    <div class="form-group col-md-3">
+                    <!-- <div class="form-group col-md-3">
                         <label for="inputconocer">Estandar CONOCER</label>
                         <select name="conocer" id="conocer" class="form-control">
                             @if ($perfil_ins->estandar_conocer == "SI")
@@ -102,9 +102,7 @@
                                 <option value="NO" selected>NO</option>
                             @endif
                         </select>
-                    </div>
-                </div>
-                <div class="form-row">
+                    </div> -->
                     <div class="form-group col-md-3">
                         <label for="inputicapacitador_icatech">Capacitador ICATECH</label>
                         <select name="capacitador_icatech" id="capacitador_icatech" class="form-control">

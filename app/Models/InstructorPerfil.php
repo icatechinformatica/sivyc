@@ -12,7 +12,7 @@ class InstructorPerfil extends Model
     protected $fillable = [
         'id','grado_profesional','area_carrera','estatus','pais_institucion','entidad_institucion',
         'ciudad_institucion','nombre_institucion','fecha_expedicion_documento','folio_documento','cursos_recibidos',
-        'estandar_conocer','registro_stps','capacitador_icatech','recibidos_icatech','cursos_impartidos','experiencia_laboral',
+        'capacitador_icatech','recibidos_icatech','cursos_impartidos','experiencia_laboral',
         'experiencia_docente','numero_control','lastUserId',
     ];
 
