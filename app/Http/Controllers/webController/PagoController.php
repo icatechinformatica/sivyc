@@ -206,9 +206,22 @@ class PagoController extends Controller
         ->update(['status' => 'Pago_Rechazado',
                   'fecha_rechazado' => carbon::now()]);
 
+        $pago = pago::find($request->idPago);
+        if($pago->fecha_rechazo == NULL)
+        {
+            $old = array(array('fecha' => carbon::now()->toDateString(), 'observacion' => $request->observaciones));
+        }
+        else
+        {
+            $new = array('fecha' => carbon::now()->toDateString(), 'observacion' => $request->observaciones);
+            $old = $pago->fecha_rechazo;
+            // dd($new);
+            array_push($old, $new);
+        }
         pago::where('id', '=', $request->idPago)
         ->update(['observacion' => $request->observaciones,
-                  'fecha_status' => carbon::now()]);
+                  'fecha_rechazo' => $old,
+                  'chk_rechazado' => TRUE]);
 
         return redirect()->route('pago-inicio');
     }
@@ -218,6 +231,13 @@ class PagoController extends Controller
         $folio = folio::findOrfail($idfolio);
         $folio->status = 'Pago_Verificado';
         $folio->save();
+
+        $pago = DB::table('folios')->SELECT('pagos.id')->WHERE('folios.id_folios', '=', $idfolio)
+                ->JOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
+                ->JOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+                ->FIRST();
+
+        pago::where('id', '=', $pago->id)->update(['fecha_validado' => carbon::now()]);
         return redirect()->route('pago-inicio')->with('info', 'El pago ha sido verificado exitosamente.');
     }
 

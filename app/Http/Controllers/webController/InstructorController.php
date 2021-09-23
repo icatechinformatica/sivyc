@@ -398,6 +398,8 @@ class InstructorController extends Controller
         $modInstructor->tipo_honorario = trim($request->honorario);
         $modInstructor->clave_unidad = trim($request->unidad_registra);
         $modInstructor->extracurricular = trim($request->extracurricular);
+        $modInstructor->stps = trim($request->stps);
+        $modInstructor->conocer = trim($request->conocer);
         if($request->estado != NULL)
         {
             $modInstructor->estado = TRUE;
@@ -575,8 +577,8 @@ class InstructorController extends Controller
         $perfilInstructor->fecha_expedicion_documento = trim($request->fecha_documento); //
         $perfilInstructor->folio_documento = trim($request->folio_documento); //
         $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
-        $perfilInstructor->estandar_conocer = trim($request->conocer);
-        $perfilInstructor->registro_stps = trim($request->stps);
+        // $perfilInstructor->estandar_conocer = trim($request->conocer);
+        // $perfilInstructor->registro_stps = trim($request->stps);
         $perfilInstructor->capacitador_icatech = trim($request->capacitador_icatech);
         $perfilInstructor->recibidos_icatech = trim($request->recibidos_icatech);
         $perfilInstructor->cursos_impartidos = trim($request->cursos_impartidos);
@@ -607,8 +609,8 @@ class InstructorController extends Controller
         $perfilInstructor->fecha_expedicion_documento = trim($request->fecha_documento); //
         $perfilInstructor->folio_documento = trim($request->folio_documento); //
         $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
-        $perfilInstructor->estandar_conocer = trim($request->conocer);
-        $perfilInstructor->registro_stps = trim($request->stps);
+        // $perfilInstructor->estandar_conocer = trim($request->conocer);
+        // $perfilInstructor->registro_stps = trim($request->stps);
         $perfilInstructor->capacitador_icatech = trim($request->capacitador_icatech);
         $perfilInstructor->recibidos_icatech = trim($request->recibidos_icatech);
         $perfilInstructor->cursos_impartidos = trim($request->cursos_impartidos);
