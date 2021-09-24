@@ -522,7 +522,12 @@ class InstructorController extends Controller
                 'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)->GET();
-        //dd($listacursos);
+        if($listacursos == '[]')
+        {
+
+            $listacursos = curso::WHERE('id_especialidad', '=', $especvalid->especialidad_id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+            // dd($especvalid->especialidad_id);
+        }
 
         return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'id','idins','nomesp', 'catcursos','listacursos'));
     }
@@ -644,6 +649,7 @@ class InstructorController extends Controller
 
     public function especval_mod_save(Request $request)
     {
+        // dd($request);
         $userId = Auth::user()->id;
 
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
@@ -714,7 +720,7 @@ class InstructorController extends Controller
         //$cursos_mod->cursos()->attach($pila_edit);
         // Eliminar todos los elementos del array
         //unset($pila_edit);
-
+        return back();
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
     }
