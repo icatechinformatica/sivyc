@@ -30,7 +30,7 @@
                     {!! Form::open(['route' => 'cursos_validados.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipobusquedacursovalidado" class="form-control mr-sm-2" id="tipobusquedacursovalidado">
                             <option value="">BUSCAR POR TIPO</option>
-                            <option value="arc01">ARC-01</option>
+                            <option value="arc01">MEMO DE SOLICITUD ARC-01</option>
                             <option value="clave">CLAVE DEL CURSO</option>
                             <option value="nombre_curso">NOMBRE DEL CURSO</option>
                             <option value="instructor">INSTRUCTORES</option>
@@ -51,7 +51,7 @@
                 <tr>
                     <th scope="col">UNIDAD</th>
                     <th scope="col">CLAVE DE CURSO</th>
-                    <th scope="col">ARC-01</th>
+                    <th scope="col">MEMO DE SOLICITUD ARC-01</th>
                     <th scope="col">NOMBRE DEL CURSO</th>
                     <th scope="col">TIPO DE CURSO</th>
                     <th scope="col">INSTRUCTOR</th>

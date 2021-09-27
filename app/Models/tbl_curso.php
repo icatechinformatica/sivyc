@@ -62,7 +62,7 @@ class tbl_curso extends Model
                         break;
                     case 'arc01':
                         # code...
-                        return $query->WHERE('tbl_cursos.munidad', '=', $buscar);
+                        return $query->WHERE('tbl_cursos.munidad', 'LIKE', "%$buscar%");
                     break;
                     default:
                         # code...
