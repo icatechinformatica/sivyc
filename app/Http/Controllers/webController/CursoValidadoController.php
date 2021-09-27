@@ -33,7 +33,7 @@ class CursoValidadoController extends Controller
 
     public function cv_inicio(Request $request) {
         // parametros de busqueda
-        $buscarcursoValidado = $request->get('busqueda_curso_validado');
+        $buscarcursoValidado = trim($request->get('busqueda_curso_validado'));
 
         $tipoCursoValidad = $request->get('tipobusquedacursovalidado');
         //  dd($request);
