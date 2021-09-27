@@ -396,16 +396,16 @@ class supreController extends Controller
 
         if(isset($fecha_inicio)){
             if(isset($fecha_termino)){
-                $consulta1 = $consulta1->where('tabla_supre.fecha','>=',$fecha_inicio)
-                                    ->where('tabla_supre.fecha','<=',$fecha_termino);
+                $consulta1 = $consulta1->where('tabla_supre.created_at','>=',$fecha_inicio)
+                                    ->where('tabla_supre.created_at','<=',$fecha_termino);
 
-                $consulta2 = $consulta2->where('tabla_supre.fecha','>=',$fecha_inicio)
-                                    ->where('tabla_supre.fecha','<=',$fecha_termino);
+                $consulta2 = $consulta2->where('tabla_supre.created_at','>=',$fecha_inicio)
+                                    ->where('tabla_supre.created_at','<=',$fecha_termino);
             }else{
-                $fidefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->FIRST();
-                $ftdefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->LATEST();
-                $fecha_inicio = $fidefault->fecha;
-                $fecha_termino = $ftdefault->fecha;
+                $fidefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->FIRST();
+                $ftdefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->LATEST();
+                $fecha_inicio = $fidefault->created_at;
+                $fecha_termino = $ftdefault->created_at;
                 //dd($fidefault);
                 return redirect()->route('reporte-solicitados')
                 ->withErrors(sprintf('INGRESE UNA FECHA DE INICIO Y TERMINO'));
@@ -413,11 +413,12 @@ class supreController extends Controller
         }
         else
         {
-            $fidefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->FIRST();
-            $ftdefault = DB::table('tabla_supre')->SELECT('fecha')->WHERE('id', '!=', '0')->LATEST()->FIRST();
+            $fidefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->FIRST();
+            $ftdefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->LATEST()->FIRST();
             //dd($ftdefault);
-            $fecha_inicio = $fidefault->fecha;
-            $fecha_termino = $ftdefault->fecha;
+            $fecha_inicio = $fidefault->created_at;
+            $fecha_termino = $ftdefault->created_at;
+            // dd($fecha_termino);
         }
 
         $consulta1 = $consulta1->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
@@ -564,23 +565,23 @@ class supreController extends Controller
         ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
         ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
         ->whereRaw("folios.status in ('Verificando_Pago', 'Pago_Verificado', 'Finalizado', 'Pago_Rechazado')");
-
+dd($fin);
         if($ini != 0 ||  $fin != 0)
         {
-            $consulta1 = $consulta1->where('tabla_supre.fecha','>=',$ini)
-                                    ->where('tabla_supre.fecha','<=',$fin);
+            $consulta1 = $consulta1->where('tabla_supre.created_at','>=',$ini)
+                                    ->where('tabla_supre.created_at','<=',$fin);
 
-            $consulta2 = $consulta2->where('tabla_supre.fecha','>=',$ini)
-                                    ->where('tabla_supre.fecha','<=',$fin);
+            $consulta2 = $consulta2->where('tabla_supre.created_at','>=',$ini)
+                                    ->where('tabla_supre.created_at','<=',$fin);
 
             $cadwell = $cadwell->WHERE('fecha', '>=', $ini)
                                 ->WHERE('fecha', '<=', $fin);
 
-            $cadwell2 = $cadwell2->WHERE('tabla_supre.fecha', '>=', $ini)
-                                ->WHERE('tabla_supre.fecha', '<=', $fin);
+            $cadwell2 = $cadwell2->WHERE('tabla_supre.created_at', '>=', $ini)
+                                ->WHERE('tabla_supre.created_at', '<=', $fin);
 
-            $cadwell3 = $cadwell3->WHERE('tabla_supre.fecha', '>=', $ini)
-                                ->WHERE('tabla_supre.fecha', '<=', $fin);
+            $cadwell3 = $cadwell3->WHERE('tabla_supre.created_at', '>=', $ini)
+                                ->WHERE('tabla_supre.created_at', '<=', $fin);
 
             $separa = explode("-",$ini);
             $ini = $separa[2] . ' DE ' .$this->monthToString($separa[1]) . ' ' . $separa[0];
@@ -588,12 +589,11 @@ class supreController extends Controller
             $fin = $separa[2] . ' DE ' .$this->monthToString($separa[1]) . ' ' . $separa[0];
         }
 
-        $consulta1 = $consulta1->groupBy('tbl_unidades.unidad')->FIRST();
-        $consulta2 = $consulta2->groupBy('tbl_unidades.unidad')->FIRST();
+        $consulta1 = $consulta1->groupBy('tbl_unidades.unidad')->GET();
+        $consulta2 = $consulta2->groupBy('tbl_unidades.unidad')->GET();
         $cadwell = $cadwell->GET();
         $cadwell2 = $cadwell2->GET();
         $cadwell3 = $cadwell3->GET();
-
 
         $consulta1->supre_memo_rechazo = explode(",",trim($consulta1->supre_memo_rechazo, "{}"));
         $consulta1->supre_fecha_rechazo = str_replace('"', "", explode(",",trim($consulta1->supre_fecha_rechazo, "{}")));
