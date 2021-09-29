@@ -274,7 +274,7 @@
                         <div class="row" role="row">
                             <div class="col-md-3" role="gridcell">
                                 <label><h5>NOMBRE</h5></label>
-                                <div class="form-control-plaintext text-truncate">{{$itemDataCatCurso->nombre_curso}}</div>
+                                <div class="form-control-plaintext">{{$itemDataCatCurso->nombre_curso}}</div>
                             </div>
                             <div class="col-md-3" role="gridcell">
                                 <label><h5>RANGOS</h5></label>

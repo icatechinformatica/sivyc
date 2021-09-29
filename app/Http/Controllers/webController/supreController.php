@@ -17,13 +17,13 @@ use App\Models\contrato_directorio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PDF;
-use function PHPSTORM_META\type;
 use Carbon\Carbon;
-use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\pago;
 use Illuminate\Support\Facades\Auth;
+use App\events\SupreEvent;
+use app\Notifications\SupreNotification;
 
 class supreController extends Controller
 {
@@ -92,6 +92,7 @@ class supreController extends Controller
             $supre->status = 'En_Proceso';
             $supre->fecha_status = strtoupper($request->fecha);
             $supre->save();
+            // auth()->user()->notify(new SupreNotification($supre));
 
             $id = $supre->id;
             $directorio->supre_dest = $request->id_destino;
@@ -144,6 +145,8 @@ class supreController extends Controller
                 }
             }
 
+            event(new SupreEvent($supre));
+            // dd($supre->id);
             return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
         }
@@ -264,6 +267,13 @@ class supreController extends Controller
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+
+        $notification = auth()->user()->notifications()->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)->FIRST();
+        // dd($notification);
+        if ($notification)
+        {
+            $notification->markAsRead();
+        }
 
         return view('layouts.pages.valsupre',compact('data','getremitente','directorio'));
     }
@@ -548,8 +558,9 @@ class supreController extends Controller
         ->WHERE('status', '=', 'Validado');
 
         $cadwell2 = DB::table('tabla_supre')->SELECT('folios.status','folios.iva','folios.importe_total',
-                    'contratos.updated_at', 'contratos.numero_contrato', 'contratos.observacion','tbl_cursos.unidad',
-                    'tbl_cursos.curso', 'tbl_cursos.nombre')
+                    'contratos.updated_at','contratos.created_at', 'contratos.numero_contrato',
+                    'contratos.observacion','contratos.fecha_status','contratos.chk_rechazado',
+                    'contratos.fecha_rechazo','tbl_cursos.unidad','tbl_cursos.curso', 'tbl_cursos.nombre')
         ->JOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
         ->JOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
         ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
@@ -557,7 +568,8 @@ class supreController extends Controller
         ->whereRaw("folios.status in ('Validando_Contrato', 'Contratado', 'Contrato_Rechazado')");
 
         $cadwell3 = DB::table('tabla_supre')->SELECT('folios.status','folios.iva','folios.importe_total',
-                        'pagos.observacion','pagos.updated_at','pagos.created_at', 'pagos.no_memo','pagos.liquido',
+                        'pagos.observacion','pagos.updated_at','pagos.created_at','pagos.fecha_validado',
+                        'pagos.fecha_rechazo','pagos.chk_rechazado','pagos.no_memo','pagos.liquido',
                         'tbl_cursos.unidad')
         ->JOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
         ->JOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
@@ -565,7 +577,6 @@ class supreController extends Controller
         ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
         ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
         ->whereRaw("folios.status in ('Verificando_Pago', 'Pago_Verificado', 'Finalizado', 'Pago_Rechazado')");
-dd($fin);
         if($ini != 0 ||  $fin != 0)
         {
             $consulta1 = $consulta1->where('tabla_supre.created_at','>=',$ini)
@@ -589,11 +600,12 @@ dd($fin);
             $fin = $separa[2] . ' DE ' .$this->monthToString($separa[1]) . ' ' . $separa[0];
         }
 
-        $consulta1 = $consulta1->groupBy('tbl_unidades.unidad')->GET();
-        $consulta2 = $consulta2->groupBy('tbl_unidades.unidad')->GET();
+        $consulta1 = $consulta1->groupBy('tbl_unidades.unidad')->FIRST();
+        $consulta2 = $consulta2->groupBy('tbl_unidades.unidad')->FIRST();
         $cadwell = $cadwell->GET();
         $cadwell2 = $cadwell2->GET();
         $cadwell3 = $cadwell3->GET();
+        // dd($consulta1);
 
         $consulta1->supre_memo_rechazo = explode(",",trim($consulta1->supre_memo_rechazo, "{}"));
         $consulta1->supre_fecha_rechazo = str_replace('"', "", explode(",",trim($consulta1->supre_fecha_rechazo, "{}")));
