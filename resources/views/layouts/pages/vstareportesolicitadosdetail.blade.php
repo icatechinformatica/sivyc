@@ -268,9 +268,9 @@
                                 <tr>
                                     <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Contrato</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
                                     <th style="text-align: center;">Curso</th>
                                     <th style="text-align: center;">Instructor</th>
-                                    <th style="text-align: center;">Fecha de Creación</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -279,9 +279,9 @@
                                         <tr>
                                             <td align="center">{{$proceso->unidad}}</td>
                                             <td align="center">{{$proceso->numero_contrato}}</td>
+                                            <td align="center">{{$proceso->created_at}}</td>
                                             <td align="center">{{$proceso->curso}}</td>
                                             <td align="center">{{$proceso->nombre}}</td>
-                                            <td align="center">{{$proceso->updated_at}}</td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -309,9 +309,10 @@
                                 <tr>
                                     <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Contrato</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
+                                    <th style="text-align: center;">Fecha de Validación</th>
                                     <th style="text-align: center;">Curso</th>
                                     <th style="text-align: center;">Instructor</th>
-                                    <th style="text-align: center;">Fecha de Validación</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -320,9 +321,10 @@
                                         <tr>
                                             <td align="center">{{$validado->unidad}}</td>
                                             <td align="center">{{$validado->numero_contrato}}</td>
+                                            <td align="center">{{$validado->created_at}}</td>
+                                            <td align="center">{{$validado->updated_at}}</td>
                                             <td align="center">{{$validado->curso}}</td>
                                             <td align="center">{{$validado->nombre}}</td>
-                                            <td align="center">{{$validado->updated_at}}</td>
                                         </tr>
                                     @endif
                                 @endforeach
@@ -350,9 +352,10 @@
                                 <tr>
                                 <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Contrato</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
+                                    <th style="text-align: center;">Fecha de Cancelación</th>
                                     <th style="text-align: center;">Curso</th>
                                     <th style="text-align: center;">Instructor</th>
-                                    <th style="text-align: center;">Fecha de Cancelación</th>
                                     <th style="text-align: center;">Observación</th>
                                 </tr>
                             </thead>
@@ -362,9 +365,10 @@
                                         <tr>
                                             <td align="center">{{$validado->unidad}}</td>
                                             <td align="center">{{$rechazo->numero_contrato}}</td>
+                                            <td align="center">{{$rechazo->created_at}}</td>
+                                            <td align="center">{{$rechazo->updated_at}}</td>
                                             <td align="center">{{$rechazo->curso}}</td>
                                             <td align="center">{{$rechazo->nombre}}</td>
-                                            <td align="center">{{$rechazo->updated_at}}</td>
                                             @if($rechazo->observacion != NULL)
                                                 <td align="center">{{$rechazo->observacion}}</td>
                                             @else
@@ -445,6 +449,7 @@
                                 <tr>
                                     <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
                                     <th style="text-align: center;">Fecha de Validación</th>
                                     <th style="text-align: center;">Líquido de Factura</th>
                                     <th style="text-align: center;">Importe</th>
@@ -457,7 +462,8 @@
                                         <tr>
                                             <td align="center">{{$validado->unidad}}</td>
                                             <td align="center">{{$validado->no_memo}}</td>
-                                            <td align="center">{{$validado->updated_at}}</td>
+                                            <td align="center">{{$validado->created_at}}</td>
+                                            <td align="center">{{$validado->fecha_validado}}</td>
                                             <td align="center">{{$validado->liquido}}</td>
                                             <td align="center">{{$validado->importe_total}}</td>
                                             <td align="center">{{$validado->iva}}</td>
@@ -488,6 +494,8 @@
                                 <tr>
                                     <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
+                                    <th style="text-align: center;">Fecha de Validación</th>
                                     <th style="text-align: center;">Fecha de Pago</th>
                                     <th style="text-align: center;">Líquido de Factura</th>
                                     <th style="text-align: center;">Importe</th>
@@ -500,6 +508,8 @@
                                         <tr>
                                             <td align="center">{{$finalizado->unidad}}</td>
                                             <td align="center">{{$finalizado->no_memo}}</td>
+                                            <td align="center">{{$finalizado->created_at}}</td>
+                                            <td align="center">{{$finalizado->fecha_validado}}</td>
                                             <td align="center">{{$finalizado->updated_at}}</td>
                                             <td align="center">{{$finalizado->liquido}}</td>
                                             <td align="center">{{$finalizado->importe_total}}</td>
@@ -531,6 +541,7 @@
                                 <tr>
                                     <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
                                     <th style="text-align: center;">Fecha de Rechazo</th>
                                     <th style="text-align: center;">Líquido de Factura</th>
                                     <th style="text-align: center;">Importe</th>
@@ -544,6 +555,7 @@
                                         <tr>
                                             <td align="center">{{$finalizado->unidad}}</td>
                                             <td align="center">{{$finalizado->no_memo}}</td>
+                                            <td align="center">{{$finalizado->created_at}}</td>
                                             <td align="center">{{$finalizado->updated_at}}</td>
                                             <td align="center">{{$finalizado->liquido}}</td>
                                             <td align="center">{{$finalizado->importe_total}}</td>

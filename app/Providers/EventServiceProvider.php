@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\SupreEvent;
+use App\Listeners\SupreListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,6 +30,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
+        Event::listen( SupreEvent::class, SupreListener::class);
 
         //
     }
