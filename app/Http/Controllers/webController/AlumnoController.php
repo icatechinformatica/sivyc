@@ -365,8 +365,7 @@ class AlumnoController extends Controller
             'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
             'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO',
-            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
+            'POSTGRADO' => 'POSTGRADO'
         ];
         $estado = estado::get();
         foreach($estado as $item){
