@@ -44,47 +44,49 @@
                         <input name="fecha_val" id="fecha_val" type="date" class="form-control" value="{{$data->fecha_validacion}}">
                     </div>
                 </div>
+                <!--
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_firmante">Nombre del Firmante</label>
-                        <input  type="text" name="nombre_firmante" id="nombre_firmante" class="form-control" value="{{$getfirmante->nombre}} {{$getfirmante->apellidoPaterno}} {{$getfirmante->apellidoMaterno}}">
+                        <input  type="text" name="nombre_firmante" id="nombre_firmante" class="form-control" value="{getfirmante->nombre}} {getfirmante->apellidoPaterno}} {getfirmante->apellidoMaterno}}">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_firmante">Puesto de firmante</label>
-                        <input name="puesto_firmante" readonly id="puesto_firmante" type="text" class="form-control" value="{{$getfirmante->puesto}}">
-                        <input id="id_firmante" name="id_firmante" hidden  value='{{$getfirmante->id}}'>
+                        <input name="puesto_firmante" readonly id="puesto_firmante" type="text" class="form-control" value="{getfirmante->puesto}}">
+                        <input id="id_firmante" name="id_firmante" hidden  value='{getfirmante->id}}'>
                     </div>
                 </div>
+                -->
                 <hr style="border-color:dimgray">
-            <!-- START CCP -->
-                <h3>Con Copia Para:</h3>
+                <h3>Con Copia Para El Delegado:</h3>
+            <!-- START CCP
                 <div id="div4" class="form-row " >
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo" value="{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}">
+                        <input  type="text" name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo" value="{getccp1->nombre}} {getccp1->apellidoPaterno}} {getccp1->apellidoMaterno}}">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa1" readonly id="ccpa1" class="form-control" placeholder="Puesto" value="{{$getccp1->puesto}}">
-                        <input id="id_ccp1" name="id_ccp1" hidden value='{{$getccp1->id}}'>
+                        <input name="ccpa1" readonly id="ccpa1" class="form-control" placeholder="Puesto" value="{getccp1->puesto}}">
+                        <input id="id_ccp1" name="id_ccp1" hidden value='{getccp1->id}}'>
                     </div>
                 </div>
                 <div id="div5" class="form-row ">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp2" id="ccp2" class="form-control" placeholder="Nombre Completo" value="{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}">
+                        <input  type="text" name="ccp2" id="ccp2" class="form-control" placeholder="Nombre Completo" value="{getccp2->nombre}} {getccp2->apellidoPaterno}} {getccp2->apellidoMaterno}}">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa2" id="ccpa2" readonly class="form-control" placeholder="Puesto" value="{{$getccp2->puesto}}">
-                        <input id="id_ccp2" name="id_ccp2" hidden value='{{$getccp2->id}}'>
+                        <input name="ccpa2" id="ccpa2" readonly class="form-control" placeholder="Puesto" value="{getccp2->puesto}}">
+                        <input id="id_ccp2" name="id_ccp2" hidden value='{getccp2->id}}'>
                     </div>
                 </div>
                 <div id="div6" class="form-row ">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp3" id="ccp3" class="form-control" placeholder="Nombre Completo" value="{{$getccp3->nombre}} {{$getccp3->apellidoPaterno}} {{$getccp3->apellidoMaterno}}">
+                        <input  type="text" name="ccp3" id="ccp3" class="form-control" placeholder="Nombre Completo" value="{getccp3->nombre}} {getccp3->apellidoPaterno}} {getccp3->apellidoMaterno}}">
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa3" id="ccpa3" readonly class="form-control" placeholder="Puesto" value="{{$getccp3->puesto}}">
-                        <input id="id_ccp3" name="id_ccp3" hidden value='{{$getccp3->id}}'>
+                        <input name="ccpa3" id="ccpa3" readonly class="form-control" placeholder="Puesto" value="{getccp3->puesto}}">
+                        <input id="id_ccp3" name="id_ccp3" hidden value='{getccp3->id}}'>
                     </div>
-                </div>
+                </div>-->
                 <div id="div7" class="form-row ">
                     <div class="form-group col-md-4">
                         <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}">

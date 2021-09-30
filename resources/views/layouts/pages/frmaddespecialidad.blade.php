@@ -147,6 +147,19 @@
 
                     <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
                         <div class="card-header">
+                            <div class="form-row">
+                                <div class="form-group col-md-9"></div>
+                                <div class="form-group col-md-3">
+                                    <input  type="checkbox" id="ckbCheckAll"
+                                        data-toggle="toggle"
+                                        data-style="ios"
+                                        data-on= "."
+                                        data-off= "."
+                                        data-onstyle="success"
+                                        data-offstyle="danger"
+                                        onchange="toggleOnOff()"/> Seleccionar Todo
+                                </div>
+                            </div>
                             <div class="row" role="row">
                                 <div class="col-md-3" role="columnheader">
                                     <p class="form-control-plaintext">NOMBRE</p>
@@ -189,7 +202,7 @@
                                     <div class="col-md-3" role="gridcell">
                                         <label>AÑADIR</label>
                                         <div class="form-control-plaintext text-truncate">
-                                            <input type="checkbox"
+                                            <input type="checkbox" class="checkBoxClass"
                                                 data-toggle="toggle"
                                                 data-style="ios"
                                                 data-on="ON"
@@ -225,4 +238,14 @@
 @section('script_content_js')
     <script src="{{ asset("js/scripts/bootstrap-toggle.js") }}"></script>
     <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
+    <script>
+        function toggleOnOff() {
+            var checkBox = document.getElementById("ckbCheckAll");
+            if (checkBox.checked == true){
+                $('.checkBoxClass').prop('checked', true).change()
+            } else {
+                $('.checkBoxClass').prop('checked', false).change()
+            }
+        }
+    </script>
 @endsection

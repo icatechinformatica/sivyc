@@ -397,6 +397,9 @@ class InstructorController extends Controller
         $modInstructor->correo = trim($request->correo);
         $modInstructor->tipo_honorario = trim($request->honorario);
         $modInstructor->clave_unidad = trim($request->unidad_registra);
+        $modInstructor->extracurricular = trim($request->extracurricular);
+        $modInstructor->stps = trim($request->stps);
+        $modInstructor->conocer = trim($request->conocer);
         if($request->estado != NULL)
         {
             $modInstructor->estado = TRUE;
@@ -519,7 +522,12 @@ class InstructorController extends Controller
                 'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)->GET();
-        //dd($listacursos);
+        if($listacursos == '[]')
+        {
+
+            $listacursos = curso::WHERE('id_especialidad', '=', $especvalid->especialidad_id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+            // dd($especvalid->especialidad_id);
+        }
 
         return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'id','idins','nomesp', 'catcursos','listacursos'));
     }
@@ -574,8 +582,8 @@ class InstructorController extends Controller
         $perfilInstructor->fecha_expedicion_documento = trim($request->fecha_documento); //
         $perfilInstructor->folio_documento = trim($request->folio_documento); //
         $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
-        $perfilInstructor->estandar_conocer = trim($request->conocer);
-        $perfilInstructor->registro_stps = trim($request->stps);
+        // $perfilInstructor->estandar_conocer = trim($request->conocer);
+        // $perfilInstructor->registro_stps = trim($request->stps);
         $perfilInstructor->capacitador_icatech = trim($request->capacitador_icatech);
         $perfilInstructor->recibidos_icatech = trim($request->recibidos_icatech);
         $perfilInstructor->cursos_impartidos = trim($request->cursos_impartidos);
@@ -606,8 +614,8 @@ class InstructorController extends Controller
         $perfilInstructor->fecha_expedicion_documento = trim($request->fecha_documento); //
         $perfilInstructor->folio_documento = trim($request->folio_documento); //
         $perfilInstructor->cursos_recibidos = trim($request->cursos_recibidos);
-        $perfilInstructor->estandar_conocer = trim($request->conocer);
-        $perfilInstructor->registro_stps = trim($request->stps);
+        // $perfilInstructor->estandar_conocer = trim($request->conocer);
+        // $perfilInstructor->registro_stps = trim($request->stps);
         $perfilInstructor->capacitador_icatech = trim($request->capacitador_icatech);
         $perfilInstructor->recibidos_icatech = trim($request->recibidos_icatech);
         $perfilInstructor->cursos_impartidos = trim($request->cursos_impartidos);
@@ -641,6 +649,7 @@ class InstructorController extends Controller
 
     public function especval_mod_save(Request $request)
     {
+        // dd($request);
         $userId = Auth::user()->id;
 
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
@@ -680,7 +689,7 @@ class InstructorController extends Controller
                     DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
                         ->where('id_especialidad_instructor', '=', $request->idespec)
                         ->update(['activo' => TRUE,
-                                  'id_especialidad_instructor'  => $request->valido_perfil]);
+                                  'id_especialidad_instructor'  => $request->idespec]);
                     break;
                 }
                 else
@@ -688,7 +697,7 @@ class InstructorController extends Controller
                     DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
                         ->where('id_especialidad_instructor', '=', $request->idespec)
                         ->update(['activo' => FALSE,
-                                  'id_especialidad_instructor'  => $request->valido_perfil]);
+                                  'id_especialidad_instructor'  => $request->idespec]);
                 }
             }
         }
@@ -711,7 +720,7 @@ class InstructorController extends Controller
         //$cursos_mod->cursos()->attach($pila_edit);
         // Eliminar todos los elementos del array
         //unset($pila_edit);
-
+        return back();
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
     }

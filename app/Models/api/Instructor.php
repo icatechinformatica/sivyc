@@ -17,7 +17,7 @@ class Instructor extends Model
        'interbancaria', 'folio_ine','id_especialidad',
        'tipo_honorario', 'archivo_ine', 'archivo_domicilio', 'archivo_curp',
        'archivo_alta', 'archivo_bancario', 'archivo_fotografia', 'archivo_estudios',
-       'archivo_otraid', 'status', 'rechazo', 'clave_unidad'
+       'archivo_otraid', 'status', 'rechazo', 'clave_unidad', 'extracurricular'
         ];
 
 

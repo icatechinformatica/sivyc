@@ -226,47 +226,64 @@
                         <label for="inputnumero_cuenta">Numero de Cuenta</label>
                         <input name="numero_cuenta" value="{{$datains->no_cuenta }}" id="numero_cuenta" type="text" disabled class="form-control" aria-required="true">
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_ine">Archivo INE</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_curp">Archivo CURP</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_alta">Archivo Alta de Instructor</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled>
-                        </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_ine">Archivo INE</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_banco">Archivo Datos Bancarios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_rfc">RFC/Constancia Fiscal</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_foto">Archivo Fotografia</label>
-                            <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label for="inputarch_estudio">Archivo Grado de Estudios</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled>
-                        </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="inputarch_id">Archivo Otra Identificación</label>
-                            <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
-                        </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_curp">Archivo CURP</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_alta">Archivo Alta de Instructor</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_banco">Archivo Datos Bancarios</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_rfc">RFC/Constancia Fiscal</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_foto">Archivo Fotografia</label>
+                        <input type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_estudio">Archivo Grado de Estudios</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_id">Archivo Otra Identificación</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
+                    </div>
+                </div>
+                <br>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="extracurricular"><h3>Registro de Capacitador Externo STPS</h3></label>
+                        <textarea name="stps" id="stps" cols="6" rows="4" class="form-control">{{$datains->stps}}</textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="extracurricular"><h3>Estandar CONOCER</h3></label>
+                        <textarea name="conocer" id="conocer" cols="6" rows="4" class="form-control">{{$datains->conocer}}</textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="extracurricular"><h3>Datos Extracurriculares</h3></label>
+                        <textarea name="extracurricular" id="extracurricular" cols="6" rows="10" class="form-control">{{$datains->extracurricular}}</textarea>
                     </div>
                 </div>
                 <hr style="border-color:dimgray">

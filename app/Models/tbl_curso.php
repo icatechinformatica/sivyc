@@ -60,6 +60,10 @@ class tbl_curso extends Model
                         # retornar consulta por anio
                         return $query->WHERE(\DB::raw("date_part('year' , tbl_cursos.created_at )"), '=', "$buscar");
                         break;
+                    case 'arc01':
+                        # code...
+                        return $query->WHERE('tbl_cursos.munidad', 'LIKE', "%$buscar%");
+                    break;
                     default:
                         # code...
                         break;
