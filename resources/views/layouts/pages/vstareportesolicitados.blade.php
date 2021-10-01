@@ -74,7 +74,7 @@
                                 @foreach ($unidades as $unidad)
                                     <?php $findit = FALSE; ?>
                                     @foreach($consulta1 as $key => $supre)
-                                        @if ($unidad->unidad == $supre->unidad)
+                                        @if ($unidad->unidad == $supre->ubicacion)
                                             <?php
                                                 $findit = TRUE; $key2 = $key + 1;
                                                 $dif = round($supre->supre_validados * 100 / $supre->supre_total, 2);
@@ -128,8 +128,8 @@
                                             ?>
                                             <tr>
 
-                                                <td align="center"><a href="{{ route('reporte-solicitados-detail', ['un' => $supre->unidad, 'ini' => $fecha_inicio, 'fin' => $fecha_termino]) }}">
-                                                    {{$supre->unidad}}</a>
+                                                <td align="center"><a href="{{ route('reporte-solicitados-detail', ['un' => $supre->ubicacion, 'ini' => $fecha_inicio, 'fin' => $fecha_termino]) }}">
+                                                    {{$supre->ubicacion}}</a>
                                                 </td>
                                                 <td align="center" bgcolor= {{$color}}>{{$supre->supre_proceso}}</td>
                                                 <td align="center" bgcolor= {{$color}}>{{$supre->supre_validados}}</td>

@@ -11,7 +11,7 @@ class tbl_unidades extends Model
 
     protected $fillable = [
     'id','unidad','cct','dunidad','dgeneral','plantel','academico','vinculacion','dacademico','pdgeneral','pdacademico',
-    'pdunidad','pacademico','pvinculacion','jcyc','pjcyc','ubicacion','created_at','updated_at'
+    'pdunidad','pacademico','pvinculacion','jcyc','pjcyc','ubicacion','created_at','updated_at','ubicacion'
 ];
 
     protected $hidden = ['created_at', 'updated_at'];
