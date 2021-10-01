@@ -701,3 +701,8 @@ Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->n
 
 //Notificaciones
 Route::get('send', 'webController\NotificationController@sendNotification');
+Route::post('/firma/cancelar', 'FirmaElectronica\FirmarController@cancelarDocumento')->name('firma.cancelar');
+
+// buscar alumnos
+Route::post('/autocomplete/curso', 'Consultas\foliosController@cursoAutocomplete')->name('autocomplete.curso');
+Route::post('/autocomplete/alumno', 'Consultas\foliosController@alumnoAutocomplete')->name('autocomplete.alumno');
