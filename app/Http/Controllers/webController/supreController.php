@@ -507,7 +507,7 @@ class supreController extends Controller
         ->whereRaw("folios.status in ('Verificando_Pago', 'Pago_Verificado', 'Finalizado', 'Pago_Rechazado')");
         if($ini != 0 ||  $fin != 0)
         {
-            // dd($ini);
+            // dd($fin);
             $consulta1 = $consulta1->where('tabla_supre.created_at','>=',$ini)
                                     ->where('tabla_supre.created_at','<=',$fin);
 
