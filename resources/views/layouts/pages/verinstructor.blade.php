@@ -87,33 +87,33 @@
         <h2>Vista de Documentos</h2>
         <div class="form-row">
             @if ($datains->archivo_ine != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_ine}} download>Comprobante INE</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_ine}} target="_blank">Comprobante INE</a><br>
             @endif
             @if ($datains->archivo_domicilio != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_domicilio}} download>Comprobante de Domicilio</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
             @endif
             @if ($datains->archivo_curp != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_curp}} download>CURP</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_curp}} target="_blank">CURP</a><br>
             @endif
             @if ($datains->archivo_alta != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_alta}} download>Alta de Instructor</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_alta}} target="_blank">Alta de Instructor</a><br>
             @endif
         </div>
         <div class="form-row">
             @if ($datains->archivo_bancario != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_bancario}} download>Datos Bancarios</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
             @endif
             @if ($datains->archivo_rfc != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_rfc}} download>RFC/Constancia Fiscal</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_rfc}} target="_blank">RFC/Constancia Fiscal</a><br>
             @endif
             @if ($datains->archivo_fotografia != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_fotografia}} download>Fotografía</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_fotografia}} target="_blank">Fotografía</a><br>
             @endif
             @if ($datains->archivo_estudios != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_estudios}} download>Estudios</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_estudios}} target="_blank">Estudios</a><br>
             @endif
             @if ($datains->archivo_otraid != NULL)
-                <a class="btn btn-danger" href={{$datains->archivo_otraid}} download>Otra Identificación</a><br>
+                <a class="btn btn-danger" href={{$datains->archivo_otraid}} target="_blank">Otra Identificación</a><br>
             @endif
         </div>
         <form id="registerinstructor"  method="POST" action="{{ route('saveins') }}" enctype="multipart/form-data">
