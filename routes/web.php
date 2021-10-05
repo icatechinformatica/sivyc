@@ -154,7 +154,7 @@ Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_fo
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
 Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
-//Ruta last-update 15072021
+//Ruta last-update 05102021
 Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
@@ -169,6 +169,7 @@ Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoControlle
 Route::post('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
 Route::get('/pagos/documento/{docs}', 'webController\ContratoController@docs')->name('get-docs');
 Route::get('/contrato-certificacion/{id}', 'webController\ContratoController@contrato_certificacion_pdf')->name('contrato-certificacion-pdf');
+Route::get('/recepcion/{id}', 'webController\ContratoController@recepcion')->name('recepcion');
 
 //Ruta Pago
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
