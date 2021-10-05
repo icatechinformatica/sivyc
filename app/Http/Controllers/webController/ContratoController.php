@@ -72,7 +72,6 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->WHERE('folios.status', '!=', 'Rechazado')
                                 ->WHERE('folios.status', '!=', 'Cancelado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
@@ -83,7 +82,7 @@ class ContratoController extends Controller
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
@@ -95,7 +94,6 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato,  $tipoStatus, $unidad, $mes)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->WHERE('folios.status', '!=', 'Rechazado')
                                 ->WHERE('folios.status', '!=', 'Cancelado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
@@ -106,7 +104,7 @@ class ContratoController extends Controller
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
-                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
@@ -118,7 +116,6 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
                                  ->WHERE('folios.status', '!=', 'En_Proceso')
                                  ->WHERE('folios.status', '!=', 'Finalizado')
-                                 ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                  ->WHERE('folios.status', '!=', 'Rechazado')
                                  ->WHERE('folios.status', '!=', 'Cancelado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
@@ -129,7 +126,7 @@ class ContratoController extends Controller
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
-                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
@@ -141,7 +138,6 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->WHERE('folios.status', '!=', 'Rechazado')
                                 ->WHERE('folios.status', '!=', 'Cancelado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
@@ -152,7 +148,7 @@ class ContratoController extends Controller
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
-                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
@@ -164,7 +160,6 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->WHERE('folios.status', '!=', 'Rechazado')
                                 ->WHERE('folios.status', '!=', 'eliminado')
                                 ->WHERE('folios.status', '!=', 'Validado')
@@ -177,7 +172,7 @@ class ContratoController extends Controller
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
@@ -189,7 +184,6 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->WHERE('folios.status', '!=', 'Rechazado')
                                 ->WHERE('folios.status', '!=', 'eliminado')
                                 ->WHERE('folios.status', '!=', 'Validado')
@@ -202,7 +196,7 @@ class ContratoController extends Controller
                                 ->PAGINATE(25, [
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-                                    'folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
                                     'tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
@@ -222,7 +216,6 @@ class ContratoController extends Controller
                                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
                                 ->WHERE('folios.status', '!=', 'En_Proceso')
                                 ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Pago_Verificado')
                                 ->WHERE('folios.status', '!=', 'Rechazado')
                                 ->WHERE('folios.status', '!=', 'Cancelado')
                                 ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
@@ -234,7 +227,7 @@ class ContratoController extends Controller
                                     'tabla_supre.id','tabla_supre.no_memo',
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','contratos.created_at',
                                     'folios.status','folios.id_folios', 'folios.folio_validacion','folios.permiso_editar',
-                                    'tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
+                                    'folios.recepcion','tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
                                     'contratos.fecha_status','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
@@ -717,6 +710,15 @@ class ContratoController extends Controller
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Contrato Reiniciado');
+    }
+
+    public function recepcion($id)
+    {
+        folio::where('id_folios', '=', $id)
+                        ->update(['recepcion' => carbon::now()]);
+
+        return redirect()->route('contrato-inicio')
+                        ->with('success','Recepción de Documentos Confirmada');
     }
 
     public function get_directorio(Request $request){
