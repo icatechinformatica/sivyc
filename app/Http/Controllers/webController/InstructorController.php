@@ -521,7 +521,7 @@ class InstructorController extends Controller
                 'cursos.duracion','cursos.objetivo','cursos.tipo_curso','cursos.id_especialidad',
                 'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
-                ->WHERE('id_especialidad_instructor', '=', $id)->GET();
+                ->WHERE('id_especialidad_instructor', '=', $id)->orderby('cursos.nombre_curso','asc')->GET();
         if($listacursos == '[]')
         {
 
@@ -630,26 +630,9 @@ class InstructorController extends Controller
 
     }
 
-    public function add_cursoimpartir($id)
-    {
-        $idins = $id;
-        $data_especialidad = especialidad::where('id', '!=', '0')->orderBy('nombre','asc')->paginate(20);
-        return view('layouts.pages.frmcursoimpartir', compact('data_especialidad','idins'));
-    }
-
-    public function cursoimpartir_form($id, $idins)
-    {
-        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
-        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
-        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
-        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
-        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
-    }
-
     public function especval_mod_save(Request $request)
     {
-        // dd($request);
+            // dd($request);
         $userId = Auth::user()->id;
 
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
@@ -671,33 +654,66 @@ class InstructorController extends Controller
         }
         $espec_mod->lastUserId = $userId;
         $espec_mod->save();
-        // declarar un arreglo
-        //$pila_edit = array();
-        // se trabajará en el loop
-        //$cursos_mod = especialidad_instructor::findOrFail($request->idespec);
+        $espe = $espec_mod->especialidad_id;
+        // $idespval = $espec_mod->id;
+
         $listacursos = DB::table('especialidad_instructor_curso')
         ->WHERE('id_especialidad_instructor', '=', $request->idespec)->GET();
-        // eliminar registros previamente
-        //$cursos_mod->cursos()->detach();
-        foreach ($listacursos as $cadwell)
+        if($listacursos == '[]')
         {
-            foreach ($request->itemEdit as $new)
+            $listacursos = DB::table('cursos')->WHERE('id_especialidad', '=', $espe)->GET();
+            // dd($listacursos);
+            foreach ($listacursos as $cadwell)
             {
-                //dd($new['check_cursos_edit']);
-                if($cadwell->curso_id == $new['check_cursos_edit'])
+                // dd($request);
+                // print('que pedo ' . $cadwell->id . ' **** ');
+                foreach ($request->itemEdit as $key=>$new)
                 {
-                    DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
-                        ->where('id_especialidad_instructor', '=', $request->idespec)
-                        ->update(['activo' => TRUE,
-                                  'id_especialidad_instructor'  => $request->idespec]);
-                    break;
+                    // dd($new);
+                    // print('ahi va '. $new['check_cursos']. ' -_-_- ');
+                    if($cadwell->id == $new['check_cursos_edit'])
+                    {
+                        // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                        DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $request->idespec,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => TRUE]);
+                        break;
+                    }
+                    else if(array_key_last($request->itemEdit) == $key)
+                    {
+                        print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                        DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $request->idespec,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => FALSE]);
+                        break;
+                    }
                 }
-                else
+            }
+        }
+        else
+        {
+            foreach ($listacursos as $cadwell)
+            {
+                foreach ($request->itemEdit as $new)
                 {
-                    DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
-                        ->where('id_especialidad_instructor', '=', $request->idespec)
-                        ->update(['activo' => FALSE,
-                                  'id_especialidad_instructor'  => $request->idespec]);
+                    //dd($new['check_cursos_edit']);
+                    if($cadwell->curso_id == $new['check_cursos_edit'])
+                    {
+                        DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
+                            ->where('id_especialidad_instructor', '=', $request->idespec)
+                            ->update(['activo' => TRUE,
+                                    'id_especialidad_instructor'  => $request->idespec]);
+                        break;
+                    }
+                    else
+                    {
+                        DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
+                            ->where('id_especialidad_instructor', '=', $request->idespec)
+                            ->update(['activo' => FALSE,
+                                    'id_especialidad_instructor'  => $request->idespec]);
+                    }
                 }
             }
         }
@@ -723,6 +739,23 @@ class InstructorController extends Controller
         return back();
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
+    }
+
+    public function add_cursoimpartir($id)
+    {
+        $idins = $id;
+        $data_especialidad = especialidad::where('id', '!=', '0')->orderBy('nombre','asc')->paginate(20);
+        return view('layouts.pages.frmcursoimpartir', compact('data_especialidad','idins'));
+    }
+
+    public function cursoimpartir_form($id, $idins)
+    {
+        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
+        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
+        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
     }
 
     public function espec_val_save(Request $request)
@@ -752,13 +785,13 @@ class InstructorController extends Controller
 
         foreach ($listacursos as $cadwell)
         {
-            print('que pedo ' . $cadwell->id . ' **** ');
+            // print('qhe ' . $cadwell->id . ' **** ');
             foreach ($request->itemAdd as $key=>$new)
             {
-                print('ahi va '. $new['check_cursos']. ' -_-_- ');
+                // print('ahi va '. $new['check_cursos']. ' -_-_- ');
                 if($cadwell->id == $new['check_cursos'])
                 {
-                    print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                    // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
                     DB::table('especialidad_instructor_curso')
                         ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
                                   'curso_id' => $cadwell->id,
