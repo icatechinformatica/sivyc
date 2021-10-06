@@ -472,6 +472,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
     Route::post('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
     Route::get('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
+    Route::post('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
+    Route::get('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
+   
+    Route::post('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
+    Route::get('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
+    Route::post('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->name('solicitudes.aperturas.cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');
+    Route::get('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->name('solicitudes.aperturas.cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');
+    Route::post('/solicitudes/aperturas/autorizar', 'Solicitudes\aperturasController@autorizar')->name('solicitudes.aperturas.autorizar')->middleware('can:solicitudes.aperturas.autorizar');
+    Route::get('/solicitudes/aperturas/autorizar', 'Solicitudes\aperturasController@autorizar')->name('solicitudes.aperturas.autorizar')->middleware('can:solicitudes.aperturas.autorizar');
+    Route::post('/solicitudes/generar/autoriza', 'Solicitudes\aperturasController@pdfAutoriza')->name('solicitudes.generar.autoriza');
+    Route::get('/solicitudes/generar/autoriza', 'Solicitudes\aperturasController@pdfAutoriza')->name('solicitudes.generar.autoriza');
 
     //Folios
     Route::get('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
