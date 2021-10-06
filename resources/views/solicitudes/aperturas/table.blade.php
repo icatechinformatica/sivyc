@@ -3,10 +3,11 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th scope="col" class="text-center">#</th> 
-                <th scope="col" class="text-center" >MOTIVO</th>
+                <th scope="col" class="text-center">ID</th> 
                 <th scope="col" class="text-center" >CLAVE</th>
+                <!--<th scope="col" class="text-center" >MOTIVO</th> -->        
                 <th scope="col" class="text-center">SERVICIO</th>
+                <th scope="col" class="text-center">UNIDAD</th>
                 <th scope="col" class="text-center">ESPECIALIDAD</th>
                 <th scope="col" class="text-center">CURSO</th>
                 <th scope="col" class="text-center">INSTRUCTOR</th> 
@@ -25,21 +26,23 @@
                 <th scope="col" class="text-center">DEPENDENCIA</th> 
                 <th scope="col" class="text-center">TIPO</th>                 
                 <th scope="col" class="text-center">TURNADO</th>
-                <th scope="col" class="text-center">ESTATUS</th>          
+                <th scope="col" class="text-center">ESTATUS</th>  
+                <th scope="col" class="text-center">FORMATO T</th>         
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
+                <th scope="col" class="text-center">M.VALIDACIÓN</th>
                 @if($opt=="ARC02")
                     <th scope="col" class="text-center" >EDIT</th>                    
                 @else
-                <th scope="col" class="text-center" >VER</th>
+                    <th scope="col" class="text-center" >VER</th>
                 @endif
             </tr>
         </thead>
         @if(count($grupos)>0) 
             <tbody>                    
-                <?php 
-                    $consec=1; 
-                    $activar = true; 
+                <?php                    
+                    if($movimientos)$activar = true; 
+                    else $activar = false;
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
                     $status_curso = $grupos[0]->status_curso; 
@@ -55,22 +58,31 @@
                     */
                     switch($opt){
                         case "ARC01":
-                            if($g->status_curso<>'SOLICITADO' OR $g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                            if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
                         break;
                         case "ARC02":
-                            if($g->status_curso<>'SOLICITADO' OR ($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD' ) OR $g->turnado<>'UNIDAD' ) $activar=false;
+                            if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
                         break;
                     }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
-                        <td class="text-center"> {{ $consec++ }}</td>
-                        <td class="text-center"><div style="width:450px;">
-                            <!--<textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>-->
-                        </div> </td>
-                        <td><div style="width:128px;"> {{ $g->clave}} </div> </td>              
+                        <td class="text-center"> {{ $g->id }}</td>
+                        <td class="text-center">
+                            @if($g->clave=='0')
+                                <div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></div>
+                            @else
+                                <div style="width:128px;">{{ $g->clave}}</div> 
+                            @endif
+                       </td> 
+                       <!--
+                        <td class="text-center"><div style="width:400px;">
+                            <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
+                        </div> </td>  
+                        -->                                   
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
-                        <td> {{ $g->espe }} </td>
-                        <td> {{ $g->curso }} </td>
+                        <td> <div style="width:100px;">{{ $g->unidad }} </div></td>
+                        <td> <div style="width:148px;">{{ $g->espe }} </div></td>
+                        <td><div style="width:220px;"> {{ $g->curso }}</di></td>
                         <td><div style="width:120px;">{{ $g->nombre }}</div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center"> {{ $g->tipo }} </td>
@@ -87,21 +99,22 @@
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
                         <td class="text-center"> {{ $g->tcapacitacion }} </td>                                                
                         <td class="text-center"> 
-                            @if($opt=="ARC01")
-                            {{ $g->turnado_solicitud }} 
+                            @if($g->clave=='0')
+                                {{ $g->turnado_solicitud }} 
                             @else
-                            {{ $g->turnado }} 
-                            @endif
-                        
-                        </td>
+                                {{ $g->turnado }} 
+                            @endif                        
+                        </td>                        
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif</td>
-                        <td> {{ $g->efisico }} </td>
+                        <td class="text-center"> {{ $g->status}}</td>
+                        <td> <div style="width:120px;"> {{ $g->efisico }} </div></td>
                         <td class="text-left">
-                            <div style="width:900px;">
+                            <div style="width:700px;">
                                 @if($g->option =='ARC01')  {{ $g->nota }}
                                 @elseif($g->option =='ARC02') {{ $g->observaciones }} @endif
                             </div>    
                         </td>
+                        <td class="text-center"> {{ $g->mvalida}}</td>
                         @if($opt == "ARC02")
                             <td class='text-center'>
                                 <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
@@ -119,22 +132,39 @@
         @endif
     </table>
 </div>
-
-<div class="form-inline  col-md-12 mt-4 justify-content-end align-items-end"> 
+<div class="form-row col-md-12 my-4">
     @if($activar==true)
-        MOVIMIENTO: {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control col-md-2  mx-4' ] ) }}
-        {{ Form::text('mrespuesta', null, ['id'=>'mrespuesta', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM RESPUESTA',  'required' => 'required', 'size' => 25]) }}
-        {{ form::date('fecha', date('Y-m-d'), [ 'id'=>'fecha', 'class'=>'form-control mx-4']) }}    
-        <div class="custom-file col-md-3 mx-4 text-center" id="file">
+        <div class="form-group col-md-4">
+            @if($status_curso == "EN FIRMA")
+                {{ Form::button('GENERAR MEMORÁNDUM VALIDACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
+            @endif
+        </div>
+        <div class="form-group col-md-3  my-3" id="espacio">     </div>
+        <div class="form-group col-md-1  my-3">           
+            <label>MOVIMIENTO:</label>
+        </div>
+        <div class="form-group col-md-2 my-2">
+            {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control' ] ) }}
+        </div>
+        <div class="form-group col-md-2 my-2" id='mrespuesta'>
+            {{ Form::text('mrespuesta', null, [ 'class' => 'form-control', 'placeholder' => 'NÚMERO DEMEMORÁNDUM',  'required' => 'required', 'size' => 35]) }}
+        </div> 
+        <div class="form-group col-md-2" id="fecha">
+            {{ form::date('fecha', date('Y-m-d'), ['class'=>'form-control mx-3']) }}    
+        </div>
+        <div class="custom-file form-group col-md-3 text-center my-2" id="file">
             <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
-            <label for="file_autorizacion" class="custom-file-label">PDF SOLICITUD FIRMADA</label>
-        </div>    
-        @if($status_curso == "EN FIRMA")
-            {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
-        @endif
-        {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-4']) }}  
+            <label for="file_autorizacion" class="custom-file-label">AUTORIZACIÓN FIRMADA PDF</label>
+        </div>
+        <div class="form-group col-md-1 "> 
+            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-3']) }} 
+        </div>
     @endif
-    @if($pdf_curso)
-        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>   
+
+    @if($pdf_curso AND $activar == false)
+        <div class="form-group col-md-8"></div> 
+        <div class="form-group col-md-4"> 
+            <a href="{{$pdf_curso}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a> 
+        </div>  
     @endif
 </div>

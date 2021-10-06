@@ -54,7 +54,7 @@
             </div>
         @endif
 
-    {!! Form::close() !!}    
+    {!! Form::close() !!} 
 </div>
     @section('script_content_js') 
         <script language="javascript">      
@@ -75,16 +75,31 @@
                             $("#mrespuesta").hide();
                             $("#fecha").hide();                            
                             $("#file").hide();
+                            $("#espacio").show();
                         break;
                         case "EN FIRMA":
                             $("#mrespuesta").show();
                             $("#fecha").show();
                             $("#file").hide();
+                            $("#espacio").hide();
                         break;
                         case "AUTORIZADO":
                             $("#mrespuesta").hide();
                             $("#fecha").hide();                            
                             $("#file").show();
+                            $("#espacio").hide();
+                        break;
+                        case "DESHACER":
+                            $("#mrespuesta").hide();
+                            $("#fecha").hide();                            
+                            $("#file").hide();
+                            $("#espacio").show();
+                        break;
+                        case "CAMBIAR":
+                            $("#mrespuesta").show();
+                            $("#fecha").show();                            
+                            $("#file").hide();
+                            $("#espacio").hide();
                         break;
                     }
                 });
@@ -92,22 +107,36 @@
 
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitudes.aperturas')}}"); $('#frm').attr('target', '_self').submit();});
                 $("#aceptar" ).click(function(){// alert($("#movimiento").val());
-                    switch($("#movimiento").val()){
-                        case "RETORNADO":                            
-                            if(confirm("Esta seguro de ejecutar la acción?")==true){
-                                $('#frm').attr('action', "{{route('solicitudes.aperturas.retornar')}}");
-                                $('#frm').attr('target', '_self').submit();                            
-                            }                            
-                        break;                    
+                    if(confirm("Esta seguro de ejecutar la acción?")==true){
+                        switch($("#movimiento").val()){
+                            case "RETORNADO":
+                                    $('#frm').attr('action', "{{route('solicitudes.aperturas.retornar')}}");
+                                    $('#frm').attr('target', '_self').submit();
+                            break; 
+                            case "EN FIRMA":
+                                    $('#frm').attr('action', "{{route('solicitudes.aperturas.asignar')}}");
+                                    $('#frm').attr('target', '_self').submit();
+                            break; 
+                            case "DESHACER":
+                                $('#frm').attr('action', "{{route('solicitudes.aperturas.deshacer')}}");
+                                $('#frm').attr('target', '_self').submit();
+                            break; 
+                            case "CAMBIAR":
+                                $('#frm').attr('action', "{{route('solicitudes.aperturas.cambiarmemo')}}");
+                                $('#frm').attr('target', '_self').submit();
+                            break;
+                            case "AUTORIZADO":
+                                $('#frm').attr('action', "{{route('solicitudes.aperturas.autorizar')}}");
+                                $('#frm').attr('target', '_self').submit();
+                            break;
+                            default:
+                                alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
+                            break;                   
+                        }
                     }
                 });
-                $("#generar" ).click(function(){
-                    if($("#opt" ).val() == "ARC01"){
-                        $('#frm').attr('action', "{{route('solicitud.generar.arc01')}}"); $('#frm').attr('target', '_blank').submit();
-                    }else if($("#opt" ).val() == "ARC02"){
-                        $('#frm').attr('action', "{{route('solicitud.generar.arc02')}}"); $('#frm').attr('target', '_blank').submit();
-                    }
-                    
+                $("#generar" ).click(function(){                   
+                    $('#frm').attr('action', "{{route('solicitudes.generar.autoriza')}}"); $('#frm').attr('target', '_blank').submit();                   
                 });
                 
             });        
