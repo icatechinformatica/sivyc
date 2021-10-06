@@ -53,7 +53,8 @@ class CursosController extends Controller
         ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
                    'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
                    'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
-                   'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre', 'cursos.tipo_curso']);
+                   'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre',
+                   'cursos.tipo_curso', 'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo']);
         }
         else
         {
@@ -63,7 +64,8 @@ class CursosController extends Controller
             ->PAGINATE(25, ['cursos.id', 'cursos.nombre_curso', 'cursos.modalidad', 'cursos.horas', 'cursos.clasificacion',
                        'cursos.costo', 'cursos.objetivo', 'cursos.perfil', 'cursos.solicitud_autorizacion',
                        'cursos.fecha_validacion', 'cursos.memo_validacion', 'cursos.memo_actualizacion',
-                       'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre', 'cursos.tipo_curso']);
+                       'cursos.fecha_actualizacion', 'cursos.unidad_amovil', 'especialidades.nombre',
+                       'cursos.tipo_curso', 'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo']);
         }
         return view('layouts.pages.vstacursosinicio',compact('data'));
     }
@@ -288,10 +290,20 @@ class CursosController extends Controller
                     'especialidades.nombre AS especialidad','cursos.tipo_curso' ,
                     'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria',
                     'cursos.documento_memo_validacion',
-                    'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion')
+                    'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
+                    'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo')
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->GET();
+
+            $cadwell = DB::TABLE('criterio_pago')->SELECT('perfil_profesional')
+                ->WHERE('id', '=', $curso[0]->rango_criterio_pago_minimo)
+                ->FIRST();
+            $curso[0]->rango_criterio_pago_minimo = $cadwell->perfil_profesional;
+            $cadwell = DB::TABLE('criterio_pago')->SELECT('perfil_profesional')
+                ->WHERE('id', '=', $curso[0]->rango_criterio_pago_maximo)
+                ->FIRST();
+            $curso[0]->rango_criterio_pago_maximo = $cadwell->perfil_profesional;
 
             $json= response()->json($curso, 200);
         } else {

@@ -390,7 +390,7 @@ $(function(){
     /****
      *
      */
-    
+
 
     /**
      * form paso 2
@@ -654,6 +654,12 @@ $(function(){
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>OBJETIVOS DEL CURSO: </b>' + response[0].objetivo
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>CRITERIO DE PAGO MINIMO: </b>' + response[0].rango_criterio_pago_minimo
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>CRITERIO DE PAGO MAXIMO: </b>' + response[0].rango_criterio_pago_maximo
                   +   '</li>'
                   + '</ul>'
               );
