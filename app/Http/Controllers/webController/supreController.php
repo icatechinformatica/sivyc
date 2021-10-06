@@ -361,18 +361,18 @@ class supreController extends Controller
         //dd($request->all());
         $fecha_inicio = $request->fecha_inicio;
         $fecha_termino = $request->fecha_termino;
-        $consulta1 = DB::table('tabla_supre')->SELECT('tbl_unidades.unidad',
-        DB::raw('SUM(CASE WHEN tabla_supre.id != 0 THEN 1 ELSE 0 END) as supre_total'),
-        DB::raw("SUM(CASE WHEN tabla_supre.status = 'En_Proceso' THEN 1 ELSE 0 END) as supre_proceso"),
-        DB::raw("SUM(CASE WHEN tabla_supre.status = 'Validado' THEN 1 ELSE 0 END) as supre_validados"),
-        DB::raw("SUM(CASE WHEN tabla_supre.status = 'Rechazado' THEN 1 ELSE 0 END) as supre_rechazados"),
-        DB::raw("ARRAY(SELECT tabla_supre.fecha_rechazado FROM tabla_supre WHERE status = 'Rechazado'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_fecha_rechazo"),
-        DB::raw("ARRAY(SELECT tabla_supre.observacion FROM tabla_supre WHERE status = 'Rechazado'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_observaciones"))
-        ->join('tbl_unidades','tbl_unidades.unidad','=','tabla_supre.unidad_capacitacion');
+        $consulta1 = DB::table('tabla_supre')->SELECT('tbl_unidades.ubicacion',
+            DB::raw('SUM(CASE WHEN tabla_supre.id != 0 THEN 1 ELSE 0 END) as supre_total'),
+            DB::raw("SUM(CASE WHEN tabla_supre.status = 'En_Proceso' THEN 1 ELSE 0 END) as supre_proceso"),
+            DB::raw("SUM(CASE WHEN tabla_supre.status = 'Validado' THEN 1 ELSE 0 END) as supre_validados"),
+            DB::raw("SUM(CASE WHEN tabla_supre.status = 'Rechazado' THEN 1 ELSE 0 END) as supre_rechazados"),
+            DB::raw("ARRAY(SELECT tabla_supre.fecha_rechazado FROM tabla_supre WHERE status = 'Rechazado'
+                    AND tabla_supre.unidad_capacitacion = tbl_unidades.ubicacion) as supre_fecha_rechazo"),
+            DB::raw("ARRAY(SELECT tabla_supre.observacion FROM tabla_supre WHERE status = 'Rechazado'
+                    AND tabla_supre.unidad_capacitacion = tbl_unidades.ubicacion) as supre_observaciones"))
+            ->join('tbl_unidades','tbl_unidades.unidad','=','tabla_supre.unidad_capacitacion');
 
-        $consulta2 = DB::table('folios')->SELECT('tbl_unidades.unidad',
+        $consulta2 = DB::table('folios')->SELECT('tbl_unidades.ubicacion',
         DB::raw("SUM(CASE WHEN folios.status in ('Validando_Contrato','Contratado','Contrato_Rechazado') THEN 1
                 ELSE 0 END) as contrato_total"),
         DB::raw("SUM(CASE WHEN folios.status = 'Validando_Contrato' THEN 1 ELSE 0 END) as contrato_proceso"),
@@ -381,11 +381,11 @@ class supreController extends Controller
         DB::raw("ARRAY(SELECT folios.fecha_rechazado FROM tabla_supre
                 INNER JOIN folios ON folios.id_supre = tabla_supre.id
                 WHERE folios.status = 'Contrato_Rechazado'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as contrato_fecha_rechazo"),
+                AND tbl_unidades.ubicacion = tabla_supre.unidad_capacitacion) as contrato_fecha_rechazo"),
         DB::raw("ARRAY(SELECT contratos.observacion FROM folios
                 INNER JOIN contratos ON contratos.id_folios = folios.id_folios
                 WHERE folios.status = 'Contrato_Rechazado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_observaciones"),
+                AND contratos.unidad_capacitacion = tbl_unidades.ubicacion) as contrato_observaciones"),
         DB::raw("SUM(CASE WHEN folios.status in ('Verificando_Pago','Pago_Verificado','Finalizado','Pago_Rechazado')
                 THEN 1 END) as pago_total"),
         DB::raw("SUM(CASE WHEN folios.status = 'Verificando_Pago' THEN 1 ELSE 0 END) as pago_proceso"),
@@ -395,12 +395,12 @@ class supreController extends Controller
         DB::raw("ARRAY(SELECT folios.fecha_rechazado FROM tabla_supre
                 INNER JOIN folios ON folios.id_supre = tabla_supre.id
                 WHERE folios.status = 'Pago_Rechazado'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as pago_fecha_rechazo"),
+                AND tbl_unidades.ubicacion = tabla_supre.unidad_capacitacion) as pago_fecha_rechazo"),
         DB::raw("ARRAY(SELECT pagos.observacion FROM folios
                 INNER JOIN contratos ON contratos.id_folios = folios.id_folios
                 INNER JOIN pagos ON pagos.id_contrato = contratos.id_contrato
                 WHERE folios.status = 'Pago_Rechazado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as pago_observaciones"))
+                AND contratos.unidad_capacitacion = tbl_unidades.ubicacion) as pago_observaciones"))
         ->join('tabla_supre','tabla_supre.id', '=', 'folios.id_supre')
         ->join('tbl_unidades','tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion');
 
@@ -412,150 +412,76 @@ class supreController extends Controller
                 $consulta2 = $consulta2->where('tabla_supre.created_at','>=',$fecha_inicio)
                                     ->where('tabla_supre.created_at','<=',$fecha_termino);
             }else{
-                $fidefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->FIRST();
+                $fidefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')
+                                                    ->orderBy('id', 'asc')->FIRST();
                 $ftdefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->LATEST();
                 $fecha_inicio = $fidefault->created_at;
+                $fecha_inicio = Carbon::parse($fecha_inicio)->format('Y-m-d');
                 $fecha_termino = $ftdefault->created_at;
-                //dd($fidefault);
+                $fecha_termino = Carbon::parse($fecha_termino)->format('Y-m-d');
+                    //dd($fidefault);
                 return redirect()->route('reporte-solicitados')
                 ->withErrors(sprintf('INGRESE UNA FECHA DE INICIO Y TERMINO'));
             }
         }
         else
         {
-            $fidefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->FIRST();
+            $fidefault = DB::table('tabla_supre')->SELECT('created_at','id')->WHERE('id', '!=', '0')
+                                                ->orderBy('id', 'asc')->FIRST();
             $ftdefault = DB::table('tabla_supre')->SELECT('created_at')->WHERE('id', '!=', '0')->LATEST()->FIRST();
-            //dd($ftdefault);
+            // dd($fidefault);
             $fecha_inicio = $fidefault->created_at;
+            $fecha_inicio = Carbon::parse($fecha_inicio)->format('Y-m-d');
             $fecha_termino = $ftdefault->created_at;
+            $fecha_termino = Carbon::parse($fecha_termino)->format('Y-m-d');
             // dd($fecha_termino);
         }
 
-        $consulta1 = $consulta1->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
-        $consulta2 = $consulta2->orderBy('tbl_unidades.unidad','asc')->groupBy('tbl_unidades.unidad')->GET();
+        $consulta1 = $consulta1->orderBy('tbl_unidades.ubicacion','asc')->groupBy('tbl_unidades.ubicacion')->GET();
+        $consulta2 = $consulta2->orderBy('tbl_unidades.ubicacion','asc')->groupBy('tbl_unidades.ubicacion')->GET();
 
-        $unidades = DB::table('tbl_unidades')->SELECT('unidad')->orderBy('unidad','asc')->GET();
-        //dd($consulta2);
+        $unidades = DB::table('tbl_unidades')->SELECT('ubicacion as unidad')->groupBy('ubicacion')
+            ->orderBy('ubicacion','asc')->GET();
+        // dd($consulta1);
         return view('layouts.pages.vstareportesolicitados',compact('consulta1','consulta2','fecha_inicio','fecha_termino','unidades','fecha_inicio','fecha_termino'));
     }
 
     public function reporte_solicitados_detail($un, $ini, $fin)
     {
         //dd($fin);
-        $consulta1 = DB::table('tabla_supre')->SELECT('tbl_unidades.unidad',
+        $consulta1 = DB::table('tabla_supre')->SELECT('tbl_unidades.ubicacion',
         DB::raw('SUM(CASE WHEN tabla_supre.id != 0 THEN 1 ELSE 0 END) as supre_total'),
         DB::raw("SUM(CASE WHEN tabla_supre.status = 'En_Proceso' THEN 1 ELSE 0 END) as supre_proceso"),
         DB::raw("SUM(CASE WHEN tabla_supre.status = 'Validado' THEN 1 ELSE 0 END) as supre_validados"),
         DB::raw("SUM(CASE WHEN tabla_supre.status = 'Rechazado' THEN 1 ELSE 0 END) as supre_rechazados"),
         DB::raw("ARRAY(SELECT tabla_supre.fecha_rechazado FROM tabla_supre WHERE status = 'Rechazado'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_fecha_rechazo"),
-        DB::raw("ARRAY(SELECT tabla_supre.updated_at FROM tabla_supre WHERE status = 'En_Proceso'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_updated_proceso"),
-        DB::raw("ARRAY(SELECT tabla_supre.no_memo FROM tabla_supre WHERE status = 'En_Proceso'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_memo_proceso"),
-        DB::raw("ARRAY(SELECT tabla_supre.updated_at FROM tabla_supre WHERE status = 'Rechazado'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_updated_rechazo"),
-        DB::raw("ARRAY(SELECT tabla_supre.no_memo FROM tabla_supre WHERE status = 'Rechazado'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_memo_rechazo"),
+                AND tabla_supre.unidad_capacitacion = tbl_unidades.ubicacion) as supre_fecha_rechazo"),
         DB::raw("ARRAY(SELECT tabla_supre.observacion FROM tabla_supre WHERE status = 'Rechazado'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_observaciones"),
-        DB::raw("ARRAY(SELECT tabla_supre.no_memo FROM tabla_supre WHERE tabla_supre.status = 'Validado'
-                AND tabla_supre.unidad_capacitacion = tbl_unidades.unidad) as supre_memo_validado"))
-        ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
+                AND tabla_supre.unidad_capacitacion = tbl_unidades.ubicacion) as supre_observaciones"))
+        ->WHERE('tbl_unidades.ubicacion', '=', $un)
         ->join('tbl_unidades','tbl_unidades.unidad','=','tabla_supre.unidad_capacitacion');
 
-        $consulta2 = DB::table('folios')->SELECT('tbl_unidades.unidad',
+        $consulta2 = DB::table('folios')->SELECT('tbl_unidades.ubicacion',
         DB::raw("SUM(CASE WHEN folios.status in ('Validando_Contrato','Contratado','Contrato_Rechazado') THEN 1
                 ELSE 0 END) as contrato_total"),
         DB::raw("SUM(CASE WHEN folios.status = 'Validando_Contrato' THEN 1 ELSE 0 END) as contrato_proceso"),
         DB::raw("SUM(CASE WHEN folios.status = 'Contratado' THEN 1 ELSE 0 END) as contrato_validados"),
         DB::raw("SUM(CASE WHEN folios.status = 'Contrato_Rechazado' THEN 1 ELSE 0 END) as contrato_rechazados"),
-        DB::raw("ARRAY(SELECT folios.fecha_rechazado FROM tabla_supre
-                INNER JOIN folios ON folios.id_supre = tabla_supre.id
-                WHERE folios.status = 'Contrato_Rechazado'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as contrato_fecha_rechazo"),
-        DB::raw("ARRAY(SELECT contratos.observacion FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                WHERE folios.status = 'Contrato_Rechazado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_observaciones"),
-        DB::raw("ARRAY(SELECT contratos.numero_contrato FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                WHERE folios.status = 'Contrato_Rechazado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_memo_rechazo"),
-        DB::raw("ARRAY(SELECT contratos.unidad_capacitacion FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                WHERE folios.status = 'Contrato_Rechazado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_unidad_rechazo"),
-        DB::raw("ARRAY(SELECT folios.updated_at FROM tabla_supre
-                INNER JOIN folios ON folios.id_supre = tabla_supre.id
-                WHERE folios.status = 'Validando_Contrato'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as contrato_fecha_proceso"),
-        DB::raw("ARRAY(SELECT contratos.numero_contrato FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                WHERE folios.status = 'Contratado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_memo_validado"),
-        DB::raw("ARRAY(SELECT folios.updated_at FROM tabla_supre
-                INNER JOIN folios ON folios.id_supre = tabla_supre.id
-                WHERE folios.status = 'Contratado'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as contrato_fecha_validado"),
-        DB::raw("SUM(CASE WHEN folios.status in ('Verificando_Pago','Pago_Verificado','Finalizado','Pago_Rechazado')
-                THEN 1 END) as pago_total"),
-        DB::raw("ARRAY(SELECT contratos.numero_contrato FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                WHERE folios.status = 'Validando_Contrato'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as contrato_memo_proceso"),
         DB::raw("SUM(CASE WHEN folios.status = 'Verificando_Pago' THEN 1 ELSE 0 END) as pago_proceso"),
         DB::raw("SUM(CASE WHEN folios.status = 'Pago_Verificado' THEN 1 ELSE 0 END) as pago_validados"),
         DB::raw("SUM(CASE WHEN folios.status = 'Finalizado' THEN 1 ELSE 0 END) as pago_finalizados"),
-        DB::raw("SUM(CASE WHEN folios.status = 'Pago_Rechazado' THEN 1 ELSE 0 END) as pago_rechazados"),
-        DB::raw("ARRAY(SELECT folios.updated_at FROM tabla_supre
-                INNER JOIN folios ON folios.id_supre = tabla_supre.id
-                WHERE folios.status = 'Pago_Rechazado'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as pago_fecha_rechazo"),
-        DB::raw("ARRAY(SELECT pagos.observacion FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                INNER JOIN pagos ON pagos.id_contrato = contratos.id_contrato
-                WHERE folios.status = 'Pago_Rechazado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as pago_observaciones"),
-        DB::raw("ARRAY(SELECT pagos.no_memo FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                INNER JOIN pagos ON pagos.id_contrato = contratos.id_contrato
-                WHERE folios.status = 'Pago_Rechazado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as pago_memo_rechazo"),
-        DB::raw("ARRAY(SELECT pagos.no_memo FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                INNER JOIN pagos ON pagos.id_contrato = contratos.id_contrato
-                WHERE folios.status = 'Verificando_Pago'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as pago_memo_proceso"),
-        DB::raw("ARRAY(SELECT folios.updated_at FROM tabla_supre
-                INNER JOIN folios ON folios.id_supre = tabla_supre.id
-                WHERE folios.status = 'Verificando_Pago'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as pago_fecha_proceso"),
-        DB::raw("ARRAY(SELECT pagos.no_memo FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                INNER JOIN pagos ON pagos.id_contrato = contratos.id_contrato
-                WHERE folios.status = 'Pago_Verificado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as pago_memo_validado"),
-        DB::raw("ARRAY(SELECT folios.updated_at FROM tabla_supre
-                INNER JOIN folios ON folios.id_supre = tabla_supre.id
-                WHERE folios.status = 'Pago_Verificado'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as pago_fecha_validado"),
-        DB::raw("ARRAY(SELECT pagos.no_memo FROM folios
-                INNER JOIN contratos ON contratos.id_folios = folios.id_folios
-                INNER JOIN pagos ON pagos.id_contrato = contratos.id_contrato
-                WHERE folios.status = 'Finalizado'
-                AND contratos.unidad_capacitacion = tbl_unidades.unidad) as pago_memo_finalizado"),
-        DB::raw("ARRAY(SELECT folios.updated_at FROM tabla_supre
-                INNER JOIN folios ON folios.id_supre = tabla_supre.id
-                WHERE folios.status = 'Finalizado'
-                AND tbl_unidades.unidad = tabla_supre.unidad_capacitacion) as pago_fecha_finalizado"))
-        ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
+        DB::raw("SUM(CASE WHEN folios.status = 'Pago_Rechazado' THEN 1 ELSE 0 END) as pago_rechazados"))
+        ->WHERE('tbl_unidades.ubicacion', '=', $un)
         ->join('tabla_supre','tabla_supre.id', '=', 'folios.id_supre')
         ->join('tbl_unidades','tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion');
 
 
-        $cadwell = DB::table('tabla_supre')->SELECT('no_memo', 'folio_validacion', 'updated_at')->WHERE('unidad_capacitacion', '=', $un)
-        ->WHERE('status', '=', 'Validado');
+        $cadwell = DB::table('tabla_supre')->SELECT('tabla_supre.unidad_capacitacion','tabla_supre.no_memo',
+            'tabla_supre.folio_validacion', 'tabla_supre.observacion', 'tabla_supre.created_at',
+            'tabla_supre.updated_at', 'tabla_supre.status')
+            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+            ->whereRaw("tabla_supre.status in ('Validado','En_Proceso','Rechazado')")
+            ->WHERE('tbl_unidades.ubicacion', '=', $un);
 
         $cadwell2 = DB::table('tabla_supre')->SELECT('folios.status','folios.iva','folios.importe_total',
                     'contratos.updated_at','contratos.created_at', 'contratos.numero_contrato',
@@ -564,7 +490,8 @@ class supreController extends Controller
         ->JOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
         ->JOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
         ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-        ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
+        ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+        ->WHERE('tbl_unidades.ubicacion', '=', $un)
         ->whereRaw("folios.status in ('Validando_Contrato', 'Contratado', 'Contrato_Rechazado')");
 
         $cadwell3 = DB::table('tabla_supre')->SELECT('folios.status','folios.iva','folios.importe_total',
@@ -575,18 +502,21 @@ class supreController extends Controller
         ->JOIN('contratos', 'contratos.id_folios', '=', 'folios.id_folios')
         ->JOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
         ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-        ->WHERE('tabla_supre.unidad_capacitacion', '=', $un)
+        ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tabla_supre.unidad_capacitacion')
+        ->WHERE('tbl_unidades.ubicacion', '=', $un)
         ->whereRaw("folios.status in ('Verificando_Pago', 'Pago_Verificado', 'Finalizado', 'Pago_Rechazado')");
         if($ini != 0 ||  $fin != 0)
         {
+            // dd($fin);
             $consulta1 = $consulta1->where('tabla_supre.created_at','>=',$ini)
                                     ->where('tabla_supre.created_at','<=',$fin);
+
 
             $consulta2 = $consulta2->where('tabla_supre.created_at','>=',$ini)
                                     ->where('tabla_supre.created_at','<=',$fin);
 
-            $cadwell = $cadwell->WHERE('fecha', '>=', $ini)
-                                ->WHERE('fecha', '<=', $fin);
+            $cadwell = $cadwell->WHERE('tabla_supre.created_at', '>=', $ini)
+                                ->WHERE('tabla_supre.created_at', '<=', $fin);
 
             $cadwell2 = $cadwell2->WHERE('tabla_supre.created_at', '>=', $ini)
                                 ->WHERE('tabla_supre.created_at', '<=', $fin);
@@ -600,43 +530,12 @@ class supreController extends Controller
             $fin = $separa[2] . ' DE ' .$this->monthToString($separa[1]) . ' ' . $separa[0];
         }
 
-        $consulta1 = $consulta1->groupBy('tbl_unidades.unidad')->FIRST();
-        $consulta2 = $consulta2->groupBy('tbl_unidades.unidad')->FIRST();
+        $consulta1 = $consulta1->groupBy('tbl_unidades.ubicacion')->FIRST();
+        $consulta2 = $consulta2->groupBy('tbl_unidades.ubicacion')->FIRST();
         $cadwell = $cadwell->GET();
         $cadwell2 = $cadwell2->GET();
         $cadwell3 = $cadwell3->GET();
-        // dd($consulta1);
-
-        $consulta1->supre_memo_rechazo = explode(",",trim($consulta1->supre_memo_rechazo, "{}"));
-        $consulta1->supre_fecha_rechazo = str_replace('"', "", explode(",",trim($consulta1->supre_fecha_rechazo, "{}")));
-        $consulta1->supre_updated_rechazo =  str_replace('"', "", explode(",",trim($consulta1->supre_updated_rechazo, "{}")));
-        $consulta1->supre_observaciones = explode(",",trim($consulta1->supre_observaciones, "{}"));
-        $consulta1->supre_memo_proceso = explode(",",trim($consulta1->supre_memo_proceso, "{}"));
-        $consulta1->supre_updated_proceso =  str_replace('"', "", explode(",",trim($consulta1->supre_updated_proceso, "{}")));
-        $consulta1->supre_memo_validado = explode(",",trim($consulta1->supre_memo_validado, "{}"));
-        //$consulta1->supre_updated_validado =  str_replace('"', "", explode(",",trim($consulta1->supre_updated_validado, "{}")));
-
-        $consulta2->contrato_fecha_rechazo = str_replace('"', "", explode(",",trim($consulta2->contrato_fecha_rechazo, "{}")));
-        $consulta2->contrato_observaciones = explode(",",trim($consulta2->contrato_observaciones, "{}"));
-        $consulta2->contrato_memo_rechazo = explode(",",trim($consulta2->contrato_memo_rechazo, "{}"));
-        $consulta2->contrato_unidad_rechazo = explode(",",trim($consulta2->contrato_unidad_rechazo, "{}"));
-        $consulta2->contrato_memo_proceso = explode(",",trim($consulta2->contrato_memo_proceso, "{}"));
-        $consulta2->contrato_fecha_proceso = str_replace('"', "", explode(",",trim($consulta2->contrato_fecha_proceso, "{}")));
-        $consulta2->contrato_memo_validado = explode(",",trim($consulta2->contrato_memo_validado, "{}"));
-        $consulta2->contrato_fecha_validado = str_replace('"', "", explode(",",trim($consulta2->contrato_fecha_validado, "{}")));
-
-        $consulta2->pago_fecha_rechazo = str_replace('"', "", explode(",",trim($consulta2->pago_fecha_rechazo, "{}")));
-        $consulta2->pago_observaciones = explode(",",trim($consulta2->pago_observaciones, "{}"));
-        $consulta2->pago_memo_rechazo = explode(",",trim($consulta2->pago_memo_rechazo, "{}"));
-        $consulta2->pago_memo_proceso = explode(",",trim($consulta2->pago_memo_proceso, "{}"));
-        $consulta2->pago_fecha_proceso = str_replace('"', "", explode(",",trim($consulta2->pago_fecha_proceso, "{}")));
-        $consulta2->pago_memo_validado = explode(",",trim($consulta2->pago_memo_validado, "{}"));
-        $consulta2->pago_fecha_validado = str_replace('"', "", explode(",",trim($consulta2->pago_fecha_validado, "{}")));
-        $consulta2->pago_memo_finalizado = explode(",",trim($consulta2->pago_memo_finalizado, "{}"));
-        $consulta2->pago_fecha_finalizado = str_replace('"', "", explode(",",trim($consulta2->pago_fecha_finalizado, "{}")));
-
-        //if(empty($cadwell2['0'])){dd('entro');}
-       // dd($consulta2);
+        // dd($cadwell);
         return view('layouts.pages.vstareportesolicitadosdetail',compact('consulta1','consulta2','ini','fin','un','cadwell','cadwell2', 'cadwell3'));
     }
 

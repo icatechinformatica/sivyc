@@ -141,7 +141,8 @@
                 <H2>Lista de Proceso</H2>
             </div>
             <div class="row">
-                @if($consulta1->supre_memo_proceso[0] == "")
+                <?php $chk= false; foreach($cadwell as $prob){if($prob->status == 'En_Proceso'){$chk = true;}}?>
+                @if(empty($cadwell[0]) || $chk == false)
                     <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
                             <strong>Info!</strong> No hay Registros
@@ -153,16 +154,20 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
                                     <th style="text-align: center;">Fecha de Creación</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($consulta1->supre_memo_proceso as $key => $proceso)
-                                    <tr>
-                                        <td align="center">{{$proceso}}</td>
-                                        <td align="center">{{$consulta1->supre_updated_proceso[$key]}}</td>
-                                    </tr>
+                                @foreach($cadwell as $key => $proceso)
+                                    @if($proceso->status == 'En_Proceso')
+                                        <tr>
+                                            <td align="center">{{$proceso->unidad_capacitacion}}</td>
+                                            <td align="center">{{$proceso->no_memo}}</td>
+                                            <td align="center">{{$proceso->created_at}}</td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -173,7 +178,8 @@
                 <H2>Solicitudes Validadas</H2>
             </div>
             <div class="row">
-                @if($cadwell[0] == null)
+                <?php $chk= false; foreach($cadwell as $prob){if($prob->status == 'Validado'){$chk = true;}}?>
+                @if(empty($cadwell[0]) || $chk == false)
                     <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
                             <strong>Info!</strong> No hay Registros
@@ -184,18 +190,24 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
-                                    <th style="text-align: center;">Fecha de Validación</th>
                                     <th style="text-align: center;">No. Memorándum de Validación</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
+                                    <th style="text-align: center;">Fecha de Validación</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($cadwell as $key => $validado)
-                                    <tr>
-                                        <td align="center">{{$validado->no_memo}}</td>
-                                        <td align="center">{{$validado->updated_at}}</td>
-                                        <td align="center">{{$validado->folio_validacion}}</td>
-                                    </tr>
+                                    @if($validado->status == 'Validado')
+                                        <tr>
+                                            <td align="center">{{$validado->unidad_capacitacion}}</td>
+                                            <td align="center">{{$validado->no_memo}}</td>
+                                            <td align="center">{{$validado->folio_validacion}}</td>
+                                            <td align="center">{{$validado->created_at}}</td>
+                                            <td align="center">{{$validado->updated_at}}</td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -206,7 +218,8 @@
                 <H2>Lista de Rechazados</H2>
             </div>
             <div class="row">
-                @if($consulta1->supre_memo_rechazo[0] == "")
+                <?php $chk= false; foreach($cadwell as $prob){if($prob->status == 'Rechazado'){$chk = true;}}?>
+                @if(empty($cadwell[0]) || $chk == false)
                     <div class="container2" style="width:95%;">
                         <div class="alert alert-warning child">
                             <strong>Info!</strong> No hay Registros
@@ -218,26 +231,28 @@
                         <table class="table table-bordered table-striped" id='table_supre_cancelado'>
                             <thead>
                                 <tr>
+                                    <th style="text-align: center;">Unidad</th>
                                     <th style="text-align: center;">No. Memorándum</th>
+                                    <th style="text-align: center;">Fecha de Creación</th>
                                     <th style="text-align: center;">Fecha de Rechazo</th>
                                     <th style="text-align: center;">Observación</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($consulta1->supre_memo_rechazo as $key => $rechazo)
-                                    <tr>
-                                        <td align="center">{{$rechazo}}</td>
-                                        @if($consulta1->supre_fecha_rechazo[$key] != 'NULL')
-                                            <td align="center">{{$consulta1->supre_fecha_rechazo[$key]}}</td>
-                                        @else
-                                            <td align="center">{{$consulta1->supre_updated_rechazo[$key]}}</td>
-                                        @endif
-                                        @if($consulta1->supre_observaciones[$key] != 'NULL')
-                                            <td align="center">{{$consulta1->supre_observaciones[$key]}}</td>
-                                        @else
-                                            <td align="center">N/A</td>
-                                        @endif
-                                    </tr>
+                                @foreach($cadwell as $key => $rechazado)
+                                    @if($rechazado->status == 'Rechazado')
+                                        <tr>
+                                            <td align="center">{{$rechazado->unidad_capacitacion}}</td>
+                                            <td align="center">{{$rechazado->no_memo}}</td>
+                                            <td align="center">{{$rechazado->created_at}}</td>
+                                            <td align="center">{{$rechazado->updated_at}}</td>
+                                            @if($rechazado->observacion != 'NULL')
+                                                <td align="center">{{$rechazado->observacion}}</td>
+                                            @else
+                                                <td align="center">N/A</td>
+                                            @endif
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
