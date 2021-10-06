@@ -256,33 +256,38 @@
         <br>
     </div>
 
-        <!--Modal-->
-            <div class="modal fade" id="validarContratoModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Validar Contrato</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    </div>
+<!--Modal-->
+    <div class="modal fade" id="validarContratoModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Validar Contrato</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form action="{{ route('valcontrato') }}" id="validarForm" method="POST">
+                    @csrf
                     <div class="modal-body">
-                        ¿ Estás seguro de validar el contrato?
+                        <h3><b>¿ Estás seguro de validar el contrato?</b></h3>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="observaciones">Observaciones (Opcional)</label>
+                                <textarea name="observaciones" id="observaciones" cols="6" rows="6" class="form-control"></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <form action="" id="validarForm" method="get">
-                            @csrf
-                            <input type="hidden" name="id">
+                            <input type="hidden" name="id" id="id">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                             <button type="submit" class="btn btn-success">Validar</button>
-                        </form>
                     </div>
-                </div>
-                </div>
+                </form>
             </div>
-        <!--Modal End-->
-        <br>
-
+        </div>
+    </div>
+<!--Modal End-->
+    <br>
     </section>
 @stop
 @section('script_content_js')
