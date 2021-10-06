@@ -525,7 +525,7 @@ class InstructorController extends Controller
         if($listacursos == '[]')
         {
 
-            $listacursos = curso::WHERE('id_especialidad', '=', $especvalid->especialidad_id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+            $listacursos = curso::WHERE('id_especialidad', '=', $especvalid->especialidad_id)->orderby('nombre_curso', 'asc')->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
             // dd($especvalid->especialidad_id);
         }
 
