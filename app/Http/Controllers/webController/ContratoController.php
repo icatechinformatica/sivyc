@@ -621,6 +621,7 @@ class ContratoController extends Controller
 
     public function recepcion(Request $request)
     {
+        //A
         folio::where('id_folios', '=', $request->idf)
                         ->update(['recepcion' => $request->fecha_recepcion]);
 
