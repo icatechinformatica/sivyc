@@ -84,7 +84,7 @@ class ContratoController extends Controller
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
                                     'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'tbl_cursos.termino AS fecha_termino',
+                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
@@ -106,7 +106,7 @@ class ContratoController extends Controller
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
                                     'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'tbl_cursos.termino AS fecha_termino',
+                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
@@ -128,7 +128,7 @@ class ContratoController extends Controller
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
                                     'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'tbl_cursos.termino AS fecha_termino',
+                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
@@ -150,7 +150,7 @@ class ContratoController extends Controller
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
                                     'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'tbl_cursos.termino AS fecha_termino',
+                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
@@ -174,7 +174,7 @@ class ContratoController extends Controller
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
                                     'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'tbl_cursos.termino AS fecha_termino',
+                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
@@ -198,7 +198,7 @@ class ContratoController extends Controller
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
                                     'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
                                     'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'tbl_cursos.termino AS fecha_termino',
+                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
@@ -228,7 +228,7 @@ class ContratoController extends Controller
                                     'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','contratos.created_at',
                                     'folios.status','folios.id_folios', 'folios.folio_validacion','folios.permiso_editar',
                                     'folios.recepcion','tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
-                                    'contratos.fecha_status','tbl_cursos.termino AS fecha_termino',
+                                    'contratos.fecha_status','contratos.observacion','tbl_cursos.termino AS fecha_termino',
                                     'tbl_cursos.inicio AS fecha_inicio',
                                     DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
                                 ]);
@@ -467,11 +467,12 @@ class ContratoController extends Controller
                         ->with('success','Contrato Rechazado Exitosamente');
     }
 
-    public function valcontrato($id){
-        contratos::where('id_folios', '=', $id)
-        ->update(['fecha_status' => carbon::now()]);
+    public function valcontrato(Request $request){
+        contratos::where('id_folios', '=', $request->id)
+        ->update(['fecha_status' => carbon::now(),
+                  'observacion' => $request->observaciones]);
 
-        $folio = folio::find($id);
+        $folio = folio::find($request->id);
         $folio->status = "Contratado";
         $folio->save();
         return redirect()->route('contrato-inicio')

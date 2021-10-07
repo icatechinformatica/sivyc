@@ -163,7 +163,7 @@ Route::post('/contrato/rechazar-contrato','webController\ContratoController@rech
 Route::get('/contrato/validar/{id}', 'webController\ContratoController@validar_contrato')->name('contrato-validar');
 Route::get('/contrato/{id}', 'webController\ContratoController@contrato_pdf')->name('contrato-pdf');
 Route::post('/contrato/save-doc','webController\ContratoController@save_doc')->name('save-doc');
-Route::get('/contrato/valcontrato/{id}', 'webController\ContratoController@valcontrato')->name('valcontrato');
+Route::post('/contrato/valcontrato/', 'webController\ContratoController@valcontrato')->name('valcontrato');
 Route::get('/contrato/modificar/{id}', 'webController\ContratoController@modificar')->name('contrato-mod');
 Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoController@solicitudpago_pdf')->name('solpa-pdf');
 Route::post('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
