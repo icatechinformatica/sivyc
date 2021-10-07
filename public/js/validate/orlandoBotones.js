@@ -204,7 +204,8 @@ $(function(){
     $('#validarContratoModel').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        $('#validarForm').attr("action", "/contrato/valcontrato/" + id);
+        $('#id').val(id);
+        // $('#validarForm').attr("action", "/contrato/valcontrato/" + id);
     });
 
     //Boton Insturctor alta/baja modal

@@ -153,7 +153,7 @@
                             <th>@if($a->tipo=="PINS"){{ "X" }}@endif</th>                            
                             <th>@if($a->tipo=="EXO"){{ "X" }}@endif</th>
                             <th>@if($a->tipo=="EPAR"){{ "X" }}@endif</th>                                                      
-                            <th>{{ $a->nota }}</th>                           
+                            <th>{{ $obs }}</th>                           
                         </tr>
                         @endforeach
                     </tbody>                                        
