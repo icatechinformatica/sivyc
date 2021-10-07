@@ -180,7 +180,8 @@ $(function(){
     $('#recepcionModal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        $('#confirm_recepcion').attr("href","/recepcion/" + id);
+        // $('#confirm_recepcion').attr("href","/recepcion/" + id);
+        document.getElementById('idf').value = id;
     });
 
     //Modal de reincio de Pago
