@@ -548,16 +548,28 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-2"></div>
-                <div class="form-group col-md-4">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            <form action="{{ route('recepcion') }}" method="post" id="recepcion">
+                @csrf
+                <div class="form-row">
+                    <div class="form-group col-md-3"></div>
+                    <div class="form-group col-md-5">
+                        <label for="fecha_recepcion" class="control-label">Fecha de Recepción</label>
+                    <input type="date" class="form-control" name="fecha_recepcion" id="fecha_recepcion" required>
+                    <input name="idf" id="idf" type="text" class="form-control" hidden>
+                    </div>
+                    <div class="form-group col-md-2"></div>
                 </div>
-                <div class="form-group col-md-4">
-                    <a class="btn btn-success" id="confirm_recepcion" name="confirm_recepcion" href="#">Aceptar</a>
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button type="submit" class="btn btn-primary" >Aceptar</button>
+                    </div>
+                    <div class="form-group col-md-2"></div>
                 </div>
-                <div class="form-group col-md-2"></div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
