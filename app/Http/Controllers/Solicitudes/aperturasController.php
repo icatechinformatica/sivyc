@@ -20,7 +20,7 @@ class aperturasController extends Controller
         session_start();
         $this->ejercicio = date("y");         
         $this->middleware('auth');
-        $this->path_pdf = "/cursosvalidados/";
+        $this->path_pdf = "DTA/autorizado_arc01/";
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
 
         $this->movARC01 = ['RETORNADO'=>'RETORNAR A UNIDAD'/*,'EN FIRMA'=>'ASIGNAR CLAVES','AUTORIZADO'=>'ENVIAR AUTORIZACION'*/];
@@ -52,7 +52,7 @@ class aperturasController extends Controller
         
         $_SESSION['grupos'] = NULL;        
         $grupos = $movimientos = [];
-        echo $memo;
+        //echo $memo;
         if($memo){            
             $grupos = DB::table('tbl_cursos as tc')->select('tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo');
@@ -108,8 +108,6 @@ class aperturasController extends Controller
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
         $result = NULL;
         $message = 'Operación fallida, vuelva a intentar..'; 
-     //RUTA ANTERIOR https://www.sivyc.icatech.gob.mx/storage/uploadFiles/cursosvalidados/214700060/pdf_curso_update_20210907084928_214700060.pdf
-
         if($_SESSION['memo'] AND $_SESSION['opt'] ){
             if ($request->hasFile('file_autorizacion')) {               
                 $name_file = str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;                      

@@ -54,14 +54,14 @@
                         $memo = $reg_cursos[0]->mvalida;
                         $asunto = "AUTORIZACIÓN DE ASIGNACIÓN DE CLAVES DE APERTURAS";
                         $det = "Por este medio envió a Usted el formato de autorización de asignación de claves de apertura de servicios, en atención a la solicitud con número de memorándum $munidad.";
-                        $obs =  $reg_cursos[0]->nota;
+                        
                         break;
                     case 'ARC-02':
                         $fecha = $reg_cursos[0]->fecha_modificacion; 
                         $memo = $reg_cursos[0]->nmacademico;
                         $asunto = "REPROGRAMACIÓN, MODIFICACIÓN O CANCELACIÓN DE APERTURAS";
                         $det = "Por este medio envió a Usted el formato de autorización de reprogramación, modificación o cancelación de aperturas de servicios, en atención a la solicitud con número de memorándum $nmunidad.";
-                        $obs = $reg_cursos[0]->observaciones;;
+                       
                     break;
                 }                
             @endphp
@@ -149,7 +149,7 @@
                             <th>@if($a->tipo=="PINS"){{ "X" }}@endif</th>                            
                             <th>@if($a->tipo=="EXO"){{ "X" }}@endif</th>
                             <th>@if($a->tipo=="EPAR"){{ "X" }}@endif</th>                                                      
-                            <th>{{ $obs }}</th>                           
+                            <th>@if($opt == "ARC-01"){{ $a->nota }} @else {{ $a->observaciones}}@endif</th>                           
                         </tr>
                         @endforeach
                     </tbody>                                        
