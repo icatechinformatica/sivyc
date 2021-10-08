@@ -44,13 +44,10 @@
             @endif  
 
             @php 
-                $valido= $reg_cursos[0]->valido;
-               
+                $valido= $reg_cursos[0]->valido;               
                 $munidad = $reg_cursos[0]->munidad;
-                $nmunidad = $reg_cursos[0]->nmunidad;    
-
+                $nmunidad = $reg_cursos[0]->nmunidad;
                 $fecha = $asunto = $det = $memo =  $obs = "";
-
                 switch($opt){
                     case 'ARC-01':
                         $fecha = $reg_cursos[0]->fecha_apertura;
@@ -66,8 +63,7 @@
                         $det = "Por este medio envió a Usted el formato de autorización de reprogramación, modificación o cancelación de aperturas de servicios, en atención a la solicitud con número de memorándum $nmunidad.";
                         $obs = $reg_cursos[0]->observaciones;;
                     break;
-                }
-                
+                }                
             @endphp
             <div id="wrappertop">
                 <div align=center><br>                     
@@ -197,6 +193,9 @@
                         <td align="center" style='padding-top:100px; text-alingn:center; width:230px;border: gray 1px solid;'><b>SELLO DE LA DIRECCIÓN</b></td>                                 
                     </tr>                    
                 </table>
+                <p>CCP. {{ $reg_unidad->academico}}.-{{ $reg_unidad->pacademico}} DE LA UNIDAD DE CAPACITACIÓN {{ $reg_unidad->ubicacion}}.<br/>
+                ARCHIVO/MINUTARIO<BR/>
+                </p>
             </div> 
         </div>
     </div>

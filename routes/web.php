@@ -169,7 +169,7 @@ Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoControlle
 Route::post('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
 Route::get('/pagos/documento/{docs}', 'webController\ContratoController@docs')->name('get-docs');
 Route::get('/contrato-certificacion/{id}', 'webController\ContratoController@contrato_certificacion_pdf')->name('contrato-certificacion-pdf');
-Route::get('/recepcion/{id}', 'webController\ContratoController@recepcion')->name('recepcion');
+Route::post('/recepcion', 'webController\ContratoController@recepcion')->name('recepcion');
 
 //Ruta Pago
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
@@ -474,7 +474,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
     Route::post('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
     Route::get('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
-   
+
     Route::post('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
     Route::get('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
     Route::post('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->name('solicitudes.aperturas.cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');

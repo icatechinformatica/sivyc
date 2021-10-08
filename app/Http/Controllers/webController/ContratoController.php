@@ -64,144 +64,51 @@ class ContratoController extends Controller
         $contratos = new contratos();
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
+        $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
+        ->SELECT('tabla_supre.id','tabla_supre.no_memo',
+        'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
+        'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+        'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
+        'contratos.observacion','tbl_cursos.termino AS fecha_termino',
+        'tbl_cursos.inicio AS fecha_inicio',
+        DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif"))
+            ->WHERE('folios.status', '!=', 'En_Proceso')
+            ->WHERE('folios.status', '!=', 'Finalizado')
+            ->WHERE('folios.status', '!=', 'Rechazado')
+            ->WHERE('folios.status', '!=', 'Cancelado')
+            ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+            ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+            ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+            ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+            ->orderBy(DB::raw("array_position(array['Validando_Contrato','Contratado',
+                'Verificando_Pago','Contrato_Rechazado','Validado']::varchar[], folios.status)"));
         //dd($roles[0]->role_name);
 
         switch ($roles[0]->role_name) {
             case 'admin':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
-                                ->WHERE('folios.status', '!=', 'En_Proceso')
-                                ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Rechazado')
-                                ->WHERE('folios.status', '!=', 'Cancelado')
-                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('contratos.created_at', 'desc')
-                                ->PAGINATE(25, [
-                                    'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
-                                    'tbl_cursos.inicio AS fecha_inicio',
-                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                                ]);
+                $querySupre = $querySupre->PAGINATE(25);
+                    // dd($querySupre);
             break;
             case 'unidad.ejecutiva':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato,  $tipoStatus, $unidad, $mes)
-                                ->WHERE('folios.status', '!=', 'En_Proceso')
-                                ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Rechazado')
-                                ->WHERE('folios.status', '!=', 'Cancelado')
-                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('contratos.created_at', 'desc')
-                                ->PAGINATE(25, [
-                                    'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
-                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
-                                    'tbl_cursos.inicio AS fecha_inicio',
-                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                                ]);
+                $querySupre = $querySupre->PAGINATE(25);
             break;
             case 'direccion.general':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
-                                 ->WHERE('folios.status', '!=', 'En_Proceso')
-                                 ->WHERE('folios.status', '!=', 'Finalizado')
-                                 ->WHERE('folios.status', '!=', 'Rechazado')
-                                 ->WHERE('folios.status', '!=', 'Cancelado')
-                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('contratos.created_at', 'desc')
-                                ->PAGINATE(25, [
-                                    'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
-                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
-                                    'tbl_cursos.inicio AS fecha_inicio',
-                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                                ]);
+                $querySupre = $querySupre->PAGINATE(25);
             break;
             case 'planeacion':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
-                                ->WHERE('folios.status', '!=', 'En_Proceso')
-                                ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Rechazado')
-                                ->WHERE('folios.status', '!=', 'Cancelado')
-                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('contratos.created_at', 'desc')
-                                ->PAGINATE(25, [
-                                    'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status', 'folios.permiso_editar',
-                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
-                                    'tbl_cursos.inicio AS fecha_inicio',
-                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                                ]);
+                $querySupre = $querySupre->PAGINATE(25);
             break;
             case 'financiero_verificador':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
-                                ->WHERE('folios.status', '!=', 'En_Proceso')
-                                ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Rechazado')
-                                ->WHERE('folios.status', '!=', 'eliminado')
-                                ->WHERE('folios.status', '!=', 'Validado')
-                                ->WHERE('folios.status', '!=', 'Cancelado')
-                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('contratos.created_at', 'desc')
-                                ->PAGINATE(25, [
-                                    'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
-                                    'tbl_cursos.inicio AS fecha_inicio',
-                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                                ]);
+                $querySupre = $querySupre->PAGINATE(25);
             break;
             case 'financiero_pago':
                 # code...
-                $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
-                                ->WHERE('folios.status', '!=', 'En_Proceso')
-                                ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Rechazado')
-                                ->WHERE('folios.status', '!=', 'eliminado')
-                                ->WHERE('folios.status', '!=', 'Validado')
-                                ->WHERE('folios.status', '!=', 'Cancelado')
-                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('contratos.created_at', 'desc')
-                                ->PAGINATE(25, [
-                                    'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-                                    'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
-                                    'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
-                                    'contratos.observacion','tbl_cursos.termino AS fecha_termino',
-                                    'tbl_cursos.inicio AS fecha_inicio',
-                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                                ]);
+                $querySupre = $querySupre->PAGINATE(25);
             break;
             default:
                 # code...
@@ -213,28 +120,27 @@ class ContratoController extends Controller
                 $contratos = new contratos();
 
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
-                                ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
-                                ->WHERE('folios.status', '!=', 'En_Proceso')
-                                ->WHERE('folios.status', '!=', 'Finalizado')
-                                ->WHERE('folios.status', '!=', 'Rechazado')
-                                ->WHERE('folios.status', '!=', 'Cancelado')
-                                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-                                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-                                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-                                ->orderBy('contratos.created_at', 'desc')
-                                ->PAGINATE(25, [
-                                    'tabla_supre.id','tabla_supre.no_memo',
-                                    'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','contratos.created_at',
-                                    'folios.status','folios.id_folios', 'folios.folio_validacion','folios.permiso_editar',
-                                    'folios.recepcion','tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
-                                    'contratos.fecha_status','contratos.observacion','tbl_cursos.termino AS fecha_termino',
-                                    'tbl_cursos.inicio AS fecha_inicio',
-                                    DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")
-                                ]);
+                    ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
+                    ->WHERE('folios.status', '!=', 'En_Proceso')
+                    ->WHERE('folios.status', '!=', 'Finalizado')
+                    ->WHERE('folios.status', '!=', 'Rechazado')
+                    ->WHERE('folios.status', '!=', 'Cancelado')
+                    ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                    ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                    ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                    ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                    ->orderBy('contratos.created_at', 'desc')
+                    ->PAGINATE(25, [
+                        'tabla_supre.id','tabla_supre.no_memo',
+                        'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','contratos.created_at',
+                        'folios.status','folios.id_folios', 'folios.folio_validacion','folios.permiso_editar',
+                        'folios.recepcion','tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
+                        'contratos.fecha_status','contratos.observacion','tbl_cursos.termino AS fecha_termino',
+                        'tbl_cursos.inicio AS fecha_inicio',
+                        DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")]);
             break;
         }
-        //dd($querySupre);
+        // dd($querySupre);
         return view('layouts.pages.vstacontratoini', compact('querySupre','unidades'));
     }
 
@@ -713,10 +619,11 @@ class ContratoController extends Controller
                         ->with('success','Solicitud de Contrato Reiniciado');
     }
 
-    public function recepcion($id)
+    public function recepcion(Request $request)
     {
-        folio::where('id_folios', '=', $id)
-                        ->update(['recepcion' => carbon::now()]);
+        //A
+        folio::where('id_folios', '=', $request->idf)
+                        ->update(['recepcion' => $request->fecha_recepcion]);
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Recepción de Documentos Confirmada');

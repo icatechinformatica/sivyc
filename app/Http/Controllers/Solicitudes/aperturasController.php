@@ -212,7 +212,7 @@ class aperturasController extends Controller
                         ->where('tc.turnado','UNIDAD')
                         ->where('tc.status_curso','SOLICITADO')
                         ->where('tc.status','NO REPORTADO')
-                        ->where('tc.munidad',$_SESSION['memo'])
+                        ->where('tc.munidad',$_SESSION['memo'])->orderby('termino','ASC')->orderby('hfin','ASC')
                         ->get();
                         // var_dump($result);exit;
                         foreach($result as $r){
@@ -293,8 +293,7 @@ class aperturasController extends Controller
             $fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
             $fecha_memo=date('d/M/Y',strtotime($fecha_memo));
-            $opt = $request->opt; 
-           
+            $opt = $request->opt;        
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','nmunidad','efisico','hombre','mujer','tipo','opcion',
@@ -313,10 +312,12 @@ class aperturasController extends Controller
 
            // var_dump($reg_cursos);exit;
             if(count($reg_cursos)>0){     
+                $unidad = DB::table('tbl_unidades')->where('unidad',$reg_cursos[0]->unidad)->value('ubicacion');
+
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
-                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','jcyc','dacademico','pjcyc','pdacademico');
-                if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);                            
-                $reg_unidad = $reg_unidad->first();            
+                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','jcyc','dacademico','pjcyc','pdacademico','ubicacion')
+                ->where('unidad',$unidad)->first();   
+
                 if($opt=="ARC01") $opt = "ARC-01";
                 else $opt = "ARC-02";
                 $realizo = $this->realizo;
@@ -327,93 +328,4 @@ class aperturasController extends Controller
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
         }return "ACCIÓN INVÁlIDA";exit;
     }
-
-   /*
-   public function enviar(Request $request){            
-        $result = NULL;
-        $message = 'Operación fallida, vuelva a intentar..';        
-
-        if($_SESSION['memo']){
-            if ($request->hasFile('file_autorizacion')) {               
-                $name_file = $this->id_unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;                                
-                $file = $request->file('file_autorizacion');
-                $file_result = $this->upload_file($file,$name_file);                
-                $url_file = $file_result["url_file"];
-                if($file_result){
-                    switch($_SESSION['opt'] ){
-                        case "ARC01":
-                            $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
-                            $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);                    
-                            if($alumnos){
-                                $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
-                                ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]);                                
-                                              
-                            }else $message = "Error al turnar la solictud, volver a intentar.";
-                        break;
-                        case "ARC02":    
-                            $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
-                            ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc02' => $url_file]);    
-                            //echo $result; exit;                      
-                        break;
-                    }
-                    if($result)$message = "La solicitud fué turnada correctamente a la DTA"; 
-                    
-                }else $message = "Error al subir el archivo, volver a intentar.";
-            }else $message = "Archivo inválido";
-        }
-        return redirect('solicitud/apertura/turnar')->with('message',$message);   
-   }
-   
-   
-   
-   public function pdfARC01(Request $request){
-        if($request->fecha AND $request->memo){        
-            $fecha_memo =  $request->fecha;
-            $memo_apertura =  $request->memo;
-            $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
-
-            $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
-                DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
-                'motivo','cp','ze','tcapacitacion','tipo_curso');                
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
-            $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
-                
-            if(count($reg_cursos)>0){     
-                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');
-                if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);                            
-                $reg_unidad = $reg_unidad->first();            
-                
-                $pdf = PDF::loadView('solicitud.turnar.pdfARC01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura'));
-                $pdf->setpaper('letter','landscape');
-                return $pdf->stream('ARC01.pdf');
-            }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
-        }return "ACCIÓN INVÁlIDA";exit;
-    }
-    
-    public function pdfARC02(Request $request) { 
-        if($request->fecha AND $request->memo){      
-            $fecha_memo =  $request->fecha;
-            $memo_apertura =  $request->memo;
-            $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
-
-            $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
-                'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion');
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
-            $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
-                
-            if(count($reg_cursos)>0){
-                $instituto = DB::table('tbl_instituto')->first();
-               // var_dump($instituto);exit;
-
-                $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');                
-                if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);           
-                $reg_unidad = $reg_unidad->first();                
-                    
-                $pdf = PDF::loadView('solicitud.turnar.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','instituto'));
-                $pdf->setpaper('letter','landscape');
-                return $pdf->stream('ARC02.pdf');
-            }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;   
-        }
-    }
-   */
 }
