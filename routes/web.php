@@ -154,7 +154,7 @@ Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_fo
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
 Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
-//Ruta last-update 05102021
+//Ruta last-update 12102021
 Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
@@ -162,6 +162,7 @@ Route::post('/contrato/save-mod','webController\ContratoController@save_mod')->n
 Route::post('/contrato/rechazar-contrato','webController\ContratoController@rechazar_contrato')->name('contrato-rechazar');
 Route::get('/contrato/validar/{id}', 'webController\ContratoController@validar_contrato')->name('contrato-validar');
 Route::get('/contrato/{id}', 'webController\ContratoController@contrato_pdf')->name('contrato-pdf');
+Route::get('/contrato-web/{id}', 'webController\ContratoController@contrato_web')->name('contrato-web');
 Route::post('/contrato/save-doc','webController\ContratoController@save_doc')->name('save-doc');
 Route::post('/contrato/valcontrato/', 'webController\ContratoController@valcontrato')->name('valcontrato');
 Route::get('/contrato/modificar/{id}', 'webController\ContratoController@modificar')->name('contrato-mod');
