@@ -76,10 +76,10 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
-            ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-            ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-            ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+            ->JOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+            ->JOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+            ->JOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
             ->orderBy(DB::raw("array_position(array['Validando_Contrato','Contratado',
                 'Verificando_Pago','Contrato_Rechazado','Validado']::varchar[], folios.status)"));
         //dd($roles[0]->role_name);
@@ -140,6 +140,7 @@ class ContratoController extends Controller
                         DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")]);
             break;
         }
+        // dd($querySupre);
         // dd($querySupre);
         return view('layouts.pages.vstacontratoini', compact('querySupre','unidades'));
     }
