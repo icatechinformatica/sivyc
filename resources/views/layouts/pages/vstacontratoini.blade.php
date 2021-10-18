@@ -110,7 +110,7 @@
                     <th scope="col">Folio de Validación</th>
                     <th scope="col">Observación</th>
                     @can('contratos.create')
-                        <th scope="col">Fecha de Validación de Recepción Fisica</th>}
+                        <th scope="col">Fecha de Validación de Recepción Fisica</th>
                     @endcan
                     <th scope="col">Acción</th>
                     <th scope="col">semaforo</th>

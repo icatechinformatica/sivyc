@@ -72,8 +72,11 @@
         <hr style="border-color:dimgray">
         <h2>Previsualización de Contrato</h2>
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="/contrato-web/{{$data->id_contrato}}" target="_blank">Contrato de Instructor</a>
+            </div>
+            <div class="form-group col-md-6">
+                <a class="btn btn-danger" id="contrato_pdf2" name="contrato_pdf2" href="/contrato/{{$data->id_contrato}}" target="_blank">Contrato PDF</a>
             </div>
         </div>
         <hr style="border-color:dimgray">
