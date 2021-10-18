@@ -57,7 +57,8 @@ class PagoController extends Controller
         //dd($roles[0]->role_name);
 
         $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
-        ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
+        ->WHEREIN('folios.status', ['Contrato_Validado','Verificando_Pago','Pago_Verificado','Pago_Rechazado',
+                    'Finalizado'])
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -67,8 +68,8 @@ class PagoController extends Controller
         ->PAGINATE(25, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
-            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre',
-            'pagos.created_at'
+            'contratos.docs', 'contratos.observacion', 'folios.status','folios.recepcion', 'folios.id_folios',
+            'folios.id_supre','pagos.created_at'
         ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
@@ -115,8 +116,9 @@ class PagoController extends Controller
                 ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(25, [
                     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
-                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
-                    'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre'
+                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
+                    'folios.permiso_editar','contratos.docs',
+                    'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','folios.recepcion'
                 ]);
                 break;
         }

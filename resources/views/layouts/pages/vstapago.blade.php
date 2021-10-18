@@ -93,6 +93,9 @@
                     <th scope="col">Unidad de Capacitación</th>
                     <th scope="col">Status</th>
                     <th scope="col">Ultima Modificación de Status</th>
+                    @can('contratos.create')
+                            <th scope="col">Fecha de Validación de Recepción Fisica</th>
+                    @endcan
                     <th width="160px">Acciones</th>
                 </tr>
             </thead>
@@ -109,6 +112,13 @@
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>{{$itemData->fecha_status}}</td>
+                        @can('contratos.create')
+                            @if($itemData->recepcion != NULL)
+                                <td>{{$itemData->recepcion}}</td>
+                            @else
+                                <td>N/A</td>
+                            @endif
+                        @endcan
                         <td>
                             @switch($itemData->status)
                                 @case('Verificando_Pago')
