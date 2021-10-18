@@ -76,6 +76,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
+            ->WHERE('folios.status', '!=', 'Validado')
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
             ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
             ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
