@@ -109,6 +109,9 @@
                     <th scope="col">Ultima Modificación de Status</th>
                     <th scope="col">Folio de Validación</th>
                     <th scope="col">Observación</th>
+                    @can('contratos.create')
+                        <th scope="col">Fecha de Validación de Recepción Fisica</th>
+                    @endcan
                     <th scope="col">Acción</th>
                     <th scope="col">semaforo</th>
                 </tr>
@@ -144,6 +147,13 @@
                             <td>{{$itemData->fecha_status}}</td>
                             <td>{{$itemData->folio_validacion}}</td>
                             <td>{{$itemData->observacion}}</td>
+                            @can('contratos.create')
+                                @if($itemData->recepcion != NULL)
+                                    <td>{{$itemData->recepcion}}</td>
+                                @else
+                                    <td>N/A</td>
+                                @endif
+                            @endcan
                             <td>
                                 @if ($itemData->status == 'Validado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>

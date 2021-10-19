@@ -76,18 +76,39 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
+            ->WHERE('folios.status', '!=', 'Validado')
+            // ->WHERE('folios.status', '!=', 'Verificando_Pago')
             ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
             ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
             ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
             ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
-            ->orderBy(DB::raw("array_position(array['Validando_Contrato','Contratado',
-                'Verificando_Pago','Contrato_Rechazado','Validado']::varchar[], folios.status)"));
+            ->orderBy('contratos.created_at','desc');
+            // ->orderBy('folios.status','desc')->orderBy('contratos.created_at','asc');
+
+        $querySupre2 = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
+            ->SELECT('tabla_supre.id','tabla_supre.no_memo',
+            'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
+            'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+            'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
+            'contratos.observacion','tbl_cursos.termino AS fecha_termino',
+            'tbl_cursos.inicio AS fecha_inicio',
+            DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif"))
+                ->WHERE('folios.status', '=', 'Verificando_Pago')
+                ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
+                ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+                ->RIGHTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                ->orderBy('contratos.created_at', 'asc');
+                // ->orderBy('folios.status','desc')->orderBy('contratos.created_at','asc');
+            // ->orderBy(DB::raw("array_position(array['Validando_Contrato','Contratado',
+            //     'Verificando_Pago','Contrato_Rechazado']::varchar[], folios.status)"));
         //dd($roles[0]->role_name);
 
         switch ($roles[0]->role_name) {
             case 'admin':
                 # code...
                 $querySupre = $querySupre->PAGINATE(25);
+                $querySupre2 = $querySupre2->PAGINATE(25);
                     // dd($querySupre);
             break;
             case 'unidad.ejecutiva':
@@ -140,6 +161,7 @@ class ContratoController extends Controller
                         DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")]);
             break;
         }
+        // dd($querySupre2);
         // dd($querySupre);
         return view('layouts.pages.vstacontratoini', compact('querySupre','unidades'));
     }
@@ -742,6 +764,54 @@ class ContratoController extends Controller
         else
         {
             $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        }
+
+        return $pdf->stream('Contrato Instructor.pdf');
+    }
+
+    public function contrato_web($id)
+    {
+
+        $contrato = new contratos();
+
+        $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
+
+        $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
+        $director = directorio::WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
+        $testigo1 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
+        $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
+        $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
+
+        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
+                                  'tbl_cursos.tipo_curso','instructores.nombre','instructores.apellidoPaterno',
+                                  'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc',
+                                  'instructores.curp','instructores.domicilio')
+                          ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
+                          ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                          ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                          ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                          ->FIRST();
+                          //nomes especialidad
+        $especialidad = especialidad_instructor::SELECT('especialidades.nombre')
+                                                ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
+                                                ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+                                                ->FIRST();
+        $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
+        $date = strtotime($data_contrato->fecha_firma);
+        $D = date('d', $date);
+        $M = $this->toMonth(date('m', $date));
+        $Y = date("Y", $date);
+
+        $cantidad = $this->numberFormat($data_contrato->cantidad_numero);
+        $monto = explode(".",strval($data_contrato->cantidad_numero));
+
+        if($data->tipo_curso == 'CURSO')
+        {
+            return view('layouts.pdfpages.contratohonorariosweb', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+        }
+        else
+        {
+            return view('layouts.pdfpages.contratocertificacionweb', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
         }
 
         return $pdf->stream('Contrato Instructor.pdf');
