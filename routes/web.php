@@ -719,3 +719,7 @@ Route::post('/firma/cancelar', 'FirmaElectronica\FirmarController@cancelarDocume
 // buscar alumnos
 Route::post('/autocomplete/curso', 'Consultas\foliosController@cursoAutocomplete')->name('autocomplete.curso');
 Route::post('/autocomplete/alumno', 'Consultas\foliosController@alumnoAutocomplete')->name('autocomplete.alumno');
+
+//Tramites Recepcionados - Reporte 28102021
+Route::get('/financieros/tramites-recepcionados', 'webController\PagoController@documentospago_reporte')->name('docummentospago.reporte');
+Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoController@tramitesrecepcionados_pdf')->name('documentospago.pdf');
