@@ -56,7 +56,7 @@
                         <td><b>ASUNTO: SOLICITUD DE REPROGRAMACION, CANCELACION O CORRECCIÓN</b></td>
                         <td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td>
                         <td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="right"><b>{{ $reg_unidad->unidad }},CHIS; {{$fecha_memo }}</b></td>                        
+                        <td align="right"><b>{{ $reg_cursos[0]->unidad }},CHIS; {{$fecha_memo }}</b></td>                        
                     </tr>
                     <tr style="padding: 0px;">
                         <td><b>CC. ARCHIVO MINUTARIO</b></td>                        
