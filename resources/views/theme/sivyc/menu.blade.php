@@ -136,9 +136,11 @@
                             <a class="dropdown-item" href="{{route('reportes.rcdod11.index')}}">RCDOD-11</a>
                         @endcan
                         @can('financieros.reportevalrec')
-                        <a class="dropdown-item" data-toggle="modal" data-placement="top"
-                                data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>
+                        {{-- <a class="dropdown-item" data-toggle="modal" data-placement="top"
+                                data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>--}}
+                            <a class="dropdown-item" href="{{route('docummentospago.reporte')}}">TRAMITES RECEPCIONADOS</a>
                         @endcan
+
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>
                 </li>
@@ -343,9 +345,8 @@
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         @foreach (auth()->user()->unreadNotifications as $cadwell)
                             <a href={{$cadwell->data['url']}} class="dropdown-item">
-                                <i class="fas fa-envelope mr-2"></i> {{$cadwell->data['titulo']}} de la Unidad: {{$cadwell->data['supre_unidad']}}
-                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$cadwell->data['supre_memo']}}<br>
-                                <span class="float-right text-muted text-sm">{{$cadwell->created_at->diffForHumans()}}</span>
+                                <i class="fas fa-envelope mr-2"></i> {{$cadwell->data['titulo']}}
+                                <br><span class="float-right text-muted text-sm">{{$cadwell->created_at->diffForHumans()}}</span>
                             </a>
                         @endforeach
                     </div>

@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\SupreEvent;
+use App\Events\ValSupreDelegadoEvent;
 use App\Listeners\SupreListener;
+use App\Listeners\ValSupreDelegadoListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -31,6 +33,7 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
         Event::listen( SupreEvent::class, SupreListener::class);
+        Event::listen( ValSupreDelegadoEvent::class, ValSupreDelegadoListener::class);
 
         //
     }
