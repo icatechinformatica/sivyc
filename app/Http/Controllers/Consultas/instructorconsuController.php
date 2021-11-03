@@ -27,9 +27,10 @@ class instructorconsuController extends Controller
                         # code...
                          $buscar = trim($buscar,' ');
                          $buscar = $this->eliminar_tildes($buscar);    //dd($buscar);
+                        //  dd($buscar);
                          //$consulta->where( DB::raw('(btrim(CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores.nombre)))'), 'LIKE', "%$buscar%");
                          //$consulta->where(DB::raw('replace(REPLACE(REPLACE(REPLACE(REPLACE(upper(CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores.nombre)), Á, A), É,E), Í, I), Ó, O), Ú,U)'),'like',"%$buscar%");
-                        $consulta->where( DB::raw('replace(REPLACE(REPLACE(REPLACE(REPLACE(btrim(upper(CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores.nombre)),\' \'), \'Á\', \'A\'), \'É\',\'E\'), \'Í\', \'I\'), \'Ó\', \'O\'), \'Ú\',\'U\')'), 'LIKE', "%$buscar%");
+                         $consulta->where( DB::raw('replace(REPLACE(REPLACE(REPLACE(REPLACE(btrim(upper(CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores.nombre)),\' \'), \'Á\', \'A\'), \'É\',\'E\'), \'Í\', \'I\'), \'Ó\', \'O\'), \'Ú\',\'U\')'), 'LIKE', "%$buscar%");
                         break;
                     case 'curp':
                          $consulta->where( 'instructores.curp', '=', $buscar);
@@ -61,9 +62,11 @@ class instructorconsuController extends Controller
                                         $query->where('tc.termino','>=', $fecha_inicio)
                                               ->where('tc.termino','<=', $fecha_termino);
                                     });*/
-                $consulta = $consulta->whereRaw("tc.inicio >= '$fecha_inicio' and tc.termino <= '$fecha_termino'")
-                                     ->orwhereRaw("tc.inicio >= '$fecha_inicio' and tc.inicio <= '$fecha_termino'")
-                                     ->orWhereRaw("tc.termino >= '$fecha_inicio' and tc.termino <= '$fecha_termino'");
+                $consulta = $consulta->whereRaw("(tc.inicio >= '$fecha_inicio' and tc.termino <= '$fecha_termino'
+                                                OR tc.inicio >= '$fecha_inicio' and tc.inicio <= '$fecha_termino'
+                                                OR tc.termino >= '$fecha_inicio' and tc.termino <= '$fecha_termino')");
+                                    //  ->orwhereRaw("tc.inicio >= '$fecha_inicio' and tc.inicio <= '$fecha_termino'")
+                                    //  ->orWhereRaw("tc.termino >= '$fecha_inicio' and tc.termino <= '$fecha_termino')");
         }elseif(isset($fecha_inicio)&&empty($fecha_termino)){
             $consulta = $consulta->where('tc.inicio','>=',$fecha_inicio);
         }elseif(empty($fecha_inicio)&&isset($fecha_termino)){
@@ -74,7 +77,7 @@ class instructorconsuController extends Controller
             $consulta = $consulta->where('tc.unidad','=',$request->unidad);
         }
         $consulta = $consulta->orderBy('tc.termino','desc')->paginate(15,[DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") as nombre'),'tc.unidad','tc.curso','tc.status_curso','tc.inicio','tc.termino','tc.dia','tc.hini','tc.hfin','tc.horas','tipo_curso','tcapacitacion','espe']);
-
+        // dd($consulta);
         return view('consultas.consultainstructor',compact('consulta','unidad'));
     }
 
