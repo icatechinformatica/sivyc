@@ -114,7 +114,8 @@ $(function(){
         else if(id['4'] == 'Validando_Contrato')
         {
             $('#sol_pdf').attr("class", "btn btn-danger disabled");
-            $('#contrato_pdf').attr("class", "btn btn-danger disabled");
+            $('#contrato_pdf').attr("class", "btn btn-danger");
+            $('#contrato_pdf').attr("href", "/contrato/" + id['1']);
             $('#docs_pdf').attr("class", "btn btn-danger disabled");
             $('#valsupre_pdf').attr("class", "btn btn-danger");
             if(id['5'] != "")
@@ -175,6 +176,13 @@ $(function(){
         var button = $(event.relatedTarget);
         var id = button.data('id');
         $('#confirm_restart').attr("href","/contrato/reiniciar/" + id);
+    });
+
+    $('#recepcionModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        // $('#confirm_recepcion').attr("href","/recepcion/" + id);
+        document.getElementById('idf').value = id;
     });
 
     //Modal de reincio de Pago

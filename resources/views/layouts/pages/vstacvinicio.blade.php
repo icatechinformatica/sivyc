@@ -30,13 +30,13 @@
                     {!! Form::open(['route' => 'cursos_validados.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipobusquedacursovalidado" class="form-control mr-sm-2" id="tipobusquedacursovalidado">
                             <option value="">BUSCAR POR TIPO</option>
+                            <option value="arc01">MEMO DE SOLICITUD ARC-01</option>
                             <option value="clave">CLAVE DEL CURSO</option>
                             <option value="nombre_curso">NOMBRE DEL CURSO</option>
                             <option value="instructor">INSTRUCTORES</option>
                             <option value="unidad">UNIDAD</option>
                             <option value="anio">AÑO</option>
                         </select>
-
                         {!! Form::text('busqueda_curso_validado', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
@@ -51,6 +51,7 @@
                 <tr>
                     <th scope="col">UNIDAD</th>
                     <th scope="col">CLAVE DE CURSO</th>
+                    <th scope="col">MEMO DE SOLICITUD ARC-01</th>
                     <th scope="col">NOMBRE DEL CURSO</th>
                     <th scope="col">TIPO DE CURSO</th>
                     <th scope="col">INSTRUCTOR</th>
@@ -64,6 +65,7 @@
                         <tr>
                             <td>{{$itemData->unidad}}</td>
                             <td>{{$itemData->clave}}</td>
+                            <td>{{$itemData->munidad}}</td>
                             <td>{{$itemData->nombrecur}}</td>
                             <td>{{$itemData->tcapacitacion}}</td>
                             <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>

@@ -33,9 +33,10 @@ class CursoValidadoController extends Controller
 
     public function cv_inicio(Request $request) {
         // parametros de busqueda
-        $buscarcursoValidado = $request->get('busqueda_curso_validado');
+        $buscarcursoValidado = trim($request->get('busqueda_curso_validado'));
 
         $tipoCursoValidad = $request->get('tipobusquedacursovalidado');
+        //  dd($request);
 
         // obtener el usuario y su unidad
         $unidadUser = Auth::user()->unidad;
@@ -64,7 +65,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
             break;
             case 'depto_academico_cursos':
                 # code...
@@ -77,7 +78,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
             break;
             case 'depto_academico':
                 # code...
@@ -90,7 +91,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
             break;
             case 'unidad.ejecutiva':
                 # code... DTA - Información e Innovación Académica - Jefatura
@@ -103,7 +104,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
             break;
             case 'direccion.general':
                 # code...
@@ -116,7 +117,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
                 break;
             case 'planeacion':
                 # code...
@@ -129,7 +130,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
                 break;
             case 'financiero_verificador':
                 # code...
@@ -142,7 +143,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
                 break;
             case 'financiero_pago':
                 # code...
@@ -155,7 +156,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
                 break;
                 case 'admin':
                     # code...
@@ -168,7 +169,7 @@ class CursoValidadoController extends Controller
                         ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                         'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                         'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                        'tbl_cursos.tcapacitacion']);
+                        'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
                     break;
             default:
                 # code...
@@ -188,7 +189,7 @@ class CursoValidadoController extends Controller
                     ->PAGINATE(25, ['tbl_cursos.id','tbl_cursos.clave','cursos.nombre_curso AS nombrecur',
                     'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.archivo_alta',
                     'tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.unidad','tbl_cursos.pdf_curso',
-                    'tbl_cursos.tcapacitacion']);
+                    'tbl_cursos.tcapacitacion','tbl_cursos.munidad']);
                 break;
         }
 

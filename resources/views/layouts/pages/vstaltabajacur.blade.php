@@ -481,10 +481,12 @@
             <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-success">Confirmar Alta/Baja</button>
-                        <input type="hidden" name="id_available" id='id_available' value="{{$id}}">
-                    </div>
+                    @can('cursos.update')
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-success">Confirmar Alta/Baja</button>
+                            <input type="hidden" name="id_available" id='id_available' value="{{$id}}">
+                        </div>
+                    @endcan
                     <div class="pull-left">
                         <a class="btn btn-warning" href="{{URL::previous()}}">Regresar</a>
                     </div>

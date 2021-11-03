@@ -113,7 +113,7 @@ class AlumnoController extends Controller
              //dd($estados);
             $estado_civil=DB::table('estado_civil')->orderby('nombre','ASC')->pluck('nombre');
             $etnia=$this->etnia= ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
-            $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DEL HABLA"=>"DEL HABLA","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
+            $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DE COMUNICACIÓN"=>"DE COMUNICACIÓN","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
             // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
             $curp_formateada = trim($curp);//dd($curp_formateada);
             /**
@@ -365,8 +365,7 @@ class AlumnoController extends Controller
             'NIVEL MEDIO SUPERIOR TERMINADO' => 'NIVEL MEDIO SUPERIOR TERMINADO',
             'NIVEL SUPERIOR INCONCLUSO' => 'NIVEL SUPERIOR INCONCLUSO',
             'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
-            'POSTGRADO' => 'POSTGRADO',
-            'NO ESPECIFICADO' => 'NO ESPECIFICADO'
+            'POSTGRADO' => 'POSTGRADO'
         ];
         $estado = estado::get();
         foreach($estado as $item){
@@ -374,7 +373,7 @@ class AlumnoController extends Controller
         }
         $estado_civil=DB::table('estado_civil')->orderBy('nombre','ASC')->pluck('nombre');
         $etnia=$this->etnia= ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
-        $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DEL HABLA"=>"DEL HABLA","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
+        $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DE COMUNICACIÓN"=>"DE COMUNICACIÓN","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
         $idpre = base64_decode($id);
         $alumnos = new Alumnopre();
         $alumno = $alumnos->findOrfail($idpre);     //dd($alumno->curp);
@@ -653,7 +652,7 @@ class AlumnoController extends Controller
         // dd($estados);
         $estado_civil=DB::table('estado_civil')->select('nombre')->orderby('nombre','ASC')->get();
         $etnia=$this->etnia= ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
-        $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DEL HABLA"=>"DEL HABLA","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
+        $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DE COMUNICACIÓN"=>"DE COMUNICACIÓN","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
         $curp = strtoupper($request->input('curp'));//dd($curp);
         $curp_d=str_split($curp);
         $sexo=$curp_d[10];

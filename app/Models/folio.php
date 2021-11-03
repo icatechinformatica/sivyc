@@ -12,7 +12,7 @@ class folio extends Model
 
     protected $fillable = [
         'id_folios','numero_presupuesto','folio_validacion','iva','importe_hora','importe_total',
-        'id_supre','id_cursos','status','comentario','cancelo','permiso_editar','fecha_rechazado'
+        'id_supre','id_cursos','status','comentario','cancelo','permiso_editar','fecha_rechazado','recepcion'
     ];
 
     protected $primaryKey = 'id_folios';

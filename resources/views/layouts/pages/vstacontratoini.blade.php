@@ -82,6 +82,7 @@
                                 <option value="Contratado">CONTRATO VALIDADO</option>
                                 <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
                                 <option value="Verificando_Pago">VERIFICANDO PAGO</option>
+                                <option value="Pago_Verificado">PAGO VERIFICADO</option>
                                 <option value="Pago_Rechazado">PAGO RECHAZADO</option>
                             </select>
                         </Div>
@@ -107,6 +108,10 @@
                     <th scope="col">Status</th>
                     <th scope="col">Ultima Modificación de Status</th>
                     <th scope="col">Folio de Validación</th>
+                    <th scope="col">Observación</th>
+                    @can('contratos.create')
+                        <th scope="col">Fecha de Validación de Recepción Fisica</th>
+                    @endcan
                     <th scope="col">Acción</th>
                     <th scope="col">semaforo</th>
                 </tr>
@@ -141,6 +146,14 @@
                             </td>
                             <td>{{$itemData->fecha_status}}</td>
                             <td>{{$itemData->folio_validacion}}</td>
+                            <td>{{$itemData->observacion}}</td>
+                            @can('contratos.create')
+                                @if($itemData->recepcion != NULL)
+                                    <td>{{$itemData->recepcion}}</td>
+                                @else
+                                    <td>N/A</td>
+                                @endif
+                            @endcan
                             <td>
                                 @if ($itemData->status == 'Validado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
@@ -339,6 +352,17 @@
                                             </a>
                                         @endcan
                                     @endif
+                                    @if($itemData->recepcion == NULL)
+                                        @can('contrato.recepcion')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#recepcionModal"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Recepción de documentos">
+                                                <i class="fa fa-book"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                 @endif
                                 @if ($itemData->status == 'Pago_Verificado')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
@@ -347,6 +371,17 @@
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
+                                    @if($itemData->recepcion == NULL)
+                                        @can('contrato.recepcion')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#recepcionModal"
+                                                data-id='{{$itemData->id_folios}}'
+                                                title="Recepción de documentos">
+                                                <i class="fa fa-book"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                     @can('folio.cancel')
                                         <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
@@ -489,7 +524,7 @@
         </div>
     </div>
     <!--Modal Semaforo Ends-->
-    <!-- Modal -->
+<!-- Modal -->
     <div class="modal fade" id="restartModalContrato" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -512,6 +547,42 @@
             </div>
         </div>
     </div>
+<!-- END -->
+<!-- Modal -->
+<div class="modal fade" id="recepcionModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>¿Esta seguro de confirmar la recepción de documentos?</b></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('recepcion') }}" method="post" id="recepcion">
+                @csrf
+                <div class="form-row">
+                    <div class="form-group col-md-3"></div>
+                    <div class="form-group col-md-5">
+                        <label for="fecha_recepcion" class="control-label">Fecha de Recepción</label>
+                    <input type="date" class="form-control" name="fecha_recepcion" id="fecha_recepcion" required>
+                    <input name="idf" id="idf" type="text" class="form-control" hidden>
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2"></div>
+                    <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button type="submit" class="btn btn-primary" >Aceptar</button>
+                    </div>
+                    <div class="form-group col-md-2"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- END -->
 <!-- Modal Cancel Folio -->
 <div class="modal fade" id="cancelModalFolio" role="dialog">

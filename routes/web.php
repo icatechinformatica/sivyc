@@ -154,7 +154,7 @@ Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_fo
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
 Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
-//Ruta last-update 15072021
+//Ruta last-update 12102021
 Route::get('/contrato/inicio', 'webController\ContratoController@index')->name('contrato-inicio');
 Route::get('/contrato/solicitud-pago/{id}','webController\ContratoController@solicitud_pago')->name('solicitud-pago');
 Route::post('/contrato/save','webController\ContratoController@contrato_save')->name('contrato-save');
@@ -162,13 +162,15 @@ Route::post('/contrato/save-mod','webController\ContratoController@save_mod')->n
 Route::post('/contrato/rechazar-contrato','webController\ContratoController@rechazar_contrato')->name('contrato-rechazar');
 Route::get('/contrato/validar/{id}', 'webController\ContratoController@validar_contrato')->name('contrato-validar');
 Route::get('/contrato/{id}', 'webController\ContratoController@contrato_pdf')->name('contrato-pdf');
+Route::get('/contrato-web/{id}', 'webController\ContratoController@contrato_web')->name('contrato-web');
 Route::post('/contrato/save-doc','webController\ContratoController@save_doc')->name('save-doc');
-Route::get('/contrato/valcontrato/{id}', 'webController\ContratoController@valcontrato')->name('valcontrato');
+Route::post('/contrato/valcontrato/', 'webController\ContratoController@valcontrato')->name('valcontrato');
 Route::get('/contrato/modificar/{id}', 'webController\ContratoController@modificar')->name('contrato-mod');
 Route::get('/contrato/solicitud-pago/pdf/{id}', 'webController\ContratoController@solicitudpago_pdf')->name('solpa-pdf');
 Route::post('/directorio/getdirectorio','webController\ContratoController@get_directorio')->name('get-directorio');
 Route::get('/pagos/documento/{docs}', 'webController\ContratoController@docs')->name('get-docs');
 Route::get('/contrato-certificacion/{id}', 'webController\ContratoController@contrato_certificacion_pdf')->name('contrato-certificacion-pdf');
+Route::post('/recepcion', 'webController\ContratoController@recepcion')->name('recepcion');
 
 //Ruta Pago
 Route::get('/pago/vista/{id}', 'webController\PagoController@mostrar_pago')->name('mostrar-pago');
@@ -471,6 +473,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
     Route::post('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
     Route::get('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
+    Route::post('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
+    Route::get('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
+
+    Route::post('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
+    Route::get('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
+    Route::post('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->name('solicitudes.aperturas.cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');
+    Route::get('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->name('solicitudes.aperturas.cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');
+    Route::post('/solicitudes/aperturas/autorizar', 'Solicitudes\aperturasController@autorizar')->name('solicitudes.aperturas.autorizar')->middleware('can:solicitudes.aperturas.autorizar');
+    Route::get('/solicitudes/aperturas/autorizar', 'Solicitudes\aperturasController@autorizar')->name('solicitudes.aperturas.autorizar')->middleware('can:solicitudes.aperturas.autorizar');
+    Route::post('/solicitudes/generar/autoriza', 'Solicitudes\aperturasController@pdfAutoriza')->name('solicitudes.generar.autoriza');
+    Route::get('/solicitudes/generar/autoriza', 'Solicitudes\aperturasController@pdfAutoriza')->name('solicitudes.generar.autoriza');
 
     //Folios
     Route::get('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
@@ -697,3 +710,11 @@ Route::get('/firma/inicio', 'FirmaElectronica\FirmarController@index')->name('fi
 Route::post('/firma/update', 'FirmaElectronica\FirmarController@update')->name('firma.update');
 Route::post('/firma/sellar', 'FirmaElectronica\FirmarController@sellar')->name('firma.sellar');
 Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->name('firma.generarPdf');
+
+//Notificaciones
+Route::get('send', 'webController\NotificationController@sendNotification');
+Route::post('/firma/cancelar', 'FirmaElectronica\FirmarController@cancelarDocumento')->name('firma.cancelar');
+
+// buscar alumnos
+Route::post('/autocomplete/curso', 'Consultas\foliosController@cursoAutocomplete')->name('autocomplete.curso');
+Route::post('/autocomplete/alumno', 'Consultas\foliosController@alumnoAutocomplete')->name('autocomplete.alumno');
