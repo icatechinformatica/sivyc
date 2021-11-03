@@ -51,11 +51,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputcantidad_numero" class="control-label">Monto Total de los Honorarios (En Numero)</label>
-                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero" value="{{$datacon->cantidad_numero}}" >
+                    <input type="text" class="form-control" id="cantidad_numero" name="cantidad_numero" value="{{$datacon->cantidad_numero}}" readonly >
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputcantidad_letras" class="control-label">Monto Total de los Honorarios (En Letra)</label>
-                    <input type="text" class="form-control" id="cantidad_letras" name="cantidad_letras" value="{{$datacon->cantidad_letras1}}" >
+                    <input type="text" class="form-control" id="cantidad_letras" name="cantidad_letras" readonly >
                 </div>
             </div>
             <div class="form-row">
