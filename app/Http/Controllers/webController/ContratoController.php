@@ -282,6 +282,7 @@ class ContratoController extends Controller
                                 ->WHERE('especialidad_instructores.activo', '=', TRUE)
                                 ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
+                                // dd($perfil_prof);
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
