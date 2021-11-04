@@ -813,6 +813,13 @@ class supreController extends Controller
                   'id_cursos' => $hora->id,
                   'permiso_editar' => FALSE]);
 
+        $idc = DB::TABLE('contratos')->WHERE('id_folios', '=', $request->id_folio)->FIRST();
+        // dd($idc);
+        if($idc != NULL)
+        {
+            contratos::where('id_contrato', '=', $idc->id_contrato)
+                  ->update(['cantidad_numero' => round($request->addmore[0]['importe']-$request->addmore[0]['iva'], 2)]);
+        }
 
         return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
