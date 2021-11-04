@@ -46,7 +46,7 @@
                     <?php 
                     $aviso = NULL;
                     if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) 
-                        OR ($g->option =='ARC02'AND ($g->status!='NO REPORTADO' OR $g->turnado!='UNIDAD'))){
+                        OR ($g->option =='ARC02'AND ($g->status_curso!='AUTORIZADO' OR $g->status!='NO REPORTADO' OR $g->turnado!='UNIDAD' OR $g->status!='RETORNO_UNIDAD'))){
                         $activar = false;                        
                         $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
                     }else if( $g->turnado_solicitud == 'VINCULACION'  ){
