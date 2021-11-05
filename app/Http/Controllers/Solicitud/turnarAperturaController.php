@@ -98,7 +98,7 @@ class turnarAperturaController extends Controller
                             $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
                             $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);                    
                             if($alumnos){
-                                $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
+                                $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
                                 ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]);                                
                                               
                             }else $message = "Error al turnar la solictud, volver a intentar.";
