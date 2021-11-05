@@ -40,13 +40,14 @@
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
                     $pdf_curso = $grupos[0]->pdf_curso;
-                    $rojo = null;
+                    $rojo = null;                    
                 ?>
                 @foreach($grupos as $g)
                     <?php 
-                    $aviso = NULL;
+                    $aviso = NULL;                    
                     if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0')) 
-                        OR ($g->option =='ARC02'AND ($g->status_curso!='AUTORIZADO' OR $g->status!='NO REPORTADO' OR $g->turnado!='UNIDAD'))){
+                        OR ($g->option =='ARC02'
+                        AND ($g->status_curso!='AUTORIZADO' OR $g->turnado!='UNIDAD' OR $g->status == 'TURNADO_DTA' OR $g->status == 'TURNADO_PLANEACION' OR $g->status == 'REPORTADO'))){
                         $activar = false;                        
                         $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
                     }else if( $g->turnado_solicitud == 'VINCULACION'  ){
