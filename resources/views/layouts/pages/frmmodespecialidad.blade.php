@@ -295,10 +295,9 @@
                                 <div class="form-control-plaintext text-truncate">
 
                                     <input type="checkbox" class="checkBoxClass"
-                                        @if($itemDataCatCurso->activo == TRUE)
+                                        @if(in_array($itemDataCatCurso->id, $especvalid->cursos_impartir))
                                             checked
                                         @endif
-
                                         data-toggle="toggle"
                                         data-style="ios"
                                         data-on="ON"
@@ -307,7 +306,6 @@
                                         data-offstyle="danger"
                                         name="itemEdit[{{$itemDataCatCurso->id}}][check_cursos_edit]"
                                         value="{{$itemDataCatCurso->id}}">
-
                                 </div>
                             </div>
                         </div>
