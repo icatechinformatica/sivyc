@@ -29,17 +29,6 @@ use DateTime;
 
 class ContratoController extends Controller
 {
-    public function prueba()
-    {
-        $id = folio::select('id_folios')->WHERE('id_folios', '!=', '0')->GET();
-        foreach($id as $item)
-        {
-            $folio = folio::find($item->id_folios);
-            $folio->permiso_editar = FALSE;
-            $folio->save();
-            dd('hola');
-        }
-    }
     public function index(Request $request)
     {
         /**

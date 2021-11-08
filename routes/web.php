@@ -25,7 +25,7 @@ Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@histor
 Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
-Route::get('/prueba', 'webController\ContratoController@prueba');
+Route::get('/prueba', 'webController\InstructorController@prueba');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
 //Ruta Manual

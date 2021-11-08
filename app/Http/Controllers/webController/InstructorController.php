@@ -30,14 +30,29 @@ use App\Exports\FormatoTReport;
 
 class InstructorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function prueba()
+    {
+        $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
 
-     #----- instructor/inicio -----#
+        foreach ($idesin as $key => $cadwell)
+        {
+            $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
+                          ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
+                          ->WHERE('activo', '=', TRUE)
+                          ->OrderBy('curso_id', 'ASC')
+                          ->GET();
 
+            $array = [];
+            foreach ($cursos as $data)
+            {
+                array_push($array, $data->curso_id);
+            }
+
+            especialidad_instructor::WHERE('id', '=', $cadwell->id)
+                                ->update(['cursos_impartir' => $array]);
+        }
+        dd('Lock&Load');
+    }
 
     public function index(Request $request)
     {
@@ -486,10 +501,6 @@ class InstructorController extends Controller
 
         $modInstructor->save();
 
-        //$affecttbl_inscripcion = DB::table("tbl_inscripcion")->WHERE('instructor', $old)->update(['instructor' => $new]);
-        //$affecttbl_calificaciones = DB::table("tbl_calificaciones")->WHERE('instructor', $old)->update(['instructor' => $new]);
-        //$affecttbl_cursos = DB::table("tbl_cursos")->WHERE('nombre', $old)->update(['nombre' =>$new]);
-
         Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
         //Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
         tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
@@ -499,14 +510,6 @@ class InstructorController extends Controller
         return redirect()->route('instructor-inicio')
                 ->with('success','Instructor Modificado');
     }
-
-    /*public function edit_especval($id,$idins)
-    {
-        $idesp = $id;
-        $idins = $idins;
-        $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
-        return view('layouts.pages.modcursoimpartir', compact('data_especialidad','idesp','idins'));
-    }*/
 
     public function edit_especval($id,$idins)
     {
@@ -524,83 +527,11 @@ class InstructorController extends Controller
                 ->WHERE('id_especialidad', '=', $especvalid->especialidad_id)
                 ->FIRST();
 
-        $listacursos= DB::table('especialidad_instructor_curso')->SELECT('especialidad_instructor_curso.activo',
-                'cursos.id','cursos.id_especialidad','cursos.nombre_curso','cursos.modalidad','cursos.objetivo',
-                'cursos.costo','cursos.duracion','cursos.objetivo','cursos.tipo_curso','cursos.id_especialidad',
-                'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
-                ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
-                ->WHERE('id_especialidad_instructor', '=', $id)
-                ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
-                ->orderby('cursos.nombre_curso','asc')
-                ->GET();
-                //   dd($listacursos);
-        if(count($listacursos) != $count->count)
-        {
-            if(count($listacursos) == '0')
-            {
-                //  dd($listacursos);
-                 $listacursos = DB::table('cursos')->WHERE('id_especialidad', '=', $especvalid->especialidad_id)
-                        ->orderby('nombre_curso', 'asc')
-                        ->GET();
+        $listacursos = DB::table('cursos')->WHERE('id_especialidad', '=', $especvalid->especialidad_id)
+                           ->orderby('nombre_curso', 'asc')
+                           ->GET();
+                        //    dd($especvalid);
 
-                foreach ($listacursos as $cadwell)
-                {
-                    DB::table('especialidad_instructor_curso')
-                        ->insert(['id_especialidad_instructor' => $id,
-                                'curso_id' => $cadwell->id,
-                                'activo' => FALSE]);
-
-                }
-
-                $listacursos= DB::table('especialidad_instructor_curso')->SELECT('especialidad_instructor_curso.activo',
-                'cursos.id','cursos.id_especialidad','cursos.nombre_curso','cursos.modalidad','cursos.objetivo','cursos.costo',
-                'cursos.duracion','cursos.objetivo','cursos.tipo_curso','cursos.id_especialidad',
-                'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
-                ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
-                ->WHERE('id_especialidad_instructor', '=', $id)
-                ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
-                ->orderby('cursos.nombre_curso','asc')
-                ->GET();
-            }
-            else
-            {
-                $cursoupd = DB::table('cursos')->WHERE('id_especialidad', '=', $especvalid->especialidad_id)
-                        ->orderby('nombre_curso', 'asc')
-                        ->GET();
-                $lstarr = count($listacursos) -1;
-                // dd('ea');
-                foreach ($cursoupd as $upd)
-                {
-                    foreach ($listacursos as $key => $cadwell)
-                    {
-                        if($cadwell->id == $upd->id)
-                        {
-                            // printf($cadwell->id . ' - ' . $upd->id);
-                            // printf(' /// ');
-                            break;
-                        }
-                        else if($lstarr == $key)
-                        {
-                            DB::table('especialidad_instructor_curso')
-                                ->insert(['id_especialidad_instructor' => $id,
-                                        'curso_id' => $upd->id,
-                                        'activo' => FALSE]);
-                            break;
-                        }
-                    }
-                }
-                $listacursos= DB::table('especialidad_instructor_curso')->SELECT('especialidad_instructor_curso.activo',
-                'cursos.id','cursos.id_especialidad','cursos.nombre_curso','cursos.modalidad','cursos.objetivo','cursos.costo',
-                'cursos.duracion','cursos.objetivo','cursos.tipo_curso','cursos.id_especialidad',
-                'cursos.rango_criterio_pago_minimo','cursos.rango_criterio_pago_maximo')
-                ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
-                ->WHERE('id_especialidad_instructor', '=', $id)
-                ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
-                ->orderby('cursos.nombre_curso','asc')
-                ->GET();
-            }
-        }
-        // dd($listacursos);
         return view('layouts.pages.frmmodespecialidad', compact('especvalid','data_espec','data_pago','data_unidad', 'id','idins','nomesp', 'catcursos','listacursos'));
     }
 
@@ -629,72 +560,16 @@ class InstructorController extends Controller
         $espec_mod->lastUserId = $userId;
         $espec_mod->save();
         $espe = $espec_mod->especialidad_id;
-        // $idespval = $espec_mod->id;
 
-        $listacursos = DB::table('especialidad_instructor_curso')
-        ->WHERE('id_especialidad_instructor', '=', $request->idespec)->GET();
-        if($listacursos == '[]')
+        $array = [];
+        foreach ($request->itemEdit as $cadwell)
         {
-            $listacursos = DB::table('cursos')->WHERE('id_especialidad', '=', $espe)
-                    ->orderby('nombre_curso', 'asc')
-                    ->GET();
-            // dd($listacursos);
-            foreach ($listacursos as $cadwell)
-            {
-                // dd($request);
-                // print('que pedo ' . $cadwell->id . ' **** ');
-                foreach ($request->itemEdit as $key=>$new)
-                {
-                    // dd($new);
-                    // print('ahi va '. $new['check_cursos']. ' -_-_- ');
-                    if($cadwell->id == $new['check_cursos_edit'])
-                    {
-                        // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                        DB::table('especialidad_instructor_curso')
-                            ->insert(['id_especialidad_instructor' => $request->idespec,
-                                    'curso_id' => $cadwell->id,
-                                    'activo' => TRUE]);
-                        break;
-                    }
-                    else if(array_key_last($request->itemEdit) == $key)
-                    {
-                        // print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                        DB::table('especialidad_instructor_curso')
-                            ->insert(['id_especialidad_instructor' => $request->idespec,
-                                    'curso_id' => $cadwell->id,
-                                    'activo' => FALSE]);
-                        break;
-                    }
-                }
-            }
+            array_push($array, $cadwell['check_cursos_edit']);
         }
-        else
-        {
-            foreach ($listacursos as $cadwell)
-            {
-                foreach ($request->itemEdit as $new)
-                {
-                    //dd($new['check_cursos_edit']);
-                    if($cadwell->curso_id == $new['check_cursos_edit'])
-                    {
-                        DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
-                            ->where('id_especialidad_instructor', '=', $request->idespec)
-                            ->update(['activo' => TRUE,
-                                    'id_especialidad_instructor'  => $request->idespec]);
-                        break;
-                    }
-                    else
-                    {
-                        DB::table('especialidad_instructor_curso')->where('curso_id', '=', $cadwell->curso_id)
-                            ->where('id_especialidad_instructor', '=', $request->idespec)
-                            ->update(['activo' => FALSE,
-                                    'id_especialidad_instructor'  => $request->idespec]);
-                    }
-                }
-            }
-        }
+        especialidad_instructor::WHERE('id', '=', $request->idespec)
+                                ->update(['cursos_impartir' => $array]);
 
-        //dd($request->itemEdit);
+        // dd($request->itemEdit);
         return back();
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
@@ -830,62 +705,18 @@ class InstructorController extends Controller
         $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
         $espec_save->lastUserId = $userId;
         $espec_save->activo = TRUE;
+        $espec_save->id_instructor = $request->idInstructor;
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
-        $especialidadInstrcutorId = $espec_save->id;
+        $especialidadInstructorId = $espec_save->id;
         // declarar un arreglo
-        $pila = array();
-
-        $listacursos = DB::table('cursos')->WHERE('id_especialidad', '=', $request->idespec)->GET();
-        // eliminar registros previamente
-        //$cursos_mod->cursos()->detach();
-
-        foreach ($listacursos as $cadwell)
+        $array = [];
+        foreach ($request->itemAdd as $cadwell)
         {
-            // print('qhe ' . $cadwell->id . ' **** ');
-            foreach ($request->itemAdd as $key=>$new)
-            {
-                // print('ahi va '. $new['check_cursos']. ' -_-_- ');
-                if($cadwell->id == $new['check_cursos'])
-                {
-                    // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                    DB::table('especialidad_instructor_curso')
-                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
-                                  'curso_id' => $cadwell->id,
-                                  'activo' => TRUE]);
-                    break;
-                }
-                else if(array_key_last($request->itemAdd) == $key)
-                {
-                    // print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                    DB::table('especialidad_instructor_curso')
-                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
-                                  'curso_id' => $cadwell->id,
-                                  'activo' => FALSE]);
-                    break;
-                }
-            }
+            array_push($array, $cadwell['check_cursos']);
         }
-        //dd($especialidadInstrcutorId);
-        /*foreach( (array) $request->itemAdd as $key => $value)
-        {
-            if(isset($value['check_cursos']))
-            {
-                $arreglos = [
-                    'curso_id' => $value['check_cursos'],
-                    'activo' => TRUE
-                ];
-                array_push($pila, $arreglos);
-            }
-        }
-         hacemos la llamada al módelo
-        $instructorEspecialidad = new especialidad_instructor();
-        $especialidadesInstructoresCurso = $instructorEspecialidad->findOrFail($especialidadInstrcutorId);
-
-        $especialidadesInstructoresCurso->cursos()->attach($pila);
-
-         limpiar array
-        unset($pila);*/
+        especialidad_instructor::WHERE('id', '=', $especialidadInstructorId)
+                                ->update(['cursos_impartir' => $array]);
 
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');
