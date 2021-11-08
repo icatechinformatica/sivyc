@@ -295,7 +295,7 @@
                                 <div class="form-control-plaintext text-truncate">
 
                                     <input type="checkbox" class="checkBoxClass"
-                                        @if(in_array($itemDataCatCurso->id, $especvalid->cursos_impartir))
+                                        @if($itemDataCatCurso->activo == TRUE)
                                             checked
                                         @endif
                                         data-toggle="toggle"
