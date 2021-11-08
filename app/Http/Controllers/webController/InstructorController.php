@@ -30,14 +30,29 @@ use App\Exports\FormatoTReport;
 
 class InstructorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function prueba()
+    {
+        $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
 
-     #----- instructor/inicio -----#
+        foreach ($idesin as $key => $cadwell)
+        {
+            $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
+                          ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
+                          ->WHERE('activo', '=', TRUE)
+                          ->OrderBy('curso_id', 'ASC')
+                          ->GET();
 
+            $array = [];
+            foreach ($cursos as $data)
+            {
+                array_push($array, $data->curso_id);
+            }
+
+            especialidad_instructor::WHERE('id', '=', $cadwell->id)
+                                ->update(['cursos_impartir' => $array]);
+        }
+        dd('Lock&Load');
+    }
 
     public function index(Request $request)
     {
@@ -486,10 +501,6 @@ class InstructorController extends Controller
 
         $modInstructor->save();
 
-        //$affecttbl_inscripcion = DB::table("tbl_inscripcion")->WHERE('instructor', $old)->update(['instructor' => $new]);
-        //$affecttbl_calificaciones = DB::table("tbl_calificaciones")->WHERE('instructor', $old)->update(['instructor' => $new]);
-        //$affecttbl_cursos = DB::table("tbl_cursos")->WHERE('nombre', $old)->update(['nombre' =>$new]);
-
         Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
         //Calificacion::where('instructor', '=', $old)->update(['instructor' => $new]);
         tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
@@ -499,14 +510,6 @@ class InstructorController extends Controller
         return redirect()->route('instructor-inicio')
                 ->with('success','Instructor Modificado');
     }
-
-    /*public function edit_especval($id,$idins)
-    {
-        $idesp = $id;
-        $idins = $idins;
-        $data_especialidad = especialidad::where('id', '!=', '0')->latest()->get();
-        return view('layouts.pages.modcursoimpartir', compact('data_especialidad','idesp','idins'));
-    }*/
 
     public function edit_especval($id,$idins)
     {

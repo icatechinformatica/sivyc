@@ -17,7 +17,7 @@ class instructor extends Model
     'archivo_otraid','id_especialidad','archivo_rfc','estado','lastUserId','stps','conocer'];
 
     protected $casts = [
-        'unidades_disponible' => 'array'
+        'unidades_disponible' => 'array',
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

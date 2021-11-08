@@ -130,7 +130,7 @@ class aperturasController extends Controller
                             ->where('clave','<>','0')
                             ->where('turnado','UNIDAD')
                             ->where('status_curso','EN FIRMA')
-                            ->where('status','NO REPORTADO')
+                            ->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
                             ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);                                            
                         break;
                     }
@@ -162,7 +162,7 @@ class aperturasController extends Controller
                         ->where('clave','<>','0')
                         ->where('turnado','UNIDAD')
                         ->where('status_curso','EN FIRMA')
-                        ->where('status','NO REPORTADO')
+                        ->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
                         ->update([ 'nmacademico' => $mrespuesta, 'fecha_modificacion' => $fecha, 'valido' => $this->realizo]);                             
                         if($result)$message = "OPERACIÓN EXITOSA!!";                       
                 break;

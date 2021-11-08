@@ -61,7 +61,7 @@
                             if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
                         break;
                         case "ARC02":
-                            if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                            if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD') $activar=false;
                         break;
                     }
                     ?>
