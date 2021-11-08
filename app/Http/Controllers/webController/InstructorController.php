@@ -588,7 +588,7 @@ class InstructorController extends Controller
                             break;
                         }
                     }
-                }
+                }//A
                 $listacursos= DB::table('especialidad_instructor_curso')->SELECT('especialidad_instructor_curso.activo',
                 'cursos.id','cursos.id_especialidad','cursos.nombre_curso','cursos.modalidad','cursos.objetivo','cursos.costo',
                 'cursos.duracion','cursos.objetivo','cursos.tipo_curso','cursos.id_especialidad',
