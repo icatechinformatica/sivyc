@@ -291,12 +291,14 @@ class PagoController extends Controller
             ->JOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
             ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-            ->WHERE('tbl_unidades.ubicacion', '=', $request->unidad)
-            ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
-            ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
-            ->WHEREBETWEEN('tbl_cursos.inicio', [$request->fecha1, $request->fecha2])
+            ->WHERE('contratos.id_contrato', '=', '4228')
+            // ->WHERE('tbl_unidades.ubicacion', '=', $request->unidad)
+            // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
+            // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
+            // ->WHEREBETWEEN('tbl_cursos.inicio', [$request->fecha1, $request->fecha2])
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
+            // dd($data);
         // dd($data[1]->fecha_rechazo);
         if ($request->tipo == 'CURSO')
         {

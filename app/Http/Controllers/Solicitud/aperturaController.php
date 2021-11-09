@@ -239,8 +239,10 @@ class aperturaController extends Controller
                             $talumno = $grupo->hombre + $grupo->mujer;
                             $costo_total = $grupo->costo_individual * $talumno;
                             $ctotal = $costo_total - $total_pago;
-                            if($total_pago == 0)$tipo_pago = "EXO";
-                            elseif($ctotal > 0) $tipo_pago = "EPAR";
+                            if($total_pago == 0){
+                                 $tipo_pago = "EXO"; 
+                                 if($cp>7)$cp = 7; //EXONERACION Criterio de Pago Máximo 7
+                            }elseif($ctotal > 0) $tipo_pago = "EPAR";
                             else $tipo_pago = "PINS";
 
                             /*RECALCULANDO TOTAL HOMBRES Y MUJERES*/

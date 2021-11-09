@@ -104,7 +104,7 @@ class turnarAperturaController extends Controller
                             }else $message = "Error al turnar la solictud, volver a intentar.";
                         break;
                         case "ARC02":    
-                            $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])->where('status_curso','AUTORIZADO')->where('turnado','UNIDAD')->where('status','NO REPORTADO')
+                            $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])->where('status_curso','AUTORIZADO')->where('turnado','UNIDAD')->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
                             ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc02' => $url_file]);    
                             //echo $result; exit;                      
                         break;
