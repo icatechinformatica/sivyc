@@ -60,7 +60,9 @@
                             if($g->status=='NO REPORTADO' AND $g->turnado=='UNIDAD') $activar=true;
                         break;
                         case "ARC02":
-                            if(($g->status=='NO REPORTADO' OR $g->status=='RETORNO_UNIDAD') AND $g->turnado=='UNIDAD')$activar=true;                       
+                            if(($g->status=='NO REPORTADO' OR $g->status=='RETORNO_UNIDAD') AND $g->turnado=='UNIDAD')
+                             $activar=true;
+                    }                       
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
                         <td class="text-center"> {{ $g->id }}</td>
