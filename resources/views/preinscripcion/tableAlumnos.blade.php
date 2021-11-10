@@ -21,7 +21,7 @@
                 <th scope="row"> {{ $consec++ }} </th>
                 <th>{{ $a->curp }}</th>
                 <th>{{ $a->apellido_paterno }} {{ $a->apellido_materno }} {{ $a->nombre }}</th> 
-                <th>{{ $a->no_control }}</th>
+                <th>{{ $a->matricula }}</th>
                 <th>{{ $a->sex }}</th>
                 <th>{{ $a->fnacimiento }}</th>
                 <th>{{ $a->ultimo_grado_estudios }}</th>
