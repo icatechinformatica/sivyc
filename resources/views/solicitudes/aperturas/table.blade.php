@@ -41,7 +41,8 @@
         @if(count($grupos)>0) 
             <tbody>                    
                 <?php                    
-                    $activar = false;
+                    if($movimientos)$activar = true; 
+                    else $activar = false;
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
                     $status_curso = $grupos[0]->status_curso; 
@@ -57,12 +58,12 @@
                     */
                     switch($opt){
                         case "ARC01":
-                            if($g->status=='NO REPORTADO' AND $g->turnado=='UNIDAD') $activar=true;
+                            if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
                         break;
                         case "ARC02":
-                            if(($g->status=='NO REPORTADO' OR $g->status=='RETORNO_UNIDAD') AND $g->turnado=='UNIDAD')
-                             $activar=true;
-                    }                       
+                            if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD') $activar=false;
+                        break;
+                    }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
                         <td class="text-center"> {{ $g->id }}</td>
