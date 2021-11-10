@@ -43,7 +43,7 @@ class grupoController extends Controller
         $message = NULL;
         if(isset($_SESSION['folio_grupo'])){  //echo $_SESSION['folio_grupo'];exit;
             $anio_hoy = date('y');
-            $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ar.no_control','ar.turnado','ap.nombre','apellido_paterno','apellido_materno',
+            $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ap.matricula','ar.turnado','ap.nombre','apellido_paterno','apellido_materno',
                 'ar.id_curso','ar.tipo_curso','ar.id_cerss','ar.horario','ap.ultimo_grado_estudios','ar.tinscripcion','ar.unidad','ar.folio_grupo','ap.curp',
                 DB::raw("substring(curp,11,1) as sex"),                     
                 DB::raw("CASE WHEN substring(curp,5,2) <='".$anio_hoy."' 
