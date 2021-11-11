@@ -34,6 +34,13 @@ class supreController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function prueba2()
+    {
+        $supre = supre::find('1000');
+        event(new ValSupreDelegadoEvent($supre));
+        dd('hola');
+    }
+
     public function solicitud_supre_inicio(Request $request) {
         /**
          * parametros de busqueda

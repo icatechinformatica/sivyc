@@ -17,9 +17,9 @@ class ValSupreDelegadoNotification extends Notification
      *
      * @return void
      */
-    public function __construct(supre $valsupre)
+    public function __construct($letter)
     {
-        $this->valsupre =  $valsupre;
+        $this->letter =  $letter;
     }
 
     /**
@@ -55,13 +55,15 @@ class ValSupreDelegadoNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        $url = '/supre/validacion/pdf/' . $this->valsupre->id;
-        return [
-            'titulo' => 'La suficicencia presupuestal '. $this->valsupre->no_memo .' ha sido validada',
-            'supre_id' => $this->valsupre->id,
-            'supre_memo' => $this->valsupre->no_memo,
-            'supre_unidad' => $this->valsupre->unidad_capacitacion,
-            'url' => $url,
-        ];
+        // $url = '/supre/validacion/pdf/' . $this->valsupre->id;
+        // return [
+        //     'titulo' => 'La suficicencia presupuestal '. $this->valsupre->no_memo .' ha sido validada',
+        //     'supre_id' => $this->valsupre->id,
+        //     'supre_memo' => $this->valsupre->no_memo,
+        //     'supre_unidad' => $this->valsupre->unidad_capacitacion,
+        //     'url' => $url,
+        // ];
+
+        return $this->letter;
     }
 }
