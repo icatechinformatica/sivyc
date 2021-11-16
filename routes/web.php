@@ -25,7 +25,8 @@ Route::get('/pago/historial/Validado/{id}', 'webController\PagoController@histor
 Route::get('/contrato/historial/validado/{id}', 'webController\ContratoController@historial_validado')->name('contrato-validado-historial');
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
-Route::get('/prueba', 'webController\ContratoController@prueba');
+Route::get('/prueba', 'webController\InstructorController@prueba');
+Route::get('/prueba2', 'webController\supreController@prueba2');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
 //Ruta Manual
@@ -718,3 +719,7 @@ Route::post('/firma/cancelar', 'FirmaElectronica\FirmarController@cancelarDocume
 // buscar alumnos
 Route::post('/autocomplete/curso', 'Consultas\foliosController@cursoAutocomplete')->name('autocomplete.curso');
 Route::post('/autocomplete/alumno', 'Consultas\foliosController@alumnoAutocomplete')->name('autocomplete.alumno');
+
+//Tramites Recepcionados - Reporte 28102021
+Route::get('/financieros/tramites-recepcionados', 'webController\PagoController@documentospago_reporte')->name('docummentospago.reporte');
+Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoController@tramitesrecepcionados_pdf')->name('documentospago.pdf');

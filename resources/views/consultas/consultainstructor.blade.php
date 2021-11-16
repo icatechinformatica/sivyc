@@ -70,7 +70,7 @@
                         <td>HORA INICIO</td>
                         <td>HORA TERMINO</td>
                         <td>DIAS</td>
-                        
+
                     </tr>
                     @isset($consulta)
                     @foreach ($consulta as $item)

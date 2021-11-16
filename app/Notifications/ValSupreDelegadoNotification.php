@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\supre;
 
-class SupreNotification extends Notification
+class ValSupreDelegadoNotification extends Notification
 {
     use Queueable;
 
@@ -17,9 +17,9 @@ class SupreNotification extends Notification
      *
      * @return void
      */
-    public function __construct(supre $supre)
+    public function __construct($letter)
     {
-        $this->supre =  $supre;
+        $this->letter =  $letter;
     }
 
     /**
@@ -55,13 +55,15 @@ class SupreNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        $url = '/supre/validacion/' . $this->supre->id;
-        return [
-            'titulo' => 'Una nueva solicitud de suficicencia '. $this->supre->no_memo .' presupuestal ha sido agregada de la unidad '. $this->supre->unidad_capacitacion,
-            'supre_id' => $this->supre->id,
-            'supre_memo' => $this->supre->no_memo,
-            'supre_unidad' => $this->supre->unidad_capacitacion,
-            'url' => $url,
-        ];
+        // $url = '/supre/validacion/pdf/' . $this->valsupre->id;
+        // return [
+        //     'titulo' => 'La suficicencia presupuestal '. $this->valsupre->no_memo .' ha sido validada',
+        //     'supre_id' => $this->valsupre->id,
+        //     'supre_memo' => $this->valsupre->no_memo,
+        //     'supre_unidad' => $this->valsupre->unidad_capacitacion,
+        //     'url' => $url,
+        // ];
+
+        return $this->letter;
     }
 }

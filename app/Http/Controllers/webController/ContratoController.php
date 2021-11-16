@@ -29,17 +29,6 @@ use DateTime;
 
 class ContratoController extends Controller
 {
-    public function prueba()
-    {
-        $id = folio::select('id_folios')->WHERE('id_folios', '!=', '0')->GET();
-        foreach($id as $item)
-        {
-            $folio = folio::find($item->id_folios);
-            $folio->permiso_editar = FALSE;
-            $folio->save();
-            dd('hola');
-        }
-    }
     public function index(Request $request)
     {
         /**
@@ -282,6 +271,7 @@ class ContratoController extends Controller
                                 ->WHERE('especialidad_instructores.activo', '=', TRUE)
                                 ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
+                                // dd($perfil_prof);
 
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();

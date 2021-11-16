@@ -23,6 +23,7 @@ use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\pago;
 use Illuminate\Support\Facades\Auth;
 use App\events\SupreEvent;
+use App\events\ValSupreDelegadoEvent;
 use app\Notifications\SupreNotification;
 
 class supreController extends Controller
@@ -32,6 +33,13 @@ class supreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function prueba2()
+    {
+        $supre = supre::find('1000');
+        event(new ValSupreDelegadoEvent($supre));
+        dd('hola');
+    }
 
     public function solicitud_supre_inicio(Request $request) {
         /**
@@ -145,7 +153,7 @@ class supreController extends Controller
                 }
             }
 
-            event(new SupreEvent($supre));
+            //event(new SupreEvent($supre));
             // dd($supre->id);
             return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
@@ -268,12 +276,10 @@ class supreController extends Controller
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
 
-        $notification = auth()->user()->notifications()->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)->FIRST();
+        $notification = DB::table('notifications')
+                        ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
+                        ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
-        if ($notification)
-        {
-            $notification->markAsRead();
-        }
 
         return view('layouts.pages.valsupre',compact('data','getremitente','directorio'));
     }
@@ -310,6 +316,7 @@ class supreController extends Controller
 
         $id = $request->id;
         $directorio_id = $request->directorio_id;
+        // event(new ValSupreDelegadoEvent($supre));
         return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id'));
     }
 
@@ -813,6 +820,13 @@ class supreController extends Controller
                   'id_cursos' => $hora->id,
                   'permiso_editar' => FALSE]);
 
+        $idc = DB::TABLE('contratos')->WHERE('id_folios', '=', $request->id_folio)->FIRST();
+        // dd($idc);
+        if($idc != NULL)
+        {
+            contratos::where('id_contrato', '=', $idc->id_contrato)
+                  ->update(['cantidad_numero' => round($request->addmore[0]['importe']-$request->addmore[0]['iva'], 2)]);
+        }
 
         return redirect()->route('supre-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
@@ -983,6 +997,10 @@ class supreController extends Controller
     }
 
     public function valsupre_pdf($id){
+        $notification = DB::table('notifications')
+                        ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
+                        ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
+
         $supre = new supre;
         $curso = new tbl_curso;
         $recursos = array();

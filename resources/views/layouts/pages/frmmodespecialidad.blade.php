@@ -298,7 +298,6 @@
                                         @if($itemDataCatCurso->activo == TRUE)
                                             checked
                                         @endif
-
                                         data-toggle="toggle"
                                         data-style="ios"
                                         data-on="ON"
@@ -307,7 +306,6 @@
                                         data-offstyle="danger"
                                         name="itemEdit[{{$itemDataCatCurso->id}}][check_cursos_edit]"
                                         value="{{$itemDataCatCurso->id}}">
-
                                 </div>
                             </div>
                         </div>
