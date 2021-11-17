@@ -724,3 +724,6 @@ Route::post('/autocomplete/alumno', 'Consultas\foliosController@alumnoAutocomple
 //Tramites Recepcionados - Reporte 28102021
 Route::get('/financieros/tramites-recepcionados', 'webController\PagoController@documentospago_reporte')->name('docummentospago.reporte');
 Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoController@tramitesrecepcionados_pdf')->name('documentospago.pdf');
+
+ //Consulta de cursos validados por unidad y accion movil con XLS 17112021
+ Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');

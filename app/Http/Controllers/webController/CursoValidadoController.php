@@ -220,7 +220,16 @@ class CursoValidadoController extends Controller
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         return view('layouts.pages.vstareportecursovinculador', compact('unidades'));
     }
-//a
+
+    public function consulta(Request $request)
+    {
+        tbl_curso::SELECT('tbl_cursos.unidad','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave',
+            'tbl_cursos.mod','tbl_cursos.dura','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
+            'tbl_cursos.hfin','tbl_cursos.dia','tbl_cursos.horas','tbl_cursos.hombre','tbl_cursos.mujer',
+            'tbl_cursos.nombre','tbl_cursos.cp','tbl_cursos.nota','tbl_cursos.muni','tbl_cursos.depen',
+            'tbl_cursos.efisico','tbl_cursos.tcapacitacion','cursos.costo','tbl_unidades.ubicacion');
+    }
+
     public function vinculacion_reportepdf(Request $request)
     {
         $usuarioUnidad = Auth::user()->unidad;
