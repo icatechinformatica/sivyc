@@ -712,6 +712,7 @@ Route::get('/firma/inicio', 'FirmaElectronica\FirmarController@index')->name('fi
 Route::post('/firma/update', 'FirmaElectronica\FirmarController@update')->name('firma.update');
 Route::post('/firma/sellar', 'FirmaElectronica\FirmarController@sellar')->name('firma.sellar');
 Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->name('firma.generarPdf');
+Route::post('/firma/token', 'firmaElectronica\FirmaController@generarToken')->name('firma.token');
 
 //Notificaciones
 Route::get('send', 'webController\NotificationController@sendNotification');
