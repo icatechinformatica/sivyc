@@ -22,6 +22,8 @@ use App\Models\Alumno;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FormatoTReport;
 
 class CursoValidadoController extends Controller
 {
@@ -223,11 +225,74 @@ class CursoValidadoController extends Controller
 
     public function consulta(Request $request)
     {
-        tbl_curso::SELECT('tbl_cursos.unidad','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.clave',
-            'tbl_cursos.mod','tbl_cursos.dura','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
-            'tbl_cursos.hfin','tbl_cursos.dia','tbl_cursos.horas','tbl_cursos.hombre','tbl_cursos.mujer',
-            'tbl_cursos.nombre','tbl_cursos.cp','tbl_cursos.nota','tbl_cursos.muni','tbl_cursos.depen',
-            'tbl_cursos.efisico','tbl_cursos.tcapacitacion','cursos.costo','tbl_unidades.ubicacion');
+        $unidad = $request->get('unidad');
+        $inicio = $request->get('inicio');
+        $termino = $request->get('termino');
+        $data = null;
+
+        if($inicio != NULL && $termino != NULL && $unidad != 'DEFAULT')
+        {
+            $data = tbl_curso::SELECT('tbl_cursos.unidad','tbl_cursos.espe','tbl_cursos.clave','tbl_cursos.curso',
+                'tbl_cursos.mod','tbl_cursos.dura','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.hini',
+                'tbl_cursos.hfin','tbl_cursos.dia','tbl_cursos.horas','tbl_cursos.hombre','tbl_cursos.mujer',
+                'tbl_cursos.nombre','tbl_cursos.cp','tbl_cursos.costo','tbl_cursos.tipo_curso','tbl_cursos.tipo',
+                'tbl_cursos.nota','tbl_cursos.muni','tbl_cursos.munidad','tbl_cursos.mvalida','tbl_cursos.nmunidad',
+                'tbl_cursos.nmacademico','tbl_cursos.modinstructor','tbl_cursos.status','tbl_cursos.efisico',
+                'tbl_cursos.depen','tbl_cursos.tcapacitacion','tbl_unidades.ubicacion')
+            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+            ->WHERE('inicio', '>=', $inicio)
+            ->WHERE('inicio', '<=', $termino)
+            ->WHERE('tbl_unidades.ubicacion', '=', $unidad)
+            ->ORDERBY('tbl_unidades.ubicacion', 'ASC')
+            ->ORDERBY('tbl_cursos.unidad', 'ASC')
+            ->ORDERBY('tbl_cursos.inicio', 'ASC')
+            ->GET();
+        }
+
+        $unidades = DB::TABLE('tbl_unidades')->SELECT('id','ubicacion')->WHERE('cct', 'LIKE', '%07EIC%')->GET();
+        // dd($unidad);
+
+        return view('consultas.cursosiniciados', compact('data','unidad','inicio','termino','unidades'));
+    }
+
+    public function xls_cursosiniciados(Request $request)
+    {
+        $unidad = $request->get('unidad');
+        $inicio = $request->get('inicio');
+        $termino = $request->get('termino');
+
+        $data = $data = DB::TABLE('tbl_cursos')->SELECT('tbl_unidades.ubicacion','tbl_cursos.unidad','tbl_cursos.espe',
+                'tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.mod','tbl_cursos.dura','tbl_cursos.inicio',
+                'tbl_cursos.termino',
+                DB::raw("CONCAT(tbl_cursos.hini, ' A ', tbl_cursos.hfin) AS horario"),
+                'tbl_cursos.dia','tbl_cursos.horas',
+                DB::raw("tbl_cursos.hombre + tbl_cursos.mujer AS cupo"),
+                'tbl_cursos.nombre','tbl_cursos.cp','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.costo',
+                'tbl_cursos.tipo_curso','tbl_cursos.tipo','tbl_cursos.nota','tbl_cursos.muni','tbl_cursos.depen',
+                'tbl_cursos.munidad','tbl_cursos.mvalida','tbl_cursos.nmunidad',
+                'tbl_cursos.nmacademico','tbl_cursos.efisico','tbl_cursos.modinstructor','tbl_cursos.status',
+                'tbl_cursos.tcapacitacion')
+            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+            ->WHERE('inicio', '>=', $inicio)
+            ->WHERE('inicio', '<=', $termino)
+            ->WHERE('tbl_unidades.ubicacion', '=', $unidad)
+            ->ORDERBY('tbl_unidades.ubicacion', 'ASC')
+            ->ORDERBY('tbl_cursos.unidad', 'ASC')
+            ->ORDERBY('tbl_cursos.inicio', 'ASC')
+            ->GET();
+            // DD($data);
+
+        $cabecera = ['UNIDAD','ACCION MOVIL','ESPECIALIDAD','CLAVE','CURSO','MOD','DURA','INICIO','TERMINO','HORARIO',
+            'DIAS','HORAS','CUPO','INSTRUCTOR','CP','HOMBRES','MUJERES','CUOTA','ESQUEMA','TIPO DE PAGO',
+            'OBSERVACIONES','MUNICIPIO','DEPENDENCIA BENEFICIADA','MEMO DE SOLICITUD','MEMO DE AUTORIZACION',
+            'MEMO DE SOLICITUD DE PROG.','MEMO DE AUTORIZACION DE PROG','ESPACIO','PAGO INSTRUCTOR','ESTATUS',
+            'CAPACITACION'];
+
+        $nombreLayout = "cursos iniciados.xlsx";
+        $titulo = "cursos iniciados";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
     }
 
     public function vinculacion_reportepdf(Request $request)

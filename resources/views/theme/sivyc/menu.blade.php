@@ -301,6 +301,9 @@
                         @can('planeacion.ingresos.propios')
                             <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
                         @endcan
+                        @can('consultas.cursos.iniciados')
+                            <a class="dropdown-item" href="{{route('consulta-cursosval')}}">Cursos Iniciados</a>
+                        @endcan
                     </div>
                 </li>
 
