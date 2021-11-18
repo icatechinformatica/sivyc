@@ -28,11 +28,18 @@ class NotificationListener
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
-    {
-        foreach($event->users as $user)
-        {
+    public function handle($event) {
+
+        $this->tokens_movil = [];
+        foreach($event->users as $user) {
+
+            if($user->token_movil != null) {
+                array_push($this->tokens_movil, $user->token_movil);
+            }
+
             Notification::send($user, new BasicNotification($event->letter));
         }
+
+        sendNotification($this->tokens_movil, $event->letter['titulo'], $event->letter['cuerpo']);
     }
 }
