@@ -112,6 +112,7 @@ class aperturasController extends Controller
         $result = NULL;
         $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..'; 
+
         if($_SESSION['memo'] AND $_SESSION['opt'] ){
             if ($request->hasFile('file_autorizacion')) {               
                 $name_file = str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;                      
@@ -144,8 +145,9 @@ class aperturasController extends Controller
                     }
                     if($result) {
                         $usersNotification = User::join('role_user', 'users.id', 'role_user.user_id')
-                            ->wherein('users.puesto', ['JEFE DE DEPARTAMENTO', 'JEFE DE DEPARTAMENTO ACADEMICO'])
-                            ->where('role_id', 30)->get();
+                            ->where('role_id', 30)
+                            ->where('unidades', '!=', 'null')
+                            ->get();
                         $dataCurso = tbl_curso::where('munidad', $_SESSION['memo'])->first();
                         foreach ($usersNotification as $key => $value) {
                             $partsUnity = explode(',', $value->unidades);
