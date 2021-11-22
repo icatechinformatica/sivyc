@@ -8,8 +8,12 @@ function sendNotification(array $tokens, String $titulo, String $body) {
         'notification' => [
             'title' => $titulo,
             'body' => $body,
-            'sound' => 'default'
-        ]
+            'sound' => 'default',
+            'color' => '#541533',
+            'default_vibrate_timings' => true,
+            'default_light_settings' => true
+        ],
+        'priority' => 'high',
     ];
     $dataString = json_encode($data);
 
