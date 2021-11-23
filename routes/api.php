@@ -83,3 +83,10 @@ Route::get('instructores/asistencia/alumnos/{idCurso}', 'ApiController\ApisInstr
 Route::post('instructores/asistencia/alumnos/update', 'ApiController\ApisInstructores\AsistenciaController@updateAsistencias');
 Route::get('instructores/asistencia/pdf/{clave}', 'ApiController\ApisInstructores\AsistenciaController@getCursoAsistenciaPdf');
 Route::get('instructores/asistencia/curso/{id}', 'ApiController\ApisInstructores\AsistenciaController@updateAsisFinalizado');
+
+
+// php artisan serve --host 192.168.137.1
+// api movil
+Route::post('sivycMovil/login', 'ApiController\ApisMovil\LoginMovil@login');
+Route::post('sivycMovil/getNotificaciones', 'ApiController\ApisMovil\HomeMovil@getNotificaciones');
+Route::post('sivycMovil/updateRead', 'ApiController\ApisMovil\HomeMovil@updateRead');

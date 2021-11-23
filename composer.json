@@ -57,7 +57,8 @@
             "database/factories"
         ],
         "files": [
-            "app/Helpers/functionFormatoT.php"
+            "app/Helpers/functionFormatoT.php",
+            "app/Helpers/notificationMovil.php"
         ]
     },
     "autoload-dev": {
