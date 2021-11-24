@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ApiController\ApisMovil;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -25,6 +26,12 @@ class HomeMovil extends Controller {
         $id = $request->id;
         $read = $request->read;
         DB::table('notifications')->where('id', $id)->update(['read_movil' => $read]);
+        return response()->json('success', 200);
+    }
+
+    public function updateToken(Request $request) {
+        $id = $request->id;
+        User::where('id', $id)->update(['token_movil' => null]);
         return response()->json('success', 200);
     }
 
