@@ -732,3 +732,8 @@ Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoControl
 
 //Consulta de Localidades en instructores
 Route::post('/instructores/busqueda/localidad', 'webController\Instructorcontroller@getlocalidades')->name('instructores.busqueda.localidades');
+ Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
+
+//  autocomplete localidad inscripcion alumnos
+Route::get('inscripciones/localidad', 'webController\AlumnoController@localidadAutocomplete')->name('autocomplete.localidad');
+
