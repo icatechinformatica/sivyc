@@ -198,7 +198,7 @@
                         </select>
                     </div>
                     <!--<div class="form-group col-md-3">
-                        <label for="inputasentamiento">Asentamiento</label>
+                        <label for="inputasentamiento">Asentamientos</label>
                         <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true" disabled value="{datains->asentamiento}}">
                     </div>-->
                     <div class="form-group col-md-3">
