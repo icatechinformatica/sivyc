@@ -729,3 +729,6 @@ Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoControl
  //Consulta de cursos validados por unidad y accion movil con XLS 17112021
  Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval')->middleware('can:consultas.cursos.iniciados');
  Route::get('/consulta/xls/cursos-validados','webController\CursoValidadoController@xls_cursosiniciados')->name('xls-cursosiniciados')->middleware('can:consultas.cursos.iniciados');
+
+//Consulta de Localidades en instructores
+Route::post('/instructores/busqueda/localidad', 'webController\Instructorcontroller@getlocalidades')->name('instructores.busqueda.localidades');
