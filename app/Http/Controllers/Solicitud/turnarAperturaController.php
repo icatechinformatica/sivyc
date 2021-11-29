@@ -85,7 +85,8 @@ class turnarAperturaController extends Controller
         return redirect('solicitud/apertura')->with('message',$message);
    }
    
-   public function enviar(Request $request){            
+    //  ICATECH/1300/1537/2021
+   public function enviar(Request $request){
         $result = NULL;
         $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..';        
@@ -120,10 +121,12 @@ class turnarAperturaController extends Controller
                     }
                     if($result) {
                         $usersNotification = User::WHEREIN('id', [368,370])->get();
-                        $dataCurso = tbl_curso::where('munidad', $_SESSION['memo'])->first();
+                        $dataCurso = tbl_curso::select('tbl_cursos.*','tbl_unidades.ubicacion as ucapacitacion')
+                            ->join('tbl_unidades', 'tbl_cursos.unidad', 'tbl_unidades.unidad')
+                            ->where('munidad', $_SESSION['memo'])->first();
                         foreach ($usersNotification as $key => $value) {
                             $partsUnity = explode(',', $value->unidades);
-                            if (!in_array($dataCurso->unidad, $partsUnity)) {
+                            if (!in_array($dataCurso->ucapacitacion, $partsUnity)) {
                                 unset($usersNotification[$key]);
                             }
                         }

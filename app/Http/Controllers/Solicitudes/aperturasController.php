@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use App\Models\cat\catUnidades;
+use App\Models\Permission;
 use App\Models\tbl_curso;
 use App\User;
 use PDF;
@@ -144,17 +145,27 @@ class aperturasController extends Controller
                         break;
                     }
                     if($result) {
-                        $usersNotification = User::join('role_user', 'users.id', 'role_user.user_id')
-                            ->where('role_id', 30)
-                            ->where('unidades', '!=', 'null')
-                            ->get();
-                        $dataCurso = tbl_curso::where('munidad', $_SESSION['memo'])->first();
+                        $usersNotification = Permission::select('u.*')->join('permission_role as pr', 'permissions.id','pr.permission_id')
+                                            ->join('roles as r', 'pr.role_id', 'r.id')
+                                            ->join('role_user as ru', 'r.id', 'ru.role_id')
+                                            ->join('users as u', 'ru.user_id', 'u.id')
+                                            ->where('u.unidades', '!=', 'null')
+                                            ->where('permissions.slug', 'solicitud.apertura')
+                                            ->get();
+                        $dataCurso = tbl_curso::select('tbl_cursos.*','tbl_unidades.ubicacion as ucapacitacion')
+                                    ->join('tbl_unidades', 'tbl_cursos.unidad', 'tbl_unidades.unidad')
+                                    ->where('munidad', $_SESSION['memo'])->first();
                         foreach ($usersNotification as $key => $value) {
                             $partsUnity = explode(',', $value->unidades);
-                            if (!in_array($dataCurso->unidad, $partsUnity)) {
+                            if (!in_array($dataCurso->ucapacitacion, $partsUnity)) {
                                 unset($usersNotification[$key]);
                             }
                         }
+                        $ids = [];
+                        foreach ($usersNotification as $value) {
+                            array_push($ids, $value->id);
+                        }
+                        $usersNotification = User::WHEREIN('id', $ids)->get();
 
                         $dataNotification = [
                             'titulo' => $titulo,
@@ -163,9 +174,8 @@ class aperturasController extends Controller
                             'unidad' => $dataCurso->unidad,
                             'url' => 'https://sivyc.icatech.gob.mx/solicitud/turnar solicitud',
                         ];
-
+                        
                         event(new NotificationEvent($usersNotification, $dataNotification));
-
                         $message = "La AUTORIZACIÓN fué enviada correctamente";
                     }
                 }else $message = "Error al subir el archivo, volver a intentar.";
