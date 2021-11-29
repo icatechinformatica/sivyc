@@ -58,10 +58,12 @@
         </script>
         <table class="tablad" bgcolor="black">
                 <tr>
-                    <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td>
+                    <td colspan="4" style="color:white;"><b>Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma</b></td>
+                    {{-- <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td> --}}
                 </tr> 
                 <tr>
-                    <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td>
+                    <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, Chiapas; Telefono (961)6121621 Ext.601 C.P.29030</b></td>
+                    {{-- <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td> --}}
                 </tr>
                 <tr>
                     <td colspan="4" style="color:white;"><b>Email: dtecnicaacademica@gmail.com</b></td>
