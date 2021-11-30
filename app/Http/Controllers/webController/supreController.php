@@ -22,9 +22,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\pago;
 use Illuminate\Support\Facades\Auth;
-use App\events\SupreEvent;
-use App\events\ValSupreDelegadoEvent;
-use app\Notifications\SupreNotification;
+use App\Events\NotificationEvent;
+use App\User;
 
 class supreController extends Controller
 {
@@ -36,8 +35,20 @@ class supreController extends Controller
 
     public function prueba2()
     {
-        $supre = supre::find('1000');
-        event(new ValSupreDelegadoEvent($supre));
+        $notis = auth()->user()->unreadNotifications;
+        dd($notis);
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal',
+            'cuerpo' => 'La suficicencia presupuestal ferjfoi3ur49/kjfer ha sido validada',
+            'memo' => '$event->valsupre->no_memo',
+            'unidad' => '$event->valsupre->unidad_capacitacion',
+            'url' => '/supre/validacion/pdf/',
+        ];
+        $users = User::where('id', 1)->get();
+        // dd($users);
+        event((new NotificationEvent($users, $letter)));
+
+        // event(new ValSupreDelegadoEvent());
         dd('hola');
     }
 
@@ -51,7 +62,9 @@ class supreController extends Controller
         $unidad = $request->get('unidad');
 
         $supre = new supre();
-        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)->where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
+                        ->where('id', '!=', '0')
+                        ->latest()->paginate(25);
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));

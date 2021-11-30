@@ -65,7 +65,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            ->WHERE('folios.status', '!=', 'Validado')
+            // ->WHERE('folios.status', '!=', 'Validado')
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
             ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
             ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
@@ -708,7 +708,7 @@ class ContratoController extends Controller
             $pdf = PDF::loadView('layouts.pdfpages.precontratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
         }
 
-        return $pdf->stream('Contrato Instructor.pdf');
+        return $pdf->stream("Precontrato-Instructor-$data_contrato->numero_contrato.pdf");
     }
 
     public function contrato_pdf($id)
@@ -756,7 +756,7 @@ class ContratoController extends Controller
             $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
         }
 
-        return $pdf->stream('Contrato Instructor.pdf');
+        return $pdf->stream("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
     }
 
     public function contrato_web($id)

@@ -97,6 +97,7 @@ $(function(){
                 $('#arch_id').prop("disabled",false)
                 $('#entidad').prop("disabled",false)
                 $('#municipio').prop("disabled",false)
+                $('#localidad').prop("disabled",false)
                 $('#asentamiento').prop("disabled",false)
             }
         });
@@ -274,6 +275,7 @@ $(function(){
         $('#unidad_registra').prop("disabled", false)
         $('#honorario').prop("disabled", false)
         $('#savemodbuttonins').prop("disabled", false)
+        $('#localidad').prop("disabled",false)
     });
 
     $( document ).on('input', function(){

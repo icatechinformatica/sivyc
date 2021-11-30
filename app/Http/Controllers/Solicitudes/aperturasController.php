@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Solicitudes;
 
+use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,6 +12,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use App\Models\cat\catUnidades;
+use App\Models\Permission;
+use App\Models\tbl_curso;
+use App\User;
 use PDF;
 
 class aperturasController extends Controller
@@ -104,10 +108,12 @@ class aperturasController extends Controller
         //var_dump($grupos);exit;
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos'));
     }  
-
+    
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
         $result = NULL;
+        $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..'; 
+
         if($_SESSION['memo'] AND $_SESSION['opt'] ){
             if ($request->hasFile('file_autorizacion')) {               
                 $name_file = str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;                      
@@ -116,8 +122,10 @@ class aperturasController extends Controller
                 $url_file = "https://www.sivyc.icatech.gob.mx/storage/uploadFiles/".$file_result["url_file"];
 
                 if($file_result){
-                    switch($_SESSION['opt'] ){
-                        case "ARC01":                      
+                    switch($_SESSION['opt']){
+                        case "ARC01":
+                            $titulo = 'Autorización de Apertura';  
+                            $cuerpo = 'La autorización de clave de apertura del memo '.$_SESSION['memo'].' ha sido procesada';                  
                             $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
                             ->where('clave','<>','0')
                             ->where('turnado','UNIDAD')
@@ -126,6 +134,8 @@ class aperturasController extends Controller
                             ->update(['status_curso' => 'AUTORIZADO', 'updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                         break;
                         case "ARC02": 
+                            $titulo = 'Autorización de Apertura';
+                            $cuerpo = 'La autorización de clave de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
                             $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
                             ->where('clave','<>','0')
                             ->where('turnado','UNIDAD')
@@ -134,8 +144,40 @@ class aperturasController extends Controller
                             ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);                                            
                         break;
                     }
-                    if($result)$message = "La AUTORIZACIÓN fué enviada correctamente"; 
-                    
+                    if($result) {
+                        $usersNotification = Permission::select('u.*')->join('permission_role as pr', 'permissions.id','pr.permission_id')
+                                            ->join('roles as r', 'pr.role_id', 'r.id')
+                                            ->join('role_user as ru', 'r.id', 'ru.role_id')
+                                            ->join('users as u', 'ru.user_id', 'u.id')
+                                            ->where('u.unidades', '!=', 'null')
+                                            ->where('permissions.slug', 'solicitud.apertura')
+                                            ->get();
+                        $dataCurso = tbl_curso::select('tbl_cursos.*','tbl_unidades.ubicacion as ucapacitacion')
+                                    ->join('tbl_unidades', 'tbl_cursos.unidad', 'tbl_unidades.unidad')
+                                    ->where('munidad', $_SESSION['memo'])->first();
+                        foreach ($usersNotification as $key => $value) {
+                            $partsUnity = explode(',', $value->unidades);
+                            if (!in_array($dataCurso->ucapacitacion, $partsUnity)) {
+                                unset($usersNotification[$key]);
+                            }
+                        }
+                        $ids = [];
+                        foreach ($usersNotification as $value) {
+                            array_push($ids, $value->id);
+                        }
+                        $usersNotification = User::WHEREIN('id', $ids)->get();
+
+                        $dataNotification = [
+                            'titulo' => $titulo,
+                            'cuerpo' => $cuerpo,
+                            'memo' => $_SESSION['memo'],
+                            'unidad' => $dataCurso->unidad,
+                            'url' => 'https://sivyc.icatech.gob.mx/solicitud/turnar solicitud',
+                        ];
+                        
+                        event(new NotificationEvent($usersNotification, $dataNotification));
+                        $message = "La AUTORIZACIÓN fué enviada correctamente";
+                    }
                 }else $message = "Error al subir el archivo, volver a intentar.";
             }else $message = "Archivo inválido";
         }

@@ -190,11 +190,26 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputmunicipio">Municipio</label>
-                        <input name='municipio' id='municipio' type="text" class="form-control" disabled aria-required="true" value="{{$datains->municipio}}">
+                        <select class="form-control" name="municipio" id="municipio" onchange="local()" disabled>
+                            <option value="sin especificar">Sin Especificar</option>
+                            @foreach ($municipios as $item)
+                                <option value="{{$item->muni}}" @if($datains->municipio == $item->muni) selected @endif>{{$item->muni}}</option>
+                            @endforeach
+                        </select>
                     </div>
+                    <!--<div class="form-group col-md-3">
+                        <label for="inputasentamiento">Asentamientos</label>
+                        <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true" disabled value="{datains->asentamiento}}">
+                    </div>-->
                     <div class="form-group col-md-3">
-                        <label for="inputasentamiento">Asentamiento</label>
-                        <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true" disabled value="{{$datains->asentamiento}}">
+                        <label for="inputmunicipio">Localidad</label>
+                        <select class="form-control" name="localidad" id="localidad" disabled>
+                            @if ($localidades == NULL)
+                                <option value="sin especificar">SELECCIONE</option>
+                            @else
+                                <option value="{{$localidades->id}}">{{$localidades->localidad}}</option>
+                            @endif
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
@@ -513,5 +528,41 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script>
+    function local() {
+        // var x = document.getElementById("municipio").value;
+        // console.log(x);
+
+        var valor = document.getElementById("municipio").value;
+        var datos = {valor: valor};
+        var url = '/instructores/busqueda/localidad';
+        var request = $.ajax
+        ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+
+        request.done(( respuesta) =>
+        {
+            $("#localidad").empty();
+            var selectL = document.getElementById('localidad'),
+            option,
+            i = 0,
+            il = respuesta.length;
+            // console.log(il);
+            // console.log( respuesta[1].id)
+            for (; i < il; i += 1)
+            {
+                newOption = document.createElement('option');
+                newOption.value = respuesta[i].id;
+                newOption.text=respuesta[i].localidad;
+                // selectL.appendChild(option);
+                selectL.add(newOption);
+            }
+        });
+    }
+</script>
 @endsection
 

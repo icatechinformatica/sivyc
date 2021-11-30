@@ -32,7 +32,7 @@
         
         }
         .margin_top_ccp {
-            margin-top: 8em;
+            margin-top: 7em;
         }
     </style>
 </head>
@@ -65,10 +65,12 @@
         
         <table class="tablad" bgcolor="#621132">
                 <tr>
-                    <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td>
+                    <td colspan="4" style="color:white;"><b>Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma</b></td>
+                    {{-- <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td> --}}
                 </tr> 
                 <tr>
-                    <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td>
+                    <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, Chiapas; Telefono (961)6121621 Ext.601 C.P.29030</b></td>
+                    {{-- <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td> --}}
                 </tr>
                 <tr>
                     <td colspan="4" style="color:white;"><b>Email: dtecnicaacademica@gmail.com</b></td>
@@ -97,7 +99,7 @@
         
         <br>
         <div align="justify" style="font-size:16px;">Sin más por el momento agradezco de su atención y le envío un cordial saludo.</div>
-        <br>
+        {{-- <br> --}}
         
         <br>
         <br><br>
