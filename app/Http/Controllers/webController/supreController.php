@@ -35,6 +35,8 @@ class supreController extends Controller
 
     public function prueba2()
     {
+        $notis = auth()->user()->unreadNotifications;
+        dd($notis);
         $letter = [
             'titulo' => 'Suficiencia Presupuestal',
             'cuerpo' => 'La suficicencia presupuestal ferjfoi3ur49/kjfer ha sido validada',
@@ -60,7 +62,9 @@ class supreController extends Controller
         $unidad = $request->get('unidad');
 
         $supre = new supre();
-        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)->where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
+                        ->where('id', '!=', '0')
+                        ->latest()->paginate(25);
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));

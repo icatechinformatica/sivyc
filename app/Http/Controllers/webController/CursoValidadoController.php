@@ -258,50 +258,25 @@ class CursoValidadoController extends Controller
         }
 
         $unidades = DB::TABLE('tbl_unidades')->SELECT('id','ubicacion')->WHERE('cct', 'LIKE', '%07EIC%')->GET();
-<<<<<<< HEAD
-        // dd($unidad);
-
-        return view('consultas.cursosiniciados', compact('data','unidad','inicio','termino','unidades'));
-=======
-        // dd($initer);
-
-    {
         $unidad = $request->get('unidad');
         $inicio = $request->get('inicio');
-<<<<<<< HEAD
-
-        $data = $data = DB::TABLE('tbl_cursos')->SELECT('tbl_unidades.ubicacion','tbl_cursos.unidad','tbl_cursos.espe',
-                'tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.mod','tbl_cursos.dura','tbl_cursos.inicio',
-=======
         $initer = $request->get('initer');
 
         $data = $data = DB::TABLE('tbl_cursos')->SELECT('tbl_cursos.unidad','tbl_cursos.espe',
                 'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.mod','tbl_cursos.dura','tbl_cursos.inicio',
->>>>>>> a0f109964769b2769b60c8c2f2c662376541edc9
                 'tbl_cursos.termino',
                 DB::raw("CONCAT(tbl_cursos.hini, ' A ', tbl_cursos.hfin) AS horario"),
                 'tbl_cursos.dia','tbl_cursos.horas',
                 DB::raw("tbl_cursos.hombre + tbl_cursos.mujer AS cupo"),
-<<<<<<< HEAD
-                'tbl_cursos.nombre','tbl_cursos.cp','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.costo',
-=======
                 'tbl_cursos.nombre','tbl_cursos.cp','tbl_cursos.mujer','tbl_cursos.hombre',
                 DB::raw("CASE WHEN (tbl_cursos.tipo = 'PINS' AND tbl_cursos.tipo_curso = 'CURSO') THEN 'X' END AS CUOTA"),
                 DB::raw("CASE WHEN (tbl_cursos.tipo_curso = 'CERTIFICACION') THEN 'X' END AS CERTIFICACION"),
                 DB::raw("CASE WHEN (tbl_cursos.tipo = 'EXO' AND tbl_cursos.tipo_curso = 'CURSO') THEN 'X' END AS EXONERACION"),
                 DB::raw("CASE WHEN (tbl_cursos.tipo = 'EPAR' AND tbl_cursos.tipo_curso = 'CURSO') THEN 'X' END AS EXOPAR"),
->>>>>>> a0f109964769b2769b60c8c2f2c662376541edc9
                 'tbl_cursos.tipo_curso','tbl_cursos.tipo','tbl_cursos.nota','tbl_cursos.muni','tbl_cursos.depen',
                 'tbl_cursos.munidad','tbl_cursos.mvalida','tbl_cursos.nmunidad',
                 'tbl_cursos.nmacademico','tbl_cursos.efisico','tbl_cursos.modinstructor','tbl_cursos.status',
                 'tbl_cursos.tcapacitacion')
-<<<<<<< HEAD
-            ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-            ->WHERE('inicio', '>=', $inicio)
-            ->WHERE('inicio', '<=', $termino)
-            ->WHERE('tbl_unidades.ubicacion', '=', $unidad)
-            ->ORDERBY('tbl_unidades.ubicacion', 'ASC')
-=======
             ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad');
             if ($initer == 'inicio') {
                 $data = $data->WHERE('inicio', '>=', $inicio)
@@ -311,26 +286,17 @@ class CursoValidadoController extends Controller
                              ->WHERE('termino', '<=', $termino);
             }
             $data = $data->WHERE('tbl_unidades.ubicacion', '=', $unidad)
->>>>>>> a0f109964769b2769b60c8c2f2c662376541edc9
             ->ORDERBY('tbl_cursos.unidad', 'ASC')
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
             // DD($data);
 
-<<<<<<< HEAD
-        $cabecera = ['UNIDAD','ACCION MOVIL','ESPECIALIDAD','CLAVE','CURSO','MOD','DURA','INICIO','TERMINO','HORARIO',
-            'DIAS','HORAS','CUPO','INSTRUCTOR','CP','HOMBRES','MUJERES','CUOTA','ESQUEMA','TIPO DE PAGO',
-            'OBSERVACIONES','MUNICIPIO','DEPENDENCIA BENEFICIADA','MEMO DE SOLICITUD','MEMO DE AUTORIZACION',
-            'MEMO DE SOLICITUD DE PROG.','MEMO DE AUTORIZACION DE PROG','ESPACIO','PAGO INSTRUCTOR','ESTATUS',
-            'CAPACITACION'];
-=======
         $cabecera = ['UNIDAD/ACCION MOVIL','ESPECIALIDAD','CURSO','CLAVE','MODALIDAD','DURACIÓN','INICIO','TERMINO',
             'HORARIO','DÍAS','HORAS','CUPO','INSTRUCTOR','CRITERIO DE PAGO','FEMENINO','MASCULINO','CUOTA',
             'CERTIFICACIÓN','EXONERACIÓN','EXONERACIÓN PARCIAL','OBSERVACIONES','MUNICIPIO','DEPENDENCIA BENEFICIADA',
             'MEMO DE SOLICITUD ARC-01','MEMO DE AUTORIZACIÓN DTA','MEMO DE SOLICITUD DE REPROGRAMACIÓN',
             'MEMO DE AUTORIZACION DE REPROGRAMACIÓN DTA','ESPACIO FÍSICO','HONORARIOS','REPORTADO',
             'TIPO DE CAPACITACIÓN'];
->>>>>>> a0f109964769b2769b60c8c2f2c662376541edc9
 
         $nombreLayout = "cursos iniciados.xlsx";
         $titulo = "cursos iniciados";
