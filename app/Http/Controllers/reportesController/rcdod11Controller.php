@@ -54,7 +54,7 @@ class rcdod11Controller extends Controller
             $consulta=DB::table('tbl_cursos as tc')
             ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
             ->join('tbl_folios as tf', 'i.id_folio','=','tf.id')
-            ->select('tf.matricula','tf.nombre','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
+            ->select('tf.matricula','i.alumno','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
             ->where('tc.status','=','REPORTADO')
             ->whereIn('tf.motivo',['ROBO O EXTRAVIO','NO SOLICITADO'])
             ->where('tf.movimiento','=','CANCELADO');
@@ -79,7 +79,7 @@ class rcdod11Controller extends Controller
         $consulta=DB::table('tbl_cursos as tc')
             ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
             ->join('tbl_folios as tf', 'i.id_folio','=','tf.id')
-            ->select('tf.matricula','tf.nombre','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
+            ->select('tf.matricula','i.alumno','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
             ->where('tc.status','=','REPORTADO')
             ->whereIn('tf.motivo',['ROBO O EXTRAVIO','NO SOLICITADO'])
             ->where('tf.movimiento','=','CANCELADO')
