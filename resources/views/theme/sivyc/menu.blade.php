@@ -349,9 +349,13 @@
                         @foreach (auth()->user()->unreadNotifications as $cadwell)
                             <a href={{$cadwell->data['url']}} class="dropdown-item">
                                 <i class="fas fa-envelope mr-2"></i> {{$cadwell->data['titulo']}}
+                                <br>{{$cadwell->data['cuerpo']}}
                                 <br><span class="float-right text-muted text-sm">{{$cadwell->created_at->diffForHumans()}}</span>
                             </a>
                         @endforeach
+                        <a href='#' class="dropdown-item">
+                            <i class="fas fa-history mr-2"></i> Historial de Notificaciónes
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item avatar dropdown">
