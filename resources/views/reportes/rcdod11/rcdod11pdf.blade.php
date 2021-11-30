@@ -68,7 +68,7 @@ $anioSi = date('Y', strtotime('+1 year')) ;
             <tr>
                 <td class="variable">{{$i++}}</td>
                 <td class="variable2">{{$item->matricula}}</td>
-                <td class="variable2">{{$item->nombre}}</td>
+                <td class="variable2">{{$item->alumno}}</td>
                 <td class="variable">{{$item->folio}}</td>
                 <td class="variable">{{$item->duplicado}}</td>
                 <td class="variable"></td>
