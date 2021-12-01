@@ -89,7 +89,7 @@ class turnarAperturaController extends Controller
    public function enviar(Request $request){
         $result = NULL;
         $titulo = ''; $cuerpo = '';
-        $message = 'Operación fallida, vuelva a intentar..';        
+        $message = 'Operación fallida, vuelva a intentar..';
 
         if($_SESSION['memo']){
             if ($request->hasFile('file_autorizacion')) {               
@@ -99,7 +99,7 @@ class turnarAperturaController extends Controller
                 $url_file = $file_result["url_file"];
                 if($file_result){
 
-                    switch($_SESSION['opt'] ){
+                    switch($_SESSION['opt']){
                         case "ARC01":
                             $titulo = 'Clave de Apertura';
                             $cuerpo = 'Solicitud de asignación de clave de apertura del memo '.$_SESSION['memo'];
@@ -123,7 +123,7 @@ class turnarAperturaController extends Controller
                         $usersNotification = User::WHEREIN('id', [368,370])->get();
                         $dataCurso = tbl_curso::select('tbl_cursos.*','tbl_unidades.ubicacion as ucapacitacion')
                             ->join('tbl_unidades', 'tbl_cursos.unidad', 'tbl_unidades.unidad')
-                            ->where('munidad', $_SESSION['memo'])->first();
+                            ->where($_SESSION['opt'] == 'ARC01' ? 'munidad' : 'nmunidad', $_SESSION['memo'])->first();
                         foreach ($usersNotification as $key => $value) {
                             $partsUnity = explode(',', $value->unidades);
                             if (!in_array($dataCurso->ucapacitacion, $partsUnity)) {
