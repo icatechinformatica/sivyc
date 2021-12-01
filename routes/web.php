@@ -55,6 +55,7 @@ Route::post('/supre/validacion/upload_doc','webController\SupreController@doc_va
 Route::post('/supre/busqueda/folios/modal', 'webController\suprecontroller@getfoliostatsmodal')->name('supre.busqueda.foliosmodal');
 Route::post('/supre/folio/permiso','webController\SupreController@dar_permiso_folio')->name('folio-permiso-mod');
 Route::post('/supre/folio/modificacion-especial','webController\SupreController@folio_edicion_especial_save')->name('folio-especialedit-save');
+Route::post('/supre/delegado/upload_doc','webController\SupreController@doc_supre_upload')->name('doc-supre-guardar');
 Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
 Route::get('/supre/reiniciar/{id}', 'webController\SupreController@restartSupre')->name('restart-supre');
 Route::get('/folio/edicion_especial/{id}', 'webController\SupreController@folio_edicion_especial')->name('folio_especialedit');

@@ -124,6 +124,7 @@ class supreController extends Controller
             $directorio->supre_ccp2 = $request->id_ccp2;
             $directorio->id_supre = $id;
             $directorio->save();
+            $id_directorio = $directorio->id;
 
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
@@ -168,8 +169,9 @@ class supreController extends Controller
 
             //event(new SupreEvent($supre));
             // dd($supre->id);
-            return redirect()->route('supre-inicio')
-                        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+            // return redirect()->route('supre-inicio')
+            //             ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+            return view('layouts.pages.suprecheck',compact('id','id_directorio'));
         }
         else
         {
@@ -234,6 +236,7 @@ class supreController extends Controller
         //dd($request);
         $supre = new supre();
         $curso_validado = new tbl_curso();
+        $id_directorio = $request->id_directorio;
 
         supre::where('id', '=', $request->id_supre)
         ->update(['status' => 'En_Proceso',
@@ -275,8 +278,7 @@ class supreController extends Controller
             $folio->save();
         }
 
-        return redirect()->route('supre-inicio')
-                        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+        return view('layouts.pages.suprecheck',compact('id','id_directorio'));
     }
 
     public function validacion_supre_inicio(){
@@ -751,6 +753,32 @@ class supreController extends Controller
             $supre->save();
             return redirect()->route('supre-inicio')
                     ->with('success','Validación de Suficiencia Presupuestal Firmada ha sido cargada con Extio');
+        }
+    }
+
+    public function doc_supre_upload(Request $request)
+    {
+        // dd($request);
+        if ($request->hasFile('doc_supre')) {
+
+            if($request->idsupmod != NULL)
+            {
+                $supre = supre::find($request->idsupmod);
+                $doc = $request->file('doc_supre'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idsupmod, 'supre_firmado'); # invocamos el método
+                $supre->doc_supre = $urldoc; # guardamos el path
+            }
+            else
+            {
+                $supre = supre::find($request->idsupmod2);
+                $doc = $request->file('doc_supre'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idsupmod2, 'supre_firmado'); # invocamos el método
+                $supre->doc_supre = $urldoc; # guardamos el path
+            }
+
+            $supre->save();
+            return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Firmada ha sido cargada con Extio');
         }
     }
 
