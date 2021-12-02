@@ -239,6 +239,18 @@ class ContratoController extends Controller
 
         $idc = $id_contrato->id_contrato;
 
+        //Notificacion
+        $letter = [
+            'titulo' => 'Solicitud de Contrato',
+            'cuerpo' => 'La solicitud de contrato ' . $contrato->numero_contrato . ' ha sido agregada para su validación',
+            'memo' => $contrato->numero_contrato,
+            'unidad' => $contrato->unidad_capacitacion,
+            'url' => '/contrato/validar/' . $contrato->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
+
         return view('layouts.pages.contratocheck', compact('idc'));
     }
 
@@ -381,6 +393,18 @@ class ContratoController extends Controller
         $folio->status = 'Contrato_Rechazado';
         $folio->save();
 
+        //Notificacion!
+        $letter = [
+            'titulo' => 'Solicitud de Contrato Rechazada',
+            'cuerpo' => 'La solicitud de contrato ' . $contrato->numero_contrato . ' ha sido rechazada',
+            'memo' => $contrato->numero_contrato,
+            'unidad' => $contrato->unidad_capacitacion,
+            'url' => '/contrato/modificar/' . $contrato->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
+
         return redirect()->route('contrato-inicio')
                         ->with('success','Contrato Rechazado Exitosamente');
     }
@@ -390,11 +414,25 @@ class ContratoController extends Controller
         ->update(['fecha_status' => carbon::now(),
                   'observacion' => $request->observaciones]);
 
+        $contrato = contratos::WHERE('id_folios', '=', $request->id)->FIRST();
+
         $folio = folio::find($request->id);
         $folio->status = "Contratado";
         $folio->save();
         return redirect()->route('contrato-inicio')
                         ->with('success','Contrato Validado Exitosamente');
+
+        //Notificacion!
+        $letter = [
+            'titulo' => 'Solicitud de Contrato Validada',
+            'cuerpo' => 'La solicitud de contrato ' . $contrato->numero_contrato . ' ha sido validada',
+            'memo' => $contrato->numero_contrato,
+            'unidad' => $contrato->unidad_capacitacion,
+            'url' => '/contrato/' . $contrato->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
     }
 
     public function solicitud_pago($id){
@@ -465,6 +503,18 @@ class ContratoController extends Controller
 
         folio::where('id_folios', '=', $request->id_folio)
         ->update(['status' => 'Verificando_Pago']);
+
+        //Notificacion!!
+        $letter = [
+            'titulo' => 'Solicitud de Pago',
+            'cuerpo' => 'La solicitud de pago ' . $pago->no_memo . ' ha sido agregada para su validación',
+            'memo' => $pago->no_memo,
+            'unidad' => Auth::user()->unidad,
+            'url' => '/pago/verificar_pago/' . $pago->id_contrato,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
 
         return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Pago Agregado');

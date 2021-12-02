@@ -154,9 +154,24 @@ class PagoController extends Controller
         pago::where('id_contrato', '=', $contrato->id)
         ->update(['fecha_status' => carbon::now()]);
 
+        $pago = pago::WHERE('id_contrato', '=', $contrato->id);
+
         $folio = folio::findOrfail($idfolios);
         $folio->status = 'Pago_Verificado';
         $folio->save();
+
+        //Notificacion!!
+        $letter = [
+            'titulo' => 'Solicitud de Pago Validada',
+            'cuerpo' => 'La solicitud de pago ' . $pago->no_memo . ' ha sido validada',
+            'memo' => $pago->no_memo,
+            'unidad' => Auth::user()->unidad,
+            'url' => '/pago/verificar_pago/' . $idfolios,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
+
         return redirect()->route('pago-inicio');
     }
 
@@ -224,6 +239,18 @@ class PagoController extends Controller
         ->update(['observacion' => $request->observaciones,
                   'fecha_rechazo' => $old,
                   'chk_rechazado' => TRUE]);
+
+        //Notificacion!!
+        $letter = [
+            'titulo' => 'Solicitud de Pago Rechazada',
+            'cuerpo' => 'La solicitud de pago ' . $pago->no_memo . ' ha sido rechazada',
+            'memo' => $pago->no_memo,
+            'unidad' => Auth::user()->unidad,
+            'url' => '/pago/solicitud/modificar/' . $request->idfolios,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
 
         return redirect()->route('pago-inicio');
     }
