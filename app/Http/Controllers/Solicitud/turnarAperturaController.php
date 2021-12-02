@@ -86,7 +86,7 @@ class turnarAperturaController extends Controller
    }
    
     //  ICATECH/1300/1537/2021
-   public function enviar(Request $request){
+    public function enviar(Request $request){
         $result = NULL;
         $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..';
@@ -149,7 +149,7 @@ class turnarAperturaController extends Controller
         return redirect('solicitud/apertura/turnar')->with('message',$message);   
    }
    
-   protected function upload_file($file,$name){       
+    protected function upload_file($file,$name){       
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
         $url = $mgs= null;
@@ -167,7 +167,7 @@ class turnarAperturaController extends Controller
         return $data_file;
     }
    
-   public function pdfARC01(Request $request){
+    public function pdfARC01(Request $request){
         if($request->fecha AND $request->memo){        
             $fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
