@@ -166,11 +166,18 @@ class supreController extends Controller
                             ->with('success','Error Interno. Intentelo mas tarde.');
                 }
             }
+            // Notificacion!
+            $letter = [
+                'titulo' => 'Suficiencia Presupuestal',
+                'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido agregada para su validación',
+                'memo' => $supre->no_memo,
+                'unidad' => $supre->unidad_capacitacion,
+                'url' => '/supre/validacion/' . $id,
+            ];
+            //$users = User::where('id', 1)->get();
+            // dd($users);
+            //event((new NotificationEvent($users, $letter)));
 
-            //event(new SupreEvent($supre));
-            // dd($supre->id);
-            // return redirect()->route('supre-inicio')
-            //             ->with('success','Solicitud de Suficiencia Presupuestal agregado');
             return view('layouts.pages.suprecheck',compact('id','id_directorio'));
         }
         else
@@ -307,6 +314,18 @@ class supreController extends Controller
         $supre->status = 'Rechazado';
         //dd($supre);
         $supre->save();
+
+        // Notificacion!
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal Rechazada',
+            'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido rechazada',
+            'memo' => $supre->no_memo,
+            'unidad' => $supre->unidad_capacitacion,
+            'url' => '/supre/solicitud/modificar/' . $supre->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
             return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Rechazado');
     }
@@ -331,7 +350,18 @@ class supreController extends Controller
 
         $id = $request->id;
         $directorio_id = $request->directorio_id;
-        // event(new ValSupreDelegadoEvent($supre));
+
+        // Notificacion!
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal Validada',
+            'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido validada',
+            'memo' => $supre->no_memo,
+            'unidad' => $supre->unidad_capacitacion,
+            'url' => '/supre/validacion/pdf/' . $supre->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
         return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id'));
     }
 
