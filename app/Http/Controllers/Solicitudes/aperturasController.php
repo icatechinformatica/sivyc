@@ -112,7 +112,7 @@ class aperturasController extends Controller
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
         $result = NULL;
         $titulo = ''; $cuerpo = '';
-        $message = 'Operación fallida, vuelva a intentar..'; 
+        $message = 'Operación fallida, vuelva a intentar..';
 
         if($_SESSION['memo'] AND $_SESSION['opt'] ){
             if ($request->hasFile('file_autorizacion')) {               
@@ -134,8 +134,8 @@ class aperturasController extends Controller
                             ->update(['status_curso' => 'AUTORIZADO', 'updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                         break;
                         case "ARC02": 
-                            $titulo = 'Autorización de Apertura';
-                            $cuerpo = 'La autorización de clave de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
+                            $titulo = 'Autorización de modificación de apertura';
+                            $cuerpo = 'La autorización de modificación de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
                             $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
                             ->where('clave','<>','0')
                             ->where('turnado','UNIDAD')
@@ -145,37 +145,9 @@ class aperturasController extends Controller
                         break;
                     }
                     if($result) {
-                        $usersNotification = Permission::select('u.*')->join('permission_role as pr', 'permissions.id','pr.permission_id')
-                                            ->join('roles as r', 'pr.role_id', 'r.id')
-                                            ->join('role_user as ru', 'r.id', 'ru.role_id')
-                                            ->join('users as u', 'ru.user_id', 'u.id')
-                                            ->where('u.unidades', '!=', 'null')
-                                            ->where('permissions.slug', 'solicitud.apertura')
-                                            ->get();
-                        $dataCurso = tbl_curso::select('tbl_cursos.*','tbl_unidades.ubicacion as ucapacitacion')
-                                    ->join('tbl_unidades', 'tbl_cursos.unidad', 'tbl_unidades.unidad')
-                                    ->where('munidad', $_SESSION['memo'])->first();
-                        foreach ($usersNotification as $key => $value) {
-                            $partsUnity = explode(',', $value->unidades);
-                            if (!in_array($dataCurso->ucapacitacion, $partsUnity)) {
-                                unset($usersNotification[$key]);
-                            }
-                        }
-                        $ids = [];
-                        foreach ($usersNotification as $value) {
-                            array_push($ids, $value->id);
-                        }
-                        $usersNotification = User::WHEREIN('id', $ids)->get();
-
-                        $dataNotification = [
-                            'titulo' => $titulo,
-                            'cuerpo' => $cuerpo,
-                            'memo' => $_SESSION['memo'],
-                            'unidad' => $dataCurso->unidad,
-                            'url' => 'https://sivyc.icatech.gob.mx/solicitud/turnar solicitud',
-                        ];
-                        
-                        event(new NotificationEvent($usersNotification, $dataNotification));
+                        $url = 'https://sivyc.icatech.gob.mx/solicitud/turnar solicitud';
+                        $notification = $this->getDataNotification($_SESSION['opt'], $_SESSION['memo'], $titulo, $cuerpo, $url);
+                        event(new NotificationEvent($notification['users'], $notification['data']));
                         $message = "La AUTORIZACIÓN fué enviada correctamente";
                     }
                 }else $message = "Error al subir el archivo, volver a intentar.";
@@ -280,6 +252,8 @@ class aperturasController extends Controller
         if($_SESSION['memo']){ 
             switch($_SESSION['opt'] ){
                 case "ARC01":
+                    $titulo = 'Apertura retornada';
+                    $cuerpo = 'La apertura con número de memo '.$_SESSION['memo'].' fue retornada a su unidad';                  
                     $result = DB::table('tbl_cursos')
                     ->where('clave','0')
                     ->where('turnado','UNIDAD')
@@ -295,6 +269,8 @@ class aperturasController extends Controller
                      }
                 break;
                 case "ARC02": 
+                    $titulo = 'Modificación de Apertura';
+                    $cuerpo = 'La modificación de apertura del memo '.$_SESSION['memo'].' ha sido retornada a su unidad';
                     $result = DB::table('tbl_cursos')
                     ->where('arc','02')
                     ->where('turnado','UNIDAD')
@@ -306,11 +282,17 @@ class aperturasController extends Controller
                     //unset($_SESSION['memo']);            
                 break;
             }
+
+            /*if ($result) {
+                $url = 'https://sivyc.icatech.gob.mx/solicitud/turnar solicitud';
+                $notification = $this->getDataNotification($_SESSION['opt'], $_SESSION['memo'], $titulo, $cuerpo, $url);
+                event(new NotificationEvent($notification['users'], $notification['data']));
+            }*/
         }
         return redirect('solicitudes/aperturas')->with('message',$message);        
    }
 
-   protected function upload_file($file,$name){       
+    protected function upload_file($file,$name){       
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
         $url = $mgs= null;
@@ -367,5 +349,39 @@ class aperturasController extends Controller
                 return $pdf->stream('AutorizacionARC.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
         }return "ACCIÓN INVÁlIDA";exit;
+    }
+
+    public function getDataNotification($opt, $memo, $titulo, $cuerpo, $url) {
+        $usersNotification = Permission::select('u.*')->join('permission_role as pr', 'permissions.id','pr.permission_id')
+                                ->join('roles as r', 'pr.role_id', 'r.id')
+                                ->join('role_user as ru', 'r.id', 'ru.role_id')
+                                ->join('users as u', 'ru.user_id', 'u.id')
+                                ->where('u.unidades', '!=', 'null')
+                                ->where('permissions.slug', 'solicitud.apertura')
+                                ->get();
+        $dataCurso = tbl_curso::select('tbl_cursos.*','tbl_unidades.ubicacion as ucapacitacion')
+                        ->join('tbl_unidades', 'tbl_cursos.unidad', 'tbl_unidades.unidad')
+                        ->where($opt == 'ARC01' ? 'munidad' : 'nmunidad', $memo)->first();
+        foreach ($usersNotification as $key => $value) {
+            $partsUnity = explode(',', $value->unidades);
+            if (!in_array($dataCurso->ucapacitacion, $partsUnity)) {
+                unset($usersNotification[$key]);
+            }
+        }
+        $ids = [];
+        foreach ($usersNotification as $value) {
+            array_push($ids, $value->id);
+        }
+        $usersNotification = User::WHEREIN('id', $ids)->get();
+
+        $dataNotification = [
+            'titulo' => $titulo,
+            'cuerpo' => $cuerpo,
+            'memo' => $memo,
+            'unidad' => $dataCurso->unidad,
+            'url' => $url,
+        ];
+
+        return ['users' => $usersNotification, 'data' => $dataNotification];
     }
 }

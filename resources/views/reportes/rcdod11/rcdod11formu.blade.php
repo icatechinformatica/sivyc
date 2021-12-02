@@ -68,7 +68,7 @@ $i=1;
                         <tr>
                             <td>{{$i++}}</td>
                             <td>{{$item->matricula}}</td>
-                            <td>{{$item->nombre}}</td>
+                            <td>{{$item->alumno}}</td>
                             <td>{{$item->folio}}</td>
                             <td>{{$item->duplicado}}</td>
                             <td></td>
