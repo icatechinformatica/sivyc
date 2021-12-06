@@ -78,16 +78,38 @@
                     {{-- formulario de busqueda en index --}}
                     {!! Form::open(['route' => 'seguimento.avance.unidades.formatot.ejecutiva.index', 'method' => 'GET', 'class' => 'form-inline']) !!}
                         <select name="busquedaMes" id="busquedaMes" class="form-control mr-sm-2">
-                            <option value="">-- SELECCIONAR EL MES --</option>
-                            @foreach ($meses as $key => $itemMeses)
-                                <option value="{{ $itemMeses }}">{{ $itemMeses }}</option>
-                            @endforeach
+                            <option value="">Seleccione un mes</option>
+                            <option {{ $mes=='01' ? 'selected' : '' }} value="01">ENERO</option>
+                            <option {{ $mes=='02' ? 'selected' : '' }} value="02">FEBRERO</option>
+                            <option {{ $mes=='03' ? 'selected' : '' }} value="03">MARZO</option>
+                            <option {{ $mes=='04' ? 'selected' : '' }} value="04">ABRIL</option>
+                            <option {{ $mes=='05' ? 'selected' : '' }} value="05">MAYO</option>
+                            <option {{ $mes=='06' ? 'selected' : '' }} value="06">JUNIO</option>
+                            <option {{ $mes=='07' ? 'selected' : '' }} value="07">JULIO</option>
+                            <option {{ $mes=='08' ? 'selected' : '' }} value="08">AGOSTO</option>
+                            <option {{ $mes=='09' ? 'selected' : '' }} value="09">SEPTIEMBRE</option>
+                            <option {{ $mes=='10' ? 'selected' : '' }} value="10">OCTUBRE</option>
+                            <option {{ $mes=='11' ? 'selected' : '' }} value="11">NOVIEMBRE</option>
+                            <option {{ $mes=='12' ? 'selected' : '' }} value="12">DICIEMBRE</option>
+                        </select>
+                        <select name="busquedaYear" id="busquedaYear" class="form-control mr-sm-2">
+                            <option value="">Seleccione un año</option>
+                            <option {{ $year=='2021' ? 'selected' : '' }} value="2021">2021</option>
+                            <option {{ $year=='2022' ? 'selected' : '' }} value="2022">2022</option>
+                            <option {{ $year=='2023' ? 'selected' : '' }} value="2023">2023</option>
+                            <option {{ $year=='2024' ? 'selected' : '' }} value="2024">2024</option>
+                            <option {{ $year=='2025' ? 'selected' : '' }} value="2025">2025</option>
+                            <option {{ $year=='2026' ? 'selected' : '' }} value="2026">2026</option>
+                            <option {{ $year=='2027' ? 'selected' : '' }} value="2027">2027</option>
+                            <option {{ $year=='2028' ? 'selected' : '' }} value="2028">2028</option>
+                            <option {{ $year=='2029' ? 'selected' : '' }} value="2029">2029</option>
+                            <option {{ $year=='2030' ? 'selected' : '' }} value="2030">2030</option>
                         </select>
                         {{-- selector de busqueda por unidades--}}
                         <select name="busquedaPorUnidad" id="busquedaPorUnidad" class="form-control mr-sm-2">
-                            <option value="">--SELECCIONAR LA UNIDAD--</option>
+                            <option value="">Todas las unidades</option>
                             @foreach ($unidadesIcatech as $itemUnidades)
-                                <option value="{{ $itemUnidades->ubicacion }}">{{ $itemUnidades->ubicacion }}</option>
+                                <option {{ $itemUnidades->ubicacion == $unidad ? 'selected' : '' }} value="{{ $itemUnidades->ubicacion }}">{{ $itemUnidades->ubicacion }}</option>
                             @endforeach
                         </select>
                         {{-- selector de busqueda por unidades END --}}
@@ -109,7 +131,7 @@
         <div class="form-row">
             {{-- tabla --}}
             <table class="table">
-                <caption>AVANCES de las UNIDADES EN EL FORMATO T MES DE {{ $messeleccionado }}</caption>
+                <caption>AVANCES de las UNIDADES EN EL FORMATO T MES DE {{ $mes }}</caption>
                 <thead class="thead-light">
                     <tr>
                         <th scope="col">UBICACIÓN</th>

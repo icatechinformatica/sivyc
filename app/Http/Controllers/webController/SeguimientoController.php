@@ -15,12 +15,11 @@ class SeguimientoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         
-        /**
-         * VARIABLES DE BUSQUEDA
-         */
+        $year = $request->busquedaYear;
+        $mes = $request->busquedaMes;
+        $unidad = $request->busquedaPorUnidad;
 
         if (empty($request->get('busquedaPorUnidad'))) {
             # si está vacio se agrega parte de la condicion
@@ -31,29 +30,22 @@ class SeguimientoController extends Controller
             $condition_ = [$request->get('busquedaPorUnidad')] ;
         }
 
-        if (empty($request->get('busquedaMes'))) {
-            # si está vacia la busqueda se va a poner el més actual
-            /***
-             * OBTENEMOS LA FECHA ACTUAL
-            */
+        /* if (empty($request->get('busquedaMes'))) {
             $mesesCalendarizado = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"); // ARREGLO DE MESES CALENDARIZADOS
             $fecha_ahora = Carbon::now();
             $fechaActual = Carbon::parse($fecha_ahora);
             $date = $fecha_ahora->format('Y-m-d'); // fecha
-            //MES ACTUAL
             $messeleccionado = $mesesCalendarizado[($fechaActual->format('n')) - 1];
         } else {
-            # code...
             $messeleccionado = $request->get('busquedaMes');
-        }
+        } */
         
         /**
          * GENERAMOS LA CONSULTA DÓNDE SE CONTABILIZAN TODOS LOS DATOS 
          * DEL SERVIDOR POR EL MES EN EL QUE NOS ENCONTRAMOS
          * ES DECIR EL ULTIMO MES QUE SE HA REPORTADO
          */
-        // DB::connection()->enableQueryLog();
-        $query_entrega_contable_fotmatot = tbl_curso::select('tblU.ubicacion', 
+        $query_entrega_contable_fotmatot = tbl_curso::select('tblU.ubicacion',
                  DB::raw("COUNT(tbl_cursos.id) AS total_cursos"),
                  DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'NO REPORTADO' THEN 1 ELSE 0 END ) AS no_reportado_unidad"),
                  DB::raw("SUM(  CASE  WHEN tbl_cursos.status = 'TURNADO_DTA' THEN 1 ELSE 0 END ) AS turnado_dta"),
@@ -63,16 +55,17 @@ class SeguimientoController extends Controller
                 )
         ->JOIN('tbl_unidades as tblU','tblU.unidad', '=', 'tbl_cursos.unidad')
         ->WHEREIN('tblU.ubicacion', $condition_)
-        ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $messeleccionado)
+        ->whereMonth('fecha_turnado', $request->busquedaMes)
+        ->whereYear('fecha_turnado', $request->busquedaYear)
+        // ->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $messeleccionado)
         ->groupBy('tblU.ubicacion')->get();
 
-        // dd(DB::getQueryLog());
-
         $unidadesIcatech = DB::table('tbl_unidades')->select('ubicacion')->groupby('ubicacion')->get();
-        $meses = array(1 => 'ENERO', 2 => 'FEBRERO', 3 => 'MARZO', 4 => 'ABRIL', 5 => 'MAYO', 6 => 'JUNIO', 7 => 'JULIO', 8 => 'AGOSTO', 9 => 'SEPTIEMBRE', 10 => 'OCTUBRE', 11 => 'NOVIEMBRE', 12 => 'DICIEMBRE');
-        return view('reportes.seguimiento_avances_unidades_formato_t', compact('unidadesIcatech', 'meses', 'query_entrega_contable_fotmatot', 'messeleccionado'));
+
+        return view('reportes.seguimiento_avances_unidades_formato_t', compact('unidadesIcatech','query_entrega_contable_fotmatot', 'year', 'mes', 'unidad'));
 
     }
+
 
     /**
      * Show the form for creating a new resource.
