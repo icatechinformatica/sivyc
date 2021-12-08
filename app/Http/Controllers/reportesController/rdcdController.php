@@ -99,7 +99,7 @@ class rdcdController extends Controller
          ->select(DB::raw('min(tf.folio) as mini'), 
          DB::raw('max(tf.folio) as maxi'), 
          'tf.fecha_expedicion',
-         DB::raw("(sum(case when tf.movimiento='EXPEDIDO' then 1 else 0 end) )as expedidos"),
+         DB::raw("(sum(case when tf.movimiento in ('EXPEDIDO','REEXPEDIDO','DUPLICADO') then 1 else 0 end) )as expedidos"),
          DB::raw("(sum(case when tf.movimiento='CANCELADO' then 1 else 0 end) )as cancelados"))
          ->where('tf.folio', '<=', $consulta[0]->ffinal)
          ->where('tf.folio', '>=', $consulta[0]->finicial)
