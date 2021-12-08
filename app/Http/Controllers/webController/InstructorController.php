@@ -1281,8 +1281,8 @@ class InstructorController extends Controller
             $idMuni = DB::TABLE('tbl_municipios')->SELECT('id')->WHERE('muni', '=', $nombreMuni)->FIRST();
             $locals = DB::TABLE('tbl_localidades')->SELECT('id', 'localidad')
                         ->WHERE('tbl_localidades.id_municipio', '=', $idMuni->id)
+                        ->ORDERBY('localidad','ASC')
                         ->GET();
-
             $json=json_encode($locals);
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
