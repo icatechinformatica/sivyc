@@ -208,7 +208,7 @@
             for (; i < il; i += 1)
             {
                 newOption = document.createElement('option');
-                newOption.value = respuesta[i].id;
+                newOption.value = respuesta[i].clave;
                 newOption.text=respuesta[i].localidad;
                 // selectL.appendChild(option);
                 selectL.add(newOption);

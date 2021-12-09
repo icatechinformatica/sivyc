@@ -209,7 +209,7 @@ class InstructorController extends Controller
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
         $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.id','localidad','muni')
                         ->WHERE('tbl_localidades.id','!=','0')
-                        ->LEFTJOIN('tbl_municipios','tbl_municipios.id','=','tbl_localidades.id_municipio')
+                        ->LEFTJOIN('tbl_municipios','tbl_municipios.id','=','tbl_localidades.clave_municipio')
                         ->ORDERBY('localidad','ASC')->GET();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', '7')
                         ->ORDERBY('muni','ASC')->GET();
@@ -240,6 +240,8 @@ class InstructorController extends Controller
         'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
         'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
         'PALENQUE'];
+        $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')
+                    ->WHERE('clave','=', $request->localidad)->FIRST();
 
         $instructor = instructor::find($request->id);
 
@@ -259,7 +261,8 @@ class InstructorController extends Controller
         $instructor->estado = TRUE;
         $instructor->unidades_disponible = $unidades;
         $instructor->lastUserId = $userId;
-        $instructor->id_localidad = $request->localidad;
+        $instructor->clave_loc = $request->localidad;
+        $instructor->localidad = $locali->localidad;
 
         //Creacion de el numero de control
         $uni = substr($request->unidad_registra, -2);
@@ -383,7 +386,7 @@ class InstructorController extends Controller
         $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
         $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.id','localidad')
-                        ->WHERE('tbl_localidades.id', '=', $datains->id_localidad)
+                        ->WHERE('tbl_localidades.clave', '=', $datains->clave_loc)
                         ->FIRST();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
                         ->ORDERBY('muni','ASC')->GET();
@@ -405,6 +408,8 @@ class InstructorController extends Controller
     {
         $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
+        $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')
+                    ->WHERE('clave','=', $request->localidad)->FIRST();
 
         $old = $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno . ' ' . $modInstructor->nombre;
         $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
@@ -428,7 +433,8 @@ class InstructorController extends Controller
         $modInstructor->extracurricular = trim($request->extracurricular);
         $modInstructor->stps = trim($request->stps);
         $modInstructor->conocer = trim($request->conocer);
-        $modInstructor->id_localidad = $request->localidad;
+        $modInstructor->clave_loc = $request->localidad;
+        $modInstructor->localidad = $locali->localidad;
         if($request->estado != NULL)
         {
             $modInstructor->estado = TRUE;
@@ -1279,8 +1285,8 @@ class InstructorController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $nombreMuni = $request->valor;
             $idMuni = DB::TABLE('tbl_municipios')->SELECT('id')->WHERE('muni', '=', $nombreMuni)->FIRST();
-            $locals = DB::TABLE('tbl_localidades')->SELECT('id', 'localidad')
-                        ->WHERE('tbl_localidades.id_municipio', '=', $idMuni->id)
+            $locals = DB::TABLE('tbl_localidades')->SELECT('clave', 'localidad')
+                        ->WHERE('tbl_localidades.clave_municipio', '=', $idMuni->id)
                         ->ORDERBY('localidad','ASC')
                         ->GET();
             $json=json_encode($locals);
