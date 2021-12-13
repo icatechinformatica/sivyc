@@ -1284,9 +1284,9 @@ class InstructorController extends Controller
         if (isset($request->valor)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $nombreMuni = $request->valor;
-            $idMuni = DB::TABLE('tbl_municipios')->SELECT('id')->WHERE('muni', '=', $nombreMuni)->FIRST();
+            $idMuni = DB::TABLE('tbl_municipios')->SELECT('clave')->WHERE('muni', '=', $nombreMuni)->FIRST();
             $locals = DB::TABLE('tbl_localidades')->SELECT('clave', 'localidad')
-                        ->WHERE('tbl_localidades.clave_municipio', '=', $idMuni->id)
+                        ->WHERE('tbl_localidades.clave_municipio', '=', $idMuni->clave)
                         ->ORDERBY('localidad','ASC')
                         ->GET();
             $json=json_encode($locals);
