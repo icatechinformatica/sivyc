@@ -452,7 +452,7 @@
                         </div>
                     </div>
                 </form>
-            @elseif ($a==true) {{-- modificacion aspirante jefe de vinculacion --}}
+            @elseif ($a == true) {{-- modificacion aspirante jefe de vinculacion --}}
 
                 @if ($rol == 'unidad_vinculacion' || $rol == 'admin' || $rol == 'vinculadores_administrativo')
                     <form method="POST" id="sid_registro_modificacion" action="{{ route('sid.modificar', ['idAspirante' => base64_encode($alumno->id)]) }}" enctype="multipart/form-data">
@@ -1351,11 +1351,12 @@
                     $('#municipio').empty();
                     $('#municipio').append("<option value=''>Seleccione un municipio</option>");
                     $.each(municipio, function(index, value) {
-                        $('#municipio').append("<option value='" + value + "'>" + value + "</option>");
+                        $('#municipio').append("<option value='" + value['clave'] + "'>" + value['muni'] + "</option>");
                     });
                 });
             }
         });
+
         $(document).ready(function() {
             $('#curp_mod').focus();
             $('#curp_mod').keyup(function(e) {
@@ -1371,6 +1372,7 @@
                 });
             });
         });
+
         $('#curp_mod').on("change", function() {
             console.log('print');
             var fa = $(this).val();
@@ -1378,6 +1380,7 @@
                 $.get('')
             }
         });
+
         $('#estados_mod').on("change", function() {
             var estados_id = $(this).val();
             if ($(estados_id != '')) {
@@ -1385,10 +1388,9 @@
                     estado_id: estados_id
                 }, function(novo) {
                     $('#municipios_mod').empty();
-                    // $('#titular_cerss').append("<option value=''>Titular cerss</option>");
+                    $('#municipios_mod').append("<option value=''>Seleccione un municipio</option>");
                     $.each(novo, function(index, value) {
-                        $('#municipios_mod').append("<option value='" + value + "'>" +
-                            value + "</option>");
+                        $('#municipios_mod').append("<option value='" + value['clave'] + "'>" + value['muni'] + "</option>");
                     });
                 });
             }
@@ -1593,7 +1595,22 @@
                 $('#localidad').empty();
                 $('#localidad').append("<option value=''>Seleccione una localidad</option>")
                 $.each(localidades, function(index, value) {
-                    $('#localidad').append("<option value='" + value['id'] + "'>" + value['localidad'] + "</option>")
+                    $('#localidad').append("<option value='" + value['clave'] + "'>" + value['localidad'] + "</option>")
+                })
+            })
+        }
+    });
+
+    $('#municipios_mod').on('change', function() {
+        municipio = $(this).val();
+        if (municipio != '') {
+            $.get('/inscripciones/localidad', {
+                search: municipio
+            }, function (localidades) {
+                $('#localidad_mod').empty();
+                $('#localidad_mod').append("<option value=''>Seleccione una localidad</option>")
+                $.each(localidades, function(index, value) {
+                    $('#localidad_mod').append("<option value='" + value['clave'] + "'>" + value['localidad'] + "</option>")
                 })
             })
         }

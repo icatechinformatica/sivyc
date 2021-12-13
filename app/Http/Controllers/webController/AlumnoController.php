@@ -25,31 +25,22 @@ use App\Models\AlumnosSice;
 use App\Models\cerss_a;
 use PharIo\Manifest\Author;
 
-class AlumnoController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        //
-        $buscar_aspirante = $request->get('busqueda_aspirantepor'); //dd(gettype($buscar_aspirante));
+class AlumnoController extends Controller {
+    
+    public function index(Request $request) {
+        $buscar_aspirante = $request->get('busqueda_aspirantepor'); 
 
-        $tipoaspirante = $request->get('busqueda_aspirante');   //dd(ctype_alnum($buscar_aspirante));
+        $tipoaspirante = $request->get('busqueda_aspirante');   
         $tipo=null;
-        if(isset($buscar_aspirante)){
-            if(ctype_alpha($buscar_aspirante)){
+        if(isset($buscar_aspirante)) {
+            if(ctype_alpha($buscar_aspirante)) {
                 $tipo='nombre_aspirante';
-            }else{
+            } else {
                 $cay= str_split($buscar_aspirante);
-                $cay= $cay[0].$cay[1].$cay[2].$cay[3];    //dd($cay);
-                if(ctype_alpha($cay)){
-            
+                $cay= $cay[0].$cay[1].$cay[2].$cay[3];    
+                if(ctype_alpha($cay)) {
                     if(ctype_alnum($buscar_aspirante)){$tipo='curp_aspirante';}else{$tipo='nombre_aspirante';}
-                    
-                }else{
+                } else {
                     $tipo='matricula_aspirante';
                 }
             }
@@ -61,11 +52,6 @@ class AlumnoController extends Controller
         return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function showl(Request $request) {  //vista inscripción aspirante
         $curp = strtoupper($request->input('curp_val'));    
         if($curp) {
@@ -76,7 +62,7 @@ class AlumnoController extends Controller
             if($anio <= $hoy){
                 $i = 20;
                 $anio = $i.$anio; 
-            } elseif($anio>=$hoy) {
+            } elseif ($anio>=$hoy) {
                 $i = 19;
                 $anio = $i.$anio;    
             } else {
@@ -100,11 +86,9 @@ class AlumnoController extends Controller
                 'NIVEL SUPERIOR TERMINADO' => 'NIVEL SUPERIOR TERMINADO',
                 'POSTGRADO' => 'POSTGRADO'
             ];
-            //$estado = new Estado();
-            //$estado = estado::get();
             $estado = DB::table('estados')->select('id','nombre')->get(); 
             foreach($estado as $item){
-                $estados[$item->id]= $item->nombre;
+                $estados[$item->id] = $item->nombre;
             }
             $estado_civil = DB::table('estado_civil')->orderby('nombre','ASC')->pluck('nombre');
             $etnia = $this->etnia = ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
@@ -115,44 +99,34 @@ class AlumnoController extends Controller
             // checamos la base de datos para saber si ya se encuentra registrada
             $alumnoPre = DB::table('alumnos_pre')->select('curp','id')->where('curp','=', $curp_formateada)->first(); 
             
-            /* se checa si la consulta arroja un resultado o es nulo, en dado caso de ser nulo se tiene que agregar completamente */
+            // se checa si la consulta arroja un resultado o es nulo, en dado caso de ser nulo se tiene que agregar completamente
             if(is_null($alumnoPre)){
                 $a = false;
                 return view('layouts.pages.valcurp', compact('estados', 'grado_estudio','estado_civil','etnia','discapacidad','curp','sexo','fecha_t','a'));
             } else {
-                #ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
-                /*
+                /* ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
                 checamos la función básica para comparar dos cadenas a nivel binario
                 Tiene en cuenta mayúsculas y minúsculas.
-                Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
-                */
+                Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales: */
+
                 if (strcmp($curp_formateada, $alumnoPre->curp) === 0) {
                     # si coinciden hay que mandar directo un mensaje de que no funciona
                     $id= $alumnoPre->id; 
-                    return redirect()->route('alumnos.presincripcion-modificar',['id'=>base64_encode($id)])
-                            ->withErrors(sprintf('LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
+                    return redirect()->route('alumnos.presincripcion-modificar',['id'=>base64_encode($id)])->withErrors(sprintf('LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
                 }
             }
         }
         return view('layouts.pages.valcurp', compact('curp'));
     }
-    public function showlm(Request $request)    //obtención municipios
-    {
-        //dd($request->ajax());
-        if($request->ajax()){
-            //dd($request->estado_id);
-            $id= DB::table('estados')->select('id')->where(DB::RAW('TRIM(nombre)'),'=', $request->estado_id)->get(); //dd($id[0]->id);
-            
-            //$id=$request->estado_id;
 
-            $municipio = municipio::where('id_estado','=',$id[0]->id)->get(); //dd($titular_cerss); 
-            foreach($municipio as $titular){
-                $municipioArray[$titular->id]= $titular->muni;
-            }
-            //dd($municipioArray);
-            return response()->json($municipioArray);
+    public function showlm(Request $request) { //obtención municipios
+        if($request->ajax()) {
+            $id = DB::table('estados')->select('id')->where(DB::RAW('TRIM(nombre)'),'=', $request->estado_id)->get(); 
+            $municipios = municipio::select('muni', 'clave')->where('id_estado', '=', $id[0]->id)->get(); 
+            return response()->json($municipios);
         }
     }
+
     public function showlf(Request $request)    //obtención fecha_nac y sexo por curp
     {
         //dd($request->fa);
@@ -196,56 +170,54 @@ class AlumnoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */     //insercción de aspiratntes a alumnos_pre//
-    public function store(Request $request)
-    {
-            //dd($request->all());
-        $curp= $request->curp; //dd($curp);
+    public function store(Request $request) {
+        $curp= $request->curp; 
         // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
         $curp_formateada = trim($curp); 
-        /**
-         * checamos la base de datos para saber si ya se encuentra registrada
-         */
+        // checamos la base de datos para saber si ya se encuentra registrada
+        
         $alumnoPre = DB::table('alumnos_pre')->where('curp', $curp_formateada)->select('curp')->first();
         if (isset($request->empresa)) {
             $empresa = $request->empresa;
         }else{
             $empresa = 'DESEMPLEADO';
         }
-            //dd($alumnoPre);
-        /**
-         * se checa si la consulta arroja un resultado o es nulo,
-         * en dado caso de ser nulo se tiene que agregar completamente
-         */
+
+        // se checa si la consulta arroja un resultado o es nulo, en dado caso de ser nulo se tiene que agregar completamente
         if (is_null($alumnoPre)) {
-            # SI ES VERDADERO ESTÁ NULA LA CONSULTA, PROCEDEMOS A INSERTAR EL REGISTRO
+            // SI ES VERDADERO ESTÁ NULA LA CONSULTA, PROCEDEMOS A INSERTAR EL REGISTRO
             // obtener el usuario que agrega
             $usuario = Auth::user()->name;
-            # si la consulta está vacía hacemos la inserción
+            // si la consulta está vacía hacemos la inserción
             $validator = Validator::make($request->all(), [
                 'curp'=>'required'
             ]);
-            //dd($validator);
+
             if ($validator->fails()) {
-                return redirect('alumnos/valsid')
-                            ->withErrors($validator)
-                            ->withInput();
+                return redirect('alumnos/valsid')->withErrors($validator)->withInput();
             }else{
-                #CONSULTAMOS SI HAY REGISTRO EN registro_alumnos-sice, SI HAY SE CAPTURA LA MATRICULA Y LA AGREGAMOS AL NUEVO REGISTRO
+                // CONSULTAMOS SI HAY REGISTRO EN registro_alumnos-sice, SI HAY SE CAPTURA LA MATRICULA Y LA AGREGAMOS AL NUEVO REGISTRO
+                $municipio = Municipio::where('clave', $request->municipio)->first();
                 $matricula = DB::table('registro_alumnos_sice')->where('curp','=',$curp_formateada)->where('eliminado','=',false)->select('no_control as matricula')->first() ;    //dd($matricula); 
-                #CONTUINAMOS CON LA CAPTURA
+                // CONTUINAMOS CON LA CAPTURA
                 $usuarioUnidad = Auth::user()->unidad;
                 $id_user = Auth::user()->id;
-                $hoy=date('Y-m-d H:i:s');   //dd($hoy);
-                //dd($arregloDocs);
-                $arc = $request->file('customFile'); //dd($arc);
-                $fotografia=$request->file('fotografia'); //dd($fotografia);
+                $hoy=date('Y-m-d H:i:s');
+                $arc = $request->file('customFile'); 
+                $fotografia=$request->file('fotografia'); 
                 $AlumnoPreseleccion = new Alumnopre;
                 $AlumnoPreseleccion->id_unidad = $usuarioUnidad;
                 if($request->cerss_chk == null){
                     $AlumnoPreseleccion->es_cereso = false;
-                }else{$AlumnoPreseleccion->es_cereso = $request->cerss_chk;}
+                } else {
+                    $AlumnoPreseleccion->es_cereso = $request->cerss_chk;
+                }
                 //$AlumnoPreseleccion->es_cereso = $request->cerss_chk;
-                if($request->trabajo==null){$AlumnoPreseleccion->empleado=false;}else{$AlumnoPreseleccion->empleado=$request->trabajo;}
+                if($request->trabajo == null) {
+                    $AlumnoPreseleccion->empleado=false;
+                } else {
+                    $AlumnoPreseleccion->empleado=$request->trabajo;
+                }
                 $AlumnoPreseleccion->numero_expediente = $request->num_expediente_cerss;
                 $AlumnoPreseleccion->curp = strtoupper($curp_formateada);
                 $AlumnoPreseleccion->nombre = strtoupper($request->nombre);
@@ -265,7 +237,7 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->colonia = $request->colonia;
                 $AlumnoPreseleccion->cp = $request->cp;
                 $AlumnoPreseleccion->estado = $request->estado;
-                $AlumnoPreseleccion->municipio = $request->municipio;
+                $AlumnoPreseleccion->municipio = $municipio->muni;
                 $AlumnoPreseleccion->estado_civil = $request->estado_civil;
                 $AlumnoPreseleccion->discapacidad = $request->discapacidad;
                 $AlumnoPreseleccion->madre_soltera = $request->madre_soltera;
@@ -289,7 +261,8 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->iduser_created=$id_user;
                 $AlumnoPreseleccion->tiene_documentacion = true;
                 $AlumnoPreseleccion->created_at= $hoy;
-                $AlumnoPreseleccion->id_localidad = $request->localidad;
+                $AlumnoPreseleccion->clave_localidad = $request->localidad;
+                $AlumnoPreseleccion->clave_municipio = $request->municipio;
                 if(isset($matricula)){
                     $AlumnoPreseleccion->matricula= $matricula->matricula;
                 }
@@ -297,10 +270,8 @@ class AlumnoController extends Controller
                 $AlumnoPreseleccion->save();
                 // generamos url para carga de archivo
                 $consulta= DB::table('alumnos_pre')->where('curp','=',$curp)->select('id','nombre')->first();
-                //dd($consulta);
                 $idPre = $consulta->id;
                 $url_documento = $this->uploaded_file($arc, $idPre, 'requisitos'); #invocamos el método
-                //dd($url_documento);
                 $arregloDocs = [
                     'documento'=>$url_documento,
                     'chk_curp' => $request->chk_curp,
@@ -312,12 +283,10 @@ class AlumnoController extends Controller
                     'fecha_vigencia_migratorio'=>$request->fecha_vigencia_migratorio
                 ];
                 //$resultado = json_encode($arregloDocs, true, 2);
-                //dd($resultado);
-                //dd($arregloDocs);
                 $affected = DB::table('alumnos_pre')->where('id', $idPre)->update(['requisitos' => $arregloDocs]);
                 
                 if(isset($fotografia)){
-                    $url_fotografia=$this->uploaded_file($fotografia,$idPre,'fotografia');  //dd($url_fotografia);
+                    $url_fotografia=$this->uploaded_file($fotografia,$idPre,'fotografia');  
                     $opss= DB::table('alumnos_pre')->where('id',$idPre)->update(['fotografia'=>$url_fotografia]);
                 }
                 // redireccionamos con un mensaje de éxito
@@ -326,26 +295,23 @@ class AlumnoController extends Controller
             }
            
         } else {
-            # ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
-            /**
-             * checamos la función básica para comparar dos cadenas a nivel binario
-             * Tiene en cuenta mayúsculas y minúsculas.
-             * Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales:
-             */
-            if (strcmp($curp_formateada, $alumnoPre->curp) === 0)
-            {
+            // ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
+            /* checamos la función básica para comparar dos cadenas a nivel binario
+                Tiene en cuenta mayúsculas y minúsculas.
+                Devuelve < 0 si el primer valor dado es menor que el segundo, > 0 si es al revés, y 0 si son iguales: */
+            if (strcmp($curp_formateada, $alumnoPre->curp) === 0) {
                 # si coinciden hay que mandar directo un mensaje de que no funciona
-                return redirect()->route('alumnos.valid')
-                    ->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
+                return redirect()->route('alumnos.valid')->withErrors(sprintf('LO SENTIMOS, LA CURP %s ASOCIADA AL ASPIRANTE YA SE ENCUENTRA REGISTRADA', $curp_formateada));
             }
         }
     }
-        //vista modificación de aspirantes Catalogo aspirantes
+    
+    //vista modificación de aspirantes Catalogo aspirantes
     protected function showUpdate($id) {
         $id_user = Auth::user()->id;    
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
-        ->WHERE('role_user.user_id', '=', $id_user)
-            ->value('roles.slug');  //dd($rol);
+                ->WHERE('role_user.user_id', '=', $id_user)
+                ->value('roles.slug');  
         //$rol='unidad_vinculacion';
         $grado_estudio = [
             'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
@@ -359,20 +325,20 @@ class AlumnoController extends Controller
             'POSTGRADO' => 'POSTGRADO'
         ];
         $estado = estado::get();
-        foreach($estado as $item){
-            $estados[$item->id]= $item->nombre;
+        foreach($estado as $item) {
+            $estados[$item->id] = $item->nombre;
         }
-        $estado_civil=DB::table('estado_civil')->orderBy('nombre','ASC')->pluck('nombre');
-        $etnia=$this->etnia= ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
+        $estado_civil = DB::table('estado_civil')->orderBy('nombre','ASC')->pluck('nombre');
+        $etnia = $this->etnia = ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
         $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DE COMUNICACIÓN"=>"DE COMUNICACIÓN","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
         $idpre = base64_decode($id);
         $alumnos = new Alumnopre();
         $alumno = $alumnos->findOrfail($idpre);     
         $requisitos= json_decode($alumno->requisitos); 
         //obtención de vigencia de los rquisitos ingresados en la BD para su actualización
-        $vigencia_curp='';
-        $vigencia_acta= '';
-        $vigencia_migracion='';
+        $vigencia_curp = '';
+        $vigencia_acta = '';
+        $vigencia_migracion = '';
         if (isset($requisitos)) {
             $vigencia_doc_curp = $requisitos->fecha_expedicion_curp;
             $vigencia_doc= date('Y-m-d',strtotime($vigencia_doc_curp));
@@ -387,11 +353,13 @@ class AlumnoController extends Controller
             $vigencia_acta= $vigencia_acta->days;
             if(isset($requisitos->fecha_vigencia_comprobante_migratorio)){$vigencia_migracion= strtotime($requisitos->fecha_vigencia_comprobante_migratorio);}
             if(isset($requisitos->fecha_vigencia_migratorio)){$vigencia_migracion= strtotime($requisitos->fecha_vigencia_migratorio);}
-            $hoys= strtotime(date("Y-m-d",time()));; //dd($vigencia_migracion);
+            $hoys= strtotime(date("Y-m-d",time()));; 
             if ($vigencia_migracion<$hoys) {
                 $vigencia_migracion= true;
-            }else{$vigencia_migracion=false;}
-            $vigencia_migracion= $vigencia_migracion; //dd($vigencia_migracion);
+            } else {
+                $vigencia_migracion=false;
+            }
+            $vigencia_migracion= $vigencia_migracion; 
         }/*else{
             $vigencia_doc=explode('/',$alumno->acta_nacimiento);    
             $vigencia_doc = $vigencia_doc[7];
@@ -406,9 +374,9 @@ class AlumnoController extends Controller
         $a=true;
         $curp= $alumno->curp;
         $localidades = [];
-        $id_municipio = DB::table('tbl_localidades')->select('id_municipio')->where('localidad',$alumno->municipio)->first();
+        $id_municipio = DB::table('tbl_localidades')->select('clave_municipio')->where('localidad',$alumno->municipio)->first();
         if ($id_municipio) {
-            $localidades = DB::table('tbl_localidades')->where('id_municipio', $id_municipio->id_municipio)->get();
+            $localidades = DB::table('tbl_localidades')->where('clave_municipio', $id_municipio->clave_municipio)->get();
         }
         return view('layouts.pages.valcurp', compact('alumno', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio','estado_civil','etnia','discapacidad','requisitos','vigencia_curp','vigencia_acta','vigencia_migracion','rol','a','curp', 'localidades'));
     }
@@ -422,7 +390,7 @@ class AlumnoController extends Controller
                 # si no está vacio tenemos que cargar el dato puro
                 if( $request->trabajo_mod== true && $request->empresa_mod!='DESEMPLEADO'){
                     $empresa = trim($request->empresa_mod);
-                }else{
+                } else {
                     $empresa = '';
                 }
             } else {
@@ -444,6 +412,8 @@ class AlumnoController extends Controller
                 $sexo='FEMENINO';
             }
                 
+            $municipio = Municipio::where('clave', $request->municipio)->first();
+
             $array = [
                 'id_unidad'=>Auth::user()->unidad,
                 'es_cereso'=>$chk_cerss,
@@ -466,7 +436,7 @@ class AlumnoController extends Controller
                 'colonia'=>trim($request->colonia_mod),
                 'cp' => $request->cp_mod,
                 'estado' => $request->estados_mod,
-                'municipio' => $request->municipios_mod,
+                'municipio' => $municipio->muni,
                 'estado_civil' => $request->estado_civil_mod,
                 'discapacidad' => $request->discapacidad_mod,
                 'madre_soltera'=>$request->madre_soltera_mod,
@@ -489,13 +459,14 @@ class AlumnoController extends Controller
                 'iduser_updated'=>Auth::user()->id,
                 'tiene_documentacion'=> true,
                 'updated_at'=>$hoy,
-                'id_localidad'=> $request->localidad_mod
+                'clave_localidad'=> $request->localidad_mod,
+                'clave_municipio'=> $request->municipios_mod,
             ];
 
             $AlumnoPre_mod=DB::table('alumnos_pre')->WHERE('id', '=', $AspiranteId)->UPDATE($array);
             //si se pretende cargar nuevos archivos
             if (isset($request->customFile_mod)) {
-                $arc = $request->file('customFile_mod'); //dd($arc);
+                $arc = $request->file('customFile_mod'); 
                 $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); #invocamos el método
                 $arregloDocs = [
                     'documento'=>$url_documento,
@@ -509,7 +480,7 @@ class AlumnoController extends Controller
                 ];
                 $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => $arregloDocs]);
             }
-            if(isset($request->fotografia_mod)){
+            if(isset($request->fotografia_mod)) {
                 $url=$request->fotografia_mod;
                 $url_fotografia_mod= $this->uploaded_file($url,$AspiranteId,'fotografia');
                 $opps = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['fotografia' => $url_fotografia_mod,'chk_fotografia'=>true]);
@@ -1519,7 +1490,6 @@ class AlumnoController extends Controller
         return $json;
     }
 
-
     protected function getcursos_update(Request $request)
     {
         /**
@@ -1570,7 +1540,6 @@ class AlumnoController extends Controller
         return $documentUrl;
     }
     
-
     protected function modifyUpdateChief($id){
         $grado_estudio = [
             'PRIMARIA INCONCLUSA' => 'PRIMARIA INCONCLUSA',
@@ -1768,8 +1737,8 @@ class AlumnoController extends Controller
 
     public function localidadAutocomplete(Request $request) {
         $search = $request->search;
-        $id_muni = DB::table('tbl_municipios')->select('id')->where(DB::RAW('TRIM(muni)'),'=', $search)->first();
-        $localidades = DB::table('tbl_localidades')->select('id', 'localidad')->where('id_municipio', $id_muni->id)->get();
+        // $id_muni = DB::table('tbl_municipios')->select('id')->where(DB::RAW('TRIM(muni)'),'=', $search)->first();
+        $localidades = DB::table('tbl_localidades')->select('localidad', 'clave')->where('clave_municipio', $search)->get();
         return response()->json($localidades);
     }
 }
