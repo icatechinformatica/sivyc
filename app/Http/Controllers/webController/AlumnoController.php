@@ -328,6 +328,7 @@ class AlumnoController extends Controller {
         foreach($estado as $item) {
             $estados[$item->id] = $item->nombre;
         }
+
         $estado_civil = DB::table('estado_civil')->orderBy('nombre','ASC')->pluck('nombre');
         $etnia = $this->etnia = ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
         $discapacidad=$this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DE COMUNICACIÓN"=>"DE COMUNICACIÓN","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
@@ -374,11 +375,15 @@ class AlumnoController extends Controller {
         $a=true;
         $curp= $alumno->curp;
         $localidades = [];
+        $clave_estado = Estado::where('nombre', $alumno->estado)->first();
+        $municipios = Municipio::where('id_estado', $clave_estado->id)->get();
         $id_municipio = DB::table('tbl_localidades')->select('clave_municipio')->where('localidad',$alumno->municipio)->first();
         if ($id_municipio) {
             $localidades = DB::table('tbl_localidades')->where('clave_municipio', $id_municipio->clave_municipio)->get();
         }
-        return view('layouts.pages.valcurp', compact('alumno', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio','estado_civil','etnia','discapacidad','requisitos','vigencia_curp','vigencia_acta','vigencia_migracion','rol','a','curp', 'localidades'));
+        return view('layouts.pages.valcurp', compact('alumno', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio',
+                    'estado_civil','etnia','discapacidad','requisitos','vigencia_curp','vigencia_acta','vigencia_migracion',
+                    'rol','a','curp', 'localidades', 'municipios'));
     }
 
     // modificación de aspirantes en alumnos_pre
@@ -411,8 +416,8 @@ class AlumnoController extends Controller {
             if($request->sexo_mod=='MUJER'){
                 $sexo='FEMENINO';
             }
-                
-            $municipio = Municipio::where('clave', $request->municipio)->first();
+            
+            $municipio = Municipio::where('clave', $request->municipios_mod)->first();
 
             $array = [
                 'id_unidad'=>Auth::user()->unidad,
