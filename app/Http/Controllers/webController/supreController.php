@@ -929,6 +929,7 @@ class supreController extends Controller
     protected function planeacion_reporte_canceladospdf(Request $request){
         $i = 0;
         set_time_limit(0);
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
 
         if ($request->filtro == "general")
         {
@@ -964,9 +965,10 @@ class supreController extends Controller
                            ->GET();
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data','distintivo'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+        return view('layouts.pdfpages.reportefolioscancelados', compact('data'));
     }
 
     public function tablasupre_pdf($id){
@@ -1200,6 +1202,7 @@ class supreController extends Controller
     protected function generate_report_supre_pdf($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
         set_time_limit(0);
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
 
         if ($filtrotipo == "general")
         {
@@ -1290,7 +1293,7 @@ class supreController extends Controller
             $i++;
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva','distintivo'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $fecha1 . ' - '. $fecha2 .'.pdf');
     }
