@@ -41,9 +41,13 @@ class ConveniosController extends Controller
      */
     public function create() {
         // mostrar formulario de convenio
-        $unidades = \DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
-        $estados = \DB::table('estados')->orderBy('estados.id')->get();
-        return view('layouts.pages.frmconvenio', compact('estados', 'unidades'));
+        $unidades = DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
+        $estados = DB::table('estados')->orderBy('estados.id')->get();
+        $organismos = DB::table('organismos_publicos')
+                        ->where('activo',true)
+                        ->orderBy('organismo')
+                        ->pluck('organismo','id');
+        return view('layouts.pages.frmconvenio', compact('estados', 'unidades','organismos'));
     }
 
     /**
@@ -456,5 +460,19 @@ class ConveniosController extends Controller
         $file->storeAs('/uploadFiles/convenios/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
         $documentUrl = Storage::url('/uploadFiles/convenios/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
+    }
+
+    protected function getcampos(Request $request){
+        $organismo = DB::table('organismos_publicos as o')
+                    ->select('o.nombre_titular','o.telefono','o.correo','o.direccion','l.localidad')
+                    ->leftJoin('tbl_localidades as l','o.clave_localidad','=','l.clave') 
+                    ->where('o.id',$request->organismo_id)
+                    ->first();  //dd($organismo);
+        $data['titular']= $organismo->nombre_titular;
+        $data['telefono']= $organismo->telefono;
+        $data['correo']= $organismo->correo;
+        $data['direccion']= $organismo->direccion;
+        $data['localidad']= $organismo->localidad;
+        return response()->json($data);
     }
 }

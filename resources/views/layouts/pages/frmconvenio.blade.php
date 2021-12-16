@@ -9,7 +9,9 @@
 
 {{-- contenido --}}
 @section('content')
-
+    <?php
+        $id_organismo = null;
+    ?>
     <div class="container g-pt-10">
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -42,7 +44,7 @@
                 <!-- Organismo -->
                 <div class="form-group col-md-6">
                     <label for="institucion" class="control-label">INSTITUCIÓN</label>
-                    <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución">
+                    {{ Form::select('institucion', $organismos,$id_organismo, ['id'=>'institucion','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>
             </div>
             <div class="form-row">
@@ -50,32 +52,32 @@
                 <div class="form-group col">
                     <label for="nombre_titular" class="control-label">NOMBRE DEL TITULAR</label>
                     <input type='text' id="nombre_titular" name="nombre_titular" class="form-control"
-                        placeholder="nombre del titular">
+                        placeholder="nombre del titular" readonly>
                 </div>
                 <!-- Telefono -->
                 <div class="form-group col">
                     <label for="telefono" class="control-label">TELÉFONO</label>
                     <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono"
-                        name="telefono" placeholder="telefono">
+                        name="telefono" placeholder="telefono" readonly>
                 </div>
                 <!-- email -->
                 <div class="form-group col">
                     <label for="correo_ins" class="control-label">CORREO DE LA INSTITUCIÓN</label>
                     <input type="email" class="form-control" onkeypress="return solonumeros(event)" id="correo_ins"
-                        name="correo_ins" placeholder="CORREO DE LA INSTITUCIÓN">
+                        name="correo_ins" placeholder="CORREO DE LA INSTITUCIÓN" readonly>
                 </div>
             </div>
             <div class="form-row">
                 {{-- direccion --}}
                 <div class="form-group col">
                     <label for="direccion" class="control-label">DIRECCIÓN</label>
-                    <input type="text" class="form-control" name="direccion" id="direccion" placeholder="dirección">
+                    <input type="text" class="form-control" name="direccion" id="direccion" placeholder="dirección" readonly>
                 </div>
                 <!--localidad-->
                 <div class="form-group col">
                     <label for="poblacion" class="control-label">LOCALIDAD</label>
                     <input type='text' id="poblacion" name="poblacion"
-                    placeholder="LOCALIDAD" class="form-control">
+                    placeholder="LOCALIDAD" class="form-control" readonly>
                 </div>
             </div>
 
@@ -212,8 +214,8 @@
             <div class="row mt-5">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
-                        {{-- <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a> --}}
-                        <a class="btn btn-danger" id="tbn">Regresar</a>
+                        <a class="btn btn-danger" href="{{ URL::previous() }}">Regresar</a>
+                        {{--<a class="btn btn-danger" id="tbn">Regresar</a>--}}
 
                     </div>
                     <div class="pull-right">
@@ -421,6 +423,33 @@
                         alert( "Ocurrio un error: " + textStatus );
                     });
                 });
+            });
+
+            $('#institucion').change(function(){
+                console.log('print');
+                var organismo_id=$(this).val();
+                if($(organismo_id != '')){
+                    $.ajax({
+                        type: "GET",
+                        url: "/convenios/organismo",
+                        data:{organismo_id:organismo_id, _token:"{{csrf_token()}}"},
+                        contentType: "application/json",              
+                        dataType: "json",
+                        success: function (data) { 
+                            $('#nombre_titular').val(data['titular']);
+                            $('#telefono').val(data['telefono']);
+                            $('#correo_ins').val(data['correo']);
+                            $('#direccion').val(data['direccion']);
+                            $('#poblacion').val(data['localidad']); 
+                        }
+                    });
+                }else{
+                    $('#nombre_titular').val('');
+                    $('#telefono').val('');
+                    $('#correo_ins').val('');
+                    $('#direccion').val('');
+                    $('#poblacion').val('');
+                }
             });
 
         });
