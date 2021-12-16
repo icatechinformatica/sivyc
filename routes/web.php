@@ -357,6 +357,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/convenios/mostrar/{id}', 'webController\ConveniosController@show')->name('convenios.show')
     ->middleware('can:convenios.show');
     Route::post('/convenios/sid/municipios', 'webController\ConveniosController@getmunicipios');
+    Route::get('/convenios/organismo', 'webController\ConveniosController@getcampos');
     /**
      * agregando financiero rutas -- DMC
      */
@@ -578,6 +579,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
     Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
+
+    Route::get('/organismos/inicio', 'organismosController@index')->name('organismos.index');
+    Route::get('/organismos/agregar', 'organismosController@agregar')->name('organismos.agregar');
+    Route::post('/organismos/store', 'organismosController@store')->name('organismos.insert');
+    Route::post('/organismos/update', 'organismosController@update')->name('organismos.update');
+    Route::get('/organismo/municipio','organismosController@muni');
 
 });
 

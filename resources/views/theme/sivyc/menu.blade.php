@@ -57,7 +57,7 @@
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
-
+                        <a class="dropdown-item" href="{{route('organismos.index')}}">Organismos Publicos</a>
                         @can('convenios.index')
                             <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                         @endcan
