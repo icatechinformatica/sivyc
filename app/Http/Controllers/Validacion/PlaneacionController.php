@@ -22,8 +22,7 @@ class PlaneacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         // unidad a buscar
         $unidades = $request->get('busqueda_unidad');
         $mesSearch = $request->get('mesSearch');
@@ -37,7 +36,6 @@ class PlaneacionController extends Controller
         $anioActual = Carbon::now()->year;
 
         $cursos_unidades_planeacion = dataFormatoT2do($unidades, ['PLANEACION'], null, $mesSearch, 'TURNADO_PLANEACION');
-        // dd($cursos_unidades_planeacion);
 
         // las unidades
         $unidadesIndex = DB::table('tbl_unidades')->select('ubicacion')->groupBy('ubicacion')
@@ -299,9 +297,9 @@ class PlaneacionController extends Controller
         }
     }
 
-    protected function generarMemorandum(Request $request)
-    {
+    protected function generarMemorandum(Request $request) {
         // variable pivote
+        $anio = Carbon::now()->year;
         $generarMemo = $request->get('memorandumGenerado');
         $mesReport = $request->get('mesReport');
         switch ($mesReport) {
@@ -366,7 +364,7 @@ class PlaneacionController extends Controller
                     $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
                     $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
                     $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport', 'leyenda'));
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport', 'leyenda', 'anio' ));
                     return $pdf->stream('Memorandum_respuesta_satisfactorio_planeacion.pdf');
                     break;
                 case 'memorandumNegativo':
@@ -412,7 +410,7 @@ class PlaneacionController extends Controller
                     $directorio = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$value}%")->first();
                     $jefeDepto = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('puesto', 'LIKE', "%{$jefdepto}%")->first();
                     $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport', 'leyenda'));
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'reg_unidad', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesReport', 'leyenda', 'anio'));
                     return $pdf->stream('Memorandum_termino_negativo_planeacion.pdf');
                     break;
                 default:

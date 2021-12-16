@@ -786,31 +786,14 @@ class validacionDtaController extends Controller
         }
     }
 
-    protected function getFechaDiff()
-    {
-
+    protected function getFechaDiff() {
         $meses = array("ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
         $anioActual = Carbon::now()->year;
         $mes = $meses[($fecha->format('n')) - 1];
-        /**
-         * obtener mes anterior
-         */
-        $mesAnterior = $meses[($fecha->format('n')) - 2];
         $fechaActual = Carbon::now()->format('d-m-Y');
-        /**
-         * hacemos una consulta a la tabla para obtener el mes correspondiente
-         */
-        $fechaEntregaAnterior = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mesAnterior)->first();
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $mes)->first();
-        $fEAn = $fechaEntregaAnterior->fecha_entrega . "-" . $anioActual;
         $fEAc = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        /**
-         * fechaAnteriorEntrega convertirla a fecha
-         */
-        $convertfEAn = date_create_from_format('d-m-Y', $fEAn);
-        $confEAn = date_format($convertfEAn, 'd-m-Y');
-        $comconfEAn = strtotime($confEAn);
         $comfechaActual = strtotime($fechaActual);
         $convertfEAc = date_create_from_format('d-m-Y', $fEAc);
         $confEAc = date_format($convertfEAc, 'd-m-Y');
