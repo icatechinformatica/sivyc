@@ -1269,7 +1269,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1285,7 +1285,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1302,7 +1302,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1319,7 +1319,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('instructores.id', '=', $idInstructor)
@@ -1370,6 +1370,7 @@ class supreController extends Controller
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tabla_supre.unidad_capacitacion',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
                     'tbl_cursos.clave',
                     'tbl_cursos.ze',
@@ -1399,7 +1400,9 @@ class supreController extends Controller
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tabla_supre.unidad_capacitacion',
-                    'tbl_cursos.curso', 'tbl_cursos.clave',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
+                    'tbl_cursos.curso',
+                    'tbl_cursos.clave',
                     'tbl_cursos.ze', 'tbl_cursos.dura',
                     \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
@@ -1424,7 +1427,9 @@ class supreController extends Controller
         {
             $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tabla_supre.unidad_capacitacion', 'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tabla_supre.unidad_capacitacion',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
+                    'tbl_cursos.curso', 'tbl_cursos.clave',
                     'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),
@@ -1448,7 +1453,9 @@ class supreController extends Controller
         {
             $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tabla_supre.unidad_capacitacion', 'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tabla_supre.unidad_capacitacion',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
+                    'tbl_cursos.curso', 'tbl_cursos.clave',
                     'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),
@@ -1470,7 +1477,7 @@ class supreController extends Controller
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA',
-            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO', 'CLAVE DEL GRUPO',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CLAVE DEL GRUPO',
             'Z.E.', 'HSM', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES'
