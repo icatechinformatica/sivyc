@@ -53,7 +53,7 @@
                     @can('cursos.create')
                         <a class="btn btn-success btn-lg" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
                     @endcan
-                    @can('academico.catalogocursos')
+                    @can('academico.catalogo.cursos')
                         <a class="btn btn-info btn-lg" href="{{route('academico.exportar.cursos')}}">EXPORTAR CURSOS</a>
                     @endcan
                 </div>
