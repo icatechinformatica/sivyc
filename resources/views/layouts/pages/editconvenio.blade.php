@@ -33,6 +33,7 @@
 
             <hr>
 
+
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="no_convenio" class="control-label">N° CONVENIO</label>
@@ -42,31 +43,34 @@
                 <!-- Organismo -->
                 <div class="form-group col-md-6">
                     <label for="institucion" class="control-label">INSTITUCIÓN</label>
-                    <input type="text" class="form-control" id="institucion" name="institucion" placeholder="Institución"
-                        value="{{ $convenios->institucion }}">
+                    <select name="institucion" id="institucion" class="custom-select">
+                        <option value="">Seleccione una institución</option>
+                        @foreach ($organismos as $val)
+                            <option {{ $val->id == $convenios->id_organismo ? 'selected' : '' }} value="{{ $val->id }}">{{ $val->organismo }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <!--Organismo Fin-->
             </div>
 
             <div class="form-row">
                 <!--nombre_titular-->
                 <div class="form-group col">
                     <label for="nombre_titular" class="control-label">NOMBRE DEL TITULAR</label>
-                    <input type='text' id="nombre_titular" name="nombre_titular" class="form-control"
-                        value="{{ $convenios->nombre_titular }}" />
+                    <input type='text' id="nombre_titular" name="nombre_titular" class="form-control" 
+                        value="{{ $organismo->nombre_titular ?? null }}" readonly />
                 </div>
                 <!-- Telefono -->
                 <div class="form-group col">
                     <label for="telefono" class="control-label">TELÉFONO</label>
-                    <input type="text" class="form-control" onkeypress="return solonumeros(event)" id="telefono"
-                        name="telefono" placeholder="telefono" value="{{ $convenios->telefono }}">
+                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="telefono" 
+                        value="{{ $organismo->telefono ?? null }}" readonly>
                 </div>
                 <!-- email -->
+                
                 <div class="form-group col">
                     <label for="correo_ins" class="control-label">CORREO DE LA INSTITUCIÓN</label>
-                    <input type="email" class="form-control" onkeypress="return solonumeros(event)" id="correo_ins"
-                        name="correo_ins" placeholder="{{$convenios->correo_institucion != null ? $convenios->correo_institucion : 'NO AGREGADO'}}"
-                        value="{{$convenios->correo_institucion}}">
+                    <input type="text" class="form-control" id="correo_ins" name="correo_ins" 
+                        placeholder="Correo de la institución" value="{{ $organismo->correo ?? null }}" readonly>
                 </div>
             </div>
 
@@ -74,13 +78,14 @@
                 {{-- direccion --}}
                 <div class="form-group col">
                     <label for="direccion" class="control-label">DIRECCIÓN</label>
-                    <input type="text" name="direccion" class="form-control" id="direccion" value="{{ $convenios->direccion }}"/>
+                    <input type="text" name="direccion" class="form-control" id="direccion" 
+                        value="{{ $organismo->direccion ?? null }}" readonly/>
                 </div>
                 <!--poblacion-->
                 <div class="form-group col">
                     <label for="poblacion" class="control-label">POBLACIÓN</label>
                     <input type='text' id="poblacion" name="poblacion" class="form-control"
-                        value="{{ $convenios->poblacion }}" />
+                        value="{{ $organismo->localidad ?? null }}" readonly/>
                 </div>
             </div>
 
@@ -88,23 +93,14 @@
                 <!--estados-->
                 <div class="form-group col">
                     <label for="estadoG" class="control-label">ESTADO</label>
-                    <select name="estadoG" id="estadoG" class="custom-select">
-                        <option value="">--SELECCIONAR--</option>
-                        @foreach ($estados as $estado)
-                            <option {{ $estado->id == $convenios->id_estado ? 'selected' : '' }} value="{{ $estado->id }}">{{ $estado->nombre }}</option>
-                        @endforeach
-                    </select>
+                    <input type='text' id="estadoG" name="estadoG" class="form-control"
+                        value="{{ $organismo->estado ?? null }}" readonly/>
                 </div>
                 <!--municipio-->
                 <div class="form-group col">
                     <label for="municipio" class="control-label">MUNICIPIO</label>
-                    <select name="municipio" id="municipio" class="custom-select">
-                        <option value="">--SELECCIONAR--</option>
-                        @foreach ($municipios as $municipio)
-                            <option {{ $municipio->id == $convenios->municipio ? 'selected' : '' }}
-                                value="{{ $municipio->id }}">{{ $municipio->muni }}</option>
-                        @endforeach
-                    </select>
+                    <input type='text' id="municipio" name="municipio" class="form-control"
+                        value="{{ $organismo->municipio ?? null }}" readonly/>
                 </div>
             </div>
 
@@ -439,7 +435,7 @@
                 }
             });
 
-            $('#estadoG').on("change", () => {
+            /* $('#estadoG').on("change", () => {
                 var IdEstado = $('#estadoG').val();
                 $('#estadoG option:selected').each(() => {
                     var datos = {idEst: IdEstado, _token: "{{ csrf_token() }}"};
@@ -473,11 +469,41 @@
                         alert( "Ocurrio un error: " + textStatus );
                     });
                 });
-            });
+            }); */
         });
 
         // switch
         $('#chkToggle2').bootstrapToggle();
+
+        $('#institucion').change(function(){
+            var organismo_id=$(this).val();
+            if($(organismo_id != '')){
+                $.ajax({
+                    type: "GET",
+                    url: "/convenios/organismo",
+                    data:{organismo_id:organismo_id, _token:"{{csrf_token()}}"},
+                    contentType: "application/json",              
+                    dataType: "json",
+                    success: function (data) { 
+                        $('#nombre_titular').val(data['titular']);
+                        $('#telefono').val(data['telefono']);
+                        $('#correo_ins').val(data['correo']);
+                        $('#direccion').val(data['direccion']);
+                        $('#poblacion').val(data['localidad']); 
+                        $('#estadoG').val(data['estado']); 
+                        $('#municipio').val(data['municipio']); 
+                    }
+                });
+            }else{
+                $('#nombre_titular').val('');
+                $('#telefono').val('');
+                $('#correo_ins').val('');
+                $('#direccion').val('');
+                $('#poblacion').val('');
+                $('#estadoG').val(''); 
+                $('#municipio').val(''); 
+            }
+        });
 
     </script>
 
