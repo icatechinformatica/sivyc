@@ -85,19 +85,12 @@
                 <!--estados-->
                 <div class="form-group col">
                     <label for="estadoG" class="control-label">ESTADO</label>
-                    <select name="estadoG" id="estadoG" class="custom-select">
-                        <option value="">--SELECCIONAR--</option>
-                        @foreach ($estados as $estado)
-                            <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
-                        @endforeach
-                    </select>
+                    <input type='text' id="estadoG" name="estadoG" placeholder="ESTADO" class="form-control" readonly>
                 </div>
                 <!--municipio-->
                 <div class="form-group col">
-                    <label for="area" class="control-label">MUNICIPIO</label>
-                    <select name="municipio" id="municipio" class="custom-select">
-                        <option value="">--SELECCIONAR--</option>
-                    </select>
+                    <label for="municipio" class="control-label">MUNICIPIO</label>
+                    <input type='text' id="municipio" name="municipio" placeholder="MUNICIPIO" class="form-control" readonly>
                 </div>
             </div>
 
@@ -246,18 +239,6 @@
                     institucion: {
                         required: true
                     },
-                    nombre_titular: {
-                        required: true
-                    },
-                    telefono: {
-                        required: true
-                    },
-                    direccion: {
-                        required: true
-                    },
-                    poblacion: {
-                        required: true
-                    },
                     tipo_convenio: {
                         required: true
                     },
@@ -276,18 +257,12 @@
                     telefono_enlace: {
                         required: true
                     },
-                    municipio: {
-                        required: true
-                    },
                     status: {
                         required: true
                     },
                     archivo_convenio: {
                         extension: "pdf",
                         filesize: 3000000, //max size 2mb
-                    },
-                    estadoG: {
-                        required: true
                     }
                 },
                 messages: {
@@ -297,28 +272,16 @@
                     institucion: {
                         required: "Campo requerido"
                     },
-                    telefono: {
-                        required: "Campo requerido"
-                    },
                     sector: {
                         required: "Campo requerido"
                     },
                     fecha_firma: {
                         required: "Campo requerido"
                     },
-                    poblacion: {
-                        required: "Campo requerido"
-                    },
-                    municipio: {
-                        required: "Campo requerido"
-                    },
                     tipo_convenio: {
                         required: "Campo requerido"
                     },
                     nombre_firma: {
-                        required: "Campo requerido"
-                    },
-                    nombre_titular: {
                         required: "Campo requerido"
                     },
                     nombre_enlace: {
@@ -330,15 +293,9 @@
                     status: {
                         required: "Campo requerido"
                     },
-                    direccion: {
-                        required: "Campo requerido"
-                    },
                     archivo_convenio: {
                         accept: "Sólo se permiten pdf",
                         filesize: "El archivo debe ser menor de 3 MB",
-                    },
-                    estadoG: {
-                        required: "Campo requerido"
                     }
                 }
             });
@@ -389,7 +346,7 @@
                 }
             });
 
-            $('#estadoG').on("change", () => {
+            /* $('#estadoG').on("change", () => {
                 var IdEstado = $('#estadoG').val();
                 $('#estadoG option:selected').each(() => {
                     var datos = {idEst: IdEstado, _token: "{{ csrf_token() }}"};
@@ -423,7 +380,7 @@
                         alert( "Ocurrio un error: " + textStatus );
                     });
                 });
-            });
+            }); */
 
             $('#institucion').change(function(){
                 console.log('print');
@@ -441,6 +398,8 @@
                             $('#correo_ins').val(data['correo']);
                             $('#direccion').val(data['direccion']);
                             $('#poblacion').val(data['localidad']); 
+                            $('#estadoG').val(data['estado']); 
+                            $('#municipio').val(data['municipio']); 
                         }
                     });
                 }else{
@@ -449,6 +408,8 @@
                     $('#correo_ins').val('');
                     $('#direccion').val('');
                     $('#poblacion').val('');
+                    $('#estadoG').val(''); 
+                    $('#municipio').val(''); 
                 }
             });
 
