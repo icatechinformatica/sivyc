@@ -91,5 +91,73 @@
                         
         return true; 
     }
+
+    $('#frm').validate({
+        rules:{
+            tipo:{
+                required: true
+            },
+            unidad:{
+                required: true
+            },
+            id_municipio:{
+                required: true
+            },
+            localidad:{
+                required: true
+            },
+            id_curso:{
+                required: true
+            },
+            inicio:{
+                required: true
+            },
+            termino:{
+                required: true
+            },
+            hini:{
+                required: true
+            },
+            hfin:{
+                required: true
+            },
+            dependencia:{
+                required: true
+            }
+
+        },
+        messages:{
+            tipo:{
+                required: 'Seleccione una opción'
+            },
+            unidad:{
+                required: 'Seleccione una opción'
+            },
+            id_municipio:{
+                required: 'Seleccione una opción'
+            },
+            localidad:{
+                required: 'Seleccione una opción'
+            },
+            id_curso:{
+                required: 'Seleccione una opción'
+            },
+            inicio:{
+                required: 'Agregue una fecha'
+            },
+            termino:{
+                required: 'Agregue una fecha'
+            },
+            hini:{
+                required: 'Agregue un horario'
+            },
+            hfin:{
+                required: 'Agregue un horario'
+            },
+            dependencia:{
+                required: 'Seleccione una opción'
+            }
+        }
+    });
     
     

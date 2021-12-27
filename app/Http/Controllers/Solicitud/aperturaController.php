@@ -16,6 +16,10 @@ use App\Models\cat\catApertura;
 use App\Models\tbl_curso;
 use App\Models\Inscripcion;
 use App\Models\Alumno;
+use App\Agenda;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use Illuminate\Database\QueryException;
 
 class aperturaController extends Controller
 {
@@ -61,18 +65,19 @@ class aperturaController extends Controller
     }
 
     public function index(Request $request){
-        $valor = $grupo = $alumnos = $message = $municipio = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota = NULL;
+        $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota = 
+        $muni = $instructores = $convenio = $localidad = NULL;
         if($request->valor)  $valor = $request->valor;
         elseif(isset($_SESSION['folio'])) $valor = $_SESSION['folio'];
         $_SESSION['alumnos'] = NULL;
         if($valor){
-            $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','e.nombre as espe','a.formacion_profesional as area',
-                'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','c.modalidad as mod','ar.horario','c.horas as dura','c.costo as costo_individual','c.id_especialidad',
+            $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.hini','ar.hfin','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
+                'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','c.modalidad as mod','ar.horario','c.horas as dura','c.costo as costo_individual','c.id_especialidad','ar.comprobante_pago',
                 DB::raw("SUM(CASE WHEN substring(ap.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ap.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
-                'tc.hini','tc.hfin','tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),
-                'tc.id_municipio','tc.status_curso','tc.dia','tc.inicio','tc.termino','tc.plantel',
+                'tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),'ar.id_muni','ar.clave_localidad','ar.organismo_publico',
+                'tc.id_municipio','tc.status_curso','tc.plantel', 'tc.dia', 'tdias',
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','tc.tdias','c.rango_criterio_pago_maximo as cp')
+                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','c.rango_criterio_pago_maximo as cp')
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
                 ->join('cursos as c','ar.id_curso','c.id')
                 ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
@@ -80,13 +85,15 @@ class aperturaController extends Controller
                 ->where('ar.turnado','<>','VINCULACION')
                 ->where('ar.folio_grupo',$valor);
             if($_SESSION['unidades']) $grupo = $grupo->whereIn('ar.unidad',$_SESSION['unidades']);
-            $grupo = $grupo->groupby('ar.id_curso','ar.unidad','ar.horario', 'ar.folio_grupo','ar.tipo_curso','ar.horario','tc.arc','ar.id_cerss',
-                'e.id','a.formacion_profesional','tc.id','c.id')->first();
+            $grupo = $grupo->groupby('ar.id_curso','ar.unidad','ar.horario', 'ar.folio_grupo','ar.tipo_curso','ar.horario','tc.arc','ar.id_cerss','ar.clave_localidad','ar.organismo_publico',
+                'e.id','a.formacion_profesional','tc.id','c.id','ar.hini','ar.hfin','ar.inicio','ar.termino','ar.comprobante_pago','ar.id_muni')->first(); //dd($grupo);
 
             // var_dump($grupo);exit;
             if($grupo){
                 $_SESSION['folio'] = $grupo->folio_grupo;
                 $anio_hoy = date('y');
+                $muni = DB::table('tbl_municipios')->where('id_estado','7')->where('id',$grupo->id_muni)->orderby('muni')->pluck('muni')->first();
+                $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
 
                 $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"))->where('i.folio_grupo',$valor)->get();
                // var_dump($alumnos);exit;
@@ -110,21 +117,33 @@ class aperturaController extends Controller
                 //var_dump($alumnos);exit;
 
                 $plantel = $this->plantel();
-                $depen = $this->dependencia($grupo->unidad);
-                $depen["ICATECH"] = "ICATECH";
-                $depen["CAPACITACION ABIERTA"] = "CAPACITACION ABIERTA";
 
+                if($grupo->organismo_publico AND $grupo->mod=='CAE'){
+                    $convenio_t = DB::table('convenios')->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"),'sector')->where('institucion',$grupo->organismo_publico)->where('activo','true')->get();
+                    $convenio = [];
+                    foreach ($convenio_t as $key=>$value) {
+                        $convenio[$key] = $value;
+                    }
+                }
+                if(!$convenio){
+                    $convenio['no_convenio'] = '0';
+                    $convenio['fecha_firma'] = '';
+                    $convenio['sector'] = null;
+                }
+                
                 $sector = $this->sector();
                 $programa = $this->programa();
 
-                $municipio = $this->municipio();
-                $instructor = $this->instructor($grupo->unidad, $grupo->id_especialidad);
+                $instructor = $this->instructor($grupo->id_instructor);
+                $instructores = $this->instructores($grupo);    //dd($convenio);
                 $exoneracion = $this->exoneracion($this->id_unidad);
                 $exoneracion["NINGUNO"] = "NINGUNO";
+                $efisico = $this->efisico();
 
                 $medio_virtual = $this->medio_virtual();
 
                 $tcurso = $this->tcurso();
+                
                 //var_dump($instructor);exit;
                 if($grupo->clave !='0') $message = "Clave de Apertura Asignada";
                 elseif($grupo->status_curso) $message = "Estatus: ". $grupo->status_curso;
@@ -133,7 +152,7 @@ class aperturaController extends Controller
         }
         $tinscripcion = $this->tinscripcion();
         if(session('message')) $message = session('message');
-        return view('solicitud.apertura.index', compact('message','grupo','alumnos','plantel','depen','sector','programa','municipio','instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota'));
+        return view('solicitud.apertura.index', compact('efisico','message','grupo','alumnos','plantel','depen','sector','programa','instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad'));
     }
 
     public function cgral(Request $request){
@@ -176,14 +195,14 @@ class aperturaController extends Controller
                     ->withInput();
         }else
         */
-
+        
         if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
-                $horas = (strtotime($request->hfin)-strtotime($request->hini))/3600;
+                $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
+                $horas = (strtotime($grupo->hfin)-strtotime($grupo->hini))/3600;
                 if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){
-                    $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
                     $alumnos = $_SESSION['alumnos'];   //var_dump($alumnos);exit;
                     $unidad = DB::table('tbl_unidades')->select('cct','plantel')->where('unidad',$grupo->unidad)->first();
-                    $municipio = $cct = DB::table('tbl_municipios')->select('muni','ze')->where('id',$request->id_municipio)->first();
+                    $municipio = $cct = DB::table('tbl_municipios')->select('muni','ze')->where('id',$grupo->id_muni)->first();
                     $hini = date("h:i a",strtotime($request->hini));
                     $hfin = date("h:i a",strtotime($request->hfin));
                     $hini = str_replace(['am','pm'],['a.m.','p.m.'],$hini);
@@ -202,14 +221,14 @@ class aperturaController extends Controller
                         ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
                         ->first();
                    // var_dump($instructor);exit;
-
+                    
                     if($instructor){
                         //VALIDANDO INSTRUCTOR
                        $existe_instructor = DB::table('tbl_cursos')->where('folio_grupo','<>',$_SESSION['folio'])->where('curp', $instructor->curp)
                             ->where('inicio',$request->inicio)->where('termino',$request->termino)->where('hini',$hini)->where('hfin',$hfin)
                             ->where('dia', trim($request->dia))->where('status_curso','<>','CANCELADO')
                             ->exists();
-
+                            
                         if(!$existe_instructor){
                             /** CRITERIO DE PAGO */
                             if($instructor->cp > $grupo->cp)$cp = $grupo->cp;
@@ -223,19 +242,14 @@ class aperturaController extends Controller
                             else $ciclo = date("Y",strtotime(date("Y"). "- 1 year"))."-".date("Y"); //restar año
 
                             /*REGISTRANDO COSTO Y TIPO DE INSCRIPCION*/
-                            $total_pago = 0;
-                            $abrinscri = $this->abrinscri();
-                            foreach($request->costo as $key=>$pago){
-
-                                $diferencia = $grupo->costo_individual - $pago;
-                                if($pago == 0 ) $tinscripcion = "EXONERACION TOTAL DE PAGO";
-                                elseif($diferencia > 0) $tinscripcion = "EXONERACION PARCIAL DE PAGO";
-                                else $tinscripcion = "PAGO DE INSCRIPCION";
-                                $total_pago += $pago*1;
-                                $abrins = $abrinscri[$tinscripcion];
-                                Alumno::where('id',$key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
-                            }
+                            
                             /*CALCULANDO EL TIPO DE PAGO*/
+                            $total_pago = 0;
+                            foreach($alumnos as $key=>$pago){
+                                
+                                $costo= $pago->costo;
+                                $total_pago += $costo*1;
+                            }
                             $talumno = $grupo->hombre + $grupo->mujer;
                             $costo_total = $grupo->costo_individual * $talumno;
                             $ctotal = $costo_total - $total_pago;
@@ -274,7 +288,12 @@ class aperturaController extends Controller
                             if(!$request->cespecifico) $request->cespecifico = 0;
                             if(!$request->mexoneracion) $request->mexoneracion = 0;
                             if(!$request->cgeneral) $request->cgeneral = 0;
-
+                            if ($request->efsico=='OTRO') {
+                                $efisico = strtoupper($request->efisico_t);
+                            }else {
+                                $efisico = $request->efisico;
+                            }
+                            
                             //$result = tbl_curso::updateOrCreate(
                             $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
                                 ['folio_grupo' => $_SESSION['folio']],
@@ -291,21 +310,21 @@ class aperturaController extends Controller
                                 'curso' => $grupo->curso,
                                 'inicio' => $request->inicio,
                                 'termino' => $termino,
-                                'tdias' => $request->tdias,
-                                'dia' => $request->dia,
+                                //'tdias' => $request->tdias,
+                                //'dia' => $grupo->dia,
                                 'dura' => $dura,
                                 'hini' => $hini,
                                 'hfin' => $hfin,
                                 'horas' => $horas,
                                 'ciclo' => $ciclo,
                                 'plantel' => $request->plantel,
-                                'depen' => $request->depen,
+                                'depen' => $grupo->organismo_publico,
                                 'muni' => $municipio->muni,
                                 'sector' => $request->sector,
                                 'programa' => $request->programa,
                                 'nota' => strtoupper($request->observaciones),
                                 'munidad' => $request->munidad,
-                                'efisico' => strtoupper($request->efisico),
+                                'efisico' => $efisico,
                                 'cespecifico' => strtoupper($request->cespecifico),
                                 'mpaqueteria' => $grupo->mpaqueteria,
                                 'mexoneracion' => $request->mexoneracion,
@@ -347,7 +366,7 @@ class aperturaController extends Controller
                                 'instructor_mespecialidad' => $instructor->mespecialidad,
                                 'medio_virtual' => $request->medio_virtual,
                                 'link_virtual' => $request->link_virtual,
-                                'id_municipio' => $request->id_municipio,
+                                'id_municipio' => $grupo->id_muni,
                                 'id_cerss' => $grupo->id_cerss,
                                 'created_at'=>date('Y-m-d H:i:s')
                             ]
@@ -455,5 +474,407 @@ class aperturaController extends Controller
             DB::table('registro_alumnos_sice')->where('curp',$curp)->update(['eliminado'=>true]);
         }
         return $matricula;
+    }
+
+    public function showCalendar($id){
+        $data['agenda'] =  Agenda::where('id_instructor', '=', $id)->get();
+        return response()->json($data['agenda']);
+    }
+    public function storeCalendar(Request $request) {
+
+        $isEquals = false;
+        $isEquals2 = false;
+        $isEquals3 = false;
+        $isEquals4 = false;
+        $grupo = $_SESSION['grupo'];
+        $fechaInicio = Carbon::parse($request->start)->format('d-m-Y');
+        $fechaTermino = Carbon::parse($request->end)->format('d-m-Y');
+        $horaInicio = Carbon::parse($request->start)->format('H:i');
+        $horaTermino = Carbon::parse($request->end)->format('H:i');
+        $minutos_curso= Carbon::parse($horaTermino)->diffInMinutes($horaInicio);
+        $period = CarbonPeriod::create($request->start,$request->end);
+        $id_instructor = $request->id_instructor;
+        $id_unidad = DB::table('tbl_unidades')->where('unidad','=',$grupo->unidad)->value('id');
+        $id_curso = $grupo->folio_grupo;
+        $id_municipio = $grupo->id_muni;
+        $clave_localidad = $grupo->clave_localidad;
+        $tipo_curso = $grupo->tcapacitacion;
+        $es_lunes= Carbon::parse($fechaInicio)->is('monday');
+        $sumaMesInicio = 0;
+        $sumaMesFin = 0;
+        //CRITERIO DISPONIBILIDAD FECHA Y HORA
+        $data['events'] = Agenda::where('id_instructor', '=', $id_instructor)->get();
+        foreach($data['events'] as $evento) {
+            $date = Carbon::parse($evento->start)->format('d-m-Y');
+            $datefin = Carbon::parse($evento->end)->format('d-m-Y');
+            if (carbon::parse($fechaInicio)->greaterThanOrEqualTo(carbon::parse($date))) {
+                if (carbon::parse($fechaInicio)->lessThanOrEqualTo(carbon::parse($datefin))) {
+                    if ($horaInicio >= Carbon::parse($evento->start)->format('H:i')
+                    && $horaInicio < Carbon::parse($evento->end)->format('H:i')) {
+                        $isEquals = true;
+                    }
+                }
+            }
+            // 
+            if (carbon::parse($fechaTermino)->greaterThanOrEqualTo(carbon::parse($date))) {
+                if (carbon::parse($fechaTermino)->lessThanOrEqualTo(carbon::parse($datefin)) ) {
+                    if ($horaTermino > Carbon::parse($evento->start)->format('H:i')
+                    && $horaTermino <= Carbon::parse($evento->end)->format('H:i')) {
+                    $isEquals2 = true;
+                }
+                }
+            }
+        }
+        //CRITERIO 8hrs
+        foreach ($period as $value) {
+            $total = 0;
+            $a= Carbon::parse($value)->format('d-m-Y 22:00');    //print_r($a.'||');
+            $b= Carbon::parse($value)->format('d-m-Y 00:00');
+            $consulta_fechas8= DB::table('agenda')->select('start','end')
+                                                 ->where('id_instructor','=',$id_instructor)
+                                                 ->where('start','<=',$a)
+                                                 ->where('end','>=',$b)
+                                                 ->orderByRaw("extract(hour from start) asc")
+                                                 ->get();   //dd($consulta_fechas8);
+            $suma= 0;
+            foreach($consulta_fechas8 as $key=>$fechas){
+                $y= Carbon::parse($fechas->end)->format('H:i');
+                $x= Carbon::parse($fechas->start)->format('H:i');   //dd($x.'||'.$y);
+                $minutos= Carbon::parse($y)->diffInMinutes($x);
+                $suma += $minutos; 
+                if( $suma >= 360 ){
+                    if ( ($suma + $minutos_curso) > 480 ) {
+                        $isEquals3= true;
+                    }
+                }
+            }
+        }
+        //CRITERIO 40hrs
+        if ($es_lunes) {
+            $dateini = Carbon::parse($fechaInicio); 
+            $datefin= Carbon::parse($fechaInicio)->addDay(6);
+            $total=0;
+            $count= 0;
+            $array1=[];
+            foreach($period as $pan){
+                $al = Carbon::parse($pan->format('d-m-Y'));
+                $fal = Carbon::parse($datefin->format('d-m-Y'));
+                if($al <= $fal){
+                    $total += $minutos_curso;
+                }else{
+                    $array1[]=$al;
+                }
+            }
+            $consulta_fechas= DB::table('agenda')->select('start','end')
+                                                 ->where('id_instructor','=',$id_instructor)
+                                                 ->where('start','>=',$dateini->format('d-m-Y'))
+                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+                                                 ->get();   
+            foreach($consulta_fechas as $item){
+                $xhora= Carbon::parse($item->start)->format('H:i');
+                $yhora= Carbon::parse($item->end)->format('H:i');
+                $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                $count += $minutos;
+                if ($count > 1800) {
+                    if (($count + $total) > 2400) {
+                        $isEquals4=true;
+                    }
+                }
+            }
+            if(!empty($array1)){
+                $dateini = $array1[0];
+                $es_lunes= Carbon::parse($dateini)->is('monday');
+                if($es_lunes){
+                    $datefin= Carbon::parse($dateini)->addDay(6);
+                    $array2=[];
+                    $total2=0;
+                    $count2=0;
+
+                    foreach($array1 as $item){
+                        $al = Carbon::parse($item->format('d-m-Y'));
+                        $fal = Carbon::parse($datefin->format('d-m-Y'));
+                        if($al <= $fal){
+                            $total2 += $minutos_curso;
+                        }else{
+                            $array2[]= $item;
+                        }
+                    }
+                    $consulta_fechas2= DB::table('agenda')->select('start','end')
+                                                 ->where('id_instructor','=',$id_instructor)
+                                                 ->where('start','>=',$dateini->format('d-m-Y'))
+                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+                                                 ->get();   //dd($consulta_fechas2);
+                    foreach ($consulta_fechas2 as $value) {
+                        $xhora= Carbon::parse($value->start)->format('H:i');
+                        $yhora= Carbon::parse($value->end)->format('H:i');
+                        $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                        $count2 += $minutos;
+                        if ($count > 1800) {
+                            if (($count + $total2) > 2400) {
+                                $isEquals4=true;
+                            }
+                        }
+                    }
+                    if(!empty($array2)){
+                        $isEquals4=true;        //ERROR!!!!!
+                    }
+                }else{
+                    $isEquals4=true;       //ERROR!!!!!
+                }
+            }
+        } else {
+            $date= Carbon::parse($fechaInicio)->startOfWeek();   //dd(gettype($date));   //obtener el primer dia de la semana
+            $datefin= Carbon::parse($date)->addDay(6);
+            $total=0;   //vamos a contar los minutos que dura el curso a la semana y crear array´s para comprobar si el curso comparte días con otra semana
+            $count= 0;
+            $array1=[];
+            foreach($period as $pan){
+                $al = Carbon::parse($pan->format('d-m-Y'));
+                $fal = Carbon::parse($datefin->format('d-m-Y'));
+                if($al <= $fal){
+                    $total += $minutos_curso; 
+                }else{
+                    $array1[]=$pan;
+                }
+            } 
+            $consulta_fechas= DB::table('agenda')->select('start','end')
+                                                 ->where('id_instructor','=',$id_instructor)
+                                                 ->where('start','>=',$date->format('d-m-Y'))
+                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+                                                 ->get();
+            foreach($consulta_fechas as $item){
+                $xhora= Carbon::parse($item->start)->format('H:i');
+                $yhora= Carbon::parse($item->end)->format('H:i');
+                $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                $count += $minutos;
+                if ($count > 1800) {
+                    if (($count + $total)>2400) {
+                        $isEquals4=true;
+                    }
+                }
+            }
+            if(!empty($array1)){
+                $date= $array1[0];
+                $es_lunes= Carbon::parse($date)->is('monday');
+                if($es_lunes){
+                    $datefin= Carbon::parse($date)->addDay(6);
+                    $array2=[];
+                    $total2=0;
+                    $count2=0;
+                    foreach($array1 as $item){
+                        $al = Carbon::parse($item->format('d-m-Y'));
+                        $fal = Carbon::parse($datefin->format('d-m-Y'));
+                        if($al <= $fal){
+                            $total2 += $minutos_curso;
+                        }else{
+                            $array2= $item;
+                        }
+                    }
+                    $consulta_fechas2= DB::table('agenda')->select('start','end')
+                                                 ->where('id_instructor','=',$id_instructor)
+                                                 ->where('start','>=',$date->format('d-m-Y'))
+                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+                                                 ->get();   
+                    foreach ($consulta_fechas2 as $value) {
+                        $xhora= Carbon::parse($value->start)->format('H:i');
+                        $yhora= Carbon::parse($value->end)->format('H:i');
+                        $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                        $count2 += $minutos;
+                        if ($count2>1800) {
+                            if (($count2 + $total2)>2400) {
+                                $isEquals4=true;
+                            }
+                        }
+                    }
+                    if(!empty($array2)){
+                        $isEquals3=true;    
+                    }
+                    
+                }else{
+                    $isEquals4=true;  
+                }
+            }
+        }
+        //CRITERIO 5 MESES
+        for ($i=1; $i < 6; $i++) { 
+            $mesActivo= Carbon::parse($request->end)->addMonth($i);
+            $mes = Carbon::parse($mesActivo)->format('d-m-Y');
+            $mesInicio = Carbon::parse($mes)->firstOfMonth();
+            $mesFin = Carbon::parse($mes)->endOfMonth();
+            $consulta = DB::table('agenda')->select('id')
+                                           ->where('id_instructor','=', $id_instructor)
+                                           ->where('start','>=', $mesInicio)
+                                           ->where('end','<=', $mesFin)
+                                           ->get();
+            $conteo = $consulta->count();
+            if ($conteo >= 1) {
+                $sumaMesInicio += 1;
+            } else {
+                $sumaMesInicio = 0;
+                break;
+            }
+        }
+        for ($i=1; $i < 6; $i++) { 
+            $mesActivoSub= Carbon::parse($request->start)->subMonth($i);
+            $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
+            $mesInicio = Carbon::parse($mes)->firstOfMonth();
+            $mesFin = Carbon::parse($mes)->endOfMonth();
+            $consulta = DB::table('agenda')->select('id')
+                                           ->where('id_instructor','=', $id_instructor)
+                                           ->where('start','>=', $mesInicio)
+                                           ->where('end','<=', $mesFin)
+                                           ->get();
+            $conteo = $consulta->count();
+            if ($conteo >= 1) {
+                $sumaMesFin += 1;
+            } else {
+                $sumaMesFin = 0;
+                break;
+            }
+        }
+        if ($sumaMesInicio==5||$sumaMesFin==5) {
+            return 'iguales5';
+        } else {
+            if ( Carbon::parse($request->stat)->format('m-Y') == Carbon::parse($request->end)->format('m-Y')) {
+                $total = ($sumaMesInicio + $sumaMesFin) + 1;
+                $total1 = $sumaMesInicio + 1;
+                $total2 = $sumaMesFin + 1;
+                if ($total > 5||$total1 > 5||$total2 > 5) {
+                    return 'iguales5';
+                }
+            } else {
+                $total = ($sumaMesInicio + $sumaMesFin) + 2;
+                $total1 = $sumaMesInicio + 2;
+                $total2 = $sumaMesFin +2;
+                if ($total > 5||$total1 > 5||$total2 > 5) {
+                    return 'iguales5';
+                }
+            }
+        }
+        //CRITERIO NO MÁS DE 4 CURSOS EN UN MES
+        $hinimes = Carbon::parse($fechaInicio)->firstOfMonth();
+        $finmes = Carbon::parse($fechaInicio)->endOfMonth();
+        $total_grupos = 0;
+        $consulta_grupos = DB::table('agenda')->select('id_instructor','id_curso')
+                                           ->where('id_instructor','=', $id_instructor)
+                                           ->where('start','>=', $hinimes)
+                                           ->where('end','<=', $finmes)
+                                           ->groupBy('id_instructor','id_curso')
+                                           ->get(); //dd($consulta_grupos);
+        foreach ($consulta_grupos as $valuel) {
+            if ($valuel->id_curso != $id_curso) {
+                $total_grupos += 1;
+                if ($total_grupos > 3) {
+                    return 'iguales6';
+                }
+            }
+        }
+        //CRITERIO UNIDADES
+        if ($tipo_curso != 'A DISTANCIA') {
+            foreach ($period as $value) {
+                $a= Carbon::parse($value)->format('d-m-Y 22:00');    
+                $b= Carbon::parse($value)->format('d-m-Y 00:00');
+                $consulta_unidad= DB::table('agenda')->select('start','end','id_unidad','id_municipio')
+                                                     ->where('id_instructor','=',$id_instructor)
+                                                     ->where('start','<=',$a)
+                                                     ->where('end','>=',$b)
+                                                     ->orderByRaw("extract(hour from start) asc")
+                                                     ->get();    //dd($consulta_unidad);
+                foreach ($consulta_unidad as $fecha) { 
+                    if ($fecha->id_municipio != $id_municipio) {
+                        $tiempo_distance = 20;  //consulta tabla de tiempos
+                        $hini= Carbon::parse($fecha->start)->format('H:i');
+                        $hfin= Carbon::parse($fecha->end)->format('H:i');
+                        if ($hfin == $horaInicio||$hini == $horaTermino) {
+                            return 'iguales7';
+                        }
+                        if ( carbon::parse($hini)->greaterThan(carbon::parse($horaTermino)) ) {
+                            $diferiencia= Carbon::parse($horaTermino)->diffInMinutes($hini);
+                            if ($diferiencia < $tiempo_distance) {
+                                return 'iguales7';
+                            }
+                        }
+                        if( carbon::parse($hfin)->lessThan(carbon::parse($horaInicio)) ){
+                            $diferiencia= Carbon::parse($horaInicio)->diffInMinutes($hfin);
+                            if ($diferiencia < $tiempo_distance) {
+                                return 'iguales7';
+                            }
+                        }
+                    }else {
+                        $tiempo_distance = 30;
+                        $hini= Carbon::parse($fecha->start)->format('H:i');
+                        $hfin= Carbon::parse($fecha->end)->format('H:i');
+                        if ($hfin == $horaInicio||$hini == $horaTermino) {
+                            return 'iguales7';
+                        }
+                        if (carbon::parse($hini)->greaterThan(carbon::parse($horaTermino))) {
+                            $diferiencia= Carbon::parse($horaTermino)->diffInMinutes($hini);
+                            if ($diferiencia < $tiempo_distance) {
+                                return 'iguales7';
+                            }
+                        }
+                        if( carbon::parse($hfin)->lessThan(carbon::parse($horaInicio)) ){
+                            $diferiencia= Carbon::parse($horaInicio)->diffInMinutes($hfin);
+                            if ($diferiencia < $tiempo_distance) {
+                                return 'iguales7';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+           // dd($isEquals);
+        if ($isEquals) {
+            return 'iguales';
+        } else if ($isEquals2) {
+            return 'iguales2';
+        } else if ($isEquals3) {
+            return 'iguales3';
+        } else if ($isEquals4) {
+            return 'iguales4';
+        }else {
+            try { 
+                //dd($id_curso);
+                $titulo = $request->title;
+
+                $agenda = new Agenda();
+
+                $agenda->title = $titulo;
+                $agenda->start = $request->start;
+                $agenda->end = $request->end;
+                $agenda->textColor = $request->textColor;
+                $agenda->observaciones = $request->observaciones;
+                $agenda->id_curso = $id_curso;
+                $agenda->id_instructor = $id_instructor;
+                $agenda->id_unidad = $id_unidad;
+                $agenda->id_municipio = $id_municipio;
+                $agenda->clave_localidad = $clave_localidad;
+                $agenda->iduser_created = Auth::user()->id; //dd($agenda);
+                $agenda->save();
+            } catch(QueryException $ex) {
+                //dd($ex);
+                return 'duplicado'; 
+            }
+        }
+        $dias_agenda = DB::table('agenda')
+            ->select(db::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"))
+            ->where('id_curso',$id_curso)
+            ->orderBy('agenda.start')
+            ->pluck('dia');
+            $dias = [];
+            foreach ($dias_agenda as $dia) {
+                $dias[]= $this->dia($dia);
+            }
+            $dias = array_unique($dias);
+            $dias = implode(",", $dias);
+        $total_dias = DB::table('agenda')
+            ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval)) as dias"))
+            ->where('id_curso',$id_curso)
+            ->pluck('dias');
+            $tdias = 0;
+            foreach ($total_dias as $tdia) {
+                $tdias += 1;
+            } 
+        $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias, 'tdias' => $tdias]);
     }
 }

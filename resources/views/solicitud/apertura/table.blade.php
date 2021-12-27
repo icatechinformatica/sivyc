@@ -30,11 +30,7 @@
                         <td class="text-center">{{ $a->sexo }}</td>
                         <td >{{ $a->escolaridad }}</td>
                         <td class="text-center">{{ $a->tinscripcion }}</td>
-                        @if($grupo->clave=='0' AND !$grupo->status_curso)
-                            <td class="text-center">{{ Form::text('costo['.$a->id_reg.']', $a->costo , ['id'=>'costo['.$a->id_reg.']', 'class' => 'form-control numero', 'required' => 'required', 'size' => 1]) }}</td>
-                        @else
-                            <td class="text-center">{{ $a->costo }}</td>
-                        @endif
+                        <td class="text-center">{{ $a->costo }}</td>
                     </tr>
                  @endforeach                       
             </tbody>                   
@@ -42,12 +38,26 @@
             {{ 'NO REGISTRO DE ALUMNOS'}}
         @endif
     </table>
+    <table class="table table-striped col-md-3">
+        <th>
+            <td>
+                <label for=""><b>COMPROBANTE DE PAGO:</b></label><br>
+                <a href="{{$grupo->comprobante_pago}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  data-placement="top" title="DESCARGAR COMPROBANTE" target="_blank">
+                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                </a>
+            </td>
+        </th>
+    </table>
 </div>
 
  <div class="col-md-12 text-right">                
     @if($grupo->clave=='0' AND !$grupo->status_curso)
-        <button type="button" class="btn bg-warning " id="regresar" ><< REGRESAR A VINCULACI&Oacute;N</button>
-        <button type="submit" class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp;       
+        <button type="button" class="btn bg-warning " id="regresar" ><< REGRESAR A VINCULACI&Oacute;N</button> 
+        {{--<button id="btnShowCalendarFlex" type="button" class="btn btn-amber">Agendar Horario Flexible</button>--}}
+        <button type="submit" class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp; 
+        @if ($instructor)
+        <button id="btnShowCalendar" type="button" class="btn btn-info">Agendar</button>
+        @endif      
     @elseif($grupo->clave!='0' AND $grupo->status_curso=="AUTORIZADO" AND $grupo->status=="NO REPORTADO" AND $mov == "INSERT") 
             <button type="button" class="btn bg-warning" id="inscribir" >ACEPTAR APERTURA </button>    
     @endif

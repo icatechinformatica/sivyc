@@ -44,11 +44,17 @@ class turnarAperturaController extends Controller
         $_SESSION['grupos'] = NULL;        
         $grupos = [];
         if($memo){            
-            $grupos = DB::table('tbl_cursos as tc')->select('tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud')->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo');
+            $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from 
+			(select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
+			 ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) ) 
+			 as hours 
+ 			from agenda
+			where id_curso = tc.folio_grupo) as t) as horas_agenda"),
+                                                            'tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud')->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo');
                if($opt == 'ARC01') $grupos = $grupos->where('tc.munidad',$memo);
                else $grupos = $grupos->where('tc.nmunidad',$memo);
                if($_SESSION['unidades']) $grupos = $grupos->whereIn('tc.unidad',$_SESSION['unidades']);
-               $grupos = $grupos->groupby('tc.id','ar.turnado')->get(); 
+               $grupos = $grupos->groupby('tc.id','ar.turnado')->get();
 
             if(count($grupos)>0){
                 if($opt == 'ARC01' AND $grupos[0]->file_arc01) $file =  $this->path_files.$grupos[0]->file_arc01;
