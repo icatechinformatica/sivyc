@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Solicitud;
 
+use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,6 +12,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use App\Models\cat\catUnidades;
+use App\Models\tbl_curso;
+use App\User;
 use PDF;
 
 class turnarAperturaController extends Controller
@@ -88,9 +91,11 @@ class turnarAperturaController extends Controller
         return redirect('solicitud/apertura')->with('message',$message);
    }
    
-   public function enviar(Request $request){            
+    //  ICATECH/1300/1537/2021
+    public function enviar(Request $request){
         $result = NULL;
-        $message = 'Operación fallida, vuelva a intentar..';        
+        $titulo = ''; $cuerpo = '';
+        $message = 'Operación fallida, vuelva a intentar..';
 
         if($_SESSION['memo']){
             if ($request->hasFile('file_autorizacion')) {               
@@ -99,23 +104,50 @@ class turnarAperturaController extends Controller
                 $file_result = $this->upload_file($file,$name_file);                
                 $url_file = $file_result["url_file"];
                 if($file_result){
-                    switch($_SESSION['opt'] ){
+
+                    switch($_SESSION['opt']){
                         case "ARC01":
+                            $titulo = 'Clave de Apertura';
+                            $cuerpo = 'Solicitud de asignación de clave de apertura del memo '.$_SESSION['memo'];
                             $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
-                            $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);                    
+                            $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);
                             if($alumnos){
                                 $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
                                 ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]);                                
                                               
                             }else $message = "Error al turnar la solictud, volver a intentar.";
                         break;
-                        case "ARC02":    
+                        case "ARC02":
+                            $titulo = 'Modificación de Apertura'; 
+                            $cuerpo = 'Solicitud de corrección o cancelación de apertura del memo '.$_SESSION['memo'];   
                             $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])->where('status_curso','AUTORIZADO')->where('turnado','UNIDAD')->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
                             ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc02' => $url_file]);    
                             //echo $result; exit;                      
                         break;
                     }
-                    if($result)$message = "La solicitud fué turnada correctamente a la DTA"; 
+                    if($result) {
+                        $usersNotification = User::WHEREIN('id', [368,370])->get();
+                        $dataCurso = tbl_curso::select('tbl_cursos.*','tbl_unidades.ubicacion as ucapacitacion')
+                            ->join('tbl_unidades', 'tbl_cursos.unidad', 'tbl_unidades.unidad')
+                            ->where($_SESSION['opt'] == 'ARC01' ? 'munidad' : 'nmunidad', $_SESSION['memo'])->first();
+                        foreach ($usersNotification as $key => $value) {
+                            $partsUnity = explode(',', $value->unidades);
+                            if (!in_array($dataCurso->ucapacitacion, $partsUnity)) {
+                                unset($usersNotification[$key]);
+                            }
+                        }
+
+                        $dataNotificacion = [
+                            'titulo' => $titulo,
+                            'cuerpo' => $cuerpo,
+                            'memo' => $_SESSION['memo'],
+                            'unidad' => $dataCurso->unidad,
+                            'url' => 'https://sivyc.icatech.gob.mx/solicitudes/aperturas ARC01 Y ARC02',
+                        ];
+                        event(new NotificationEvent($usersNotification, $dataNotificacion));
+
+                        $message = "La solicitud fué turnada correctamente a la DTA"; 
+                    }
                     
                 }else $message = "Error al subir el archivo, volver a intentar.";
             }else $message = "Archivo inválido";
@@ -123,7 +155,7 @@ class turnarAperturaController extends Controller
         return redirect('solicitud/apertura/turnar')->with('message',$message);   
    }
    
-   protected function upload_file($file,$name){       
+    protected function upload_file($file,$name){       
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
         $url = $mgs= null;
@@ -141,7 +173,7 @@ class turnarAperturaController extends Controller
         return $data_file;
     }
    
-   public function pdfARC01(Request $request){
+    public function pdfARC01(Request $request){
         if($request->fecha AND $request->memo){        
             $fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;

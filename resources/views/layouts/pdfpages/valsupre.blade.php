@@ -187,16 +187,16 @@ else{
                             <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR</small></td>
                             <td width="10px"><small style="font-size: 8px;">UNIDAD/ A.M. DE CAP.</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">SERVICIO</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">SERVICIO</small></td>
                             <td scope="col" ><small style="font-size: 8px;">NOMBRE</small></td>
                             <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
-                            <td scope="col"><small style="font-size: 8px;">HSM (horas)</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
-                            <td scope="col"><small style="font-size: 8px;">IVA 16%</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
                             <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>
-                            <td scope="col"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
+                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
                             <td scope="col" ><small style="font-size: 8px;">OBSERVACION</small></td>
                         </tr>
                     </thead>

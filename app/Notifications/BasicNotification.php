@@ -6,9 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\supre;
 
-class ValSupreDelegadoNotification extends Notification
+class BasicNotification extends Notification
 {
     use Queueable;
 
@@ -19,7 +18,7 @@ class ValSupreDelegadoNotification extends Notification
      */
     public function __construct($letter)
     {
-        $this->letter =  $letter;
+        $this->letter = $letter;
     }
 
     /**
@@ -55,15 +54,6 @@ class ValSupreDelegadoNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        // $url = '/supre/validacion/pdf/' . $this->valsupre->id;
-        // return [
-        //     'titulo' => 'La suficicencia presupuestal '. $this->valsupre->no_memo .' ha sido validada',
-        //     'supre_id' => $this->valsupre->id,
-        //     'supre_memo' => $this->valsupre->no_memo,
-        //     'supre_unidad' => $this->valsupre->unidad_capacitacion,
-        //     'url' => $url,
-        // ];
-
         return $this->letter;
     }
 }

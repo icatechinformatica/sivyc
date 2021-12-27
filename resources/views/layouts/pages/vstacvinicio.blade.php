@@ -71,10 +71,10 @@
                             <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
                             <td>{{ \Carbon\Carbon::parse($itemData->inicio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($itemData->termino)->format('d/m/Y') }}</td>
                             <td>
-                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Validación de clave de curso" href="{{$itemData->pdf_curso}}" download>
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Validación de clave de curso" href="{{$itemData->pdf_curso}}" target="_blank">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" href="{{$itemData->archivo_alta}}" download>
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" href="{{$itemData->archivo_alta}}" target="_blank">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             </td>

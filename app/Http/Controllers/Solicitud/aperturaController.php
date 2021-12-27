@@ -102,7 +102,7 @@ class aperturaController extends Controller
                     $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ap.curp','ap.nombre','ap.apellido_paterno','ap.apellido_materno','ap.fecha_nacimiento AS FN','ap.sexo AS SEX',
                     DB::raw("CONCAT(ap.apellido_paterno,' ', ap.apellido_materno,' ',ap.nombre) as alumno"),'ar.id_cerss',
                     'ap.estado_civil','ap.discapacidad','ap.nacionalidad','ap.etnia','ap.indigena','ap.inmigrante','ap.madre_soltera','ap.familia_migrante',
-                    'ar.costo','ar.tinscripcion',DB::raw("'0' as calificacion"),'ap.ultimo_grado_estudios as escolaridad','ap.empresa_trabaja as empleado',
+                    'ar.costo','ar.tinscripcion',DB::raw("'0' as calificacion"),'ap.ultimo_grado_estudios as escolaridad','ap.empleado',
                     'ap.matricula', 'ar.id_pre','ar.id', DB::raw("substring(curp,11,1) as sexo"),
                     DB::raw("substring(curp,5,2) as anio_nac"),
                     DB::raw("CASE WHEN substring(curp,5,2) <='".$anio_hoy."' THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
@@ -440,7 +440,8 @@ class aperturaController extends Controller
                         'id_folio' =>  null,
                         'reexpedicion' =>  false,
                         'sexo'=> $a->sexo,
-                        'curp'=> $a->curp
+                        'curp'=> $a->curp,
+                        'empleado'=>$a->empleado
                         ]);
                     }
                 }

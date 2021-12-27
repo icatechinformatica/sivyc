@@ -277,7 +277,7 @@ class cursosController extends Controller
                         DB::raw("LPAD('".$curso->dia_termino."',2,'0') as dia"),
                         DB::raw("'".$this->mes[$curso->mes_termino]."' as mes"),
                         DB::raw("'".$curso->anio_termino."' as anio"),
-                        DB::raw( $duracion.' as horas'),
+                        DB::raw("'".$duracion."' as horas"),
                         DB::raw("'".$curso->cct."' as cct"),
                         DB::raw("'".$curso->unidad."' as unidad"),
                         DB::raw("'CHIAPAS' as estado"),

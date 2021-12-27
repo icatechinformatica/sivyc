@@ -26,6 +26,7 @@ Route::get('/contrato/historial/validado/{id}', 'webController\ContratoControlle
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
 Route::get('/prueba', 'webController\InstructorController@prueba');
+Route::get('/prueba2', 'webController\supreController@prueba2');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
 //Ruta Manual
@@ -355,6 +356,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/convenios/mostrar/{id}', 'webController\ConveniosController@show')->name('convenios.show')
     ->middleware('can:convenios.show');
     Route::post('/convenios/sid/municipios', 'webController\ConveniosController@getmunicipios');
+    Route::get('/convenios/organismo', 'webController\ConveniosController@getcampos');
     /**
      * agregando financiero rutas -- DMC
      */
@@ -581,6 +583,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/calendario/show/{id}', 'Solicitud\aperturaController@showCalendar')->name('calendario.show');
     Route::post('/calendario/guardar','Solicitud\aperturaController@storeCalendar')->name('calendario.store');
+    Route::get('/organismos/inicio', 'organismosController@index')->name('organismos.index');
+    Route::get('/organismos/agregar', 'organismosController@agregar')->name('organismos.agregar');
+    Route::post('/organismos/store', 'organismosController@store')->name('organismos.insert');
+    Route::post('/organismos/update', 'organismosController@update')->name('organismos.update');
+    Route::get('/organismo/municipio','organismosController@muni');
+
 });
 
 /*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
@@ -715,6 +723,7 @@ Route::get('/firma/inicio', 'FirmaElectronica\FirmarController@index')->name('fi
 Route::post('/firma/update', 'FirmaElectronica\FirmarController@update')->name('firma.update');
 Route::post('/firma/sellar', 'FirmaElectronica\FirmarController@sellar')->name('firma.sellar');
 Route::post('/firma/generar', 'FirmaElectronica\FirmarController@generarPDF')->name('firma.generarPdf');
+Route::post('/firma/token', 'firmaElectronica\FirmaController@generarToken')->name('firma.token');
 
 //Notificaciones
 Route::get('send', 'webController\NotificationController@sendNotification');
@@ -727,3 +736,15 @@ Route::post('/autocomplete/alumno', 'Consultas\foliosController@alumnoAutocomple
 //Tramites Recepcionados - Reporte 28102021
 Route::get('/financieros/tramites-recepcionados', 'webController\PagoController@documentospago_reporte')->name('docummentospago.reporte');
 Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoController@tramitesrecepcionados_pdf')->name('documentospago.pdf');
+
+ //Consulta de cursos validados por unidad y accion movil con XLS 17112021
+ Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval')->middleware('can:consultas.cursos.iniciados');
+ Route::get('/consulta/xls/cursos-validados','webController\CursoValidadoController@xls_cursosiniciados')->name('xls-cursosiniciados')->middleware('can:consultas.cursos.iniciados');
+
+//Consulta de Localidades en instructores
+Route::post('/instructores/busqueda/localidad', 'webController\Instructorcontroller@getlocalidades')->name('instructores.busqueda.localidades');
+ Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
+
+//  autocomplete localidad inscripcion alumnos
+Route::get('inscripciones/localidad', 'webController\AlumnoController@localidadAutocomplete')->name('autocomplete.localidad');
+

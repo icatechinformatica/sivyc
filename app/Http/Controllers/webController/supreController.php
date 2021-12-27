@@ -22,9 +22,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\pago;
 use Illuminate\Support\Facades\Auth;
-use App\events\SupreEvent;
-use App\events\ValSupreDelegadoEvent;
-use app\Notifications\SupreNotification;
+use App\Events\NotificationEvent;
+use App\User;
 
 class supreController extends Controller
 {
@@ -33,6 +32,25 @@ class supreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function prueba2()
+    {
+        $notis = auth()->user()->unreadNotifications;
+        dd($notis);
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal',
+            'cuerpo' => 'La suficicencia presupuestal ferjfoi3ur49/kjfer ha sido validada',
+            'memo' => '$event->valsupre->no_memo',
+            'unidad' => '$event->valsupre->unidad_capacitacion',
+            'url' => '/supre/validacion/pdf/',
+        ];
+        $users = User::where('id', 1)->get();
+        // dd($users);
+        event((new NotificationEvent($users, $letter)));
+
+        // event(new ValSupreDelegadoEvent());
+        dd('hola');
+    }
 
     public function solicitud_supre_inicio(Request $request) {
         /**
@@ -44,7 +62,9 @@ class supreController extends Controller
         $unidad = $request->get('unidad');
 
         $supre = new supre();
-        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)->where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
+                        ->where('id', '!=', '0')
+                        ->latest()->paginate(25);
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));
@@ -1000,7 +1020,7 @@ class supreController extends Controller
         $i = 0;
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
