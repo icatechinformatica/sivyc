@@ -23,9 +23,9 @@ class CreateOrganismosPublicosTable extends Migration
             $table->unsignedBigInteger('id_estado');
             $table->unsignedBigInteger('id_municipio');
             $table->unsignedBigInteger('clave_localidad')->nullable();
-            $table->string('telefono')->nullable();
-            $table->string('correo')->nullable();
-            $table->string('direccion')->nullable();
+            $table->string('telefono');
+            $table->string('correo');
+            $table->string('direccion');
             $table->boolean('activo');
 
             $table->timestamps();
