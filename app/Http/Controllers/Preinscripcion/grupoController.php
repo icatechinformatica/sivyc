@@ -280,7 +280,7 @@ class grupoController extends Controller
     {
         if ($_SESSION['folio_grupo']) {
             $comprobante = DB::table('alumnos_registro')->select('comprobante_pago')->where('folio_grupo', $_SESSION['folio_grupo'])->first();
-            if ($comprobante) {
+            if ($comprobante->comprobante_pago) {
                 //echo "pasa"; exit;
                 DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
                 //$_SESSION['folio_grupo']=NULL;
