@@ -16,16 +16,16 @@ class CreateOrganismosPublicosTable extends Migration
         Schema::create('organismos_publicos', function (Blueprint $table) {
             $table->id();
             $table->string('organismo');
-            $table->string('sector');
+            $table->string('sector')->nullable();
             $table->string('poder_pertenece')->nullable();
             $table->string('tipo')->nullable();
             $table->string('nombre_titular')->nullable();
             $table->unsignedBigInteger('id_estado');
             $table->unsignedBigInteger('id_municipio');
             $table->unsignedBigInteger('clave_localidad')->nullable();
-            $table->string('telefono');
-            $table->string('correo');
-            $table->string('direccion');
+            $table->string('telefono')->nullable();
+            $table->string('correo')->nullable();
+            $table->string('direccion')->nullable();
             $table->boolean('activo');
 
             $table->timestamps();

@@ -16,9 +16,11 @@
             $tipo = $curso->tipo_curso;
             $id_cerss = $alumnos[0]->id_cerss;
         }
-        if($alumnos){                  
-            $hini = $alumnos[0]->hini;
-            $hfin = $alumnos[0]->hfin;
+        if($alumnos){ 
+            $hfin = substr($alumnos[0]->horario, 8, 5);
+            $hini = substr($alumnos[0]->horario, 0, 5);                 
+            //$hini = $alumnos[0]->hini;
+            //$hfin = $alumnos[0]->hfin;
             $inicio = $alumnos[0]->inicio;
             $termino = $alumnos[0]->termino;
             $id_muni = $alumnos[0]->id_muni;
@@ -153,18 +155,6 @@
                 $("#turnar").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.turnar')}}"); $('#frm').submit(); });
                 $("#comprobante").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.comprobante')}}"); $('#frm').submit(); }); 
 
-                $('#id_municipio').change(function(){
-                    console.log('print');
-                    var estados_id=$(this).val();
-                    if($(estados_id != '')){
-                        $.get('/preinscripcion/municipio',{estado_id: estados_id}, function(novo){
-                            $('#localidad').empty();
-                            $.each(novo, function(index,value){
-                                $('#localidad').append("<option value='" + index + "'>" + value + "</option>");
-                            });
-                        });
-                    }
-                });
             });
         </script>
     @endsection

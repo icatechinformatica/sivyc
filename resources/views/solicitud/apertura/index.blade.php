@@ -15,16 +15,13 @@
     </div>
     <div class="card card-body" style=" min-height:450px;">       
         <?php
-            $horario = $modalidad = $valor = $munidad = $mov = $disabled = NULL;
+            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = NULL;
             $activar = true;
             if(isset($grupo)){
                 $valor = $grupo->folio_grupo;
                 $modalidad = $grupo->mod;
-                if($grupo->hini){
-                   $grupo->hini = date("H:i",strtotime($grupo->hini));
-                   $grupo->hfin= date("H:i",strtotime($grupo->hfin));
-                   $horario = $grupo->hini." A ".$grupo->hfin;
-                }else $horario = $grupo->horario;                
+                $hfin = substr($grupo->horario, 8, 5);
+                $hini = substr($grupo->horario, 0, 5);               
                 if(isset($grupo->munidad)) $munidad = $grupo->munidad;
                 if($grupo->tcapacitacion=='PRESENCIAL'){
                     $disabled = 'disabled';
@@ -70,8 +67,8 @@
                 <div class="form-group col-md-3">&Aacute;REA: <b>{{ $grupo->area }}</b></div>
                 <div class="form-group col-md-2">MODALIDAD: <b>{{ $grupo->mod}}</b></div>
                 <div class="form-group col-md-3">TIPO CAPACITACI&Oacute;N: <b>{{ $grupo->tcapacitacion}}</b></div>            
-                <div class="form-group col-md-4">DURACI&Oacute;N: <b>{{ $grupo->dura }} hrs.</b></div>    <input type="hidden" name="hini" id="hini" value="{{$grupo->hini}}">
-                <div class="form-group col-md-3" id="hora">HORARIO: <b>{{ $horario }}</b></div> <input type="hidden" name="hfin" id="hfin" value="{{$grupo->hfin}}">
+                <div class="form-group col-md-4">DURACI&Oacute;N: <b>{{ $grupo->dura }} hrs.</b></div>    <input type="hidden" name="hini" id="hini" value="{{$hini}}">
+                <div class="form-group col-md-3" id="hora">HORARIO: <b>{{ $grupo->horario }}</b></div> <input type="hidden" name="hfin" id="hfin" value="{{$hfin}}">
                 <div class="form-group col-md-2">COSTO ALUMNO: <b>{{ $grupo->costo_individual }}</b></div>
                 <div class="form-group col-md-3">HOMBRES: <b>{{ $grupo->hombre }}</b></div>
                 <div class="form-group col-md-2">MUJERES: <b>{{ $grupo->mujer }}</b></div>
