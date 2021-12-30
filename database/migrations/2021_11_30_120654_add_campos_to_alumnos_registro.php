@@ -16,11 +16,10 @@ class AddCamposToAlumnosRegistro extends Migration
         Schema::table('alumnos_registro', function (Blueprint $table) {
             $table->date('inicio')->nullable();
             $table->date('termino')->nullable();
-            $table->string('hini')->nullable();
-            $table->string('hfin')->nullable();
             $table->unsignedBigInteger('id_muni')->nullable();
             $table->unsignedBigInteger('clave_localidad')->nullable();
             $table->string('organismo_publico')->nullable();
+            $table->unsignedBigInteger('id_organismo')->nullable();
             //php artisan migrate --path=database/migrations/2021_11_30_120654_add_campos_to_alumnos_registro.php
         });
     }

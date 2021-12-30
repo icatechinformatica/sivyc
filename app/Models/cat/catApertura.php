@@ -130,13 +130,13 @@ trait catApertura
         $id_curso = $grupo->id;
         $fhini = $grupo->inicio;    //$fhini = '2021-09-01 16:00:00';
         $ffinal = $grupo->termino;    //$ffinal = '2021-09-30 18:00:00';
-        $hini = date('H:i',strtotime(str_replace('.','',$grupo->hini))); 
-        $hfin = date('H:i',strtotime(str_replace('.','',$grupo->hfin)));
+        $hini = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5)))); 
+        $hfin = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 8, 5))));
         $hinimes = Carbon::parse($fhini)->firstOfMonth();   
         $finmes = Carbon::parse($fhini)->endOfMonth();
         $es_lunes= Carbon::parse($fhini)->is('monday');
         $period = CarbonPeriod::create($fhini,$ffinal);
-        $minutos_curso= Carbon::parse($hfin)->diffInMinutes($hini); 
+        $minutos_curso= Carbon::parse($hfin)->diffInMinutes($hini);
         $segundos_curso = Carbon::parse($hfin)->diffInSeconds($hini); //dd($period);
         $id_unidad = DB::table('tbl_unidades')->where('unidad',$grupo->unidad)->pluck('id')->first();
         $id= [];

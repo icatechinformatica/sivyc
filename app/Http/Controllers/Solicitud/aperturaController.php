@@ -198,7 +198,7 @@ class aperturaController extends Controller
         
         if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
                 $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
-                $horas = (strtotime($grupo->hfin)-strtotime($grupo->hini))/3600;
+                $horas = (strtotime($request->hfin)-strtotime($request->hini))/3600;
                 if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){
                     $alumnos = $_SESSION['alumnos'];   //var_dump($alumnos);exit;
                     $unidad = DB::table('tbl_unidades')->select('cct','plantel')->where('unidad',$grupo->unidad)->first();
@@ -367,6 +367,7 @@ class aperturaController extends Controller
                                 'medio_virtual' => $request->medio_virtual,
                                 'link_virtual' => $request->link_virtual,
                                 'id_municipio' => $grupo->id_muni,
+                                'clave_localidad'=>$grupo->clave_localidad,
                                 'id_cerss' => $grupo->id_cerss,
                                 'created_at'=>date('Y-m-d H:i:s')
                             ]

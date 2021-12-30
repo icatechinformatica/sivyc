@@ -4,7 +4,10 @@
     });
      $("#unidad" ).change(function(){
         cmb_curso();
-    });  
+    }); 
+    $("#id_municipio" ).change(function(){
+        cmb_loc();
+    }); 
       
     function cmb_curso(){ 
         var tipo =$('#tipo').val();
@@ -28,6 +31,26 @@
                         
     };
  
+    function cmb_loc(){ 
+        var tipo =$('#id_municipio').val();
+        $("#localidad").empty();                            
+        if(tipo && unidad){
+            $.ajax({
+                type: "GET",
+                url: "municipio",
+                data:{estado_id:tipo, _token:"{{csrf_token()}}"},
+                contentType: "application/json",              
+                dataType: "json",
+                success: function (data) {// console.log(data); 
+                    $.each(data, function () {                                    
+                        //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');                                    
+                        $("#localidad").append('<option value="'+this['clave']+'">'+this['localidad']+'</option>');
+                    });
+                }
+            });                        
+        }
+                        
+    };
 
     if( $('#cerss_ok').is(':checked')){
             $('#cerss').prop('disabled', false);
