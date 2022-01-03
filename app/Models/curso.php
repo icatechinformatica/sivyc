@@ -16,11 +16,13 @@ class curso extends Model
             'objetivo','perfil','solicitud_autorizacion','fecha_validacion','memo_validacion',
             'memo_actualizacion','fecha_actualizacion','unidad_amovil','descripcion','no_convenio','id_especialidad',
             'area', 'cambios_especialidad', 'nivel_estudio', 'categoria','tipo_curso', 'rango_criterio_pago_minimo',
-            'rango_criterio_pago_maximo','estado'
+            'rango_criterio_pago_maximo','estado','observacion'
     ];
 
     protected $casts = [
-        'unidades_disponible' => 'array'
+        'unidades_disponible' => 'array',
+        'dependencia' => 'array',
+        'grupo_vulnerable' => 'array'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

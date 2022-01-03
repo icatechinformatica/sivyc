@@ -480,14 +480,17 @@ class CursosController extends Controller
 
     public function exportar_cursos()
     {
-        $data = curso::SELECT('cursos.id','area.formacion_profesional','especialidades.nombre as especialidad',
-                        'cursos.nombre_curso','cursos.tipo_curso','cursos.modalidad','cursos.categoria',
-                        'cursos.clasificacion','cursos.costo','cursos.horas','cursos.objetivo','cursos.perfil',
-                        'cursos.nivel_estudio',
+        $data = curso::SELECT('cursos.id','area.formacion_profesional','cursos.categoria','dependencia',
+                        'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
+                        'cursos.horas','cursos.objetivo','cursos.perfil','cursos.nivel_estudio',
                         DB::raw("(case when cursos.solicitud_autorizacion <> 'FALSE' then 'SI' else 'NO' end) as etnia"),
-                        'cursos.memo_validacion','cursos.fecha_validacion','cursos.memo_actualizacion',
-                        'cursos.fecha_actualizacion','cursos.rango_criterio_pago_minimo',
-                        'cursos.rango_criterio_pago_maximo','cursos.unidad_amovil')
+                        'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
+                        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
+                        'cursos.modalidad','cursos.clasificacion','observacion','cursos.costo',
+                        'cursos.rango_criterio_pago_minimo',
+                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
+                        'cursos.rango_criterio_pago_maximo',
+                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"))
                         ->WHERE('cursos.estado', '=', 'TRUE')
                         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
                         ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
@@ -497,10 +500,11 @@ class CursosController extends Controller
                         //dd($data[0]);
 
         $cabecera = [
-            'ID','CAMPO','ESPECIALIDAD','NOMBRE','TIPO CURSO','MODALIDAD','CATEGORIA','CLASIFICACION','COSTO','HORAS',
-            'OBJETIVO','PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','MEMO DE VALIDACION',
-            'FECHA DE VALIDACION','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','CRITERIO DE PAGO MINIMO',
-            'CRITERIO DE PAGO MAXIMO','UNIDAD MOVIL'
+            'ID','CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
+            'PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
+            'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CURSO','MODALIDAD','CLASIFICACION',
+            'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
+            'NOMBRE DE CRITERIO MAXIMO'
         ];
         $nombreLayout = "Catalogo de cursos.xlsx";
         $titulo = "Catalogo de cursos";
@@ -691,5 +695,39 @@ class CursosController extends Controller
         $file->storeAs('/uploadFiles/cursos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
         $documentUrl = Storage::url('/uploadFiles/cursos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
+    }
+
+    public function exportar_cursos_all()
+    {
+        $data = curso::SELECT('cursos.id','area.formacion_profesional','cursos.categoria','dependencia',
+                        'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
+                        'cursos.horas','cursos.objetivo','cursos.perfil','cursos.nivel_estudio',
+                        DB::raw("(case when cursos.solicitud_autorizacion <> 'FALSE' then 'SI' else 'NO' end) as etnia"),
+                        'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
+                        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
+                        'cursos.modalidad','cursos.clasificacion','observacion','cursos.costo',
+                        'cursos.rango_criterio_pago_minimo',
+                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
+                        'cursos.rango_criterio_pago_maximo',
+                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"))
+                        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
+                        ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
+                        ->ORDERBY('especialidades.nombre', 'ASC')
+                        ->ORDERBY('cursos.nombre_curso', 'ASC')
+                        ->GET();
+                        //dd($data[0]);
+
+        $cabecera = [
+            'ID','CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
+            'PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
+            'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CURSO','MODALIDAD','CLASIFICACION',
+            'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
+            'NOMBRE DE CRITERIO MAXIMO'
+        ];
+        $nombreLayout = "Catalogo de cursos completo.xlsx";
+        $titulo = "Catalogo de cursos completo";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
     }
 }
