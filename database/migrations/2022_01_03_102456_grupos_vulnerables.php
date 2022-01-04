@@ -17,6 +17,7 @@ class GruposVulnerables extends Migration
             $table->bigIncrements('id');
             $table->string('grupo');
             $table->timestamps();
+            //a
         });
     }
 
