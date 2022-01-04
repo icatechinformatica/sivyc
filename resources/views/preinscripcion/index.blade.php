@@ -9,7 +9,7 @@
 @endsection
 @section('content')   
     <?php 
-        $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = 
+        $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable =
         $hfin = $termino = $inicio = $id_localidad = $comprobante= $id_muni = $organismo =  "";       
         if($curso){
             $id_curso = $curso->id;
@@ -29,7 +29,8 @@
             $unidad = $alumnos[0]->unidad;
             $folio = $alumnos[0]->folio_grupo;
             $turnado = $alumnos[0]->turnado;  
-            $comprobante = $alumnos[0]->comprobante_pago;                      
+            $comprobante = $alumnos[0]->comprobante_pago;  
+            $id_vulnerable = $alumnos[0]->id_vulnerable;                    
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
@@ -107,6 +108,10 @@
                     <div class="form-group col-md-4">
                         <label>ORGANISMO PUBLICO:</label>
                         {{ Form::select('dependencia', $dependencia,$organismo, ['id'=>'dependencia','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    </div> 
+                    <div class="form-group col-md-4">
+                        <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($id_vulnerable){{'checked'}}@endif>&nbsp;&nbsp;GRUPO VULNERABLE</label>      
+                        {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $id_vulnerable, ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}                  
                     </div>                
                 </div>
                 <div class="form-row">

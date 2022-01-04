@@ -74,8 +74,10 @@
                 <div class="form-group col-md-2">MUJERES: <b>{{ $grupo->mujer }}</b></div>
                 <div class="form-group col-md-3">FECHA INICIO: <b>{{ $grupo->inicio }}</b></div>    <input type="hidden" name="inicio" id="inicio" value="{{$grupo->inicio}}">
                 <div class="form-group col-md-2">Fecha T&eacute;rmino: <b>{{ $grupo->termino }}</b></div>   <input type="hidden" name="termino" id="termino" value="{{$grupo->termino}}">
+                @if ($grupo->tdias)
                 <div class="form-group col-md-2">TOTAL DIAS: <b>{{$grupo->tdias}}</b></div>
-                <div class="form-group col-md-4">DIAS: <b>{{$grupo->dia}}</b></div>
+                <div class="form-group col-md-4">DIAS: <b>{{$grupo->dia}}</b></div> 
+                @endif
                 <div class="form-group col-md-3">MUNICIPIO: <b>{{$muni}}</b></div>
                 <div class="form-group col-md-3">LOCALIDAD: <b>{{$localidad}}</b></div>
                 <div class="form-group col-md-3">ORGANISMO PUBLICO: <b>{{$grupo->organismo_publico}}</b></div>

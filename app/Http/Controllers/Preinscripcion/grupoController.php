@@ -67,6 +67,8 @@ class grupoController extends Controller
                 'ar.clave_localidad',
                 'ar.organismo_publico',
                 'ar.id_organismo',
+                'ar.grupo_vulnerable',
+                'ar.id_vulnerable',
                 'ap.ultimo_grado_estudios',
                 'ar.tinscripcion',
                 'ar.unidad',
@@ -115,10 +117,10 @@ class grupoController extends Controller
             ->where('activo', true)
             ->orderby('organismo')
             ->pluck('organismo', 'organismo');
-        $dependencia["CAPACITACION ABIERTA"] = "CAPACITACION ABIERTA";
+        $grupo_vulnerable = DB::table('grupos_vulnerables')->orderBy('grupo')->pluck('grupo','id');
         if (session('message')) $message = session('message');
         $tinscripcion = $this->tinscripcion();
-        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad'));
+        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable'));
     }
 
 
@@ -172,8 +174,6 @@ class grupoController extends Controller
                             $unidad = $a_reg->unidad;
                             $id_curso = $a_reg->id_curso;
                             $horario = $a_reg->horario;
-                            //$hini = $a_reg->hini;
-                            //$hfin = $a_reg->hfin;
                             $inicio = $a_reg->inicio;
                             $termino = $a_reg->termino;
                             $tipo = $a_reg->tipo_curso;
@@ -182,13 +182,13 @@ class grupoController extends Controller
                             $clave_localidad = $a_reg->clave_localidad;
                             $organismo = $a_reg->organismo_publico;
                             $id_organismo = $a_reg->id_organismo;
+                            $grupo_vulnerable = $a_reg->grupo_vunerable;
+                            $id_vulnerable = $a_reg->id_vulnerable;
                         } else {
                             $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
                             $id_unidad = DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
                             $unidad = $request->unidad;
                             $id_curso = $request->id_curso;
-                            //$hini = $request->hini;
-                            //$hfin = $request->hfin;
                             $horario= $request->hini.' A '.$request->hfin;
                             $inicio = $request->inicio;
                             $termino = $request->termino;
@@ -198,6 +198,8 @@ class grupoController extends Controller
                             $clave_localidad = $request->localidad;
                             $organismo = $request->dependencia;
                             $id_organismo = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('id');
+                            $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id',$request->grupo_vulnerable)->value('grupo');
+                            $id_vulnerable = $request->grupo_vulnerable;
                         }
                         if ($id_cerss) $cerrs = true;
                         else $cerrs = NULL;
@@ -207,10 +209,10 @@ class grupoController extends Controller
                                 [
                                     'id_unidad' =>  $id_unidad, 'id_curso' => $id_curso, 'id_especialidad' =>  $id_especialidad, 'organismo_publico' => $organismo, 'id_organismo'=>$id_organismo,
                                     'horario'=>$horario, 'inicio' => $inicio, 'termino' => $termino, 'unidad' => $unidad, 'tipo_curso' => $tipo, 'clave_localidad' => $clave_localidad,
-                                    'cct' => $this->data['cct_unidad'], 'realizo' => $this->realizo, 'no_control' => $matricula, 'ejercicio' => $this->ejercicio, 'id_muni' => $id_muni,
+                                    'cct' => $this->data['cct_unidad'], 'realizo' => str_replace('ñ','Ñ',strtoupper($this->realizo)), 'no_control' => $matricula, 'ejercicio' => $this->ejercicio, 'id_muni' => $id_muni,
                                     'folio_grupo' => $_SESSION['folio_grupo'], 'iduser_created' => $this->id_user,
                                     'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs,
-                                    'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false
+                                    'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable
                                 ]
                             );
                             if ($result) $message = "Operación Exitosa!!";
@@ -255,13 +257,14 @@ class grupoController extends Controller
             else $cerrs = NULL;
             $horario= $request->hini.' A '.$request->hfin;
             $id_organismo = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('id');
+            $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id',$request->grupo->vulnerable)->value('grupo');
             $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
                 [
                     'id_unidad' =>  $id_unidad, 'id_curso' => $request->id_curso, 'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
                     'id_especialidad' =>  $id_especialidad, 'horario'=>$horario, 'unidad' => $request->unidad, 'tipo_curso' => $request->tipo,
                     'iduser_updated' => $this->id_user, 'updated_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_muni' => $request->id_municipio,
-                    'inicio' => $request->inicio, 'termino' => $request->termino, 'id_organismo'=>$id_organismo,
-                    'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $request->id_municipio
+                    'inicio' => $request->inicio, 'termino' => $request->termino, 'id_organismo'=>$id_organismo, 'id_vulnerable' => $request->grupo_vulnerable,
+                    'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $request->id_municipio, 'grupo_vulnerable' => $grupo_vulnerable
                 ]
             );
             if ($result) $message = "Operación Exitosa!!";

@@ -76,6 +76,17 @@
             $( ".cerss" ).hide();                     
         }                
     });
+
+    $("#vulnerable_ok").click(function(){
+        if( $('#vulnerable_ok').prop('checked') ){
+            $('#grupo_vulnerable').prop('disabled', false);  
+        }else {
+            $('#grupo_vulnerable').prop('disabled', 'disabled');                     
+        }                
+    });
+    if( $('#vulnerable_ok').is(':checked')){
+        $('#grupo_vulnerable').prop('disabled', false); 
+    }
    
   }); 
    

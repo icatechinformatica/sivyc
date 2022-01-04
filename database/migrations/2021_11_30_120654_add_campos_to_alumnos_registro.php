@@ -20,6 +20,8 @@ class AddCamposToAlumnosRegistro extends Migration
             $table->unsignedBigInteger('clave_localidad')->nullable();
             $table->string('organismo_publico')->nullable();
             $table->unsignedBigInteger('id_organismo')->nullable();
+            $table->string('grupo_vulnerable')->nullable();
+            $table->unsignedBigInteger('id_vulnerable')->nullable();
             //php artisan migrate --path=database/migrations/2021_11_30_120654_add_campos_to_alumnos_registro.php
         });
     }
