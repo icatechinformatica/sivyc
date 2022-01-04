@@ -804,7 +804,8 @@ class CursosController extends Controller
                         'cursos.rango_criterio_pago_minimo',
                         DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
                         'cursos.rango_criterio_pago_maximo',
-                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"))
+                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),
+                        DB::raw("(case when cursos.estado = true then 'SI' else 'NO' end) as status"))
                         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
                         ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
                         ->ORDERBY('especialidades.nombre', 'ASC')
@@ -817,7 +818,7 @@ class CursosController extends Controller
             'PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
             'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CURSO','MODALIDAD','CLASIFICACION',
             'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
-            'NOMBRE DE CRITERIO MAXIMO'
+            'NOMBRE DE CRITERIO MAXIMO','ACTIVO'
         ];
         $nombreLayout = "Catalogo de cursos completo.xlsx";
         $titulo = "Catalogo de cursos completo";
