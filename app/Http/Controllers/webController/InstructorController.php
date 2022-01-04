@@ -206,15 +206,17 @@ class InstructorController extends Controller
     {
         $instructor = new instructor();
         $getinstructor = $instructor->findOrFail($id);
-        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        $data2 = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
         $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.id','localidad','muni')
                         ->WHERE('tbl_localidades.id','!=','0')
                         ->LEFTJOIN('tbl_municipios','tbl_municipios.id','=','tbl_localidades.clave_municipio')
                         ->ORDERBY('localidad','ASC')->GET();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', '7')
                         ->ORDERBY('muni','ASC')->GET();
-
-        return view('layouts.pages.validarinstructor', compact('getinstructor','data','localidades','municipios'));
+        // var_dump($data2);
+        // echo $data2[0]['unidad'];
+        // echo'pasa';
+        return view('layouts.pages.validarinstructor', compact('getinstructor','data2','localidades','municipios'));
     }
 
     public function rechazo_save(Request $request)
@@ -933,6 +935,7 @@ class InstructorController extends Controller
             $av = instructor::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
         }
         $available = $av->unidades_disponible;
+        dd($av);
         return view('layouts.pages.vstaltabajains', compact('id','available'));
     }
 

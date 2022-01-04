@@ -151,7 +151,7 @@
                     <label for="inputunidad_registra">Unidad que Registra</label>
                     <select class="form-control" name="unidad_registra" id="unidad_registra">
                         <option value="sin especificar">Sin Especificar</option>
-                        @foreach ($data as $value )
+                        @foreach ($data2 as $value)
                         <option value="{{$value->cct}}">{{$value->unidad}}</option>
                         @endforeach
                     </select>
