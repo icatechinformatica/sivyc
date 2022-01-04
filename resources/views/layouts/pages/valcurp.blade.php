@@ -669,7 +669,7 @@
                                     <label for="municipios_mod" class="control-label">Municipio</label>
                                     <select class="form-control" id="municipios_mod" name="municipios_mod">
                                         {{-- @isset($alumno->municipio)<option value="{{ $alumno->municipio }}">
-                                                {{ $alumno->municipio }}@else 
+                                                {{ $alumno->municipio }}@else
                                                 @endisset
                                         --}}
                                         <option value="">--SELECCIONAR--</option>
@@ -688,7 +688,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                
+
                                 <div class="form-group col-md-3">
                                     <label for="cp_mod" class="control-label">Código Postal</label>
                                     <input type="text" class="form-control" id="cp_mod" name="cp_mod" autocomplete="off" value="{{ $alumno->cp }}">

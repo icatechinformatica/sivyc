@@ -74,6 +74,68 @@
         .slider.round:before {
           border-radius: 50%;
         }
+        .multiselect {
+            width: 200px;
+            }
+
+        .selectBox {
+            position: relative;
+            width: 363px;
+        }
+
+        .selectBox select {
+            width: 100%;
+            font-weight: bold;
+        }
+        .selectBox2 {
+            position: relative;
+            width: 730px;
+        }
+
+        .selectBox2 select {
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .overSelect {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        #checkboxes {
+            display: none;
+            border: 1px #dadada solid;
+            width: 363px;
+            height: 110px;
+            overflow: auto;
+        }
+
+        #checkboxes label {
+            display: block;
+        }
+
+        #checkboxes label:hover {
+            background-color: #1e90ff;
+        }
+
+        #checkboxes2 {
+            display: none;
+            border: 1px #dadada solid;
+            width: 730px;
+            height: 110px;
+            overflow: auto;
+        }
+
+        #checkboxes2 label {
+            display: block;
+        }
+
+        #checkboxes2 label:hover {
+            background-color: #1e90ff;
+        }
     </style>
 </head>
 @section('content')
@@ -124,16 +186,26 @@
                 <label for="nombrecurso" class="control-label">NOMBRE DEL CURSO</label>
                 <input type="text" class="form-control" id="nombrecurso" name="nombrecurso" value="{{$cursos[0]->nombre_curso}}">
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label for="unidad_accion_movil" class="control-label">UNIDAD ACCIÓN MÓVIL</label>
                 <select class="form-control" name="unidad_accion_movil" id="unidad_accion_movil">
                     <option value="">--SELECCIONAR--</option>
                     @foreach ($unidadesMoviles as $itemUnidaMovil)
                         <option {{( $cursos[0]->unidad_amovil == $itemUnidaMovil->ubicacion) ? "selected" : ""}} value="{{$itemUnidaMovil->ubicacion}}">{{$itemUnidaMovil->ubicacion}}</option>
                     @endforeach
+                    <option value="0" @if($otrauni == TRUE) selected @endif>OTRO</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-5">
+                <div class="unidad_especificar" @if($otrauni == FALSE) style="display: none" @endif>
+                    <label for="unidad_ubicacion_especificar" class="control-label">ESPECIFIQUE</label>
+                    <input type="text" class="form-control" name="unidad_ubicacion_especificar"
+                        id="unidad_ubicacion_especificar" @if($otrauni == TRUE) value="{{$cursos[0]->unidad_amovil}}" @endif>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
                 <label for="modalidad  " class="control-label">Modalidad</label>
                 <select class="form-control" id="modalidad" name="modalidad">
                   <option value="">--SELECCIONAR--</option>
@@ -142,11 +214,7 @@
                   <option {{ trim($cursos[0]->modalidad) == "EMP" ? "selected" : "" }} value="EMP">EMP</option>
                 </select>
             </div>
-        </div>
-        <div class="form-row">
-
-            <!--clasificacion-->
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label for="clasificacion  " class="control-label">CLASIFICACIÓN</label>
                 <select class="form-control" id="clasificacion" name="clasificacion">
                     <option value="">--SELECCIONAR--</option>
@@ -157,23 +225,22 @@
             </div>
             <!--clasificacion END-->
             <!-- Puesto-->
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label for="costo" class="control-label">COSTO</label>
                 <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="COSTO" value="{{$cursos[0]->costo}}">
             </div>
             <!-- Puesto END-->
             <!-- Duracion -->
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
               <label for="duracion" class="control-label">DURACIÓN EN HORAS</label>
               <input type="text" class="form-control" id="duracion" name="duracion" placeholder="DURACIÓN EN HORAS" value="{{$cursos[0]->horas}}">
             </div>
             <!-- Duracion END -->
         </div>
         <div class="form-row">
-
             <!-- Perfil-->
             <div class="form-group col-md-6">
-              <label for="perfil" class="control-label">PEFIL</label>
+              <label for="perfil" class="control-label">PERFIL</label>
               <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil" value="{{$cursos[0]->perfil}}">
             </div>
             <!-- Perfil END-->
@@ -298,6 +365,50 @@
                 </select>
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <div class="multiselect">
+                    <div class="selectBox" onclick="showCheckboxes()">
+                        <label for="a" class="control-label">GRUPOS VULNERABLES</label>
+                        <select class="form-control">
+                            <option>-SELECCIONAR-</option>
+                        </select>
+                        <div class="overSelect"></div>
+                    </div>
+                    <div id="checkboxes">
+                        @foreach ($gruposvulnerables as $cadwell)
+                        <label for="{{$cadwell->id}}">
+                            <input type="checkbox" id="{{$cadwell->id}}" name="a[{{$cadwell->id}}]" value="{{$cadwell->grupo}}" @foreach ($gv as $data) @if($data == $cadwell->grupo) checked @endif @endforeach/> {{$cadwell->grupo}}
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-8">
+                <div class="multiselect">
+                    <div class="selectBox2" onclick="showCheckboxes2()">
+                        <label for="b" class="control-label">DEPENDENCIAS</label>
+                        <select class="form-control">
+                            <option>-SELECCIONAR-</option>
+                        </select>
+                        <div class="overSelect"></div>
+                    </div>
+                    <div id="checkboxes2">
+                        @foreach ($gruposvulnerables as $cadwell)
+                        {{-- <label for="{cadwell->id}}">
+                            <input type="checkbox" id="{cadwell->id}}" name="b[cadwell->id}}]" value="{cadwell->grupo}}"/> {cadwell->grupo}}
+                        </label> --}}
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="observaciones">OBSERVACIONES</label>
+                <textarea name="observaciones" id="observaciones" cols="30" rows="5" class="form-control"></textarea>
+            </div>
+        </div> --}}
         <hr style="border-color:dimgray">
         <label><h2>Estado General del Curso</h2></label>
         <div class="form-group col-md-4">
@@ -350,4 +461,55 @@
     }
 </script>
 @endsection
+@section('script_content_js')
+    <script type="text/javascript">
+        var expanded = false;
+        var expanded2 = false;
+        $('#unidad_accion_movil').on("change", () => {
+            $("#unidad_accion_movil option:selected").each( () => {
+                var medioEntero = $('#unidad_accion_movil').val();
+                if (!medioEntero) {
+                    $("#unidad_ubicacion_especificar").css("display", "none");
+                    $('#unidad_ubicacion_especificar').rules('remove', 'required');
+                    $('.unidad_especificar').css("display", "none");
+                } else {
+                    if (medioEntero == 0) {
+                        $("#unidad_ubicacion_especificar").css("display", "block");
+                        $('#unidad_ubicacion_especificar').rules('add', {required: true,
+                            messages: {
+                                required: "Campo Requerido"
+                            }
+                        });
+                        $('.unidad_especificar').css("display", "block");
+                    } else {
+                        $("#unidad_ubicacion_especificar").css("display", "none");
+                        $('#unidad_ubicacion_especificar').rules('remove', 'required');
+                        $('.unidad_especificar').css("display", "none");
+                    }
+                }
+            });
+        });
+        function showCheckboxes() {
+            var checkboxes = document.getElementById("checkboxes");
+            if (!expanded) {
+                checkboxes.style.display = "block";
+                expanded = true;
+            } else {
+                checkboxes.style.display = "none";
+                expanded = false;
+            }
+        }
+        function showCheckboxes2() {
+            var checkboxes = document.getElementById("checkboxes2");
+            if (!expanded2) {
+                checkboxes.style.display = "block";
+                expanded2 = true;
+            } else {
+                checkboxes.style.display = "none";
+                expanded2 = false;
+            }
+        }
+    </script>
+@endsection
+
 <!--a-->
