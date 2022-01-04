@@ -14,7 +14,7 @@ class CreateOrganismosPublicosTable extends Migration
     public function up()
     {
         Schema::create('organismos_publicos', function (Blueprint $table) {
-            $table->id();
+            $table->id(); 
             $table->string('organismo');
             $table->string('sector')->nullable();
             $table->string('poder_pertenece')->nullable();
