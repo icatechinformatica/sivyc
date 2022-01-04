@@ -54,10 +54,10 @@
                         <a class="btn btn-success btn-lg" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
                     @endcan
                     @can('academico.catalogo.cursos')
-                        <a class="btn btn-info btn-md" href="{{route('academico.exportar.cursos')}}">EXPORTAR CURSOS</a>
+                        <a class="btn btn-info btn-md" href="{{route('academico.exportar.cursos')}}">EXPORTAR CURSOS ACTIVOS</a>
                     @endcan
                     @can('academico.catalogo.cursosall')
-                        <a class="btn btn-info btn-md" href="{{route('academico.exportar.cursosall')}}">EXPORTAR CURSOS COMPLETOS</a>
+                        <a class="btn btn-info btn-md" href="{{route('academico.exportar.cursosall')}}">EXPORTAR TODOS LOS CURSOS</a>
                     @endcan
                 </div>
             </div>
