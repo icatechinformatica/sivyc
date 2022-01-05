@@ -266,6 +266,7 @@ class AlumnoController extends Controller {
                 if(isset($matricula)){
                     $AlumnoPreseleccion->matricula= $matricula->matricula;
                 }
+                $AlumnoPreseleccion->lgbt = $request->lgbt == 'true' ? true : false;
                 //$AlumnoPreseleccion->acta_nacimiento = $request->file('customFile');
                 $AlumnoPreseleccion->save();
                 // generamos url para carga de archivo
@@ -466,6 +467,7 @@ class AlumnoController extends Controller {
                 'updated_at'=>$hoy,
                 'clave_localidad'=> $request->localidad_mod,
                 'clave_municipio'=> $request->municipios_mod,
+                'lgbt' => $request->lgbt_mod == 'true' ? true : false
             ];
 
             $AlumnoPre_mod=DB::table('alumnos_pre')->WHERE('id', '=', $AspiranteId)->UPDATE($array);

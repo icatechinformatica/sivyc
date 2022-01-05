@@ -102,33 +102,33 @@
                         </div>
                         <div class="form-row">
                             <!--nombre aspirante-->
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="nombre " class="control-label">Nombre del Aspirante</label>
                                 <input type="text" class="form-control" id="nombre" name="nombre" autocomplete="off">
                             </div>
                             <!--nombre aspirante END-->
                             <!-- apellido paterno -->
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="apellidoPaterno" class="control-label">Apellido Paterno</label>
                                 <input type="text" class="form-control" id="apellidoPaterno" name="apellidoPaterno"
                                     autocomplete="off">
                             </div>
                             <!-- apellido paterno END -->
                             <!-- apellido materno-->
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="apellidoMaterno" class="control-label">Apellido Materno</label>
                                 <input type="text" class="form-control" id="apellidoMaterno" name="apellidoMaterno"
                                     autocomplete="off">
                             </div>
                             <!-- apellido materno END-->
                             @php $ka= date('Y-m-d',strtotime($fecha_t)); @endphp
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="">Fecha de nacimiento</label>
                                 <input type="date" readonly name="fecha" id="fecha" class="form-control"
                                     value="{{ $ka }}">
                             </div>
                             <div class="form-group col-md-2">
-                                <label for="sexo" class="control-label">Genero</label>
+                                <label for="sexo" class="control-label">Genero:</label>
                                 <select class="form-control" id="sexo" name="sexo" aria-readonly="true">
                                     @if ($sexo == 'M')
                                         <option value="FEMENINO">MUJER</option>
@@ -138,6 +138,15 @@
                                     @endif
                                 </select>
                             </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="lgbt" class="control-label">Se concidera:</label>
+                                <div class="custom-control custom-checkbox">
+                                    <input value="true" type="checkbox" class="custom-control-input" id="lgbt" name="lgbt">
+                                    <label class="custom-control-label" for="lgbt">LGBTTTI+</label>
+                                </div>
+                            </div>
+
                             <div class="form-group col-md-2">
                                 <label>Nacionalidad:</label>
                                 <input id="nacionalidad" name="nacionalidad" class="form-control" type="text" />
@@ -512,14 +521,14 @@
                             </div>
                             <div class="form-row">
                                 <!--nombre aspirante-->
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="nombre_mod " class="control-label">Nombre del Aspirante</label>
                                     <input type="text" class="form-control" id="nombre_mod" name="nombre_mod"
                                         autocomplete="off" value="{{ $alumno->nombre }}">
                                 </div>
                                 <!--nombre aspirante END-->
                                 <!-- apellido paterno -->
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="apellidoPaterno_mod" class="control-label">Apellido Paterno</label>
                                     <input type="text" class="form-control" id="apellidoPaterno_mod"
                                         name="apellidoPaterno_mod" autocomplete="off"
@@ -527,14 +536,14 @@
                                 </div>
                                 <!-- apellido paterno END -->
                                 <!-- apellido materno-->
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="apellidoMaterno_mod" class="control-label">Apellido Materno</label>
                                     <input type="text" class="form-control" id="apellidoMaterno_mod"
                                         name="apellidoMaterno_mod" autocomplete="off"
                                         value="{{ $alumno->apellido_materno }}">
                                 </div>
                                 <!-- apellido materno END-->
-                                <div class="form-group col-md-2">
+                                <div class="form-group col-md-3">
                                     <label for="">Fecha de nacimiento</label>
                                     @if ($rol == 'admin')
                                         <input type="date" name="fecha_nacimiento_mod" id="fecha_nacimiento_mod"
@@ -570,6 +579,15 @@
                                         @endif
                                     @endif
                                 </div>
+
+                                <div class="form-group col-md-2">
+                                    <label for="lgbt_mod" class="control-label">Se concidera:</label>
+                                    <div class="custom-control custom-checkbox">
+                                        <input {{ $alumno->lgbt ? 'checked' : '' }} value="true" type="checkbox" class="custom-control-input" id="lgbt_mod" name="lgbt_mod">
+                                        <label class="custom-control-label" for="lgbt_mod">LGBTTTI+</label>
+                                    </div>
+                                </div>
+
                                 <div class="form-group col-md-2">
                                     <label>Nacionalidad:</label>
                                     <input id="nacionalidad_mod" name="nacionalidad_mod" class="form-control" type="text"
