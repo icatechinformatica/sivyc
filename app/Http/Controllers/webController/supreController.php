@@ -616,7 +616,7 @@ class supreController extends Controller
     {
         if (isset($request->valor)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $claveCurso = $request->valor;
+            $claveCurso = '3A-22-ALIM-EXT-0001';//$request->valor;
             $Curso = new tbl_curso();
             $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
@@ -624,18 +624,25 @@ class supreController extends Controller
             if($Cursos != NULL)
             {
                 $inicio = date("m-d-Y", strtotime($Cursos->inicio));
+                $inicio = carbon::parse($inicio);
+                // $inicio = strtotime($inicio);
                 $date1 = "2021-05-01";
-                $date1 = date("m-d-Y", strtotime($date1));
+                // $date1 = date("m-d-Y", strtotime($date1));
+                $date1 = carbon::parse($date1);
+                // $date1 = strtotime($date1);
+                // dd($inicio);
 
                 if ($date1 <= $inicio)
                 {
                     $ze2 = 'ze2_2021 AS monto';
                     $ze3 = 'ze3_2021 AS monto';
+                    // dd(gettype($date1) . ' entro1 ' . gettype($inicio));
                 }
                 else
                 {
                     $ze2 = 'monto_hora_ze2 AS monto';
                     $ze3 = 'monto_hora_ze3 AS monto';
+                    // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
                 }
 
                 if ($Cursos->ze == 'II')
@@ -645,6 +652,7 @@ class supreController extends Controller
                 else
                 {
                     $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    // printf('hola');
                 }
 
                 if($criterio != NULL)
@@ -668,12 +676,12 @@ class supreController extends Controller
             {
                 $total = 'N/A';
             }
-            $json=json_encode($total);
+            $json=json_encode($total); //dura 10 cp 6
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
         }
 
-
+        // dd($Cursos->inicio);
         return $json;
     }
 
