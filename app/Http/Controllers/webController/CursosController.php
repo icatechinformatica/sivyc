@@ -87,9 +87,10 @@ class CursosController extends Controller
         $cp = $criterioPago->all();
         $area = new Area();
         $areas = $area->all();
-        $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->GET();
+        $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo','ASC')->GET();
+        $dependencias = DB::table('organismos_publicos')->SELECT('id','organismo')->ORDERBY('organismo','ASC')->GET();
         // mostramos el formulario de cursos
-        return view('layouts.pages.frmcursos', compact('especialidades', 'areas', 'unidadesMoviles', 'cp', 'gruposvulnerables'));
+        return view('layouts.pages.frmcursos', compact('especialidades', 'areas', 'unidadesMoviles', 'cp', 'gruposvulnerables','dependencias'));
     }
 
     /**
@@ -131,8 +132,8 @@ class CursosController extends Controller
                 return redirect()->back()->withErrors(['msg', sprintf('EL CURSO %s YA SE ENCUENTRA REGISTRADO EN LA BASE DE DATOS', $request->nombrecurso)]);
             } else {
                 # por el contrario no hay registros se procede a guardar el registro en la base de datos
-                $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->GET();
-                // $dependencias = DB::table('organismos_publicos')[...]
+                $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo','ASC')->GET();
+                $dependencias = DB::table('organismos_publicos')->SELECT('id','organismo')->ORDERBY('organismo','ASC')->GET();
                 if($request->a != NULL)
                 {
                     foreach($gruposvulnerables as $cadwell)
@@ -146,16 +147,19 @@ class CursosController extends Controller
                         }
                     }
                 }
-                /*foreach($dependencias as $cadwell)
+                if($request->b != NULL)
                 {
-                    foreach($request->b as $data)
+                    foreach($dependencias as $cadwell)
                     {
-                        if($cadwell->dependencia == $data)
+                        foreach($request->b as $data)
                         {
-                            array_push($dp, $data);
+                            if($cadwell->organismo == $data)
+                            {
+                                array_push($dp, $data);
+                            }
                         }
                     }
-                }*/
+                }
                 // dd($gv);
 
                 $cursos = new curso;
@@ -193,7 +197,7 @@ class CursosController extends Controller
                 $cursos->estado = TRUE;
                 // $cursos->observacion = $request->observaciones;
                 $cursos->grupo_vulnerable = $gv;
-                //$cursos->dependencia = $dp;
+                $cursos->dependencia = $dp;
                 $cursos->save();
 
                 # ==================================
@@ -283,17 +287,19 @@ class CursosController extends Controller
 
             $fechaVal = $curso->getMyDateFormat($cursos[0]->fecha_validacion);
             $fechaAct = $curso->getMyDateFormat($cursos[0]->fecha_actualizacion);
-            $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->GET();
+            $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo','ASC')->GET();
+            $dependencias = DB::table('organismos_publicos')->SELECT('id','organismo')->ORDERBY('organismo','ASC')->GET();
             $cadwell = $unidades->WHERE('ubicacion', '=', $cursos[0]->unidad_amovil)->FIRST();
             if($cadwell == NULL)
             {
                 $otrauni = TRUE;
             }
             $gv = $cursos[0]->grupo_vulnerable;
+            $dp = $cursos[0]->dependencia;
             // $dp = $cursos[0]->dependencia;
 
             // dd($gv);
-            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv'));
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp'));
 
         // } catch (\Throwable $th) {
         //     //throw $th;
@@ -343,7 +349,8 @@ class CursosController extends Controller
                     'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria',
                     'cursos.documento_memo_validacion',
                     'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
-                    'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo')
+                    'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo',
+                    'cursos.grupo_vulnerable','cursos.dependencia')
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->GET();
@@ -356,6 +363,18 @@ class CursosController extends Controller
                 ->WHERE('id', '=', $curso[0]->rango_criterio_pago_maximo)
                 ->FIRST();
             $curso[0]->rango_criterio_pago_maximo = $cadwell->perfil_profesional;
+
+            if($curso[0]->grupo_vulnerable != NULL)
+            {
+                $gv = $curso[0]->grupo_vulnerable;
+                $curso[0]->grupo_vulnerable = $gv;
+            }
+
+            if($curso[0]->dependencia != NULL)
+            {
+                $dp = $curso[0]->dependencia;
+                $curso[0]->dependencia = $dp;
+            }
 
             $json= response()->json($curso, 200);
         } else {
@@ -411,8 +430,8 @@ class CursosController extends Controller
                 'tipo_curso' => trim($request->tipo_curso),
             ];
 
-            $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->GET();
-                // $dependencias = DB::table('organismos_publicos')[...]
+            $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo', 'ASC')->GET();
+            $dependencias = DB::table('organismos_publicos')->SELECT('id','organismo')->ORDERBY('organismo','ASC')->GET();
                 if($request->a != NULL)
                 {
                     foreach($gruposvulnerables as $cadwell)
@@ -426,16 +445,20 @@ class CursosController extends Controller
                         }
                     }
                 }
-                /*foreach($dependencias as $cadwell)
+
+                if($request->b != NULL)
                 {
-                    foreach($request->b as $data)
+                    foreach($dependencias as $cadwell)
                     {
-                        if($cadwell->dependencia == $data)
+                        foreach($request->b as $data)
                         {
-                            array_push($dp, $data);
+                            if($cadwell->organismo == $data)
+                            {
+                                array_push($dp, $data);
+                            }
                         }
                     }
-                }*/
+                }
 
             $cursos->WHERE('id', '=', $id)->UPDATE($array);
             if($request->estado != NULL)
@@ -445,7 +468,7 @@ class CursosController extends Controller
                           'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
                           'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
                           'grupo_vulnerable' => $gv,
-                          //'dependencia' => $dp,
+                          'dependencia' => $dp,
                         ]);
             }
             else
@@ -455,7 +478,7 @@ class CursosController extends Controller
                           'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
                           'rango_criterio_pago_maximo' => trim($request->criterio_pago_maximo_edit),
                           'grupo_vulnerable' => $gv,
-                          //'dependencia' => $dp,
+                          'dependencia' => $dp,
                         ]);
             }
 
