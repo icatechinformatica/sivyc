@@ -382,6 +382,11 @@ class AlumnoController extends Controller {
         if ($id_municipio) {
             $localidades = DB::table('tbl_localidades')->where('clave_municipio', $id_municipio->clave_municipio)->get();
         }
+        if ($alumno->municipio) {
+            $temp = Municipio::where('muni', $alumno->municipio)->first();
+            $alumno->clave_municipio = $temp->clave;
+        }
+
         return view('layouts.pages.valcurp', compact('alumno', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio',
                     'estado_civil','etnia','discapacidad','requisitos','vigencia_curp','vigencia_acta','vigencia_migracion',
                     'rol','a','curp', 'localidades', 'municipios'));
