@@ -378,7 +378,7 @@
                     <div id="checkboxes">
                         @foreach ($gruposvulnerables as $cadwell)
                         <label for="{{$cadwell->id}}">
-                            <input type="checkbox" id="{{$cadwell->id}}" name="a[{{$cadwell->id}}]" value="{{$cadwell->grupo}}" @foreach ($gv as $data) @if($data == $cadwell->grupo) checked @endif @endforeach/> {{$cadwell->grupo}}
+                            <input type="checkbox" id="{{$cadwell->id}}" name="a[{{$cadwell->id}}]" value="{{$cadwell->grupo}}" @if($gv != NULL) @foreach ($gv as $data) @if($data == $cadwell->grupo) checked @endif @endforeach @endif/> {{$cadwell->grupo}}
                         </label>
                         @endforeach
                     </div>
