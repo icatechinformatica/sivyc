@@ -127,8 +127,6 @@ class supreController extends Controller
             $id_directorio = $directorio->id;
 
             //Guarda Folios
-            foreach ($request->addmore as $key => $
-            //Guarda Folios
             foreach ($request->addmore as $key => $value)
             {
                 $folio = new folio();
@@ -168,11 +166,19 @@ class supreController extends Controller
                             ->with('success','Error Interno. Intentelo mas tarde.');
                 }
             }
+            // Notificacion!
+            $letter = [
+                'titulo' => 'Suficiencia Presupuestal',
+                'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido agregada para su validación',
+                'memo' => $supre->no_memo,
+                'unidad' => $supre->unidad_capacitacion,
+                'url' => '/supre/validacion/' . $id,
+            ];
+            //$users = User::where('id', 1)->get();
+            // dd($users);
+            //event((new NotificationEvent($users, $letter)));
 
-            //event(new SupreEvent($supre));
-            // dd($supre->id);
-            return redirect()->route('supre-inicio')
-                        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+            return view('layouts.pages.suprecheck',compact('id','id_directorio'));
         }
         else
         {
@@ -237,6 +243,7 @@ class supreController extends Controller
         //dd($request);
         $supre = new supre();
         $curso_validado = new tbl_curso();
+        $id_directorio = $request->id_directorio;
 
         supre::where('id', '=', $request->id_supre)
         ->update(['status' => 'En_Proceso',
@@ -278,8 +285,7 @@ class supreController extends Controller
             $folio->save();
         }
 
-        return redirect()->route('supre-inicio')
-                        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+        return view('layouts.pages.suprecheck',compact('id','id_directorio'));
     }
 
     public function validacion_supre_inicio(){
@@ -308,6 +314,18 @@ class supreController extends Controller
         $supre->status = 'Rechazado';
         //dd($supre);
         $supre->save();
+
+        // Notificacion!
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal Rechazada',
+            'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido rechazada',
+            'memo' => $supre->no_memo,
+            'unidad' => $supre->unidad_capacitacion,
+            'url' => '/supre/solicitud/modificar/' . $supre->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
             return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Rechazado');
     }
@@ -332,7 +350,18 @@ class supreController extends Controller
 
         $id = $request->id;
         $directorio_id = $request->directorio_id;
-        // event(new ValSupreDelegadoEvent($supre));
+
+        // Notificacion!
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal Validada',
+            'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido validada',
+            'memo' => $supre->no_memo,
+            'unidad' => $supre->unidad_capacitacion,
+            'url' => '/supre/validacion/pdf/' . $supre->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
         return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id'));
     }
 
@@ -584,7 +613,10 @@ class supreController extends Controller
     }
 
     protected function getcursostats(Request $request)
-              $claveCurso = $request->valor;//$request->valor;
+    {
+        if (isset($request->valor)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $claveCurso = $request->valor;//$request->valor;
             $Curso = new tbl_curso();
             $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
@@ -650,11 +682,6 @@ class supreController extends Controller
         }
 
         // dd($Cursos->inicio);
-lse{
-            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
-        }
-
-
         return $json;
     }
 
@@ -764,7 +791,61 @@ lse{
             $supre->save();
             return redirect()->route('supre-inicio')
                     ->with('success','Validación de Suficiencia Presupuestal Firmada ha sido cargada con Extio');
- = tbl_curso::SELECT('clave')->WHERE('id', '=', $folio->id_cursos)->FIRST();
+        }
+    }
+
+    public function doc_supre_upload(Request $request)
+    {
+        // dd($request);
+        if ($request->hasFile('doc_supre')) {
+
+            if($request->idsupmod != NULL)
+            {
+                $supre = supre::find($request->idsupmod);
+                $doc = $request->file('doc_supre'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idsupmod, 'supre_firmado'); # invocamos el método
+                $supre->doc_supre = $urldoc; # guardamos el path
+            }
+            else
+            {
+                $supre = supre::find($request->idsupmod2);
+                $doc = $request->file('doc_supre'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idsupmod2, 'supre_firmado'); # invocamos el método
+                $supre->doc_supre = $urldoc; # guardamos el path
+            }
+
+            $supre->save();
+            return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Firmada ha sido cargada con Extio');
+        }
+    }
+
+    public function cancelados_reporte()
+    {
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.vstareportecancelados', compact('unidades'));
+    }
+
+    public function planeacion_reporte()
+    {
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+
+        return view('layouts.pages.vstareporteplaneacion', compact('unidades'));
+    }
+
+    public function folio_edicion_especial($id)
+    {
+        $getdestino = null;
+        $getremitente = null;
+        $getvalida = null;
+        $getelabora = null;
+        $getccp1 = null;
+        $getccp2 = null;
+
+        $folio = folio::WHERE('id_folios', '=', $id)->FIRST();
+        $supre = supre::WHERE('id', '=', $folio->id_supre)->FIRST();
+        $clave = tbl_curso::SELECT('clave')->WHERE('id', '=', $folio->id_cursos)->FIRST();
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $supre->id)->FIRST();
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $supre->unidad_capacitacion)->FIRST();
