@@ -124,7 +124,10 @@ class supreController extends Controller
             $directorio->supre_ccp2 = $request->id_ccp2;
             $directorio->id_supre = $id;
             $directorio->save();
+            $id_directorio = $directorio->id;
 
+            //Guarda Folios
+            foreach ($request->addmore as $key => $
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
             {
@@ -581,10 +584,7 @@ class supreController extends Controller
     }
 
     protected function getcursostats(Request $request)
-    {
-        if (isset($request->valor)){
-            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $claveCurso = '3A-22-ALIM-EXT-0001';//$request->valor;
+              $claveCurso = $request->valor;//$request->valor;
             $Curso = new tbl_curso();
             $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
@@ -650,6 +650,11 @@ class supreController extends Controller
         }
 
         // dd($Cursos->inicio);
+lse{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+
         return $json;
     }
 
@@ -759,35 +764,7 @@ class supreController extends Controller
             $supre->save();
             return redirect()->route('supre-inicio')
                     ->with('success','Validación de Suficiencia Presupuestal Firmada ha sido cargada con Extio');
-        }
-    }
-
-    public function cancelados_reporte()
-    {
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-
-        return view('layouts.pages.vstareportecancelados', compact('unidades'));
-    }
-
-    public function planeacion_reporte()
-    {
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
-
-        return view('layouts.pages.vstareporteplaneacion', compact('unidades'));
-    }
-
-    public function folio_edicion_especial($id)
-    {
-        $getdestino = null;
-        $getremitente = null;
-        $getvalida = null;
-        $getelabora = null;
-        $getccp1 = null;
-        $getccp2 = null;
-
-        $folio = folio::WHERE('id_folios', '=', $id)->FIRST();
-        $supre = supre::WHERE('id', '=', $folio->id_supre)->FIRST();
-        $clave = tbl_curso::SELECT('clave')->WHERE('id', '=', $folio->id_cursos)->FIRST();
+ = tbl_curso::SELECT('clave')->WHERE('id', '=', $folio->id_cursos)->FIRST();
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $supre->id)->FIRST();
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $supre->unidad_capacitacion)->FIRST();
