@@ -211,11 +211,12 @@ class InstructorController extends Controller
                         ->WHERE('tbl_localidades.id','!=','0')
                         ->LEFTJOIN('tbl_municipios','tbl_municipios.id','=','tbl_localidades.clave_municipio')
                         ->ORDERBY('localidad','ASC')->GET();
-        $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', '7')
+        $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
                         ->ORDERBY('muni','ASC')->GET();
+
+        // dd($municipios);
         // var_dump($data2);
         // echo $data2[0]['unidad'];
-        // echo'pasa';
         return view('layouts.pages.validarinstructor', compact('getinstructor','data2','localidades','municipios'));
     }
 
@@ -387,7 +388,7 @@ class InstructorController extends Controller
 
         $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
-        $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.id','localidad')
+        $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.clave','localidad')
                         ->WHERE('tbl_localidades.clave', '=', $datains->clave_loc)
                         ->FIRST();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
@@ -408,10 +409,12 @@ class InstructorController extends Controller
 
     public function save_ins(Request $request)
     {
+        // dd($request->localidad);
         $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
-        $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')
-                    ->WHERE('clave','=', $request->localidad)->FIRST();
+        $locali = DB::TABLE('tbl_localidades')
+                    ->WHERE('clave','=', $request->localidad)->VALUE('localidad');
+        // dd ($locali);
 
         $old = $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno . ' ' . $modInstructor->nombre;
         $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
@@ -436,7 +439,7 @@ class InstructorController extends Controller
         $modInstructor->stps = trim($request->stps);
         $modInstructor->conocer = trim($request->conocer);
         $modInstructor->clave_loc = $request->localidad;
-        $modInstructor->localidad = $locali->localidad;
+        $modInstructor->localidad = $locali;
         if($request->estado != NULL)
         {
             $modInstructor->estado = TRUE;

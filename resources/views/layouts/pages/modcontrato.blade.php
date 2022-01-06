@@ -96,7 +96,7 @@
                     <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
                     <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
                 </div>
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="testigo_icatech" class="control-label">Tipo de Factura</label>
                     <select name="tipo_factura" class="form-control mr-sm-2" id="tipo_factura">
                         @if ($datacon->tipo_factura == 'NORMAL')
@@ -107,7 +107,7 @@
                             <option value="NUEVA" selected>NUEVA</option>
                         @endif
                     </select>
-                </div>
+                </div> --}}
             </div>
             <hr style="border-color:dimgray">
             <h2>Testigos</h2>
