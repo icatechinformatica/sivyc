@@ -23,6 +23,21 @@ $(function(){
     //$('idinsmod').val(id);
     });
 
+    //Modal Subir Supre Firmado
+   $('#DocSupreModal').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id = button.data('id');
+    $('#idsupmod').val(id);
+    });
+
+    //Modal Reemplazar Supre Firmado
+   $('#DocSupreModal2').on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id = button.data('id');
+    document.getElementById('idsupmod2').value = id;
+    //$('idinsmod').val(id);
+    });
+
    //Modal en Contratos
    $('#myModal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
@@ -142,6 +157,15 @@ $(function(){
             $('#anexo_pdf').attr("class", "btn btn-danger");
             $('#anexo_pdf').attr("href", "/supre/tabla-pdf/" + id['0']);
             $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
+            if(id['3'] != "")
+            {
+                $('#supre2_pdf').attr("class", "btn btn-danger");
+                $('#supre2_pdf').attr("href", id['3']);
+            }
+            if(id['3'] == "")
+            {
+                $('#supre2_pdf').attr("class", "btn btn-danger disabled");
+            }
             $('#valsupre2_pdf').attr("class", "btn btn-danger disabled");
         }
         else if(id['1'] == 'Validado')
@@ -152,6 +176,15 @@ $(function(){
             $('#anexo_pdf').attr("href", "/supre/tabla-pdf/" + id['0']);
             $('#valsupre_pdf').attr("class", "btn btn-danger");
             $('#valsupre_pdf').attr("href","/supre/validacion/pdf/" + id['0']);
+            if(id['3'] != "")
+            {
+                $('#supre2_pdf').attr("class", "btn btn-danger");
+                $('#supre2_pdf').attr("href", id['3']);
+            }
+            if(id['3'] == "")
+            {
+                $('#supre2_pdf').attr("class", "btn btn-danger disabled");
+            }
             if(id['2'] != "")
             {
                 $('#valsupre2_pdf').attr("class", "btn btn-danger");

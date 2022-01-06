@@ -13,7 +13,7 @@ class contratos extends Model
 
     protected $fillable = ['id_contrato','numero_contrato','cantidad_letras1','fecha_firma','municipio',
     'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero','arch_factura',
-    'fecha_status','chk_rechazado','fecha_rechazo'
+    'fecha_status','chk_rechazado','fecha_rechazo','tipo_factura'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
