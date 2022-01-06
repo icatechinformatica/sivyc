@@ -207,7 +207,7 @@
                             @if ($localidades == NULL)
                                 <option value="sin especificar">SELECCIONE</option>
                             @else
-                                <option value="{{$localidades->id}}">{{$localidades->localidad}}</option>
+                                <option value="{{$localidades->clave}}">{{$localidades->localidad}}</option>
                             @endif
                         </select>
                     </div>
