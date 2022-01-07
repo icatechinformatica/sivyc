@@ -120,11 +120,22 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio</label>
-                    <input name='municipio' id='municipio' type="text" class="form-control" aria-required="true">
+                    <select class="form-control" name="municipio" id="municipio" onchange="local()">
+                        <option value="sin especificar">Sin Especificar</option>
+                        @foreach ($municipios as $data)
+                            <option value="{{$data->muni}}">{{$data->muni}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="form-group col-md-3">
+                <!--<div class="form-group col-md-3">
                     <label for="inputasentamiento">Asentamiento</label>
                     <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true">
+                </div>-->
+                <div class="form-gorup col-md-3">
+                    <label for="inputlocalidad">Localidad</label>
+                    <select class="form-control" name="localidad" id="localidad">
+                        <option value="sin especificar">Sin Especificar</option>
+                    </select>
                 </div>
             </div>
             <div id="div4" class="form-row d-none d-print-none">
@@ -142,7 +153,7 @@
                     <label for="inputunidad_registra">Unidad que Registra</label>
                     <select class="form-control" name="unidad_registra" id="unidad_registra">
                         <option value="sin especificar">Sin Especificar</option>
-                        @foreach ($data as $value )
+                        @foreach ($data2 as $value)
                         <option value="{{$value->cct}}">{{$value->unidad}}</option>
                         @endforeach
                     </select>
@@ -171,4 +182,41 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script>
+    function local() {
+        // var x = document.getElementById("municipio").value;
+        // console.log(x);
+
+        var valor = document.getElementById("municipio").value;
+        var datos = {valor: valor};
+        console.log('hola');
+        var url = '/instructores/busqueda/localidad';
+        var request = $.ajax
+        ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+
+        request.done(( respuesta) =>
+        {
+            $("#localidad").empty();
+            var selectL = document.getElementById('localidad'),
+            option,
+            i = 0,
+            il = respuesta.length;
+            // console.log(il);
+            // console.log( respuesta[1].id)
+            for (; i < il; i += 1)
+            {
+                newOption = document.createElement('option');
+                newOption.value = respuesta[i].clave;
+                newOption.text=respuesta[i].localidad;
+                // selectL.appendChild(option);
+                selectL.add(newOption);
+            }
+        });
+    }
+</script>
 @endsection

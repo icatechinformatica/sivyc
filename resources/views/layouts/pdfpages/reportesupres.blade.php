@@ -85,7 +85,7 @@
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <br><h6>"2021, Año de la Independencia"</h6>
+            <br><h6>{{$distintivo}}</h6>
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
@@ -107,6 +107,7 @@
                             <td width="8px"><small style="font-size: 8px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR</small></td>
                             <td scope="col"><small style="font-size: 8px;">UNIDAD/A.M. DE CAP.</small></td>
+                            <td scope="col"><small style="font-size: 8px;">SERVICIO</small></td>
                             <td scope="col" ><small style="font-size: 8px;">CURSO</small></td>
                             <td scope="col"><small style="font-size: 8px;">CLAVE DEL GRUPO</small></td>
                             <td scope="col" ><small style="font-size: 8px;">Z.E.</small></td>
@@ -132,6 +133,11 @@
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->fecha}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->nombre}} {{$item->apellidoPaterno}} {{$item->apellidoMaterno}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->unidad_capacitacion}}</small></td>
+                                @if ($item->tipo_curso == 'CURSO')
+                                    <td scope="col" class="text-center"><small style="font-size: 8px;">CURSO</small></td>
+                                @else
+                                    <td scope="col" class="text-center"><small style="font-size: 8px;">CERTIFICACION EXTRAORDINARIA</small></td>
+                                @endif
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->curso}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->clave}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 8px;">{{$item->ze}}</td>

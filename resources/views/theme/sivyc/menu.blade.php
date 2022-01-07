@@ -285,13 +285,13 @@
                         @can('consultas.instructor')
                             <a class="dropdown-item" href="{{route('consultas.instructor')}}">Instructores</a>
                         @endcan
-                        <!--can('academico.catalogocursos')-->
+                        @can('academico.catalogo.cursos')
                             <a class="dropdown-item" href="{{route('academico.exportar.cursos')}}">Exportar Cursos</a>
-                        <!--endcan-->
-                        <!--can('academico.catalogoinstructores')-->
+                        @endcan
+                        @can('academico.catalogo.instructores')
                             <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalExpIns">Exportar Instructores</a>
-                        <!--endcan-->
+                        @endcan
                         @can('planeacion.estadisticas')
                             <a class="dropdown-item" href="{{route('reportes.planeacion.estadisticas')}}">Estadisticas del Formato T</a>
                         @endcan
@@ -349,9 +349,13 @@
                         @foreach (auth()->user()->unreadNotifications as $cadwell)
                             <a href={{$cadwell->data['url']}} class="dropdown-item">
                                 <i class="fas fa-envelope mr-2"></i> {{$cadwell->data['titulo']}}
+                                <br>{{$cadwell->data['cuerpo']}}
                                 <br><span class="float-right text-muted text-sm">{{$cadwell->created_at->diffForHumans()}}</span>
                             </a>
                         @endforeach
+                        <a href='#' class="dropdown-item">
+                            <i class="fas fa-history mr-2"></i> Historial de Notificaciónes
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item avatar dropdown">

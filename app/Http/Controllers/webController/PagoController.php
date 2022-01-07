@@ -318,8 +318,9 @@ class PagoController extends Controller
             $modalidad = 'A DISTANCIA';
         }
         $unidad = $request->unidad;
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
 
-        $pdf = PDF::loadView('layouts.pdfpages.reportetramitesrecepcionados', compact('data','tipo', 'modalidad','unidad'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportetramitesrecepcionados', compact('data','tipo', 'modalidad','unidad','distintivo'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Stream('Tramites recepcionados de la unidad '. $request->unidad . $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
     }

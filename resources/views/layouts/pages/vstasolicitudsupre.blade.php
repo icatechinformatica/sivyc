@@ -180,6 +180,9 @@
             </tbody>
             <tfoot>
                 <tr>
+                    <td colspan="8">
+                        {{ $data->appends(request()->query())->links() }}
+                    </td>
                 </tr>
             </tfoot>
         </table>

@@ -35,6 +35,8 @@ class supreController extends Controller
 
     public function prueba2()
     {
+        $notis = auth()->user()->unreadNotifications;
+        dd($notis);
         $letter = [
             'titulo' => 'Suficiencia Presupuestal',
             'cuerpo' => 'La suficicencia presupuestal ferjfoi3ur49/kjfer ha sido validada',
@@ -60,7 +62,9 @@ class supreController extends Controller
         $unidad = $request->get('unidad');
 
         $supre = new supre();
-        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)->where('id', '!=', '0')->latest()->get();
+        $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
+                        ->where('id', '!=', '0')
+                        ->latest()->paginate(25);
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));
@@ -120,6 +124,7 @@ class supreController extends Controller
             $directorio->supre_ccp2 = $request->id_ccp2;
             $directorio->id_supre = $id;
             $directorio->save();
+            $id_directorio = $directorio->id;
 
             //Guarda Folios
             foreach ($request->addmore as $key => $value)
@@ -161,11 +166,21 @@ class supreController extends Controller
                             ->with('success','Error Interno. Intentelo mas tarde.');
                 }
             }
+            // Notificacion!
+            $letter = [
+                'titulo' => 'Suficiencia Presupuestal',
+                'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido agregada para su validación',
+                'memo' => $supre->no_memo,
+                'unidad' => $supre->unidad_capacitacion,
+                'url' => '/supre/validacion/' . $id,
+            ];
+            //$users = User::where('id', 1)->get();
+            // dd($users);
+            //event((new NotificationEvent($users, $letter)));
 
-            //event(new SupreEvent($supre));
-            // dd($supre->id);
             return redirect()->route('supre-inicio')
-                        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+                ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+            // return view('layouts.pages.suprecheck',compact('id','id_directorio'));
         }
         else
         {
@@ -227,9 +242,10 @@ class supreController extends Controller
 
     public function solicitud_mod_guardar(Request $request)
     {
-        //dd($request);
+        dd($request);
         $supre = new supre();
         $curso_validado = new tbl_curso();
+        $id_directorio = $request->id_directorio;
 
         supre::where('id', '=', $request->id_supre)
         ->update(['status' => 'En_Proceso',
@@ -270,9 +286,9 @@ class supreController extends Controller
             $folio->status = 'En_Proceso';
             $folio->save();
         }
-
         return redirect()->route('supre-inicio')
-                        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+        // return view('layouts.pages.suprecheck',compact('id','id_directorio'));
     }
 
     public function validacion_supre_inicio(){
@@ -301,6 +317,18 @@ class supreController extends Controller
         $supre->status = 'Rechazado';
         //dd($supre);
         $supre->save();
+
+        // Notificacion!
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal Rechazada',
+            'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido rechazada',
+            'memo' => $supre->no_memo,
+            'unidad' => $supre->unidad_capacitacion,
+            'url' => '/supre/solicitud/modificar/' . $supre->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
             return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Rechazado');
     }
@@ -325,7 +353,18 @@ class supreController extends Controller
 
         $id = $request->id;
         $directorio_id = $request->directorio_id;
-        // event(new ValSupreDelegadoEvent($supre));
+
+        // Notificacion!
+        $letter = [
+            'titulo' => 'Suficiencia Presupuestal Validada',
+            'cuerpo' => 'La suficicencia presupuestal ' . $supre->no_memo . ' ha sido validada',
+            'memo' => $supre->no_memo,
+            'unidad' => $supre->unidad_capacitacion,
+            'url' => '/supre/validacion/pdf/' . $supre->id,
+        ];
+        //$users = User::where('id', 1)->get();
+        // dd($users);
+        //event((new NotificationEvent($users, $letter)));
         return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id'));
     }
 
@@ -580,7 +619,7 @@ class supreController extends Controller
     {
         if (isset($request->valor)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $claveCurso = $request->valor;
+            $claveCurso = $request->valor;//$request->valor;
             $Curso = new tbl_curso();
             $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
@@ -588,18 +627,25 @@ class supreController extends Controller
             if($Cursos != NULL)
             {
                 $inicio = date("m-d-Y", strtotime($Cursos->inicio));
+                $inicio = carbon::parse($inicio);
+                // $inicio = strtotime($inicio);
                 $date1 = "2021-05-01";
-                $date1 = date("m-d-Y", strtotime($date1));
+                // $date1 = date("m-d-Y", strtotime($date1));
+                $date1 = carbon::parse($date1);
+                // $date1 = strtotime($date1);
+                // dd($inicio);
 
                 if ($date1 <= $inicio)
                 {
                     $ze2 = 'ze2_2021 AS monto';
                     $ze3 = 'ze3_2021 AS monto';
+                    // dd(gettype($date1) . ' entro1 ' . gettype($inicio));
                 }
                 else
                 {
                     $ze2 = 'monto_hora_ze2 AS monto';
                     $ze3 = 'monto_hora_ze3 AS monto';
+                    // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
                 }
 
                 if ($Cursos->ze == 'II')
@@ -609,6 +655,7 @@ class supreController extends Controller
                 else
                 {
                     $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    // printf('hola');
                 }
 
                 if($criterio != NULL)
@@ -632,12 +679,12 @@ class supreController extends Controller
             {
                 $total = 'N/A';
             }
-            $json=json_encode($total);
+            $json=json_encode($total); //dura 10 cp 6
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
         }
 
-
+        // dd($Cursos->inicio);
         return $json;
     }
 
@@ -747,6 +794,32 @@ class supreController extends Controller
             $supre->save();
             return redirect()->route('supre-inicio')
                     ->with('success','Validación de Suficiencia Presupuestal Firmada ha sido cargada con Extio');
+        }
+    }
+
+    public function doc_supre_upload(Request $request)
+    {
+        // dd($request);
+        if ($request->hasFile('doc_supre')) {
+
+            if($request->idsupmod != NULL)
+            {
+                $supre = supre::find($request->idsupmod);
+                $doc = $request->file('doc_supre'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idsupmod, 'supre_firmado'); # invocamos el método
+                $supre->doc_supre = $urldoc; # guardamos el path
+            }
+            else
+            {
+                $supre = supre::find($request->idsupmod2);
+                $doc = $request->file('doc_supre'); # obtenemos el archivo
+                $urldoc = $this->pdf_upload($doc, $request->idsupmod2, 'supre_firmado'); # invocamos el método
+                $supre->doc_supre = $urldoc; # guardamos el path
+            }
+
+            $supre->save();
+            return redirect()->route('supre-inicio')
+                    ->with('success','Suficiencia Presupuestal Firmada ha sido cargada con Extio');
         }
     }
 
@@ -925,6 +998,7 @@ class supreController extends Controller
     protected function planeacion_reporte_canceladospdf(Request $request){
         $i = 0;
         set_time_limit(0);
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
 
         if ($request->filtro == "general")
         {
@@ -960,9 +1034,10 @@ class supreController extends Controller
                            ->GET();
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportefolioscancelados', compact('data','distintivo'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
+        return view('layouts.pdfpages.reportefolioscancelados', compact('data'));
     }
 
     public function tablasupre_pdf($id){
@@ -1016,7 +1091,7 @@ class supreController extends Controller
         $i = 0;
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'cursos.nombre_curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -1196,6 +1271,7 @@ class supreController extends Controller
     protected function generate_report_supre_pdf($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
         set_time_limit(0);
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
 
         if ($filtrotipo == "general")
         {
@@ -1204,7 +1280,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1220,7 +1296,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1237,7 +1313,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1254,7 +1330,7 @@ class supreController extends Controller
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
-                           'tbl_cursos.mujer')
+                           'tbl_cursos.mujer', 'tbl_cursos.tipo_curso')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('instructores.id', '=', $idInstructor)
@@ -1286,7 +1362,7 @@ class supreController extends Controller
             $i++;
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportesupres', compact('data','recursos','risr','riva','cantidad','iva','distintivo'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $fecha1 . ' - '. $fecha2 .'.pdf');
     }
@@ -1305,6 +1381,7 @@ class supreController extends Controller
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tabla_supre.unidad_capacitacion',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
                     'tbl_cursos.clave',
                     'tbl_cursos.ze',
@@ -1334,7 +1411,9 @@ class supreController extends Controller
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tabla_supre.unidad_capacitacion',
-                    'tbl_cursos.curso', 'tbl_cursos.clave',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
+                    'tbl_cursos.curso',
+                    'tbl_cursos.clave',
                     'tbl_cursos.ze', 'tbl_cursos.dura',
                     \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
@@ -1359,7 +1438,9 @@ class supreController extends Controller
         {
             $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tabla_supre.unidad_capacitacion', 'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tabla_supre.unidad_capacitacion',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
+                    'tbl_cursos.curso', 'tbl_cursos.clave',
                     'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),
@@ -1383,7 +1464,9 @@ class supreController extends Controller
         {
             $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
-                    'tabla_supre.unidad_capacitacion', 'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tabla_supre.unidad_capacitacion',
+                    \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINAARIA' END AS tipo_curso"),
+                    'tbl_cursos.curso', 'tbl_cursos.clave',
                     'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),
@@ -1405,7 +1488,7 @@ class supreController extends Controller
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA',
-            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'CURSO', 'CLAVE DEL GRUPO',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CLAVE DEL GRUPO',
             'Z.E.', 'HSM', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES'
@@ -1418,3 +1501,4 @@ class supreController extends Controller
         }
     }
 }
+//A

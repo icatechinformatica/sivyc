@@ -26,7 +26,7 @@ Route::get('/contrato/historial/validado/{id}', 'webController\ContratoControlle
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
 Route::get('/prueba', 'webController\InstructorController@prueba');
-Route::get('/prueba2', 'webController\supreController@prueba2');
+Route::get('/prueba2', 'webController\supreController@getcursostats');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
 //Ruta Manual
@@ -681,6 +681,7 @@ Route::get('planeacion/generar/reporte/xls/{filtrotipo}/{idcurso}/{unidad}/{idIn
 
 //exportar catalogos de cursos e instructores08072021
 Route::get('academico/catalogo/exportar/cursos', 'webController\CursosController@exportar_cursos')->name('academico.exportar.cursos');
+Route::get('academico/catalogo/exportar/cursosall', 'webController\CursosController@exportar_cursos_all')->name('academico.exportar.cursosall');
 Route::get('academico/catalogo/exportar/instructores', 'webController\InstructorController@exportar_instructores')->name('academico.exportar.instructores');
 Route::get('academico/catalogo/exportar/instructores_especialidades', 'webController\InstructorController@exportar_instructoresByEspecialidad')->name('academico.exportar.instructoresByespecialidad');
 
@@ -728,3 +729,11 @@ Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoControl
  //Consulta de cursos validados por unidad y accion movil con XLS 17112021
  Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval')->middleware('can:consultas.cursos.iniciados');
  Route::get('/consulta/xls/cursos-validados','webController\CursoValidadoController@xls_cursosiniciados')->name('xls-cursosiniciados')->middleware('can:consultas.cursos.iniciados');
+
+//Consulta de Localidades en instructores
+Route::post('/instructores/busqueda/localidad', 'webController\Instructorcontroller@getlocalidades')->name('instructores.busqueda.localidades');
+ Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
+
+//  autocomplete localidad inscripcion alumnos
+Route::get('inscripciones/localidad', 'webController\AlumnoController@localidadAutocomplete')->name('autocomplete.localidad');
+

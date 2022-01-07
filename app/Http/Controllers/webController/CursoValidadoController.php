@@ -258,16 +258,8 @@ class CursoValidadoController extends Controller
         }
 
         $unidades = DB::TABLE('tbl_unidades')->SELECT('id','ubicacion')->WHERE('cct', 'LIKE', '%07EIC%')->GET();
-        // dd($initer);
-
-        return view('consultas.cursosiniciados', compact('data','unidad','inicio','termino','unidades','initer'));
-    }
-
-    public function xls_cursosiniciados(Request $request)
-    {
         $unidad = $request->get('unidad');
         $inicio = $request->get('inicio');
-        $termino = $request->get('termino');
         $initer = $request->get('initer');
 
         $data = $data = DB::TABLE('tbl_cursos')->SELECT('tbl_cursos.unidad','tbl_cursos.espe',

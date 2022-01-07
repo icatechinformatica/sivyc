@@ -206,8 +206,18 @@ class InstructorController extends Controller
     {
         $instructor = new instructor();
         $getinstructor = $instructor->findOrFail($id);
-        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        return view('layouts.pages.validarinstructor', compact('getinstructor','data'));
+        $data2 = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.id','localidad','muni')
+                        ->WHERE('tbl_localidades.id','!=','0')
+                        ->LEFTJOIN('tbl_municipios','tbl_municipios.id','=','tbl_localidades.clave_municipio')
+                        ->ORDERBY('localidad','ASC')->GET();
+        $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
+                        ->ORDERBY('muni','ASC')->GET();
+
+        // dd($municipios);
+        // var_dump($data2);
+        // echo $data2[0]['unidad'];
+        return view('layouts.pages.validarinstructor', compact('getinstructor','data2','localidades','municipios'));
     }
 
     public function rechazo_save(Request $request)
@@ -233,6 +243,8 @@ class InstructorController extends Controller
         'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
         'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
         'PALENQUE'];
+        $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')
+                    ->WHERE('clave','=', $request->localidad)->FIRST();
 
         $instructor = instructor::find($request->id);
 
@@ -252,6 +264,8 @@ class InstructorController extends Controller
         $instructor->estado = TRUE;
         $instructor->unidades_disponible = $unidades;
         $instructor->lastUserId = $userId;
+        $instructor->clave_loc = $request->localidad;
+        $instructor->localidad = $locali->localidad;
 
         //Creacion de el numero de control
         $uni = substr($request->unidad_registra, -2);
@@ -374,6 +388,11 @@ class InstructorController extends Controller
 
         $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
+        $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.clave','localidad')
+                        ->WHERE('tbl_localidades.clave', '=', $datains->clave_loc)
+                        ->FIRST();
+        $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
+                        ->ORDERBY('muni','ASC')->GET();
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
         // consulta
@@ -385,13 +404,17 @@ class InstructorController extends Controller
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                         ->GET();
-        return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado'));
+        return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado', 'localidades','municipios'));
     }
 
     public function save_ins(Request $request)
     {
+        // dd($request->localidad);
         $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
+        $locali = DB::TABLE('tbl_localidades')
+                    ->WHERE('clave','=', $request->localidad)->VALUE('localidad');
+        // dd ($locali);
 
         $old = $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno . ' ' . $modInstructor->nombre;
         $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
@@ -415,6 +438,8 @@ class InstructorController extends Controller
         $modInstructor->extracurricular = trim($request->extracurricular);
         $modInstructor->stps = trim($request->stps);
         $modInstructor->conocer = trim($request->conocer);
+        $modInstructor->clave_loc = $request->localidad;
+        $modInstructor->localidad = $locali;
         if($request->estado != NULL)
         {
             $modInstructor->estado = TRUE;
@@ -913,6 +938,7 @@ class InstructorController extends Controller
             $av = instructor::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
         }
         $available = $av->unidades_disponible;
+        dd($av);
         return view('layouts.pages.vstaltabajains', compact('id','available'));
     }
 
@@ -1257,6 +1283,25 @@ class InstructorController extends Controller
         if(count($data)>0){
             return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
         }
+    }
+
+    protected function getlocalidades(Request $request)
+    {
+        if (isset($request->valor)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $nombreMuni = $request->valor;
+            $idMuni = DB::TABLE('tbl_municipios')->SELECT('clave')->WHERE('muni', '=', $nombreMuni)->FIRST();
+            $locals = DB::TABLE('tbl_localidades')->SELECT('clave', 'localidad')
+                        ->WHERE('tbl_localidades.clave_municipio', '=', $idMuni->clave)
+                        ->ORDERBY('localidad','ASC')
+                        ->GET();
+            $json=json_encode($locals);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+
+        return $json;
     }
 }
 

@@ -93,27 +93,26 @@ class rdcdController extends Controller
      public function none($id){
          $consulta=DB::table('tbl_banco_folios as tb')->select('tb.finicial', 'tb.ffinal', 'tb.total', 'tb.facta','tb.unidad','tb.mod')
          ->where('tb.id','=',$id)
-         ->get();//dd($consulta);
+         ->get();
 
          $cuerpo=DB::table('tbl_folios as tf')
          ->select(DB::raw('min(tf.folio) as mini'), 
          DB::raw('max(tf.folio) as maxi'), 
          'tf.fecha_expedicion',
-         DB::raw("(sum(case when tf.movimiento='EXPEDIDO' then 1 else 0 end) )as expedidos"),
+         DB::raw("(sum(case when tf.movimiento in ('EXPEDIDO','REEXPEDIDO','DUPLICADO') then 1 else 0 end) )as expedidos"),
          DB::raw("(sum(case when tf.movimiento='CANCELADO' then 1 else 0 end) )as cancelados"))
          ->where('tf.folio', '<=', $consulta[0]->ffinal)
          ->where('tf.folio', '>=', $consulta[0]->finicial)
          ->groupBy('tf.id_curso','tf.fecha_expedicion')
-         ->get();//dd($cuerpo);
+         ->get();
  
          $fcancelados=DB::table('tbl_folios as tf')
          ->select('tf.folio as cance','tf.motivo')
-         ->where('tf.mod', '=', $consulta[0]->mod)
          ->where('tf.unidad', '=', $consulta[0]->unidad)
          ->where('tf.folio', '<=', $consulta[0]->ffinal)
          ->where('tf.folio', '>=', $consulta[0]->finicial)
          ->where('tf.movimiento', '=', 'CANCELADO')
-         ->get();//dd($fcancelados);
+         ->get();
 
          $cct=DB::table('tbl_unidades')
          ->select('cct','dunidad')->where('unidad', '=', $consulta[0]->unidad)
