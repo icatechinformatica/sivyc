@@ -127,7 +127,7 @@
                                 <input type="date" readonly name="fecha" id="fecha" class="form-control"
                                     value="{{ $ka }}">
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="sexo" class="control-label">Genero:</label>
                                 <select class="form-control" id="sexo" name="sexo" aria-readonly="true">
                                     @if ($sexo == 'M')
@@ -138,16 +138,7 @@
                                     @endif
                                 </select>
                             </div>
-
-                            <div class="form-group col-md-2">
-                                <label for="lgbt" class="control-label">Se concidera:</label>
-                                <div class="custom-control custom-checkbox">
-                                    <input value="true" type="checkbox" class="custom-control-input" id="lgbt" name="lgbt">
-                                    <label class="custom-control-label" for="lgbt">LGBTTTI+</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label>Nacionalidad:</label>
                                 <input id="nacionalidad" name="nacionalidad" class="form-control" type="text" />
                             </div>
@@ -241,25 +232,32 @@
                         <!--formulario-->
                         <br>
                         <div class="form-row">
-                            <div class="form-group col-md-3">
+                            <div class="form-group col">
+                                <div class="custom-control custom-checkbox">
+                                    <input value="true" type="checkbox" class="custom-control-input" id="lgbt" name="lgbt">
+                                    <label class="custom-control-label" for="lgbt">LGBTTTI+</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group col">
                                 <label><input id="madre_soltera" name="madre_soltera" type="checkbox"
                                         value="true" />&nbsp;&nbsp;¿Es Madre Soltera?</label>
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col">
                                 <label><input id="familia_migrante" name="familia_migrante" type="checkbox"
                                         value="true" />&nbsp;&nbsp;¿Tiene Familia Migrante?</label>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col">
                                 <label><input id="inmigrante" name="inmigrante" type="checkbox" value="true">&nbsp;&nbsp;¿Es
                                     Inmigrante?</label>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col">
                                 <label>
                                     <input id="indigena" name="indigena" type="checkbox" value="true" />&nbsp;&nbsp¿Es
                                     Indígena?
                                 </label>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col">
                                 {{ Form::select('etnia', $etnia, null, ['id' => 'etnia', 'class' => 'form-control mr-sm-2', 'placeholder' => '--ETNIA--']) }}
                             </div>
                         </div>
@@ -553,7 +551,7 @@
                                             class="form-control" value="{{ $alumno->fecha_nacimiento }}" readonly>
                                     @endif
                                 </div>
-                                <div class="form-group col-md-2">
+                                <div class="form-group col-md-3">
                                     <label for="sexo_mod" class="control-label">Genero</label>
                                     @if ($rol == 'admin')
                                         @if ($alumno->sexo == 'MASCULINO')
@@ -579,16 +577,7 @@
                                         @endif
                                     @endif
                                 </div>
-
-                                <div class="form-group col-md-2">
-                                    <label for="lgbt_mod" class="control-label">Se concidera:</label>
-                                    <div class="custom-control custom-checkbox">
-                                        <input {{ $alumno->lgbt ? 'checked' : '' }} value="true" type="checkbox" class="custom-control-input" id="lgbt_mod" name="lgbt_mod">
-                                        <label class="custom-control-label" for="lgbt_mod">LGBTTTI+</label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-md-2">
+                                <div class="form-group col-md-3">
                                     <label>Nacionalidad:</label>
                                     <input id="nacionalidad_mod" name="nacionalidad_mod" class="form-control" type="text"
                                         value="{{ $alumno->nacionalidad }}" />
@@ -715,7 +704,13 @@
                             <!--formulario-->
                             <br>
                             <div class="form-row">
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input {{ $alumno->lgbt ? 'checked' : '' }} value="true" type="checkbox" class="custom-control-input" id="lgbt_mod" name="lgbt_mod">
+                                        <label class="custom-control-label" for="lgbt_mod">LGBTTTI+</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-2">
                                     @if ($alumno->madre_soltera == 'true')
                                         <label><input id="madre_soltera_mod" name="madre_soltera_mod" type="checkbox"
                                                 value="true" checked />&nbsp;&nbsp;¿Es Madre Soltera?</label>
@@ -724,7 +719,7 @@
                                                 value="true" />&nbsp;&nbsp;¿Es Madre Soltera?</label>
                                     @endif
                                 </div>
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-2">
                                     @if ($alumno->familia_migrante == 'true')
                                         <label><input id="familia_migrante_mod" name="familia_migrante_mod" type="checkbox"
                                                 value="true" checked />&nbsp;&nbsp;¿Tiene Familia Migrante?</label>
@@ -1595,7 +1590,13 @@
                 },
                 localidad_mod: {
                     required: true,
-                }
+                },
+                fecha_nacimiento_mod: {
+                    required: true
+                },
+                sexo_mod: {
+                    required: true
+                },
             },
             messages: {
                 curp: {
@@ -1603,7 +1604,13 @@
                 },
                 localidad_mod: {
                     required: 'Seleccione la localidad'
-                }
+                },
+                fecha_nacimiento_mod: {
+                    required: 'Por favor ingrese fecha de nacimiento'
+                },
+                sexo_mod: {
+                    required: 'Por favor Elegir su genero'
+                },
             }
         });
 
