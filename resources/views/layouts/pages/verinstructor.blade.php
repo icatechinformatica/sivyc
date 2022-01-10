@@ -186,14 +186,19 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="inputentidad">Entidad</label>
-                        <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true" disabled value="{{$datains->entidad}}">
+                        <select class="form-control" name="entidad" id="entidad" onchange="local2()" disabled>
+                            <option value="sin especificar">Sin Especificar</option>
+                            @foreach ($estados as $items)
+                                <option value="{{$items->id}}" @if($datains->entidad == $items->nombre) selected @endif>{{$items->nombre}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputmunicipio">Municipio</label>
                         <select class="form-control" name="municipio" id="municipio" onchange="local()" disabled>
                             <option value="sin especificar">Sin Especificar</option>
                             @foreach ($municipios as $item)
-                                <option value="{{$item->muni}}" @if($datains->municipio == $item->muni) selected @endif>{{$item->muni}}</option>
+                                <option value="{{$item->id}}" @if($datains->municipio == $item->muni) selected @endif>{{$item->muni}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -558,6 +563,42 @@
                 newOption = document.createElement('option');
                 newOption.value = respuesta[i].clave;
                 newOption.text=respuesta[i].localidad;
+                // selectL.appendChild(option);
+                selectL.add(newOption);
+            }
+        });
+    }
+
+    function local2() {
+        // var x = document.getElementById("municipio").value;
+        // console.log(x);
+
+        var valor = document.getElementById("entidad").value;
+        var datos = {valor: valor};
+        // console.log('hola');
+        var url = '/instructores/busqueda/municipio';
+        var request = $.ajax
+        ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+
+        request.done(( respuesta) =>
+        {
+            $("#municipio").empty();
+            var selectL = document.getElementById('municipio'),
+            option,
+            i = 0,
+            il = respuesta.length;
+            // console.log(il);
+            // console.log( respuesta[1].id)
+            for (; i < il; i += 1)
+            {
+                newOption = document.createElement('option');
+                newOption.value = respuesta[i].id;
+                newOption.text=respuesta[i].muni;
                 // selectL.appendChild(option);
                 selectL.add(newOption);
             }
