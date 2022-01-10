@@ -178,6 +178,8 @@ class supreController extends Controller
             // dd($users);
             //event((new NotificationEvent($users, $letter)));
 
+            // return redirect()->route('supre-inicio')
+            //     ->with('success','Solicitud de Suficiencia Presupuestal agregado');
             return view('layouts.pages.suprecheck',compact('id','id_directorio'));
         }
         else
@@ -240,7 +242,7 @@ class supreController extends Controller
 
     public function solicitud_mod_guardar(Request $request)
     {
-        //dd($request);
+        dd($request);
         $supre = new supre();
         $curso_validado = new tbl_curso();
         $id_directorio = $request->id_directorio;
@@ -284,7 +286,8 @@ class supreController extends Controller
             $folio->status = 'En_Proceso';
             $folio->save();
         }
-
+        // return redirect()->route('supre-inicio')
+        // ->with('success','Solicitud de Suficiencia Presupuestal agregado');
         return view('layouts.pages.suprecheck',compact('id','id_directorio'));
     }
 

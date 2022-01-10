@@ -2,7 +2,6 @@
 
 function sendNotification(array $tokens, String $titulo, String $body) {
     $SERVER_API_KEY = 'AAAAYu3fFhE:APA91bESm3NEUerhW-CuXsIEbIiAQot7xTBRCeOakCvjevgwm1fEPlcTocXARJlbJtvow5qTrFKemuuG9VBdyK450jR3EM1YwVaFLgBBQCWZNxQ8tQ1l_bRPLjdZSVT-lQpkGukDjSud';
-    
     $data = [
         'registration_ids' => $tokens,
         'notification' => [

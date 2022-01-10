@@ -19,20 +19,22 @@
                 <a class="btn btn-info" id="anexosupre_pdf" name="anexosupre_pdf" href="/supre/tabla-pdf/{{$id}}" target="_blank">Anexo Suficiencia Presupuestal</a><br>
             </div>
         </div>
+        <br>
         <div class="form-row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <a class="btn btn-danger" href="{{route('modificar_supre', ['id' => $id])}}">Modificar</a>
-                </div>
-                <div class="pull-right">
-                    <button type="button" class="btn btn-success"
-                        data-toggle="modal" data-placement="top"
-                        data-target="#DocSupreModal"
-                        data-id='{{$id}}'
-                        title="Enviar a Dirección de Planeación">
-                        Enviar a Dirección de Planeación
-                    </button>
-                </div>
+            <div class="form-group col-md-4">
+                <a class="btn btn-danger" href="{{route('modificar_supre', ['id' => $id])}}">Modificar</a>
+            </div>
+            <div class="form-group col-md-5">
+                <button type="button" class="btn btn-success"
+                    data-toggle="modal" data-placement="top"
+                    data-target="#DocSupreModal"
+                    data-id='{{$id}}'
+                    title="Enviar a Dirección de Planeación">
+                    Cargar Suficiencia Presupuestla Firmada
+                </button>
+            </div>
+            <div class="form-group col-md-3">
+                <a class="btn btn-danger" href="{{route('supre-inicio')}}">Omitir Carga de Documento</a>
             </div>
         </div>
         <br>

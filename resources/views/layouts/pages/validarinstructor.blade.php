@@ -118,13 +118,15 @@
                     <label for="inputentidad">Entidad</label>
                     <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true">
                 </div>
-                <label for="inputmunicipio">Municipio</label>
-                <select class="form-control" name="municipio" id="municipio">
-                    <option value="sin especificar">Sin Especificar</option>
-                    @foreach ($municipios as $data)
-                        <option value="{{$data->muni}}">{{$data->muni}}</option>
-                    @endforeach
-                </select>
+                <div class="form-group col-md-3">
+                    <label for="inputmunicipio">Municipio</label>
+                    <select class="form-control" name="municipio" id="municipio" onchange="local()">
+                        <option value="sin especificar">Sin Especificar</option>
+                        @foreach ($municipios as $data)
+                            <option value="{{$data->muni}}">{{$data->muni}}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <!--<div class="form-group col-md-3">
                     <label for="inputasentamiento">Asentamiento</label>
                     <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true">
@@ -187,6 +189,7 @@
 
         var valor = document.getElementById("municipio").value;
         var datos = {valor: valor};
+        console.log('hola');
         var url = '/instructores/busqueda/localidad';
         var request = $.ajax
         ({
