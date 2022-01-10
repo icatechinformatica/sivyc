@@ -242,7 +242,7 @@ class supreController extends Controller
 
     public function solicitud_mod_guardar(Request $request)
     {
-        dd($request);
+        // dd($request);
         $supre = new supre();
         $curso_validado = new tbl_curso();
         $id_directorio = $request->id_directorio;
