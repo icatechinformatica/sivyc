@@ -14,7 +14,7 @@ class supre extends Model
         'id', 'unidad_capacitacion', 'no_memo', 'fecha','nombre_para','puesto_para','nombre_remitente','puesto_remitente',
         'nombre_valida','puesto_valida','nombre_elabora','puesto_elabora','nombre_ccp1','puesto_ccp1','nombre_ccp2','puesto_ccp2',
         'status','observacion','folio_validacion','fecha_validacion','nombre,firmante','puesto_firmante','val_ccp1','val_ccpp1',
-        'val_ccp2','val_ccpp2','val_ccp3','val_ccpp3','val_ccp4','val_ccpp4','fecha_status','fecha_rechazado'
+        'val_ccp2','val_ccpp2','val_ccp3','val_ccpp3','val_ccp4','val_ccpp4','fecha_status','fecha_rechazado','doc_supre'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
