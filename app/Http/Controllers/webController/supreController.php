@@ -178,9 +178,9 @@ class supreController extends Controller
             // dd($users);
             //event((new NotificationEvent($users, $letter)));
 
-            return redirect()->route('supre-inicio')
-                ->with('success','Solicitud de Suficiencia Presupuestal agregado');
-            // return view('layouts.pages.suprecheck',compact('id','id_directorio'));
+            // return redirect()->route('supre-inicio')
+            //     ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+            return view('layouts.pages.suprecheck',compact('id','id_directorio'));
         }
         else
         {
@@ -286,9 +286,9 @@ class supreController extends Controller
             $folio->status = 'En_Proceso';
             $folio->save();
         }
-        return redirect()->route('supre-inicio')
-        ->with('success','Solicitud de Suficiencia Presupuestal agregado');
-        // return view('layouts.pages.suprecheck',compact('id','id_directorio'));
+        // return redirect()->route('supre-inicio')
+        // ->with('success','Solicitud de Suficiencia Presupuestal agregado');
+        return view('layouts.pages.suprecheck',compact('id','id_directorio'));
     }
 
     public function validacion_supre_inicio(){
