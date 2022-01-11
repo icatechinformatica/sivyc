@@ -150,13 +150,13 @@
                 <div class="form-group col-md-3">
                     <label>Lugar o Espacio F&iacute;sico:</label>
                     @if (isset($grupo->efisico))
-                    @if ($grupo->efisico != 'EN LINEA' OR $grupo->efisico != 'ACCIÓN MÓVIL' OR $grupo->efisico != 'UNIDAD DE CAPACITACIÓN' OR $grupo->efisico != 'AULA MÓVIL')
-                    {{ Form::select('efisico', $efisico, "OTRO", ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                    <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}">
-                    @else
-                    {{ Form::select('efisico', $efisico, $grupo->efisico, ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                    <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}" hidden>
-                    @endif
+                        @if ($grupo->efisico != 'EN LINEA' && $grupo->efisico != 'ACCIÓN MÓVIL' && $grupo->efisico != 'UNIDAD DE CAPACITACIÓN' && $grupo->efisico != 'AULA MÓVIL')
+                        {{ Form::select('efisico', $efisico, "OTRO", ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                        <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}">
+                        @else
+                        {{ Form::select('efisico', $efisico, $grupo->efisico, ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                        <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}" hidden>
+                        @endif
                     @else
                     {{ Form::select('efisico', $efisico, $grupo->efisico, ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                     <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}" hidden>
@@ -195,112 +195,116 @@
         @endif
     {!! Form::close() !!}    
 </div>
-    <!-- modal para mostrar el calendario -->
-    <div class="modal fade" id="modalCalendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-notify modal-info" role="document">
-            <!--Content-->
-            <div class="modal-content text-center">
-                <!--Header-->
-                <div class="modal-header d-flex justify-content-center bg-primary" id="cabezaModal">
-                    <p id="titleCalendar" class="heading font-weight-bold h4 text-white text-center"></p>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+@if (isset($grupo))
+<!-- modal para mostrar el calendario -->
+<div class="modal fade" id="modalCalendar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-notify modal-info" role="document">
+        <!--Content-->
+        <div class="modal-content text-center">
+            <!--Header-->
+            <div class="modal-header d-flex justify-content-center bg-primary" id="cabezaModal">
+                <p id="titleCalendar" class="heading font-weight-bold h4 text-white text-center"></p>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body">
+                <div aria-live="assertive" aria-atomic="true" style="position: relative; top: 0; left: 0;"
+                    role="alert" class="toast mt-1 mr-1" data-autohide="false">
+                    <div class="toast-header bg-primary">
+                        <strong id="titleToast" class="mr-auto text-white"></strong>
+                        <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="msgVolumen" class="toast-body">
+                    </div>
                 </div>
 
-                <!--Body-->
-                <div class="modal-body">
-                    <div aria-live="assertive" aria-atomic="true" style="position: relative; top: 0; left: 0;"
-                        role="alert" class="toast mt-1 mr-1" data-autohide="false">
-                        <div class="toast-header bg-primary">
-                            <strong id="titleToast" class="mr-auto text-white"></strong>
-                            <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div id="msgVolumen" class="toast-body">
-                        </div>
-                    </div>
-
-                    {{-- action="javascript:void(0)" --}}
-                    <div class="row d-flex align-items-center">
-                        <div class="col-12 col-md-6">
-                            <form id="formCalendario">
-                                <div class="row">
-                                    <input type="text" name="txtId" id="txtId" class="d-none">
-                                    <div class="col">
-                                        <!-- fecha inicial -->
-                                        <div class="form-group">
-                                            <label for="fecha_firma" class="control-label">FECHA DE INCIO</label>
-                                            <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly"
-                                                name="fecha_firma" class="form-control datepicker" required>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <!-- Fecha conclusion -->
-                                        <div class="form-group">
-                                            <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
-                                            <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly"
-                                                name="fecha_termino" class="form-control datepicker" required>
-                                        </div>
+                {{-- action="javascript:void(0)" --}}
+                <div class="row d-flex align-items-center">
+                    <div class="col-12 col-md-6">
+                        <form id="formCalendario">
+                            <div class="row">
+                                <input type="text" name="txtId" id="txtId" class="d-none">
+                                <div class="col">
+                                    <!-- fecha inicial -->
+                                    <div class="form-group">
+                                        <label for="fecha_firma" class="control-label">FECHA DE INCIO</label>
+                                        <input type='text' id="fecha_firma" autocomplete="off" readonly="readonly"
+                                            name="fecha_firma" class="form-control datepicker" required>
                                     </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label for="">HORA INICIO</label>
-                                            <input type="time" class="form-control"
-                                                name="txtHora" id="txtHora" required>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group">
-                                            <label for="">HORA TERMINO</label>
-                                            <input type="time" class="form-control"
-                                                name="txtHoraTermino" id="txtHoraTermino" required>
-                                        </div>
+                                <div class="col">
+                                    <!-- Fecha conclusion -->
+                                    <div class="form-group">
+                                        <label for="fecha_termino" class="control-label">FECHA DE TERMINO</label>
+                                        <input type='text' id="fecha_termino" autocomplete="off" readonly="readonly"
+                                            name="fecha_termino" class="form-control datepicker" required>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="form-group col">
-                                        <label for="observaciones_mod" class="control-label">OBSERVACIONES</label>
-                                        <textarea name="observaciones_mod" class="form-control" id="observaciones_mod" rows="6"></textarea>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="col-12 col-md-6">
                             <div class="row">
                                 <div class="col">
-                                    <div id='calendar'></div>
+                                    <div class="form-group">
+                                        <label for="">HORA INICIO</label>
+                                        <input type="time" class="form-control"
+                                            name="txtHora" id="txtHora" required>
+                                    </div>
                                 </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="">HORA TERMINO</label>
+                                        <input type="time" class="form-control"
+                                            name="txtHoraTermino" id="txtHoraTermino" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="observaciones_mod" class="control-label">OBSERVACIONES</label>
+                                    <textarea name="observaciones_mod" class="form-control" id="observaciones_mod" rows="6"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="row">
+                            <div class="col">
+                                <div id='calendar'></div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!--Footer-->
-                <div class="modal-footer flex-center py-2">
-                    <div class="col d-flex justify-content-start">
-                        <button id="btnClean" type="button" class="btn btn-info">Limpiar campos</button>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
-                            {{--<button id="btnModificar" class="btn btn-warning">Modificar</button>--}}
-                            <button id="btnBorrar" class="btn btn-danger">Borrar</button>
-                            <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancelar</button>
-                        </div>
+            <!--Footer-->
+            <div class="modal-footer flex-center py-2">
+                <div class="col d-flex justify-content-start">
+                    <button id="btnClean" type="button" class="btn btn-info">Limpiar campos</button>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @if ($grupo->turnado != 'DTA')
+                        <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
+                        {{--<button id="btnModificar" class="btn btn-warning">Modificar</button>--}}
+                        <button id="btnBorrar" class="btn btn-danger">Borrar</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancelar</button>
+                        @endif
                     </div>
                 </div>
             </div>
-            <!--/.Content-->
         </div>
+        <!--/.Content-->
     </div>
+</div>
+@endif
     @section('script_content_js')     
         <script src="{{ asset('js/solicitud/apertura.js') }}"></script>     
         <script src="{{ asset('edit-select/jquery-editable-select.min.js') }}"></script>    

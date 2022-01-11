@@ -81,7 +81,7 @@ trait catApertura
     }
 
     protected function efisico(){
-        $efisico = ["EN LINEA"=>"EN LINEA","ACCIÓN MÓVIL"=>"ACCIÓN MÓVIL", "UNIDAD DE CAPACITACION"=>"UNIDAD DE CAPACITACIÓN","AULA MÓVIL"=>"AULA MÓVIL", "OTRO"=>"OTRO"];
+        $efisico = ["EN LINEA"=>"EN LINEA","ACCIÓN MÓVIL"=>"ACCIÓN MÓVIL", "UNIDAD DE CAPACITACIÓN"=>"UNIDAD DE CAPACITACIÓN","AULA MÓVIL"=>"AULA MÓVIL", "OTRO"=>"OTRO"];
         return $efisico;
     }
     
