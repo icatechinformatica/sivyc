@@ -10,7 +10,7 @@
 @section('content')   
     <?php 
         $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable =
-        $hfin = $termino = $inicio = $id_localidad = $comprobante= $id_muni = $organismo =  "";       
+        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo =  "";       
         if($curso){
             $id_curso = $curso->id;
             $tipo = $curso->tipo_curso;
@@ -28,8 +28,7 @@
             $organismo = $alumnos[0]->organismo_publico;
             $unidad = $alumnos[0]->unidad;
             $folio = $alumnos[0]->folio_grupo;
-            $turnado = $alumnos[0]->turnado;  
-            $comprobante = $alumnos[0]->comprobante_pago;  
+            $turnado = $alumnos[0]->turnado;   
             $id_vulnerable = $alumnos[0]->id_vulnerable;                    
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;

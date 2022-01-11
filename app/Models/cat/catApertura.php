@@ -155,13 +155,13 @@ trait catApertura
             ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
-            ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id_curso) as total from (select id_instructor, id_curso from agenda
-                                                                                                                                        where start >= '$hinimes'
-                                                                                                                                        and agenda.end <= '$finmes'
-						                                                                                                                group by id_curso, id_instructor
-						                                                                                                                order by id_instructor) as t
-							                                                    group by id_instructor) as r
-                                                     where r.total > 3")])
+            ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id) as total from
+											    (select id_instructor, id from tbl_cursos
+											    where inicio >= '$hinimes'
+											    and inicio<= '$finmes'
+											    and status_curso != 'CANCELADO') as t
+											    group by id_instructor) as r
+                                            where r.total > 3")])
             ->whereNotIn('instructores.id', [DB::raw("select id_instructor from agenda
                                                       where ((date(agenda.start)>='$fhini' and date(agenda.start)<='$ffinal' and cast(agenda.start as time)>='$hini' and cast(agenda.start as time)<'$hfin')
                                                       or (date(agenda.end)>='$fhini' and date(agenda.end)<='$ffinal' and cast(agenda.end as time)>'$hini' and cast(agenda.end as time)<='$hfin'))
@@ -169,6 +169,7 @@ trait catApertura
             
             //->orderby('instructor')
             //->pluck('instructor','instructores.id');
+            //->groupBy('t.id_instructor','instructores.id')
             //->get();    dd($instructores);
         //CRITERIO8HRS
         foreach ($period as $value) {
@@ -596,8 +597,9 @@ trait catApertura
             }
         }
         //CRITERIO UNIDADES
-        if ($tipo_curso != 'A DISTANCIA') {
-            $validos= DB::table('agenda')->select('agenda.id_instructor')
+        if ($tipo_curso == 'PRESENCIAL') {
+            $instructores = $instructores->whereJsonContains('instructores.unidades_disponible',$unidad);
+            /*$validos= DB::table('agenda')->select('agenda.id_instructor')
                                      ->join('instructores','agenda.id_instructor','=','instructores.id')
                                      ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
                                      ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
@@ -621,7 +623,7 @@ trait catApertura
                                                          ->get();    //dd($consulta_unidad);
                     foreach ($consulta_unidad as $fecha) { 
                         if ($fecha->id_municipio != $id_muni) {
-                            $tiempo_distance = 20;  //consulta tabla de tiempos
+                            $tiempo_distance = 60;  //consulta tabla de tiempos
                             $horaInicio= Carbon::parse($fecha->start)->format('H:i');
                             $horaTermino= Carbon::parse($fecha->end)->format('H:i');
                             if ($hfin == $horaInicio||$hini == $horaTermino) {
@@ -673,7 +675,7 @@ trait catApertura
                         }
                     }
                 }
-            }
+            }*/
         }
         
         foreach ($fivem as $key => $value) {
@@ -691,13 +693,14 @@ trait catApertura
                         //->pluck('instructor','instructores.id');
                         //->inRandomOrder()
                         ->groupBy('t.id_instructor','instructores.id')
-                        ->orderBy(DB::raw('total, "apellidoPaterno"'));
-                        if (isset($grupo->id_instructor)) {
+                        ->orderBy(DB::raw('total, "apellidoPaterno"'))
+                        ->get();
+                        /*if (isset($grupo->id_instructor)) {
                            $instructores = $instructores->take(4)->get();
                         }else{
                            $instructores = $instructores->take(5)->get();
-                        }
-                        //->pluck('instructor','instructores.id');  //dd($instructores);    
+                        }*/
+                        //dd($instructores);    
         return $instructores;
     }
 

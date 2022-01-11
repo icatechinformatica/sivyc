@@ -66,16 +66,16 @@ class aperturaController extends Controller
 
     public function index(Request $request){
         $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota = 
-        $muni = $instructores = $convenio = $localidad = NULL;
+        $muni = $instructores = $convenio = $localidad = $comprobante = NULL;
         if($request->valor)  $valor = $request->valor;
         elseif(isset($_SESSION['folio'])) $valor = $_SESSION['folio'];
         $_SESSION['alumnos'] = NULL;
         if($valor){
-            $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.hini','ar.hfin','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
+            $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
                 'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','c.modalidad as mod','ar.horario','c.horas as dura','c.costo as costo_individual','c.id_especialidad','ar.comprobante_pago',
                 DB::raw("SUM(CASE WHEN substring(ap.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ap.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
                 'tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),'ar.id_muni','ar.clave_localidad','ar.organismo_publico',
-                'tc.id_municipio','tc.status_curso','tc.plantel', 'tc.dia', 'tdias',
+                'tc.id_municipio','tc.status_curso','tc.plantel', 'tc.dia', 'tdias', 'id_vulnerable',
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
                 'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','c.rango_criterio_pago_maximo as cp')
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
@@ -86,12 +86,13 @@ class aperturaController extends Controller
                 ->where('ar.folio_grupo',$valor);
             if($_SESSION['unidades']) $grupo = $grupo->whereIn('ar.unidad',$_SESSION['unidades']);
             $grupo = $grupo->groupby('ar.id_curso','ar.unidad','ar.horario', 'ar.folio_grupo','ar.tipo_curso','ar.horario','tc.arc','ar.id_cerss','ar.clave_localidad','ar.organismo_publico',
-                'e.id','a.formacion_profesional','tc.id','c.id','ar.hini','ar.hfin','ar.inicio','ar.termino','ar.comprobante_pago','ar.id_muni')->first(); //dd($grupo);
+                'e.id','a.formacion_profesional','tc.id','c.id','ar.inicio','ar.termino','ar.comprobante_pago','ar.id_muni','ar.id_vulnerable')->first(); //dd($grupo);
 
             // var_dump($grupo);exit;
             if($grupo){
                 $_SESSION['folio'] = $grupo->folio_grupo;
                 $anio_hoy = date('y');
+                $comprobante = $this->path_files.$grupo->comprobante_pago;
                 $muni = DB::table('tbl_municipios')->where('id_estado','7')->where('id',$grupo->id_muni)->orderby('muni')->pluck('muni')->first();
                 $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
 
@@ -100,7 +101,7 @@ class aperturaController extends Controller
 
                 if(count($alumnos)==0){
                     $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ap.curp','ap.nombre','ap.apellido_paterno','ap.apellido_materno','ap.fecha_nacimiento AS FN','ap.sexo AS SEX',
-                    DB::raw("CONCAT(ap.apellido_paterno,' ', ap.apellido_materno,' ',ap.nombre) as alumno"),'ar.id_cerss',
+                    DB::raw("CONCAT(ap.apellido_paterno,' ', ap.apellido_materno,' ',ap.nombre) as alumno"),'ar.id_cerss', 'ap.lgbt',
                     'ap.estado_civil','ap.discapacidad','ap.nacionalidad','ap.etnia','ap.indigena','ap.inmigrante','ap.madre_soltera','ap.familia_migrante',
                     'ar.costo','ar.tinscripcion',DB::raw("'0' as calificacion"),'ap.ultimo_grado_estudios as escolaridad','ap.empleado',
                     'ap.matricula', 'ar.id_pre','ar.id', DB::raw("substring(curp,11,1) as sexo"),
@@ -119,10 +120,16 @@ class aperturaController extends Controller
                 $plantel = $this->plantel();
 
                 if($grupo->organismo_publico AND $grupo->mod=='CAE'){
-                    $convenio_t = DB::table('convenios')->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"),'sector')->where('institucion',$grupo->organismo_publico)->where('activo','true')->get();
+                    $convenio_t = DB::table('convenios')->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))->where('institucion',$grupo->organismo_publico)->where('activo','true')->first();
                     $convenio = [];
-                    foreach ($convenio_t as $key=>$value) {
-                        $convenio[$key] = $value;
+                    if ($convenio_t) {
+                        foreach ($convenio_t as $key=>$value) {
+                            $convenio[$key] = $value;
+                        }
+                    }else {
+                        $convenio['no_convenio'] = '0';
+                        $convenio['fecha_firma'] = '';
+                        $convenio['sector'] = null;
                     }
                 }
                 if(!$convenio){
@@ -131,7 +138,7 @@ class aperturaController extends Controller
                     $convenio['sector'] = null;
                 }
                 
-                $sector = $this->sector();
+                $sector = DB::table('organismos_publicos')->where('organismo',$grupo->organismo_publico)->value('sector');
                 $programa = $this->programa();
 
                 $instructor = $this->instructor($grupo->id_instructor);
@@ -152,7 +159,7 @@ class aperturaController extends Controller
         }
         $tinscripcion = $this->tinscripcion();
         if(session('message')) $message = session('message');
-        return view('solicitud.apertura.index', compact('efisico','message','grupo','alumnos','plantel','depen','sector','programa','instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad'));
+        return view('solicitud.apertura.index', compact('comprobante','efisico','message','grupo','alumnos','plantel','depen','sector','programa','instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad'));
     }
 
     public function cgral(Request $request){
@@ -172,6 +179,7 @@ class aperturaController extends Controller
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
             $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
+            $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
             //$_SESSION['folio'] = null;
            // unset($_SESSION['folio']);
            if($result){
@@ -285,15 +293,15 @@ class aperturaController extends Controller
                                 $termino =  $request->termino;
                             }
 
-                            if(!$request->cespecifico) $request->cespecifico = 0;
-                            if(!$request->mexoneracion) $request->mexoneracion = 0;
-                            if(!$request->cgeneral) $request->cgeneral = 0;
-                            if ($request->efsico=='OTRO') {
+                            if (isset($request->efisico_t)) {
                                 $efisico = strtoupper($request->efisico_t);
                             }else {
                                 $efisico = $request->efisico;
                             }
-                            
+
+                            if(!$request->cespecifico) $request->cespecifico = 0;
+                            if(!$request->mexoneracion) $request->mexoneracion = 0;
+                            if(!$request->cgeneral) $request->cgeneral = 0;
                             //$result = tbl_curso::updateOrCreate(
                             $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
                                 ['folio_grupo' => $_SESSION['folio']],
@@ -368,6 +376,7 @@ class aperturaController extends Controller
                                 'link_virtual' => $request->link_virtual,
                                 'id_municipio' => $grupo->id_muni,
                                 'clave_localidad'=>$grupo->clave_localidad,
+                                'id_gvulnerable'=>$grupo->id_vulnerable,
                                 'id_cerss' => $grupo->id_cerss,
                                 'created_at'=>date('Y-m-d H:i:s')
                             ]
@@ -441,6 +450,7 @@ class aperturaController extends Controller
                         'id_folio' =>  null,
                         'reexpedicion' =>  false,
                         'sexo'=> $a->sexo,
+                        'lgbt' => $a->lgbt,
                         'curp'=> $a->curp,
                         'empleado'=>$a->empleado
                         ]);
@@ -481,6 +491,64 @@ class aperturaController extends Controller
     public function showCalendar($id){
         $data['agenda'] =  Agenda::where('id_instructor', '=', $id)->get();
         return response()->json($data['agenda']);
+    }
+    public function destroy($id){
+        // $agenda = Agenda::findOrfail($id);
+        $id_curso = DB::table('agenda')->where('id',$id)->value('id_curso');
+        Agenda::destroy($id);
+        $dias_agenda = DB::table('agenda')
+            ->select(db::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"))
+            ->where('id_curso',$id_curso)
+            ->orderBy('agenda.start')
+            ->pluck('dia');
+            if (count($dias_agenda) > 0) {
+                $dias = []; $temp = $dias_agenda[0]; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
+                foreach ($dias_agenda as $key => $value) {
+                    if ($key > 0) {
+                        if (($temp+1)==$value) {
+                            $temp2 = $value;
+                            $save = false;
+                        }elseif (($temp2+1)==$value) {
+                            $temp2 = $value;
+                            $save = false;
+                        }else {
+                            $save = true;
+                        }
+                        if ($save == true) {
+                            $dias[] = [$temp,$temp2];
+                            $temp = $value;
+                            $temp2 = null;
+                            $save = false;
+                        }
+                    };
+                    if ($key == ($conteo-1)) {
+                        $dias[] = [$temp,$temp2];
+                    }
+                }
+                foreach ($dias as $item) {
+                    if (($item[0]+1) < ($item[1])) {
+                        $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
+                    }elseif (($item[0]+1)==($item[1])) {
+                        $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                    }else {
+                        $dias_a[] = $this->dia($item[0]);
+                    }
+                }
+                $dias_a = array_unique($dias_a);
+                $dias_a = implode(", ", $dias_a);
+            }else {
+                $dias_a = 0;
+            }
+        $total_dias = DB::table('agenda')
+            ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval)) as dias"))
+            ->where('id_curso',$id_curso)
+            ->pluck('dias');
+            $tdias = 0;
+            foreach ($total_dias as $tdia) {
+                $tdias += 1;
+            } 
+        $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
+        return response()->json($id);
     }
     public function storeCalendar(Request $request) {
 
@@ -772,7 +840,7 @@ class aperturaController extends Controller
             }
         }
         //CRITERIO UNIDADES
-        if ($tipo_curso != 'A DISTANCIA') {
+        /*if ($tipo_curso != 'A DISTANCIA') {
             foreach ($period as $value) {
                 $a= Carbon::parse($value)->format('d-m-Y 22:00');    
                 $b= Carbon::parse($value)->format('d-m-Y 00:00');
@@ -824,7 +892,7 @@ class aperturaController extends Controller
                     }
                 }
             }
-        }
+        }*/
            // dd($isEquals);
         if ($isEquals) {
             return 'iguales';
@@ -863,12 +931,40 @@ class aperturaController extends Controller
             ->where('id_curso',$id_curso)
             ->orderBy('agenda.start')
             ->pluck('dia');
-            $dias = [];
-            foreach ($dias_agenda as $dia) {
-                $dias[]= $this->dia($dia);
+            $dias = []; $temp = $dias_agenda[0]; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
+            foreach ($dias_agenda as $key => $value) {
+                if ($key > 0) {
+                    if (($temp+1)==$value) {
+                        $temp2 = $value;
+                        $save = false;
+                    }elseif (($temp2+1)==$value) {
+                        $temp2 = $value;
+                        $save = false;
+                    }else {
+                        $save = true;
+                    }
+                    if ($save == true) {
+                        $dias[] = [$temp,$temp2];
+                        $temp = $value;
+                        $temp2 = null;
+                        $save = false;
+                    }
+                };
+                if ($key == ($conteo-1)) {
+                    $dias[] = [$temp,$temp2];
+                }
             }
-            $dias = array_unique($dias);
-            $dias = implode(",", $dias);
+            foreach ($dias as $item) {
+                if (($item[0]+1) < ($item[1])) {
+                    $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
+                }elseif (($item[0]+1)==($item[1])) {
+                    $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                }else {
+                    $dias_a[] = $this->dia($item[0]);
+                }
+            }
+            $dias_a = array_unique($dias_a);
+            $dias_a = implode(", ", $dias_a);
         $total_dias = DB::table('agenda')
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval)) as dias"))
             ->where('id_curso',$id_curso)
@@ -877,6 +973,6 @@ class aperturaController extends Controller
             foreach ($total_dias as $tdia) {
                 $tdias += 1;
             } 
-        $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias, 'tdias' => $tdias]);
+        $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
     }
 }

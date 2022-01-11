@@ -66,6 +66,7 @@
       @endif                                                                                         
     </tbody>
 </table>
+@if ($activar AND $folio_grupo)
 <table class="table table-striped col-md-7">
   <thead>
     <tr>
@@ -76,7 +77,6 @@
   </thead>
   <tbody>
     <tr>
-      @if ($activar AND $folio_grupo)
       <th>
         <div class="custom-file">
           <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
@@ -89,16 +89,14 @@
       <th>
         <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
       </th>
-      @endif
-      @if ($comprobante)
-          <th>
-            <a target="_blank" href="{{$comprobante}}" class="nav-link" ><i class="fa fa-print  fa-2x fa-lg text-info" title="Imprimir Comprobante de pago"></i></a>
-          </th>
-      @endif
     </tr>
   </tbody>
 </table>
+@endif
     <div class="col-md-12 text-right">
+        @if ($comprobante)
+        <a href="{{$comprobante}}" target="_blank" class="btn  bg-warning">IMPRIMIR COMPROBANTE DE PAGO</a>
+        @endif
         <button type="button" class="btn" id="nuevo" >NUEVO GRUPO</button> &nbsp;&nbsp;
         @if($activar AND $folio_grupo)
             <button type="submit" class="btn" id="update" >GUARDAR CAMBIOS </button> &nbsp;&nbsp;                        

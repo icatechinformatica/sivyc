@@ -30,8 +30,9 @@ class grupoController extends Controller
             $this->id_user = Auth::user()->id;
             $this->realizo = Auth::user()->name;
             $this->id_unidad = Auth::user()->unidad;
+            $this->path_files = env("APP_URL").'/storage/uploadFiles';
 
-            $this->data = $this->unidades_user('admi');  //vincula
+            $this->data = $this->unidades_user('vincula');  //vincula
             $_SESSION['unidades'] =  $this->data['unidades'];
 
             return $next($request);
@@ -44,7 +45,7 @@ class grupoController extends Controller
         $curso = $grupo = $cursos = $localidad  = $alumnos = [];
         $unidades = $this->data['unidades'];
         $unidad = $this->data['unidad'];
-        $message = NULL;
+        $message = $comprobante = NULL;
         if (isset($_SESSION['folio_grupo'])) {  //echo $_SESSION['folio_grupo'];exit;
             $anio_hoy = date('y');  //dd($_SESSION);
             $alumnos = DB::table('alumnos_registro as ar')->select(
@@ -57,8 +58,6 @@ class grupoController extends Controller
                 'ar.id_curso',
                 'ar.tipo_curso',
                 'ar.id_cerss',
-                //'ar.hini',
-                //'ar.hfin',
                 'ar.horario',
                 'ar.inicio',
                 'ar.termino',
@@ -87,6 +86,7 @@ class grupoController extends Controller
             if (count($alumnos) > 0) {
                 $id_curso = $alumnos[0]->id_curso;
                 $tipo = $alumnos[0]->tipo_curso;
+                if($alumnos[0]->comprobante_pago)$comprobante = $this->path_files.$alumnos[0]->comprobante_pago; 
                 if ($alumnos[0]->turnado == 'VINCULACION' and isset($this->data['cct_unidad'])) $this->activar = true;
                 else $this->activar = false;
 
@@ -120,7 +120,7 @@ class grupoController extends Controller
         $grupo_vulnerable = DB::table('grupos_vulnerables')->orderBy('grupo')->pluck('grupo','id');
         if (session('message')) $message = session('message');
         $tinscripcion = $this->tinscripcion();
-        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable'));
+        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante'));
     }
 
 
@@ -150,9 +150,11 @@ class grupoController extends Controller
             $alumno = DB::table('alumnos_pre')->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"))->where('curp', $curp)->where('activo', true)->first(); //dd($alumno);
             if ($alumno) {
                 if ($alumno->edad > 15) {
-                    $cursos = DB::table(DB::raw("(select c.id_curso as curso from tbl_inscripcion as i
-                                                    inner join tbl_cursos as c on c.id = i.id_curso
-                                                    where i.curp = '$curp') as t"))
+                    $cursos = DB::table(DB::raw("(select a.id_curso as curso from alumnos_registro as a
+													inner join alumnos_pre as ap on a.id_pre = ap.id
+                                                    where ap.curp = '$curp'
+                                                   	and a.eliminado = false
+													and extract(year from a.inicio) = extract(year from current_date)) as t"))
                         ->select(DB::raw("count(curso) as total"), DB::raw("count(case when curso = '$request->id_curso' then curso end) as igual"))
                         ->first(); //dd($cursos);
                     if ($cursos->igual < 2 && $cursos->total < 6) {
@@ -182,8 +184,9 @@ class grupoController extends Controller
                             $clave_localidad = $a_reg->clave_localidad;
                             $organismo = $a_reg->organismo_publico;
                             $id_organismo = $a_reg->id_organismo;
-                            $grupo_vulnerable = $a_reg->grupo_vunerable;
+                            $grupo_vulnerable = $a_reg->grupo_vulnerable;
                             $id_vulnerable = $a_reg->id_vulnerable;
+                            $comprobante_pago = $a_reg->comprobante_pago;
                         } else {
                             $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
                             $id_unidad = DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
@@ -200,6 +203,7 @@ class grupoController extends Controller
                             $id_organismo = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('id');
                             $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id',$request->grupo_vulnerable)->value('grupo');
                             $id_vulnerable = $request->grupo_vulnerable;
+                            $comprobante_pago = null;
                         }
                         if ($id_cerss) $cerrs = true;
                         else $cerrs = NULL;
@@ -210,7 +214,7 @@ class grupoController extends Controller
                                     'id_unidad' =>  $id_unidad, 'id_curso' => $id_curso, 'id_especialidad' =>  $id_especialidad, 'organismo_publico' => $organismo, 'id_organismo'=>$id_organismo,
                                     'horario'=>$horario, 'inicio' => $inicio, 'termino' => $termino, 'unidad' => $unidad, 'tipo_curso' => $tipo, 'clave_localidad' => $clave_localidad,
                                     'cct' => $this->data['cct_unidad'], 'realizo' => str_replace('ñ','Ñ',strtoupper($this->realizo)), 'no_control' => $matricula, 'ejercicio' => $this->ejercicio, 'id_muni' => $id_muni,
-                                    'folio_grupo' => $_SESSION['folio_grupo'], 'iduser_created' => $this->id_user,
+                                    'folio_grupo' => $_SESSION['folio_grupo'], 'iduser_created' => $this->id_user, 'comprobante_pago' => $comprobante_pago,
                                     'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs,
                                     'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable
                                 ]
@@ -235,10 +239,24 @@ class grupoController extends Controller
     {
         //dd($request->all());
         if ($_SESSION['folio_grupo']) {
+            $folio = $_SESSION['folio_grupo'];
             $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
             $costo_individual = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('costo');
             $id_unidad = DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
             foreach ($request->costo as $key => $pago) {
+                $cursos = DB::table(DB::raw("(select a.id_curso as curso from alumnos_registro as a
+													inner join alumnos_pre as ap on a.id_pre = ap.id
+                                                    where a.id = '$key'
+													and a.folio_grupo != '$folio'
+                                                   	and a.eliminado = false
+													and extract(year from a.inicio) = extract(year from current_date)) as t"))
+                        ->select(DB::raw("count(curso) as total"), DB::raw("count(case when curso = '$request->id_curso' then curso end) as igual"))
+                        ->first(); //dd($cursos);
+                        $curp = DB::table('alumnos_registro')->select('alumnos_pre.curp')->join('alumnos_pre','alumnos_registro.id_pre','=','alumnos_pre.id')->where('alumnos_registro.id',$key)->value('alumnos_pre.curp');
+                if ($cursos->igual > 2 && $cursos->total > 6) {
+                    $message = "Alumno excede el limite de cursos " . $curp . ".";
+                    return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
+                }
                 $diferencia = $costo_individual - $pago;
                 if ($pago == 0) {
                     $tinscripcion = "EXONERACION";
@@ -252,12 +270,12 @@ class grupoController extends Controller
                 }
                 Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
             }
-
+            
             if ($request->cerss) $cerrs = true;
             else $cerrs = NULL;
             $horario= $request->hini.' A '.$request->hfin;
             $id_organismo = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('id');
-            $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id',$request->grupo->vulnerable)->value('grupo');
+            $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id',$request->grupo_vulnerable)->value('grupo');
             $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
                 [
                     'id_unidad' =>  $id_unidad, 'id_curso' => $request->id_curso, 'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
@@ -337,7 +355,8 @@ class grupoController extends Controller
         $path_pdf = "/UNIDAD/comprobantes_pagos/";
         $path = $path_pdf . $documentFile;
         Storage::disk('custom_folder_1')->put($path, file_get_contents($file)); // guardamos el archivo en la carpeta storage
-        $documentUrl = storage::url($path); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        //$documentUrl = storage::url($path); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $documentUrl = $path;
         return $documentUrl;
     }
 

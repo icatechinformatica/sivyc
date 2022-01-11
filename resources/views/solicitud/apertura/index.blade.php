@@ -117,22 +117,22 @@
             </div>
             <div class="form-row" >                   
                
-                <div class="form-group col-md-3">
-                    <label>Sector:</label>
-                    {{ Form::select('sector', $sector, $convenio['sector'], ['id'=>'sector','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                </div>
                 <div class="form-group col-md-4">
                     <label>Programa Estrat&eacute;gico:</label>
                     {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>                                              
                 <div class="form-group col-md-2">
                     <label>Convenio General:</label>
-                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}"/>
+                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" disabled/>
                 </div>  
                 <div class="form-group col-md-2">
                     <label>Fecha Convenio General:</label>                    
-                    <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" />
+                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" disabled/ >
                 </div> 
+                <div class="form-group col-md-3">
+                    <label>Sector:</label>
+                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" disabled/>
+                </div>
             </div> 
             <div class="form-row" >
                 <div class="form-group col-md-3">
@@ -149,8 +149,18 @@
                 </div>  
                 <div class="form-group col-md-3">
                     <label>Lugar o Espacio F&iacute;sico:</label>
+                    @if (isset($grupo->efisico))
+                    @if ($grupo->efisico != 'EN LINEA' OR $grupo->efisico != 'ACCIÓN MÓVIL' OR $grupo->efisico != 'UNIDAD DE CAPACITACIÓN' OR $grupo->efisico != 'AULA MÓVIL')
+                    {{ Form::select('efisico', $efisico, "OTRO", ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}">
+                    @else
                     {{ Form::select('efisico', $efisico, $grupo->efisico, ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                     <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}" hidden>
+                    @endif
+                    @else
+                    {{ Form::select('efisico', $efisico, $grupo->efisico, ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}" hidden>
+                    @endif
                 </div>             
             </div>
             <div class="form-row" >
@@ -523,14 +533,7 @@
                         $("#msgVolumen").html("Todos los campos son requeridos");
                         $(".toast").toast("show");
                 } else {
-                    if ($('#txtHora').val() < $('#txtHoraTermino').val()) {
                         EnviarInformacion("", objEvento, 'insert');
-                    } else {
-                        objEvento = null;
-                        $('#titleToast').html('Hora incorrecta');
-                        $("#msgVolumen").html("La hora de inicio debe ser menor a la hora de termino");
-                        $(".toast").toast("show");
-                    }
                 }
             });
             function recolectarDatos(method) {
