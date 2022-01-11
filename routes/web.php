@@ -584,7 +584,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/calendario/show/{id}', 'Solicitud\aperturaController@showCalendar')->name('calendario.show');
     Route::post('/calendario/guardar','Solicitud\aperturaController@storeCalendar')->name('calendario.store');
     Route::get('/calendario/{id}','Solicitud\aperturaController@destroy')->name('calendario.destroy');
-    Route::get('/organismos/inicio', 'organismosController@index')->name('organismos.index');
+    Route::get('/organismos/inicio', 'organismosController@index')->name('organismos.index')->middleware('can:organismo.inicio');
     Route::get('/organismos/agregar', 'organismosController@agregar')->name('organismos.agregar');
     Route::post('/organismos/store', 'organismosController@store')->name('organismos.insert');
     Route::post('/organismos/update', 'organismosController@update')->name('organismos.update');
