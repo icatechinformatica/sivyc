@@ -38,19 +38,10 @@
             {{ 'NO REGISTRO DE ALUMNOS'}}
         @endif
     </table>
-    <table class="table table-striped col-md-3">
-        <th>
-            <td>
-                <label for=""><b>COMPROBANTE DE PAGO:</b></label><br>
-                <a href="{{$grupo->comprobante_pago}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  data-placement="top" title="DESCARGAR COMPROBANTE" target="_blank">
-                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                </a>
-            </td>
-        </th>
-    </table>
 </div>
 
- <div class="col-md-12 text-right">                
+ <div class="col-md-12 text-right">    
+    <a href="{{$comprobante}}" target="_blank" class="btn  bg-warning">IMPRIMIR COMPROBANTE DE PAGO</a>            
     @if($grupo->clave=='0' AND !$grupo->status_curso)
         <button type="button" class="btn bg-warning " id="regresar" ><< REGRESAR A VINCULACI&Oacute;N</button> 
         {{--<button id="btnShowCalendarFlex" type="button" class="btn btn-amber">Agendar Horario Flexible</button>--}}
