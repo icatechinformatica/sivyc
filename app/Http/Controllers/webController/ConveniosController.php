@@ -10,9 +10,11 @@ use Illuminate\Support\Facades\Storage;
 // use Illuminate\Support\Facades\File;
 use App\Models\Municipio;
 use App\Models\convenioAvailable;
+use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToArray;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 use PhpParser\Node\Stmt\Foreach_;
 use SebastianBergmann\Environment\Console;
 
@@ -41,9 +43,13 @@ class ConveniosController extends Controller
      */
     public function create() {
         // mostrar formulario de convenio
-        $unidades = \DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
-        $estados = \DB::table('estados')->orderBy('estados.id')->get();
-        return view('layouts.pages.frmconvenio', compact('estados', 'unidades'));
+        $unidades = DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
+        $estados = DB::table('estados')->orderBy('estados.id')->get();
+        $organismos = DB::table('organismos_publicos')
+                        ->where('activo',true)
+                        ->orderBy('organismo')
+                        ->pluck('organismo','id');
+        return view('layouts.pages.frmconvenio', compact('estados', 'unidades','organismos'));
     }
 
     /**
@@ -75,9 +81,11 @@ class ConveniosController extends Controller
             'direccion' => 'required',
         ]);
 
+        $organismo = DB::table('organismos_publicos')->where('id', $request->institucion)->first();
+
         $convenios = new Convenio;
         $convenios['no_convenio'] = trim($request->input('no_convenio'));
-        $convenios['institucion'] = trim($request->input('institucion'));
+        $convenios['institucion'] = $organismo->organismo;
 
         $convenios['tipo_sector'] = $request->no_convenio[0];
 
@@ -99,7 +107,7 @@ class ConveniosController extends Controller
         $convenios['nombre_firma'] = trim($request->input('nombre_firma'));
         $convenios['tipo_convenio'] = trim($request->input('tipo_convenio'));
         $convenios['telefono_enlace'] = trim($request->input('telefono_enlace'));
-        $convenios['id_municipio'] = trim($request->input('municipio'));
+        // $convenios['id_municipio'] = trim($request->input('municipio'));
 
         $convenios['correo_institucion'] = null;
         if ($request->input('correo_ins') != null) {
@@ -109,7 +117,8 @@ class ConveniosController extends Controller
         if ($request->input('correo_en') != null) {
             $convenios['correo_enlace'] = trim($request->input('correo_en'));
         }
-        $convenios['id_estado'] = trim($request->input('estadoG'));
+        // $convenios['id_estado'] = trim($request->input('estadoG'));
+        $convenios['id_organismo'] = trim($request->input('institucion'));
 
         $publicar = 'false';
         if ($request->input('publicar') != null) {
@@ -189,13 +198,43 @@ class ConveniosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        //
         $idConvenio = base64_decode($id);
         $convenios = Convenio::findOrfail($idConvenio);
-        $municipios = \DB::table('tbl_municipios')->where('tbl_municipios.id_estado', '=', $convenios->id_estado)->get();
-        $unidades = \DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
-        $estados = \DB::table('estados')->orderBy('estados.id')->get();
-        return view('layouts.pages.editconvenio', ['convenios'=>$convenios, 'unidades'=>$unidades, 'municipios'=>$municipios, 'estados'=>$estados]);
+        // $municipios = \DB::table('tbl_municipios')->where('tbl_municipios.id_estado', '=', $convenios->id_estado)->get();
+        $unidades = DB::table('tbl_unidades')->orderBy('tbl_unidades.id')->get();
+        // $estados = \DB::table('estados')->orderBy('estados.id')->get();
+        $organismos = DB::table('organismos_publicos')
+                        //->where('activo',true)
+                        ->orderBy('organismo')
+                        ->get();
+                        // ->pluck('organismo','id');
+
+        if ($convenios->id_organismo == null) {
+            $id_organismo = DB::table('organismos_publicos')->select('id')
+                        //->where('activo', true)
+                        ->where('organismo', $convenios->institucion)->first();
+            if($id_organismo) {
+                $convenios->id_organismo = $id_organismo->id;
+            }
+        }
+         
+        $organismo = DB::table('organismos_publicos as o')->select(
+                            'o.organismo', 
+                            'o.nombre_titular',
+                            'o.telefono',
+                            'o.correo as correo',
+                            'o.direccion',
+                            'l.localidad', 
+                            'e.nombre as estado',
+                            'm.muni as municipio'
+                        )
+                        ->leftJoin('tbl_localidades as l','o.clave_localidad','=','l.clave') 
+                        ->join('estados as e', 'o.id_estado', 'e.id')
+                        ->join('tbl_municipios as m', 'o.id_municipio', 'm.id')
+                        ->where('o.id',$convenios->id_organismo)
+                        ->first();
+        
+        return view('layouts.pages.editconvenio', ['convenios' => $convenios, 'unidades' => $unidades, 'organismos' => $organismos, 'organismo' => $organismo]);
     }
 
     /**
@@ -221,10 +260,14 @@ class ConveniosController extends Controller
                 }
             }
 
+            $organismo = DB::table('organismos_publicos')->where('id', $request->institucion)->first();
+
             $array_update = [
                 'no_convenio' => trim($request->no_convenio),
                 'tipo_sector' => $request->no_convenio[0],
-                'institucion' => trim($request->institucion),
+                // 'institucion' => trim($request->institucion),
+                'institucion' => $organismo->organismo,
+
                 'fecha_firma' => trim($request->fecha_firma),
                 'fecha_vigencia' => trim($request->fecha_termino),
                 'poblacion' => trim($request->poblacion),
@@ -236,12 +279,14 @@ class ConveniosController extends Controller
                 'tipo_convenio' => trim($request->tipo_convenio),
                 'nombre_firma' => trim($request->nombre_firma),
                 'telefono_enlace' => trim($request->telefono_enlace),
-                'id_municipio' => trim($request->id_municipio),
+                // 'id_municipio' => trim($request->id_municipio),
                 'activo' => trim($publicar),
                 'sector' => trim($request->tipo),
                 'correo_institucion' => $request->correo_ins,
                 'correo_enlace' => $request->correo_en,
-                'id_estado' => $request->estadoG,
+                // 'id_estado' => $request->estadoG,
+                'id_organismo' => trim($request->input('institucion')),
+
                 'unidades' => json_encode($unity)
             ];
 
@@ -456,5 +501,29 @@ class ConveniosController extends Controller
         $file->storeAs('/uploadFiles/convenios/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
         $documentUrl = Storage::url('/uploadFiles/convenios/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
+    }
+
+    protected function getcampos(Request $request){
+        $organismo = DB::table('organismos_publicos as o')
+                    ->select(
+                        'o.nombre_titular',
+                        'o.telefono','o.correo',
+                        'o.direccion','l.localidad', 
+                        'e.nombre as estado',
+                        'm.muni as municipio'
+                    )
+                    ->leftJoin('tbl_localidades as l','o.clave_localidad','=','l.clave') 
+                    ->join('estados as e', 'o.id_estado', 'e.id')
+                    ->join('tbl_municipios as m', 'o.id_municipio', 'm.id')
+                    ->where('o.id',$request->organismo_id)
+                    ->first();  //dd($organismo);
+        $data['titular']= $organismo->nombre_titular;
+        $data['telefono']= $organismo->telefono;
+        $data['correo']= $organismo->correo;
+        $data['direccion']= $organismo->direccion;
+        $data['localidad']= $organismo->localidad;
+        $data['estado']= $organismo->estado;
+        $data['municipio']= $organismo->municipio;
+        return response()->json($data);
     }
 }

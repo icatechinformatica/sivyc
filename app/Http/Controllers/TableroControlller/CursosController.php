@@ -1,5 +1,5 @@
 <?php
-//Creado por Romelia Pérez Nangüelú--rpnanguelu@gmail.com 
+//Creado por Romelia Pï¿½rez Nangï¿½elï¿½--rpnanguelu@gmail.com 
 namespace App\Http\Controllers\TableroControlller;
 
 use App\Http\Controllers\Controller;
@@ -8,8 +8,8 @@ use App\Models\tbl_curso;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
-class CursosController extends Controller
-{
+class CursosController extends Controller {
+    
     public function index(Request $request){
         $ubicacion = $request->get('ubicacion');
         $fecha_inicio = $request->get('fecha_inicio');

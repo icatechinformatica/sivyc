@@ -357,6 +357,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/convenios/mostrar/{id}', 'webController\ConveniosController@show')->name('convenios.show')
     ->middleware('can:convenios.show');
     Route::post('/convenios/sid/municipios', 'webController\ConveniosController@getmunicipios');
+    Route::get('/convenios/organismo', 'webController\ConveniosController@getcampos');
     /**
      * agregando financiero rutas -- DMC
      */
@@ -532,6 +533,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@nuevo')->name('preinscripcion.grupo.nuevo');
     Route::post('/preinscripcion/grupo/turnar', 'Preinscripcion\grupoController@turnar')->name('preinscripcion.grupo.turnar')->middleware('can:preinscripcion.grupo.turnar');
     Route::get('/preinscripcion/grupo/eliminar', 'Preinscripcion\grupoController@delete')->name('preinscripcion.grupo.eliminar')->middleware('can:preinscripcion.grupo.eliminar');
+    Route::post('/preinscripcion/grupo/comrobante','Preinscripcion\grupoController@subir_comprobante')->name('preinscripcion.grupo.comprobante');
+    Route::get('/preinscripcion/municipio', 'Preinscripcion\grupoController@showlm');
 
     /*VINCULACION->PREINSCRIPCION=> BUSCAR GRUPO RPN*/
     Route::get('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');
@@ -543,8 +546,8 @@ Route::middleware(['auth'])->group(function () {
     /*Solicitud de Apertura ARC01 y ARC02 RPN*/
     Route::get('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
     Route::post('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
-    Route::get('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
-    Route::post('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
+    //Route::get('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
+    //Route::post('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
     Route::get('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion')->name('solicitud.apertura.mexon');
     Route::post('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion')->name('solicitud.apertura.mexon');
     Route::post('/solicitud/apertura/guardar', 'Solicitud\aperturaController@store')->name('solicitud.apertura.guardar')->middleware('can:solicitud.apertura.guardar');
@@ -578,6 +581,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
     Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
+
+    Route::get('/calendario/show/{id}', 'Solicitud\aperturaController@showCalendar')->name('calendario.show');
+    Route::post('/calendario/guardar','Solicitud\aperturaController@storeCalendar')->name('calendario.store');
+    Route::get('/calendario/{id}','Solicitud\aperturaController@destroy')->name('calendario.destroy');
+    Route::get('/organismos/inicio', 'organismosController@index')->name('organismos.index')->middleware('can:organismo.inicio');
+    Route::get('/organismos/agregar', 'organismosController@agregar')->name('organismos.agregar');
+    Route::post('/organismos/store', 'organismosController@store')->name('organismos.insert');
+    Route::post('/organismos/update', 'organismosController@update')->name('organismos.update');
+    Route::get('/organismo/municipio','organismosController@muni');
 
 });
 

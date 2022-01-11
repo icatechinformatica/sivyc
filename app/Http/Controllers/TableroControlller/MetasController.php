@@ -1,5 +1,5 @@
 <?php
-//Creado por Romelia Pérez Nangüelú--rpnanguelu@gmail.com
+//Creado por Romelia Pï¿½rez Nangï¿½elï¿½--rpnanguelu@gmail.com
 namespace App\Http\Controllers\TableroControlller;
 
 use App\Http\Controllers\Controller;
@@ -14,21 +14,30 @@ class MetasController extends Controller
       $this->field = [1=>"ene",2=>"feb",3=>"mar",4=>"abr",5=>"may",6=>"jun",7=>"jul",8=>"ago",9=>"sep", 10=>"oct", 11=>"nov",12=>"dic"];
     }
     
-    public function index(Request $request)
-    {       
-        if($request->get('ejercicio'))$ejercicio = $request->get('ejercicio');
+    public function index(Request $request) {       
+        if($request->get('ejercicio'))$ejercicio = $request->get('ejercicio');        
         else $ejercicio = date("Y");
+
         $sql= "";
         for($n=1;$n<=12; $n++){
             $sql .= "(SELECT count(c1.id) FROM tbl_cursos c1 WHERE c1.unidad = p.tbl_unidades_unidad AND
-    			 	EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' AND  EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as ".$this->field[$n]."_r,";
+    			    EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' 
+                    AND  EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as ".$this->field[$n]."_r,";
+
             $sql .= "(SELECT COALESCE(sum(c1.dura),0) FROM tbl_cursos c1 WHERE c1.unidad = p.tbl_unidades_unidad AND
-    			 	EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' AND  EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as hr_".$this->field[$n]."_r,";
+    			 	EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' AND  
+                    EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as hr_".$this->field[$n]."_r,";
+
             $sql .= "(SELECT COALESCE(sum(c1.hombre+c1.mujer),0)FROM tbl_cursos c1 WHERE c1.unidad = p.tbl_unidades_unidad AND
-    			 	EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' AND  EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as benef_".$this->field[$n]."_r,";
+    			 	EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' AND 
+                    EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as benef_".$this->field[$n]."_r,";
+
             $sql .= "promedio_benef*".$this->field[$n]." as benef_".$this->field[$n].",";
-            $sql .= "(SELECT COALESCE(sum(f.importe_total),0) FROM folios f, tbl_cursos c1 WHERE f.id_cursos = c1.id  AND c1.unidad = p.tbl_unidades_unidad AND f.status = 'Finalizado' AND
-    			 	EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' AND  EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as inversion_".$this->field[$n].",";
+
+            $sql .= "(SELECT COALESCE(sum(f.importe_total),0) FROM folios f, tbl_cursos c1 WHERE f.id_cursos = c1.id 
+                    AND c1.unidad = p.tbl_unidades_unidad AND f.status = 'Finalizado' 
+                    AND EXTRACT(MONTH FROM c1.fecha_apertura)='".str_pad($n, 2, "0", STR_PAD_LEFT)."' 
+                    AND EXTRACT(YEAR FROM c1.fecha_apertura)='$ejercicio' AND c1.clave!='0') as inversion_".$this->field[$n].",";
         }
         
         $data=DB::select("SELECT ".$sql." p.*  FROM poa p WHERE p.id_plantel = 0 AND p.ejercicio='$ejercicio' order by p.id");

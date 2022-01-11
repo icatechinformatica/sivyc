@@ -9,17 +9,27 @@
 @endsection
 @section('content')   
     <?php 
-        $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = "";        
+        $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable =
+        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo =  "";       
         if($curso){
             $id_curso = $curso->id;
             $tipo = $curso->tipo_curso;
             $id_cerss = $alumnos[0]->id_cerss;
         }
-        if($alumnos){                        
-            $horario = $alumnos[0]->horario;
+        if($alumnos){ 
+            $hfin = substr($alumnos[0]->horario, 8, 5);
+            $hini = substr($alumnos[0]->horario, 0, 5);                 
+            //$hini = $alumnos[0]->hini;
+            //$hfin = $alumnos[0]->hfin;
+            $inicio = $alumnos[0]->inicio;
+            $termino = $alumnos[0]->termino;
+            $id_muni = $alumnos[0]->id_muni;
+            $id_localidad = $alumnos[0]->clave_localidad;
+            $organismo = $alumnos[0]->organismo_publico;
             $unidad = $alumnos[0]->unidad;
             $folio = $alumnos[0]->folio_grupo;
-            $turnado = $alumnos[0]->turnado;                        
+            $turnado = $alumnos[0]->turnado;   
+            $id_vulnerable = $alumnos[0]->id_vulnerable;                    
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
@@ -62,20 +72,52 @@
                         <label>UNIDAD/ACCI&Oacute;N M&Oacute;VIL</label>
                         {{ Form::select('unidad', $unidades, $unidad, ['id'=>'unidad','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
                     </div>
+                    <div class="form-group col-md-3">
+                        <label>MUNICIPIO:</label>
+                        {{ Form::select('id_municipio', $municipio, $id_muni, ['id'=>'id_municipio','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="localidad" class="control-label">LOCALIDAD</label>
+                        {{--<select class="form-control" id="localidad" name="localidad">
+                            <option value="">--SELECCIONAR--</option>
+                        </select>--}}
+                        {{ Form::select('localidad', $localidad, $id_localidad, ['id'=>'localidad','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    </div>    
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-5">
                         <label>CURSO</label>
                         {{ Form::select('id_curso', $cursos, $id_curso, ['id'=>'id_curso','old'=>'curso', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
-                    </div>       
+                    </div>  
+                    <div class="form-group col-md-2">
+                        <label>FECHA INICIO:</label>
+                        <input type="date" id="inicio" name="inicio" value="{{$inicio}}" class="form-control" >
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>FECHA TERMINO:</label>
+                        <input type="date" id="termino" name="termino" value="{{$termino}}" class="form-control" >
+                    </div> 
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label>HORARIO</label>
-                        <input name='horario' id='horario' type="text" class="form-control" aria-required="true" value="{{ $horario }}"/>
+                    <div class="d-flex flex-row ">
+                        <div class="p-2">HORARIO: <br /><input type="time" name='hini' id='hini' type="text" class="form-control" aria-required="true" value="{{$hini}}"/></div>
+                        <div class="p-2"><br />A</div>
+                        <div class="p-2"><br /><input type="time" name='hfin' id='hfin' type="text" class="form-control" aria-required="true" value="{{$hfin}}"/></div>
                     </div>
                     <div class="form-group col-md-4">
-                          <label><input type="checkbox" value="cerss" id="cerss_ok" @if($id_cerss){{'checked'}}@endif>&nbsp;&nbsp;CERSS</label>      
-                          {{ Form::select('cerss', $cerss, $id_cerss, ['id'=>'cerss','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}                  
-                    </div>                 
+                        <label>ORGANISMO PUBLICO:</label>
+                        {{ Form::select('dependencia', $dependencia,$organismo, ['id'=>'dependencia','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                    </div> 
+                    <div class="form-group col-md-4">
+                        <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($id_vulnerable){{'checked'}}@endif>&nbsp;&nbsp;GRUPO VULNERABLE</label>      
+                        {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $id_vulnerable, ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}                  
+                    </div>                
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label><input type="checkbox" value="cerss" id="cerss_ok" @if($id_cerss){{'checked'}}@endif>&nbsp;&nbsp;CERSS</label>      
+                        {{ Form::select('cerss', $cerss, $id_cerss, ['id'=>'cerss','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}                  
+                  </div>  
                 </div>
                 
                 <br />
@@ -91,7 +133,7 @@
                         <input name='busqueda' id='busqueda' oninput="validarInput(this)" type="text" class="form-control" value="{{old('curp')}}"/>
                         <pre id="resultado"></pre>
                     </div>
-                    <div class="col-md-4"><br />
+                    <div class="col-md-2"><br />
                         <button type="button" id="agregar" class="btn btn-success">AGREGAR</button>                                                                  
                     </div>
                 </div>
@@ -114,7 +156,9 @@
                 $("#agregar").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.save')}}"); $('#frm').submit(); });
                 $("#nuevo").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.nuevo')}}"); $('#frm').submit(); });
                 $("#update").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.update')}}"); $('#frm').submit(); });
-                $("#turnar").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.turnar')}}"); $('#frm').submit(); }); 
+                $("#turnar").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.turnar')}}"); $('#frm').submit(); });
+                $("#comprobante").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.comprobante')}}"); $('#frm').submit(); }); 
+
             });
         </script>
     @endsection
