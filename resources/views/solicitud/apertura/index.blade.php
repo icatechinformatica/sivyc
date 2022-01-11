@@ -384,8 +384,8 @@
                     inicializarCalendar();
                     let hora = document.getElementById("txtHora");
                     let horaTermino = document.getElementById("txtHoraTermino");
-                    hora.disabled = true;
-                    horaTermino.disabled = true;
+                    hora.disabled = false;
+                    horaTermino.disabled = false;
                     $('#titleCalendar').html(document.getElementById('instructor').value.split(',')[1]);
                     $("#modalCalendar").modal("show");
                 } else {
