@@ -293,7 +293,7 @@ class aperturaController extends Controller
                                 $termino =  $request->termino;
                             }
 
-                            if (isset($request->efisico_t)) {
+                            if (isset($request->efisico_t) && ($request->efisico == 'OTRO')) {
                                 $efisico = strtoupper($request->efisico_t);
                             }else {
                                 $efisico = $request->efisico;
