@@ -180,7 +180,7 @@ class aperturaController extends Controller
         if($_SESSION['folio']){
             $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
             $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
-            $curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dias'=>null]);
+            $curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dia'=>null]);
             //$_SESSION['folio'] = null;
            // unset($_SESSION['folio']);
            if($result){
