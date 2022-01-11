@@ -149,7 +149,7 @@ class grupoController extends Controller
             $date = date('d-m-Y'); //dd($date);
             $alumno = DB::table('alumnos_pre')->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"))->where('curp', $curp)->where('activo', true)->first(); //dd($alumno);
             if ($alumno) {
-                if ($alumno->edad > 15) {
+                if ($alumno->edad >= 15) {
                     $cursos = DB::table(DB::raw("(select a.id_curso as curso from alumnos_registro as a
 													inner join alumnos_pre as ap on a.id_pre = ap.id
                                                     where ap.curp = '$curp'
