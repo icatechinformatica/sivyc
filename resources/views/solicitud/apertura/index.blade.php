@@ -148,19 +148,8 @@
                      {{ Form::select('mexoneracion', $exoneracion, $grupo->mexoneracion, ['id'=>'mexoneracion','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>  
                 <div class="form-group col-md-3">
-                    <label>Lugar o Espacio F&iacute;sico:</label>
-                    @if (isset($grupo->efisico))
-                        @if ($grupo->efisico != 'EN LINEA' && $grupo->efisico != 'ACCIÓN MÓVIL' && $grupo->efisico != 'UNIDAD DE CAPACITACIÓN' && $grupo->efisico != 'AULA MÓVIL')
-                        {{ Form::select('efisico', $efisico, "OTRO", ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                        <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}">
-                        @else
-                        {{ Form::select('efisico', $efisico, $grupo->efisico, ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                        <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}" hidden>
-                        @endif
-                    @else
-                    {{ Form::select('efisico', $efisico, $grupo->efisico, ['id'=>'efisico','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                    <input type="text" id="efisico_t" name="efisico_t" class="form-control" value="{{$grupo->efisico}}" hidden>
-                    @endif
+                    <label>Domicilio, Lugar o Espacio F&iacute;sico:</label>
+                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}">
                 </div>             
             </div>
             <div class="form-row" >
@@ -337,16 +326,6 @@
                 
                 $("#tcurso").change(function(){
                    validaCERT();
-                });
-
-                $( function() {
-                    $("#efisico").change( function() {
-                        if ($(this).val() === "OTRO") {
-                            $("#efisico_t").prop("hidden", false);
-                        } else {
-                            $("#efisico_t").prop("hidden", true);
-                        }
-                    });
                 });
 
                 function validaCERT(){
