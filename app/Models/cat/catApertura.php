@@ -247,7 +247,7 @@ trait catApertura
                     if($item <= $datefin){
                         $total2= $total2+$segundos_curso;
                     }else{
-                        $array2= $item;
+                        $array2[]= $item;
                     }
                 }
                 $consulta_fechas2= DB::table(DB::raw("(select id_instructor,
@@ -272,7 +272,7 @@ trait catApertura
                             if($item <= $datefin){
                                 $total3= $total3+$segundos_curso;
                             }else{
-                                $array3= $item;
+                                $array3[]= $item;
                             }
                         }
                         $consulta_fechas3= DB::table(DB::raw("(select id_instructor,
@@ -297,7 +297,7 @@ trait catApertura
                                 if($item <= $datefin){
                                     $total4= $total4+$segundos_curso;
                                 }else{
-                                    $array4= $item;
+                                    $array4[]= $item;
                                 }
                             }
                             $consulta_fechas4= DB::table(DB::raw("(select id_instructor,
@@ -322,7 +322,7 @@ trait catApertura
                                     if($item <= $datefin){
                                         $total5= $total5+$segundos_curso;
                                     }else{
-                                        $array5= $item;
+                                        $array5[]= $item;
                                     }
                                 }
                                 $consulta_fechas5= DB::table(DB::raw("(select id_instructor,
