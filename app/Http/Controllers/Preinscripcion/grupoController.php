@@ -240,6 +240,15 @@ class grupoController extends Controller
         //dd($request->all());
         if ($_SESSION['folio_grupo']) {
             $folio = $_SESSION['folio_grupo'];
+            $file =  $request->customFile;
+            $url_comprobante = DB::table('alumnos_registro')->select('comprobante_pago')->where('folio_grupo',$folio)->first();
+            if ($file) {
+                $url_comprobante = $this->uploaded_file($file, $folio, 'comprobante_pago');
+            }elseif ($url_comprobante->comprobante_pago != null) {
+                $url_comprobante = $url_comprobante->comprobante_pago;
+            }else {
+                $url_comprobante = null;
+            }
             $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
             $costo_individual = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('costo');
             $id_unidad = DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
@@ -282,7 +291,7 @@ class grupoController extends Controller
                     'id_especialidad' =>  $id_especialidad, 'horario'=>$horario, 'unidad' => $request->unidad, 'tipo_curso' => $request->tipo,
                     'iduser_updated' => $this->id_user, 'updated_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_muni' => $request->id_municipio,
                     'inicio' => $request->inicio, 'termino' => $request->termino, 'id_organismo'=>$id_organismo, 'id_vulnerable' => $request->grupo_vulnerable,
-                    'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $request->id_municipio, 'grupo_vulnerable' => $grupo_vulnerable
+                    'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $request->id_municipio, 'grupo_vulnerable' => $grupo_vulnerable, 'comprobante_pago'=>$url_comprobante
                 ]
             );
             if ($result) $message = "Operación Exitosa!!";
@@ -309,13 +318,22 @@ class grupoController extends Controller
     public function turnar()
     {
         if ($_SESSION['folio_grupo']) {
+            $alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->get();
             $comprobante = DB::table('alumnos_registro')->select('comprobante_pago')->where('folio_grupo', $_SESSION['folio_grupo'])->first();
-            if ($comprobante->comprobante_pago) {
-                //echo "pasa"; exit;
-                DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
-                //$_SESSION['folio_grupo']=NULL;
+            $costo = 0;
+            foreach ($alumnos as $a) {
+                $costo += $a->costo;
+            }
+            if ($costo > 0) {
+                if ($comprobante->comprobante_pago) {
+                    //echo "pasa"; exit;
+                   $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                    //$_SESSION['folio_grupo']=NULL;
+                }else {
+                    return redirect()->route('preinscripcion.grupo')->with(['message' => 'FAVOR DE CARGAR EL COMPROBANTE DE PAGO']);
+                }
             } else {
-                return redirect()->route('preinscripcion.grupo')->with(['message' => 'FAVOR DE CARGAR EL COMPROBANTE DE PAGO']);
+                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d'), 'comprobante_pago' => null]);
             }
         }
         return redirect()->route('preinscripcion.grupo');

@@ -66,34 +66,15 @@
       @endif                                                                                         
     </tbody>
 </table>
-@if ($activar AND $folio_grupo)
-<table class="table table-striped col-md-7">
-  <thead>
-    <tr>
-      <th class="h6" scope="col">
-        <div>COMPROBANTE DE PAGO:</div>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>
-        <div class="custom-file">
-          <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
-          <label class="custom-file-label" for="customFile">SELECCIONAR DOCUMENTO</label>
-        </div>
-      </th>
-      <th>
-        <button type="button" id="comprobante" class="btn btn-success">SUBIR COMPROBANTE</button>
-      </th>
-      <th>
-        <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
-      </th>
-    </tr>
-  </tbody>
-</table>
-@endif
     <div class="col-md-12 text-right">
+      @if ($activar AND $folio_grupo)
+      <div class="custom-file col-md-3 mx-4 text-center">
+        <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
+        <label class="custom-file-label" for="customFile">PDF COMPROBANTE DE PAGO</label>
+      </div>
+      <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
+      {{--<button type="button" id="comprobante" class="btn btn-success">SUBIR COMPROBANTE</button>--}}
+      @endif
         @if ($comprobante)
         <a href="{{$comprobante}}" target="_blank" class="btn  bg-warning">IMPRIMIR COMPROBANTE DE PAGO</a>
         @endif
