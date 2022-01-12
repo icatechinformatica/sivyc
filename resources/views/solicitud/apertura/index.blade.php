@@ -123,15 +123,15 @@
                 </div>                                              
                 <div class="form-group col-md-2">
                     <label>Convenio General:</label>
-                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" disabled/>
+                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" readonly/>
                 </div>  
                 <div class="form-group col-md-2">
                     <label>Fecha Convenio General:</label>                    
-                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" disabled/ >
+                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" readonly/ >
                 </div> 
                 <div class="form-group col-md-3">
                     <label>Sector:</label>
-                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" disabled/>
+                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" readonly/>
                 </div>
             </div> 
             <div class="form-row" >
@@ -651,8 +651,8 @@
                     inicializarCalendar();
                     let hora = document.getElementById("txtHora");
                     let horaTermino = document.getElementById("txtHoraTermino");
-                    hora.disabled = true;
-                    horaTermino.disabled = true;
+                    hora.disabled = false;
+                    horaTermino.disabled = false;
                     $('#titleCalendar').html(document.getElementById('instructor').value.split(',')[1]);
                     $("#modalCalendar").modal("show");
                 } else {
