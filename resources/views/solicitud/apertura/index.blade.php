@@ -123,15 +123,15 @@
                 </div>                                              
                 <div class="form-group col-md-2">
                     <label>Convenio General:</label>
-                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" disabled/>
+                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" readonly/>
                 </div>  
                 <div class="form-group col-md-2">
                     <label>Fecha Convenio General:</label>                    
-                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" disabled/ >
+                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" readonly/ >
                 </div> 
                 <div class="form-group col-md-3">
                     <label>Sector:</label>
-                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" disabled/>
+                    <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" readonly/>
                 </div>
             </div> 
             <div class="form-row" >
