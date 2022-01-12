@@ -76,7 +76,7 @@ trait catApertura
     }
 
     protected function plantel(){  
-        $plantel = ["UNIDAD"=>"UNIDAD DE CAPACITACIÓN","AULA MÓVIL"=>"AULA MÓVIL","ACCIÓN MÓVIL"=>"ACCIÓN MÓVIL", "CAPACITACIÓN EXTERNA"=>"CAPACITACIÓN EXTERNA","EN LINEA"=>"EN LINEA"];
+        $plantel = ["UNIDAD"=>"UNIDAD DE CAPACITACIÓN","AULA MÓVIL"=>"AULA MÓVIL","ACCIÓN MÓVIL"=>"ACCIÓN MÓVIL", "CAPACITACIÓN EXTERNA"=>"CAPACITACIÓN EXTERNA","A DISTANCIA"=>"A DISTANCIA"];
         return $plantel;       
     }
 
