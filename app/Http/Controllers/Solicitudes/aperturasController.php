@@ -58,13 +58,13 @@ class aperturasController extends Controller
         $grupos = $movimientos = [];
         //echo $memo;
         if($memo){            
-            $grupos = DB::table('tbl_cursos as tc')->select('tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud')
+            $grupos = DB::table('tbl_cursos as tc')->select('tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud', 'ar.comprobante_pago')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo');
                if($opt == 'ARC01') $grupos = $grupos->where('tc.munidad',$memo);
                else $grupos = $grupos->where('tc.nmunidad',$memo);
-               $grupos = $grupos->groupby('tc.id','ar.turnado')->get();           
-            //var_dump($grupos);exit;
-            
+               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago')->get();           
+            $path = $this->path_files;
+               
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;
                 $_SESSION['memo'] = $memo;
@@ -104,9 +104,10 @@ class aperturasController extends Controller
             }else $message = "No se encuentran registros que mostrar.";
            
         }
+
         if(session('message')) $message = session('message');
         //var_dump($grupos);exit;
-        return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos'));
+        return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path'));
     }  
     
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
