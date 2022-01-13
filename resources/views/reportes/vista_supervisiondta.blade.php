@@ -231,16 +231,20 @@
                                     <th scope="col">INSCRITOS</th>
                                     <th scope="col">FEM</th>
                                     <th scope="col">MASC</th>
+                                    <th scope="col">LGBTTTI+</th>
                                     <th scope="col">EGRESADO</th>
                                     <th scope="col">EGRESADO FEM</th>
                                     <th scope="col">EGRESADO MASC</th>
+                                    <th scope="col">EGRESADO LGBTTTI+</th>
                                     <th scope="col">DESERCIÓN</th>
                                     <th scope="col">C TOTAL CURSO PERSONA</th>
                                     <th scope="col">INGRESO TOTAL</th>
-                                    <th scope="col">EXO TOTAL MUJER</th>
-                                    <th scope="col">EXO TOTAL HOMBRE</th>
-                                    <th scope="col">EXO PARCIAL MUJER</th>
-                                    <th scope="col">EXO PARCIAL HOMBRE</th>
+                                    <th scope="col">EXONERACION MUJER</th>
+                                    <th scope="col">EXONERACION HOMBRE</th>
+                                    <th scope="col">EXONERACION LGBTTTI+</th>
+                                    <th scope="col">REDUCCION CUOTA MUJER</th>
+                                    <th scope="col">REDUCCION CUOTA HOMBRE</th>
+                                    <th scope="col">REDUCCION CUOTA LGBTTTI+</th>
                                     <th scope="col">CONVENIO ESPECIFICO</th>
                                     <th scope="col">MEMO VALIDA CURSO</th>
                                     <th scope="col">ESPACIO FISICO</th>
@@ -266,74 +270,106 @@
                                     <th scope="col">VALIDACION PAQUETERIA</th>
                                     <th scope="col">INSC EDAD M1</th>
                                     <th scope="col">INSC EDAD H1</th>
+                                    <th scope="col">INSC EDAD L1</th>
                                     <th scope="col">INSC EDAD M2</th>
                                     <th scope="col">INSC EDAD H2</th>
+                                    <th scope="col">INSC EDAD L2</th>
                                     <th scope="col">INSC EDAD M3</th>
                                     <th scope="col">INSC EDAD H3</th>
+                                    <th scope="col">INSC EDAD L3</th>
                                     <th scope="col">INSC EDAD M4</th>
                                     <th scope="col">INSC EDAD H4</th>
+                                    <th scope="col">INSC EDAD L4</th>
                                     <th scope="col">INSC EDAD M5</th>
                                     <th scope="col">INSC EDAD H5</th>
+                                    <th scope="col">INSC EDAD L5</th>
                                     <th scope="col">INSC EDAD M6</th>
                                     <th scope="col">INSC EDAD H6</th>
-                                    <th scope="col">INSC EDAD M7</th>
-                                    <th scope="col">INSC EDAD H7</th>
-                                    <th scope="col">INSC EDAD M8</th>
-                                    <th scope="col">INSC EDAD H8</th>
+                                    <th scope="col">INSC EDAD L6</th>
+
                                     <th scope="col">INSC ESCOL M1</th>
                                     <th scope="col">INSC ESCOL H1</th>
+                                    <th scope="col">INSC ESCOL L1</th>
                                     <th scope="col">INSC ESCOL M2</th>
                                     <th scope="col">INSC ESCOL H2</th>
+                                    <th scope="col">INSC ESCOL L2</th>
                                     <th scope="col">INSC ESCOL M3</th>
                                     <th scope="col">INSC ESCOL H3</th>
+                                    <th scope="col">INSC ESCOL L3</th>
                                     <th scope="col">INSC ESCOL M4</th>
                                     <th scope="col">INSC ESCOL H4</th>
+                                    <th scope="col">INSC ESCOL L4</th>
                                     <th scope="col">INSC ESCOL M5</th>
                                     <th scope="col">INSC ESCOL H5</th>
+                                    <th scope="col">INSC ESCOL L5</th>
                                     <th scope="col">INSC ESCOL M6</th>
                                     <th scope="col">INSC ESCOL H6</th>
+                                    <th scope="col">INSC ESCOL L6</th>
                                     <th scope="col">INSC ESCOL M7</th>
                                     <th scope="col">INSC ESCOL H7</th>
+                                    <th scope="col">INSC ESCOL L7</th>
                                     <th scope="col">INSC ESCOL M8</th>
                                     <th scope="col">INSC ESCOL H8</th>
+                                    <th scope="col">INSC ESCOL L8</th>
                                     <th scope="col">INSC ESCOL M9</th>
                                     <th scope="col">INSC ESCOL H9</th>
+                                    <th scope="col">INSC ESCOL L9</th>
+
                                     <th scope="col">ACRE ESCOL M1</th>
                                     <th scope="col">ACRE ESCOL H1</th>
+                                    <th scope="col">ACRE ESCOL L1</th>
                                     <th scope="col">ACRE ESCOL M2</th>
                                     <th scope="col">ACRE ESCOL H2</th>
+                                    <th scope="col">ACRE ESCOL L2</th>
                                     <th scope="col">ACRE ESCOL M3</th>
                                     <th scope="col">ACRE ESCOL H3</th>
+                                    <th scope="col">ACRE ESCOL L3</th>
                                     <th scope="col">ACRE ESCOL M4</th>
                                     <th scope="col">ACRE ESCOL H4</th>
+                                    <th scope="col">ACRE ESCOL L4</th>
                                     <th scope="col">ACRE ESCOL M5</th>
                                     <th scope="col">ACRE ESCOL H5</th>
+                                    <th scope="col">ACRE ESCOL L5</th>
                                     <th scope="col">ACRE ESCOL M6</th>
                                     <th scope="col">ACRE ESCOL H6</th>
+                                    <th scope="col">ACRE ESCOL L6</th>
                                     <th scope="col">ACRE ESCOL M7</th>
                                     <th scope="col">ACRE ESCOL H7</th>
+                                    <th scope="col">ACRE ESCOL L7</th>
                                     <th scope="col">ACRE ESCOL M8</th>
                                     <th scope="col">ACRE ESCOL H8</th>
+                                    <th scope="col">ACRE ESCOL L8</th>
                                     <th scope="col">ACRE ESCOL M9</th>
                                     <th scope="col">ACRE ESCOL H9</th>
+                                    <th scope="col">ACRE ESCOL L9</th>
+
                                     <th scope="col">DESC ESCOL M1</th>
                                     <th scope="col">DESC ESCOL H1</th>
+                                    <th scope="col">DESC ESCOL L1</th>
                                     <th scope="col">DESC ESCOL M2</th>
                                     <th scope="col">DESC ESCOL H2</th>
+                                    <th scope="col">DESC ESCOL L2</th>
                                     <th scope="col">DESC ESCOL M3</th>
                                     <th scope="col">DESC ESCOL H3</th>
+                                    <th scope="col">DESC ESCOL L3</th>
                                     <th scope="col">DESC ESCOL M4</th>
                                     <th scope="col">DESC ESCOL H4</th>
+                                    <th scope="col">DESC ESCOL L4</th>
                                     <th scope="col">DESC ESCOL M5</th>
                                     <th scope="col">DESC ESCOL H5</th>
+                                    <th scope="col">DESC ESCOL L5</th>
                                     <th scope="col">DESC ESCOL M6</th>
                                     <th scope="col">DESC ESCOL H6</th>
+                                    <th scope="col">DESC ESCOL L6</th>
                                     <th scope="col">DESC ESCOL M7</th>
                                     <th scope="col">DESC ESCOL H7</th>
+                                    <th scope="col">DESC ESCOL L7</th>
                                     <th scope="col">DESC ESCOL M8</th>
                                     <th scope="col">DESC ESCOL H8</th>
+                                    <th scope="col">DESC ESCOL L8</th>
                                     <th scope="col">DESC ESCOL M9</th>
                                     <th scope="col">DESC ESCOL H9</th>
+                                    <th scope="col">DESC ESCOL L9</th>
                                     <th scope="col" style="width:50%">OBSERVACIONES</th>
                                     <th scope="col" style="width:50%">OBSERVACIONES ENLACES</th>
                                 </tr>
@@ -378,16 +414,20 @@
                                         <td>{{ $datas->tinscritos }}</td>
                                         <td>{{ $datas->imujer }}</td>
                                         <td>{{ $datas->ihombre }}</td>
+                                        <td>{{ $datas->ilgbt }}</td>
                                         <td>{{ $datas->egresado }}</td>
                                         <td>{{ $datas->emujer }}</td>
                                         <td>{{ $datas->ehombre }}</td>
+                                        <td>{{ $datas->elgbt }}</td>
                                         <td>{{ $datas->desertado }}</td>
                                         <td>{{ $datas->costo }}</td>
                                         <td>{{ $datas->ctotal }}</td>
                                         <td>{{ $datas->etmujer }}</td>
                                         <td>{{ $datas->ethombre }}</td>
+                                        <td>{{ $datas->etlgbt }}</td>
                                         <td>{{ $datas->epmujer }}</td>
                                         <td>{{ $datas->ephombre }}</td>
+                                        <td>{{ $datas->eplgbt }}</td>
                                         <td>
                                             <div style="width:200px; word-wrap: break-word">{{ $datas->cespecifico }}
                                             </div>
@@ -424,74 +464,106 @@
                                         <td>{{ $datas->mpaqueteria }}</td>
                                         <td>{{ $datas->iem1 }}</td>
                                         <td>{{ $datas->ieh1 }}</td>
+                                        <td>{{ $datas->iel1 }}</td>
                                         <td>{{ $datas->iem2 }}</td>
                                         <td>{{ $datas->ieh2 }}</td>
+                                        <td>{{ $datas->iel2 }}</td>
                                         <td>{{ $datas->iem3 }}</td>
                                         <td>{{ $datas->ieh3 }}</td>
+                                        <td>{{ $datas->iel3 }}</td>
                                         <td>{{ $datas->iem4 }}</td>
                                         <td>{{ $datas->ieh4 }}</td>
+                                        <td>{{ $datas->iel4 }}</td>
                                         <td>{{ $datas->iem5 }}</td>
                                         <td>{{ $datas->ieh5 }}</td>
+                                        <td>{{ $datas->iel5 }}</td>
                                         <td>{{ $datas->iem6 }}</td>
                                         <td>{{ $datas->ieh6 }}</td>
-                                        <td>{{ $datas->iem7 }}</td>
-                                        <td>{{ $datas->ieh7 }}</td>
-                                        <td>{{ $datas->iem8 }}</td>
-                                        <td>{{ $datas->ieh8 }}</td>
+                                        <td>{{ $datas->iel6 }}</td>
+
                                         <td>{{ $datas->iesm1 }}</td>
                                         <td>{{ $datas->iesh1 }}</td>
+                                        <td>{{ $datas->iesl1 }}</td>
                                         <td>{{ $datas->iesm2 }}</td>
                                         <td>{{ $datas->iesh2 }}</td>
+                                        <td>{{ $datas->iesl2 }}</td>
                                         <td>{{ $datas->iesm3 }}</td>
                                         <td>{{ $datas->iesh3 }}</td>
+                                        <td>{{ $datas->iesl3 }}</td>
                                         <td>{{ $datas->iesm4 }}</td>
                                         <td>{{ $datas->iesh4 }}</td>
+                                        <td>{{ $datas->iesl4 }}</td>
                                         <td>{{ $datas->iesm5 }}</td>
                                         <td>{{ $datas->iesh5 }}</td>
+                                        <td>{{ $datas->iesl5 }}</td>
                                         <td>{{ $datas->iesm6 }}</td>
                                         <td>{{ $datas->iesh6 }}</td>
+                                        <td>{{ $datas->iesl6 }}</td>
                                         <td>{{ $datas->iesm7 }}</td>
                                         <td>{{ $datas->iesh7 }}</td>
+                                        <td>{{ $datas->iesl7 }}</td>
                                         <td>{{ $datas->iesm8 }}</td>
                                         <td>{{ $datas->iesh8 }}</td>
+                                        <td>{{ $datas->iesl8 }}</td>
                                         <td>{{ $datas->iesm9 }}</td>
                                         <td>{{ $datas->iesh9 }}</td>
+                                        <td>{{ $datas->iesl9 }}</td>
+
                                         <td>{{ $datas->aesm1 }}</td>
                                         <td>{{ $datas->aesh1 }}</td>
+                                        <td>{{ $datas->aesl1 }}</td>
                                         <td>{{ $datas->aesm2 }}</td>
                                         <td>{{ $datas->aesh2 }}</td>
+                                        <td>{{ $datas->aesl2 }}</td>
                                         <td>{{ $datas->aesm3 }}</td>
                                         <td>{{ $datas->aesh3 }}</td>
+                                        <td>{{ $datas->aesl3 }}</td>
                                         <td>{{ $datas->aesm4 }}</td>
                                         <td>{{ $datas->aesh4 }}</td>
+                                        <td>{{ $datas->aesl4 }}</td>
                                         <td>{{ $datas->aesm5 }}</td>
                                         <td>{{ $datas->aesh5 }}</td>
+                                        <td>{{ $datas->aesl5 }}</td>
                                         <td>{{ $datas->aesm6 }}</td>
                                         <td>{{ $datas->aesh6 }}</td>
+                                        <td>{{ $datas->aesl6 }}</td>
                                         <td>{{ $datas->aesm7 }}</td>
                                         <td>{{ $datas->aesh7 }}</td>
+                                        <td>{{ $datas->aesl7 }}</td>
                                         <td>{{ $datas->aesm8 }}</td>
                                         <td>{{ $datas->aesh8 }}</td>
+                                        <td>{{ $datas->aesl8 }}</td>
                                         <td>{{ $datas->aesm9 }}</td>
                                         <td>{{ $datas->aesh9 }}</td>
+                                        <td>{{ $datas->aesl9 }}</td>
+
                                         <td>{{ $datas->naesm1 }}</td>
                                         <td>{{ $datas->naesh1 }}</td>
+                                        <td>{{ $datas->naesl1 }}</td>
                                         <td>{{ $datas->naesm2 }}</td>
                                         <td>{{ $datas->naesh2 }}</td>
+                                        <td>{{ $datas->naesl2 }}</td>
                                         <td>{{ $datas->naesm3 }}</td>
                                         <td>{{ $datas->naesh3 }}</td>
+                                        <td>{{ $datas->naesl3 }}</td>
                                         <td>{{ $datas->naesm4 }}</td>
                                         <td>{{ $datas->naesh4 }}</td>
+                                        <td>{{ $datas->naesl4 }}</td>
                                         <td>{{ $datas->naesm5 }}</td>
                                         <td>{{ $datas->naesh5 }}</td>
+                                        <td>{{ $datas->naesl5 }}</td>
                                         <td>{{ $datas->naesm6 }}</td>
                                         <td>{{ $datas->naesh6 }}</td>
+                                        <td>{{ $datas->naesl6 }}</td>
                                         <td>{{ $datas->naesm7 }}</td>
                                         <td>{{ $datas->naesh7 }}</td>
+                                        <td>{{ $datas->naesl7 }}</td>
                                         <td>{{ $datas->naesm8 }}</td>
                                         <td>{{ $datas->naesh8 }}</td>
+                                        <td>{{ $datas->naesl8 }}</td>
                                         <td>{{ $datas->naesm9 }}</td>
                                         <td>{{ $datas->naesh9 }}</td>
+                                        <td>{{ $datas->naesl9 }}</td>
                                         <td>
                                             <div style="width:900px; word-wrap: break-word" align="justify">
                                                 {{ $datas->tnota }}
