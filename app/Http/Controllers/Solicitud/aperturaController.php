@@ -511,7 +511,7 @@ class aperturaController extends Controller
                         if (($temp+1)==$value) {
                             $temp2 = $value;
                             $save = false;
-                        }elseif (($temp2+1)==$value) {
+                        }elseif ($temp2 && (($temp2+1)==$value)) {
                             $temp2 = $value;
                             $save = false;
                         }else {
@@ -940,7 +940,7 @@ class aperturaController extends Controller
                     if (($temp+1)==$value) {
                         $temp2 = $value;
                         $save = false;
-                    }elseif (($temp2+1)==$value) {
+                    }elseif ($temp2 && (($temp2+1)==$value)) {
                         $temp2 = $value;
                         $save = false;
                     }else {
