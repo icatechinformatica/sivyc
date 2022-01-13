@@ -162,10 +162,10 @@ trait catApertura
 											    and status_curso != 'CANCELADO') as t
 											    group by id_instructor) as r
                                             where r.total > 3")])
-            ->whereNotIn('instructores.id', [DB::raw("select id_instructor from agenda
+            /*->whereNotIn('instructores.id', [DB::raw("select id_instructor from agenda
                                                       where ((date(agenda.start)>='$fhini' and date(agenda.start)<='$ffinal' and cast(agenda.start as time)>='$hini' and cast(agenda.start as time)<'$hfin')
                                                       or (date(agenda.end)>='$fhini' and date(agenda.end)<='$ffinal' and cast(agenda.end as time)>'$hini' and cast(agenda.end as time)<='$hfin'))
-                                                      group by id_instructor")]);
+                                                      group by id_instructor")])*/;
             
             //->orderby('instructor')
             //->pluck('instructor','instructores.id');
@@ -683,7 +683,7 @@ trait catApertura
                 $id[]= $value;
             }
         } 
-        $instructores = $instructores->whereNotIn('instructores.id',$id)
+        $instructores = $instructores//->whereNotIn('instructores.id',$id)
                         /*->where(function ($query){
                             $query->whereExists('instructores.clave_loc', '=', 'TUXTLA GUTIERREZ')
                                   ->orWhere('name', 'John');
