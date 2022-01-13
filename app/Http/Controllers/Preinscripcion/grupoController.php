@@ -77,16 +77,16 @@ class grupoController extends Controller
                 'ap.requisitos',
                 'ap.documento_curp',
                 DB::raw("substring(curp,11,1) as sex"),
-                DB::raw("CASE WHEN substring(curp,5,2) <='" . $anio_hoy . "' 
+                DB::raw("CASE WHEN substring(curp,5,2) <='" . $anio_hoy . "'
                 THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
-                ELSE CONCAT('19',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2)) 
+                ELSE CONCAT('19',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
                 END AS fnacimiento")
-            )->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)->orderBy('apellido_paterno')->get();
+            )->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')->get();
             //var_dump($alumnos);exit;
             if (count($alumnos) > 0) {
                 $id_curso = $alumnos[0]->id_curso;
                 $tipo = $alumnos[0]->tipo_curso;
-                if($alumnos[0]->comprobante_pago)$comprobante = $this->path_files.$alumnos[0]->comprobante_pago; 
+                if($alumnos[0]->comprobante_pago)$comprobante = $this->path_files.$alumnos[0]->comprobante_pago;
                 if ($alumnos[0]->turnado == 'VINCULACION' and isset($this->data['cct_unidad'])) $this->activar = true;
                 else $this->activar = false;
 
@@ -143,7 +143,7 @@ class grupoController extends Controller
 
     public function save(Request $request)
     {
-        $curp = $request->busqueda;    //dd($request->all());  
+        $curp = $request->busqueda;    //dd($request->all());
         $matricula = $message = NULL;
         if ($curp) {
             $date = date('d-m-Y'); //dd($date);
@@ -167,7 +167,7 @@ class grupoController extends Controller
                             $matricula = $matricula_sice;
                             DB::table('registro_alumnos_sice')->where('curp', $curp)->update(['eliminado' => true]);
                         } elseif (isset($alumno->matricula)) $matricula  =  $alumno->matricula;
-                        //FIN MATRICULA 
+                        //FIN MATRICULA
 
                         $a_reg = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->first();
                         if ($a_reg) {
@@ -279,7 +279,7 @@ class grupoController extends Controller
                 }
                 Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
             }
-            
+
             if ($request->cerss) $cerrs = true;
             else $cerrs = NULL;
             $horario= $request->hini.' A '.$request->hfin;
