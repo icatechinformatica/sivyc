@@ -57,13 +57,13 @@ class aperturasController extends Controller
         $_SESSION['grupos'] = NULL;        
         $grupos = $movimientos = [];
         //echo $memo;
+        $path = $this->path_files;
         if($memo){            
             $grupos = DB::table('tbl_cursos as tc')->select('tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud', 'ar.comprobante_pago')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo');
                if($opt == 'ARC01') $grupos = $grupos->where('tc.munidad',$memo);
                else $grupos = $grupos->where('tc.nmunidad',$memo);
                $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago')->get();           
-            $path = $this->path_files;
                
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;
