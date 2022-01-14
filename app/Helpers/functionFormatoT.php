@@ -60,7 +60,7 @@ function dataFormatoT($unidad, $status, $fecha) {
             DB::raw("sum(case when ins.empleado = true then 1 else 0 end) as empleado"),
             DB::raw("sum(case when ins.empleado = false then 1 else 0 end) as desempleado"),
             DB::raw("sum(case when ins.discapacidad <> 'NINGUNA' then 1 else 0 end) as discapacidad"),
-            DB::raw("0 as madres_solteras"), // debe ir madres solteras 
+            DB::raw("0 as madres_solteras"), // debe ir madres solteras
 
             DB::raw("sum(case when ins.inmigrante = true then 1 else 0 end) as migrante"),
             DB::raw("sum(case when ins.indigena = true then 1 else 0 end) as indigena"),
@@ -89,8 +89,8 @@ function dataFormatoT($unidad, $status, $fecha) {
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) between 30 and 59 AND ins.sexo='M' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) between 30 and 59 AND ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iem5"),
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) between 30 and 59 AND ins.sexo='H' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) between 30 and 59 AND ins.sexo='H' and ins.lgbt is null then 1 else 0 end) as ieh5"),
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) between 30 and 59 AND ins.lgbt = true then 1 else 0 end) as iel5"),
-            DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 AND ins.sexo='M' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 65 AND ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iem6"),
-            DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 and ins.sexo='H' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 65 and ins.sexo='H' and ins.lgbt is null then 1 else 0 end) as ieh6"),
+            DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 AND ins.sexo='M' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 AND ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iem6"),
+            DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 and ins.sexo='H' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 and ins.sexo='H' and ins.lgbt is null then 1 else 0 end) as ieh6"),
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 and ins.lgbt then 1 else 0 end) as iel6"),
 
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.lgbt = false or ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iesm1"),
@@ -180,20 +180,20 @@ function dataFormatoT($unidad, $status, $fecha) {
             DB::raw("case when c.arc='01' then nota else observaciones end as tnota"),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_FIRMA' AS observaciones_firma"),
             DB::raw("(c.hombre + c.mujer) AS totalinscripciones"),
-            'c.hombre as masculinocheck', 
+            'c.hombre as masculinocheck',
             'c.mujer as femeninocheck',
             DB::raw("
-                  COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 6 and ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 6 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 7 and 11 AND ins.sexo = 'M' then 1 else 0 end )) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 7 and 11 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 12 and 17 AND ins.sexo='M' then 1 else 0  end )) 
-                + COALESCE(sum(case When EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 12 and 17 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 18 and 29 AND ins.sexo='M' then 1 else 0 end )) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 18 and 29 AND ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 30 and 59 AND ins.sexo='M' then 1 else 0 end)) 
+                  COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 6 and ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 6 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 7 and 11 AND ins.sexo = 'M' then 1 else 0 end ))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 7 and 11 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 12 and 17 AND ins.sexo='M' then 1 else 0  end ))
+                + COALESCE(sum(case When EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 12 and 17 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 18 and 29 AND ins.sexo='M' then 1 else 0 end ))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 18 and 29 AND ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 30 and 59 AND ins.sexo='M' then 1 else 0 end))
                 + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 30 and 59 AND ins.sexo='H' then 1 else 0 end))
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 60 AND ins.sexo='M' then 1 else 0 end)) 
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 60 AND ins.sexo='M' then 1 else 0 end))
                 + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 60 and ins.sexo='H' then 1 else 0 end)) as sumatoria_total_ins_edad"
             ),
 
@@ -246,7 +246,7 @@ function dataFormatoT($unidad, $status, $fecha) {
 }
 
 function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
-    
+
     $var_cursos = DB::table('tbl_cursos as c')
         ->select(
             DB::raw("to_char(c.fecha_turnado, 'TMMONTH') AS fechaturnado"),
@@ -308,7 +308,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when ins.empleado = true then 1 else 0 end) as empleado"),
             DB::raw("sum(case when ins.empleado = false then 1 else 0 end) as desempleado"),
             DB::raw("sum(case when ins.discapacidad <> 'NINGUNA' then 1 else 0 end) as discapacidad"),
-            DB::raw("0 as madres_solteras"), // debe ir madres solteras 
+            DB::raw("0 as madres_solteras"), // debe ir madres solteras
 
             DB::raw("sum(case when ins.inmigrante = true then 1 else 0 end) as migrante"),
             DB::raw("sum(case when ins.indigena = true then 1 else 0 end) as indigena"),
@@ -321,7 +321,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             'c.cgeneral',
             'c.sector',
             'c.mpaqueteria',
-            
+
             // NEEW
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) < 6 and ins.sexo='M' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) < 6 and ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iem1"),
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) < 6 and ins.sexo='H' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) < 6 and ins.sexo='H' and ins.lgbt is null then 1 else 0 end) as ieh1"),
@@ -341,8 +341,8 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 AND ins.sexo='M' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 65 AND ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iem6"),
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 and ins.sexo='H' and ins.lgbt = false or EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 65 and ins.sexo='H' and ins.lgbt is null then 1 else 0 end) as ieh6"),
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 60 and ins.lgbt then 1 else 0 end) as iel6"),
-            
-            // new 
+
+            // new
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.lgbt = false or ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iesm1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.lgbt = false or ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.lgbt is null then 1 else 0 end) as iesh1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.lgbt = true then 1 else 0 end) as iesl1"),
@@ -370,7 +370,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='M' and ins.lgbt = false or ins.escolaridad='POSTGRADO' and ins.sexo='M' and ins.lgbt is null then 1 else 0 end) as iesm9"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='H' and ins.lgbt = false or ins.escolaridad='POSTGRADO' and ins.sexo='H' and ins.lgbt is null then 1 else 0 end) as iesh9"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.lgbt = true then 1 else 0 end) as iesl9"),
-            
+
             // new
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.calificacion != 'NP' and ins.lgbt = false or ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.calificacion != 'NP' and ins.lgbt is null then 1 else 0 end) as aesm1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.calificacion != 'NP' and ins.lgbt = false or ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.calificacion != 'NP' and ins.lgbt is null then 1 else 0 end) as aesh1"),
@@ -399,7 +399,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='M' and ins.calificacion != 'NP' and ins.lgbt = false or ins.escolaridad='POSTGRADO' and ins.sexo='M' and ins.calificacion != 'NP' and ins.lgbt is null then 1 else 0 end) as aesm9"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='H' and ins.calificacion != 'NP' and ins.lgbt = false or ins.escolaridad='POSTGRADO' and ins.sexo='H' and ins.calificacion != 'NP' and ins.lgbt is null then 1 else 0 end) as aesh9"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.lgbt = true and ins.calificacion != 'NP' then 1 else 0 end) as aesl9"),
-            
+
             // new
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.calificacion = 'NP' and ins.lgbt = false or ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.calificacion = 'NP' and ins.lgbt is null then 1 else 0 end) as naesm1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.calificacion = 'NP' and ins.lgbt = false or ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.calificacion = 'NP' and ins.lgbt is null then 1 else 0 end) as naesh1"),
@@ -439,26 +439,26 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' AS numero_memo_retorno1"), //new
             DB::raw("c.observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno"), //new
             DB::raw("
-                  COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 AND ins.sexo = 'M' then 1 else 0 end )) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 20 and 24 AND ins.sexo='M' then 1 else 0  end )) 
-                + COALESCE(sum(case When EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between '20' and '24' and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='M' then 1 else 0 end )) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 AND ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 65 AND ins.sexo='M' then 1 else 0 end)) 
+                  COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 AND ins.sexo = 'M' then 1 else 0 end ))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 20 and 24 AND ins.sexo='M' then 1 else 0  end ))
+                + COALESCE(sum(case When EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between '20' and '24' and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='M' then 1 else 0 end ))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 AND ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 65 AND ins.sexo='M' then 1 else 0 end))
                 + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 65 and ins.sexo='H' then 1 else 0 end)) as sumatoria_total_ins_edad"
             ),
-            /* DB::raw("COALESCE(sum( case when EXTRACT( year from (age(c.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='   ' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(YEAR FROM (AGE(c.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO' 
-                THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END )) + COALESCE(sum( Case When EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 25 and 34 
-                AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 35 and 44 
+            /* DB::raw("COALESCE(sum( case when EXTRACT( year from (age(c.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='   ' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(YEAR FROM (AGE(c.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO'
+                THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END )) + COALESCE(sum( Case When EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 25 and 34
+                AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 35 and 44
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 45 and 54
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between 55 and 64 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) >= 65 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(c.termino,ap.fecha_nacimiento))) >= 65 and ap.sexo='MASCULINO' then 1 else 0 end)) as sumatoria_total_ins_edad"), */
             $status == 'TURNADO_DTA'
@@ -544,7 +544,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
 
 /* function dataFormatoTSaveData($id)
 {
-    
+
     $var_cursos = DB::table('tbl_cursos as c')
         ->select(
             DB::raw("to_char(c.fecha_turnado, 'TMMONTH') AS fechaturnado"),
@@ -594,7 +594,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when ins.empleado = true then 1 else 0 end) as empleado"),
             DB::raw("sum(case when ins.empleado = false then 1 else 0 end) as desempleado"),
             DB::raw("sum(case when ins.discapacidad <> 'NINGUNA' then 1 else 0 end) as discapacidad"),
-            DB::raw("0 as madres_solteras"), // debe ir madres solteras 
+            DB::raw("0 as madres_solteras"), // debe ir madres solteras
 
             DB::raw("sum(case when ins.inmigrante = true then 1 else 0 end) as migrante"),
             DB::raw("sum(case when ins.indigena = true then 1 else 0 end) as indigena"),
@@ -623,7 +623,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) between 55 and 64 and ins.sexo='H' then 1 else 0 end) as ieh7"),
             DB::raw("sum(case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 65 AND ins.sexo='M' then 1 else 0 end) as iem8"),
             DB::raw("sum(case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) >= 65 and ins.sexo='H' then 1 else 0 end) as ieh8"),
-            
+
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' then 1 else 0 end) as iesm1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' then 1 else 0 end) as iesh1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA TERMINADA' and ins.sexo='M' then 1 else 0 end) as iesm2"),
@@ -642,7 +642,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when ins.escolaridad='NIVEL SUPERIOR TERMINADO' and ins.sexo='H' then 1 else 0 end) as iesh8"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='M' then 1 else 0 end) as iesm9"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='H' then 1 else 0 end) as iesh9"),
-            
+
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.calificacion != 'NP' then 1 else 0 end) as aesm1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.calificacion != 'NP' then 1 else 0 end) as aesh1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA TERMINADA' and ins.sexo='M' and ins.calificacion != 'NP' then 1 else 0 end) as aesm2"),
@@ -661,7 +661,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when ins.escolaridad='NIVEL SUPERIOR TERMINADO' and ins.sexo='H' and ins.calificacion != 'NP' then 1 else 0 end) as aesh8"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='M' and ins.calificacion != 'NP' then 1 else 0 end) as aesm9"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='H' and ins.calificacion != 'NP' then 1 else 0 end) as aesh9"),
-            
+
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='M' and ins.calificacion = 'NP' then 1 else 0 end) as naesm1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA INCONCLUSA' and ins.sexo='H' and ins.calificacion = 'NP' then 1 else 0 end) as naesh1"),
             DB::raw("sum(case when ins.escolaridad='PRIMARIA TERMINADA' and ins.sexo='M' and ins.calificacion = 'NP' then 1 else 0 end) as naesm2"),
@@ -680,7 +680,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("sum(case when ins.escolaridad='NIVEL SUPERIOR TERMINADO' and ins.sexo='H' and ins.calificacion = 'NP' then 1 else 0 end) as naesh8"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='M' and ins.calificacion = 'NP' then 1 else 0 end) as naesm9"),
             DB::raw("sum(case when ins.escolaridad='POSTGRADO' and ins.sexo='H' and ins.calificacion = 'NP' then 1 else 0 end) as naesh9"),
-            
+
             DB::raw("case when c.arc='01' then nota else observaciones end as tnota"),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_FIRMA' AS observaciones_firma"),
             DB::raw("(c.hombre + c.mujer) AS totalinscripciones"),
@@ -690,21 +690,21 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("c.memos->'ENLACE_TURNADO_RETORNO'->>'NUMERO_MEMO' AS numero_memo_retorno1"), //new
             DB::raw("c.observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno"), //new
             DB::raw("
-                  COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 AND ins.sexo = 'M' then 1 else 0 end )) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 20 and 24 AND ins.sexo='M' then 1 else 0  end )) 
-                + COALESCE(sum(case When EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between '20' and '24' and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='M' then 1 else 0 end )) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 AND ins.sexo='M' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 and ins.sexo='H' then 1 else 0 end)) 
-                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 65 AND ins.sexo='M' then 1 else 0 end)) 
+                  COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) < 15 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 AND ins.sexo = 'M' then 1 else 0 end ))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 15 and 19 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 20 and 24 AND ins.sexo='M' then 1 else 0  end ))
+                + COALESCE(sum(case When EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between '20' and '24' and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='M' then 1 else 0 end ))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 25 and 34 AND ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 35 and 44 AND ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 45 and 54 AND ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 AND ins.sexo='M' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) between 55 and 64 and ins.sexo='H' then 1 else 0 end))
+                + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 65 AND ins.sexo='M' then 1 else 0 end))
                 + COALESCE(sum(case when EXTRACT(year from(age(c.termino, ins.fecha_nacimiento))) >= 65 and ins.sexo='H' then 1 else 0 end)) as sumatoria_total_ins_edad"
             ),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_DIRECCIONDTA_TO_PLANEACION'->>'OBSERVACION_ENVIO_PLANEACION' AS observacion_envio_to_planeacion")
