@@ -177,9 +177,6 @@
                         telefono:{
                             required: true
                         },
-                        correo_ins:{
-                            required: true
-                        },
                         estado:{
                             required: true
                         },
@@ -189,17 +186,11 @@
                         direccion:{
                             required: true
                         },
-                        area:{
-                            required:true
-                        },
                         status:{
                             required: true
                         },
                         sector:{
                             required: true
-                        },
-                        tipo:{
-                            required : true
                         }
                     },
                     messages:{
@@ -212,9 +203,6 @@
                         telefono:{
                             required: 'Escriba el teléfono que pertenece al organismo'
                         },
-                        correo_ins:{
-                            required: 'Escriba el correo que pertenece al organismo'
-                        },
                         estado:{
                             required: 'Seleccione una opción'
                         },
@@ -224,16 +212,10 @@
                         direccion:{
                             required: 'Escriba la direccion al que pertenece'
                         },
-                        area:{
-                            required: 'Seleccione una opción'
-                        },
                         status:{
                             required: 'Seleccione una opción'
                         },
                         sector:{
-                            required: 'Seleccione una opción'
-                        },
-                        tipo:{
                             required: 'Seleccione una opción'
                         }
                     }
