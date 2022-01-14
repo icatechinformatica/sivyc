@@ -693,7 +693,8 @@ trait catApertura
                         //->pluck('instructor','instructores.id');
                         //->inRandomOrder()
                         ->groupBy('t.id_instructor','instructores.id')
-                        ->orderBy(DB::raw('total, "apellidoPaterno"'))
+                        //->orderBy(DB::raw('total, "apellidoPaterno"'))
+                        ->orderBy('instructor')
                         ->get();
                         /*if (isset($grupo->id_instructor)) {
                            $instructores = $instructores->take(4)->get();
