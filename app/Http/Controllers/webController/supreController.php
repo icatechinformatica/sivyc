@@ -33,23 +33,73 @@ class supreController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function prueba2()
+    protected function prueba2()
     {
-        $notis = auth()->user()->unreadNotifications;
-        dd($notis);
-        $letter = [
-            'titulo' => 'Suficiencia Presupuestal',
-            'cuerpo' => 'La suficicencia presupuestal ferjfoi3ur49/kjfer ha sido validada',
-            'memo' => '$event->valsupre->no_memo',
-            'unidad' => '$event->valsupre->unidad_capacitacion',
-            'url' => '/supre/validacion/pdf/',
-        ];
-        $users = User::where('id', 1)->get();
-        // dd($users);
-        event((new NotificationEvent($users, $letter)));
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $Curso = new tbl_curso();
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
+                                    ->WHERE('clave', '=', '11J-22-ALIM-EXT-0006')->FIRST();
 
-        // event(new ValSupreDelegadoEvent());
-        dd('hola');
+            if($Cursos != NULL)
+            {
+                // $inicio = date("m-d-Y", strtotime($Cursos->inicio));
+                $inicio = carbon::parse($Cursos->inicio);
+                dd($inicio);
+                // $inicio = strtotime($inicio);
+                $date1 = "2021-05-01";
+                // $date1 = date("m-d-Y", strtotime($date1));
+                $date1 = carbon::parse($date1);
+                // $date1 = strtotime($date1);
+                // dd($inicio);
+
+                if ($date1 <= $inicio)
+                {
+                    $ze2 = 'ze2_2021 AS monto';
+                    $ze3 = 'ze3_2021 AS monto';
+                    // dd(gettype($date1) . ' entro1 ' . gettype($inicio));
+                }
+                else
+                {
+                    $ze2 = 'monto_hora_ze2 AS monto';
+                    $ze3 = 'monto_hora_ze3 AS monto';
+                    // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
+                }
+
+                if ($Cursos->ze == 'II')
+                {
+                    $criterio = criterio_pago::SELECT($ze2)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                }
+                else
+                {
+                    $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
+                    // printf('hola');
+                }
+
+                if($criterio != NULL)
+                {
+                    if($Cursos->tipo_curso == 'CERTIFICACION')
+                    {
+                        $total = $criterio->monto * 10;
+                        //$aviso = TRUE;
+                    }
+                    else
+                    {
+                        $total = $criterio->monto * $Cursos->dura;
+                    }
+                }
+                else
+                {
+                    $total = 'N/A';
+                }
+            }
+            else
+            {
+                $total = 'N/A';
+            }
+            $json=json_encode($total); //dura 10 cp 6
+
+        // dd($Cursos->inicio);
+        return $json;
     }
 
     public function solicitud_supre_inicio(Request $request) {
@@ -626,8 +676,8 @@ class supreController extends Controller
 
             if($Cursos != NULL)
             {
-                $inicio = date("m-d-Y", strtotime($Cursos->inicio));
-                $inicio = carbon::parse($inicio);
+                // $inicio = date("m-d-Y", strtotime($Cursos->inicio));
+                $inicio = carbon::parse($Cursos->inicio);
                 // $inicio = strtotime($inicio);
                 $date1 = "2021-05-01";
                 // $date1 = date("m-d-Y", strtotime($date1));
