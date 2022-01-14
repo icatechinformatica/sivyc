@@ -21,7 +21,7 @@ use App\Models\tbl_curso;
 use Hamcrest\Core\HasToString;
 
 class ftcontroller extends Controller {
-    
+
     public function index(Request $request) {
         // obtener el año actual --
         $anio_actual = Carbon::now()->year;
@@ -29,7 +29,7 @@ class ftcontroller extends Controller {
         $id_user = Auth::user()->id;
         $rol = DB::table('role_user')
                 ->select('roles.slug')
-                ->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')            
+                ->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')
                 ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
                 ->get();
         $_SESSION['unidades'] = NULL;
@@ -39,7 +39,7 @@ class ftcontroller extends Controller {
 
         if (!empty($rol[0]->slug)) {
             # si no está vacio
-            if(count($rol) > 0) { 
+            if(count($rol) > 0) {
                 $unidad = Auth::user()->unidad;
                 $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
                 $_SESSION['unidad'] = $unidad;
@@ -47,13 +47,13 @@ class ftcontroller extends Controller {
 
             $var_cursos = dataFormatoT($_SESSION['unidad'], ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
             foreach ($var_cursos as $value) {
-                $inscritosEdad = $value->iem1 + $value->ieh1 + $value->iel1 + 
+                $inscritosEdad = $value->iem1 + $value->ieh1 + $value->iel1 +
                                 $value->iem2 + $value->ieh2 + $value->iel2 +
                                 $value->iem3 + $value->ieh3 + $value->iel3 +
                                 $value->iem4 + $value->ieh4 + $value->iel4 +
                                 $value->iem5 + $value->ieh5 + $value->iel5 +
                                 $value->iem6 + $value->ieh6 + $value->iel6;
-                                
+
                 $inscritosEsc = $value->iesm1 + $value->iesh1 + $value->iesl1 +
                                 $value->iesm2 + $value->iesh2 + $value->iesl2 +
                                 $value->iesm3 + $value->iesh3 + $value->iesl3 +
@@ -87,12 +87,12 @@ class ftcontroller extends Controller {
                 $sumaHM = $value->ihombre + $value->imujer + $value->ilgbt;
                 $sumaED = $value->egresado + $value->desertado;
                 $sumaEmDe = $value->empleado + $value->desempleado;
-                $sumaEgresados = $value->emujer + $value->ehombre + $value->elgbt;  
+                $sumaEgresados = $value->emujer + $value->ehombre + $value->elgbt;
 
                 $value->inscritosEdad = $inscritosEdad;
                 $value->inscritosEsc = $inscritosEsc;
                 $value->acreditadosEsc = $acreditadosEsc;
-                $value->desertoresEsc = $desertoresEsc; 
+                $value->desertoresEsc = $desertoresEsc;
                 $value->sumaHM = $sumaHM;
                 $value->sumaED = $sumaED;
                 $value->sumaEmDe = $sumaEmDe;
@@ -116,7 +116,7 @@ class ftcontroller extends Controller {
         $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
         $diasParaEntrega = $this->chkDateToDeliver();
 
-        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad'));    
+        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad'));
     }
 
     /**
@@ -125,7 +125,7 @@ class ftcontroller extends Controller {
     public function paso2(Request $request) {
         $numero_memo = $request->get('numero_memo'); // número de memo
         $cursoschk = $request->get('check_cursos_dta');
-        
+
         if (!empty($numero_memo)) {
             # si el número de memo no está vacio hay que iniciar todo el proceso
             if (!empty($cursoschk)) {
@@ -134,11 +134,11 @@ class ftcontroller extends Controller {
                 */
                 if ($request->hasFile('cargar_archivo_formato_t')) {
                     // obtenemos el valor del archivo memo
-    
+
                     $validator = Validator::make($request->all(), [
                         'cargar_archivo_formato_t' => 'mimes:pdf|max:10240'
                     ]);
-    
+
                     if ($validator->fails()) {
                          # mandar mensaje de error si falla el cargado del archivo
                          return back()->withInput()->withErrors([$validator]);
@@ -146,7 +146,7 @@ class ftcontroller extends Controller {
                         $memo = str_replace('/', '_', $numero_memo);
                         /**
                          * aquí vamos a verificar que el archivo no se encuentre guardado
-                         * previamente en el sistema de archivos del sistema de ser así se 
+                         * previamente en el sistema de archivos del sistema de ser así se
                          * remplazará el archivo porel que se subirá a continuación
                          */
                         // construcción del archivo
@@ -155,7 +155,7 @@ class ftcontroller extends Controller {
                             #checamos si hay algún documento, de ser así, procedemos a eliminarlo
                             Storage::delete($archivo_memo);
                         }
-    
+
                         $archivo_memo_to_dta = $request->file('cargar_archivo_formato_t'); # obtenemos el archivo
                         $url_archivo_memo = $this->uploaded_memo_validacion_file($archivo_memo_to_dta, $memo, 'memoValidacion'); #invocamos el método
                     }
@@ -171,9 +171,9 @@ class ftcontroller extends Controller {
                     $date = $fecha_ahora->format('Y-m-d'); // fecha
                     $numero_memo = $request->get('numero_memo'); // número de memo
                     $fecha_nueva=$fecha_ahora->format('d-m-Y');
-    
+
                     $anioActual = $fecha_ahora->year; // año actual
-    
+
                     $currentMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
                     $fechaEntregaAct = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $currentMonth)->first();
                     $fEAct = $fechaEntregaAct->fecha_entrega."-".$anioActual;
@@ -197,16 +197,16 @@ class ftcontroller extends Controller {
                         'FECHA' => $date,
                         'MEMORANDUM' => $url_archivo_memo
                     ];
-    
+
                     if ($fechaEntregaSpring >= $fecha_actual) {
-    
+
                         $actualMonth = $mesesCalendarizado[($fechaActual->format('n')) - 1];
                         $actualSpring = \DB::table('calendario_formatot')->select('fecha_entrega')->where('mes_informar', $actualMonth)->first();
                         $fechActualSpring = $actualSpring->fecha_entrega."-".$anioActual;
                         $fechActSpring = date_create_from_format('d-m-Y', $fechActualSpring);
                         $formatFechaActual = date_format($fechActSpring, 'Y-m-d');
                         # la fecha de entrega debe siempre ser mayor o igual sobre la fecha actual que se envía el paquete.
-                        
+
                         /**
                          * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
                          */
@@ -233,15 +233,15 @@ class ftcontroller extends Controller {
                                 ->where('id', $key)
                                 ->update([
                                     'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_dta)."'::jsonb"),
-                                    'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"), 
-                                    'status' => 'TURNADO_DTA', 
+                                    'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"),
+                                    'status' => 'TURNADO_DTA',
                                     'turnado' => 'DTA',
                                     'fecha_turnado' => $formatFechaActual,
                                     'fecha_envio' => $date
                                 ]);
                         }
                         // dd(DB::getQueryLog());
-                        
+
                     } else {
                         # si la condición no se cumple se tiene que tomar el envío con fecha del siguiente spring
                         #obtenemos el mes después
@@ -250,7 +250,7 @@ class ftcontroller extends Controller {
                         $fechNextSpring = $fechaNextSpring->fecha_entrega."-".$anioActual;
                         $nextSpring = date_create_from_format('d-m-Y', $fechNextSpring);
                         $formatFechaSiguiente = date_format($nextSpring, 'Y-m-d');
-    
+
                         /**
                          * TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
                          */
@@ -276,8 +276,8 @@ class ftcontroller extends Controller {
                                 ->where('id', $key)
                                 ->update([
                                     'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_dta)."'::jsonb"),
-                                    'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"), 
-                                    'status' => 'TURNADO_DTA', 
+                                    'memos' => \DB::raw("'".json_encode($array_memosDTA)."'::jsonb"),
+                                    'status' => 'TURNADO_DTA',
                                     'turnado' => 'DTA',
                                     'fecha_turnado' => $formatFechaSiguiente,
                                     'fecha_envio' => $date
@@ -285,13 +285,13 @@ class ftcontroller extends Controller {
                         }
                         // dd(DB::getQueryLog());
                     }
-    
+
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
                      */
                     return redirect()->route('vista_formatot')
                            ->with('success', sprintf('CURSOS TURNADOS PARA VALIDACIÓN A LA DIRECCIÓN TÉCNICA ACÁDEMICA!'));
-    
+
                 }
             } else {
                 # enviamos un mensaje que no se puede porque no hay registros
@@ -301,7 +301,7 @@ class ftcontroller extends Controller {
             # si el número de memo está vacio por ende se regresa y se le comenta al usuario que se necesita adjuntar ese dato
             return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE ASIGNO EL NÚMERO DE MEMORANDUM!']);
         }
- 
+
     }
 
     /**
@@ -311,10 +311,10 @@ class ftcontroller extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        
-        if (isset($_POST['generarMemoAFirma'])) 
+
+        if (isset($_POST['generarMemoAFirma']))
         {
-            
+
             # vamos a checar sólo a los checkbox checados como propiedad
             if (!empty($_POST['chkcursos_list'])) {
 
@@ -322,7 +322,7 @@ class ftcontroller extends Controller {
                     /**
                      * unidades
                      */
-                    
+
                     //aqui generamos las consultas pertinentes
                     $fecha_ahora = Carbon::now();
                     $date = $fecha_ahora->format('Y-m-d'); // fecha
@@ -357,17 +357,17 @@ class ftcontroller extends Controller {
                         \DB::table('tbl_cursos')
                             ->where('id', $value)
                             ->update([
-                                'memos' => $memos, 
-                                'status' => 'EN_FIRMA', 
+                                'memos' => $memos,
+                                'status' => 'EN_FIRMA',
                                 'turnado' => 'UNIDAD',
                                 'observaciones_formato_t' => DB::raw("'".json_encode($comentarios_envio_firma)."'::jsonb")
                             ]);
                     }
-                    $total=count($_POST['chkcursos_list']);          
+                    $total=count($_POST['chkcursos_list']);
                     $id_user = Auth::user()->id;
-                    $rol = DB::table('role_user')->select('roles.slug')->leftjoin('roles', 'roles.id', '=', 'role_user.role_id') 
+                    $rol = DB::table('role_user')->select('roles.slug')->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')
                     ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])->get();
-                    if(count($rol) > 0){ 
+                    if(count($rol) > 0){
                         $unidad = Auth::user()->unidad;
                         $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
                         $_SESSION['unidad'] = $unidad;
@@ -403,8 +403,8 @@ class ftcontroller extends Controller {
             // TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”]
             // “TURNADO_DTA”:”2021-01-28”
             /**
-             *  {TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”], 
-             * TURNADO_PLANEACION[“NUMERO”:”XXXXXX”,FECHA:”XXXX-XX-XX”], 
+             *  {TURNADO_DTA:[“NUMERO”:”XXXXXX”,”FECHA”:” XXXX-XX-XX”],
+             * TURNADO_PLANEACION[“NUMERO”:”XXXXXX”,FECHA:”XXXX-XX-XX”],
              * TUNADO_UNIDAD:[“NUMERO”:”XXXXXX”,FECHA:”XXXX-XX-XX”]}
              */
     }
@@ -442,7 +442,7 @@ class ftcontroller extends Controller {
                             $memo = str_replace('/', '_', $numero_memo);
                             /**
                             * aquí vamos a verificar que el archivo no se encuentre guardado
-                            * previamente en el sistema de archivos del sistema de ser así se 
+                            * previamente en el sistema de archivos del sistema de ser así se
                             * remplazará el archivo porel que se subirá a continuación
                             */
                             // construcción del archivo
@@ -455,11 +455,11 @@ class ftcontroller extends Controller {
                             $archivo_memo_send_to_planeacion = $request->file('cargar_memorandum_to_planeacion'); # obtenemos el archivo
                             $url_memo_turnado_planeacion = $this->uploaded_memo_validacion_file($archivo_memo_send_to_planeacion, $memo, 'memoTurnadoPlaneacion'); #invocamos el método
                         }
-                        
+
                     } else {
                         $url_memo_turnado_planeacion = null;
                     }
-                    
+
                     // empezamos a turnar a planeacion
                     $memo_turnado_planeacion = [
                         'PLANEACION' => [
@@ -484,8 +484,8 @@ class ftcontroller extends Controller {
                         \DB::table('tbl_cursos')
                             ->where('id', $key)
                             ->update([
-                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}', '".json_encode($memo_turnado_planeacion)."', true)"), 
-                                'status' => 'TURNADO_PLANEACION', 
+                                'memos' => DB::raw("jsonb_set(memos, '{TURNADO_PLANEACION}', '".json_encode($memo_turnado_planeacion)."', true)"),
+                                'status' => 'TURNADO_PLANEACION',
                                 'turnado' => 'PLANEACION',
                                 'observaciones_formato_t' => DB::raw("jsonb_set(observaciones_formato_t, '{COMENTARIO_ENVIO_PLANEACION}', '".json_encode($comentarios_envio_planeacion)."', true)"),
                             ]);
@@ -517,7 +517,7 @@ class ftcontroller extends Controller {
         $documentUrl = Storage::disk('custom_folder_1')->url('/uploadFiles/'.$subpath.'/'.$memo."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $documentUrl;
     }
-    
+
     protected function chkDateToDeliver() {
         $meses = array("ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE");
         $fecha = Carbon::parse(Carbon::now());
@@ -552,21 +552,21 @@ class ftcontroller extends Controller {
             // unset($value->femeninocheck);
             unset($value->sumatoria_total_ins_edad);
             unset($value->observaciones_enlaces);
-        }    
+        }
 
         // 'id curso', 'ESTADO DEL CURSO', discapacitados, ->, madres solteras
         $head = [
             'UNIDAD DE CAPACITACION','TIPO DE PLANTEL (UNIDAD, AULA MOVIL, ACCION MOVIL O CAPACITACION EXTERNA)','ESPECIALIDAD','CURSO','CLAVE DEL GRUPO','MODALIDAD','DURACION TOTAL EN HORAS','TURNO','DIA INICIO','MES INICIO','DIA TERMINO','MES TERMINO', 'PERIODO', 'HRS. DIARIAS', 'DIAS', 'HORARIO', 'INSCRITOS', 'FEM', 'MASC', 'LGBTTTI+',
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'EGRESADO LGBTTTI+', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'EXONERACION LGBTTTI+', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES', 'REDUCCION CUOTA LGBTTTI+', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
             'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'STATUS', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS',  'MIGRANTES',
-            'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA', 
-            'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 'INSCRITOS EDAD-1 LGBTTTI+', 
+            'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA',
+            'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 'INSCRITOS EDAD-1 LGBTTTI+',
             'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 'INSCRITOS EDAD-2 LGBTTTI+',
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 'INSCRITOS EDAD-3 LGBTTTI+',
             'INSCRITOS EDAD-4 MUJERES', 'INSCRITOS EDAD-4 HOMBRES', 'INSCRITOS EDAD-4 LGBTTTI+',
             'INSCRITOS EDAD-5 MUJERES', 'INSCRITOS EDAD-5 HOMBRES', 'INSCRITOS EDAD-5 LGBTTTI+',
             'INSCRITOS EDAD-6 MUJERES', 'INSCRITOS EDAD-6 HOMBRES', 'INSCRITOS EDAD-6 LGBTTTI+',
-            'INSCRITOS ESC-1 MUJERES', 'INSCRITOS ESC-1 HOMBRES', 'INSCRITOS ESC-1 LGBTTTI+', 
+            'INSCRITOS ESC-1 MUJERES', 'INSCRITOS ESC-1 HOMBRES', 'INSCRITOS ESC-1 LGBTTTI+',
             'INSCRITOS ESC-2 MUJERES', 'INSCRITOS ESC-2 HOMBRES', 'INSCRITOS ESC-2 LGBTTTI+',
             'INSCRITOS ESC-3 MUJERES', 'INSCRITOS ESC-3 HOMBRES', 'INSCRITOS ESC-3 LGBTTTI+',
             'INSCRITOS ESC-4 MUJERES', 'INSCRITOS ESC-4 HOMBRES', 'INSCRITOS ESC-4 LGBTTTI+',
@@ -575,7 +575,7 @@ class ftcontroller extends Controller {
             'INSCRITOS ESC-7 MUJERES', 'INSCRITOS ESC-7 HOMBRES', 'INSCRITOS ESC-7 LGBTTTI+',
             'INSCRITOS ESC-8 MUJERES', 'INSCRITOS ESC-8 HOMBRES', 'INSCRITOS ESC-8 LGBTTTI+',
             'INSCRITOS ESC-9 MUJERES', 'INSCRITOS ESC-9 HOMBRES', 'INSCRITOS ESC-9 LGBTTTI+',
-            'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES', 'ACREDITADOS ESC-1 LGBTTTI+', 
+            'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES', 'ACREDITADOS ESC-1 LGBTTTI+',
             'ACREDITADOS ESC-2 MUJERES', 'ACREDITADOS ESC-2 HOMBRES', 'ACREDITADOS ESC-2 LGBTTTI+',
             'ACREDITADOS ESC-3 MUJERES', 'ACREDITADOS ESC-3 HOMBRES', 'ACREDITADOS ESC-3 LGBTTTI+',
             'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES', 'ACREDITADOS ESC-4 LGBTTTI+',
@@ -584,7 +584,7 @@ class ftcontroller extends Controller {
             'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES', 'ACREDITADOS ESC-7 LGBTTTI+',
             'ACREDITADOS ESC-8 MUJERES', 'ACREDITADOS ESC-8 HOMBRES', 'ACREDITADOS ESC-8 LGBTTTI+',
             'ACREDITADOS ESC-9 MUJERES', 'ACREDITADOS ESC-9 HOMBRES', 'ACREDITADOS ESC-9 LGBTTTI+',
-            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES', 'DESERTORES ESC-1 LGBTTTI+', 
+            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES', 'DESERTORES ESC-1 LGBTTTI+',
             'DESERTORES ESC-2 MUJERES', 'DESERTORES ESC-2 HOMBRES', 'DESERTORES ESC-2 LGBTTTI+',
             'DESERTORES ESC-3 MUJERES', 'DESERTORES ESC-3 HOMBRES', 'DESERTORES ESC-3 LGBTTTI+',
             'DESERTORES ESC-4 MUJERES', 'DESERTORES ESC-4 HOMBRES', 'DESERTORES ESC-4 LGBTTTI+',
@@ -595,12 +595,12 @@ class ftcontroller extends Controller {
             'DESERTORES ESC-9 MUJERES', 'DESERTORES ESC-9 HOMBRES', 'DESERTORES ESC-9 LGBTTTI+',
             'OBSERVACIONES',
             'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO'
-            // 'OBSERVACIONES FIRMA', 'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO', 'SUMATORIA TOTAL', 'COMENTARIOS ENLACES'    
+            // 'OBSERVACIONES FIRMA', 'TOTAL INSCRIPCIONES', 'MASCULINO', 'FEMENINO', 'SUMATORIA TOTAL', 'COMENTARIOS ENLACES'
         ];
 
         $nombreLayout = "FORMATO_T_PARA_LA_UNIDAD_".$unidad_.".xlsx";
         $titulo = "FORMATO T DE LA UNIDAD ".$unidad_;
-        
+
         if(count($formatot_planeacion_unidad)>0) {
             return Excel::download(new FormatoTReport($formatot_planeacion_unidad,$head, $titulo), $nombreLayout);
         }
@@ -624,14 +624,14 @@ class ftcontroller extends Controller {
             // DB::connection()->enableQueryLog();
             $queryGetMemo = DB::table('tbl_cursos')
                         ->select(
-                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM' AS ruta"), 
+                            DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM' AS ruta"),
                             DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO' AS numero_memo"),
                             DB::raw("CASE  WHEN tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO' is not NULL THEN 'MEMORANDUM TURNADO DTA' END AS tipo_memo")
                         )
                         ->join('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
                         ->where('u.ubicacion', '=', $unidadstr)
                         ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_DTA'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
-                        ->groupby(DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM'"), 
+                        ->groupby(DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'MEMORANDUM'"),
                             DB::raw("tbl_cursos.memos->'TURNADO_DTA'->>'NUMERO'")
                         )
                         ->paginate(5);
@@ -639,7 +639,7 @@ class ftcontroller extends Controller {
 
             $queryGetMemoRetorno = DB::table('tbl_cursos')
                                 ->select(
-                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS ruta"), 
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM' AS ruta"),
                                     DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO' AS numero_memo"),
                                     DB::raw("CASE WHEN tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO' is not NULL THEN 'MEMORANDUM TURNADO UNIDAD' END AS tipo_memo")
                                 )
@@ -647,7 +647,7 @@ class ftcontroller extends Controller {
                                 ->where('u.ubicacion', '=', $unidadstr)
                                 ->where(DB::raw("EXTRACT(MONTH FROM TO_DATE(memos->'TURNADO_UNIDAD'->>'FECHA','YYYY-MM-DD'))") , '=' , $busquedaPorMes)
                                 ->groupby(
-                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"), 
+                                    DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'MEMORANDUM'"),
                                     DB::raw("tbl_cursos.memos->'TURNADO_UNIDAD'->>'NUMERO'")
                                 )
                                 ->paginate(5);
@@ -662,7 +662,7 @@ class ftcontroller extends Controller {
 
     protected function cursosreportados(Request $request){
         $setMes = $request->get('messeleccionado');
-        
+
         if (empty($request->get('anio'))) {
             # si está vacio se toma el año actual
             $anioActual = Carbon::now()->year;
@@ -670,14 +670,14 @@ class ftcontroller extends Controller {
             # code...
             $anioActual = $request->get('anio');
         }
-        
+
         // obtener el año actual --
 
         $id_user = Auth::user()->id;
         // dd($id_user);exit;
         $rol = DB::table('role_user')
         ->select('roles.slug')
-        ->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')            
+        ->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')
         ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
         ->get();
         $_SESSION['unidades']=NULL;
@@ -686,7 +686,7 @@ class ftcontroller extends Controller {
         if (!empty($rol[0]->slug)) {
             # si no está vacio
             if(count($rol) > 0)
-            { 
+            {
                 $unidad = Auth::user()->unidad;
                 //dd($unidad);
                 $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
@@ -786,9 +786,9 @@ class ftcontroller extends Controller {
                 DB::raw("count( ar.id_pre) AS totalinscripciones"),
                 DB::raw("count( CASE  WHEN  ap.sexo ='MASCULINO' THEN ar.id_pre END ) AS masculinocheck"),
                 DB::raw("count( CASE  WHEN ap.sexo ='FEMENINO' THEN ar.id_pre END ) AS femeninocheck"),
-                DB::raw("COALESCE(sum( case when EXTRACT( year from (age(tbl_cursos.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(YEAR FROM (AGE(tbl_cursos.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO' 
-                THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END )) + COALESCE(sum( Case When EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34 
-                AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44 
+                DB::raw("COALESCE(sum( case when EXTRACT( year from (age(tbl_cursos.termino, ap.fecha_nacimiento))) < 15 and ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) < 15 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(YEAR FROM (AGE(tbl_cursos.termino, ap.fecha_nacimiento))) between 15 and 19 AND ap.sexo = 'FEMENINO'
+                THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 15 and 19 and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 20 and 24 AND ap.sexo='FEMENINO' THEN 1 ELSE 0  END )) + COALESCE(sum( Case When EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between '20' and '24' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( CASE WHEN EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34  AND ap.sexo='FEMENINO' THEN 1 ELSE 0 END )) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 25 and 34
+                AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 35 and 44 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54
                 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum(  case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 45 and 54 AND ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between 55 and 64 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) between '55' and '64' and ap.sexo='MASCULINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 AND ap.sexo='FEMENINO' then 1 else 0 end)) + COALESCE(sum( case when EXTRACT(year from (age(tbl_cursos.termino,ap.fecha_nacimiento))) >= 65 and ap.sexo='MASCULINO' then 1 else 0 end)) as sumatoria_total_ins_edad"),
                 DB::raw("tbl_cursos.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces"),
@@ -797,21 +797,21 @@ class ftcontroller extends Controller {
                 ->JOIN('tbl_calificaciones as ca','tbl_cursos.id', '=', 'ca.idcurso')
                 ->JOIN('instructores as i','tbl_cursos.id_instructor', '=', 'i.id')
                 ->JOIN('instructor_perfil as ip','i.id', '=', 'ip.numero_control')
-                ->JOIN('especialidad_instructores as ei','ip.id', '=', 'ei.perfilprof_id')                
+                ->JOIN('especialidad_instructores as ei','ip.id', '=', 'ei.perfilprof_id')
                 ->JOIN('especialidades as e', function($join)
                     {
-                        $join->on('ei.especialidad_id', '=', 'e.id');                
+                        $join->on('ei.especialidad_id', '=', 'e.id');
                         $join->on('tbl_cursos.espe', '=', 'e.nombre');
                     })
                 ->JOIN($tempinner ,function($join)
                 {
-                    $join->on('ca.matricula', '=', 'ar.no_control');                
+                    $join->on('ca.matricula', '=', 'ar.no_control');
                     $join->on('tbl_cursos.id_curso','=','ar.id_curso');
-                }) 
+                })
                 ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
                 ->JOIN('tbl_inscripcion as ins', function($join)
                 {
-                    $join->on('ca.idcurso', '=', 'ins.id_curso');                
+                    $join->on('ca.idcurso', '=', 'ins.id_curso');
                     $join->on('ca.matricula','=','ins.matricula');
                 })
                 ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'tbl_cursos.unidad')
@@ -828,7 +828,7 @@ class ftcontroller extends Controller {
             $cursos_reportados = null;
         }
 
-        return view('reportes.cursos_reportados_formatot_unidad',compact('cursos_reportados', 'meses', 'unidad')); 
+        return view('reportes.cursos_reportados_formatot_unidad',compact('cursos_reportados', 'meses', 'unidad'));
     }
 
 }
