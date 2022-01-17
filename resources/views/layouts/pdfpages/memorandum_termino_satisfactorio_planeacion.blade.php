@@ -94,7 +94,7 @@
             me permito informarle que una vez revisada la información relativa a los números
             absolutos de las variables cualitativas y cuantitativas; esta Dirección a través del
             Departamento de Programación y Presupuesto da por concluido el cierre estadístico del mes
-            de {{$mesReport}} del 2021.
+            de {{$mesReport}} del {{$anio}}.
            </p>
         </div>
         <br>

@@ -661,6 +661,12 @@ $(function(){
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>CRITERIO DE PAGO MAXIMO: </b>' + response[0].rango_criterio_pago_maximo
                   +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>GRUPOS VULNERABLES: </b>' + response[0].grupo_vulnerable
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>DEPENDENCIAS: </b>' + response[0].dependencia
+                  +   '</li>'
                   + '</ul>'
               );
             },

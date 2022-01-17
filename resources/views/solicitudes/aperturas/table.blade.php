@@ -122,6 +122,9 @@
                         @else
                             <td class='text-center'>
                                 <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-success" title="Ver detalle" onclick="show('{{$g->id}}')"></i></a>
+                                <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
+                                    <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
+                                </a>
                             </td>
                         @endif
                     </tr>

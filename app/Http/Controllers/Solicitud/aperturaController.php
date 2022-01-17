@@ -65,7 +65,7 @@ class aperturaController extends Controller
     }
 
     public function index(Request $request){
-        $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota = 
+        $valor = $efisico = $grupo = $alumnos = $message = $medio_virtual = $depen = $exoneracion = $instructor = $plantel = $programa = $sector = $tcurso = $tcuota =
         $muni = $instructores = $convenio = $localidad = $comprobante = NULL;
         if($request->valor)  $valor = $request->valor;
         elseif(isset($_SESSION['folio'])) $valor = $_SESSION['folio'];
@@ -96,7 +96,7 @@ class aperturaController extends Controller
                 $muni = DB::table('tbl_municipios')->where('id_estado','7')->where('id',$grupo->id_muni)->orderby('muni')->pluck('muni')->first();
                 $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
 
-                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"))->where('i.folio_grupo',$valor)->get();
+                $alumnos = DB::table('tbl_inscripcion as i')->select('i.*', DB::raw("'VIEW' as mov"))->where('i.folio_grupo',$valor)->orderby('alumno','ASC')->get();
                // var_dump($alumnos);exit;
 
                 if(count($alumnos)==0){
@@ -111,7 +111,7 @@ class aperturaController extends Controller
                     "),
                     DB::raw("'INSERT' as mov"))
                     ->join('alumnos_pre as ap','ap.id','ar.id_pre')->where('ar.folio_grupo',$valor )
-                    ->where('ar.eliminado',false)->get();
+                    ->where('ar.eliminado',false)->orderby('ap.apellido_paterno','ASC')->orderby('ap.apellido_materno','ASC')->orderby('ap.nombre','ASC')->get();
                 }
                 $_SESSION['alumnos'] = $alumnos;
                 $_SESSION['grupo'] = $grupo;
@@ -137,7 +137,6 @@ class aperturaController extends Controller
                     $convenio['fecha_firma'] = '';
                     $convenio['sector'] = null;
                 }
-                
                 $sector = DB::table('organismos_publicos')->where('organismo',$grupo->organismo_publico)->value('sector');
                 $programa = $this->programa();
 
@@ -150,7 +149,6 @@ class aperturaController extends Controller
                 $medio_virtual = $this->medio_virtual();
 
                 $tcurso = $this->tcurso();
-                
                 //var_dump($instructor);exit;
                 if($grupo->clave !='0') $message = "Clave de Apertura Asignada";
                 elseif($grupo->status_curso) $message = "Estatus: ". $grupo->status_curso;
@@ -251,11 +249,11 @@ class aperturaController extends Controller
                             else $ciclo = date("Y",strtotime(date("Y"). "- 1 year"))."-".date("Y"); //restar año
 
                             /*REGISTRANDO COSTO Y TIPO DE INSCRIPCION*/
-                            
+
                             /*CALCULANDO EL TIPO DE PAGO*/
                             $total_pago = 0;
                             foreach($alumnos as $key=>$pago){
-                                
+
                                 $costo= $pago->costo;
                                 $total_pago += $costo*1;
                             }
@@ -263,7 +261,7 @@ class aperturaController extends Controller
                             $costo_total = $grupo->costo_individual * $talumno;
                             $ctotal = $costo_total - $total_pago;
                             if($total_pago == 0){
-                                 $tipo_pago = "EXO"; 
+                                 $tipo_pago = "EXO";
                                  if($cp>7)$cp = 7; //EXONERACION Criterio de Pago Máximo 7
                             }elseif($ctotal > 0) $tipo_pago = "EPAR";
                             else $tipo_pago = "PINS";
@@ -549,7 +547,7 @@ class aperturaController extends Controller
             $tdias = 0;
             foreach ($total_dias as $tdia) {
                 $tdias += 1;
-            } 
+            }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
         return response()->json($id);
     }
@@ -588,7 +586,7 @@ class aperturaController extends Controller
                     }
                 }
             }
-            // 
+            //
             if (carbon::parse($fechaTermino)->greaterThanOrEqualTo(carbon::parse($date))) {
                 if (carbon::parse($fechaTermino)->lessThanOrEqualTo(carbon::parse($datefin)) ) {
                     if ($horaTermino > Carbon::parse($evento->start)->format('H:i')
@@ -614,7 +612,7 @@ class aperturaController extends Controller
                 $y= Carbon::parse($fechas->end)->format('H:i');
                 $x= Carbon::parse($fechas->start)->format('H:i');   //dd($x.'||'.$y);
                 $minutos= Carbon::parse($y)->diffInMinutes($x);
-                $suma += $minutos; 
+                $suma += $minutos;
                 if( $suma >= 360 ){
                     if ( ($suma + $minutos_curso) > 480 ) {
                         $isEquals3= true;
@@ -624,7 +622,7 @@ class aperturaController extends Controller
         }
         //CRITERIO 40hrs
         if ($es_lunes) {
-            $dateini = Carbon::parse($fechaInicio); 
+            $dateini = Carbon::parse($fechaInicio);
             $datefin= Carbon::parse($fechaInicio)->addDay(6);
             $total=0;
             $count= 0;
@@ -642,7 +640,7 @@ class aperturaController extends Controller
                                                  ->where('id_instructor','=',$id_instructor)
                                                  ->where('start','>=',$dateini->format('d-m-Y'))
                                                  ->where('end','<=',$datefin->format('d-m-Y'))
-                                                 ->get();   
+                                                 ->get();
             foreach($consulta_fechas as $item){
                 $xhora= Carbon::parse($item->start)->format('H:i');
                 $yhora= Carbon::parse($item->end)->format('H:i');
@@ -705,11 +703,11 @@ class aperturaController extends Controller
                 $al = Carbon::parse($pan->format('d-m-Y'));
                 $fal = Carbon::parse($datefin->format('d-m-Y'));
                 if($al <= $fal){
-                    $total += $minutos_curso; 
+                    $total += $minutos_curso;
                 }else{
                     $array1[]=$pan;
                 }
-            } 
+            }
             $consulta_fechas= DB::table('agenda')->select('start','end')
                                                  ->where('id_instructor','=',$id_instructor)
                                                  ->where('start','>=',$date->format('d-m-Y'))
@@ -747,7 +745,7 @@ class aperturaController extends Controller
                                                  ->where('id_instructor','=',$id_instructor)
                                                  ->where('start','>=',$date->format('d-m-Y'))
                                                  ->where('end','<=',$datefin->format('d-m-Y'))
-                                                 ->get();   
+                                                 ->get();
                     foreach ($consulta_fechas2 as $value) {
                         $xhora= Carbon::parse($value->start)->format('H:i');
                         $yhora= Carbon::parse($value->end)->format('H:i');
@@ -760,16 +758,16 @@ class aperturaController extends Controller
                         }
                     }
                     if(!empty($array2)){
-                        $isEquals3=true;    
+                        $isEquals3=true;
                     }
-                    
+
                 }else{
-                    $isEquals4=true;  
+                    $isEquals4=true;
                 }
             }
         }
         //CRITERIO 5 MESES
-        for ($i=1; $i < 6; $i++) { 
+        for ($i=1; $i < 6; $i++) {
             $mesActivo= Carbon::parse($request->end)->addMonth($i);
             $mes = Carbon::parse($mesActivo)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
@@ -787,7 +785,7 @@ class aperturaController extends Controller
                 break;
             }
         }
-        for ($i=1; $i < 6; $i++) { 
+        for ($i=1; $i < 6; $i++) {
             $mesActivoSub= Carbon::parse($request->start)->subMonth($i);
             $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
@@ -845,7 +843,7 @@ class aperturaController extends Controller
         //CRITERIO UNIDADES
         /*if ($tipo_curso != 'A DISTANCIA') {
             foreach ($period as $value) {
-                $a= Carbon::parse($value)->format('d-m-Y 22:00');    
+                $a= Carbon::parse($value)->format('d-m-Y 22:00');
                 $b= Carbon::parse($value)->format('d-m-Y 00:00');
                 $consulta_unidad= DB::table('agenda')->select('start','end','id_unidad','id_municipio')
                                                      ->where('id_instructor','=',$id_instructor)
@@ -853,7 +851,7 @@ class aperturaController extends Controller
                                                      ->where('end','>=',$b)
                                                      ->orderByRaw("extract(hour from start) asc")
                                                      ->get();    //dd($consulta_unidad);
-                foreach ($consulta_unidad as $fecha) { 
+                foreach ($consulta_unidad as $fecha) {
                     if ($fecha->id_municipio != $id_municipio) {
                         $tiempo_distance = 20;  //consulta tabla de tiempos
                         $hini= Carbon::parse($fecha->start)->format('H:i');
@@ -906,7 +904,7 @@ class aperturaController extends Controller
         } else if ($isEquals4) {
             return 'iguales4';
         }else {
-            try { 
+            try {
                 //dd($id_curso);
                 $titulo = $request->title;
 
@@ -926,7 +924,7 @@ class aperturaController extends Controller
                 $agenda->save();
             } catch(QueryException $ex) {
                 //dd($ex);
-                return 'duplicado'; 
+                return 'duplicado';
             }
         }
         $dias_agenda = DB::table('agenda')
@@ -975,7 +973,7 @@ class aperturaController extends Controller
             $tdias = 0;
             foreach ($total_dias as $tdia) {
                 $tdias += 1;
-            } 
+            }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
     }
 }

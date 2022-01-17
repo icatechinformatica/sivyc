@@ -95,7 +95,7 @@
                         </td>
                         <td>
                             @if ( $itemData->status == 'En_Proceso')
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                     <i class="fa fa-file" aria-hidden="true"></i>
                                 </a>
                                 @can('supre.validar')
@@ -103,20 +103,31 @@
                                         <i class="fa fa-file-text" aria-hidden="true"></i>
                                     </a>
                                 @endcan
-                                @can('supre.edit')
-                                    <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                @can('supre.delete')
+                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Eliminar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                     </a>
                                 @endcan
-                                @can('supre.delete')
-                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Eliminar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
-                                        <i class="fa fa-wrench" aria-hidden="true">
-                                    </a>
-                                @endcan
+                                @if ($itemData->doc_supre == NULL)
+                                    @can('supre.edit')
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
+                                    @can('supre.upload_supre')
+                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#DocSupreModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                    @endcan
+                                @endif
                                 <input hidden value={{$itemData->id}} id='pdfp'>
                             @endif
                             @if ($itemData->status == 'Validado')
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                     <i class="fa fa-file" aria-hidden="true"></i>
                                 </a>
                                 @if ($itemData->doc_validado == NULL)
@@ -160,13 +171,22 @@
                                 @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                     <i class="fa fa-file" aria-hidden="true"></i>
                                 </a>
                                 @can('supre.edit')
                                     <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                     </a>
+                                @endcan
+                                @can('supre.upload_supre')
+                                    <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                        data-toggle="modal" data-placement="top"
+                                        data-target="#DocSupreModal2"
+                                        data-id='{{$itemData->id}}'
+                                        title="Reemplazar Suficiencia Presupuestal Firmada">
+                                        <i class="fa fa-upload"></i>
+                                    </button>
                                 @endcan
                                 @can('supre.delete')
                                     <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Eliminar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
@@ -199,14 +219,19 @@
                             </button>
                         </div>
                         <div class="modal-body" style="text-align:center">
-                            <div style="text-align:center" class="form-group">
-                                <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
-                            </div>
-                            <div style="text-align:center" class="form-group">
-                                <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo  Solicitud de Suficiencia Presupuestal</a><br>
-                            </div>
+                            @can('supre.create')
+                                <div style="text-align:center" class="form-group">
+                                    <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
+                                </div>
+                                <div style="text-align:center" class="form-group">
+                                    <a class="btn btn-danger" id="anexo_pdf" name="anexo_pdf" href="#" target="_blank">Anexo  Solicitud de Suficiencia Presupuestal</a><br>
+                                </div>
+                            @endcan
                             <div style="text-align:center" class="form-group">
                                 <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                            </div>
+                            <div style="text-align:center" class="form-group">
+                                <a class="btn btn-danger" id="supre2_pdf" name="supre2_pdf" href="#" target="_blank" download>Suficiencia Presupuestal Autorizada</a><br>
                             </div>
                             <div style="text-align:center" class="form-group">
                                 <a class="btn btn-danger" id="valsupre2_pdf" name="valsupre2_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal Autorizada</a><br>
@@ -247,21 +272,75 @@
             </div>
         <!-- END -->
         <!-- Modal -->
-        <div class="modal fade" id="DocModal2" role="dialog">
+            <div class="modal fade" id="DocModal2" role="dialog">
+                <div class="modal-dialog">
+                    <form method="POST" enctype="multipart/form-data" action="{{ route('doc-valsupre-guardar') }}" id="doc_valsupre">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Reemplazar Validación de Suficiencia Presupuestal Firmada</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="text-align:center">
+                                <div style="text-align:center" class="form-group">
+                                    <input type="file" accept="application/pdf" class="form-control" id="doc_validado" name="doc_validado" placeholder="Archivo PDF">
+                                    <input id="idinsmod2" name="idinsmod2" hidden>
+                                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <!-- END -->
+        <!-- Modal -->
+            <div class="modal fade" id="DocSupreModal" role="dialog">
+                <div class="modal-dialog">
+                    <form method="POST" enctype="multipart/form-data" action="{{ route('doc-supre-guardar') }}" id="doc_supre">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Cargar Suficiencia Presupuestal Firmada</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="text-align:center">
+                                <div style="text-align:center" class="form-group">
+                                    <input type="file" accept="application/pdf" class="form-control" id="doc_supre" name="doc_supre" placeholder="Archivo PDF">
+                                    <input id="idsupmod" name="idsupmod" hidden>
+                                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <!-- END -->
+        <!-- Modal -->
+        <div class="modal fade" id="DocSupreModal2" role="dialog">
             <div class="modal-dialog">
-                <form method="POST" enctype="multipart/form-data" action="{{ route('doc-valsupre-guardar') }}" id="doc_valsupre">
+                <form method="POST" enctype="multipart/form-data" action="{{ route('doc-supre-guardar') }}" id="doc_supre">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Reemplazar Validación de Suficiencia Presupuestal Firmada</h5>
+                            <h5 class="modal-title">Reemplazar Suficiencia Presupuestal Firmada</h5>
                             <button type="button" class="close" data-dismiss="modal">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body" style="text-align:center">
                             <div style="text-align:center" class="form-group">
-                                <input type="file" accept="application/pdf" class="form-control" id="doc_validado" name="doc_validado" placeholder="Archivo PDF">
-                                <input id="idinsmod2" name="idinsmod2" hidden>
+                                <input type="file" accept="application/pdf" class="form-control" id="doc_supre" name="doc_supre" placeholder="Archivo PDF">
+                                <input id="idsupmod2" name="idsupmod2" hidden>
                                 <button type="submit" class="btn btn-primary" >Guardar</button>
                             </div>
                         </div>
@@ -273,66 +352,66 @@
             </div>
         </div>
     <!-- END -->
-    <!-- Modal -->
-    <div class="modal fade" id="restartModal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-2"></div>
-                    <div class="form-group col-md-4">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        <!-- Modal -->
+            <div class="modal fade" id="restartModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2"></div>
+                            <div class="form-group col-md-4">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <a class="btn btn-success" id="confirm_restart" name="confirm_restart" href="#">Aceptar</a>
+                            </div>
+                            <div class="form-group col-md-2"></div>
+                        </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        <a class="btn btn-success" id="confirm_restart" name="confirm_restart" href="#">Aceptar</a>
-                    </div>
-                    <div class="form-group col-md-2"></div>
                 </div>
             </div>
-        </div>
-    </div>
-<!-- END -->
-<!-- Modal -->
-<div class="modal fade" id="modfolioModal" role="dialog">
-        <div class="modal-dialog">
-            <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><b>Seleccione el Folio de Validación</b></h5>
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="form-row">
-                    <div class="form-group col-md-4"></div>
-                        <div class="form-group col-md-4">
-                            <label for="unidad" class="control-label">Folio de Validación </label>
-                            <select name="folios" id="folios" class="form-control">
-                            <option value="sin especificar">SIN ESPECIFICAR</option>
-                        </select>
+        <!-- END -->
+        <!-- Modal -->
+            <div class="modal fade" id="modfolioModal" role="dialog">
+                <div class="modal-dialog">
+                    <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><b>Seleccione el Folio de Validación</b></h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="form-row">
+                            <div class="form-group col-md-4"></div>
+                                <div class="form-group col-md-4">
+                                    <label for="unidad" class="control-label">Folio de Validación </label>
+                                    <select name="folios" id="folios" class="form-control">
+                                    <option value="sin especificar">SIN ESPECIFICAR</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-2"></div>
+                                <div class="form-group col-md-4">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <button type="submit" class="btn btn-primary" >Aceptar</button>
+                                </div>
+                                <div class="form-group col-md-2"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-2"></div>
-                        <div class="form-group col-md-4">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <button type="submit" class="btn btn-primary" >Aceptar</button>
-                        </div>
-                        <div class="form-group col-md-2"></div>
-                    </div>
+                    </form>
                 </div>
-            </form>
-        </div>
-    </div>
-<!-- END -->
+            </div>
+        <!-- END -->
     </div>
     <br>
 @endsection

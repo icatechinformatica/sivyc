@@ -102,33 +102,33 @@
                         </div>
                         <div class="form-row">
                             <!--nombre aspirante-->
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="nombre " class="control-label">Nombre del Aspirante</label>
                                 <input type="text" class="form-control" id="nombre" name="nombre" autocomplete="off">
                             </div>
                             <!--nombre aspirante END-->
                             <!-- apellido paterno -->
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="apellidoPaterno" class="control-label">Apellido Paterno</label>
                                 <input type="text" class="form-control" id="apellidoPaterno" name="apellidoPaterno"
                                     autocomplete="off">
                             </div>
                             <!-- apellido paterno END -->
                             <!-- apellido materno-->
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="apellidoMaterno" class="control-label">Apellido Materno</label>
                                 <input type="text" class="form-control" id="apellidoMaterno" name="apellidoMaterno"
                                     autocomplete="off">
                             </div>
                             <!-- apellido materno END-->
                             @php $ka= date('Y-m-d',strtotime($fecha_t)); @endphp
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="">Fecha de nacimiento</label>
                                 <input type="date" readonly name="fecha" id="fecha" class="form-control"
                                     value="{{ $ka }}">
                             </div>
-                            <div class="form-group col-md-2">
-                                <label for="sexo" class="control-label">Genero</label>
+                            <div class="form-group col-md-3">
+                                <label for="sexo" class="control-label">Genero:</label>
                                 <select class="form-control" id="sexo" name="sexo" aria-readonly="true">
                                     @if ($sexo == 'M')
                                         <option value="FEMENINO">MUJER</option>
@@ -138,7 +138,7 @@
                                     @endif
                                 </select>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label>Nacionalidad:</label>
                                 <input id="nacionalidad" name="nacionalidad" class="form-control" type="text" />
                             </div>
@@ -232,25 +232,32 @@
                         <!--formulario-->
                         <br>
                         <div class="form-row">
-                            <div class="form-group col-md-3">
+                            <div class="form-group col">
+                                <div class="custom-control custom-checkbox">
+                                    <input value="true" type="checkbox" class="custom-control-input" id="lgbt" name="lgbt">
+                                    <label class="custom-control-label" for="lgbt">LGBTTTI+</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group col">
                                 <label><input id="madre_soltera" name="madre_soltera" type="checkbox"
                                         value="true" />&nbsp;&nbsp;¿Es Madre Soltera?</label>
                             </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col">
                                 <label><input id="familia_migrante" name="familia_migrante" type="checkbox"
                                         value="true" />&nbsp;&nbsp;¿Tiene Familia Migrante?</label>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col">
                                 <label><input id="inmigrante" name="inmigrante" type="checkbox" value="true">&nbsp;&nbsp;¿Es
                                     Inmigrante?</label>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col">
                                 <label>
                                     <input id="indigena" name="indigena" type="checkbox" value="true" />&nbsp;&nbsp¿Es
                                     Indígena?
                                 </label>
                             </div>
-                            <div class="form-group col-md-2">
+                            <div class="form-group col">
                                 {{ Form::select('etnia', $etnia, null, ['id' => 'etnia', 'class' => 'form-control mr-sm-2', 'placeholder' => '--ETNIA--']) }}
                             </div>
                         </div>
@@ -452,7 +459,7 @@
                         </div>
                     </div>
                 </form>
-            @elseif ($a==true) {{-- modificacion aspirante jefe de vinculacion --}}
+            @elseif ($a == true) {{-- modificacion aspirante jefe de vinculacion --}}
 
                 @if ($rol == 'unidad_vinculacion' || $rol == 'admin' || $rol == 'vinculadores_administrativo')
                     <form method="POST" id="sid_registro_modificacion" action="{{ route('sid.modificar', ['idAspirante' => base64_encode($alumno->id)]) }}" enctype="multipart/form-data">
@@ -512,14 +519,14 @@
                             </div>
                             <div class="form-row">
                                 <!--nombre aspirante-->
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="nombre_mod " class="control-label">Nombre del Aspirante</label>
                                     <input type="text" class="form-control" id="nombre_mod" name="nombre_mod"
                                         autocomplete="off" value="{{ $alumno->nombre }}">
                                 </div>
                                 <!--nombre aspirante END-->
                                 <!-- apellido paterno -->
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="apellidoPaterno_mod" class="control-label">Apellido Paterno</label>
                                     <input type="text" class="form-control" id="apellidoPaterno_mod"
                                         name="apellidoPaterno_mod" autocomplete="off"
@@ -527,14 +534,14 @@
                                 </div>
                                 <!-- apellido paterno END -->
                                 <!-- apellido materno-->
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-3">
                                     <label for="apellidoMaterno_mod" class="control-label">Apellido Materno</label>
                                     <input type="text" class="form-control" id="apellidoMaterno_mod"
                                         name="apellidoMaterno_mod" autocomplete="off"
                                         value="{{ $alumno->apellido_materno }}">
                                 </div>
                                 <!-- apellido materno END-->
-                                <div class="form-group col-md-2">
+                                <div class="form-group col-md-3">
                                     <label for="">Fecha de nacimiento</label>
                                     @if ($rol == 'admin')
                                         <input type="date" name="fecha_nacimiento_mod" id="fecha_nacimiento_mod"
@@ -544,7 +551,7 @@
                                             class="form-control" value="{{ $alumno->fecha_nacimiento }}" readonly>
                                     @endif
                                 </div>
-                                <div class="form-group col-md-2">
+                                <div class="form-group col-md-3">
                                     <label for="sexo_mod" class="control-label">Genero</label>
                                     @if ($rol == 'admin')
                                         @if ($alumno->sexo == 'MASCULINO')
@@ -570,7 +577,7 @@
                                         @endif
                                     @endif
                                 </div>
-                                <div class="form-group col-md-2">
+                                <div class="form-group col-md-3">
                                     <label>Nacionalidad:</label>
                                     <input id="nacionalidad_mod" name="nacionalidad_mod" class="form-control" type="text"
                                         value="{{ $alumno->nacionalidad }}" />
@@ -668,9 +675,14 @@
                                 <div class="form-group col-md-3">
                                     <label for="municipios_mod" class="control-label">Municipio</label>
                                     <select class="form-control" id="municipios_mod" name="municipios_mod">
-                                        @isset($alumno->municipio)<option value="{{ $alumno->municipio }}">
+                                        {{-- @isset($alumno->municipio)<option value="{{ $alumno->municipio }}">
                                                 {{ $alumno->municipio }}@else
-                                        <option value="">--SELECCIONAR--</option>@endisset
+                                                @endisset
+                                        --}}
+                                        <option value="">--SELECCIONAR--</option>
+                                        @foreach ($municipios as $municipio)
+                                            <option {{ $municipio->clave == $alumno->clave_municipio ? 'selected' : '' }} value="{{ $municipio->clave }}">{{ $municipio->muni }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
 
@@ -679,11 +691,11 @@
                                     <select class="form-control" id="localidad_mod" name="localidad_mod">
                                         <option value="">Seleccione una localidad</option>
                                         @foreach ($localidades as $localidad)
-                                            <option {{ $localidad->id == $alumno->id_localidad ? 'selected' : '' }} value="{{ $localidad->id }}">{{ $localidad->localidad }}</option>
+                                            <option {{ $localidad->clave == $alumno->clave_localidad ? 'selected' : '' }} value="{{ $localidad->clave }}">{{ $localidad->localidad }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                
+
                                 <div class="form-group col-md-3">
                                     <label for="cp_mod" class="control-label">Código Postal</label>
                                     <input type="text" class="form-control" id="cp_mod" name="cp_mod" autocomplete="off" value="{{ $alumno->cp }}">
@@ -692,7 +704,13 @@
                             <!--formulario-->
                             <br>
                             <div class="form-row">
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input {{ $alumno->lgbt ? 'checked' : '' }} value="true" type="checkbox" class="custom-control-input" id="lgbt_mod" name="lgbt_mod">
+                                        <label class="custom-control-label" for="lgbt_mod">LGBTTTI+</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-2">
                                     @if ($alumno->madre_soltera == 'true')
                                         <label><input id="madre_soltera_mod" name="madre_soltera_mod" type="checkbox"
                                                 value="true" checked />&nbsp;&nbsp;¿Es Madre Soltera?</label>
@@ -701,7 +719,7 @@
                                                 value="true" />&nbsp;&nbsp;¿Es Madre Soltera?</label>
                                     @endif
                                 </div>
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-2">
                                     @if ($alumno->familia_migrante == 'true')
                                         <label><input id="familia_migrante_mod" name="familia_migrante_mod" type="checkbox"
                                                 value="true" checked />&nbsp;&nbsp;¿Tiene Familia Migrante?</label>
@@ -1351,11 +1369,12 @@
                     $('#municipio').empty();
                     $('#municipio').append("<option value=''>Seleccione un municipio</option>");
                     $.each(municipio, function(index, value) {
-                        $('#municipio').append("<option value='" + value + "'>" + value + "</option>");
+                        $('#municipio').append("<option value='" + value['clave'] + "'>" + value['muni'] + "</option>");
                     });
                 });
             }
         });
+
         $(document).ready(function() {
             $('#curp_mod').focus();
             $('#curp_mod').keyup(function(e) {
@@ -1371,6 +1390,7 @@
                 });
             });
         });
+
         $('#curp_mod').on("change", function() {
             console.log('print');
             var fa = $(this).val();
@@ -1378,6 +1398,7 @@
                 $.get('')
             }
         });
+
         $('#estados_mod').on("change", function() {
             var estados_id = $(this).val();
             if ($(estados_id != '')) {
@@ -1385,10 +1406,9 @@
                     estado_id: estados_id
                 }, function(novo) {
                     $('#municipios_mod').empty();
-                    // $('#titular_cerss').append("<option value=''>Titular cerss</option>");
+                    $('#municipios_mod').append("<option value=''>Seleccione un municipio</option>");
                     $.each(novo, function(index, value) {
-                        $('#municipios_mod').append("<option value='" + value + "'>" +
-                            value + "</option>");
+                        $('#municipios_mod').append("<option value='" + value['clave'] + "'>" + value['muni'] + "</option>");
                     });
                 });
             }
@@ -1570,7 +1590,13 @@
                 },
                 localidad_mod: {
                     required: true,
-                }
+                },
+                fecha_nacimiento_mod: {
+                    required: true
+                },
+                sexo_mod: {
+                    required: true
+                },
             },
             messages: {
                 curp: {
@@ -1578,7 +1604,13 @@
                 },
                 localidad_mod: {
                     required: 'Seleccione la localidad'
-                }
+                },
+                fecha_nacimiento_mod: {
+                    required: 'Por favor ingrese fecha de nacimiento'
+                },
+                sexo_mod: {
+                    required: 'Por favor Elegir su genero'
+                },
             }
         });
 
@@ -1593,7 +1625,22 @@
                 $('#localidad').empty();
                 $('#localidad').append("<option value=''>Seleccione una localidad</option>")
                 $.each(localidades, function(index, value) {
-                    $('#localidad').append("<option value='" + value['id'] + "'>" + value['localidad'] + "</option>")
+                    $('#localidad').append("<option value='" + value['clave'] + "'>" + value['localidad'] + "</option>")
+                })
+            })
+        }
+    });
+
+    $('#municipios_mod').on('change', function() {
+        municipio = $(this).val();
+        if (municipio != '') {
+            $.get('/inscripciones/localidad', {
+                search: municipio
+            }, function (localidades) {
+                $('#localidad_mod').empty();
+                $('#localidad_mod').append("<option value=''>Seleccione una localidad</option>")
+                $.each(localidades, function(index, value) {
+                    $('#localidad_mod').append("<option value='" + value['clave'] + "'>" + value['localidad'] + "</option>")
                 })
             })
         }

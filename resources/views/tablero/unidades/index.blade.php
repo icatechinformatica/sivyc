@@ -21,18 +21,69 @@
             <div class="card">
                 <div class="card-header border-0">                        
                     <h2 class="titulo">Situaci&oacute;n Actual de las Unidades</h2>
-                    <br />
-                    <div class="row align-items-center">
-                        <div class="col-8">                            
-                            {!! Form::open(['route' => 'tablero.unidades.index', 'method'=> 'POST', 'role'=> 'search', 'class' => 'form-inline', 'id'=>'frm', 'name'=>'frm', 'enctype'=>'multipart/form-data' ]) !!}
+                    <br/>
+                    {{-- <div class="col align-items-center"> --}}
+                        {{-- <div class="row"> --}}
+
+                            <form id="frm" name="frm" action="{{ route('tablero.unidades.index') }}" method="post">
+                                @csrf
+
+                                <div class="row">
+                                    <div class="col">
+                                        <select id="id_unidad" name="id_unidad" class="custom-select">
+                                            <option value="">Seleccione la unidad</option>
+                                            @foreach ($lst_unidad as $key => $item)
+                                                <option {{ $key == $id_unidad ? 'selected' : '' }} value="{{ $key }}">{{ $item }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <select id="mes_inicio" name="mes_inicio" class="custom-select">
+                                            <option value="">Seleccione el mes de inicio</option>
+                                            @foreach ($lst_meses as $key1 => $mes)
+                                                <option {{ $key1 == $mes_inicio ? 'selected' : '' }} value="{{ $key1 }}">{{ $mes }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <select id="mes_fin" name="mes_fin" class="custom-select">
+                                            <option value="">Seleccione el mes de termino</option>
+                                            @foreach ($lst_meses as $key2 => $mesF)
+                                                <option {{ $key2 == $mes_fin ? 'selected' : '' }} value="{{ $key2 }}">{{ $mesF }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <select id="ejercicio" name="ejercicio" class="custom-select">
+                                            <option value="">Seleccione el ejercicio</option>
+                                            <option {{ $ejercicio == '2020' ? 'selected' : '' }}>2020</option>
+                                            <option {{ $ejercicio == '2021' ? 'selected' : '' }}>2021</option>
+                                            <option {{ $ejercicio == '2022' ? 'selected' : '' }}>2022</option>
+                                            <option {{ $ejercicio == '2023' ? 'selected' : '' }}>2023</option>
+                                            <option {{ $ejercicio == '2024' ? 'selected' : '' }}>2024</option>
+                                            <option {{ $ejercicio == '2025' ? 'selected' : '' }}>2025</option>
+                                            <option {{ $ejercicio == '2026' ? 'selected' : '' }}>2026</option>
+                                            <option {{ $ejercicio == '2027' ? 'selected' : '' }}>2027</option>
+                                            <option {{ $ejercicio == '2028' ? 'selected' : '' }}>2028</option>
+                                            <option {{ $ejercicio == '2029' ? 'selected' : '' }}>2029</option>
+                                            <option {{ $ejercicio == '2030' ? 'selected' : '' }}>2030</option>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <button id="filtrar" name="filtrar" type="button" class="btn btn-info">FILTRAR</button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            {{-- {!! Form::open(['route' => 'tablero.unidades.index', 'method'=> 'POST', 'role'=> 'search', 'class' => 'form-inline', 'id'=>'frm', 'name'=>'frm', 'enctype'=>'multipart/form-data' ]) !!}
                                  {!! Form::select('id_unidad', $lst_unidad,$id_unidad ,array('id'=>'id_unidad','class' => 'form-control  mr-sm-2','placeholder' => 'UNIDAD')) !!}                                 
                                  {!! Form::select('mes_inicio', $lst_meses,$mes_inicio ,array('id'=>'mes_inicio','class' => 'form-control  mr-sm-2','placeholder' => 'MES INICIAL')) !!}
                                  {!! Form::select('mes_fin', $lst_meses,$mes_fin ,array('id'=>'mes_fin','class' => 'form-control  mr-sm-2','placeholder' => 'MES FINAL')) !!}
                                  {!! Form::select('ejercicio', $lst_ejercicio,$ejercicio ,array('id'=>'ejercicio','class' => 'form-control  mr-sm-2')) !!}
                                  {{ Form::button('FILTRAR', array('class' => 'btn btn-outline-info my-1 my-sm-0', 'type' => 'button', 'id' => 'filtrar' )) }}
-                            {!! Form::close() !!}                                
-                        </div>                            
-                    </div>
+                            {!! Form::close() !!}                                 --}}
+                        {{-- </div>                             --}}
+                    {{-- </div> --}}
                 </div>
                  <div class="table-responsive" style="min-height:420px" id="tabla">
                     <table class="table align-items-center table-flush text-center">
@@ -285,5 +336,5 @@
             options: chartOptions
         });
     }
-</script>
+    </script>
 @endsection
