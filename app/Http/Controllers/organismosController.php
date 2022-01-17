@@ -60,7 +60,8 @@ class organismosController extends Controller
         } else {
             $activo = false;
         }
-        $result = DB::table('organismos_publicos')->updateOrInsert(['organismo'=>$request->nombre,'nombre_titular'=>$request->nombre_titular,
+        $ID = DB::table('organismos_publicos')->value(DB::raw('max(id)+1'));
+        $result = DB::table('organismos_publicos')->updateOrInsert(['id'=>$ID,'organismo'=>$request->nombre,'nombre_titular'=>$request->nombre_titular,
                                                     'telefono'=>$request->telefono,'correo'=>$request->correo_ins,'id_estado'=>$request->estado,
                                                     'id_municipio'=>$request->municipio,'clave_localidad'=>$request->localidad,'direccion'=>$request->direccion,
                                                     'poder_pertenece'=>$request->area,'activo'=>$activo,'sector'=>$request->sector,
