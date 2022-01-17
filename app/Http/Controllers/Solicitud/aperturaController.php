@@ -508,7 +508,7 @@ class aperturaController extends Controller
                 $dias = []; $temp = $dias_agenda[0]; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
                 foreach ($dias_agenda as $key => $value) {
                     if ($key > 0) {
-                        if (($temp+1)==$value) {
+                        if ((($temp+1)==$value) && !$temp2) {
                             $temp2 = $value;
                             $save = false;
                         }elseif ($temp2 && (($temp2+1)==$value)) {
@@ -947,7 +947,7 @@ class aperturaController extends Controller
             $dias = []; $temp = $dias_agenda[0]; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
             foreach ($dias_agenda as $key => $value) {
                 if ($key > 0) {
-                    if (($temp+1)==$value) {
+                    if ((($temp+1)==$value) && !$temp2) {
                         $temp2 = $value;
                         $save = false;
                     }elseif ($temp2 && (($temp2+1)==$value)) {
