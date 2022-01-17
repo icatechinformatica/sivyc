@@ -535,7 +535,17 @@ class aperturaController extends Controller
                         $dias_a[] = $this->dia($item[0]);
                     }
                 }
-                $dias_a = array_unique($dias_a);
+                $rep = 1;
+                foreach ($dias_a as $key => $value) {
+                    if ($key > 0) {
+                        if ($value == $dias_a[$key-1]) {
+                            $rep += 1;
+                        }
+                    }
+                }
+                if ($rep == count($dias_a)) {
+                    $dias_a = array_unique($dias_a);
+                }
                 $dias_a = implode(", ", $dias_a);
             }else {
                 $dias_a = 0;
@@ -964,7 +974,17 @@ class aperturaController extends Controller
                     $dias_a[] = $this->dia($item[0]);
                 }
             }
-            $dias_a = array_unique($dias_a);
+            $rep = 1;
+            foreach ($dias_a as $key => $value) {
+                if ($key > 0) {
+                    if ($value == $dias_a[$key-1]) {
+                        $rep += 1;
+                    }
+                }
+            }
+            if ($rep == count($dias_a)) {
+                $dias_a = array_unique($dias_a);
+            }
             $dias_a = implode(", ", $dias_a);
         $total_dias = DB::table('agenda')
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval)) as dias"))

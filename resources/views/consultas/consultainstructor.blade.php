@@ -60,9 +60,11 @@
                     <tr>
                         <td>INSTRUCTOR</td>
                         <td>UNIDAD</td>
+                        <td>GRUPO</td>
                         <td>CURSO</td>
                         <td>ESPECIALIDAD</td>
                         <td>SERVICIO</td>
+                        <td>DURACION</td>
                         <td>TIPO DE CAPACITACIÓN</td>
                         <td>STATUS</td>
                         <td>FECHA DE INICIO</td>
@@ -77,9 +79,11 @@
                     <tr>
                         <td>{{$item->nombre}}</td>
                         <td>{{$item->unidad}}</td>
+                        <td>{{$item->folio_grupo}}</td>
                         <td>{{$item->curso}}</td>
                         <td>{{$item->espe}}</td>
                         <td>{{$item->tipo_curso}}</td>
+                        <td>{{$item->dura}}</td>
                         <td>{{$item->tcapacitacion}}</td>
                         <td>{{$item->status_curso}}</td>
                         <td>{{$item->inicio}}</td>
