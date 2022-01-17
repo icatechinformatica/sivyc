@@ -945,7 +945,7 @@ class InstructorController extends Controller
             $av = instructor::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
         }
         $available = $av->unidades_disponible;
-        dd($av);
+        // dd($av);
         return view('layouts.pages.vstaltabajains', compact('id','available'));
     }
 
