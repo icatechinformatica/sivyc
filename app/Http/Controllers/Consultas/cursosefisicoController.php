@@ -31,7 +31,7 @@ class cursosefisicoController extends Controller
         if($rol){
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
-            $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad','unidad');
+            $unidades = DB::table('tbl_unidades')->ORDERBY('unidad','asc')->pluck('unidad','unidad');
             if(count($unidades)==0) $unidades =[$unidad];
             $_SESSION['unidades'] = $unidades;
         }
