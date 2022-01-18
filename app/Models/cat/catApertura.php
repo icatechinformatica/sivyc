@@ -154,7 +154,7 @@ trait catApertura
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
-            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
+            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino)
             ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id) as total from
 											    (select id_instructor, id from tbl_cursos
 											    where inicio >= '$hinimes'
