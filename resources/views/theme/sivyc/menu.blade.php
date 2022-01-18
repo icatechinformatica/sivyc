@@ -306,6 +306,9 @@
                         @can('consultas.cursos.iniciados')
                             <a class="dropdown-item" href="{{route('consulta-cursosval')}}">Cursos Iniciados</a>
                         @endcan
+                        @can('consultas.cursosefisico')
+                            <a class="dropdown-item" href="{{route('consultas.cursosefisico')}}">Cursos EFisico</a>
+                        @endcan
                     </div>
                 </li>
 
