@@ -81,9 +81,9 @@ class cursosefisicoController extends Controller
         if($unidad OR $fecha1 OR $fecha2 OR $valor){
             //$mes = [1=>"ENERO",2=>"FEBRERO",3=>"MARZO",4=>"ABRIL",5=>"MAYO",6=>"JUNIO",7=>"JULIO",8=>"AGOSTO",9=>"SEPTIEMBRE", 10=>"OCTUBRE", 11=>"NOVIEMBRE",12=>"DICIEMBRE"];
 
-            $data = DB::table('tbl_cursos as c')->where('clave','!=','0')->select('unidad','espe','clave','curso','mod','dura',
-            'inicio', 'termino', DB::raw("To_char(termino, 'TMMONTH')"), DB::raw("CONCAT(hini,' A ',hfin) as horario"),'dia','horas',DB::raw("hombre+mujer as cupo"),'nombre',
-            'cp','mujer','hombre','costo','tipo_curso','tipo','nota','muni','depen','munidad','mvalida','nmunidad','nmacademico','efisico','modinstructor','status','tcapacitacion','status_curso');
+            $data = DB::table('tbl_cursos as c')->where('clave','!=','0')->select('unidad','espe','clave','curso','nombre','efisico','mod','dura',
+            'inicio', 'termino', DB::raw("To_char(termino, 'TMMONTH')"), DB::raw("CONCAT(hini,' A ',hfin) as horario"),'dia','horas',DB::raw("hombre+mujer as cupo"),
+            'cp','mujer','hombre','costo','tipo_curso','tipo','nota','muni','depen','munidad','mvalida','nmunidad','nmacademico','modinstructor','status','tcapacitacion','status_curso');
 
             if($valor){
                 $data = $data->where('c.clave','like','%' . $valor.'%')
@@ -105,10 +105,10 @@ class cursosefisicoController extends Controller
 
             if(count($data)==0){ return "NO REGISTROS QUE MOSTRAR";exit;}
 
-            $head = ['UNIDAD','ESPECIALIDAD','CLAVE','CURSO','MOD','DURA','INICIO','TERMINO','MES_TERMINO','HORARIO','DIAS',
-            'HORAS','CUPO','INSTRUCTOR','CP','FEM','MASC','CUOTA','ESQUEMA','TIPO PAGO','OBSERVACIONES','MUNICIPIO',
+            $head = ['UNIDAD','ESPECIALIDAD','CLAVE','CURSO','INSTRUCTOR','ESPACIO','MOD','DURA','INICIO','TERMINO','MES_TERMINO','HORARIO','DIAS',
+            'HORAS','CUPO','CP','FEM','MASC','CUOTA','ESQUEMA','TIPO PAGO','OBSERVACIONES','MUNICIPIO',
             'DEPENDENCIA BENEFICIADA','MEMO DE SOLICITUD','MEMO DE AUTORIZACION','MEMO DE SOLICITUD DE REPROGRAMACION',
-            'MEMO DE AUTORIZACION DE REPROGRAMACION','ESPACIO','PAGO INSTRUCTOR','ESTATUS_FORMATOT','CAPACITACION','ESTATUS_APERTURA'];
+            'MEMO DE AUTORIZACION DE REPROGRAMACION','PAGO INSTRUCTOR','ESTATUS_FORMATOT','CAPACITACION','ESTATUS_APERTURA'];
 
             $title = "CURSOS_".$opcion."_".$unidad;
             if($unidad)  $name = "CURSOSEFISICO_".$opcion."_".$unidad."_".date('Ymd').".xlsx";

@@ -42,6 +42,8 @@
                             <th scope="col" class="text-center" width="8%">CLAVE</th>
                             <th scope="col" class="text-center" width="8%">ESCPECIALIDAD</th>
                             <th scope="col" class="text-center" width="12%">CURSO</th>
+                            <th scope="col" class="text-center" width="12%">INSTRUCTOR</th>
+                            <th scope="col" class="text-center" width="12%">ESPACIO</th>
                             <th scope="col" class="text-center" width="4%">TIPO</th>
                             <th scope="col" class="text-center" width="2%">MOD</th>
                             <th scope="col" class="text-center" width="2%">DURA</th>
@@ -52,7 +54,6 @@
                             <th scope="col" class="text-center" width="5%">HORA_INI</th>
                             <th scope="col" class="text-center" width="5%">HORA_FIN</th>
                             <th scope="col" class="text-center" width="6%">ESTATUS</th>
-                            <th scope="col" class="text-center" width="6%">ESPACIO</th>
 
                         </tr>
                     </thead>
@@ -66,6 +67,8 @@
                                 <td>{{ $d->clave }}</td>
                                 <td>{{ $d->espe }}</td>
                                 <td>{{ $d->curso }}</td>
+                                <td style="text-align:left;">{{ $d->nombre }}</td>
+                                <td style="text-align:left;">{{ $d->efisico }}</td>
                                 <td class="text-center" >{{ $d->tcapacitacion }}</td>
                                 <td class="text-center" >{{ $d->mod }}</td>
                                 <td class="text-center" >{{ $d->dura }}</td>
@@ -76,7 +79,6 @@
                                 <td class="text-center" >{{ $d->hini }}</td>
                                 <td class="text-center" >{{ $d->hfin }}</td>
                                 <td class="text-center" >{{ $d->status }}</td>
-                                <td class="text-center" width="300px">{{ $d->efisico }}</td>
                             </tr>
                         @endforeach
                     </tbody>
