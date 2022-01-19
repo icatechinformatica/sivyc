@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 
 class validacionDtaController extends Controller {
-    
+
     public function index(Request $request) {
         $unidad = $request->get('busqueda_unidad');
         $mesSearch = $request->get('mesSearchE');
@@ -39,12 +39,12 @@ class validacionDtaController extends Controller {
             $temp2 = substr($temp2,0, -1);
             $array2 = explode(',', $temp2);
 
-            $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = ''; 
+            $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = '';
             foreach ($array2 as $key => $movimiento) {
                 if ($movimiento == 'EXPEDIDO') {
                     if ($bloqueFolios == '') {
                         $bloqueFolios = $array[$key].'-';
-                    } 
+                    }
                 }
                 if ($movimiento == 'CANCELADO') {
                     if (isset($array[$key-1])) {
@@ -53,7 +53,7 @@ class validacionDtaController extends Controller {
                         $bloqueFolios = '';
                     }
                     $tempFoliosCancel = $tempFoliosCancel.$array[$key].',';
-                } 
+                }
                 if (($key + 1) == count($array2) && $movimiento != 'CANCELADO') {
                     $bloqueFolios = $bloqueFolios.$array[$key];
                     $folios = $folios.','.$bloqueFolios;
@@ -822,7 +822,7 @@ class validacionDtaController extends Controller {
             unset($value->sumatoria_total_ins_edad);
             unset($value->observaciones_enlaces);
             unset($value->observaciones_unidad);
- 
+
             // array de folios
             $temp = substr($value->folios,1);
             $temp = substr($temp,0, -1);
@@ -832,12 +832,12 @@ class validacionDtaController extends Controller {
             $temp2 = substr($temp2,0, -1);
             $array2 = explode(',', $temp2);
 
-            $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = ''; 
+            $tempFoliosCancel = ''; $folios = ''; $bloqueFolios = '';
             foreach ($array2 as $key => $movimiento) {
                 if ($movimiento == 'EXPEDIDO') {
                     if ($bloqueFolios == '') {
                         $bloqueFolios = $array[$key].'-';
-                    } 
+                    }
                 }
                 if ($movimiento == 'CANCELADO') {
                     if (isset($array[$key-1])) {
@@ -846,7 +846,7 @@ class validacionDtaController extends Controller {
                         $bloqueFolios = '';
                     }
                     $tempFoliosCancel = $tempFoliosCancel.$array[$key].',';
-                } 
+                }
                 if (($key + 1) == count($array2) && $movimiento != 'CANCELADO') {
                     $bloqueFolios = $bloqueFolios.$array[$key];
                     $folios = $folios.','.$bloqueFolios;
@@ -868,6 +868,14 @@ class validacionDtaController extends Controller {
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'EGRESADO LGBTTTI', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'EXONERACION LGBTTTI+', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES', 'REDUCCION CUOTA LGBTTTI+', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
             'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'DOCUMENTO ADQUIRIDO', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS', 'MIGRANTES',
             'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA',
+            'FEDERAL INSCRITOS EDAD-1 MUJERES', 'FEDERAL INSCRITOS EDAD-1 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-2 MUJERES', 'FEDERAL INSCRITOS EDAD-2 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-3 MUJERES', 'FEDERAL INSCRITOS EDAD-3 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-4 MUJERES', 'FEDERAL INSCRITOS EDAD-4 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-5 MUJERES', 'FEDERAL INSCRITOS EDAD-5 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-6 MUJERES', 'FEDERAL INSCRITOS EDAD-6 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-7 MUJERES', 'FEDERAL INSCRITOS EDAD-7 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-8 MUJERES', 'FEDERAL INSCRITOS EDAD-8 HOMBRES',
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 'INSCRITOS EDAD-1 LGBTTTI+',
             'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 'INSCRITOS EDAD-2 LGBTTTI+',
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 'INSCRITOS EDAD-3 LGBTTTI+',
@@ -892,7 +900,7 @@ class validacionDtaController extends Controller {
             'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES', 'ACREDITADOS ESC-7 LGBTTTI+',
             'ACREDITADOS ESC-8 MUJERES', 'ACREDITADOS ESC-8 HOMBRES', 'ACREDITADOS ESC-8 LGBTTTI+',
             'ACREDITADOS ESC-9 MUJERES', 'ACREDITADOS ESC-9 HOMBRES', 'ACREDITADOS ESC-9 LGBTTTI+',
-            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES', 'DESERTORES ESC-1 LGBTTTI+', 
+            'DESERTORES ESC-1 MUJERES', 'DESERTORES ESC-1 HOMBRES', 'DESERTORES ESC-1 LGBTTTI+',
             'DESERTORES ESC-2 MUJERES', 'DESERTORES ESC-2 HOMBRES', 'DESERTORES ESC-2 LGBTTTI+',
             'DESERTORES ESC-3 MUJERES', 'DESERTORES ESC-3 HOMBRES', 'DESERTORES ESC-3 LGBTTTI+',
             'DESERTORES ESC-4 MUJERES', 'DESERTORES ESC-4 HOMBRES', 'DESERTORES ESC-4 LGBTTTI+',
@@ -940,13 +948,21 @@ class validacionDtaController extends Controller {
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'EGRESADO LGBTTTI+', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'EXONERACION LGBTTTI+', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES', 'REDUCCION CUOTA LGBTTTI+', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
             'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'DOCUMENTO ADQUIRIDO', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS', 'MIGRANTES',
             'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA',
+            'FEDERAL INSCRITOS EDAD-1 MUJERES', 'FEDERAL INSCRITOS EDAD-1 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-2 MUJERES', 'FEDERAL INSCRITOS EDAD-2 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-3 MUJERES', 'FEDERAL INSCRITOS EDAD-3 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-4 MUJERES', 'FEDERAL INSCRITOS EDAD-4 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-5 MUJERES', 'FEDERAL INSCRITOS EDAD-5 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-6 MUJERES', 'FEDERAL INSCRITOS EDAD-6 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-7 MUJERES', 'FEDERAL INSCRITOS EDAD-7 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-8 MUJERES', 'FEDERAL INSCRITOS EDAD-8 HOMBRES',
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 'INSCRITOS EDAD-1 LGBTTTI+',
             'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 'INSCRITOS EDAD-2 LGBTTTI+',
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 'INSCRITOS EDAD-3 LGBTTTI+',
             'INSCRITOS EDAD-4 MUJERES', 'INSCRITOS EDAD-4 HOMBRES', 'INSCRITOS EDAD-4 LGBTTTI+',
             'INSCRITOS EDAD-5 MUJERES', 'INSCRITOS EDAD-5 HOMBRES', 'INSCRITOS EDAD-5 LGBTTTI+',
             'INSCRITOS EDAD-6 MUJERES', 'INSCRITOS EDAD-6 HOMBRES', 'INSCRITOS EDAD-6 LGBTTTI+',
-            'INSCRITOS ESC-1 MUJERES', 'INSCRITOS ESC-1 HOMBRES', 'INSCRITOS ESC-1 LGBTTTI+', 
+            'INSCRITOS ESC-1 MUJERES', 'INSCRITOS ESC-1 HOMBRES', 'INSCRITOS ESC-1 LGBTTTI+',
             'INSCRITOS ESC-2 MUJERES', 'INSCRITOS ESC-2 HOMBRES', 'INSCRITOS ESC-2 LGBTTTI+',
             'INSCRITOS ESC-3 MUJERES', 'INSCRITOS ESC-3 HOMBRES', 'INSCRITOS ESC-3 LGBTTTI+',
             'INSCRITOS ESC-4 MUJERES', 'INSCRITOS ESC-4 HOMBRES', 'INSCRITOS ESC-4 LGBTTTI+',

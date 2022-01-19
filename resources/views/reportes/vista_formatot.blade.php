@@ -85,7 +85,7 @@
                         <option value="">--SELECCIONAR MES--</option>
                         @foreach ($meses as $mun => $month)
                             <option value="{{ $mun }}">{{ $month }}</option>
-                        @endforeach 
+                        @endforeach
                     </select>
                 </div>
                 <div class="form-group col-md-4">
@@ -94,7 +94,7 @@
                 <div class="form-group col-md-4">
                     {!! Form::submit( 'FILTRAR', ['id'=>'formatot', 'class' => 'btn btn-outline-info my-2 my-sm-0 waves-effect waves-light', 'name' => 'submitbutton'])!!}
                 </div>
-                
+
             </div>
         {!! Form::close() !!} --}}
 
@@ -156,6 +156,12 @@
                                 <caption>CURSOS A ENVIAR POR UNIDADES</caption>
                                 <thead class="thead-dark">
                                     <tr align="center">
+                                        <th scope="col" colspan="58">GENERAL</th>
+                                        <th scope="col" colspan="16" style="background-color: #621032;">FEDERAL</th>
+                                        <th scope="col" colspan="18" style="background-color: #AF9A5A;">ESTATAL</th>
+                                        <th scope="col" colspan="85">GENERAL</th>
+                                    </tr>
+                                    <tr align="center">
                                         <th scope="col">N°</th>
                                         <th scope="col">
                                             <div style="width:100px; word-wrap: break-word">
@@ -196,7 +202,7 @@
                                         <th scope="col">EXONERACION LGBTTTI+</th>
                                         <th scope="col">REDUCCION CUOTA MUJER</th>
                                         <th scope="col">REDUCCION CUOTA HOMBRE</th>
-                                        <th scope="col">REDUCCION CUOTA LGBTTTI</th>
+                                        <th scope="col">REDUCCION CUOTA LGBTTTI+</th>
                                         <th scope="col">CONVENIO ESPECIFICO</th>
                                         <th scope="col">MEMO VALIDA CURSO</th>
                                         <th scope="col">ESPACIO FISICO</th>
@@ -220,6 +226,24 @@
                                         <th scope="col">CONVENIO GENERAL</th>
                                         <th scope="col">CONV SEC PUB O PRIV</th>
                                         <th scope="col">VALIDACION PAQUETERIA</th>
+                                        {{-- RUBRO FEDERAL--}}
+                                        <th scope="col">INSC EDAD M1</th>
+                                        <th scope="col">INSC EDAD H1</th>
+                                        <th scope="col">INSC EDAD M2</th>
+                                        <th scope="col">INSC EDAD H2</th>
+                                        <th scope="col">INSC EDAD M3</th>
+                                        <th scope="col">INSC EDAD H3</th>
+                                        <th scope="col">INSC EDAD M4</th>
+                                        <th scope="col">INSC EDAD H4</th>
+                                        <th scope="col">INSC EDAD M5</th>
+                                        <th scope="col">INSC EDAD H5</th>
+                                        <th scope="col">INSC EDAD M6</th>
+                                        <th scope="col">INSC EDAD H6</th>
+                                        <th scope="col">INSC EDAD M7</th>
+                                        <th scope="col">INSC EDAD H7</th>
+                                        <th scope="col">INSC EDAD M8</th>
+                                        <th scope="col">INSC EDAD H8</th>
+                                        {{-- RUBRO ESTATAL --}}
                                         <th scope="col">INSC EDAD M1</th>
                                         <th scope="col">INSC EDAD H1</th>
                                         <th scope="col">INSC EDAD L1</th>
@@ -332,29 +356,31 @@
                                     @foreach ($var_cursos as $key => $datas)
                                         <tr class="text-center"
                                             {{-- style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }} {{ ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) ? '' : '#808080' }}" --}}
-                                            {{-- $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' 
+                                            {{-- $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F'
                                                 :  --}}
-                                                {{-- $datas->inscritosEdad - $datas->tinscritos != 0 || $datas->inscritosEsc - $datas->tinscritos != 0 
+                                                {{-- $datas->inscritosEdad - $datas->tinscritos != 0 || $datas->inscritosEsc - $datas->tinscritos != 0
                                                 || $datas->acreditadosEsc - $datas->egresado != 0 || $datas->desertoresEsc - $datas->desertado != 0 --}}
-                                                {{-- {{ (($datas->imujer + $datas->ihombre) - $datas->tinscritos) != 0 
+                                                {{-- {{ (($datas->imujer + $datas->ihombre) - $datas->tinscritos) != 0
                                                     ? '#ff8282' : '' }} --}}
-                                            style="background-color: 
+                                            style="background-color:
                                                 {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }}
-                                                {{ (($datas->inscritosEdad - $datas->tinscritos) != 0 
-                                                    || ($datas->inscritosEsc - $datas->tinscritos) != 0 
-                                                    || ($datas->acreditadosEsc - $datas->egresado) != 0 
+                                                {{ (($datas->inscritosEdad - $datas->tinscritos) != 0
+                                                    || ($datas->inscritosEdadFederal - $datas->tinscritos) != 0
+                                                    || ($datas->inscritosEsc - $datas->tinscritos) != 0
+                                                    || ($datas->acreditadosEsc - $datas->egresado) != 0
                                                     || ($datas->desertoresEsc - $datas->desertado) != 0
                                                     || ($datas->sumaHM - $datas->tinscritos) != 0
                                                     || ($datas->sumaED - $datas->tinscritos) != 0
                                                     || ($datas->sumaEmDe - $datas->tinscritos) != 0
-                                                    || ($datas->sumaEgresados - $datas->egresado) != 0) 
+                                                    || ($datas->sumaEgresados - $datas->egresado) != 0)
                                                     ? '#ff8282' : '' }}">
                                             <td>{{ $key + 1 }}</td>
                                             <td>
                                                 {{-- @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad) --}}
-                                                @if ($datas->inscritosEdad - $datas->tinscritos == 0 
+                                                @if ($datas->inscritosEdad - $datas->tinscritos == 0
+                                                    && $datas->inscritosEdadFederal - $datas->tinscritos == 0
                                                     && $datas->inscritosEsc - $datas->tinscritos == 0
-                                                    && $datas->acreditadosEsc - $datas->egresado == 0 
+                                                    && $datas->acreditadosEsc - $datas->egresado == 0
                                                     && $datas->desertoresEsc - $datas->desertado == 0
                                                     && $datas->sumaHM - $datas->tinscritos == 0
                                                     && $datas->sumaED - $datas->tinscritos == 0
@@ -446,6 +472,24 @@
                                             <td>{{ $datas->cgeneral }}</td>
                                             <td>{{ $datas->sector }}</td>
                                             <td>{{ $datas->mpaqueteria }}</td>
+                                            {{-- RUBRO FEDERAL --}}
+                                            <td>{{ $datas->iem1f }}</td>
+                                            <td>{{ $datas->ieh1f }}</td>
+                                            <td>{{ $datas->iem2f }}</td>
+                                            <td>{{ $datas->ieh2f }}</td>
+                                            <td>{{ $datas->iem3f }}</td>
+                                            <td>{{ $datas->ieh3f }}</td>
+                                            <td>{{ $datas->iem4f }}</td>
+                                            <td>{{ $datas->ieh4f }}</td>
+                                            <td>{{ $datas->iem5f }}</td>
+                                            <td>{{ $datas->ieh5f }}</td>
+                                            <td>{{ $datas->iem6f }}</td>
+                                            <td>{{ $datas->ieh6f }}</td>
+                                            <td>{{ $datas->iem7f }}</td>
+                                            <td>{{ $datas->ieh7f }}</td>
+                                            <td>{{ $datas->iem8f }}</td>
+                                            <td>{{ $datas->ieh8f }}</td>
+                                            {{-- RUBRO ESTATAL --}}
                                             <td>{{ $datas->iem1 }}</td>
                                             <td>{{ $datas->ieh1 }}</td>
                                             <td>{{ $datas->iel1 }}</td>
@@ -566,9 +610,10 @@
                                             </td>
                                             <td class="text-white">
                                                 <div style="width:600px; word-wrap: break-word" align="justify">
-                                                    {!! ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO ESTATAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->inscritosEdadFederal - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO FEDERAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->inscritosEsc - $datas->tinscritos) != 0 ? '* LA SUMATORIA DE INSCRITOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
-                                                    {!! ($datas->acreditadosEsc - $datas->egresado) != 0 ? '* LA SUMATORIA DE ACREDITADOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!} 
+                                                    {!! ($datas->acreditadosEsc - $datas->egresado) != 0 ? '* LA SUMATORIA DE ACREDITADOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
                                                     {!! ($datas->desertoresEsc - $datas->desertado) != 0 ? '* LA SUMATORIA DE DESERTORES POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE DESERCIÓN <br>' : '' !!}
                                                     {!! ($datas->sumaHM - $datas->tinscritos) != 0 ? '* LA SUMA  DE HOMBRES, MUJERES y LGBTTTI+ NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaED - $datas->tinscritos) != 0 ? '* LA SUMA  DE EGRESADOS Y DESERTORES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
@@ -705,7 +750,7 @@
                     // }
                 });
             });
-            // 
+            //
 
             $('#send_to_dta').click(function() {
                 $('#formSendDta').validate({
@@ -760,7 +805,7 @@
                     //                 $( ".alert" ).addClass("alert-success");
                     //                 $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
                     //                 // redireccionar después de 5 segundos
-                    //                 setTimeout(function(){ 
+                    //                 setTimeout(function(){
                     //                     window.location.href = "{{ route('vista_formatot') }}";
                     //                  }, 3000);
                     //             }
