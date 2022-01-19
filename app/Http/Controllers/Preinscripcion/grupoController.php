@@ -321,8 +321,12 @@ class grupoController extends Controller
             $alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->get();
             $comprobante = DB::table('alumnos_registro')->select('comprobante_pago')->where('folio_grupo', $_SESSION['folio_grupo'])->first();
             $costo = 0;
+            $conteo = 0;
             foreach ($alumnos as $a) {
                 $costo += $a->costo;
+                if ($a->costo) {
+                    $conteo += 1;
+                }
             }
             if ($costo > 0) {
                 if ($comprobante->comprobante_pago) {
@@ -332,6 +336,8 @@ class grupoController extends Controller
                 }else {
                     return redirect()->route('preinscripcion.grupo')->with(['message' => 'FAVOR DE CARGAR EL COMPROBANTE DE PAGO']);
                 }
+            } elseif ($conteo < count($alumnos)) {
+                return redirect()->route('preinscripcion.grupo')->with(['message' => 'FAVOR DE AGREGAR LOS COSTOS A LOS ALUMNOS']);
             } else {
                 $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d'), 'comprobante_pago' => null]);
             }
