@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 
 class PlaneacionController extends Controller {
-    
+
     public function index(Request $request) {
         // unidad a buscar
         $unidades = $request->get('busqueda_unidad');
@@ -64,7 +64,7 @@ class PlaneacionController extends Controller {
                         $memo = str_replace('/', '_', $numero_memo);
                         /**
                          * aquí vamos a verificar que el archivo no se encuentre guardado
-                         * previamente en el sistema de archivos del sistema de ser así se 
+                         * previamente en el sistema de archivos del sistema de ser así se
                          * remplazará el archivo porel que se subirá a continuación
                          */
                         // construcción del archivo
@@ -163,7 +163,7 @@ class PlaneacionController extends Controller {
                         $memo = str_replace('/', '_', $numero_memo);
                         /**
                          * aquí vamos a verificar que el archivo no se encuentre guardado
-                         * previamente en el sistema de archivos del sistema de ser así se 
+                         * previamente en el sistema de archivos del sistema de ser así se
                          * remplazará el archivo porel que se subirá a continuación
                          */
                         // construcción del archivo
@@ -226,7 +226,7 @@ class PlaneacionController extends Controller {
                              * en esta parte vamos a generar la consulta con el id y vamos a obtener todos los registros a un insert
                              * de otra tabla, generamos un método para mostrar toda la info
                              */
-                            
+
                             // $getvalueOfTblCursos = dataFormatoTSaveData($key);
                             /*\DB::table('tbl_cierre_formato_t')->insert([
                                 'id_tbl_cursos' => $getvalueOfTblCursos->id_tbl_cursos,
@@ -309,7 +309,7 @@ class PlaneacionController extends Controller {
             case '10': $mesReport = 'OCTUBRE'; break;
             case '11': $mesReport = 'NOVIEMBRE'; break;
             case '12': $mesReport = 'DICIEMBRE'; break;
-        }        
+        }
         if (isset($generarMemo)) {
             # hacemos un switch...
             $leyenda = Instituto::first();
@@ -459,8 +459,16 @@ class PlaneacionController extends Controller {
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'EGRESADO LGBTTTI+', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'EXONERACION LGBTTTI+', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES', 'REDUCCION CUOTA LGBTTTI+', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
             'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'DOCUMENTO ADQUIRIDO', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS', 'MIGRANTES',
             'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA',
+            'FEDERAL INSCRITOS EDAD-1 MUJERES', 'FEDERAL INSCRITOS EDAD-1 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-2 MUJERES', 'FEDERAL INSCRITOS EDAD-2 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-3 MUJERES', 'FEDERAL INSCRITOS EDAD-3 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-4 MUJERES', 'FEDERAL INSCRITOS EDAD-4 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-5 MUJERES', 'FEDERAL INSCRITOS EDAD-5 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-6 MUJERES', 'FEDERAL INSCRITOS EDAD-6 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-7 MUJERES', 'FEDERAL INSCRITOS EDAD-7 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-8 MUJERES', 'FEDERAL INSCRITOS EDAD-8 HOMBRES',
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 'INSCRITOS EDAD-1 LGBTTTI+',
-            'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 'INSCRITOS EDAD-2 LGBTTTI+', 
+            'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 'INSCRITOS EDAD-2 LGBTTTI+',
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 'INSCRITOS EDAD-3 LGBTTTI+',
             'INSCRITOS EDAD-4 MUJERES', 'INSCRITOS EDAD-4 HOMBRES', 'INSCRITOS EDAD-4 LGBTTTI+',
             'INSCRITOS EDAD-5 MUJERES', 'INSCRITOS EDAD-5 HOMBRES', 'INSCRITOS EDAD-5 LGBTTTI+',
@@ -477,7 +485,7 @@ class PlaneacionController extends Controller {
             'ACREDITADOS ESC-1 MUJERES', 'ACREDITADOS ESC-1 HOMBRES', 'ACREDITADOS ESC-1 LGBTTTI+',
             'ACREDITADOS ESC-2 MUJERES', 'ACREDITADOS ESC-2 HOMBRES', 'ACREDITADOS ESC-2 LGBTTTI+',
             'ACREDITADOS ESC-3 MUJERES', 'ACREDITADOS ESC-3 HOMBRES', 'ACREDITADOS ESC-3 LGBTTTI+',
-            'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES', 'ACREDITADOS ESC-4 LGBTTTI+', 
+            'ACREDITADOS ESC-4 MUJERES', 'ACREDITADOS ESC-4 HOMBRES', 'ACREDITADOS ESC-4 LGBTTTI+',
             'ACREDITADOS ESC-5 MUJERES', 'ACREDITADOS ESC-5 HOMBRES', 'ACREDITADOS ESC-5 LGBTTTI+',
             'ACREDITADOS ESC-6 MUJERES', 'ACREDITADOS ESC-6 HOMBRES', 'ACREDITADOS ESC-6 LGBTTTI+',
             'ACREDITADOS ESC-7 MUJERES', 'ACREDITADOS ESC-7 HOMBRES', 'ACREDITADOS ESC-7 LGBTTTI+',

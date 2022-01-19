@@ -57,14 +57,14 @@
             }
         }
 
-        /* thead tr th { 
+        /* thead tr th {
                 position: sticky;
                 top: 0;
                 z-index: 10;
                 background-color: #ffffff;
             }
-        
-            .table-responsive { 
+
+            .table-responsive {
                 height:600px;
                 overflow:scroll;
             } */
@@ -195,6 +195,12 @@
                             <caption>CURSOS ENVIADOS A LA DIRECCIÓN DE PLANEACIÓN</caption>
                             <thead class="thead-dark">
                                 <tr align="center">
+                                    <th scope="col" colspan="60">GENERAL</th>
+                                    <th scope="col" colspan="16" style="background-color: #621032;">FEDERAL</th>
+                                    <th scope="col" colspan="18" style="background-color: #AF9A5A;">ESTATAL</th>
+                                    <th scope="col" colspan="85">GENERAL</th>
+                                </tr>
+                                <tr align="center">
                                     <th scope="col">N°</th>
                                     <th scope="col">SELECCIONAR &nbsp;
                                         <input type="checkbox" id="selectAll" />
@@ -257,6 +263,24 @@
                                     <th scope="col">CONVENIO GENERAL</th>
                                     <th scope="col">CONV SEC PUB O PRIV</th>
                                     <th scope="col">VALIDACION PAQUETERIA</th>
+                                    {{-- RUBRO FEDERAL--}}
+                                    <th scope="col">INSC EDAD M1</th>
+                                    <th scope="col">INSC EDAD H1</th>
+                                    <th scope="col">INSC EDAD M2</th>
+                                    <th scope="col">INSC EDAD H2</th>
+                                    <th scope="col">INSC EDAD M3</th>
+                                    <th scope="col">INSC EDAD H3</th>
+                                    <th scope="col">INSC EDAD M4</th>
+                                    <th scope="col">INSC EDAD H4</th>
+                                    <th scope="col">INSC EDAD M5</th>
+                                    <th scope="col">INSC EDAD H5</th>
+                                    <th scope="col">INSC EDAD M6</th>
+                                    <th scope="col">INSC EDAD H6</th>
+                                    <th scope="col">INSC EDAD M7</th>
+                                    <th scope="col">INSC EDAD H7</th>
+                                    <th scope="col">INSC EDAD M8</th>
+                                    <th scope="col">INSC EDAD H8</th>
+                                    {{-- RUBRO ESTATAL --}}
                                     <th scope="col">INSC EDAD M1</th>
                                     <th scope="col">INSC EDAD H1</th>
                                     <th scope="col">INSC EDAD L1</th>
@@ -451,6 +475,24 @@
                                         <td>{{ $datas->cgeneral }}</td>
                                         <td>{{ $datas->sector }}</td>
                                         <td>{{ $datas->mpaqueteria }}</td>
+                                        {{-- RUBRO FEDERAL --}}
+                                        <td>{{ $datas->iem1f }}</td>
+                                        <td>{{ $datas->ieh1f }}</td>
+                                        <td>{{ $datas->iem2f }}</td>
+                                        <td>{{ $datas->ieh2f }}</td>
+                                        <td>{{ $datas->iem3f }}</td>
+                                        <td>{{ $datas->ieh3f }}</td>
+                                        <td>{{ $datas->iem4f }}</td>
+                                        <td>{{ $datas->ieh4f }}</td>
+                                        <td>{{ $datas->iem5f }}</td>
+                                        <td>{{ $datas->ieh5f }}</td>
+                                        <td>{{ $datas->iem6f }}</td>
+                                        <td>{{ $datas->ieh6f }}</td>
+                                        <td>{{ $datas->iem7f }}</td>
+                                        <td>{{ $datas->ieh7f }}</td>
+                                        <td>{{ $datas->iem8f }}</td>
+                                        <td>{{ $datas->ieh8f }}</td>
+                                        {{-- RUBRO ESTATAL --}}
                                         <td>{{ $datas->iem1 }}</td>
                                         <td>{{ $datas->ieh1 }}</td>
                                         <td>{{ $datas->iel1 }}</td>
@@ -723,7 +765,7 @@
                             }
                         });
                         var numero_memo = $('#num_memo').val();
-                        
+
                         formData.append("_token", $("meta[name='csrf-token']").attr("content"));
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
@@ -817,7 +859,7 @@
                             }
                         });
                         var numero_memo = $('#num_memo').val();
-                        
+
                         formData.append("_token", $("meta[name='csrf-token']").attr("content"));
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
