@@ -331,7 +331,7 @@ class aperturaController extends Controller
                                 'muni' => $municipio->muni,
                                 'sector' => $request->sector,
                                 'programa' => $request->programa,
-                                'nota' => strtoupper($request->observaciones),
+                                'nota' => $request->observaciones,
                                 'munidad' => $request->munidad,
                                 'efisico' => $efisico,
                                 'cespecifico' => strtoupper($request->cespecifico),
