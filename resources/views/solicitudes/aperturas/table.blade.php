@@ -4,6 +4,7 @@
         <thead>
             <tr>
                 <th scope="col" class="text-center">ID</th> 
+                <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <!--<th scope="col" class="text-center" >MOTIVO</th> -->        
                 <th scope="col" class="text-center">SERVICIO</th>
@@ -31,6 +32,7 @@
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
                 <th scope="col" class="text-center">M.VALIDACIÓN</th>
+                <th scope="col" class="text-center">FECHA ARC02</th>
                 @if($opt=="ARC02")
                     <th scope="col" class="text-center" >EDIT</th>                    
                 @else
@@ -67,6 +69,7 @@
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
                         <td class="text-center"> {{ $g->id }}</td>
+                        <td class="text-center"> {{$g->fecha_arc01}}</td>
                         <td class="text-center">
                             @if($g->clave=='0')
                                 <div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></div>
@@ -115,6 +118,7 @@
                             </div>    
                         </td>
                         <td class="text-center"> {{ $g->mvalida}}</td>
+                        <td class="text-center">{{$g->fecha_arc02}}</td>
                         @if($opt == "ARC02")
                             <td class='text-center'>
                                 <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
