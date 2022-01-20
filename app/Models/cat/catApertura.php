@@ -151,9 +151,12 @@ trait catApertura
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
             ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
             ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+            ->join('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
+            ->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
+            ->where('especialidad_instructor_curso.activo', true)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino)
             ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id) as total from
 											    (select id_instructor, id from tbl_cursos
