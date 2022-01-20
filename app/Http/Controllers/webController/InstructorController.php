@@ -206,14 +206,14 @@ class InstructorController extends Controller
     {
         $instructor = new instructor();
         $getinstructor = $instructor->findOrFail($id);
-        $data2 = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        $data2 = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->ORDERBY('unidad', 'ASC')->GET();
         $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.id','localidad','muni')
                         ->WHERE('tbl_localidades.id','!=','0')
                         ->LEFTJOIN('tbl_municipios','tbl_municipios.id','=','tbl_localidades.clave_municipio')
                         ->ORDERBY('localidad','ASC')->GET();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
                         ->ORDERBY('muni','ASC')->GET();
-        $estados = DB::TABLE('estados')->SELECT('id','nombre')->GET();
+        $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
 
         // dd($municipios);
         // var_dump($data2);
@@ -553,6 +553,7 @@ class InstructorController extends Controller
         $catcursos = curso::SELECT('id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo',
                 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo')
                 ->WHERE('id_especialidad', '=', $especvalid->especialidad_id)
+                ->WHERE('estado', '=', TRUE)
                 ->orderby('nombre_curso','asc')
                 ->GET();
         $count = curso::SELECT(DB::raw("SUM(CASE WHEN id != 0 THEN 1 ELSE 0 END) as count"))
@@ -566,6 +567,7 @@ class InstructorController extends Controller
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)
                 ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
+                ->WHERE('cursos.estado', '=', TRUE)
                 ->orderby('cursos.nombre_curso','asc')
                 ->GET();
                 //   dd($listacursos);
@@ -594,6 +596,7 @@ class InstructorController extends Controller
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)
                 ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
+                ->WHERE('cursos.estado', '=', TRUE)
                 ->orderby('cursos.nombre_curso','asc')
                 ->GET();
             }
@@ -631,6 +634,7 @@ class InstructorController extends Controller
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)
                 ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
+                ->WHERE('cursos.estado', '=', TRUE)
                 ->orderby('cursos.nombre_curso','asc')
                 ->GET();
             }
@@ -845,7 +849,7 @@ class InstructorController extends Controller
         $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
         $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
         $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+        $cursos = curso::WHERE('id_especialidad', '=', $id)->WHERE('estado', '=', TRUE)->ORDERBY('nombre_curso', 'ASC')->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
         $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
         return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
     }
