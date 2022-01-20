@@ -175,17 +175,22 @@ class turnarAperturaController extends Controller
    
     public function pdfARC01(Request $request){
         if($request->fecha AND $request->memo){        
-            $fecha_memo =  $request->fecha;
+            //$fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
-            $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
+            //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
-                'motivo','cp','ze','tcapacitacion','tipo_curso');                
+                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01');                
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
                 
-            if(count($reg_cursos)>0){     
+            if(count($reg_cursos)>0){   
+                if (!$reg_cursos[0]->fecha_arc01) {
+                    $result = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->update(['fecha_arc01'=>$request->fecha]);
+                }  
+                $fecha_memo = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->pluck('fecha_arc01')->first();
+                $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
                 $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');
                 if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);                            
@@ -200,16 +205,21 @@ class turnarAperturaController extends Controller
     
     public function pdfARC02(Request $request) { 
         if($request->fecha AND $request->memo){      
-            $fecha_memo =  $request->fecha;
+            //$fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
-            $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
+            //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
-                'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso');
+                'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02');
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
             $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
                 
             if(count($reg_cursos)>0){
+                if (!$reg_cursos[0]->fecha_arc02) {
+                    $result = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->update(['fecha_arc02'=>$request->fecha]);
+                }  
+                $fecha_memo = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->pluck('fecha_arc02')->first();
+                $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
                // var_dump($instituto);exit;
 
