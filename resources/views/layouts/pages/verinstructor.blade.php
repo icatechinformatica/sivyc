@@ -195,8 +195,8 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputmunicipio">Municipio</label>
-                        <select class="form-control" name="municipio" id="municipio" onchange="local()" disabled>
-                            <option value="sin especificar">Sin Especificar</option>
+                        <select class="form-control" name="municipio" id="municipio" onchange="local()" disabled required>
+                            <option value="">Sin Especificar</option>
                             @foreach ($municipios as $item)
                                 <option value="{{$item->id}}" @if($datains->municipio == $item->muni) selected @endif>{{$item->muni}}</option>
                             @endforeach
@@ -208,9 +208,9 @@
                     </div>-->
                     <div class="form-group col-md-3">
                         <label for="inputmunicipio">Localidad</label>
-                        <select class="form-control" name="localidad" id="localidad" disabled>
+                        <select class="form-control" name="localidad" id="localidad" disabled required>
                             @if ($localidades == NULL)
-                                <option value="sin especificar">SELECCIONE</option>
+                                <option value="">SELECCIONE</option>
                             @else
                                 <option value="{{$localidades->clave}}">{{$localidades->localidad}}</option>
                             @endif

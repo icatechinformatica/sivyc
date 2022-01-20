@@ -548,7 +548,7 @@ class InstructorController extends Controller
         $especvalid = especialidad_instructor::WHERE('id', '=', $id)->FIRST();
         $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
         $data_pago = criterio_pago::ALL();
-        $data_unidad = tbl_unidades::ALL();
+        $data_unidad = tbl_unidades::WHERE('id', '!=', 0)->orderBy('unidad', 'ASC')->GET();
         $nomesp = especialidad::ALL();
         $catcursos = curso::SELECT('id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo',
                 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo')
