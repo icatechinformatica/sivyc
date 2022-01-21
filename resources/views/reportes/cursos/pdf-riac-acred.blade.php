@@ -18,7 +18,7 @@
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         .tab{ margin-left: 10px; margin-right: 50px;}
         .tab1{ margin-left: 10px; margin-right:28px; }
-        .tab2{ margin-left: 3px; margin-right: 12px;}
+        .tab2{ margin-left: 3px; margin-right: 0px;}
 
      </style>
 </head>
@@ -52,7 +52,7 @@
                 DURACI&Oacute;N EN HORAS: <span class="tab2">{{ $curso->dura }}</span>
                 GRUPO: <span class="tab2">{{ $curso->grupo }}</span>
                 HORARIO: <span class="tab2"><small>{{ $curso->dia}} </small> {{ $curso->hini }} A {{ $curso->hfin }}</span>
-                CURP: &nbsp;&nbsp;{{ $curso->curp}}
+                <br>CURP: <span class="tab2">{{ $curso->curp}}</span>
                 CONVENIO REALIZADO CON: <span class="tab1">{{ $curso->depen}}</span>
             </div>
      </header>
