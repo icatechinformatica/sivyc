@@ -206,7 +206,7 @@
                             <caption>CURSOS VALIDADOS PARA ENVIAR A LA DIRECCIÓN DE PLANEACIÓN</caption>
                             <thead class="thead-dark">
                                 <tr align="center">
-                                    <th scope="col" colspan="60">GENERAL</th>
+                                    <th scope="col" colspan="61">GENERAL</th>
                                     <th scope="col" colspan="16" style="background-color: #621032;">FEDERAL</th>
                                     <th scope="col" colspan="18" style="background-color: #AF9A5A;">ESTATAL</th>
                                     <th scope="col" colspan="85">GENERAL</th>
@@ -274,6 +274,7 @@
                                     <th scope="col">CONVENIO GENERAL</th>
                                     <th scope="col">CONV SEC PUB O PRIV</th>
                                     <th scope="col">VALIDACION PAQUETERIA</th>
+                                    <th scope="col">GRUPO VULNERABLE</th>
                                     {{-- RUBRO FEDERAL--}}
                                     <th scope="col">INSC EDAD M1</th>
                                     <th scope="col">INSC EDAD H1</th>
@@ -486,6 +487,11 @@
                                         <td>{{ $datas->cgeneral }}</td>
                                         <td>{{ $datas->sector }}</td>
                                         <td>{{ $datas->mpaqueteria }}</td>
+                                        @if ($datas->grupo != NULL)
+                                            <td>{{ $datas->grupo }}</td>
+                                        @else
+                                            <td>NINGUNO</td>
+                                        @endif
                                         {{-- RUBRO FEDERAL --}}
                                         <td>{{ $datas->iem1f }}</td>
                                         <td>{{ $datas->ieh1f }}</td>
