@@ -97,9 +97,11 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
+        // dd('hola');
         $userId = Auth::user()->id;
 
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
+        // dd($verify);
         if(is_null($verify) == TRUE)
         {
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
@@ -197,7 +199,8 @@ class InstructorController extends Controller
         }
         else
         {
-            $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos.";
+            $clave_instructor = instructor::WHERE('curp', '=', $request->curp)->VALUE('numero_control');
+            $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos al instructor con clave ".$clave_instructor.".";
             return redirect('/instructor/crear')->withErrors($mensaje);
         }
     }
@@ -666,6 +669,7 @@ class InstructorController extends Controller
             $espec_mod->activo = FALSE;
         }
         $espec_mod->lastUserId = $userId;
+        $espec_mod->id_instructor = $request->idins;
         $espec_mod->save();
         $espe = $espec_mod->especialidad_id;
         // $idespval = $espec_mod->id;
@@ -869,6 +873,7 @@ class InstructorController extends Controller
         $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
         $espec_save->lastUserId = $userId;
         $espec_save->activo = TRUE;
+        $espec_save->id_instructor = $request->idInstructor;
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
         $especialidadInstrcutorId = $espec_save->id;

@@ -346,10 +346,12 @@ function dataFormatoT($unidad, $status, $fecha) {
             ),
 
             DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces"),
+            'gv.grupo'
         )
         ->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
         ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
+        ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')
         ->WHERE('u.ubicacion', '=', $unidad)
         ->WHEREIN('c.status', $status)
         ->WHERE('c.status_curso', '=', 'AUTORIZADO')
@@ -385,7 +387,8 @@ function dataFormatoT($unidad, $status, $fecha) {
             'c.mpaqueteria',
             'c.mexoneracion',
             'c.nota',
-            'm.region'
+            'm.region',
+            'gv.grupo'
         )
         ->distinct()
         ->get();
@@ -759,7 +762,8 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
                 ? DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces")
                 : ($status == 'REVISION_DTA'
                     ? DB::raw("c.observaciones_formato_t->'OBSERVACIONES_REVISION_DIRECCION_DTA'->>'OBSERVACION_REVISION_JEFE_DTA' AS observaciones_enlaces")
-                    : DB::raw("c.observaciones_formato_t->'OBSERVACION_DIRECCIONDTA_TO_PLANEACION'->>'OBSERVACION_ENVIO_PLANEACION' AS observacion_envio_to_planeacion"))
+                    : DB::raw("c.observaciones_formato_t->'OBSERVACION_DIRECCIONDTA_TO_PLANEACION'->>'OBSERVACION_ENVIO_PLANEACION' AS observacion_envio_to_planeacion")),
+            'gv.grupo'
         )
         // ->JOIN('instructores as i', 'c.id_instructor', '=', 'i.id')
         // ->JOIN('instructor_perfil as ip', 'i.id', '=', 'ip.numero_control')
@@ -776,6 +780,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
         // ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
         ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
+        ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')
         ->whereMonth('c.fecha_turnado', $mesSearch) // new
         ->WHERE('c.status', '=', $status) // new
         ->WHERE('c.status_curso', '=', 'AUTORIZADO')
@@ -817,6 +822,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             // 'ip.grado_profesional',
             // 'ip.estatus',
             'm.region',
+            'gv.grupo'
         )
         ->distinct();
 
