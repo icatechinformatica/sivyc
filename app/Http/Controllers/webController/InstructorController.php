@@ -886,28 +886,38 @@ class InstructorController extends Controller
 
         foreach ($listacursos as $cadwell)
         {
-            // print('qhe ' . $cadwell->id . ' **** ');
-            foreach ($request->itemAdd as $key=>$new)
+            if($request->itemAdd != NULL)
             {
-                // print('ahi va '. $new['check_cursos']. ' -_-_- ');
-                if($cadwell->id == $new['check_cursos'])
+            // print('qhe ' . $cadwell->id . ' **** ');
+                foreach ($request->itemAdd as $key=>$new)
                 {
-                    // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                    DB::table('especialidad_instructor_curso')
-                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
-                                  'curso_id' => $cadwell->id,
-                                  'activo' => TRUE]);
-                    break;
+                    // print('ahi va '. $new['check_cursos']. ' -_-_- ');
+                    if($cadwell->id == $new['check_cursos'])
+                    {
+                        // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                        DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => TRUE]);
+                        break;
+                    }
+                    else if(array_key_last($request->itemAdd) == $key)
+                    {
+                        // print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                        DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => FALSE]);
+                        break;
+                    }
                 }
-                else if(array_key_last($request->itemAdd) == $key)
-                {
-                    // print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                    DB::table('especialidad_instructor_curso')
-                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
-                                  'curso_id' => $cadwell->id,
-                                  'activo' => FALSE]);
-                    break;
-                }
+            }
+            else
+            {
+                DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => FALSE]);
             }
         }
         //dd($especialidadInstrcutorId);
