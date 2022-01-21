@@ -512,6 +512,9 @@ class aperturaController extends Controller
                         }elseif ($temp2 && (($temp2+1)==$value)) {
                             $temp2 = $value;
                             $save = false;
+                        }elseif (($temp == '6')&&($value=='0')) {
+                            $temp2 = $value;
+                            $save = false;
                         }else {
                             $save = true;
                         }
@@ -531,6 +534,10 @@ class aperturaController extends Controller
                         $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
                     }elseif (($item[0]+1)==($item[1])) {
                         $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                    }elseif (($item[0]=='6')&&($item[1]=='0')) {
+                        $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                    }elseif($item[1] && ($item[0] > $item[1])){
+                        $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
                     }else {
                         $dias_a[] = $this->dia($item[0]);
                     }
@@ -951,6 +958,9 @@ class aperturaController extends Controller
                     }elseif ($temp2 && (($temp2+1)==$value)) {
                         $temp2 = $value;
                         $save = false;
+                    }elseif (($temp == '6')&&($value=='0')) {
+                        $temp2 = $value;
+                        $save = false;
                     }else {
                         $save = true;
                     }
@@ -970,6 +980,10 @@ class aperturaController extends Controller
                     $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
                 }elseif (($item[0]+1)==($item[1])) {
                     $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                }elseif (($item[0]=='6')&&($item[1]=='0')) {
+                    $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                }elseif($item[1] && ($item[0] > $item[1])){
+                    $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
                 }else {
                     $dias_a[] = $this->dia($item[0]);
                 }
