@@ -558,12 +558,16 @@ class aperturaController extends Controller
                 $dias_a = 0;
             }
         $total_dias = DB::table('agenda')
-            ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval)) as dias"))
+            ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
             ->pluck('dias');
-            $tdias = 0;
-            foreach ($total_dias as $tdia) {
-                $tdias += 1;
+            $tdias = 1;
+            foreach ($total_dias as $key => $value) {
+                if ($key > 0) {
+                    if ($value != $total_dias[$key-1]) {
+                        $tdias += 1;
+                    }
+                }
             }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
         return response()->json($id);
@@ -1001,12 +1005,16 @@ class aperturaController extends Controller
             }
             $dias_a = implode(", ", $dias_a);
         $total_dias = DB::table('agenda')
-            ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval)) as dias"))
+            ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
             ->pluck('dias');
-            $tdias = 0;
-            foreach ($total_dias as $tdia) {
-                $tdias += 1;
+            $tdias = 1;
+            foreach ($total_dias as $key => $value) {
+                if ($key > 0) {
+                    if ($value != $total_dias[$key-1]) {
+                        $tdias += 1;
+                    }
+                }
             }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
     }
