@@ -155,8 +155,8 @@ trait catApertura
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
-            ->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
-            ->where('especialidad_instructor_curso.activo', true)
+            //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
+            //->where('especialidad_instructor_curso.activo', true)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino)
             ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id) as total from
 											    (select id_instructor, id from tbl_cursos
@@ -601,7 +601,7 @@ trait catApertura
         }
         //CRITERIO UNIDADES
         if ($tipo_curso == 'PRESENCIAL') {
-            $instructores = $instructores->whereJsonContains('instructores.unidades_disponible',$unidad);
+            //$instructores = $instructores->whereJsonContains('instructores.unidades_disponible',$unidad);
             /*$validos= DB::table('agenda')->select('agenda.id_instructor')
                                      ->join('instructores','agenda.id_instructor','=','instructores.id')
                                      ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
