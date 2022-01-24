@@ -51,7 +51,7 @@
                 FECHA TERMINO: <span class="tab2"> {{ $curso->fechafin }}</span>
                 DURACI&Oacute;N EN HORAS: <span class="tab2">{{ $curso->dura }}</span>
                 GRUPO: <span class="tab2">{{ $curso->grupo }}</span>
-                HORARIO: <span class="tab2"><small>{{ $curso->dia}} </small> {{ $curso->hini }} A {{ $curso->hfin }}</span>
+                HORARIO: <span class="tab2">{{ $curso->hini }} A {{ $curso->hfin }}</span>
                 <br>CURP: <span class="tab2">{{ $curso->curp}}</span>
                 CONVENIO REALIZADO CON: <span class="tab1">{{ $curso->depen}}</span>
             </div>

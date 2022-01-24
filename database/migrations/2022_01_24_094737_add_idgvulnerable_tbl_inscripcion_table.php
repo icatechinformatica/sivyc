@@ -14,7 +14,7 @@ class AddIdgvulnerableTblInscripcionTable extends Migration
     public function up()
     {
         Schema::table('tbl_inscripcion', function (Blueprint $table) {
-            $table->bigInteger('id_gvulnerable')->nullable();
+            $table->jsonb('id_gvulnerable')->nullable();
         });
     }
 

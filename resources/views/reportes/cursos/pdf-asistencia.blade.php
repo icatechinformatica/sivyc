@@ -88,7 +88,7 @@
                                 <br />
                                 FECHA INICIO: <span class="tab1"> {{ $curso->fechaini }}</span>
                                 FECHA TERMINO: <span class="tab1"> {{ $curso->fechafin }}</span>
-                                HORARIO: <span class="tab2"><small> {{ $curso->dia}} </small>DE {{ $curso->hini }} A {{ $curso->hfin }}</span>
+                                HORARIO: <span class="tab2"> {{ $curso->hini }} A {{ $curso->hfin }}</span>
                                 CURP: &nbsp;&nbsp;{{ $curso->curp}}
                             </div>
 
