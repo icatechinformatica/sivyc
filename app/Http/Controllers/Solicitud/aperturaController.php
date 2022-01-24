@@ -120,7 +120,11 @@ class aperturaController extends Controller
                 $plantel = $this->plantel();
 
                 if($grupo->organismo_publico AND $grupo->mod=='CAE'){
-                    $convenio_t = DB::table('convenios')->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))->where('institucion',$grupo->organismo_publico)->where('activo','true')->first();
+                    $convenio_t = DB::table('convenios')
+                        ->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
+                        ->where(db::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$grupo->termino)
+                        ->where('institucion',$grupo->organismo_publico)
+                        ->where('activo','true')->first();
                     $convenio = [];
                     if ($convenio_t) {
                         foreach ($convenio_t as $key=>$value) {
