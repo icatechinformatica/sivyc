@@ -91,7 +91,10 @@ class InstructorController extends Controller
     #----- instructor/crear -----#
     public function crear_instructor()
     {
-        return view('layouts.pages.frminstructor');
+        $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
+        $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
+
+        return view('layouts.pages.frminstructor', compact('lista_civil','estados'));
     }
 
     #----- instructor/guardar -----#
@@ -105,6 +108,9 @@ class InstructorController extends Controller
         if(is_null($verify) == TRUE)
         {
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+            $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
+            $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
+            $locali = DB::TABLE('tbl_localidades')->SELECT('localidad');
             $saveInstructor = new instructor();
             if ($uid['id'] === null) {
                 # si es nulo entra una vez y se le asigna un valor
@@ -121,10 +127,21 @@ class InstructorController extends Controller
             $saveInstructor->apellidoPaterno = trim($request->apellido_paterno);
             $saveInstructor->apellidoMaterno = trim($request->apellido_materno);
             $saveInstructor->curp = trim($request->curp);
+            $saveInstructor->rfc = $request->rfc;
+            $saveInstructor->folio_ine = $request->folio_ine;
+            $saveInstructor->sexo = $request->sexo;
+            $saveInstructor->estado_civil = $request->estado_civil;
+            $saveInstructor->fecha_nacimiento = $request->fecha_nacimientoins;
+            $saveInstructor->entidad = $estado->nombre;
+            $saveInstructor->municipio = $munic->muni;
+            $saveInstructor->clave_loc = $request->localidad;
+            $saveInstructor->localidad = $locali->localidad;
+            $saveInstructor->domicilio = $request->domicilio;
+            $saveInstructor->telefono = $request->telefono;
+            $saveInstructor->correo = $request->correo;
             $saveInstructor->banco = $request->banco;
             $saveInstructor->interbancaria = $request->clabe;
             $saveInstructor->no_cuenta = $request->numero_cuenta;
-            $saveInstructor->domicilio = $request->domicilio;
             $saveInstructor->numero_control = "Pendiente";
             $saveInstructor->status = "En Proceso";
             $saveInstructor->lastUserId = $userId;
