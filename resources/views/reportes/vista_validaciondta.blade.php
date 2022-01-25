@@ -87,13 +87,13 @@
                 {{ $errors->first() }}
             </div>
         @endif
-        
+
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
         @endif
-        
+
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -132,7 +132,7 @@
                 </div>
             </div>
         </div>
-        
+
         <hr style="border-color:dimgray">
         @if (count($cursos_validar) > 0)
             <form action="{{ route('reportes.formatot.enlaces.unidad.xls') }}" method="POST">
@@ -214,6 +214,12 @@
                             <caption>CURSOS VALIDADOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA</caption>
                             <thead class="thead-dark">
                                 <tr align="center">
+                                    <th scope="col" colspan="63">GENERAL</th>
+                                    <th scope="col" colspan="16" style="background-color: #621032;">FEDERAL</th>
+                                    <th scope="col" colspan="18" style="background-color: #AF9A5A;">ESTATAL</th>
+                                    <th scope="col" colspan="85">GENERAL</th>
+                                </tr>
+                                <tr align="center">
                                     <th scope="col">N°</th>
                                     <th scope="col">SELECCIONAR &nbsp;
                                         <input type="checkbox" id="selectAll" />
@@ -278,6 +284,24 @@
                                     <th scope="col">CONVENIO GENERAL</th>
                                     <th scope="col">CONV SEC PUB O PRIV</th>
                                     <th scope="col">VALIDACION PAQUETERIA</th>
+                                    {{-- RUBRO FEDERAL--}}
+                                    <th scope="col">INSC EDAD M1</th>
+                                    <th scope="col">INSC EDAD H1</th>
+                                    <th scope="col">INSC EDAD M2</th>
+                                    <th scope="col">INSC EDAD H2</th>
+                                    <th scope="col">INSC EDAD M3</th>
+                                    <th scope="col">INSC EDAD H3</th>
+                                    <th scope="col">INSC EDAD M4</th>
+                                    <th scope="col">INSC EDAD H4</th>
+                                    <th scope="col">INSC EDAD M5</th>
+                                    <th scope="col">INSC EDAD H5</th>
+                                    <th scope="col">INSC EDAD M6</th>
+                                    <th scope="col">INSC EDAD H6</th>
+                                    <th scope="col">INSC EDAD M7</th>
+                                    <th scope="col">INSC EDAD H7</th>
+                                    <th scope="col">INSC EDAD M8</th>
+                                    <th scope="col">INSC EDAD H8</th>
+                                    {{-- RUBRO ESTATAL --}}
                                     <th scope="col">INSC EDAD M1</th>
                                     <th scope="col">INSC EDAD H1</th>
                                     <th scope="col">INSC EDAD L1</th>
@@ -488,6 +512,29 @@
                                         <td>{{ $datas->cgeneral }}</td>
                                         <td>{{ $datas->sector }}</td>
                                         <td>{{ $datas->mpaqueteria }}</td>
+                                        @if ($datas->grupo != NULL)
+                                            <td>{{ $datas->grupo }}</td>
+                                        @else
+                                            <td>NINGUNO</td>
+                                        @endif
+                                        {{-- RUBRO FEDERAL --}}
+                                        <td>{{ $datas->iem1f }}</td>
+                                        <td>{{ $datas->ieh1f }}</td>
+                                        <td>{{ $datas->iem2f }}</td>
+                                        <td>{{ $datas->ieh2f }}</td>
+                                        <td>{{ $datas->iem3f }}</td>
+                                        <td>{{ $datas->ieh3f }}</td>
+                                        <td>{{ $datas->iem4f }}</td>
+                                        <td>{{ $datas->ieh4f }}</td>
+                                        <td>{{ $datas->iem5f }}</td>
+                                        <td>{{ $datas->ieh5f }}</td>
+                                        <td>{{ $datas->iem6f }}</td>
+                                        <td>{{ $datas->ieh6f }}</td>
+                                        <td>{{ $datas->iem7f }}</td>
+                                        <td>{{ $datas->ieh7f }}</td>
+                                        <td>{{ $datas->iem8f }}</td>
+                                        <td>{{ $datas->ieh8f }}</td>
+                                        {{-- RUBRO ESTATAL --}}
                                         <td>{{ $datas->iem1 }}</td>
                                         <td>{{ $datas->ieh1 }}</td>
                                         <td>{{ $datas->iel1 }}</td>
@@ -660,7 +707,7 @@
             $.validator.addMethod('filesize', function(value, element, param) {
                 return this.optional(element) || (element.files[0].size <= param)
             }, 'El TAMAÑO DEL ARCHIVO DEBE SER MENOR A {0} bytes.');
-            
+
             $('#enviardta').click(function() {
                 var cursosChecked = new Array();
                 // var comentario_retorno = new Array();
@@ -676,7 +723,7 @@
                             '<input type="hidden" name="comentarios_enlaces[]" id="comentarios_enlaces" value="' +
                             this.value + '">';
                         $(wrapperEnlaceDta).append(fieldHtml); // Add field html
-                        // comentario_retorno.push(this.value);   
+                        // comentario_retorno.push(this.value);
                     }
                 });
                 $('.modal-body #numero_memo_devolucion').val(numMemo);

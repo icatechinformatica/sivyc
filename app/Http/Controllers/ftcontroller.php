@@ -47,48 +47,61 @@ class ftcontroller extends Controller {
 
             $var_cursos = dataFormatoT($_SESSION['unidad'], ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
             foreach ($var_cursos as $value) {
-                $inscritosEdad = $value->iem1 + $value->ieh1 + $value->iel1 +
-                                $value->iem2 + $value->ieh2 + $value->iel2 +
-                                $value->iem3 + $value->ieh3 + $value->iel3 +
-                                $value->iem4 + $value->ieh4 + $value->iel4 +
-                                $value->iem5 + $value->ieh5 + $value->iel5 +
-                                $value->iem6 + $value->ieh6 + $value->iel6;
 
-                $inscritosEsc = $value->iesm1 + $value->iesh1 + $value->iesl1 +
-                                $value->iesm2 + $value->iesh2 + $value->iesl2 +
-                                $value->iesm3 + $value->iesh3 + $value->iesl3 +
-                                $value->iesm4 + $value->iesh4 + $value->iesl4 +
-                                $value->iesm5 + $value->iesh5 + $value->iesl5 +
-                                $value->iesm6 + $value->iesh6 + $value->iesl6 +
-                                $value->iesm7 + $value->iesh7 + $value->iesl7 +
-                                $value->iesm8 + $value->iesh8 + $value->iesl8 +
-                                $value->iesm9 + $value->iesh9 + $value->iesl9;
+                //--- RUBRO FEDERAL ---
+                $inscritosEdadFederal = $value->iem1f + $value->ieh1f +
+                                        $value->iem2f + $value->ieh2f +
+                                        $value->iem3f + $value->ieh3f +
+                                        $value->iem4f + $value->ieh4f +
+                                        $value->iem5f + $value->ieh5f +
+                                        $value->iem6f + $value->ieh6f +
+                                        $value->iem7f + $value->ieh7f +
+                                        $value->iem8f + $value->ieh8f;
 
-                $acreditadosEsc = $value->aesm1 + $value->aesh1 + $value->aesl1 +
-                                $value->aesm2 + $value->aesh2 + $value->aesl2 +
-                                $value->aesm3 + $value->aesh3 + $value->aesl3 +
-                                $value->aesm4 + $value->aesh4 + $value->aesl4 +
-                                $value->aesm5 + $value->aesh5 + $value->aesl5 +
-                                $value->aesm6 + $value->aesh6 + $value->aesl6 +
-                                $value->aesm7 + $value->aesh7 + $value->aesl7 +
-                                $value->aesm8 + $value->aesh8 + $value->aesl8 +
-                                $value->aesm9 + $value->aesh9 + $value->aesl9;
+                //-- RUBRO ESTATAL ---
+                $inscritosEdad = $value->iem1 + $value->ieh1 + //$value->iel1 +
+                                $value->iem2 + $value->ieh2 + //$value->iel2 +
+                                $value->iem3 + $value->ieh3 + //$value->iel3 +
+                                $value->iem4 + $value->ieh4 + //$value->iel4 +
+                                $value->iem5 + $value->ieh5 + //$value->iel5 +
+                                $value->iem6 + $value->ieh6; //+ $value->iel6;
 
-                $desertoresEsc = $value->naesm1 + $value->naesh1 + $value->naesl1  +
-                                $value->naesm2 + $value->naesh2 + $value->naesl2 +
-                                $value->naesm3 + $value->naesh3 + $value->naesl3 +
-                                $value->naesm4 + $value->naesh4 + $value->naesl4 +
-                                $value->naesm5 + $value->naesh5 + $value->naesl5 +
-                                $value->naesm6 + $value->naesh6 + $value->naesl6 +
-                                $value->naesm7 + $value->naesh7 + $value->naesl7 +
-                                $value->naesm8 + $value->naesh8 + $value->naesl8 +
-                                $value->naesm9 + $value->naesh9 + $value->naesl9;
+                $inscritosEsc = $value->iesm1 + $value->iesh1 + //$value->iesl1 +
+                                $value->iesm2 + $value->iesh2 + //$value->iesl2 +
+                                $value->iesm3 + $value->iesh3 + //$value->iesl3 +
+                                $value->iesm4 + $value->iesh4 + //$value->iesl4 +
+                                $value->iesm5 + $value->iesh5 + //$value->iesl5 +
+                                $value->iesm6 + $value->iesh6 + //$value->iesl6 +
+                                $value->iesm7 + $value->iesh7 + //$value->iesl7 +
+                                $value->iesm8 + $value->iesh8 + //$value->iesl8 +
+                                $value->iesm9 + $value->iesh9; //+ $value->iesl9;
 
-                $sumaHM = $value->ihombre + $value->imujer + $value->ilgbt;
+                $acreditadosEsc = $value->aesm1 + $value->aesh1 + //$value->aesl1 +
+                                $value->aesm2 + $value->aesh2 + //$value->aesl2 +
+                                $value->aesm3 + $value->aesh3 + //$value->aesl3 +
+                                $value->aesm4 + $value->aesh4 + //$value->aesl4 +
+                                $value->aesm5 + $value->aesh5 + //$value->aesl5 +
+                                $value->aesm6 + $value->aesh6 + //$value->aesl6 +
+                                $value->aesm7 + $value->aesh7 + //$value->aesl7 +
+                                $value->aesm8 + $value->aesh8 + //$value->aesl8 +
+                                $value->aesm9 + $value->aesh9; //+ $value->aesl9;
+
+                $desertoresEsc = $value->naesm1 + $value->naesh1 + //$value->naesl1  +
+                                $value->naesm2 + $value->naesh2 + //$value->naesl2 +
+                                $value->naesm3 + $value->naesh3 + //$value->naesl3 +
+                                $value->naesm4 + $value->naesh4 + //$value->naesl4 +
+                                $value->naesm5 + $value->naesh5 + //$value->naesl5 +
+                                $value->naesm6 + $value->naesh6 + //$value->naesl6 +
+                                $value->naesm7 + $value->naesh7 + //$value->naesl7 +
+                                $value->naesm8 + $value->naesh8 + //$value->naesl8 +
+                                $value->naesm9 + $value->naesh9; //+ $value->naesl9;
+
+                $sumaHM = $value->ihombre + $value->imujer; //+ $value->ilgbt;
                 $sumaED = $value->egresado + $value->desertado;
                 $sumaEmDe = $value->empleado + $value->desempleado;
-                $sumaEgresados = $value->emujer + $value->ehombre + $value->elgbt;
+                $sumaEgresados = $value->emujer + $value->ehombre; //+ $value->elgbt;
 
+                $value->inscritosEdadFederal = $inscritosEdadFederal;
                 $value->inscritosEdad = $inscritosEdad;
                 $value->inscritosEsc = $inscritosEsc;
                 $value->acreditadosEsc = $acreditadosEsc;
@@ -560,6 +573,14 @@ class ftcontroller extends Controller {
             'EGRESADOS', 'EGRESADOS FEMENINO', 'EGRESADO MASCULINO', 'EGRESADO LGBTTTI+', 'DESERCION', 'COSTO TOTAL DEL CURSO POR PERSONA', 'INGRESO TOTAL', 'EXONERACION MUJERES', 'EXONERACION HOMBRES', 'EXONERACION LGBTTTI+', 'REDUCCION CUOTA MUJERES', 'REDUCCION CUOTA HOMBRES', 'REDUCCION CUOTA LGBTTTI+', 'NUMERO DE CONVENIO ESPECIFICO', 'MEMO DE VALIDACION DEL CURSO', 'ESPACIO FISICO',
             'NOMBRE DEL INSTRUCTOR', 'ESCOLARIDAD DEL INSTRUCTOR', 'STATUS', 'SEXO', 'MEMO DE VALIDACION', 'MEMO DE AUTORIZACION DE EXONERACION', 'EMPLEADOS', 'DESEMPLEADOS', 'DISCAPACITADOS',  'MIGRANTES',
             'INDIGENA', 'ETNIA', 'PROGRAMA ESTRATEGICO', 'MUNICIPIO', 'ZE', 'REGION', 'DEPENDENCIA BENEFICIADA', 'CONVENIO GENERAL', 'CONVENIO CON EL SECTOR PUBLICO O PRIVADO', 'MEMO DE VALIDACION DE PAQUETERIA',
+            'FEDERAL INSCRITOS EDAD-1 MUJERES', 'FEDERAL INSCRITOS EDAD-1 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-2 MUJERES', 'FEDERAL INSCRITOS EDAD-2 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-3 MUJERES', 'FEDERAL INSCRITOS EDAD-3 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-4 MUJERES', 'FEDERAL INSCRITOS EDAD-4 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-5 MUJERES', 'FEDERAL INSCRITOS EDAD-5 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-6 MUJERES', 'FEDERAL INSCRITOS EDAD-6 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-7 MUJERES', 'FEDERAL INSCRITOS EDAD-7 HOMBRES',
+            'FEDERAL INSCRITOS EDAD-8 MUJERES', 'FEDERAL INSCRITOS EDAD-8 HOMBRES',
             'INSCRITOS EDAD-1 MUJERES', 'INSCRITOS EDAD-1 HOMBRES', 'INSCRITOS EDAD-1 LGBTTTI+',
             'INSCRITOS EDAD-2 MUJERES', 'INSCRITOS EDAD-2 HOMBRES', 'INSCRITOS EDAD-2 LGBTTTI+',
             'INSCRITOS EDAD-3 MUJERES', 'INSCRITOS EDAD-3 HOMBRES', 'INSCRITOS EDAD-3 LGBTTTI+',

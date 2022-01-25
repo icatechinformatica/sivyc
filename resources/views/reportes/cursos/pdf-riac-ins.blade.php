@@ -4,22 +4,22 @@
      <style>
         body{font-family: sans-serif;}
         @page { margin: 200px 25px 180px 25px; }
-        header { position: fixed; left: 0px; top: -190px; right: 0px; height: 190px; text-align: center; }        
-        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}       
+        header { position: fixed; left: 0px; top: -190px; right: 0px; height: 190px; text-align: center; }
+        header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
         header #tipo{ margin-top: 10px; text-align: center; font-size: 10px;}
         header #curso{ margin-top: 8px; font-size: 8px; border: 1px solid gray; padding: 8px; line-height: 18px;}
         footer { position: fixed; left: 0px; right: 0px; height: 600px; top: 0px;}
         footer .page:after { content: counter(page, sans-serif);}
-        
+
         .cuadro{ border: 1px solid black; width: 50px; padding: 10px;}
         #curso {text-align: left; }
         #curso b{margin-left: 10px; margin-right: 50px;}
-        .tabla { border-collapse: collapse; width: 100%;}        
+        .tabla { border-collapse: collapse; width: 100%;}
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         .tab{ margin-left: 10px; margin-right: 50px;}
         .tab1{ margin-left: 10px; margin-right:28px; }
-        .tab2{ margin-left: 3px; margin-right: 12px;}       
-        
+        .tab2{ margin-left: 3px; margin-right: 0px;}
+
      </style>
 </head>
 <body>
@@ -28,7 +28,7 @@
             <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
             <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
             <h6>REGISTRO DE INSCRIPCI&Oacute;N, ACREDITACI&Oacute;N Y CERTIFICACI&Oacute;N</h6>
-            <h6>(RIACD-02)</h6>        
+            <h6>(RIACD-02)</h6>
             <div id="tipo">
                 EXT: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="EXT"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;</span>&nbsp;
                 CAE: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="CAE"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;</span>&nbsp;
@@ -51,54 +51,53 @@
                 FECHA TERMINO: <span class="tab2"> {{ $curso->fechafin }}</span>
                 DURACI&Oacute;N EN HORAS: <span class="tab2">{{ $curso->dura }}</span>
                 GRUPO: <span class="tab2">{{ $curso->grupo }}</span>
-                HORARIO: &nbsp;&nbsp;{{ $curso->dia}} DE {{ $curso->hini }} A {{ $curso->hfin }}
-                <br />
-                CURP: <span class="tab1">{{ $curso->curp}}</span>
-                CONVENIO REALIZADO CON: <span class="tab1">{{ $curso->depen}}</span>                
+                HORARIO:<span class="tab2">{{ $curso->hini }} A {{ $curso->hfin }}</span>
+                CURP: &nbsp;&nbsp;{{ $curso->curp}}
+                CONVENIO REALIZADO CON: <span class="tab1">{{ $curso->depen}}</span>
             </div>
      </header>
      <footer>
-        <table class="tabla" width="100%" >       
+        <table class="tabla" width="100%" >
             <tbody>
                 <tr>
-                    <th height="440px" colspan="2" style="border-bottom: white;">&nbsp;</th>                    
+                    <th height="440px" colspan="2" style="border-bottom: white;">&nbsp;</th>
                     <th height="440px" colspan="4" style="border-bottom: white;">&nbsp;</th>
                 </tr>
                 <tr>
-                    <th colspan="2" style="border-bottom: white;">INSCRIPCI&Oacute;N</th>                    
+                    <th colspan="2" style="border-bottom: white;">INSCRIPCI&Oacute;N</th>
                     <th colspan="4" style="border-bottom: white;">ACREDITACI&Oacute;N / CERTIFICACI&Oacute;N</th>
                 </tr>
                 <tr>
-                    <td width="300px" style=" border-right: white;">                       
-                        <br /><br /><br /><br /><br /><br />                                                
-                        C. {{ $curso->dunidad }}                                               
+                    <td width="300px" style=" border-right: white;">
+                        <br /><br /><br /><br /><br /><br />
+                        C. {{ $curso->dunidad }}
                         <hr width="250px" />
                         NOMBRE Y FIRMA DEL {{ $curso->pdunidad }}
-                        <br /><br /><br />                                                                        
+                        <br /><br /><br />
                     </td>
-                    <td width="92px"><br /><br /><br /><br /><br /><br />SELLO </td>                    
-                    <td style=" border-right: white;">                        
-                        <br /><br /><br /><br /><br /><br />                        
+                    <td width="92px"><br /><br /><br /><br /><br /><br />SELLO </td>
+                    <td style=" border-right: white;">
+                        <br /><br /><br /><br /><br /><br />
                         C. {{ $curso->dunidad }}
                         <hr width="220px" />
-                        NOMBRE Y FIRMA DEL {{ $curso->pdunidad }} 
+                        NOMBRE Y FIRMA DEL {{ $curso->pdunidad }}
                         <br /><br /><br />
                     </td>
                      <td width="50px" style=" border-right: white;"><br /><br /><br /><br /><br /><br />SELLO </td>
-                     <td style=" border-right: white;">                        
-                        <br /><br /><br /><br /><br /><br />                        
+                     <td style=" border-right: white;">
+                        <br /><br /><br /><br /><br /><br />
                         C. {{ $curso->dgeneral }}
                         <hr width="220px" />
                         NOMBRE Y FIRMA DEL {{ $curso->pdgeneral }}
                         <br /><br /><br />
-                    </td>  
-                     <td width="55px"><br /><br /><br /><br /><br /><br />SELLO </td>                                                            
+                    </td>
+                     <td width="55px"><br /><br /><br /><br /><br /><br />SELLO </td>
                 </tr>
             </tbody>
-       </table>    
-                                             
+       </table>
+
      </footer>
-     <div id="content">         
+     <div id="content">
         <table class="tabla">
             <thead>
                 <tr>
@@ -107,11 +106,11 @@
                     <th width="300px">NOMBRE DEL ALUMNO</th>
                     <th colspan="6"><b>INSCRIPCI&Oacute;N</b></th>
                     <th colspan="3"><b>ACREDITACI&Oacute;N</b></th>
-                    <th colspan="2"><b>CERTIFICACI&Oacute;N</b></th>                    
-                </tr>               
-                <tr>                    
+                    <th colspan="2"><b>CERTIFICACI&Oacute;N</b></th>
+                </tr>
+                <tr>
                     <th rowspan="2">PRIMER APELLIDO/SEGUNDO APELLIDO/NOMBRE(S)</th>
-                    <th colspan="2">TIPO DE ALUMNO</th> 
+                    <th colspan="2">TIPO DE ALUMNO</th>
                     <th rowspan="2">TIPO DE DISCAP.</th>
                     <th rowspan="2">SEXO</th>
                     <th rowspan="2">EDAD</th>
@@ -120,15 +119,15 @@
                     <th rowspan="2">POR ACRED.</th>
                     <th rowspan="2">DESER<br/>CI&Oacute;N</th>
                     <th rowspan="2">FOLIO DEL DIPLOMA</th>
-                    <th rowspan="2" width="80px">FOLIO DE LA CONSTANCIA</th>                    
+                    <th rowspan="2" width="80px">FOLIO DE LA CONSTANCIA</th>
                 </tr>
                 <tr>
                     <th>INS. IND</th>
-                    <th>BECADOS</th>                    
+                    <th>BECADOS</th>
                 </tr>
             </thead>
-            <tbody>   
-            @foreach($alumnos as $a)         
+            <tbody>
+            @foreach($alumnos as $a)
                 <tr>
                     <td>{{ $consec++ }}</td>
                     <td>{{ $a->matricula }}</td>
@@ -147,14 +146,14 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>                                   
-                </tr> 
+                    <td></td>
+                </tr>
                 @endforeach
-            </tbody> 
-            <tfoot>            
-            </tfoot>          
+            </tbody>
+            <tfoot>
+            </tfoot>
         </table>
-       
+
      </div>
 </body>
 </html>

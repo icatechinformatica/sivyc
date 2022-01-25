@@ -194,7 +194,7 @@ class ReportesPlaneacionFormatoT extends Controller {
                     ]);
                     $data->push($dataTemp);
                     break;
-            }  
+            }
         }
 
         $head = ['Grupos', 'Egresados', 'Capacitados', '%'];
@@ -262,7 +262,7 @@ class ReportesPlaneacionFormatoT extends Controller {
             $fechaAnt = Carbon::parse($datePeriodoAntInicio);
             $yearAnt = $fechaAnt->year;
         }
-        
+
         return view('reportes.vista_planeacion_reportes_ingresosPropios', compact('fechaInicio', 'fechaTermino', 'totalesPeriodoActual', 'totalesPeriodoAnterior', 'year', 'yearAnt'));
     }
 
@@ -383,7 +383,7 @@ class ReportesPlaneacionFormatoT extends Controller {
         $year = $fecha->year;
         $fechaAnt = Carbon::parse($datePeriodoAntInicio);
         $yearAnt = $fechaAnt->year;
-        
+
         $head = ['Unidad', $yearAnt, $year, 'Diferencia vs '.$yearAnt];
         $nombreLayout = "INGRESOS PROPIOS".".xlsx";
         $titulo = "INGRESOS PROPIOS";
@@ -425,7 +425,7 @@ class ReportesPlaneacionFormatoT extends Controller {
         ->groupBy('c.id')
         ->get();
 
-        $totalCursos = count($cursosRealizados); 
+        $totalCursos = count($cursosRealizados);
         $beneficiarios=0; $horas=0; $mujeres=0; $hombres=0; $egresados=0; $desercion=0; $ext=0; $cae=0; $emp=0; $municipios=[];
         foreach ($cursosRealizados as $value) {
             $beneficiarios += $value->inscritos;
@@ -438,12 +438,12 @@ class ReportesPlaneacionFormatoT extends Controller {
                 case 'CAE': $cae += 1; break;
                 case 'EMP': $emp += 1; break;
             }
-            array_push($municipios, $value->municipio); 
+            array_push($municipios, $value->municipio);
         }
         $desercion = $beneficiarios - $egresados;
         $totalMunicipios = count(array_unique($municipios));
 
-        return view('reportes.vista_planeacion_reportes_estadisticas', compact('fechaInicio','fechaTermino', 'totalCursos', 
+        return view('reportes.vista_planeacion_reportes_estadisticas', compact('fechaInicio','fechaTermino', 'totalCursos',
             'beneficiarios', 'horas', 'mujeres', 'hombres', 'egresados', 'desercion', 'ext', 'cae', 'emp', 'totalMunicipios'));
     }
 
@@ -477,7 +477,7 @@ class ReportesPlaneacionFormatoT extends Controller {
         ->groupBy('c.id')
         ->get();
 
-        $totalCursos = count($cursosRealizados); 
+        $totalCursos = count($cursosRealizados);
         $beneficiarios=0; $horas=0; $mujeres=0; $hombres=0; $egresados=0; $desercion=0; $ext=0; $cae=0; $emp=0; $municipios=[];
         foreach ($cursosRealizados as $value) {
             $beneficiarios += $value->inscritos;
@@ -490,12 +490,12 @@ class ReportesPlaneacionFormatoT extends Controller {
                 case 'CAE': $cae += 1; break;
                 case 'EMP': $emp += 1; break;
             }
-            array_push($municipios, $value->municipio); 
+            array_push($municipios, $value->municipio);
         }
         $desercion = $beneficiarios - $egresados;
         $totalMunicipios = count(array_unique($municipios));
 
-        $pdf = PDF::loadView('reportes.reporteEstadisticas', compact('fechaInicio','fechaTermino', 'totalCursos', 
+        $pdf = PDF::loadView('reportes.reporteEstadisticas', compact('fechaInicio','fechaTermino', 'totalCursos',
         'beneficiarios', 'horas', 'mujeres', 'hombres', 'egresados', 'desercion', 'ext', 'cae', 'emp', 'totalMunicipios'));
         // $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('download.pdf');
@@ -531,7 +531,7 @@ class ReportesPlaneacionFormatoT extends Controller {
         ->groupBy('c.id')
         ->get();
 
-        $totalCursos = count($cursosRealizados); 
+        $totalCursos = count($cursosRealizados);
         $beneficiarios=0; $horas=0; $mujeres=0; $hombres=0; $egresados=0; $desercion=0; $ext=0; $cae=0; $emp=0; $municipios=[];
         foreach ($cursosRealizados as $value) {
             $beneficiarios += $value->inscritos;
@@ -544,7 +544,7 @@ class ReportesPlaneacionFormatoT extends Controller {
                 case 'CAE': $cae += 1; break;
                 case 'EMP': $emp += 1; break;
             }
-            array_push($municipios, $value->municipio); 
+            array_push($municipios, $value->municipio);
         }
         $desercion = $beneficiarios - $egresados;
         $totalMunicipios = count(array_unique($municipios));
@@ -630,7 +630,7 @@ class ReportesPlaneacionFormatoT extends Controller {
                     $data->push($dataTemp);
                     break;
             }
-        }        
+        }
 
         $head = ['Categoria', 'Resultado'];
         $nombreLayout = "ESTADISTICAS DEL FORMATO T".".xlsx";

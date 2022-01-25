@@ -57,14 +57,14 @@
             }
         }
 
-        /* thead tr th { 
+        /* thead tr th {
                 position: sticky;
                 top: 0;
                 z-index: 10;
                 background-color: #ffffff;
             }
-        
-            .table-responsive { 
+
+            .table-responsive {
                 height:600px;
                 overflow:scroll;
             } */
@@ -195,6 +195,12 @@
                             <caption>CURSOS ENVIADOS A LA DIRECCIÓN DE PLANEACIÓN</caption>
                             <thead class="thead-dark">
                                 <tr align="center">
+                                    <th scope="col" colspan="61">GENERAL</th>
+                                    <th scope="col" colspan="16" style="background-color: #621032;">FEDERAL</th>
+                                    <th scope="col" colspan="18" style="background-color: #AF9A5A;">ESTATAL</th>
+                                    <th scope="col" colspan="139">GENERAL</th>
+                                </tr>
+                                <tr align="center">
                                     <th scope="col">N°</th>
                                     <th scope="col">SELECCIONAR &nbsp;
                                         <input type="checkbox" id="selectAll" />
@@ -257,6 +263,25 @@
                                     <th scope="col">CONVENIO GENERAL</th>
                                     <th scope="col">CONV SEC PUB O PRIV</th>
                                     <th scope="col">VALIDACION PAQUETERIA</th>
+                                    <th scope="col">GRUPO VULNNERABLE</th>
+                                    {{-- RUBRO FEDERAL--}}
+                                    <th scope="col">INSC EDAD M1</th>
+                                    <th scope="col">INSC EDAD H1</th>
+                                    <th scope="col">INSC EDAD M2</th>
+                                    <th scope="col">INSC EDAD H2</th>
+                                    <th scope="col">INSC EDAD M3</th>
+                                    <th scope="col">INSC EDAD H3</th>
+                                    <th scope="col">INSC EDAD M4</th>
+                                    <th scope="col">INSC EDAD H4</th>
+                                    <th scope="col">INSC EDAD M5</th>
+                                    <th scope="col">INSC EDAD H5</th>
+                                    <th scope="col">INSC EDAD M6</th>
+                                    <th scope="col">INSC EDAD H6</th>
+                                    <th scope="col">INSC EDAD M7</th>
+                                    <th scope="col">INSC EDAD H7</th>
+                                    <th scope="col">INSC EDAD M8</th>
+                                    <th scope="col">INSC EDAD H8</th>
+                                    {{-- RUBRO ESTATAL --}}
                                     <th scope="col">INSC EDAD M1</th>
                                     <th scope="col">INSC EDAD H1</th>
                                     <th scope="col">INSC EDAD L1</th>
@@ -359,6 +384,61 @@
                                     <th scope="col">DESC ESCOL M9</th>
                                     <th scope="col">DESC ESCOL H9</th>
                                     <th scope="col">DESC ESCOL L9</th>
+
+                                    <th scope="col">GRUPO VULN M1</th>
+                                    <th scope="col">GRUPO VULN H1</th>
+                                    <th scope="col">GRUPO VULN L1</th>
+                                    <th scope="col">GRUPO VULN M2</th>
+                                    <th scope="col">GRUPO VULN H2</th>
+                                    <th scope="col">GRUPO VULN L2</th>
+                                    <th scope="col">GRUPO VULN M3</th>
+                                    <th scope="col">GRUPO VULN H3</th>
+                                    <th scope="col">GRUPO VULN L3</th>
+                                    <th scope="col">GRUPO VULN M4</th>
+                                    <th scope="col">GRUPO VULN H4</th>
+                                    <th scope="col">GRUPO VULN L4</th>
+                                    <th scope="col">GRUPO VULN M5</th>
+                                    <th scope="col">GRUPO VULN H5</th>
+                                    <th scope="col">GRUPO VULN L5</th>
+                                    <th scope="col">GRUPO VULN M6</th>
+                                    <th scope="col">GRUPO VULN H6</th>
+                                    <th scope="col">GRUPO VULN L6</th>
+                                    <th scope="col">GRUPO VULN M7</th>
+                                    <th scope="col">GRUPO VULN H7</th>
+                                    <th scope="col">GRUPO VULN L7</th>
+                                    <th scope="col">GRUPO VULN M8</th>
+                                    <th scope="col">GRUPO VULN H8</th>
+                                    <th scope="col">GRUPO VULN L8</th>
+                                    <th scope="col">GRUPO VULN M9</th>
+                                    <th scope="col">GRUPO VULN H9</th>
+                                    <th scope="col">GRUPO VULN L9</th>
+                                    <th scope="col">GRUPO VULN M10</th>
+                                    <th scope="col">GRUPO VULN H10</th>
+                                    <th scope="col">GRUPO VULN L10</th>
+                                    <th scope="col">GRUPO VULN M11</th>
+                                    <th scope="col">GRUPO VULN H11</th>
+                                    <th scope="col">GRUPO VULN L11</th>
+                                    <th scope="col">GRUPO VULN M12</th>
+                                    <th scope="col">GRUPO VULN H12</th>
+                                    <th scope="col">GRUPO VULN L12</th>
+                                    <th scope="col">GRUPO VULN M13</th>
+                                    <th scope="col">GRUPO VULN H13</th>
+                                    <th scope="col">GRUPO VULN L13</th>
+                                    <th scope="col">GRUPO VULN M14</th>
+                                    <th scope="col">GRUPO VULN H14</th>
+                                    <th scope="col">GRUPO VULN L14</th>
+                                    <th scope="col">GRUPO VULN M15</th>
+                                    <th scope="col">GRUPO VULN H15</th>
+                                    <th scope="col">GRUPO VULN L15</th>
+                                    <th scope="col">GRUPO VULN M16</th>
+                                    <th scope="col">GRUPO VULN H16</th>
+                                    <th scope="col">GRUPO VULN L16</th>
+                                    <th scope="col">GRUPO VULN M17</th>
+                                    <th scope="col">GRUPO VULN H17</th>
+                                    <th scope="col">GRUPO VULN L17</th>
+                                    <th scope="col">GRUPO VULN M18</th>
+                                    <th scope="col">GRUPO VULN H18</th>
+                                    <th scope="col">GRUPO VULN L18</th>
                                     <th scope="col" style="width:50%">OBSERVACIONES</th>
                                     <th scope="col" style="width: 50%">OBSERVACIONES DTA</th>
                                 </tr>
@@ -451,6 +531,29 @@
                                         <td>{{ $datas->cgeneral }}</td>
                                         <td>{{ $datas->sector }}</td>
                                         <td>{{ $datas->mpaqueteria }}</td>
+                                        @if ($datas->grupo != NULL)
+                                            <td>{{ $datas->grupo }}</td>
+                                        @else
+                                            <td>NINGUNO</td>
+                                        @endif
+                                        {{-- RUBRO FEDERAL --}}
+                                        <td>{{ $datas->iem1f }}</td>
+                                        <td>{{ $datas->ieh1f }}</td>
+                                        <td>{{ $datas->iem2f }}</td>
+                                        <td>{{ $datas->ieh2f }}</td>
+                                        <td>{{ $datas->iem3f }}</td>
+                                        <td>{{ $datas->ieh3f }}</td>
+                                        <td>{{ $datas->iem4f }}</td>
+                                        <td>{{ $datas->ieh4f }}</td>
+                                        <td>{{ $datas->iem5f }}</td>
+                                        <td>{{ $datas->ieh5f }}</td>
+                                        <td>{{ $datas->iem6f }}</td>
+                                        <td>{{ $datas->ieh6f }}</td>
+                                        <td>{{ $datas->iem7f }}</td>
+                                        <td>{{ $datas->ieh7f }}</td>
+                                        <td>{{ $datas->iem8f }}</td>
+                                        <td>{{ $datas->ieh8f }}</td>
+                                        {{-- RUBRO ESTATAL --}}
                                         <td>{{ $datas->iem1 }}</td>
                                         <td>{{ $datas->ieh1 }}</td>
                                         <td>{{ $datas->iel1 }}</td>
@@ -553,6 +656,62 @@
                                         <td>{{ $datas->naesm9 }}</td>
                                         <td>{{ $datas->naesh9 }}</td>
                                         <td>{{ $datas->naesl9 }}</td>
+
+                                        <td>{{ $datas->gv1m }}</td>
+                                        <td>{{ $datas->gv1h }}</td>
+                                        <td>{{ $datas->gv1l }}</td>
+                                        <td>{{ $datas->gv2m }}</td>
+                                        <td>{{ $datas->gv2h }}</td>
+                                        <td>{{ $datas->gv2l }}</td>
+                                        <td>{{ $datas->gv2m }}</td>
+                                        <td>{{ $datas->gv3h }}</td>
+                                        <td>{{ $datas->gv3l }}</td>
+                                        <td>{{ $datas->gv4m }}</td>
+                                        <td>{{ $datas->gv4h }}</td>
+                                        <td>{{ $datas->gv4l }}</td>
+                                        <td>{{ $datas->gv5m }}</td>
+                                        <td>{{ $datas->gv5h }}</td>
+                                        <td>{{ $datas->gv5l }}</td>
+                                        <td>{{ $datas->gv6m }}</td>
+                                        <td>{{ $datas->gv6h }}</td>
+                                        <td>{{ $datas->gv6l }}</td>
+                                        <td>{{ $datas->gv7m }}</td>
+                                        <td>{{ $datas->gv7h }}</td>
+                                        <td>{{ $datas->gv7l }}</td>
+                                        <td>{{ $datas->gv8m }}</td>
+                                        <td>{{ $datas->gv8h }}</td>
+                                        <td>{{ $datas->gv8l }}</td>
+                                        <td>{{ $datas->gv9m }}</td>
+                                        <td>{{ $datas->gv9h }}</td>
+                                        <td>{{ $datas->gv9l }}</td>
+                                        <td>{{ $datas->gv10m }}</td>
+                                        <td>{{ $datas->gv10h }}</td>
+                                        <td>{{ $datas->gv10l }}</td>
+                                        <td>{{ $datas->gv11m }}</td>
+                                        <td>{{ $datas->gv11h }}</td>
+                                        <td>{{ $datas->gv11l }}</td>
+                                        <td>{{ $datas->gv12m }}</td>
+                                        <td>{{ $datas->gv12h }}</td>
+                                        <td>{{ $datas->gv12l }}</td>
+                                        <td>{{ $datas->gv13m }}</td>
+                                        <td>{{ $datas->gv13h }}</td>
+                                        <td>{{ $datas->gv13l }}</td>
+                                        <td>{{ $datas->gv14m }}</td>
+                                        <td>{{ $datas->gv14h }}</td>
+                                        <td>{{ $datas->gv14l }}</td>
+                                        <td>{{ $datas->gv15m }}</td>
+                                        <td>{{ $datas->gv15h }}</td>
+                                        <td>{{ $datas->gv15l }}</td>
+                                        <td>{{ $datas->gv16m }}</td>
+                                        <td>{{ $datas->gv16h }}</td>
+                                        <td>{{ $datas->gv16l }}</td>
+                                        <td>{{ $datas->gv17m }}</td>
+                                        <td>{{ $datas->gv17h }}</td>
+                                        <td>{{ $datas->gv17l }}</td>
+                                        <td>{{ $datas->gv18m }}</td>
+                                        <td>{{ $datas->gv18h }}</td>
+                                        <td>{{ $datas->gv18l }}</td>
+
                                         <td>
                                             <div style="width:900px; word-wrap: break-word">{{ $datas->tnota }}</div>
                                         </td>
@@ -723,7 +882,7 @@
                             }
                         });
                         var numero_memo = $('#num_memo').val();
-                        
+
                         formData.append("_token", $("meta[name='csrf-token']").attr("content"));
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);
@@ -817,7 +976,7 @@
                             }
                         });
                         var numero_memo = $('#num_memo').val();
-                        
+
                         formData.append("_token", $("meta[name='csrf-token']").attr("content"));
                         formData.append("checkCursos", chkCursos);
                         formData.append("numero_memo", numero_memo);

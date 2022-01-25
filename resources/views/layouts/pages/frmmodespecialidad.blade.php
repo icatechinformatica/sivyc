@@ -316,7 +316,7 @@
                 <br>
                 <div class="form-row">
                     <div class="form-group col-md-1" style="text-align: right;width:0%">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                        <a class="btn btn-danger" href="{{route('instructor-ver', ['id' => $idins])}}">Regresar</a>
                     </div>
                     <div class="form-group col-md-11" style="text-align: right;width:100%">
                         <button type="submit" class="btn btn-primary" >Modificar</button>
