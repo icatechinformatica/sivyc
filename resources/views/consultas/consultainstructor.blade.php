@@ -72,7 +72,7 @@
                         <td>HORA INICIO</td>
                         <td>HORA TERMINO</td>
                         <td>DIAS</td>
-
+                        <td>LUGAR O ESPACIO FISICO</td>
                     </tr>
                     @isset($consulta)
                     @foreach ($consulta as $item)
@@ -91,6 +91,7 @@
                         <td>{{$item->hini}}</td>
                         <td>{{$item->hfin}}</td>
                         <td>{{$item->dia}}</td>
+                        <td>{{$item->efisico }}</td>
                     </tr>
                     @endforeach
                     <tr>
