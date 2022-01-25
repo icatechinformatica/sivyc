@@ -328,23 +328,15 @@
                         <select class="form-control" name="honorario" id="honorario" disabled>
                             @if ($datains->tipo_honorario == 'HONORARIOS')
                                 <option selected value="HONORARIOS">Honorarios</option>
-                                <option value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option value="INTERNO">Interno</option>
+                                <option value="ASIMILADO">Asimilado a Salario</option>
                             @endif
-                            @if ($datains->tipo_honorario == 'SIN HONORARIOS')
+                            @if ($datains->tipo_honorario == 'ASIMILADO')
                                 <option value="HONORARIOS">Honorarios</option>
-                                <option selected value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option value="INTERNO">Interno</option>
-                            @endif
-                            @if ($datains->tipo_honorario == 'INTERNO')
-                                <option value="HONORARIOS">Honorarios</option>
-                                <option value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option selected value="INTERNO">Interno</option>
+                                <option selected value="ASIMILADO">Asimilado a Salario</option>
                             @endif
                             @if ($datains->tipo_honorario == NULL)
                                 <option selected value="HONORARIOS">Honorarios</option>
-                                <option value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option value="INTERNO">Interno</option>
+                                <option value="ASIMILADO">Asimilado a Salario</option>
                             @endif
                         </select>
                     </div>

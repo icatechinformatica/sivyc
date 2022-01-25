@@ -169,8 +169,7 @@
                     <select class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS">Honorarios</option>
-                        <option value="SIN HONORARIOS">Sin Honorarios</option>
-                        <option value="INTERNO">Interno</option>
+                        <option value="ASIMILADO">Asimilado a Salario</option>
                     </select>
                 </div>
             </div>
