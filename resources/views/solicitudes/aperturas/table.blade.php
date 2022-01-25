@@ -38,6 +38,7 @@
                 <th scope="col" class="text-center">OBSERVACIONES</th>
                 <th scope="col" class="text-center">M.VALIDACIÓN</th>
                 <th scope="col" class="text-center">FECHA ARC02</th>
+                <th scope="col" class="text-center">CONVENIO</th>
             </tr>
         </thead>
         @if(count($grupos)>0) 
@@ -131,6 +132,7 @@
                         </td>
                         <td class="text-center"> {{ $g->mvalida}}</td>
                         <td class="text-center">{{$g->fecha_arc02}}</td>
+                        <td class="text-center">{{$g->cgeneral}} {{$g->fecha_vigencia}}</td>
                     </tr>
                  @endforeach                       
             </tbody>                   
