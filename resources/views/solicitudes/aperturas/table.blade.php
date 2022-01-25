@@ -3,6 +3,11 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
+                @if($opt=="ARC02")
+                    <th scope="col" class="text-center" >EDIT</th>                    
+                @else
+                    <th scope="col" class="text-center" >VER</th>
+                @endif
                 <th scope="col" class="text-center">ID</th> 
                 <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>
@@ -33,11 +38,6 @@
                 <th scope="col" class="text-center">OBSERVACIONES</th>
                 <th scope="col" class="text-center">M.VALIDACIÓN</th>
                 <th scope="col" class="text-center">FECHA ARC02</th>
-                @if($opt=="ARC02")
-                    <th scope="col" class="text-center" >EDIT</th>                    
-                @else
-                    <th scope="col" class="text-center" >VER</th>
-                @endif
             </tr>
         </thead>
         @if(count($grupos)>0) 
@@ -68,6 +68,18 @@
                     }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
+                        @if($opt == "ARC02")
+                            <td class='text-center'>
+                                <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
+                            </td>
+                        @else
+                            <td class='text-center'>
+                                <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-success" title="Ver detalle" onclick="show('{{$g->id}}')"></i></a>
+                                <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
+                                    <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
+                                </a>
+                            </td>
+                        @endif
                         <td class="text-center"> {{ $g->id }}</td>
                         <td class="text-center"> {{$g->fecha_arc01}}</td>
                         <td class="text-center">
@@ -119,18 +131,6 @@
                         </td>
                         <td class="text-center"> {{ $g->mvalida}}</td>
                         <td class="text-center">{{$g->fecha_arc02}}</td>
-                        @if($opt == "ARC02")
-                            <td class='text-center'>
-                                <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
-                            </td>
-                        @else
-                            <td class='text-center'>
-                                <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-success" title="Ver detalle" onclick="show('{{$g->id}}')"></i></a>
-                                <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
-                                    <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
-                                </a>
-                            </td>
-                        @endif
                     </tr>
                  @endforeach                       
             </tbody>                   
