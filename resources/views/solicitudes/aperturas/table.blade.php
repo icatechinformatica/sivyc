@@ -33,7 +33,8 @@
                 <th scope="col" class="text-center">TIPO</th>                 
                 <th scope="col" class="text-center">TURNADO</th>
                 <th scope="col" class="text-center">ESTATUS</th>  
-                <th scope="col" class="text-center">FORMATO T</th>         
+                <th scope="col" class="text-center">FORMATO T</th>  
+                <th scope="col" class="text-center">PLANTEL</th>       
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
                 <th scope="col" class="text-center">M.VALIDACIÓN</th>
@@ -123,6 +124,7 @@
                         </td>                        
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif</td>
                         <td class="text-center"> {{ $g->status}}</td>
+                        <td class="text-center">{{$g->plantel }}</td>
                         <td> <div style="width:120px;"> {{ $g->efisico }} </div></td>
                         <td class="text-left">
                             <div style="width:700px;">
