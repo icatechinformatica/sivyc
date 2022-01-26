@@ -327,8 +327,8 @@
                         <label for="inputhonorario">Tipo de Honorario</label>
                         <select class="form-control" name="honorario" id="honorario" disabled>
                             <option selected value="HONORARIOS" @if ($datains->tipo_honorario == 'HONORARIOS') selected @endif>Honorarios</option>
-                            <option value="ASIMILADO" @if ($datains->tipo_honorario == 'ASIMILADO') selected @endif>Asimilado a Salario</option>
-                            <option value="AMBOS" @if ($datains->tipo_honorario == 'AMBOS') selected @endif>Honorarios y Asimilado a Salario</option>
+                            <option value="ASIMILADO" @if ($datains->tipo_honorario == 'ASIMILADOS') selected @endif>Asimilados a Salarios</option>
+                            <option value="AMBOS" @if ($datains->tipo_honorario == 'AMBOS') selected @endif>Honorarios y Asimilado a Salarios</option>
                         </select>
                     </div>
                 </div>
