@@ -324,7 +324,7 @@
                         <input id="numero_control" name="numero_control" value="{{$datains->numero_control }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="inputhonorario">Tipo de Honorario</label>
+                        <label for="inputhonorario">Regimen</label>
                         <select class="form-control" name="honorario" id="honorario" disabled>
                             <option selected value="HONORARIOS" @if ($datains->tipo_honorario == 'HONORARIOS') selected @endif>Honorarios</option>
                             <option value="ASIMILADO" @if ($datains->tipo_honorario == 'ASIMILADOS') selected @endif>Asimilados a Salarios</option>

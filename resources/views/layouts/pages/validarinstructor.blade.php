@@ -165,7 +165,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputhonorarios">Tipo de Honorarios</label>
+                    <label for="inputhonorarios">Regimen</label>
                     <select class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS">Honorarios</option>
