@@ -170,6 +170,7 @@
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS">Honorarios</option>
                         <option value="ASIMILADO">Asimilado a Salario</option>
+                        <option value="AMBOS">Honorarios y Asimilado a Salario</option>
                     </select>
                 </div>
             </div>
