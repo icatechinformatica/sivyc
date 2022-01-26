@@ -89,6 +89,12 @@
                             $("#file").show();
                             $("#espacio").hide();
                         break;
+                        case "CANCELADO":
+                            $("#mrespuesta").hide();
+                            $("#fecha").hide();                            
+                            $("#file").show();
+                            $("#espacio").hide();
+                        break;
                         case "DESHACER":
                             $("#mrespuesta").hide();
                             $("#fecha").hide();                            
@@ -126,6 +132,10 @@
                                 $('#frm').attr('target', '_self').submit();
                             break;
                             case "AUTORIZADO":
+                                $('#frm').attr('action', "{{route('solicitudes.aperturas.autorizar')}}");
+                                $('#frm').attr('target', '_self').submit();
+                            break;
+                            case "CANCELADO":
                                 $('#frm').attr('action', "{{route('solicitudes.aperturas.autorizar')}}");
                                 $('#frm').attr('target', '_self').submit();
                             break;
