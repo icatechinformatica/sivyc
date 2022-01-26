@@ -324,20 +324,11 @@
                         <input id="numero_control" name="numero_control" value="{{$datains->numero_control }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="inputhonorario">Tipo de Honorario</label>
+                        <label for="inputhonorario">Regimen</label>
                         <select class="form-control" name="honorario" id="honorario" disabled>
-                            @if ($datains->tipo_honorario == 'HONORARIOS')
-                                <option selected value="HONORARIOS">Honorarios</option>
-                                <option value="ASIMILADO">Asimilado a Salario</option>
-                            @endif
-                            @if ($datains->tipo_honorario == 'ASIMILADO')
-                                <option value="HONORARIOS">Honorarios</option>
-                                <option selected value="ASIMILADO">Asimilado a Salario</option>
-                            @endif
-                            @if ($datains->tipo_honorario == NULL)
-                                <option selected value="HONORARIOS">Honorarios</option>
-                                <option value="ASIMILADO">Asimilado a Salario</option>
-                            @endif
+                            <option selected value="HONORARIOS" @if ($datains->tipo_honorario == 'HONORARIOS') selected @endif>Honorarios</option>
+                            <option value="ASIMILADO" @if ($datains->tipo_honorario == 'ASIMILADOS') selected @endif>Asimilados a Salarios</option>
+                            <option value="AMBOS" @if ($datains->tipo_honorario == 'AMBOS') selected @endif>Honorarios y Asimilado a Salarios</option>
                         </select>
                     </div>
                 </div>
