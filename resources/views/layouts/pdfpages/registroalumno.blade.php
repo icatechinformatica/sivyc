@@ -136,14 +136,15 @@
                     <td colspan="7"><b>DISCAPACIDAD QUE PRESENTA: </b></td>
                 </tr>
                 <tr>
-                    <td colspan="2">@php if($alumnos->discapacidad=="VISUAL"){echo "VISUAL(X)";}else{echo "VISUAL( )";} @endphp</td>
-                    <td colspan="2"> @php if($alumnos->discapacidad=="AUDITIVA"){echo "AUDITIVA(X)";}else{echo "AUDITIVA( )";} @endphp</td>
-                    <td colspan="2">@php if($alumnos->discapacidad=="DE COMUNICACIÓN"){echo "DE COMUNICACIÓN(X)";}else{echo "DE COMUNICACIÓN( )";} @endphp</td>
+                    {{--<td colspan="2">@php if($alumnos->discapacidad=="VISUAL"){echo "VISUAL(X)";}else{echo "VISUAL( )";} @endphp</td>--}}
+                    <td colspan="2">@php if($alumnos->id_gvulnerable && in_array(18, json_decode($alumnos->id_gvulnerable))){echo "VISUAL(X)";}else{echo "VISUAL( )";} @endphp</td>
+                    <td colspan="2"> @php if($alumnos->id_gvulnerable && in_array(19, json_decode($alumnos->id_gvulnerable))){echo "AUDITIVA(X)";}else{echo "AUDITIVA( )";} @endphp</td>
+                    <td colspan="2">@php if($alumnos->id_gvulnerable && in_array(20, json_decode($alumnos->id_gvulnerable))){echo "DE COMUNICACIÓN(X)";}else{echo "DE COMUNICACIÓN( )";} @endphp</td>
                     <td></td>
                 </tr>
                 <tr>
-                    <TD colspan="2">@php if($alumnos->discapacidad=="MOTRIZ"){echo "MOTRIZ(X)";}else{echo "MOTRIZ( )";} @endphp</TD>
-                    <TD colspan="2">@php if($alumnos->discapacidad=="INTELECTUAL"){echo "INTELECTUAL(X)";}else{echo "INTELECTUAL( )";} @endphp</TD>
+                    <TD colspan="2">@php if($alumnos->id_gvulnerable && in_array(21, json_decode($alumnos->id_gvulnerable))){echo "MOTRIZ(X)";}else{echo "MOTRIZ( )";} @endphp</TD>
+                    <TD colspan="2">@php if($alumnos->id_gvulnerable && in_array(22, json_decode($alumnos->id_gvulnerable))){echo "INTELECTUAL(X)";}else{echo "INTELECTUAL( )";} @endphp</TD>
                     <TD colspan="2"></TD>
                     <TD></TD>
                 </tr>
