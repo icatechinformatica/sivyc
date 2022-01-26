@@ -95,7 +95,7 @@ class aperturasController extends Controller
                                 $movimientos = ['RETORNADO'=>'RETORNAR A UNIDAD','EN FIRMA'=>'EN FIRMA'];
                             break;
                             case 'EN FIRMA':
-                                $movimientos = ['' => '- SELECCIONAR -', 'AUTORIZADO'=>'ENVIAR AUTORIZACION','CAMBIAR' => 'CAMBIAR MEMORÁNDUM'];
+                                $movimientos = ['' => '- SELECCIONAR -', 'AUTORIZADO'=>'ENVIAR AUTORIZACIÓN','CAMBIAR' => 'CAMBIAR MEMORÁNDUM','CANCELADO'=>'ENVIAR CANCELACIÓN'];
                             break;
 
                         }                        
@@ -134,14 +134,34 @@ class aperturasController extends Controller
                             ->update(['status_curso' => 'AUTORIZADO', 'updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
                         break;
                         case "ARC02": 
-                            $titulo = 'Autorización de modificación de apertura';
-                            $cuerpo = 'La autorización de modificación de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
-                            $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
-                            ->where('clave','<>','0')
-                            ->where('turnado','UNIDAD')
-                            ->where('status_curso','EN FIRMA')
-                            ->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
-                            ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);                                            
+                            if($request->movimiento=='CANCELADO'){
+                                //var_dump($_SESSION['grupos'] );
+                                
+                                $folio_grupo = $_SESSION['grupos'][0]->folio_grupo;
+
+                                //exit;
+                                $titulo = 'Cancelación de apertura';
+                                $cuerpo = 'La cancelación de la apertura del memo '.$_SESSION['memo'].' ha sido procesada';
+                                $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
+                                ->where('clave','<>','0')
+                                ->where('turnado','UNIDAD')
+                                ->where('status_curso','EN FIRMA')
+                                ->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
+                                ->update(['status_curso' => 'CANCELADO','status'=>'CANCELADO','arc'=>'02','fecha_modificacion'=>date('Y-m-d H:i:s'),'updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);
+
+                                DB::table('alumnos_registro')->where('folio_grupo',$folio_grupo)->update(['eliminado' => TRUE,'updated_at'=>date('Y-m-d H:i:s')]);
+                                DB::table('tbl_inscripcion')->where('folio_grupo',$folio_grupo)->update(['activo' => FALSE,'updated_at'=>date('Y-m-d H:i:s')]);
+
+                            }else{
+                                $titulo = 'Autorización de modificación de apertura';
+                                $cuerpo = 'La autorización de modificación de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
+                                $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
+                                ->where('clave','<>','0')
+                                ->where('turnado','UNIDAD')
+                                ->where('status_curso','EN FIRMA')
+                                ->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])
+                                ->update(['status_curso' => 'AUTORIZADO', 'arc'=>'02','updated_at'=>date('Y-m-d H:i:s'), 'pdf_curso' => $url_file]);                                            
+                            }
                         break;
                     }
                     if($result) {
