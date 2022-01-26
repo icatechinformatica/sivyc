@@ -42,12 +42,12 @@
             table{
                 width:100%;
             }
-            
+
             td{
                 display:block;
                 width:100%;
             }
-            
+
             tr{
                 display:block;
                 margin-bottom:30px;
@@ -94,17 +94,17 @@
         </div>
         <hr style="border-color:dimgray">
         <div class="form-row">
-                
+
                 @if (count($queryGetMemo) > 0)
                     {{-- listado de elementos --}}
-                        
+
                     <table  id="table-instructor" class="table table-bordered Datatables" style="width: 100%;">
                         <caption>MEMORANDUM ENVIADOS POR MES</caption>
                         <thead class="thead-dark">
                             <tr align="justify">
                                 <th>NÚMERO DE MEMORAUNDUM</th>
                                 <th>TIPO DE MEMORANDUM</th>
-                                <th>MEMORANDUM</th>                       
+                                <th>MEMORANDUM</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -117,12 +117,12 @@
                                     </td>
                                     <td>
                                         <b>{{ $itemgetmemo->tipo_memo }}</b>
-                                    </td> 
+                                    </td>
                                     <td>
                                         <a href="{{ $itemgetmemo->ruta }}" class="btn btn-danger btn-circles btn-xl" title="MEMORANDUM DE ENVÍO A DIRECCIÓN TÉCNICA ACADÉMICA" target="_blank">
                                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                         </a>
-                                    </td>      
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -134,14 +134,14 @@
                             </tr>
                         </tfoot>
                     </table>
-                        
+
                     {{-- listado de elementos END --}}
                 @else
                     <div style="text-align: center;">
                         <h1><b>LA CONSULTA NO ARROJÓ RESULTADOS</b></h1>
                     </div>
                 @endif
-    
+
                 @if (count($queryGetMemoRetorno) > 0)
                     {{-- listado de elementos --}}
                     <table  id="table-instructor" class="table table-bordered Datatables" style="width: 100%;">
@@ -150,7 +150,7 @@
                             <tr align="justify">
                                 <th>NÚMERO DE MEMORAUNDUM</th>
                                 <th>TIPO DE MEMORANDUM</th>
-                                <th>MEMORANDUM</th>                       
+                                <th>MEMORANDUM</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -163,12 +163,12 @@
                                     </td>
                                     <td>
                                         <b>{{ $itemgetretorno->tipo_memo }}</b>
-                                    </td> 
+                                    </td>
                                     <td>
                                         <a href="{{ $itemgetretorno->ruta }}" class="btn btn-danger btn-circles btn-xl" title="MEMORANDUM DE ENVÍO A DIRECCIÓN TÉCNICA ACADÉMICA" target="_blank">
                                             <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                         </a>
-                                    </td>      
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -182,14 +182,14 @@
                     </table>
                     {{-- listado de elementos END --}}
                 @endif
-                
+
         </div>
     </div>
     <br>
     {{-- spinner --}}
     <div hidden id="spinner"></div>
     {{-- spinner END --}}
-    
+
     {{-- MODAL DE ENVIO --}}
     <div class="modal fade" id="modalGoBackDTA" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-info" role="document">
@@ -215,12 +215,12 @@
         </div>
     </div>
     {{-- MODAL DE ENVIO END --}}
-    
+
 @endsection
 {{-- contenido js --}}
 @section('script_content_js')
     <script type="text/javascript">
-        
+
     </script>
 @endsection
 {{-- contenido js END --}}
