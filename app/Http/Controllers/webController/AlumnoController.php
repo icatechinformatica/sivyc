@@ -91,6 +91,7 @@ class AlumnoController extends Controller {
                 $estados[$item->id] = $item->nombre;
             }
             $estado_civil = DB::table('estado_civil')->orderby('nombre','ASC')->pluck('nombre');
+            $gvulnerable = DB::table('grupos_vulnerables')->select('grupo','id')->get();
             $etnia = $this->etnia = ["AKATECOS"=>"AKATECOS","CH'OLES"=>"CH'OLES","CHUJES"=>"CHUJES","JAKALTECOS"=>"JAKALTECOS","K'ICHES"=>"K'ICHES","LACANDONES"=>"LACANDONES","MAMES"=>"MAMES","MOCHOS"=>"MOCHOS","TEKOS"=>"TEKOS","TOJOLABALES"=>"TOJOLABALES","TSELTALES"=>"TSELTALES","TSOTSILES"=>"TSOTSILES","ZOQUES"=>"ZOQUES"];
             $discapacidad = $this->discapacidad = ["AUDITIVA"=>"AUDITIVA","DE COMUNICACIÓN"=>"DE COMUNICACIÓN","INTELECTUAL"=>"INTELECTUAL", "MOTRIZ"=>"MOTRIZ", "VISUAL"=>"VISUAL","NINGUNA"=>"NINGUNA"];
             // ELIMINAR ESPACIOS EN BLANCO EN LA CADENA
@@ -102,7 +103,7 @@ class AlumnoController extends Controller {
             // se checa si la consulta arroja un resultado o es nulo, en dado caso de ser nulo se tiene que agregar completamente
             if(is_null($alumnoPre)){
                 $a = false;
-                return view('layouts.pages.valcurp', compact('estados', 'grado_estudio','estado_civil','etnia','discapacidad','curp','sexo','fecha_t','a'));
+                return view('layouts.pages.valcurp', compact('estados', 'grado_estudio','estado_civil','etnia','discapacidad','curp','sexo','fecha_t','a','gvulnerable'));
             } else {
                 /* ES FALSO Y SE HACE LA COMPARACIÓN DE LAS CADENAS
                 checamos la función básica para comparar dos cadenas a nivel binario
@@ -218,6 +219,13 @@ class AlumnoController extends Controller {
                 } else {
                     $AlumnoPreseleccion->empleado=$request->trabajo;
                 }
+                //GRUPOS VULNERABLES
+                $gvulnerable = [];
+                if ($request->itemEdith) {
+                    foreach ($request->itemEdith as $key => $value) {
+                        $gvulnerable[]= $value;
+                    }
+                }
                 $AlumnoPreseleccion->numero_expediente = $request->num_expediente_cerss;
                 $AlumnoPreseleccion->curp = strtoupper($curp_formateada);
                 $AlumnoPreseleccion->nombre = strtoupper($request->nombre);
@@ -239,7 +247,7 @@ class AlumnoController extends Controller {
                 $AlumnoPreseleccion->estado = $request->estado;
                 $AlumnoPreseleccion->municipio = $municipio->muni;
                 $AlumnoPreseleccion->estado_civil = $request->estado_civil;
-                $AlumnoPreseleccion->discapacidad = $request->discapacidad;
+                //$AlumnoPreseleccion->discapacidad = $request->discapacidad;
                 $AlumnoPreseleccion->madre_soltera = $request->madre_soltera;
                 $AlumnoPreseleccion->familia_migrante = $request->familia_migrante;
                 $AlumnoPreseleccion->indigena = $request->indigena;
@@ -263,6 +271,7 @@ class AlumnoController extends Controller {
                 $AlumnoPreseleccion->created_at= $hoy;
                 $AlumnoPreseleccion->clave_localidad = $request->localidad;
                 $AlumnoPreseleccion->clave_municipio = $request->municipio;
+                $AlumnoPreseleccion->id_gvulnerable = json_encode($gvulnerable);
                 if(isset($matricula)){
                     $AlumnoPreseleccion->matricula= $matricula->matricula;
                 }
@@ -388,10 +397,11 @@ class AlumnoController extends Controller {
                 $alumno->clave_municipio = $temp->clave;
             }
         }
+        $gvulnerable = DB::table('grupos_vulnerables')->select('grupo','id')->get();
 
         return view('layouts.pages.valcurp', compact('alumno', 'estados', 'anio_nac', 'mes_nac', 'dia_nac', 'grado_estudio',
                     'estado_civil','etnia','discapacidad','requisitos','vigencia_curp','vigencia_acta','vigencia_migracion',
-                    'rol','a','curp', 'localidades', 'municipios'));
+                    'rol','a','curp', 'localidades', 'municipios','gvulnerable'));
     }
 
     // modificación de aspirantes en alumnos_pre
@@ -426,6 +436,14 @@ class AlumnoController extends Controller {
             }
             
             $municipio = Municipio::where('clave', $request->municipios_mod)->first();
+
+            //GRUPOS VULNERABLES
+            $gvulnerable = [];
+            if ($request->itemEdith) {
+                foreach ($request->itemEdith as $key => $value) {
+                    $gvulnerable[]= $value;
+                }
+            }
 
             $array = [
                 'id_unidad'=>Auth::user()->unidad,
@@ -474,7 +492,8 @@ class AlumnoController extends Controller {
                 'updated_at'=>$hoy,
                 'clave_localidad'=> $request->localidad_mod,
                 'clave_municipio'=> $request->municipios_mod,
-                'lgbt' => $request->lgbt_mod == 'true' ? true : false
+                'lgbt' => $request->lgbt_mod == 'true' ? true : false,
+                'id_gvulnerable' => json_encode($gvulnerable)
             ];
 
             $AlumnoPre_mod=DB::table('alumnos_pre')->WHERE('id', '=', $AspiranteId)->UPDATE($array);

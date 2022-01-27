@@ -24,7 +24,11 @@ class organismosController extends Controller
                 break;
         }
         $organismos= $organismos->orderBy('organismo')->paginate(15);
-        return view('organismos.index', compact('organismos'));
+        $id_user = Auth::user()->id;    
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+                ->WHERE('role_user.user_id', '=', $id_user)
+                ->value('roles.slug');
+        return view('organismos.index', compact('organismos','rol'));
     }
     public function agregar(Request $request){
         $municipio = $localidad = [];
@@ -51,7 +55,11 @@ class organismosController extends Controller
                             ->pluck('localidad','clave');
             $update = true;
         }
-        return view('organismos.vstaformorganismo',compact('organismo','areas','estados','sector','tipo','status','municipio','localidad','update'));
+        $id_user = Auth::user()->id;    
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+                ->WHERE('role_user.user_id', '=', $id_user)
+                ->value('roles.slug');
+        return view('organismos.vstaformorganismo',compact('organismo','areas','estados','sector','tipo','status','municipio','localidad','update','rol'));
     }
     public function store(Request $request){
         //dd($request->all());

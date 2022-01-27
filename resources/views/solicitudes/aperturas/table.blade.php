@@ -11,6 +11,7 @@
                 <th scope="col" class="text-center">ID</th> 
                 <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>
+                <th scope="col" class="text-center">GRUPO</th>
                 <!--<th scope="col" class="text-center" >MOTIVO</th> -->        
                 <th scope="col" class="text-center">SERVICIO</th>
                 <th scope="col" class="text-center">UNIDAD</th>
@@ -40,6 +41,7 @@
                 <th scope="col" class="text-center">M.VALIDACIÓN</th>
                 <th scope="col" class="text-center">FECHA ARC02</th>
                 <th scope="col" class="text-center">CONVENIO</th>
+                <th scope="col" class="text-center">CONVENIO ESPECIFICO</th>
             </tr>
         </thead>
         @if(count($grupos)>0) 
@@ -91,6 +93,7 @@
                                 <div style="width:128px;">{{ $g->clave}}</div> 
                             @endif
                        </td> 
+                       <td class="text-center">{{$g->folio_grupo}}</td>
                        <!--
                         <td class="text-center"><div style="width:400px;">
                             <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
@@ -135,6 +138,7 @@
                         <td class="text-center"> {{ $g->mvalida}}</td>
                         <td class="text-center">{{$g->fecha_arc02}}</td>
                         <td class="text-center">{{$g->cgeneral}} {{$g->fecha_vigencia}}</td>
+                        <td class="text-center">{{$g->cespecifico }} {{$g->fcespe}}</td>
                     </tr>
                  @endforeach                       
             </tbody>                   

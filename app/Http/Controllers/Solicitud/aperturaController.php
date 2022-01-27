@@ -104,7 +104,7 @@ class aperturaController extends Controller
                     DB::raw("CONCAT(ap.apellido_paterno,' ', ap.apellido_materno,' ',ap.nombre) as alumno"),'ar.id_cerss', 'ap.lgbt',
                     'ap.estado_civil','ap.discapacidad','ap.nacionalidad','ap.etnia','ap.indigena','ap.inmigrante','ap.madre_soltera','ap.familia_migrante',
                     'ar.costo','ar.tinscripcion',DB::raw("'0' as calificacion"),'ap.ultimo_grado_estudios as escolaridad','ap.empleado','ar.abrinscri',
-                    'ap.matricula', 'ar.id_pre','ar.id', DB::raw("substring(curp,11,1) as sexo"),
+                    'ap.matricula', 'ar.id_pre','ar.id', DB::raw("substring(curp,11,1) as sexo"),'ap.id_gvulnerable',
                     DB::raw("substring(curp,5,2) as anio_nac"),
                     DB::raw("CASE WHEN substring(curp,5,2) <='".$anio_hoy."' THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
                         ELSE CONCAT('19',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2)) END AS fecha_nacimiento
@@ -304,6 +304,14 @@ class aperturaController extends Controller
                                 $efisico = $request->efisico;
                             }
 
+                            $created_at = DB::table('tbl_cursos')->where('unidad',$grupo->unidad)->where('folio_grupo',$_SESSION['folio'])->value('created_at');
+                            if ($created_at) {
+                                $updated_at = date('Y-m-d H:i:s'); 
+                            } else {
+                                $created_at = date('Y-m-d H:i:s');
+                                $updated_at = date('Y-m-d H:i:s');
+                            }
+
                             if(!$request->cespecifico) $request->cespecifico = 0;
                             if(!$request->mexoneracion) $request->mexoneracion = 0;
                             if(!$request->cgeneral) $request->cgeneral = 0;
@@ -383,7 +391,8 @@ class aperturaController extends Controller
                                 'clave_localidad'=>$grupo->clave_localidad,
                                 'id_gvulnerable'=>$grupo->id_vulnerable,
                                 'id_cerss' => $grupo->id_cerss,
-                                'created_at'=>date('Y-m-d H:i:s')
+                                'created_at'=>$created_at,
+                                'updated_at'=>$updated_at
                             ]
                         );
                         $agenda = DB::table('agenda')->where('id_curso',$_SESSION['folio'])->update(['id_instructor' => $instructor->id]);
@@ -458,7 +467,8 @@ class aperturaController extends Controller
                         'sexo'=> $a->sexo,
                         'lgbt' => $a->lgbt,
                         'curp'=> $a->curp,
-                        'empleado'=>$a->empleado
+                        'empleado'=>$a->empleado,
+                        'id_gvulnerable'=>$a->id_gvulnerable
                         ]);
                     }
                 }
@@ -567,12 +577,15 @@ class aperturaController extends Controller
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
             ->pluck('dias');
-            $tdias = 1;
+            $tdias = 0;
+            
             foreach ($total_dias as $key => $value) {
                 if ($key > 0) {
                     if ($value != $total_dias[$key-1]) {
                         $tdias += 1;
                     }
+                }else{
+                    $tdias = 1;
                 }
             }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
@@ -1014,12 +1027,14 @@ class aperturaController extends Controller
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
             ->pluck('dias');
-            $tdias = 1;
+            $tdias = 0;
             foreach ($total_dias as $key => $value) {
                 if ($key > 0) {
                     if ($value != $total_dias[$key-1]) {
                         $tdias += 1;
                     }
+                }else {
+                    $tdias = 1;
                 }
             }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);

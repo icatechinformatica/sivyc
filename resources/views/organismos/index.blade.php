@@ -27,11 +27,13 @@
                 <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                 {!! Form::close() !!}
             </div>
+            @if ($rol == 'admin')
             <div class="col">
                 <div class="pull-right">
                     <a class="btn btn-success btn-lg" href="{{ route('organismos.agregar') }}">Agregar</a>
                 </div>
             </div>
+            @endif
         </div>
         <table class="table table-bordered table-striped mt-4">
             <thead>
