@@ -575,12 +575,15 @@ class aperturaController extends Controller
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
             ->pluck('dias');
-            $tdias = 1;
+            $tdias = 0;
+            
             foreach ($total_dias as $key => $value) {
                 if ($key > 0) {
                     if ($value != $total_dias[$key-1]) {
                         $tdias += 1;
                     }
+                }else{
+                    $tdias = 1;
                 }
             }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
@@ -1022,12 +1025,14 @@ class aperturaController extends Controller
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
             ->pluck('dias');
-            $tdias = 1;
+            $tdias = 0;
             foreach ($total_dias as $key => $value) {
                 if ($key > 0) {
                     if ($value != $total_dias[$key-1]) {
                         $tdias += 1;
                     }
+                }else {
+                    $tdias = 1;
                 }
             }
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_a, 'tdias' => $tdias]);
