@@ -212,7 +212,10 @@
                             @if ($localidades == NULL)
                                 <option value="">SELECCIONE</option>
                             @else
-                                <option value="{{$localidades->clave}}">{{$localidades->localidad}}</option>
+                                @foreach ($localidades as $itemx)
+                                    <option value="{{$itemx->clave}}" @if($datains->clave_loc == $itemx->clave) selected @endif>{{$itemx->localidad}}</option>
+                                @endforeach
+
                             @endif
                         </select>
                     </div>
