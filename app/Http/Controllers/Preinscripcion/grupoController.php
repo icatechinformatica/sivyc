@@ -43,6 +43,7 @@ class grupoController extends Controller
     {
 
         $curso = $grupo = $cursos = $localidad  = $alumnos = [];
+        $es_vulnerable = false;
         $unidades = $this->data['unidades'];
         $unidad = $this->data['unidad'];
         $message = $comprobante = NULL;
@@ -76,6 +77,7 @@ class grupoController extends Controller
                 'comprobante_pago',
                 'ap.requisitos',
                 'ap.documento_curp',
+                'ap.id_gvulnerable',
                 DB::raw("substring(curp,11,1) as sex"),
                 DB::raw("CASE WHEN substring(curp,5,2) <='" . $anio_hoy . "'
                 THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
@@ -84,6 +86,11 @@ class grupoController extends Controller
             )->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')->get();
             //var_dump($alumnos);exit;
             if (count($alumnos) > 0) {
+                foreach ($alumnos as $value) {
+                    if ($value->id_gvulnerable != '[]') {
+                        $es_vulnerable = true;
+                    }
+                }
                 $id_curso = $alumnos[0]->id_curso;
                 $tipo = $alumnos[0]->tipo_curso;
                 if($alumnos[0]->comprobante_pago)$comprobante = $this->path_files.$alumnos[0]->comprobante_pago;
@@ -120,7 +127,8 @@ class grupoController extends Controller
         $grupo_vulnerable = DB::table('grupos_vulnerables')->orderBy('grupo')->pluck('grupo','id');
         if (session('message')) $message = session('message');
         $tinscripcion = $this->tinscripcion();
-        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante'));
+        return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar',
+                'es_vulnerable', 'message', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','comprobante'));
     }
 
 
