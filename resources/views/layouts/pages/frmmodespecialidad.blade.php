@@ -272,7 +272,7 @@
                     <div class="card-body">
                         @foreach ($listacursos as $key=>$itemDataCatCurso)
                         <div class="row" role="row">
-                            <div class="col-md-3" role="gridcell">
+                            <div class="col-md-3" role="gridcell" style="height: 125px; width: 250px;">
                                 <label><h5>NOMBRE</h5></label>
                                 <div class="form-control-plaintext">{{$itemDataCatCurso->nombre_curso}} // {{$itemDataCatCurso->id_especialidad}}</div>
                             </div>
