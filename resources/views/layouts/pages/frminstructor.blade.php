@@ -126,6 +126,17 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
+                    <label for="inputhonorarios">Regimen</label>
+                    <select class="form-control" name="honorario" id="honorario">
+                        <option value="sin especificar">Sin Especificar</option>
+                        <option value="HONORARIOS">Honorarios</option>
+                        <option value="ASIMILADOS">Asimilados a Salarios</option>
+                        <option value="AMBOS">Honorarios y Asimilado a Salario</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
                     <label for="inputarch_ine">Archivo INE</label>
                     <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
                 </div>

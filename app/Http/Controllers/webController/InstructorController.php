@@ -102,15 +102,23 @@ class InstructorController extends Controller
     {
         // dd('hola');
         $userId = Auth::user()->id;
+        $useruni = Auth::user()->unidad;
 
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
         // dd($verify);
         if(is_null($verify) == TRUE)
         {
+            $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
+                'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
+                'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
+                'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
+                'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
+                'PALENQUE'];
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
             $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
             $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
-            $locali = DB::TABLE('tbl_localidades')->SELECT('localidad');
+            $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('id', '=', $useruni)->FIRST();
+            $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad)->FIRST();
             $saveInstructor = new instructor();
             if ($uid['id'] === null) {
                 # si es nulo entra una vez y se le asigna un valor
@@ -144,7 +152,13 @@ class InstructorController extends Controller
             $saveInstructor->no_cuenta = $request->numero_cuenta;
             $saveInstructor->numero_control = "Pendiente";
             $saveInstructor->status = "En Proceso";
+            $saveInstructor->unidades_disponible = $unidades;
+            $saveInstructor->tipo_honorario = trim($request->honorario);
+            $saveInstructor->clave_unidad = $unidadregistra->cct;
             $saveInstructor->lastUserId = $userId;
+            $saveInstructor->extracurricular = trim($request->extracurricular);
+            $saveInstructor->stps = trim($request->stps);
+            $saveInstructor->conocer = trim($request->conocer);
 
             if ($request->file('arch_ine') != null)
             {
@@ -208,7 +222,7 @@ class InstructorController extends Controller
                 $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
                 $saveInstructor->archivo_otraid = $urlotraid; # guardamos el path
             }
-
+            // dd($saveInstructor);
             $saveInstructor->save();
 
             return redirect()->route('instructor-inicio')
