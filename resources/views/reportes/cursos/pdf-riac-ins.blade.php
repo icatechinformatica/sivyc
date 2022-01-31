@@ -134,8 +134,32 @@
                     <td>{{ $a->alumno }}</td>
                     <td>@if($a->abrinscri!="ET" AND $a->abrinscri!="EP"){{ "X" }}@endif</td>
                     <td>@if($a->abrinscri=="ET" OR $a->abrinscri=="EP"){{ "X" }}@endif</td>
-                    @if(isset($discapacidad[$a->discapacidad]))<td>{{ $discapacidad[$a->discapacidad] }}</td>
-                    @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
+                    @if ($a->id_gvulnerable &&(in_array(18, json_decode($a->id_gvulnerable))||in_array(19, json_decode($a->id_gvulnerable))||
+                    in_array(20, json_decode($a->id_gvulnerable))||in_array(21, json_decode($a->id_gvulnerable))||in_array(22, json_decode($a->id_gvulnerable))))
+                      @switch($a->id_gvulnerable)
+                          @case(in_array(18, json_decode($a->id_gvulnerable)))
+                              <td>{{"1"}}</td>
+                              @break
+                          @case(in_array(19, json_decode($a->id_gvulnerable)))
+                              <td>{{"2"}}</td>
+                              @break
+                          @case(in_array(20, json_decode($a->id_gvulnerable)))
+                                <td>{{"3"}}</td>
+                              @break
+                          @case(in_array(21, json_decode($a->id_gvulnerable)))
+                                <td>{{"4"}}</td>
+                              @break
+                          @case(in_array(22, json_decode($a->id_gvulnerable)))
+                                <td>{{"5"}}</td>
+                              @break
+                          @default
+                          <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td>
+                      @endswitch 
+                    @else
+                        <td>{{"6"}}</td>
+                    @endif
+                   {{-- @if(isset($discapacidad[$a->discapacidad]))<td>{{ $discapacidad[$a->discapacidad] }}</td>
+                    @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif--}}
                    @if($a->sexo)<td>{{ $a->sexo }}</td>
                     @else <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td> @endif
                     @if($a->edad )<td>{{ $a->edad  }}</td>
