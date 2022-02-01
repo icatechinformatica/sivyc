@@ -257,10 +257,11 @@ class InstructorController extends Controller
 
     public function rechazo_save(Request $request)
     {
+        // dd($request);
         $userId = Auth::user()->id;
 
-        $saveInstructor = instructor::find($request->id);
-        $saveInstructor->rechazo = $request->comentario_rechazo;
+        $saveInstructor = instructor::find($request->idinsrec);
+        $saveInstructor->rechazo = $request->observacion;
         $saveInstructor->status = "Rechazado";
         $saveInstructor->lastUserId = $userId;
         $saveInstructor->save();
@@ -272,38 +273,12 @@ class InstructorController extends Controller
     public function validado_save(Request $request)
     {
         $userId = Auth::user()->id;
-        $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
-        'YAJALON', 'SAN CRISTOBAL', 'CHIAPA DE CORZO', 'MOTOZINTLA', 'BERRIOZABAL', 'PIJIJIAPAN', 'JITOTOL',
-        'LA CONCORDIA', 'VENUSTIANO CARRANZA', 'TILA', 'TEOPISCA', 'OCOSINGO', 'CINTALAPA', 'COPAINALA',
-        'SOYALO', 'ANGEL ALBINO CORZO', 'ARRIAGA', 'PICHUCALCO', 'JUAREZ', 'SIMOJOVEL', 'MAPASTEPEC',
-        'VILLA CORZO', 'CACAHOATAN', 'ONCE DE ABRIL', 'TUXTLA CHICO', 'OXCHUC', 'CHAMULA', 'OSTUACAN',
-        'PALENQUE'];
-        $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')
-                    ->WHERE('clave','=', $request->localidad)->FIRST();
-        $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
-        $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
         // dd($request->localidad);
 
-        $instructor = instructor::find($request->id);
-
-        $instructor->rfc = trim($request->rfc);
-        $instructor->folio_ine = trim($request->folio_ine);
-        $instructor->sexo = trim($request->sexo);
-        $instructor->estado_civil = trim($request->estado_civil);
-        $instructor->fecha_nacimiento = $request->fecha_nacimientoins;
-        $instructor->entidad = $estado->nombre;
-        $instructor->municipio = $munic->muni;
-        $instructor->asentamiento = trim($request->asentamiento);
-        $instructor->telefono = trim($request->telefono);
-        $instructor->correo = trim($request->correo);
-        $instructor->tipo_honorario = trim($request->honorario);
-        $instructor->clave_unidad = trim($request->unidad_registra);
+        $instructor = instructor::find($request->idins);
+        // dd($request);
         $instructor->status = "Validado";
         $instructor->estado = TRUE;
-        $instructor->unidades_disponible = $unidades;
-        $instructor->lastUserId = $userId;
-        $instructor->clave_loc = $request->localidad;
-        $instructor->localidad = $locali->localidad;
 
         //Creacion de el numero de control
         $uni = substr($request->unidad_registra, -3, 2) * 1 . substr($request->unidad_registra, -1);
@@ -322,24 +297,60 @@ class InstructorController extends Controller
     {
         $instructor = new instructor();
         $datains = instructor::WHERE('id', '=', $id)->FIRST();
+        $ec = DB::TABLE('estado_civil')->SELECT('id','nombre')->GET();
+        $idest = DB::TABLE('estados')->SELECT('id')->WHERE('nombre', '=', $datains->entidad)->FIRST();
+        $estados = DB::TABLE('estados')->SELECT('id','nombre')->GET();
+        $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')
+                        ->WHERE('id_estado', '=', $idest->id)->ORDERBY('muni', 'ASC')->GET();
+        $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.localidad','tbl_localidades.clave')
+                            ->JOIN('tbl_municipios','tbl_municipios.clave', '=','tbl_localidades.clave_municipio')
+                            ->WHERE('tbl_municipios.muni', '=', $datains->municipio)
+                            ->GET();
 
-        return view('layouts.pages.editarinstructor', compact('datains'));
+
+        return view('layouts.pages.editarinstructor', compact('datains','estados','municipios','localidades','ec'));
     }
 
     public function guardar_mod(Request $request)
     {
+        // dd($request);
         $userId = Auth::user()->id;
+        $useruni = Auth::user()->unidad;
+
+        $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
+        $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
+        $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('id', '=', $useruni)->FIRST();
+        $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad)->FIRST();
+
         $modInstructor = instructor::find($request->id);
+        // dd($request->id);
 
         $modInstructor->nombre = trim($request->nombre);
         $modInstructor->apellidoPaterno = trim($request->apellido_paterno);
         $modInstructor->apellidoMaterno = trim($request->apellido_materno);
+        $modInstructor->curp = trim($request->curp);
+        $modInstructor->rfc = $request->rfc;
+        $modInstructor->folio_ine = $request->folio_ine;
+        $modInstructor->sexo = $request->sexo;
+        $modInstructor->estado_civil = $request->estado_civil;
+        $modInstructor->fecha_nacimiento = $request->fecha_nacimientoins;
+        $modInstructor->entidad = $estado->nombre;
+        $modInstructor->municipio = $munic->muni;
+        $modInstructor->clave_loc = $request->localidad;
+        $modInstructor->localidad = $locali->localidad;
+        $modInstructor->domicilio = $request->domicilio;
+        $modInstructor->telefono = $request->telefono;
+        $modInstructor->correo = $request->correo;
         $modInstructor->banco = $request->banco;
         $modInstructor->interbancaria = $request->clabe;
         $modInstructor->no_cuenta = $request->numero_cuenta;
-        $modInstructor->domicilio = $request->domicilio;
         $modInstructor->status = "En Proceso";
+        $modInstructor->tipo_honorario = trim($request->honorario);
+        $modInstructor->clave_unidad = $unidadregistra->cct;
         $modInstructor->lastUserId = $userId;
+        $modInstructor->extracurricular = trim($request->extracurricular);
+        $modInstructor->stps = trim($request->stps);
+        $modInstructor->conocer = trim($request->conocer);
 
         if ($request->file('arch_ine') != null)
         {

@@ -62,10 +62,20 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <button type="button" id="instructor_rechazar" name="instructor_rechazar" class="btn btn-danger">Rechazar</a>
+                <button type="button" class="btn btn-danger btn-lg"
+                    data-toggle="modal" data-placement="top"
+                    data-target="#RechazarModal"
+                    data-id='{{$getinstructor->id}}'>
+                    <i class="fa fa-remove"></i> &nbsp Rechazar
+                </button>
             </div>
             <div class="pull-right">
-                <button type="button" id="instructor_validar" name="instructor_validar" class="btn btn-success">Validar</a>
+                <button type="button" class="btn btn-success btn-lg"
+                    data-toggle="modal" data-placement="top"
+                    data-target="#ValidarModal"
+                    data-id='{{$getinstructor->id}}'>
+                    <i class="fa fa-check"></i> &nbsp Validar
+                </button>
             </div>
         </div>
     </div>
@@ -183,57 +193,65 @@
         </div>
     </div>
 </div>
-<!-- Modal CONFIRMAR-->
-<div class="modal fade" id="DocSupreModal" role="dialog">
+<!-- Modal RECHAZAR-->
+<div class="modal fade" id="RechazarModal" role="dialog">
     <div class="modal-dialog">
-        <form method="POST" enctype="multipart/form-data" action="{{ route('doc-supre-guardar') }}" id="doc_supre">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cargar Suficiencia Presupuestal Firmada</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="text-align:center">
-                    <div style="text-align:center" class="form-group">
-                        <input type="file" accept="application/pdf" class="form-control" id="doc_supre" name="doc_supre" placeholder="Archivo PDF">
-                        <input id="idsupmod" name="idsupmod" hidden>
-                        <button type="submit" class="btn btn-primary" >Guardar</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Rechazo</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <div style="text-align:center" class="form-group">
+                    <div class="modal-body">
+                        ¿ Estás seguro de rechazar al instructor ?
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <form method="POST" action="{{ route('instructor-rechazo') }}">
+                    @csrf
+                        <textarea name="observacion" id="observacion" cols="45" rows="5"></textarea>
+                        <br>
+                        <input type="text" name="idinsrec" id="idinsrec" hidden>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-success">Validar</button>
+                    </form>
                 </div>
             </div>
-        </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
 </div>
 <!-- END -->
-<!-- Modal RECHAZAR-->
-<div class="modal fade" id="DocSupreModal" role="dialog">
+<!-- Modal VALIDAR-->
+<div class="modal fade" id="ValidarModal" role="dialog">
     <div class="modal-dialog">
-        <form method="POST" enctype="multipart/form-data" action="{{ route('doc-supre-guardar') }}" id="doc_supre">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cargar Suficiencia Presupuestal Firmada</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="text-align:center">
-                    <div style="text-align:center" class="form-group">
-                        <input type="file" accept="application/pdf" class="form-control" id="doc_supre" name="doc_supre" placeholder="Archivo PDF">
-                        <input id="idsupmod" name="idsupmod" hidden>
-                        <button type="submit" class="btn btn-primary" >Guardar</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Validación</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <div style="text-align:center" class="form-group">
+                    <div class="modal-body">
+                        ¿ Estás seguro de validar el instructor ?
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <form method="POST" action="{{ route('instructor-validado') }}">
+                        @csrf
+                        <input type="text" name="idins" id="idins" hidden>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-success">Validar</button>
+                    </form>
                 </div>
             </div>
-        </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
 </div>
 <!-- END -->
@@ -247,7 +265,6 @@
 
         var valor = document.getElementById("municipio").value;
         var datos = {valor: valor};
-        console.log('hola');
         var url = '/instructores/busqueda/localidad';
         var request = $.ajax
         ({
@@ -312,5 +329,20 @@
             }
         });
     }
+
+    $(function()
+    {
+        $('#ValidarModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#idins').val(id);
+        });
+
+        $('#RechazarModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#idinsrec').val(id);
+        });
+    });
 </script>
 @endsection
