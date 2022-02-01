@@ -276,6 +276,7 @@ class InstructorController extends Controller
         // dd($request->localidad);
 
         $instructor = instructor::find($request->idins);
+        dd($instructor->clave_unidad);
         // dd($request);
         $instructor->status = "Validado";
         $instructor->estado = TRUE;

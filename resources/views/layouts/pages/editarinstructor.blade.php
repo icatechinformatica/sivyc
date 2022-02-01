@@ -253,5 +253,81 @@
         </div>
     </div>
 </form>
-@stop
+@endsection
+@section('script_content_js')
+    <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+    <script>
+        function local() {
+            // var x = document.getElementById("municipio").value;
+            // console.log(x);
+
+            var valor = document.getElementById("municipio").value;
+            var datos = {valor: valor};
+            console.log('hola');
+            var url = '/instructores/busqueda/localidad';
+            var request = $.ajax
+            ({
+                url: url,
+                method: 'POST',
+                data: datos,
+                dataType: 'json'
+            });
+
+            request.done(( respuesta) =>
+            {
+                $("#localidad").empty();
+                var selectL = document.getElementById('localidad'),
+                option,
+                i = 0,
+                il = respuesta.length;
+                // console.log(il);
+                // console.log( respuesta[1].id)
+                for (; i < il; i += 1)
+                {
+                    newOption = document.createElement('option');
+                    newOption.value = respuesta[i].clave;
+                    newOption.text=respuesta[i].localidad;
+                    // selectL.appendChild(option);
+                    selectL.add(newOption);
+                }
+            });
+        }
+
+        function local2() {
+            // var x = document.getElementById("municipio").value;
+            // console.log(x);
+
+            var valor = document.getElementById("entidad").value;
+            var datos = {valor: valor};
+            // console.log('hola');
+            var url = '/instructores/busqueda/municipio';
+            var request = $.ajax
+            ({
+                url: url,
+                method: 'POST',
+                data: datos,
+                dataType: 'json'
+            });
+
+            request.done(( respuesta) =>
+            {
+                $("#municipio").empty();
+                var selectL = document.getElementById('municipio'),
+                option,
+                i = 0,
+                il = respuesta.length;
+                // console.log(il);
+                // console.log( respuesta[1].id)
+                for (; i < il; i += 1)
+                {
+                    newOption = document.createElement('option');
+                    newOption.value = respuesta[i].id;
+                    newOption.text=respuesta[i].muni;
+                    // selectL.appendChild(option);
+                    selectL.add(newOption);
+                }
+            });
+        }
+    </script>
+@endsection
 
