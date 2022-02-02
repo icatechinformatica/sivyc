@@ -777,7 +777,7 @@ class ContratoController extends Controller
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
-                                  'tbl_cursos.tipo_curso','instructores.nombre','instructores.apellidoPaterno',
+                                  'tbl_cursos.tipo_curso', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc',
                                   'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
@@ -808,6 +808,7 @@ class ContratoController extends Controller
             $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
         }
 
+        $pdf->setPaper('LETTER', 'Portrait');
         return $pdf->stream("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
     }
 
@@ -825,7 +826,7 @@ class ContratoController extends Controller
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
-                                  'tbl_cursos.tipo_curso','instructores.nombre','instructores.apellidoPaterno',
+                                  'tbl_cursos.tipo_curso', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc',
                                   'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
