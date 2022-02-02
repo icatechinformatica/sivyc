@@ -612,7 +612,11 @@ class aperturaController extends Controller
         $sumaMesInicio = 0;
         $sumaMesFin = 0;
         //CRITERIO DISPONIBILIDAD FECHA Y HORA
-        $data['events'] = Agenda::where('id_instructor', '=', $id_instructor)->get();
+        $data['events'] = //Agenda::where('id_instructor', '=', $id_instructor)->get();
+                                DB::table('agenda')->select('agenda.*')->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                ->where('agenda.id_instructor', '=', $id_instructor)
+                                ->where('tbl_cursos.status','!=','CANCELADO')
+                                ->get();
         foreach($data['events'] as $evento) {
             $date = Carbon::parse($evento->start)->format('d-m-Y');
             $datefin = Carbon::parse($evento->end)->format('d-m-Y');
@@ -639,15 +643,17 @@ class aperturaController extends Controller
             $total = 0;
             $a= Carbon::parse($value)->format('d-m-Y 22:00');    //print_r($a.'||');
             $b= Carbon::parse($value)->format('d-m-Y 00:00');
-            $consulta_fechas8= DB::table('agenda')->select('start','end')
-                                                 ->where('id_instructor','=',$id_instructor)
-                                                 ->where('start','<=',$a)
-                                                 ->where('end','>=',$b)
-                                                 ->orderByRaw("extract(hour from start) asc")
+            $consulta_fechas8= DB::table('agenda')->select('agenda.start','agenda.end')
+                                                 ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                                 ->where('tbl_cursos.status','!=','CANCELADO')
+                                                 ->where('agenda.id_instructor','=',$id_instructor)
+                                                 ->where('agenda.start','<=',$a)
+                                                 ->where('agenda.end','>=',$b)
+                                                 ->orderByRaw("extract(hour from agenda.start) asc")
                                                  ->get();   //dd($consulta_fechas8);
             $suma= 0;
             foreach($consulta_fechas8 as $key=>$fechas){
-                $y= Carbon::parse($fechas->end)->format('H:i');
+                $y= Carbon::parse($fechas->end)->format('H:i'); //dd($fechas);
                 $x= Carbon::parse($fechas->start)->format('H:i');   //dd($x.'||'.$y);
                 $minutos= Carbon::parse($y)->diffInMinutes($x);
                 $suma += $minutos;
@@ -674,10 +680,12 @@ class aperturaController extends Controller
                     $array1[]=$al;
                 }
             }
-            $consulta_fechas= DB::table('agenda')->select('start','end')
-                                                 ->where('id_instructor','=',$id_instructor)
-                                                 ->where('start','>=',$dateini->format('d-m-Y'))
-                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+            $consulta_fechas= DB::table('agenda')->select('agenda.start','agenda.end')
+                                                 ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                                 ->where('tbl_cursos.status','!=','CANCELADO')
+                                                 ->where('agenda.id_instructor','=',$id_instructor)
+                                                 ->where('agenda.start','>=',$dateini->format('d-m-Y'))
+                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
                                                  ->get();
             foreach($consulta_fechas as $item){
                 $xhora= Carbon::parse($item->start)->format('H:i');
@@ -708,10 +716,12 @@ class aperturaController extends Controller
                             $array2[]= $item;
                         }
                     }
-                    $consulta_fechas2= DB::table('agenda')->select('start','end')
-                                                 ->where('id_instructor','=',$id_instructor)
-                                                 ->where('start','>=',$dateini->format('d-m-Y'))
-                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+                    $consulta_fechas2= DB::table('agenda')->select('agenda.start','agenda.end')
+                                                 ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                                 ->where('tbl_cursos.status','!=','CANCELADO')
+                                                 ->where('agenda.id_instructor','=',$id_instructor)
+                                                 ->where('agenda.start','>=',$dateini->format('d-m-Y'))
+                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
                                                  ->get();   //dd($consulta_fechas2);
                     foreach ($consulta_fechas2 as $value) {
                         $xhora= Carbon::parse($value->start)->format('H:i');
@@ -746,10 +756,12 @@ class aperturaController extends Controller
                     $array1[]=$pan;
                 }
             }
-            $consulta_fechas= DB::table('agenda')->select('start','end')
-                                                 ->where('id_instructor','=',$id_instructor)
-                                                 ->where('start','>=',$date->format('d-m-Y'))
-                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+            $consulta_fechas= DB::table('agenda')->select('agenda.start','agenda.end')
+                                                 ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                                 ->where('tbl_cursos.status','!=','CANCELADO')
+                                                 ->where('agenda.id_instructor','=',$id_instructor)
+                                                 ->where('agenda.start','>=',$date->format('d-m-Y'))
+                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
                                                  ->get();
             foreach($consulta_fechas as $item){
                 $xhora= Carbon::parse($item->start)->format('H:i');
@@ -779,10 +791,12 @@ class aperturaController extends Controller
                             $array2= $item;
                         }
                     }
-                    $consulta_fechas2= DB::table('agenda')->select('start','end')
-                                                 ->where('id_instructor','=',$id_instructor)
-                                                 ->where('start','>=',$date->format('d-m-Y'))
-                                                 ->where('end','<=',$datefin->format('d-m-Y'))
+                    $consulta_fechas2= DB::table('agenda')->select('agenda.start','agenda.end')
+                                                 ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                                 ->where('tbl_cursos.status','!=','CANCELADO')
+                                                 ->where('agenda.id_instructor','=',$id_instructor)
+                                                 ->where('agenda.start','>=',$date->format('d-m-Y'))
+                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
                                                  ->get();
                     foreach ($consulta_fechas2 as $value) {
                         $xhora= Carbon::parse($value->start)->format('H:i');
@@ -810,10 +824,12 @@ class aperturaController extends Controller
             $mes = Carbon::parse($mesActivo)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
-            $consulta = DB::table('agenda')->select('id')
-                                           ->where('id_instructor','=', $id_instructor)
-                                           ->where('start','>=', $mesInicio)
-                                           ->where('end','<=', $mesFin)
+            $consulta = DB::table('agenda')->select('agenda.id')
+                                           ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                           ->where('tbl_cursos.status','!=','CANCELADO')
+                                           ->where('agenda.id_instructor','=', $id_instructor)
+                                           ->where('agenda.start','>=', $mesInicio)
+                                           ->where('agenda.end','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
@@ -828,10 +844,12 @@ class aperturaController extends Controller
             $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
-            $consulta = DB::table('agenda')->select('id')
-                                           ->where('id_instructor','=', $id_instructor)
-                                           ->where('start','>=', $mesInicio)
-                                           ->where('end','<=', $mesFin)
+            $consulta = DB::table('agenda')->select('agenda.id')
+                                           ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                           ->where('tbl_cursos.status','!=','CANCELADO')
+                                           ->where('agenda.id_instructor','=', $id_instructor)
+                                           ->where('agenda.start','>=', $mesInicio)
+                                           ->where('agenda.end','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
@@ -864,12 +882,14 @@ class aperturaController extends Controller
         $hinimes = Carbon::parse($fechaInicio)->firstOfMonth();
         $finmes = Carbon::parse($fechaInicio)->endOfMonth();
         $total_grupos = 0;
-        $consulta_grupos = DB::table('agenda')->select('id_instructor','id_curso')
-                                           ->where('id_instructor','=', $id_instructor)
-                                           ->where('start','>=', $hinimes)
-                                           ->where('end','<=', $finmes)
-                                           ->groupBy('id_instructor','id_curso')
-                                           ->get(); //dd($consulta_grupos);
+        $consulta_grupos = DB::table('agenda')->select('agenda.id_instructor','agenda.id_curso')
+                                           ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                                           ->where('tbl_cursos.status','!=','CANCELADO')
+                                           ->where('agenda.id_instructor','=', $id_instructor)
+                                           ->where('agenda.start','>=', $hinimes)
+                                           ->where('agenda.end','<=', $finmes)
+                                           ->groupBy('agenda.id_instructor','agenda.id_curso')
+                                           ->get();
         foreach ($consulta_grupos as $valuel) {
             if ($valuel->id_curso != $id_curso) {
                 $total_grupos += 1;
