@@ -58,7 +58,7 @@ class InstructorController extends Controller
     {
         $busquedaInstructor = $request->get('busquedaPorInstructor');
         $tipoInstructor = $request->get('tipo_busqueda_instructor');
-
+        $tipoStatus = $request->get('tipo_status');
         $unidadUser = Auth::user()->unidad;
 
         $userId = Auth::user()->id;
@@ -70,12 +70,12 @@ class InstructorController extends Controller
             ->GET();
         if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
         {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
         }
         else
         {
-            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
+            $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHERE('estado' ,'=', true)
             ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
         }
@@ -117,7 +117,8 @@ class InstructorController extends Controller
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
             $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
             $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
-            $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('id', '=', $useruni)->FIRST();
+            $ubicacion = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', $useruni)->FIRST();
+            $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('unidad', '=', $ubicacion->ubicacion)->FIRST();
             $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad)->FIRST();
             $saveInstructor = new instructor();
             if ($uid['id'] === null) {
@@ -273,19 +274,16 @@ class InstructorController extends Controller
     public function validado_save(Request $request)
     {
         $userId = Auth::user()->id;
-        // dd($request->localidad);
 
         $instructor = instructor::find($request->idins);
-        dd($instructor->clave_unidad);
-        // dd($request);
         $instructor->status = "Validado";
         $instructor->estado = TRUE;
 
         //Creacion de el numero de control
-        $uni = substr($request->unidad_registra, -3, 2) * 1 . substr($request->unidad_registra, -1);
+        $uni = substr($instructor->clave_unidad, -3, 2) * 1 . substr($instructor->clave_unidad, -1);
         $now = Carbon::now();
         $year = substr($now->year, -2);
-        $rfcpart = substr($request->rfc, 0, 10);
+        $rfcpart = substr($instructor->rfc, 0, 10);
         $numero_control = $uni.$year.$rfcpart;
         $instructor->numero_control = trim($numero_control);
         $instructor->save();
@@ -320,11 +318,11 @@ class InstructorController extends Controller
 
         $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
         $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
-        $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('id', '=', $useruni)->FIRST();
+        $ubicacion = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', $useruni)->FIRST();
+        $unidadregistra = DB::TABLE('tbl_unidades')->SELECT('cct')->WHERE('unidad', '=', $ubicacion->ubicacion)->FIRST();
         $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')->WHERE('clave','=', $request->localidad)->FIRST();
 
         $modInstructor = instructor::find($request->id);
-        // dd($request->id);
 
         $modInstructor->nombre = trim($request->nombre);
         $modInstructor->apellidoPaterno = trim($request->apellido_paterno);
@@ -473,7 +471,6 @@ class InstructorController extends Controller
 
     public function save_ins(Request $request)
     {
-        // dd($request->localidad);
         $userId = Auth::user()->id;
         $modInstructor = instructor::find($request->id);
         $locali = DB::TABLE('tbl_localidades')
@@ -516,8 +513,10 @@ class InstructorController extends Controller
         }
 
         $uni = substr($request->unidad_registra, -3, 2) * 1 . substr($request->unidad_registra, -1);
-        $nuco = substr($modInstructor->numero_control, -12);
-        $numero_control = $uni.$nuco;
+        $now = Carbon::now();
+        $year = substr($now->year, -2);
+        $rfcpart = substr($request->rfc, 0, 10);
+        $numero_control = $uni.$year.$rfcpart;
         $modInstructor->numero_control = trim($numero_control);
 
         $modInstructor->banco = $request->banco;

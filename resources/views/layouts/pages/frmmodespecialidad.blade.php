@@ -143,206 +143,207 @@
 @endsection
 @section('title', 'Modificación de Especialidad Validada a Impartir | Sivyc Icatech')
 @section('content')
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> hay algunos problemas con los campos.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
+    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> hay algunos problemas con los campos.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <form action="{{ route('especinstructor-modguardar') }}" method="post" id="register_espec">
+        @csrf
+        <div class="card-header">
+            <h3>Modificar Especialidad Validada a Impartir</h3>
+            @foreach($nomesp as $data)
+                @if($data->id == $especvalid->especialidad_id)
+                    <br><h5>Especialidad Seleccionada: {{$data->nombre}}</h5>
+                @endif
             @endforeach
-        </ul>
-    </div>
-@endif
-    <section class="container g-py-40 g-pt-40 g-pb-0">
-        <form action="{{ route('especinstructor-modguardar') }}" method="post" id="register_espec">
-            @csrf
-                <div class="text-center">
-                    <h1>Modificar Especialidad Validada a Impartir</h1>
-                    @foreach($nomesp as $data)
-                        @if($data->id == $especvalid->especialidad_id)
-                            <br><h2>Especialidad Seleccionada: {{$data->nombre}}</h2>
-                        @endif
-                    @endforeach
+        </div>
+        <div class="card card-body">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputvalido_perfil">PERFIL PROFESIONAL CON EL QUE SE VALIDO</label>
+                    <select class="form-control" name="valido_perfil" id="valido_perfil">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($data_espec as $itemPerfilProf)
+                            <option {{ ($especvalid->perfilprof_id == $itemPerfilProf->id) ? 'selected' : '' }} value="{{$itemPerfilProf->id}}">{{$itemPerfilProf->grado_profesional}} {{$itemPerfilProf->area_carrera}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="inputvalido_perfil">PERFIL PROFESIONAL CON EL QUE SE VALIDO</label>
-                        <select class="form-control" name="valido_perfil" id="valido_perfil">
-                            <option value="">--SELECCIONAR--</option>
-                            @foreach ($data_espec as $itemPerfilProf)
-                                <option {{ ($especvalid->perfilprof_id == $itemPerfilProf->id) ? 'selected' : '' }} value="{{$itemPerfilProf->id}}">{{$itemPerfilProf->grado_profesional}} {{$itemPerfilProf->area_carrera}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputunidad_validacion">UNIDAD DE CAPACITACIÓN QUE SOLICITA VALIDACIÓN</label>
-                        <select name="unidad_validacion" id="unidad_validacion" class="form-control">
-                            <option value="">--SELECCIONAR--</option>
-                            @foreach ($data_unidad as $itemUnidad)
-                                <option {{ ($especvalid->unidad_solicita == $itemUnidad->unidad) ? 'selected' : '' }} value="{{$itemUnidad->unidad}}">{{$itemUnidad->unidad}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="criterio_pago_mod">CRITERIO DE PAGO</label>
-                        <select name="criterio_pago_mod" id="criterio_pago_mod" class="form-control">
-                            <option value="">--SELECCIONAR--</option>
-                            @foreach ($data_pago as $itemCriterioPago)
-                                <option {{ ($especvalid->criterio_pago_id == $itemCriterioPago->id) ? 'selected' : '' }} value="{{$itemCriterioPago->id}}">{{$itemCriterioPago->perfil_profesional}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div class="form-group col-md-4">
+                    <label for="inputunidad_validacion">UNIDAD DE CAPACITACIÓN QUE SOLICITA VALIDACIÓN</label>
+                    <select name="unidad_validacion" id="unidad_validacion" class="form-control">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($data_unidad as $itemUnidad)
+                            <option {{ ($especvalid->unidad_solicita == $itemUnidad->unidad) ? 'selected' : '' }} value="{{$itemUnidad->unidad}}">{{$itemUnidad->unidad}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="criterio_pago_mod">CRITERIO DE PAGO</label>
+                    <select name="criterio_pago_mod" id="criterio_pago_mod" class="form-control">
+                        <option value="">--SELECCIONAR--</option>
+                        @foreach ($data_pago as $itemCriterioPago)
+                            <option {{ ($especvalid->criterio_pago_id == $itemCriterioPago->id) ? 'selected' : '' }} value="{{$itemCriterioPago->id}}">{{$itemCriterioPago->perfil_profesional}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
 
-                    <div class="form-group col-md-4">
-                        <label for="inputmemorandum">MEMORANDUM DE VALIDACIÓN</label>
-                        <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true" value={{$especvalid->memorandum_validacion}}>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputfecha_validacion">FECHA DE VALIDACIÓN</label>
-                        <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true" value="{{$especvalid->fecha_validacion}}">
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputmemoranum_modificacion">MEMORANDUM DE REVALIDACIÓN</label>
-                        <input type="text" name="memorandum_modificacion" id="memorandum_modificacion" class="form-control" aria-required="true" value="{{$especvalid->memorandum_modificacion}}">
-                    </div>
+                <div class="form-group col-md-4">
+                    <label for="inputmemorandum">MEMORANDUM DE VALIDACIÓN</label>
+                    <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true" value={{$especvalid->memorandum_validacion}}>
                 </div>
-                <label for="inputexp_doc"><h2>Alta/baja de Especialidad Validada</h2></label>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        @if ($especvalid->activo == true)
-                            <label class="switch">
-                                <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
-                                <span class="slider round"></span>
-                            </label>
-                            <h5><p id="text1">Especialidad Validada Activa</p><p id="text2" style="display:none">Especialidad Validada Inactiva</p></h5>
-                        @else
-                            <label class="switch">
-                                <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
-                                <span class="slider round"></span>
-                            </label>
-                            <h5><p id="text1" style="display:none">Especialidad Validada Activa</p><p id="text2">Especialidad Validada Inactiva</p></h5>
-                        @endif
-                    </div>
+                <div class="form-group col-md-4">
+                    <label for="inputfecha_validacion">FECHA DE VALIDACIÓN</label>
+                    <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true" value="{{$especvalid->fecha_validacion}}">
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <label for="inputexp_doc"><h2>OBSERVACIONES</h2></label>
-                        <textarea name="observaciones" id="observaciones" class="form-control" cols="5" rows="8">{{$especvalid->observacion}}</textarea>
-                    </div>
+                <div class="form-group col-md-4">
+                    <label for="inputmemoranum_modificacion">MEMORANDUM DE REVALIDACIÓN</label>
+                    <input type="text" name="memorandum_modificacion" id="memorandum_modificacion" class="form-control" aria-required="true" value="{{$especvalid->memorandum_modificacion}}">
                 </div>
+            </div>
+            <label for="inputexp_doc"><h2>Alta/baja de Especialidad Validada</h2></label>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    @if ($especvalid->activo == true)
+                        <label class="switch">
+                            <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
+                            <span class="slider round"></span>
+                        </label>
+                        <h5><p id="text1">Especialidad Validada Activa</p><p id="text2" style="display:none">Especialidad Validada Inactiva</p></h5>
+                    @else
+                        <label class="switch">
+                            <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
+                            <span class="slider round"></span>
+                        </label>
+                        <h5><p id="text1" style="display:none">Especialidad Validada Activa</p><p id="text2">Especialidad Validada Inactiva</p></h5>
+                    @endif
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="inputexp_doc"><h2>OBSERVACIONES</h2></label>
+                    <textarea name="observaciones" id="observaciones" class="form-control" cols="5" rows="8">{{$especvalid->observacion}}</textarea>
+                </div>
+            </div>
 
-                <hr style="border-color:dimgray">
-                <h2>Selección de Cursos Validados para Impartir</h2>
+            <hr style="border-color:dimgray">
+            <h2>Selección de Cursos Validados para Impartir</h2>
 
-                <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
-                    <div class="card-header">
-                        <div class="form-row">
-                            <div class="form-group col-md-9"></div>
-                            <div class="form-group col-md-3">
-                                <input  type="checkbox" id="ckbCheckAll"
+            <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
+                <div class="card-header" style="background-color: white;">
+                    <div class="form-row">
+                        <div class="form-group col-md-9"></div>
+                        <div class="form-group col-md-3">
+                        </div>
+                    </div>
+                    <div class="row" role="row">
+                        <div class="col-md-3" role="columnheader">
+                            <p class="form-control-plaintext">NOMBRE</p>
+                        </div>
+                        <div class="col-md-3" role="columnheader">
+                            <p class="form-control-plaintext">RANGOS</p>
+                        </div>
+                        <div class="col-md-3" role="columnheader">
+                            <p class="form-control-plaintext">TIPO DE CURSO</p>
+                        </div>
+                        <div class="col-md-3" role="columnheader">
+                            <p class="form-control-plaintext">AÑADIR</p>
+                            <input  type="checkbox" id="ckbCheckAll"
                                     data-toggle="toggle"
                                     data-style="ios"
                                     data-on= "."
                                     data-off= "."
                                     data-onstyle="success"
                                     data-offstyle="danger"
-                                    onchange="toggleOnOff()"/> Seleccionar Todo
-                            </div>
-                        </div>
-                        <div class="row" role="row">
-                            <div class="col-md-3" role="columnheader">
-                                <p class="form-control-plaintext">NOMBRE</p>
-                            </div>
-                            <div class="col-md-3" role="columnheader">
-                                <p class="form-control-plaintext">RANGOS</p>
-                            </div>
-                            <div class="col-md-3" role="columnheader">
-                                <p class="form-control-plaintext">TIPO DE CURSO</p>
-                            </div>
-                            <div class="col-md-3" role="columnheader">
-                                <p class="form-control-plaintext">AÑADIR</p>
-                            </div>
-                        </div>
-                        <div id="gridLabel" class="card-grid-caption">
-                            <p class="form-control-plaintext">CURSO</p>
+                                    onchange="toggleOnOff()"/> <label style="color: black">Seleccionar Todo</label>
                         </div>
                     </div>
-                    <div class="card-body">
-                        @foreach ($listacursos as $key=>$itemDataCatCurso)
-                        <div class="row" role="row">
-                            <div class="col-md-3" role="gridcell" style="height: 125px; width: 250px;">
-                                <label><h5>NOMBRE</h5></label>
-                                <div class="form-control-plaintext">{{$itemDataCatCurso->nombre_curso}} // {{$itemDataCatCurso->id_especialidad}}</div>
+                    <div id="gridLabel" class="card-grid-caption">
+                        <p class="form-control-plaintext">CURSO</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @foreach ($listacursos as $key=>$itemDataCatCurso)
+                    <div class="row" role="row">
+                        <div class="col-md-3" role="gridcell" style="height: 125px; width: 250px;">
+                            <label><h5>NOMBRE</h5></label>
+                            <div class="form-control-plaintext">{{$itemDataCatCurso->nombre_curso}} // {{$itemDataCatCurso->id_especialidad}}</div>
+                        </div>
+                        <div class="col-md-3" role="gridcell">
+                            <label><h5>RANGOS</h5></label>
+                            <div class="form-control-plaintext text-truncate">MINIMO {{$itemDataCatCurso->rango_criterio_pago_minimo}} -- MÁXIMO {{$itemDataCatCurso->rango_criterio_pago_maximo}}</div>
+                        </div>
+                        <div class="col-md-3" role="gridcell">
+                            <label><h5>TIPO DE CURSO</h5></label>
+                            <div class="form-control-plaintext text-truncate">
+                                @if ($itemDataCatCurso->tipo_curso === "A DISTANCIA")
+                                    A DISTANCIA
+                                @else
+                                    PRESENCIAL
+                                @endif
                             </div>
-                            <div class="col-md-3" role="gridcell">
-                                <label><h5>RANGOS</h5></label>
-                                <div class="form-control-plaintext text-truncate">MINIMO {{$itemDataCatCurso->rango_criterio_pago_minimo}} -- MÁXIMO {{$itemDataCatCurso->rango_criterio_pago_maximo}}</div>
-                            </div>
-                            <div class="col-md-3" role="gridcell">
-                                <label><h5>TIPO DE CURSO</h5></label>
-                                <div class="form-control-plaintext text-truncate">
-                                    @if ($itemDataCatCurso->tipo_curso === "A DISTANCIA")
-                                        A DISTANCIA
-                                    @else
-                                        PRESENCIAL
+                        </div>
+                        <div class="col-md-3" role="gridcell">
+                            <label>AÑADIR</label>
+                            <div class="form-control-plaintext text-truncate">
+
+                                <input type="checkbox" class="checkBoxClass"
+                                    @if($itemDataCatCurso->activo == TRUE)
+                                        checked
                                     @endif
-                                </div>
-                            </div>
-                            <div class="col-md-3" role="gridcell">
-                                <label>AÑADIR</label>
-                                <div class="form-control-plaintext text-truncate">
-
-                                    <input type="checkbox" class="checkBoxClass"
-                                        @if($itemDataCatCurso->activo == TRUE)
-                                            checked
-                                        @endif
-                                        data-toggle="toggle"
-                                        data-style="ios"
-                                        data-on="ON"
-                                        data-off="OFF"
-                                        data-onstyle="success"
-                                        data-offstyle="danger"
-                                        name="itemEdit[{{$itemDataCatCurso->id}}][check_cursos_edit]"
-                                        value="{{$itemDataCatCurso->id}}">
-                                </div>
+                                    data-toggle="toggle"
+                                    data-style="ios"
+                                    data-on="ON"
+                                    data-off="OFF"
+                                    data-onstyle="success"
+                                    data-offstyle="danger"
+                                    name="itemEdit[{{$itemDataCatCurso->id}}][check_cursos_edit]"
+                                    value="{{$itemDataCatCurso->id}}">
                             </div>
                         </div>
-                        @endforeach
                     </div>
+                    @endforeach
                 </div>
+            </div>
 
-                <br>
-                <div class="form-row">
-                    <div class="form-group col-md-1" style="text-align: right;width:0%">
-                        <a class="btn btn-danger" href="{{route('instructor-ver', ['id' => $idins])}}">Regresar</a>
-                    </div>
-                    <div class="form-group col-md-11" style="text-align: right;width:100%">
-                        <button type="submit" class="btn btn-primary" >Modificar</button>
-                    </div>
+            <br>
+            <div class="form-row">
+                <div class="form-group col-md-1" style="text-align: right;width:0%">
+                    <a class="btn btn-danger" href="{{route('instructor-ver', ['id' => $idins])}}">Regresar</a>
                 </div>
-                <br>
-                <input type="hidden" name="idesp" id="idesp" value="{{ $id }}">
-                <input type="hidden" name="idins" id="idins" value="{{ $idins }}">
-                <input type="hidden" name="idespec" id="idespec" value="{{$especvalid->id}}">
-                <!--<input type="hidden" name="especialidad" id="especialidad" value="{ idesp }}">-->
-        </form>
-        <script>
-            function leyenda() {
-              var checkBox = document.getElementById("estado");
-              var text1 = document.getElementById("text1");
-              var text2 = document.getElementById("text2");
-              if (checkBox.checked == true){
-                text1.style.display = "block";
-                text2.style.display = "none";
-              } else {
-                 text1.style.display = "none";
-                 text2.style.display = "block";
-              }
+                <div class="form-group col-md-11" style="text-align: right;width:100%">
+                    <button type="submit" class="btn btn-primary" >Modificar</button>
+                </div>
+            </div>
+            <br>
+            <input type="hidden" name="idesp" id="idesp" value="{{ $id }}">
+            <input type="hidden" name="idins" id="idins" value="{{ $idins }}">
+            <input type="hidden" name="idespec" id="idespec" value="{{$especvalid->id}}">
+            <!--<input type="hidden" name="especialidad" id="especialidad" value="{ idesp }}">-->
+        </div>
+    </form>
+    <script>
+        function leyenda() {
+            var checkBox = document.getElementById("estado");
+            var text1 = document.getElementById("text1");
+            var text2 = document.getElementById("text2");
+            if (checkBox.checked == true){
+            text1.style.display = "block";
+            text2.style.display = "none";
+            } else {
+                text1.style.display = "none";
+                text2.style.display = "block";
             }
-        </script>
-    </section>
+        }
+    </script>
 @stop
 @section('script_content_js')
     <script src="{{ asset("js/scripts/bootstrap-toggle.js") }}"></script>

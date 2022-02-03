@@ -75,15 +75,16 @@
     </style>
 </head>
 @section('content')
-    <section class="container g-py-40 g-pt-40 g-pb-0">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
-        @endif
-        <div class="text-center">
-            <h1>Ver Instructor<h1>
+    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success">
+            <p>{{ $message }}</p>
         </div>
+    @endif
+    <div class="card-header">
+        <h1>Ver Instructor<h1>
+    </div>
+    <div class="card card-body">
         <h2>Vista de Documentos</h2>
         <div class="form-row">
             @if ($datains->archivo_ine != NULL)
@@ -515,7 +516,7 @@
               }
             }
         </script>
-    </section>
+    </div>
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>

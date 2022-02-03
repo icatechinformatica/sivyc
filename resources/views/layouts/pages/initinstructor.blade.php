@@ -4,6 +4,7 @@
 @section('title', 'Instructor | SIVyC Icatech')
 <!--seccion-->
 @section('content')
+    <link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
     <style>
         * {
         box-sizing: border-box;
@@ -21,12 +22,13 @@
         margin-bottom: 12px;
         }
     </style>
-    <div class="container g-pt-50">
+    <div class="card-header">
+        <h3>REGISTRO DE INSTRUCTORES</h3>
+    </div>
+    <div class="card card-body">
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>REGISTRO DE INSTRUCTORES</h2>
-
                     {!! Form::open(['route' => 'instructor-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_busqueda_instructor" class="form-control mr-sm-2" id="tipo_busqueda_instructor">
                             <option value="">BUSCAR POR TIPO</option>
@@ -35,8 +37,17 @@
                             <option value="telefono_instructor">TELÉFONO</option>
                             <option value="estatus_instructor">ESTATUS</option>
                         </select>
-
-                        {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        <Div id="divcampo" name="divcampo">
+                            {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                        </Div>
+                        <Div id="divstat" name="divstat" class="d-none d-print-none">
+                            <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
+                                <option value="">BUSQUEDA POR STATUS</option>
+                                <option value="En Proceso">EN PROCESO</option>
+                                <option value="Validado">VALIDADO</option>
+                                <option value="Rechazado">RECHAZADO</option>
+                            </select>
+                        </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
 
@@ -104,4 +115,31 @@
         <br>
     </div>
     <br>
+@endsection
+@section('script_content_js')
+    <script>
+        $(function(){
+            //metodo
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            document.getElementById('tipo_busqueda_instructor').onchange = function() {
+                var index = this.selectedIndex;
+                var inputText = this.children[index].innerHTML.trim();
+                if(inputText != 'ESTATUS')
+                {
+                    $('#divstat').prop("class", "form-row d-none d-print-none")
+                    $('#divcampo').prop("class", "")
+                }
+                else
+                {
+                    $('#divstat').prop("class", "")
+                    $('#divcampo').prop("class", "form-row d-none d-print-none")
+                }
+            }
+        });
+    </script>
 @endsection

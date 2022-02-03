@@ -214,7 +214,7 @@
                         <br>
                         <input type="text" name="idinsrec" id="idinsrec" hidden>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-success">Validar</button>
+                        <button type="submit" class="btn btn-success">Rechazar</button>
                     </form>
                 </div>
             </div>
