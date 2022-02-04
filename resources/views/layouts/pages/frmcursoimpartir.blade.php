@@ -7,6 +7,11 @@
     <h1>Añadir Especialidad Validada para Impartir</h1>
 </div>
 <div class="card card-body">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            {{ $errors->first() }}
+        </div>
+    @endif
     <table  id="table-instructor" class="table table-bordered">
         <caption>Catalogo de Especialidades</caption>
         <thead>
