@@ -227,6 +227,7 @@ class aperturaController extends Controller
                         ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')->where('instructores.id',$request->instructor)
                         //->whereJsonContains('unidades_disponible', [$grupo->unidad])
                         ->WHERE('especialidad_instructores.especialidad_id',$grupo->id_especialidad)
+                        ->WHERE('especialidad_instructores.activo','true')
                         ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
                         ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                         ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
