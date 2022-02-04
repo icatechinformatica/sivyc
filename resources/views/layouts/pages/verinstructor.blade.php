@@ -426,8 +426,8 @@
             @else
                 <div class="alert alert-warning">
                     <strong>Info!</strong> No hay Registros
-            @endif
                 </div>
+            @endif
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
                         <div class="pull-left">
@@ -502,21 +502,21 @@
                 </div>
             </div>
         </div>
-        <script>
-            function leyenda() {
-              var checkBox = document.getElementById("estado");
-              var text1 = document.getElementById("text1");
-              var text2 = document.getElementById("text2");
-              if (checkBox.checked == true){
-                text1.style.display = "block";
-                text2.style.display = "none";
-              } else {
-                 text1.style.display = "none";
-                 text2.style.display = "block";
-              }
-            }
-        </script>
     </div>
+    <script>
+        function leyenda() {
+            var checkBox = document.getElementById("estado");
+            var text1 = document.getElementById("text1");
+            var text2 = document.getElementById("text2");
+            if (checkBox.checked == true){
+            text1.style.display = "block";
+            text2.style.display = "none";
+            } else {
+                text1.style.display = "none";
+                text2.style.display = "block";
+            }
+        }
+    </script>
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
