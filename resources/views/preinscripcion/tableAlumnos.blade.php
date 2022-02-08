@@ -29,7 +29,7 @@
                 <th>{{ $a->fnacimiento }}</th>
                 <th>{{ $a->ultimo_grado_estudios }}</th>
                 <th>{{$a->tinscripcion}}</th>
-                <th class="text-center">{{ Form::text('costo['.$a->id_reg.']', $a->costo , ['id'=>'costo['.$a->id_reg.']', 'class' => 'form-control numero', 'size' => 1]) }}</th>
+                <th class="text-center">{{ Form::text('costo['.$a->id_reg.']', $a->costo , ['id'=>'costo['.$a->id_reg.']', 'class' => 'form-control numero', 'size' => 1, 'maxlength' => '4']) }}</th>
                 <th class="text-center">
                   @if($activar)
                     <a class="nav-link" ><i class="fa fa-remove  fa-2x fa-lg text-danger" onclick="eliminar({{$a->id_reg}},'{{ route('preinscripcion.grupo.eliminar') }}');" title="Eliminar"></i></a>
