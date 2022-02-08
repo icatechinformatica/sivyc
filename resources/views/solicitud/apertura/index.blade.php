@@ -121,16 +121,6 @@
                     <label>Programa Estrat&eacute;gico:</label>
                     {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div> 
-                @if ($grupo->mod == 'EXT')
-                <div class="form-group col-md-2">
-                    <label>Convenio General:</label>
-                    <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$grupo->cgeneral}}" style="Background-color: rgb(240, 240, 240);"/>
-                </div>  
-                <div class="form-group col-md-2">
-                    <label>Fecha Convenio General:</label>                    
-                   <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$grupo->fcgen}}" style="Background-color: rgb(240, 240, 240);"/ >
-                </div> 
-                @else
                 <div class="form-group col-md-2">
                     <label>Convenio General:</label>
                     <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" readonly/>
@@ -138,8 +128,7 @@
                 <div class="form-group col-md-2">
                     <label>Fecha Convenio General:</label>                    
                    <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" readonly/ >
-                </div>
-                @endif                                              
+                </div>                                             
                 <div class="form-group col-md-3">
                     <label>Sector:</label>
                     <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" readonly/>
