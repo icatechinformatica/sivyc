@@ -883,16 +883,15 @@ class aperturaController extends Controller
         $hinimes = Carbon::parse($fechaInicio)->firstOfMonth();
         $finmes = Carbon::parse($fechaInicio)->endOfMonth();
         $total_grupos = 0;
-        $consulta_grupos = DB::table('agenda')->select('agenda.id_instructor','agenda.id_curso')
-                                           ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
-                                           ->where('tbl_cursos.status','!=','CANCELADO')
-                                           ->where('agenda.id_instructor','=', $id_instructor)
-                                           ->where('agenda.start','>=', $hinimes)
-                                           ->where('agenda.end','<=', $finmes)
-                                           ->groupBy('agenda.id_instructor','agenda.id_curso')
+        $consulta_grupos = DB::table('tbl_cursos')->select('id_instructor','folio_grupo')
+                                           ->where('status','!=','CANCELADO')
+                                           ->where('id_instructor','=', $id_instructor)
+                                           ->where('inicio','>=', $hinimes)
+                                           ->where('inicio','<=', $finmes)
+                                           ->groupBy('id_instructor','folio_grupo')
                                            ->get();
         foreach ($consulta_grupos as $valuel) {
-            if ($valuel->id_curso != $id_curso) {
+            if ($valuel->folio_grupo != $id_curso) {
                 $total_grupos += 1;
                 if ($total_grupos > 3) {
                     return 'iguales6';

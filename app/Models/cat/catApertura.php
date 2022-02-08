@@ -162,7 +162,7 @@ trait catApertura
 											    (select id_instructor, id from tbl_cursos
 											    where inicio >= '$hinimes'
 											    and inicio<= '$finmes'
-											    and status_curso != 'CANCELADO') as t
+											    and status != 'CANCELADO') as t
 											    group by id_instructor) as r
                                             where r.total > 3")])
             /*->whereNotIn('instructores.id', [DB::raw("select id_instructor from agenda
