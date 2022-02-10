@@ -217,7 +217,7 @@ class ContratoController extends Controller
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
         $contrato->fecha_status = carbon::now();
-        $contrato->tipo_factura = $request->tipo_factura;
+        // $contrato->tipo_factura = $request->tipo_factura;
         $file = $request->file('factura'); # obtenemos el archivo
         if ($file != NULL)
         {
@@ -312,7 +312,7 @@ class ContratoController extends Controller
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->fecha_status = carbon::now();
-        $contrato->tipo_facutra = $request->tipo_factura;
+        // $contrato->tipo_facutra = $request->tipo_factura;
 
         if($request->factura != NULL)
         {
