@@ -184,7 +184,7 @@
                     <br/>
                     <br>________________________________________
                     <br><small><a data-target="#contratoModal" data-toggle="modal" class="MainNavText" id="MainNavHelp" href="#contratoModal">{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</a></small>
-                    <br><small>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}} </small></b>
+                    <br><small>{{$testigo3->puesto}}</small></b>
                 </div>
                 <br><br>
                 <div align=justify>

@@ -180,7 +180,7 @@
                     <br/>
                     <br>________________________________________
                     <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
-                    <br><small><b>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}}<b/> </small></b>
+                    <br><small><b>{{$testigo3->puesto}}</b> </small></b>
                 </div>
                 <br>
                 <div align=justify>

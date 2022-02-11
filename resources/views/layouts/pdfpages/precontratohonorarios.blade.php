@@ -148,8 +148,8 @@
                 <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <table>
                     <tr>
-                        <td colspan="2"><b><p align="center">"EL ICATECH"</p></b></td>
-                        <td colspan="2"><b><p align="center">"EL (LA) PRESTADOR DE SERVICIOS"</p></b></td>
+                        <td colspan="2"><p align="center"><b>"ICATECH"</b></p></td>
+                        <td colspan="2"><p align="center"><b>"PRESTADOR DE SERVICIOS"</b></p></td>
                     </tr>
                     <tr>
                         <td colspan="2"><div align="center"><br><br></td></div>
@@ -186,7 +186,7 @@
                     <br/>
                     <br>________________________________________
                     <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
-                    <br><small><b>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}}</b></small></b>
+                    <br><small><b>{{$testigo3->puesto}}</b></small></b>
                 </div>
                 <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <br><br>
