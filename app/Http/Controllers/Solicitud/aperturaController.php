@@ -209,7 +209,7 @@ class aperturaController extends Controller
         
         if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
                 $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
-                $horas = (strtotime($request->hfin)-strtotime($request->hini))/3600;
+                $horas = round((strtotime($request->hfin)-strtotime($request->hini))/3600,2);
                 if($request->tcurso == "CERTIFICACION" AND $horas==10 OR $request->tcurso == "CURSO"){
                     $alumnos = $_SESSION['alumnos'];   //var_dump($alumnos);exit;
                     $unidad = DB::table('tbl_unidades')->select('cct','plantel')->where('unidad',$grupo->unidad)->first();

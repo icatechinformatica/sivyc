@@ -51,13 +51,20 @@ class rcdod11Controller extends Controller
         $ftermino=$request->fecha_termino;
         if($unidad or $finicio or $ftermino){
 
+            // $consulta=DB::table('tbl_cursos as tc')
+            // ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
+            // ->join('tbl_folios as tf', 'i.id_folio','=','tf.id')
+            // ->select('tf.matricula','i.alumno','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
+            // ->where('tc.status','=','REPORTADO')
+            // ->whereIn('tf.motivo',['ROBO O EXTRAVIO','NO SOLICITADO'])
+            // ->where('tf.movimiento','=','CANCELADO');
             $consulta=DB::table('tbl_cursos as tc')
-            ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
-            ->join('tbl_folios as tf', 'i.id_folio','=','tf.id')
-            ->select('tf.matricula','i.alumno','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
+            ->join('tbl_folios as tf', 'tc.id','=','tf.id_curso')
+            ->select('tf.matricula','tf.nombre as alumno',
+                DB::raw("(select f.folio from tbl_folios as f where f.movimiento='CANCELADO' and f.motivo in ('ROBO O EXTRAVIO','NO SOLICITADO') and tf.matricula=f.matricula and f.id_curso=tc.id)as folio"),
+                'tf.folio as duplicado')
             ->where('tc.status','=','REPORTADO')
-            ->whereIn('tf.motivo',['ROBO O EXTRAVIO','NO SOLICITADO'])
-            ->where('tf.movimiento','=','CANCELADO');
+            ->where('tf.movimiento','=','DUPLICADO');
             if($finicio){$consulta=$consulta->where('tc.termino','>=',$finicio);}
             if($ftermino){$consulta=$consulta->where('tc.termino','<=',$ftermino);}
             if($unidad=="TODO"){$consulta=$consulta->whereIn('tc.unidad',$unidades);}else{$consulta=$consulta->where('tc.unidad',$unidad);}
@@ -76,18 +83,30 @@ class rcdod11Controller extends Controller
         if($finicio==null||$ftermino==null){return redirect()->route('carter')->with('success', 'Selecione un rango de fecha');}
         $sq=DB::table('tbl_unidades')->select('unidad','cct','plantel','dunidad')->where('unidad',$unidad)->get();//dd($sq);
 
+        // $consulta=DB::table('tbl_cursos as tc')
+        //     ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
+        //     ->join('tbl_folios as tf', 'i.id_folio','=','tf.id')
+        //     ->select('tf.matricula','i.alumno','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
+        //     ->where('tc.status','=','REPORTADO')
+        //     ->whereIn('tf.motivo',['ROBO O EXTRAVIO','NO SOLICITADO'])
+        //     ->where('tf.movimiento','=','CANCELADO')
+        //     ->where('tc.unidad',$unidad)
+        //     ->where('tc.termino','>=',$finicio)
+        //     ->where('tc.termino','<=',$ftermino)
+        //     ->orderBy('tf.nombre')
+        //     ->get();//dd($consulta);
         $consulta=DB::table('tbl_cursos as tc')
-            ->join('tbl_inscripcion as i','tc.id','=','i.id_curso')
-            ->join('tbl_folios as tf', 'i.id_folio','=','tf.id')
-            ->select('tf.matricula','i.alumno','tf.folio',DB::raw("(select f.folio from tbl_folios as f where f.movimiento='DUPLICADO' and i.matricula=f.matricula and f.id_curso=i.id_curso)as duplicado"))
+            ->join('tbl_folios as tf', 'tc.id','=','tf.id_curso')
+            ->select('tf.matricula','tf.nombre as alumno',
+                DB::raw("(select f.folio from tbl_folios as f where f.movimiento='CANCELADO' and f.motivo in ('ROBO O EXTRAVIO','NO SOLICITADO') and tf.matricula=f.matricula and f.id_curso=tc.id)as folio"),
+                'tf.folio as duplicado')
             ->where('tc.status','=','REPORTADO')
-            ->whereIn('tf.motivo',['ROBO O EXTRAVIO','NO SOLICITADO'])
-            ->where('tf.movimiento','=','CANCELADO')
+            ->where('tf.movimiento','=','DUPLICADO')
             ->where('tc.unidad',$unidad)
             ->where('tc.termino','>=',$finicio)
             ->where('tc.termino','<=',$ftermino)
             ->orderBy('tf.nombre')
-            ->get();//dd($consulta);
+            ->get();
         
         
 
