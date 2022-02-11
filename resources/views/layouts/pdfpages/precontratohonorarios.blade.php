@@ -148,24 +148,24 @@
                 <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <table>
                     <tr>
-                        <td colspan="2"><p align="center">"EL ICATECH"</p></td>
-                        <td colspan="2"><p align="center">"EL (LA) PRESTADOR DE SERVICIOS"</p></td>
+                        <td colspan="2"><b><p align="center">"EL ICATECH"</p></b></td>
+                        <td colspan="2"><b><p align="center">"EL (LA) PRESTADOR DE SERVICIOS"</p></b></td>
                     </tr>
                     <tr>
                         <td colspan="2"><div align="center"><br><br></td></div>
                         <td colspan="2"><div align="center"><br><br></td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</td></div>
-                        <td colspan="2"><div align="center">C. {{$nomins}}</td></div>
+                        <td colspan="2"><b><div align="center">{{$director->nombre}} {{$director->apellidoPaterno}} {{$director->apellidoMaterno}}</b></td></div>
+                        <td colspan="2"><b><div align="center">C. {{$nomins}}</b></td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">{{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}</td></div>
+                        <td colspan="2"><div align="center"><b>{{$director->puesto}} DE CAPACITACIÓN {{$data_contrato->unidad_capacitacion}}</b></td></div>
                         <td colspan="2"><div align="center"></td></div>
                     </tr>
                 </table>
                 <br><br>
-                <p align="center">"TESTIGOS"</p>
+                <p align="center"><b>"TESTIGOS"</b></p>
                 <br><br>
                 <table>
                     <tr>
@@ -173,20 +173,20 @@
                         <td colspan="2"><p align="center"></p></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}</td></div>
-                        <td colspan="2"><div align="center">{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}</td></div>
+                        <td colspan="2"><div align="center"><b>{{$testigo1->nombre}} {{$testigo1->apellidoPaterno}} {{$testigo1->apellidoMaterno}}</b></td></div>
+                        <td colspan="2"><div align="center"><b>{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}</b></td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">{{$testigo1->puesto}}</td></div>
-                        <td colspan="2"><div align="center">{{$testigo2->puesto}}</td></div>
+                        <td colspan="2"><b><div align="center">{{$testigo1->puesto}}</b></td></div>
+                        <td colspan="2"><b><div align="center">{{$testigo2->puesto}}</b></td></div>
                     </tr>
                 </table>
                 <div align=center>
                     <br>
                     <br/>
                     <br>________________________________________
-                    <br><small>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</small>
-                    <br><small>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}}</small></b>
+                    <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
+                    <br><small><b>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}}</b></small></b>
                 </div>
                 <br><div align="center" style="color: red;"><b>PREVISUALIZACIÓN DE CONTRATO</b></div>
                 <br><br>

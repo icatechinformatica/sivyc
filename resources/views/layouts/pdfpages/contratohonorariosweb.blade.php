@@ -146,7 +146,7 @@
                 <br><br>
                 <table>
                     <tr>
-                        <td colspan="2"><p align="center">"ICATECH"</p></td>
+                        <td colspan="2"><b><p align="center">"ICATECH"</p></td>
                         <td colspan="2"><p align="center">"PRESTADOR DE SERVICIOS"</p></td>
                     </tr>
                     <tr>
