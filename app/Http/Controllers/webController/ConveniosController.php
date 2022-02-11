@@ -217,23 +217,23 @@ class ConveniosController extends Controller
                 $convenios->id_organismo = $id_organismo->id;
             }
         }
-         
+
         $organismo = DB::table('organismos_publicos as o')->select(
-                            'o.organismo', 
+                            'o.organismo',
                             'o.nombre_titular',
                             'o.telefono',
                             'o.correo as correo',
                             'o.direccion',
-                            'l.localidad', 
+                            'l.localidad',
                             'e.nombre as estado',
                             'm.muni as municipio'
                         )
-                        ->leftJoin('tbl_localidades as l','o.clave_localidad','=','l.clave') 
+                        ->leftJoin('tbl_localidades as l','o.clave_localidad','=','l.clave')
                         ->join('estados as e', 'o.id_estado', 'e.id')
                         ->join('tbl_municipios as m', 'o.id_municipio', 'm.id')
                         ->where('o.id',$convenios->id_organismo)
                         ->first();
-        
+
         return view('layouts.pages.editconvenio', ['convenios' => $convenios, 'unidades' => $unidades, 'organismos' => $organismos, 'organismo' => $organismo]);
     }
 
@@ -469,7 +469,7 @@ class ConveniosController extends Controller
     }
 
     /* protected function uploaded_file($file, $id, $name) {
-        $tamanio = $file->getSize(); 
+        $tamanio = $file->getSize();
         $extensionFile = $file->getClientOriginalExtension();
         $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
         $path = 'convenios/' . $id . '/' . $documentFile;
@@ -508,11 +508,11 @@ class ConveniosController extends Controller
                     ->select(
                         'o.nombre_titular',
                         'o.telefono','o.correo',
-                        'o.direccion','l.localidad', 
+                        'o.direccion','l.localidad',
                         'e.nombre as estado',
                         'm.muni as municipio'
                     )
-                    ->leftJoin('tbl_localidades as l','o.clave_localidad','=','l.clave') 
+                    ->leftJoin('tbl_localidades as l','o.clave_localidad','=','l.clave')
                     ->join('estados as e', 'o.id_estado', 'e.id')
                     ->join('tbl_municipios as m', 'o.id_municipio', 'm.id')
                     ->where('o.id',$request->organismo_id)
