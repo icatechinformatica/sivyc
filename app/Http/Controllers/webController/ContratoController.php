@@ -31,6 +31,8 @@ class ContratoController extends Controller
 {
     public function index(Request $request)
     {
+        $array_ejercicio =[];
+        $año_pointer = CARBON::now()->format('Y');
         /**
          * parametros para iniciar la busqueda
          */
@@ -49,10 +51,22 @@ class ContratoController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
+        if($request->ejercicio == NULL)
+        {
+            $año_referencia = '01-01-' . CARBON::now()->format('Y');
+            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
+        }
+        else
+        {
+            $año_referencia = '01-01-' . $request->ejercicio;
+            $año_referencia2 = '31-12-' . $request->ejercicio;
+            $año_pointer = $request->ejercicio;
+        }
 
-        $año_referencia = '01-01-' . CARBON::now()->format('Y');
-        $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
-
+        for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
+        {
+            array_push($array_ejercicio, $x);
+        }
         $contratos = new contratos();
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
@@ -141,6 +155,7 @@ class ContratoController extends Controller
                     ->WHERE('folios.status', '!=', 'Rechazado')
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+                    ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
                     ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                     ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                     ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -158,7 +173,7 @@ class ContratoController extends Controller
         }
         // dd($querySupre2);
         // dd($querySupre);
-        return view('layouts.pages.vstacontratoini', compact('querySupre','unidades'));
+        return view('layouts.pages.vstacontratoini', compact('querySupre','unidades','array_ejercicio', 'año_pointer'));
     }
 
     /**
