@@ -198,7 +198,14 @@ class ContratoController extends Controller
         }
         else
         {
-            $consecutivo = substr($consecutivo, 11, 4) + 1;
+            if ($uni_contrato->ubicacion == 'TUXTLA')
+            {
+                $consecutivo = substr($consecutivo, 10, 4) + 1;
+            }
+            else
+            {
+                $consecutivo = substr($consecutivo, 11, 4) + 1;
+            }
             switch (strlen($consecutivo))
             {
                 case 1:
