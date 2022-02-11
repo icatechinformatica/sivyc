@@ -103,6 +103,8 @@ class supreController extends Controller
     }
 
     public function solicitud_supre_inicio(Request $request) {
+        $array_ejercicio =[];
+        $año_pointer = CARBON::now()->format('Y');
         /**
          * parametros de busqueda
          */
@@ -111,13 +113,34 @@ class supreController extends Controller
         $tipoStatus = $request->get('tipo_status');
         $unidad = $request->get('unidad');
 
+        if($request->ejercicio == NULL)
+        {
+            $año_referencia = '01-01-' . CARBON::now()->format('Y');
+            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
+        }
+        else
+        {
+            $año_referencia = '01-01-' . $request->ejercicio;
+            $año_referencia2 = '31-12-' . $request->ejercicio;
+            $año_pointer = $request->ejercicio;
+        }
+
+        for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
+        {
+            array_push($array_ejercicio, $x);
+        }
+
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-                        ->where('id', '!=', '0')
-                        ->latest()->paginate(25);
+                        ->where('tabla_supre.id', '!=', '0')
+                        ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+                        ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+                        ->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                        ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                        ->latest()->paginate(25, ['tabla_supre.*']);
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
-        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));
+        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer'));
     }
 
     public function frm_formulario() {

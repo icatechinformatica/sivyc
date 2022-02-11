@@ -30,6 +30,8 @@ class PagoController extends Controller
 
     public function index(Request $request)
     {
+        $array_ejercicio =[];
+        $año_pointer = CARBON::now()->format('Y');
         /**
          * busqueda de pago
          */
@@ -38,6 +40,23 @@ class PagoController extends Controller
         $tipoStatus = $request->get('tipo_status');
         $unidad = $request->get('unidad');
         $mes = $request->get('mes');
+
+        if($request->ejercicio == NULL)
+        {
+            $año_referencia = '01-01-' . CARBON::now()->format('Y');
+            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
+        }
+        else
+        {
+            $año_referencia = '01-01-' . $request->ejercicio;
+            $año_referencia2 = '31-12-' . $request->ejercicio;
+            $año_pointer = $request->ejercicio;
+        }
+
+        for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
+        {
+            array_push($array_ejercicio, $x);
+        }
 
         $contrato = new contratos();
         // obtener el usuario y su unidad
@@ -59,6 +78,8 @@ class PagoController extends Controller
         $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
         ->WHEREIN('folios.status', ['Contrato_Validado','Verificando_Pago','Pago_Verificado','Pago_Rechazado',
                     'Finalizado'])
+        ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+        ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
         ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
         ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -109,6 +130,8 @@ class PagoController extends Controller
                 $contratos_folios = $contrato::busquedaporpagos($tipoPago, $busqueda_pago, $tipoStatus, $unidad, $mes)
                 ->WHERE('tbl_unidades.ubicacion', '=', $unidadPorUsuario->ubicacion)
                 ->WHEREIN('folios.status', ['Verificando_Pago','Pago_Verificado','Pago_Rechazado','Finalizado'])
+                ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+                ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
                 ->LEFTJOIN('folios','folios.id_folios', '=', 'contratos.id_folios')
                 ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -123,7 +146,7 @@ class PagoController extends Controller
                 break;
         }
 
-        return view('layouts.pages.vstapago', compact('contratos_folios','unidades'));
+        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio'));
     }
 
     public function crear_pago($id)
