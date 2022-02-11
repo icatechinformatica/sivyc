@@ -65,7 +65,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            ->WHERE('folios.status', '!=', 'Validado')
+            // ->WHERE('folios.status', '!=', 'Validado')
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
             ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
             ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
@@ -164,7 +164,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -180,6 +180,48 @@ class ContratoController extends Controller
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $pago = round($data->importe_total-$data->iva, 2);
 
+
+        $año_referencia = '01-01-' . CARBON::now()->format('Y');
+        // dd($año_referencia);
+        $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
+        $consecutivo = DB::TABLE('contratos')
+                        ->WHERE('tbl_unidades.ubicacion', '=', $uni_contrato->ubicacion)
+                        ->WHERE('contratos.fecha_firma','>=', $año_referencia)
+                        ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                        ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
+                        ->LATEST('contratos.created_at')
+                        ->VALUE('numero_contrato');
+        if ($consecutivo == NULL)
+        {
+            $consecutivo = '0001';
+        }
+        else
+        {
+            $consecutivo = substr($consecutivo, 11, 4) + 1;
+            switch (strlen($consecutivo))
+            {
+                case 1:
+                    $consecutivo = '000' . $consecutivo;
+                break;
+                case 2:
+                    $consecutivo = '00' . $consecutivo;
+                break;
+                case 3:
+                    $consecutivo = '0' . $consecutivo;
+                break;
+            }
+        }
+        // dd($consecutivo);
+        if($uni_contrato->ubicacion == 'SAN CRISTOBAL')
+        {
+            $uni_contrato = 'SC'.'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $uni_contrato->ubicacion)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. CARBON::now()->format('Y');
+        }
+        else
+        {
+            $uni_contrato = substr($uni_contrato->ubicacion, 0, 2).'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $uni_contrato->ubicacion)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. CARBON::now()->format('Y');
+        }
+
         $date = strtotime($data->termino);
         $dacarbon = strtotime(Carbon::now());
 
@@ -194,7 +236,7 @@ class ContratoController extends Controller
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato'));
     }
 
     public function contrato_save(Request $request)
@@ -206,7 +248,7 @@ class ContratoController extends Controller
         {
             return back()->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE CONTRATO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->numero_contrato));
         }
-
+        // dd($request->numero_contrato);
         $contrato = new contratos();
         $contrato->numero_contrato = $request->numero_contrato;
         $contrato->instructor_perfilid = $request->perfil_instructor;
