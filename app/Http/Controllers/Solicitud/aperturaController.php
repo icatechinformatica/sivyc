@@ -515,29 +515,32 @@ class aperturaController extends Controller
         $id_curso = DB::table('agenda')->where('id',$id)->value('id_curso');
         Agenda::destroy($id);
         $dias_agenda = DB::table('agenda')
-            ->select(db::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"))
+            ->select(db::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"),
+                db::raw("generate_series(agenda.start, agenda.end, '1 day'::interval)::date as fecha"))
             ->where('id_curso',$id_curso)
-            ->orderBy('agenda.start')
-            ->pluck('dia');
+            ->orderBy('fecha')
+            ->get();
             if (count($dias_agenda) > 0) {
-                $dias = []; $temp = $dias_agenda[0]; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
+                $dias = []; $temp = $dias_agenda[0]->dia; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
                 foreach ($dias_agenda as $key => $value) {
                     if ($key > 0) {
-                        if ((($temp+1)==$value) && !$temp2) {
-                            $temp2 = $value;
+                        if ((($temp+1)==$value->dia) && !$temp2) {
+                            $temp2 = $value->dia;
                             $save = false;
-                        }elseif ($temp2 && (($temp2+1)==$value)) {
-                            $temp2 = $value;
+                        }elseif ($temp2 && (($temp2+1)==$value->dia)) {
+                            $temp2 = $value->dia;
                             $save = false;
-                        }elseif (($temp == '6')&&($value=='0')) {
-                            $temp2 = $value;
+                        }elseif ( (($temp == '6')||($temp2 == '6')) &&($value->dia=='0')) {
+                            $temp2 = $value->dia;
+                            $save = false;
+                        }elseif ((($temp == $value->dia)||($temp2 == $value->dia))&&($value->fecha == $dias_agenda[$key-1]->fecha)) {
                             $save = false;
                         }else {
                             $save = true;
                         }
                         if ($save == true) {
                             $dias[] = [$temp,$temp2];
-                            $temp = $value;
+                            $temp = $value->dia;
                             $temp2 = null;
                             $save = false;
                         }
@@ -553,7 +556,7 @@ class aperturaController extends Controller
                         $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
                     }elseif (($item[0]=='6')&&($item[1]=='0')) {
                         $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
-                    }elseif($item[1] && ($item[0] > $item[1])){
+                    }elseif((($item[0]) > ($item[1])) && isset($item[1])){
                         $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
                     }else {
                         $dias_a[] = $this->dia($item[0]);
@@ -574,10 +577,11 @@ class aperturaController extends Controller
             }else {
                 $dias_a = 0;
             }
-        $total_dias = DB::table('agenda')
+            $total_dias = DB::table('agenda')
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
-            ->pluck('dias');
+            ->orderBy('dias')
+            ->pluck('dias');//dd($total_dias);
             $tdias = 0;
             
             foreach ($total_dias as $key => $value) {
@@ -988,72 +992,81 @@ class aperturaController extends Controller
             }
         }
         $dias_agenda = DB::table('agenda')
-            ->select(db::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"))
+            ->select(db::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"),
+                db::raw("generate_series(agenda.start, agenda.end, '1 day'::interval)::date as fecha"))
             ->where('id_curso',$id_curso)
-            ->orderBy('agenda.start')
-            ->pluck('dia');
-            $dias = []; $temp = $dias_agenda[0]; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
-            foreach ($dias_agenda as $key => $value) {
-                if ($key > 0) {
-                    if ((($temp+1)==$value) && !$temp2) {
-                        $temp2 = $value;
-                        $save = false;
-                    }elseif ($temp2 && (($temp2+1)==$value)) {
-                        $temp2 = $value;
-                        $save = false;
-                    }elseif (($temp == '6')&&($value=='0')) {
-                        $temp2 = $value;
-                        $save = false;
-                    }else {
-                        $save = true;
-                    }
-                    if ($save == true) {
+            ->orderBy('fecha')
+            ->get();
+            if (count($dias_agenda) > 0) {
+                $dias = []; $temp = $dias_agenda[0]->dia; $temp2 = null; $save = false; $conteo = count($dias_agenda); $dias_a = [];
+                foreach ($dias_agenda as $key => $value) {
+                    if ($key > 0) {
+                        if ((($temp+1)==$value->dia) && !$temp2) {
+                            $temp2 = $value->dia;
+                            $save = false;
+                        }elseif ($temp2 && (($temp2+1)==$value->dia)) {
+                            $temp2 = $value->dia;
+                            $save = false;
+                        }elseif ( (($temp == '6')||($temp2 == '6')) &&($value->dia=='0')) {
+                            $temp2 = $value->dia;
+                            $save = false;
+                        }elseif ((($temp == $value->dia)||($temp2 == $value->dia))&&($value->fecha == $dias_agenda[$key-1]->fecha)) {
+                            $save = false;
+                        }else {
+                            $save = true;
+                        }
+                        if ($save == true) {
+                            $dias[] = [$temp,$temp2];
+                            $temp = $value->dia;
+                            $temp2 = null;
+                            $save = false;
+                        }
+                    };
+                    if ($key == ($conteo-1)) {
                         $dias[] = [$temp,$temp2];
-                        $temp = $value;
-                        $temp2 = null;
-                        $save = false;
-                    }
-                };
-                if ($key == ($conteo-1)) {
-                    $dias[] = [$temp,$temp2];
-                }
-            }
-            foreach ($dias as $item) {
-                if (($item[0]+1) < ($item[1])) {
-                    $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
-                }elseif (($item[0]+1)==($item[1])) {
-                    $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
-                }elseif (($item[0]=='6')&&($item[1]=='0')) {
-                    $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
-                }elseif($item[1] && ($item[0] > $item[1])){
-                    $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
-                }else {
-                    $dias_a[] = $this->dia($item[0]);
-                }
-            }
-            $rep = 1;
-            foreach ($dias_a as $key => $value) {
-                if ($key > 0) {
-                    if ($value == $dias_a[$key-1]) {
-                        $rep += 1;
                     }
                 }
+                foreach ($dias as $item) {
+                    if (($item[0]+1) < ($item[1])) {
+                        $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
+                    }elseif (($item[0]+1)==($item[1])) {
+                        $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                    }elseif (($item[0]=='6')&&($item[1]=='0')) {
+                        $dias_a[] = $this->dia($item[0]).' Y '.$this->dia($item[1]);
+                    }elseif((($item[0]) > ($item[1])) && isset($item[1])){
+                        $dias_a[] = $this->dia($item[0]).' A '.$this->dia($item[1]);
+                    }else {
+                        $dias_a[] = $this->dia($item[0]);
+                    }
+                }
+                $rep = 1;
+                foreach ($dias_a as $key => $value) {
+                    if ($key > 0) {
+                        if ($value == $dias_a[$key-1]) {
+                            $rep += 1;
+                        }
+                    }
+                }
+                if ($rep == count($dias_a)) {
+                    $dias_a = array_unique($dias_a);
+                }
+                $dias_a = implode(", ", $dias_a);
+            }else {
+                $dias_a = 0;
             }
-            if ($rep == count($dias_a)) {
-                $dias_a = array_unique($dias_a);
-            }
-            $dias_a = implode(", ", $dias_a);
         $total_dias = DB::table('agenda')
             ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
             ->where('id_curso',$id_curso)
-            ->pluck('dias');
+            ->orderBy('dias')
+            ->pluck('dias');//dd($total_dias);
             $tdias = 0;
+            
             foreach ($total_dias as $key => $value) {
                 if ($key > 0) {
                     if ($value != $total_dias[$key-1]) {
                         $tdias += 1;
                     }
-                }else {
+                }else{
                     $tdias = 1;
                 }
             }
