@@ -38,6 +38,9 @@
                 <div class="pull-left">
                     <h2>Contratos</h2>
                     {!! Form::open(['route' => 'contrato-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="ejercicio" class="form-control mr-sm-2" id="ejercicio">
+                            <option value="">BUSQUEDA POR TIPO</option>
+                        </select>
                         <select name="tipo_contrato" class="form-control mr-sm-2" id="tipo_contrato">
                             <option value="">BUSQUEDA POR TIPO</option>
                             <option value="no_memorandum">N° MEMORANDUM</option>

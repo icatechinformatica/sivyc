@@ -49,7 +49,10 @@ class ContratoController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
-            //hola
+
+        $año_referencia = '01-01-' . CARBON::now()->format('Y');
+        $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
+
         $contratos = new contratos();
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
@@ -65,7 +68,9 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            // ->WHERE('folios.status', '!=', 'Validado')
+            ->WHERE('folios.status', '!=', 'Validado')
+            ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+            ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
             ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
             ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
@@ -135,6 +140,7 @@ class ContratoController extends Controller
                     ->WHERE('folios.status', '!=', 'Finalizado')
                     ->WHERE('folios.status', '!=', 'Rechazado')
                     ->WHERE('folios.status', '!=', 'Cancelado')
+                    ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                     ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                     ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                     ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
