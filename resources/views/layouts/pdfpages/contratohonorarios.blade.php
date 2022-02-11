@@ -171,16 +171,16 @@
                         <td colspan="2"><div align="center"><b>{{$testigo2->nombre}} {{$testigo2->apellidoPaterno}} {{$testigo2->apellidoMaterno}}</b></td></div>
                     </tr>
                     <tr>
-                        <td colspan="2"><div align="center">{{$testigo1->puesto}}</td></div>
-                        <td colspan="2"><div align="center">{{$testigo2->puesto}}</td></div>
+                        <td colspan="2"><div align="center"><b>{{$testigo1->puesto}}</b></td></div>
+                        <td colspan="2"><div align="center"><b>{{$testigo2->puesto}}</b></td></div>
                     </tr>
                 </table>
                 <div align=center>
                     <br>
                     <br/>
                     <br>________________________________________
-                    <br><small>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</small>
-                    <br><small>{{$testigo3->puesto}} <b>DE LA UNIDAD {{$data_contrato->unidad_capacitacion}}</b> </small></b>
+                    <br><small><b>{{$testigo3->nombre}} {{$testigo3->apellidoPaterno}} {{$testigo3->apellidoMaterno}}</b></small>
+                    <br><small><b>{{$testigo3->puesto}} DE LA UNIDAD {{$data_contrato->unidad_capacitacion}}<b/> </small></b>
                 </div>
                 <br>
                 <div align=justify>
