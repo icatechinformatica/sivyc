@@ -35,13 +35,13 @@ class Convenio extends Model
             if (!empty(trim($buscar))) {
                 switch ($tipo) {
                     case 'no_convenio':
-                        return $query->where('convenios.no_convenio', '=', $buscar);
+                        return $query->where('convenios.no_convenio', 'LIKE', "%$buscar%");
                         break;
                     case 'institucion':
                         return $query->where('convenios.institucion', 'LIKE', "%$buscar%");
                         break;
                     case 'tipo_convenio':
-                        return $query->where('convenios.tipo_convenio', '=', $buscar);
+                        return $query->where('convenios.tipo_convenio', 'LIKE', "%$buscar%");
                         break;
                     case 'sector':
                         return $query->where('convenios.sector', 'LIKE', "%$buscar%");
