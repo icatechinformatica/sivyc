@@ -185,7 +185,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total','folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -203,30 +203,38 @@ class ContratoController extends Controller
 
 
         $año_referencia = '01-01-' . CARBON::now()->format('Y');
-        // dd($año_referencia);
         $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
-        $consecutivo = DB::TABLE('contratos')
+
+        //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
+        $consecutivo = intval(substr($data->folio_validacion, 10, 3));
+
+        // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
+        /*$consecutivo = DB::TABLE('contratos')
                         ->WHERE('tbl_unidades.ubicacion', '=', $uni_contrato->ubicacion)
                         ->WHERE('contratos.fecha_firma','>=', $año_referencia)
                         ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                         ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
                         ->LATEST('contratos.created_at')
-                        ->VALUE('numero_contrato');
+                        ->VALUE('numero_contrato');*/
+                        // dd($consecutivo);
         if ($consecutivo == NULL)
         {
             $consecutivo = '0001';
         }
         else
         {
-            if ($uni_contrato->ubicacion == 'TUXTLA' || $uni_contrato->ubicacion == 'COMITAN')
+            // FUNCION DE NUMERO DE CONTRATO INDEPENDIENTE
+            /*if ($uni_contrato->ubicacion == 'TUXTLA' || $uni_contrato->ubicacion == 'COMITAN')
             {
                 $consecutivo = substr($consecutivo, 10, 4) + 1;
+                dd('a');
             }
             else
             {
                 $consecutivo = substr($consecutivo, 11, 4) + 1;
-            }
+                // dd('a');
+            }*/
             switch (strlen($consecutivo))
             {
                 case 1:
