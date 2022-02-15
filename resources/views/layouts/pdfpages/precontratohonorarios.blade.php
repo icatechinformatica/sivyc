@@ -6,7 +6,7 @@
             font-family: sans-serif;
         }
         @page {
-            margin: 60px 60px;
+            margin: 30px 60px, 60px, 60px;
         }
         header { position: fixed;
             left: 0px;
@@ -25,7 +25,7 @@
         footer {
             position: fixed;
             left: 0px;
-            bottom: -30px;
+            bottom: 0px;
             right: 0px;
             height: 10px;
             text-align: center;
