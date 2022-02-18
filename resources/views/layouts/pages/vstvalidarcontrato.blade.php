@@ -62,11 +62,11 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="clavecurso" class="control-label">Memorándum de Validación</label>
-                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->memorandum_validacion}}">
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->instructor_mespecialidad}}">
             </div>
             <div class="form-group col-md-3">
                 <label for="clavecurso" class="control-label">Tipo Honorario</label>
-                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->tipo_honorario}}">
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->modinstructor}}">
             </div>
         </div>
         <hr style="border-color:dimgray">
