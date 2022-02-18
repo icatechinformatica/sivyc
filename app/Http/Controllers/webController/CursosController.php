@@ -24,6 +24,55 @@ use App\Exports\FormatoTReport;
 
 class CursosController extends Controller
 {
+    protected function prueba2()
+    {
+        $data = curso::SELECT('id','unidades_disponible')->GET();
+        $insdata = instructor::SELECT('id','unidades_disponible')->GET();
+        foreach($data as $cadwell)
+        {
+            $newlist = [];
+            $newlistins = [];
+            foreach($cadwell->unidades_disponible as $key=>$lista)
+            {
+                if($lista == 'TILA')
+                {
+                    array_push($newlist, 'SALTO DE AGUA');
+                }
+                else
+                {
+                    array_push($newlist, $lista);
+                }
+            }
+            $cursoUpdate = curso::find($cadwell->id);
+            $cursoUpdate->unidades_disponible = $newlist;
+            $cursoUpdate->save();
+
+        }
+        foreach($insdata as $inscadwell)
+        {
+            $newlistins = [];
+            if($inscadwell->unidades_disponible != null)
+            {
+                foreach($inscadwell->unidades_disponible as $keyins=>$listains)
+                {
+                    if($listains == 'TILA')
+                    {
+                        array_push($newlistins, 'SALTO DE AGUA');
+                    }
+                    else
+                    {
+                        array_push($newlistins, $listains);
+                    }
+                }
+                $insUpdate = instructor::find($inscadwell->id);
+                $insUpdate->unidades_disponible = $newlist;
+                $insUpdate->save();
+            }
+
+        }
+        dd('listo');
+    }
+
     /**
      * Display a listing of the resource.
      *
