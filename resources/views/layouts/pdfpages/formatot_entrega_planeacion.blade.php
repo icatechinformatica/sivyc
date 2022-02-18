@@ -15,21 +15,21 @@
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 200px;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
-        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;} 
-        .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}     
+        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;}
+        .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
-        .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}     
+        .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
         footer { position:fixed;left:0px;bottom:0px;height:0px;width:100%;}
-        footer .page:after { content: counter(page, sans-serif);}   
-        .contenedor {  
+        footer .page:after { content: counter(page, sans-serif);}
+        .contenedor {
         position:RELATIVE;
-        top:120px;  
-        width:100%;   
+        top:120px;
+        width:100%;
         margin:auto;
-        
+
         /* Propiedad que ha sido agreda*/
-        
+
         }
         .margin_top_ccp {
             margin-top: 7em;
@@ -48,7 +48,7 @@
     {{-- SECCIÓN DE PIE DE PÁGINA --}}
     <footer>
         <script type="text/php">
-            if (isset($pdf)) 
+            if (isset($pdf))
             {
                 $x = 275;
                 $y = 725;
@@ -62,12 +62,12 @@
                 $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
             }
         </script>
-        
+
         <table class="tablad" bgcolor="#621132">
                 <tr>
                     <td colspan="4" style="color:white;"><b>Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma</b></td>
                     {{-- <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td> --}}
-                </tr> 
+                </tr>
                 <tr>
                     <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, Chiapas; Telefono (961)6121621 Ext.601 C.P.29030</b></td>
                     {{-- <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td> --}}
@@ -81,8 +81,8 @@
     {{-- SECCIÓN DE CONTENIDO --}}
     <div class="contenedor">
         <div align=right style="font-size:11px;"><b>DIRECCIÓN TÉCNICA ACADÉMICA. </b></div>
-        <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $num_memo_planeacion }}</b></div>                        
-        <div align=right style="font-size:11px;"><b>TUXTLA GUTIÉRREZ, CHIAPAS; {{ $fecha_ahora_espaniol }}</b></div>                        
+        <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $num_memo_planeacion }}</b></div>
+        <div align=right style="font-size:11px;"><b>TUXTLA GUTIÉRREZ, CHIAPAS; {{ $fecha_ahora_espaniol }}</b></div>
         <br><br>
         <div align=left style="font-size:12px;"><b>{{ $directorPlaneacion->nombre." ".$directorPlaneacion->apellidoPaterno." ".$directorPlaneacion->apellidoMaterno }}.</b></div>
         <div align=left style="font-size:11px;"><b>{{ $directorPlaneacion->puesto }}.</b></div>
@@ -91,16 +91,16 @@
         <div align="justify" style="font-size:16px;">
            <p>
             Por este medio y en seguimiento a la integración del Formato T de las Unidades de Capacitación
-            de este Instituto correspondiente al mes de <b>{{$mesUnity}}</b> de la anualidad en curso; me es grato infórmarle <br/>
+            de este Instituto correspondiente al mes de <b>{{$mesUnity}}</b> de la anualidad en curso; me es grato infórmarle
             que fue revisado y liberado el reporte estadístico denominado Formato T con la cantidad de <strong>{{$totalCursos}}</strong> cursos.
            </p>
         </div>
         <br>
-        
+
         <br>
         <div align="justify" style="font-size:16px;">Sin más por el momento agradezco de su atención y le envío un cordial saludo.</div>
         {{-- <br> --}}
-        
+
         <br>
         <br><br>
         <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
@@ -117,9 +117,9 @@
             {{-- <div style="font-size:8px;"> <b>Elaboró:  {{ $reg_unidad->academico }} .  {{ $reg_unidad->pacademico }} .</b></div> --}}
             <br><br>
         </div>
-        
-    </div> 
+
+    </div>
     {{-- SECCIÓN DE CONTENIDO FIN --}}
-    
+
 </body>
 </html>
