@@ -689,18 +689,16 @@ class aperturaController extends Controller
                                                  ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
                                                  ->where('tbl_cursos.status','!=','CANCELADO')
                                                  ->where('agenda.id_instructor','=',$id_instructor)
-                                                 ->where('agenda.start','>=',$dateini->format('d-m-Y'))
-                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
+                                                 ->where(DB::raw('(agenda.start)::DATE'),'>=',$dateini->format('Y-m-d'))
+                                                 ->where(DB::raw('(agenda.end)::DATE'),'<=',$datefin->format('Y-m-d'))
                                                  ->get();
             foreach($consulta_fechas as $item){
                 $xhora= Carbon::parse($item->start)->format('H:i');
                 $yhora= Carbon::parse($item->end)->format('H:i');
-                $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                $minutos= (Carbon::parse($yhora)->diffInMinutes($xhora))*((Carbon::parse($item->end)->diffInDays($item->start))+1);
                 $count += $minutos;
-                if ($count > 1800) {
-                    if (($count + $total) > 2400) {
-                        $isEquals4=true;
-                    }
+                if (($count + $total) > 2400) {
+                    $isEquals4 = true;
                 }
             }
             if(!empty($array1)){
@@ -725,18 +723,16 @@ class aperturaController extends Controller
                                                  ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
                                                  ->where('tbl_cursos.status','!=','CANCELADO')
                                                  ->where('agenda.id_instructor','=',$id_instructor)
-                                                 ->where('agenda.start','>=',$dateini->format('d-m-Y'))
-                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
+                                                 ->where(DB::raw('(agenda.start)::date'),'>=',$dateini->format('Y-m-d'))
+                                                 ->where(DB::raw('(agenda.end)::date'),'<=',$datefin->format('Y-m-d'))
                                                  ->get();   //dd($consulta_fechas2);
                     foreach ($consulta_fechas2 as $value) {
                         $xhora= Carbon::parse($value->start)->format('H:i');
                         $yhora= Carbon::parse($value->end)->format('H:i');
-                        $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                        $minutos= (Carbon::parse($yhora)->diffInMinutes($xhora))*((Carbon::parse($value->end)->diffInDays($value->start))+1);
                         $count2 += $minutos;
-                        if ($count > 1800) {
-                            if (($count + $total2) > 2400) {
-                                $isEquals4=true;
-                            }
+                        if (($count + $total2) > 2400) {
+                            $isEquals4 = true;
                         }
                     }
                     if(!empty($array2)){
@@ -765,18 +761,16 @@ class aperturaController extends Controller
                                                  ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
                                                  ->where('tbl_cursos.status','!=','CANCELADO')
                                                  ->where('agenda.id_instructor','=',$id_instructor)
-                                                 ->where('agenda.start','>=',$date->format('d-m-Y'))
-                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
+                                                 ->where(DB::raw('(agenda.start)::date'),'>=',$date->format('Y-m-d'))
+                                                 ->where(DB::raw('(agenda.end)::date'),'<=',$datefin->format('Y-m-d'))
                                                  ->get();
             foreach($consulta_fechas as $item){
                 $xhora= Carbon::parse($item->start)->format('H:i');
                 $yhora= Carbon::parse($item->end)->format('H:i');
-                $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                $minutos= (Carbon::parse($yhora)->diffInMinutes($xhora))*((Carbon::parse($item->end)->diffInDays($item->start))+1);
                 $count += $minutos;
-                if ($count > 1800) {
-                    if (($count + $total)>2400) {
-                        $isEquals4=true;
-                    }
+                if (($count + $total) > 2400) {
+                    $isEquals4 = true;
                 }
             }
             if(!empty($array1)){
@@ -800,18 +794,16 @@ class aperturaController extends Controller
                                                  ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
                                                  ->where('tbl_cursos.status','!=','CANCELADO')
                                                  ->where('agenda.id_instructor','=',$id_instructor)
-                                                 ->where('agenda.start','>=',$date->format('d-m-Y'))
-                                                 ->where('agenda.end','<=',$datefin->format('d-m-Y'))
+                                                 ->where(DB::raw('(agenda.start)::date'),'>=',$date->format('Y-m-d'))
+                                                 ->where(DB::raw('(agenda.end)::date'),'<=',$datefin->format('Y-m-d'))
                                                  ->get();
                     foreach ($consulta_fechas2 as $value) {
                         $xhora= Carbon::parse($value->start)->format('H:i');
                         $yhora= Carbon::parse($value->end)->format('H:i');
-                        $minutos= Carbon::parse($yhora)->diffInMinutes($xhora);
+                        $minutos= (Carbon::parse($yhora)->diffInMinutes($xhora))*((Carbon::parse($value->end)->diffInDays($value->start))+1);
                         $count2 += $minutos;
-                        if ($count2>1800) {
-                            if (($count2 + $total2)>2400) {
-                                $isEquals4=true;
-                            }
+                        if (($count2 + $total2) > 2400) {
+                            $isEquals4 = true;
                         }
                     }
                     if(!empty($array2)){
