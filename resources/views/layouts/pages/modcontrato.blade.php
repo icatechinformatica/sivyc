@@ -20,7 +20,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                 <label for="numero_contrato" class="control-label">Número de Contrato</label>
-                <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato" value="{{$datacon->numero_contrato}}" >
+                <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato" value="{{$datacon->numero_contrato}}" readonly>
                 </div>
             </div>
             <div class="form-row">

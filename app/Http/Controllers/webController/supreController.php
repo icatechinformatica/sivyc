@@ -32,77 +32,9 @@ class supreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
-    protected function prueba2()
-    {
-            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
-                                    ->WHERE('clave', '=', '11J-22-ALIM-EXT-0006')->FIRST();
-
-            if($Cursos != NULL)
-            {
-                // $inicio = date("m-d-Y", strtotime($Cursos->inicio));
-                $inicio = carbon::parse($Cursos->inicio);
-                dd($inicio);
-                // $inicio = strtotime($inicio);
-                $date1 = "2021-05-01";
-                // $date1 = date("m-d-Y", strtotime($date1));
-                $date1 = carbon::parse($date1);
-                // $date1 = strtotime($date1);
-                // dd($inicio);
-
-                if ($date1 <= $inicio)
-                {
-                    $ze2 = 'ze2_2021 AS monto';
-                    $ze3 = 'ze3_2021 AS monto';
-                    // dd(gettype($date1) . ' entro1 ' . gettype($inicio));
-                }
-                else
-                {
-                    $ze2 = 'monto_hora_ze2 AS monto';
-                    $ze3 = 'monto_hora_ze3 AS monto';
-                    // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
-                }
-
-                if ($Cursos->ze == 'II')
-                {
-                    $criterio = criterio_pago::SELECT($ze2)->WHERE('id', '=' , $Cursos->cp)->FIRST();
-                }
-                else
-                {
-                    $criterio = criterio_pago::SELECT($ze3)->WHERE('id', '=' , $Cursos->cp)->FIRST();
-                    // printf('hola');
-                }
-
-                if($criterio != NULL)
-                {
-                    if($Cursos->tipo_curso == 'CERTIFICACION')
-                    {
-                        $total = $criterio->monto * 10;
-                        //$aviso = TRUE;
-                    }
-                    else
-                    {
-                        $total = $criterio->monto * $Cursos->dura;
-                    }
-                }
-                else
-                {
-                    $total = 'N/A';
-                }
-            }
-            else
-            {
-                $total = 'N/A';
-            }
-            $json=json_encode($total); //dura 10 cp 6
-
-        // dd($Cursos->inicio);
-        return $json;
-    }
-
     public function solicitud_supre_inicio(Request $request) {
+        $array_ejercicio =[];
+        $año_pointer = CARBON::now()->format('Y');
         /**
          * parametros de busqueda
          */
@@ -111,13 +43,34 @@ class supreController extends Controller
         $tipoStatus = $request->get('tipo_status');
         $unidad = $request->get('unidad');
 
+        if($request->ejercicio == NULL)
+        {
+            $año_referencia = '01-01-' . CARBON::now()->format('Y');
+            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
+        }
+        else
+        {
+            $año_referencia = '01-01-' . $request->ejercicio;
+            $año_referencia2 = '31-12-' . $request->ejercicio;
+            $año_pointer = $request->ejercicio;
+        }
+
+        for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
+        {
+            array_push($array_ejercicio, $x);
+        }
+
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
-                        ->where('id', '!=', '0')
-                        ->latest()->paginate(25);
+                        ->where('tabla_supre.id', '!=', '0')
+                        ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+                        ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+                        ->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                        ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
+                        ->latest()->paginate(25, ['tabla_supre.*']);
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
-        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades'));
+        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer'));
     }
 
     public function frm_formulario() {

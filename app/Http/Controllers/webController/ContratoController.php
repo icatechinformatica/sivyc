@@ -31,6 +31,8 @@ class ContratoController extends Controller
 {
     public function index(Request $request)
     {
+        $array_ejercicio =[];
+        $año_pointer = CARBON::now()->format('Y');
         /**
          * parametros para iniciar la busqueda
          */
@@ -49,7 +51,22 @@ class ContratoController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
-            //hola
+        if($request->ejercicio == NULL)
+        {
+            $año_referencia = '01-01-' . CARBON::now()->format('Y');
+            $año_referencia2 = '31-12-' . CARBON::now()->format('Y');
+        }
+        else
+        {
+            $año_referencia = '01-01-' . $request->ejercicio;
+            $año_referencia2 = '31-12-' . $request->ejercicio;
+            $año_pointer = $request->ejercicio;
+        }
+
+        for($x = 2020; $x <= intval(CARBON::now()->format('Y')); $x++)
+        {
+            array_push($array_ejercicio, $x);
+        }
         $contratos = new contratos();
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
@@ -66,6 +83,8 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
             ->WHERE('folios.status', '!=', 'Validado')
+            ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+            ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
             ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
             ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
@@ -135,6 +154,8 @@ class ContratoController extends Controller
                     ->WHERE('folios.status', '!=', 'Finalizado')
                     ->WHERE('folios.status', '!=', 'Rechazado')
                     ->WHERE('folios.status', '!=', 'Cancelado')
+                    ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
+                    ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
                     ->RIGHTJOIN('folios', 'contratos.id_folios', '=', 'folios.id_folios')
                     ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                     ->RIGHTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
@@ -152,7 +173,7 @@ class ContratoController extends Controller
         }
         // dd($querySupre2);
         // dd($querySupre);
-        return view('layouts.pages.vstacontratoini', compact('querySupre','unidades'));
+        return view('layouts.pages.vstacontratoini', compact('querySupre','unidades','array_ejercicio', 'año_pointer'));
     }
 
     /**
@@ -164,7 +185,7 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total','folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -180,6 +201,63 @@ class ContratoController extends Controller
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $pago = round($data->importe_total-$data->iva, 2);
 
+
+        $año_referencia = '01-01-' . CARBON::now()->format('Y');
+        $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
+
+        //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
+        $consecutivo = intval(substr($data->folio_validacion, 10, 3));
+
+        // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
+        /*$consecutivo = DB::TABLE('contratos')
+                        ->WHERE('tbl_unidades.ubicacion', '=', $uni_contrato->ubicacion)
+                        ->WHERE('contratos.fecha_firma','>=', $año_referencia)
+                        ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
+                        ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
+                        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
+                        ->LATEST('contratos.created_at')
+                        ->VALUE('numero_contrato');*/
+                        // dd($consecutivo);
+        if ($consecutivo == NULL)
+        {
+            $consecutivo = '0001';
+        }
+        else
+        {
+            // FUNCION DE NUMERO DE CONTRATO INDEPENDIENTE
+            /*if ($uni_contrato->ubicacion == 'TUXTLA' || $uni_contrato->ubicacion == 'COMITAN')
+            {
+                $consecutivo = substr($consecutivo, 10, 4) + 1;
+                dd('a');
+            }
+            else
+            {
+                $consecutivo = substr($consecutivo, 11, 4) + 1;
+                // dd('a');
+            }*/
+            switch (strlen($consecutivo))
+            {
+                case 1:
+                    $consecutivo = '000' . $consecutivo;
+                break;
+                case 2:
+                    $consecutivo = '00' . $consecutivo;
+                break;
+                case 3:
+                    $consecutivo = '0' . $consecutivo;
+                break;
+            }
+        }
+        // dd($consecutivo);
+        if($uni_contrato->ubicacion == 'SAN CRISTOBAL')
+        {
+            $uni_contrato = 'SC'.'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $uni_contrato->ubicacion)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. CARBON::now()->format('Y');
+        }
+        else
+        {
+            $uni_contrato = substr($uni_contrato->ubicacion, 0, 2).'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $uni_contrato->ubicacion)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. CARBON::now()->format('Y');
+        }
+
         $date = strtotime($data->termino);
         $dacarbon = strtotime(Carbon::now());
 
@@ -194,7 +272,7 @@ class ContratoController extends Controller
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato'));
     }
 
     public function contrato_save(Request $request)
@@ -206,7 +284,7 @@ class ContratoController extends Controller
         {
             return back()->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE CONTRATO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->numero_contrato));
         }
-
+        // dd($request->numero_contrato);
         $contrato = new contratos();
         $contrato->numero_contrato = $request->numero_contrato;
         $contrato->instructor_perfilid = $request->perfil_instructor;
@@ -217,7 +295,7 @@ class ContratoController extends Controller
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->id_folios = $request->id_folio;
         $contrato->fecha_status = carbon::now();
-        $contrato->tipo_factura = $request->tipo_factura;
+        // $contrato->tipo_factura = $request->tipo_factura;
         $file = $request->file('factura'); # obtenemos el archivo
         if ($file != NULL)
         {
@@ -312,7 +390,7 @@ class ContratoController extends Controller
         $contrato->fecha_firma = $request->fecha_firma;
         $contrato->unidad_capacitacion = $request->unidad_capacitacion;
         $contrato->fecha_status = carbon::now();
-        $contrato->tipo_facutra = $request->tipo_factura;
+        // $contrato->tipo_facutra = $request->tipo_factura;
 
         if($request->factura != NULL)
         {
@@ -346,7 +424,7 @@ class ContratoController extends Controller
                                  'tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod','tbl_cursos.pdf_curso',
                                  'instructores.nombre AS insnom','instructores.apellidoPaterno','instructores.tipo_honorario','tbl_cursos.dura',
                                  'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia',
-                                 'tbl_cursos.hini','tbl_cursos.hfin','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
+                                 'tbl_cursos.hini','tbl_cursos.instructor_mespecialidad','tbl_cursos.hfin','tbl_cursos.modinstructor','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
                                  'instructores.archivo_ine','instructores.archivo_domicilio','instructores.archivo_alta','instructores.archivo_bancario',
                                  'instructores.archivo_fotografia','instructores.archivo_estudios','instructores.archivo_otraid','instructores.archivo_rfc','especialidad_instructores.memorandum_validacion',
                                  'especialidades.nombre AS especialidad','tbl_inscripcion.costo','cursos.perfil')
@@ -728,7 +806,7 @@ class ContratoController extends Controller
         $testigo2 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
-        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.tipo_curso','tbl_cursos.horas','instructores.nombre',
+        $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id', 'tbl_cursos.clave','tbl_cursos.tipo_curso','tbl_cursos.horas','instructores.nombre',
                                   'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc','instructores.curp',
                                   'instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
@@ -777,7 +855,7 @@ class ContratoController extends Controller
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
-                                  'tbl_cursos.tipo_curso','instructores.nombre','instructores.apellidoPaterno',
+                                  'tbl_cursos.tipo_curso', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc',
                                   'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
@@ -808,6 +886,7 @@ class ContratoController extends Controller
             $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
         }
 
+        $pdf->setPaper('LETTER', 'Portrait');
         return $pdf->stream("Contrato-Instructor-$data_contrato->numero_contrato.pdf");
     }
 
@@ -825,7 +904,7 @@ class ContratoController extends Controller
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
-                                  'tbl_cursos.tipo_curso','instructores.nombre','instructores.apellidoPaterno',
+                                  'tbl_cursos.tipo_curso', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','instructores.folio_ine','instructores.rfc',
                                   'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)

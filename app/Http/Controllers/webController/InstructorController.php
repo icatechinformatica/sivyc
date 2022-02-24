@@ -381,6 +381,7 @@ class InstructorController extends Controller
 
     public function ver_instructor($id)
     {
+        $localidades = null;
         $estado_civil = null;
         $instructor_perfil = new InstructorPerfil();
         $curso_validado = new cursoValidado();
@@ -395,12 +396,24 @@ class InstructorController extends Controller
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datains->entidad)->FIRST();
         $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
-        $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.clave','localidad')
-                        ->WHERE('tbl_localidades.clave', '=', $datains->clave_loc)
-                        ->FIRST();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->GET();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
+
+        if($datains->municipio != NULL)
+        {
+            $munix = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')->WHERE('muni', '=', $datains->municipio)->FIRST();
+
+            if($munix != NULL)
+            {
+                $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.clave','localidad')
+                                ->WHERE('tbl_localidades.clave_municipio', '=', $munix->clave)
+                                ->WHERE('tbl_localidades.id_estado', '=', $munix->id_estado)
+                                ->ORDERBY('tbl_localidades.localidad', 'ASC')
+                                ->GET();
+            }
+            // dd($localidades);
+        }
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
         // consulta
@@ -850,12 +863,25 @@ class InstructorController extends Controller
 
     public function cursoimpartir_form($id, $idins)
     {
-        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
-        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
-        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        $cursos = curso::WHERE('id_especialidad', '=', $id)->WHERE('estado', '=', TRUE)->ORDERBY('nombre_curso', 'ASC')->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
-        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
-        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
+        $chckespecialidad = DB::TABLE('especialidad_instructores')
+                            ->WHERE('id_instructor', '=', $idins)
+                            ->WHERE('especialidad_id', '=', $id)
+                            ->FIRST();
+        if($chckespecialidad == NULL)
+        {
+            $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
+            $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
+            $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+            $cursos = curso::WHERE('id_especialidad', '=', $id)->WHERE('estado', '=', TRUE)->ORDERBY('nombre_curso', 'ASC')->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+            $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+            return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
+        }
+        else
+        {
+            $esp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+            $mensaje = "Lo sentimos, la especialidad ".$esp->nombre." ya esta asociada a este instructor.";
+            return redirect('instructor/add/curso-impartir/' . $idins)->withErrors($mensaje);
+        }
     }
 
     public function espec_val_save(Request $request)

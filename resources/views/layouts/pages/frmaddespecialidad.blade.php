@@ -181,7 +181,7 @@
                         <div class="card-body">
                             @foreach ($cursos as $itemData)
                                 <div class="row" role="row">
-                                    <div class="col-md-3" role="gridcell">
+                                    <div class="col-md-3" role="gridcell" style="height: 125px; width: 250px;">
                                         <label><h5>NOMBRE</h5></label>
                                         <div class="form-control-plaintext text-truncate">{{$itemData->nombre_curso}}</div>
                                     </div>
