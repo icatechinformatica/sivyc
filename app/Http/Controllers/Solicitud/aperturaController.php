@@ -560,15 +560,7 @@ class aperturaController extends Controller
                         $dias_a[] = $this->dia($item[0]);
                     }
                 }
-                $rep = 1;
-                foreach ($dias_a as $key => $value) {
-                    if ($key > 0) {
-                        if ($value == $dias_a[$key-1]) {
-                            $rep += 1;
-                        }
-                    }
-                }
-                if ($rep == count($dias_a)) {
+                if ( count(array_unique(array_count_values($dias_a))) == 1 ) {
                     $dias_a = array_unique($dias_a);
                 }
                 $dias_a = implode(", ", $dias_a);
@@ -1029,15 +1021,7 @@ class aperturaController extends Controller
                         $dias_a[] = $this->dia($item[0]);
                     }
                 }
-                $rep = 1;
-                foreach ($dias_a as $key => $value) {
-                    if ($key > 0) {
-                        if ($value == $dias_a[$key-1]) {
-                            $rep += 1;
-                        }
-                    }
-                }
-                if ($rep == count($dias_a)) {
+                if ( count(array_unique(array_count_values($dias_a))) == 1 ) {
                     $dias_a = array_unique($dias_a);
                 }
                 $dias_a = implode(", ", $dias_a);
