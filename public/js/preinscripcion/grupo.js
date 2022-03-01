@@ -5,19 +5,23 @@
      $("#unidad" ).change(function(){
         cmb_curso();
     }); 
+    $("#modalidad" ).change(function(){
+        cmb_curso();
+    });
     $("#id_municipio" ).change(function(){
         cmb_loc();
     }); 
       
     function cmb_curso(){ 
         var tipo =$('#tipo').val();
-        var unidad =$('#unidad').val(); 
+        var unidad =$('#unidad').val();
+        var modalidad =$('#modalidad').val(); 
         $("#id_curso").empty();                            
-        if(tipo && unidad){
+        if(tipo && unidad && modalidad){
             $.ajax({
                 type: "GET",
                 url: "grupo/cmbcursos",
-                data:{tipo:tipo,unidad:unidad, _token:"{{csrf_token()}}"},
+                data:{tipo:tipo,unidad:unidad,modalidad:modalidad, _token:"{{csrf_token()}}"},
                 contentType: "application/json",              
                 dataType: "json",
                 success: function (data) {// console.log(data); 
