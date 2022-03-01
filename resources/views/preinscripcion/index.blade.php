@@ -10,7 +10,7 @@
 @section('content')   
     <?php 
         $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable =
-        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo =  "";       
+        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = "";       
         if($curso){
             $id_curso = $curso->id;
             $tipo = $curso->tipo_curso;
@@ -29,7 +29,8 @@
             $unidad = $alumnos[0]->unidad;
             $folio = $alumnos[0]->folio_grupo;
             $turnado = $alumnos[0]->turnado;   
-            $id_vulnerable = $alumnos[0]->id_vulnerable;                    
+            $id_vulnerable = $alumnos[0]->id_vulnerable;  
+            $modalidad = $alumnos[0]->modalidad;                  
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
@@ -68,7 +69,7 @@
                         <label>TIPO DE CURSO</label>
                         {{ Form::select('tipo', ['PRESENCIAL'=>'PRESENCIAL','A DISTANCIA'=>'A DISTANCIA'], $tipo, ['id'=>'tipo', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label>UNIDAD/ACCI&Oacute;N M&Oacute;VIL</label>
                         {{ Form::select('unidad', $unidades, $unidad, ['id'=>'unidad','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
                     </div>
@@ -85,6 +86,10 @@
                     </div>    
                 </div>
                 <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label>MODALIDAD</label>
+                        {{ Form::select('modalidad', ['EXT'=>'EXTENSION','CAE'=>'CAE'], $modalidad, ['id'=>'modalidad', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
+                    </div>
                     <div class="form-group col-md-5">
                         <label>CURSO</label>
                         {{ Form::select('id_curso', $cursos, $id_curso, ['id'=>'id_curso','old'=>'curso', 'class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR'] ) }}
