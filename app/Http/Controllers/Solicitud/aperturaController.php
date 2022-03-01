@@ -317,6 +317,11 @@ class aperturaController extends Controller
                             if(!$request->mexoneracion) $request->mexoneracion = 0;
                             if(!$request->cgeneral) $request->cgeneral = 0;
                             //$result = tbl_curso::updateOrCreate(
+                            if ($instructor->tipo_honorario == 'ASIMILADOS A SALARIOS') {
+                                $tipo_honorario = 'ASIMILADOS A SALARIOS';
+                            }else{
+                                $tipo_honorario = 'HONORARIOS';
+                            }
                             $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
                                 ['folio_grupo' => $_SESSION['folio']],
                                 ['id'=>$ID, 'cct' => $unidad->cct,
@@ -362,7 +367,7 @@ class aperturaController extends Controller
                                 'ze' => $municipio->ze,
                                 'id_curso' => $grupo->id_curso,
                                 'id_instructor' => $instructor->id,
-                                'modinstructor' => $instructor->tipo_honorario,
+                                'modinstructor' => $tipo_honorario,
                                 'nmunidad' => '0',
                                 'nmacademico' => '0',
                                 'observaciones' => 'NINGUNO',
