@@ -317,6 +317,11 @@ class aperturaController extends Controller
                             if(!$request->mexoneracion) $request->mexoneracion = 0;
                             if(!$request->cgeneral) $request->cgeneral = 0;
                             //$result = tbl_curso::updateOrCreate(
+                            if ($instructor->tipo_honorario == 'ASIMILADOS A SALARIOS') {
+                                $tipo_honorario = 'ASIMILADOS A SALARIOS';
+                            }else{
+                                $tipo_honorario = 'HONORARIOS';
+                            }
                             $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
                                 ['folio_grupo' => $_SESSION['folio']],
                                 ['id'=>$ID, 'cct' => $unidad->cct,
@@ -362,7 +367,7 @@ class aperturaController extends Controller
                                 'ze' => $municipio->ze,
                                 'id_curso' => $grupo->id_curso,
                                 'id_instructor' => $instructor->id,
-                                'modinstructor' => $instructor->tipo_honorario,
+                                'modinstructor' => $tipo_honorario,
                                 'nmunidad' => '0',
                                 'nmacademico' => '0',
                                 'observaciones' => 'NINGUNO',
@@ -562,15 +567,7 @@ class aperturaController extends Controller
                         $dias_a[] = $this->dia($item[0]);
                     }
                 }
-                $rep = 1;
-                foreach ($dias_a as $key => $value) {
-                    if ($key > 0) {
-                        if ($value == $dias_a[$key-1]) {
-                            $rep += 1;
-                        }
-                    }
-                }
-                if ($rep == count($dias_a)) {
+                if ( count(array_unique(array_count_values($dias_a))) == 1 ) {
                     $dias_a = array_unique($dias_a);
                 }
                 $dias_a = implode(", ", $dias_a);
@@ -1031,15 +1028,7 @@ class aperturaController extends Controller
                         $dias_a[] = $this->dia($item[0]);
                     }
                 }
-                $rep = 1;
-                foreach ($dias_a as $key => $value) {
-                    if ($key > 0) {
-                        if ($value == $dias_a[$key-1]) {
-                            $rep += 1;
-                        }
-                    }
-                }
-                if ($rep == count($dias_a)) {
+                if ( count(array_unique(array_count_values($dias_a))) == 1 ) {
                     $dias_a = array_unique($dias_a);
                 }
                 $dias_a = implode(", ", $dias_a);

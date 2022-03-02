@@ -331,8 +331,8 @@
                         <label for="inputhonorario">Regimen</label>
                         <select class="form-control" name="honorario" id="honorario" disabled>
                             <option selected value="HONORARIOS" @if ($datains->tipo_honorario == 'HONORARIOS') selected @endif>Honorarios</option>
-                            <option value="ASIMILADO" @if ($datains->tipo_honorario == 'ASIMILADOS') selected @endif>Asimilados a Salarios</option>
-                            <option value="AMBOS" @if ($datains->tipo_honorario == 'AMBOS') selected @endif>Honorarios y Asimilado a Salarios</option>
+                            <option value="ASIMILADOS A SALARIOS" @if ($datains->tipo_honorario == 'ASIMILADOS A SALARIOS') selected @endif>Asimilados a Salarios</option>
+                            <option value="HONORARIOS Y ASIMILADOS A SALARIOS" @if ($datains->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilado a Salarios</option>
                         </select>
                     </div>
                 </div>

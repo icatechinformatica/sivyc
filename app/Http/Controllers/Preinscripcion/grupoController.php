@@ -57,6 +57,7 @@ class grupoController extends Controller
                 'apellido_paterno',
                 'apellido_materno',
                 'ar.id_curso',
+                'c.modalidad',
                 'ar.tipo_curso',
                 'ar.id_cerss',
                 'ar.horario',
@@ -83,7 +84,8 @@ class grupoController extends Controller
                 THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
                 ELSE CONCAT('19',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
                 END AS fnacimiento")
-            )->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')->get();
+            )->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->join('cursos as c','c.id','ar.id_curso')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)
+            ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')->get();
             //var_dump($alumnos);exit;
             if (count($alumnos) > 0) {
                 foreach ($alumnos as $value) {
@@ -135,9 +137,10 @@ class grupoController extends Controller
     public function cmbcursos(Request $request)
     {
         //$request->unidad = 'TUXTLA';
-        if (isset($request->tipo) and isset($request->unidad)) {
+        if (isset($request->tipo) and isset($request->unidad) and isset($request->modalidad)) {
             $cursos = DB::table('cursos')->select('cursos.id', 'nombre_curso')
                 ->where('tipo_curso', $request->tipo)
+                ->where('modalidad', $request->modalidad)
                 ->where('cursos.estado', true)
                 ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('cursos.nombre_curso')->get();
             $json = json_encode($cursos);
