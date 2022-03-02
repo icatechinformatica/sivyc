@@ -109,7 +109,7 @@
 </div>
 
 <div class="col-md-12 text-right  mt-4">       
-    @if($activar && !isset($file))
+    @if($activar)
         {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}        
         <div class="custom-file col-md-3 mx-4 text-center">
             <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
