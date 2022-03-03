@@ -88,7 +88,8 @@
             @if($munidad)
                 <div class="row bg-light" style="padding:15px;">
                     <div class="form-group col-md-3">COUTA TOTAL: <b>{{ $grupo->costo}}</b></div>
-                    <div class="form-group col-md-3">TIPO CUOTA: <b>{{ $tcuota }}</b></div>                    
+                    <div class="form-group col-md-3">TIPO CUOTA: <b>{{ $tcuota }}</b></div> 
+                    <div class="form-group col-md-4">MEMORANDUM DE VALIDACION DEL INSTRUCTOR: <b>{{ $grupo->instructor_mespecialidad }}</b></div>                    
                 </div>   
             @endif 
             <div class="form-row">
