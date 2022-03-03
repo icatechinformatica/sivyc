@@ -111,7 +111,7 @@
                             <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
                             <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>
                             <td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>
-                            <td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>
+                            @if($tipop == 'HONORARIOS')<td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>@endif
                             <td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
                             <td scope="col"><small style="font-size: 10px;">IMPORTE</small></td>
                             <td scope="col" ><small style="font-size: 10px;">OBSERVACION<small></td>
@@ -134,8 +134,8 @@
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->ze}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->dura}}</small></td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->importe_hora}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->iva}}</td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">12101 Honorarios</td>
+                                @if($item->modinstructor == 'HONORARIOS')<td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->iva}}</td>@endif
+                                <td scope="col" class="text-center"><small style="font-size: 10px;">@if($item->modinstructor == 'HONORARIOS' || $item->modinstructor == 'HONORARIOS Y ASIMILADOS A SALARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->importe_total}}</td>
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->comentario}}</small></td>
                             </tr>
