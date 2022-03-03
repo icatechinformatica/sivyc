@@ -621,10 +621,11 @@ class supreController extends Controller
     protected function getcursostats(Request $request)
     {
         if (isset($request->valor)){
+            $total=[];
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;//$request->valor;
             $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.modinstructor', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
@@ -665,12 +666,14 @@ class supreController extends Controller
                 {
                     if($Cursos->tipo_curso == 'CERTIFICACION')
                     {
-                        $total = $criterio->monto * 10;
+                        array_push($total, $criterio->monto * 10);
+                        array_push($total, $Cursos->modinstructor);
                         //$aviso = TRUE;
                     }
                     else
                     {
-                        $total = $criterio->monto * $Cursos->dura;
+                        array_push($total, $criterio->monto * $Cursos->dura);
+                        array_push($total, $Cursos->modinstructor);
                     }
                 }
                 else
@@ -1049,13 +1052,16 @@ class supreController extends Controller
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.tipo_curso','tbl_cursos.modinstructor')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
+
+        $tipop = $data[0]['modinstructor'];
+        // dd($tipop);
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
@@ -1075,7 +1081,7 @@ class supreController extends Controller
         $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','distintivo'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','distintivo'));
         $pdf->setPaper('A4', 'Landscape');
 
         return $pdf->stream('download.pdf');
@@ -1094,7 +1100,7 @@ class supreController extends Controller
         $i = 0;
         $data = supre::SELECT('tabla_supre.fecha','folios.folio_validacion','folios.importe_hora','folios.iva','folios.importe_total',
                         'folios.comentario','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.unidad','tbl_cursos.modinstructor',
-                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso')
+                        'tbl_cursos.curso AS curso_nombre','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.tipo_curso','tbl_cursos.modinstructor')
                     ->WHERE('id_supre', '=', $id )
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
@@ -1112,6 +1118,7 @@ class supreController extends Controller
             $h = tbl_curso::SELECT('hombre')->WHERE('id', '=', $item->id_cursos)->FIRST();
             $m = tbl_curso::SELECT('mujer')->WHERE('id', '=', $item->id_cursos)->FIRST();
             $hm = $h->hombre+$m->mujer;
+            $tipop = tbl_curso::SELECT('modinstructor')->WHERE('id', '=', $item->id_cursos)->FIRST();
             //printf($item->id_cursos  . $h . ' + ' . $m . '=' . $hm . ' // ');
             if ($hm < 10)
             {
@@ -1146,11 +1153,11 @@ class supreController extends Controller
         //$getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
         $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 
-        return view('layouts.pdfpages.valsupre', compact('data','data2','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
+        return view('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4','recursos'));
     }
 
     protected function monthToString($month)
@@ -1381,6 +1388,7 @@ class supreController extends Controller
         {
             $data = supre::SELECT('tabla_supre.no_memo',
                     'folios.folio_validacion as suf',
+                    'tabla_supre.created_at as prue',
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tbl_cursos.unidad',
@@ -1411,6 +1419,7 @@ class supreController extends Controller
         {
             $data = supre::SELECT('tabla_supre.no_memo',
                     'folios.folio_validacion as suf',
+                    'tabla_supre.created_at',
                     'tabla_supre.fecha',
                     \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tbl_cursos.unidad',
@@ -1439,7 +1448,7 @@ class supreController extends Controller
         }
         else if ($filtrotipo == 'unidad')
         {
-            $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
+            $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf','tabla_supre.created_at',
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
@@ -1465,7 +1474,7 @@ class supreController extends Controller
         }
         else if ($filtrotipo == 'instructor')
         {
-            $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf',
+            $data = supre::SELECT('tabla_supre.no_memo', 'folios.folio_validacion as suf','tabla_supre.created_at',
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
@@ -1490,15 +1499,15 @@ class supreController extends Controller
         }
 
         $cabecera = [
-            'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA',
+            'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA DE CREACION EN EL SISTEMA', 'FECHA',
             'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CLAVE DEL GRUPO',
             'Z.E.', 'HSM', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES'
         ];
 
-        $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2.".xlsx";
-        $titulo = "formato de control ".$fecha1 . ' - '. $fecha2;
+        $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now() . ".xlsx";
+        $titulo = "formato de control ".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now();
         if(count($data)>0){
             return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
         }
