@@ -20,7 +20,7 @@ else{
         }
 
         @page {
-            margin: 110px 40px 80px;
+            margin: 90px 40px 50px;
             }
             header { position: fixed;
                 left: 0px;
@@ -183,7 +183,7 @@ else{
                 <table width="700"  class="table table-striped" id="table-one">
                     <thead>
                         <tr class="active">
-                            <td scope="col"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
+                            <td width="10px"><small style="font-size: 8px;">No. DE SUFICIENCIA</small></td>
                             <td scope="col" ><small style="font-size: 8px;">FECHA</small></td>
                             <td scope="col" ><small style="font-size: 8px;">INSTRUCTOR</small></td>
                             <td width="10px"><small style="font-size: 8px;">UNIDAD/ A.M. DE CAP.</small></td>
@@ -193,11 +193,11 @@ else{
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">ZONA ECÓNOMICA</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">HSM (horas)</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">IMPORTE POR HORA</small></td>
-                            <td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>
+                            @if($tipop->modinstructor == 'HONORARIOS')<td scope="col" style="width: 20px"><small style="font-size: 8px;">IVA 16%</small></td>@endif
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">PARTIDA/ CONCEPTO</small></td>
                             <td scope="col"><small style="font-size: 8px;">IMPORTE</small></td>
                             <td scope="col" style="width: 20px"><small style="font-size: 8px;">Fuente de Financiamiento</small></td>
-                            <td scope="col" ><small style="font-size: 8px;">OBSERVACION</small></td>
+                            <td width="160px" ><small style="font-size: 8px;">OBSERVACION</small></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -217,10 +217,10 @@ else{
                                 <td><small style="font-size: 8px;">{{$item->ze}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->dura}}</small></td>
                                 <td><small style="font-size: 8px;">{{$item->importe_hora}}</small></td>
-                                <td><small style="font-size: 8px;">{{$item->iva}}</small></td>
+                                @if($item->modinstructor == 'HONORARIOS')<td><small style="font-size: 8px;">{{$item->iva}}</small></td>@endif
                                 <input id='hombre{{$key}}' name="hombre" hidden value="{{$item->hombre}}">
                                 <input id='mujer{{$key}}' name="mujer" hidden value="{{$item->mujer}}">
-                                <td><small style="font-size: 8px;">12101 Honorarios</small></td>
+                                <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
                                 <td><small style="font-size: 8px;">{{$item->importe_total}}</small></td>
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
                                 <td style="text-align: center; font-size: 10px;"><small>{{$recursos[$key]}}</small></td>
@@ -233,9 +233,9 @@ else{
         </div>
         <div id="wrapperbot">
             <div align=center>
-                <small>LUIS ALFONSO CRUZ VELASCO</small>
-                <br>________________________________________<br/>
-                <br><small>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO</small></b>
+                <small><small>LUIS ALFONSO CRUZ VELASCO</small></small>
+                <br><small>________________________________________</small><br/>
+                <br><small><small>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO</small></small></b>
             </div>
             <div><br><br><br>
                 <FONT SIZE=0><b>C.c.p.</b>FABIOLA LIZBETH ASTUDILLO REYES.-DIRECTORA GENERAL.-Para su conocimiento</FONT><br/>

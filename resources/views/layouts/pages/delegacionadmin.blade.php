@@ -230,14 +230,22 @@
                         document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
                     } else {
                         if(!respuesta.hasOwnProperty('error')){
-                            iva = respuesta * 0.16;
+                            iva = respuesta[0] * 0.16;
                             iva = parseFloat(iva).toFixed(2);
-                            total = respuesta*1.16
+                            if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS')
+                            {
+                                total = respuesta[0]*1.16
+                                document.getElementById('addmore['+x+'][iva]').value = iva;
+                            }
+                            else
+                            {
+                                total = respuesta[0]
+                                document.getElementById('addmore['+x+'][iva]').value = 0.00;
+                            }
                             total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = total;
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
-                            document.getElementById('addmore['+x+'][iva]').value = iva;
 
                         }else{
 
