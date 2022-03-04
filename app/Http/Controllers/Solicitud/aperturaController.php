@@ -661,10 +661,8 @@ class aperturaController extends Controller
                 $x= Carbon::parse($fechas->start)->format('H:i');   //dd($x.'||'.$y);
                 $minutos= Carbon::parse($y)->diffInMinutes($x);
                 $suma += $minutos;
-                if( $suma >= 360 ){
-                    if ( ($suma + $minutos_curso) > 480 ) {
-                        $isEquals3= true;
-                    }
+                if (($suma + $minutos_curso) > 480) {
+                    $isEquals3 = true;
                 }
             }
         }
