@@ -156,15 +156,40 @@ if($data->tipo_curso=='CERTIFICACION'){
                 </div>
                 <table>
                     <tbody>
-                        <tr>
-                            <td><small>Banco: {{$data->banco}}</small></td>
-                        </tr>
-                        <tr>
-                            <td><small>Número de Cuenta: {{$data->no_cuenta}}</small></td>
-                        </tr>
-                        <tr>
-                            <td><small>Clabe Interbancaria: {{$data->interbancaria}}</small></td>
-                        </tr>
+                        @if($data->modinstructor == 'HONORARIOS')
+                                <tr>
+                                    <td><small>Banco: {{$data->banco}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Número de Cuenta: {{$data->no_cuenta}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Clabe Interbancaria: {{$data->interbancaria}}</small></td>
+                                </tr>
+                        @endif
+                        @if($data->modinstructor == 'ASIMILADOS A SALARIOS')
+                            @if($data->banco == NULL)
+                                <tr>
+                                    <td><small>Banco: NO APLICA</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Número de Cuenta: NO APLICA</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Clabe Interbancaria: NO APLICA</small></td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td><small>Banco: {{$data->banco}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Número de Cuenta: {{$data->no_cuenta}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Clabe Interbancaria: {{$data->interbancaria}}</small></td>
+                                </tr>
+                            @endif
+                        @endif
                     </tbody>
                 </table>
                 <br><p class="text-left"><p>Nota: El Expediente Único soporte documental del <font style="text-transform:lowercase;"> {{$tipo}}</font>, obra en poder de la Unidad de Capacitación.</p></p>

@@ -273,4 +273,12 @@ $(function(){
         //$('#confirm_restart').attr("href","/supre/reiniciar/" + id);
     });
 
+    //Modal de modificacion de supre validado
+    $('#modchangevalmodal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+
+        $('#valsupre_confirm').attr("href","/valsupre/modespec/" + id);
+    });
+
 });

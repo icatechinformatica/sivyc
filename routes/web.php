@@ -58,6 +58,7 @@ Route::post('/supre/folio/modificacion-especial','webController\SupreController@
 Route::post('/supre/delegado/upload_doc','webController\SupreController@doc_supre_upload')->name('doc-supre-guardar');
 Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
 Route::get('/supre/reiniciar/{id}', 'webController\SupreController@restartSupre')->name('restart-supre');
+Route::get('/valsupre/modespec/{id}', 'webController\SupreController@dar_permiso_valsupre')->name('darpermisovalsupre');
 Route::get('/folio/edicion_especial/{id}', 'webController\SupreController@folio_edicion_especial')->name('folio_especialedit');
 Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_solicitados')->name('reporte-solicitados');
 Route::get('/supre/reporte/solicitados/{un}/{ini}/{fin}', 'webController\supreController@reporte_solicitados_detail')->name('reporte-solicitados-detail');
@@ -154,6 +155,7 @@ Auth::routes();
 Route::get('/supre/solicitud/opc', 'webController\supreController@opcion')->name('solicitud-opcion');
 Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_folios')->name('solicitud-folio');
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
+Route::get('/supre/valsupre_mod/{id}', 'webController\supreController@valsupre_mod')->name('valsupre-mod');
 Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
 //Ruta last-update 12102021
