@@ -341,6 +341,7 @@ class supreController extends Controller
         $supre->status = 'Validado';
         $supre->folio_validacion = $request->folio_validacion;
         $supre->fecha_validacion = $request->fecha_val;
+        $supre->permiso_editar = FALSE;
         $supre->fecha_status = carbon::now();
         $supre->save();
 
@@ -384,11 +385,30 @@ class supreController extends Controller
         return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
     }
 
+    public function valsupre_mod($id){
+        $data = supre::find($id);
+        $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
+        $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
+        $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
+        $getccp1 = directorio::WHERE('id', '=', $directorio->val_ccp1)->FIRST();
+        $getccp2 = directorio::WHERE('id', '=', $directorio->val_ccp2)->FIRST();
+        $getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
+        $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
+
+        return view('layouts.pages.valsupremod', compact('data', 'directorio','getremitente','getfirmante','getccp1','getccp2','getccp3','getccp4'));
+    }
+
     public function delete($id)
     {
-        supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
-        folio::where('id_supre', '=', $id)->delete();
-        supre::where('id', '=', $id)->delete();
+        // supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
+        // folio::where('id_supre', '=', $id)->delete();
+        // supre::where('id', '=', $id)->delete();
+        $folio = folio::WHERE('id_supre','=',$id)->FIRST();
+        $folio->status = 'Cancelado';
+        $folio->save();
+        $supre = supre::WHERE('id', '=', $id)->FIRST();
+        $supre->status = 'Cancelado';
+        $supre->save();
 
         return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Eliminada');
@@ -772,6 +792,15 @@ class supreController extends Controller
         $folio = folio::find($request->folios);
         $folio->permiso_editar = TRUE;
         $folio->save();
+
+        return redirect()->route('supre-inicio')
+                    ->with('success','Permiso Otorgado');
+    }
+    public function dar_permiso_valsupre($id)
+    {
+        $supre = supre::find($id);
+        $supre->permiso_editar = TRUE;
+        $supre->save();
 
         return redirect()->route('supre-inicio')
                     ->with('success','Permiso Otorgado');
