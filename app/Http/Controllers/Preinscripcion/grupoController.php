@@ -168,7 +168,7 @@ class grupoController extends Controller
 													and extract(year from a.inicio) = extract(year from current_date)) as t"))
                         ->select(DB::raw("count(curso) as total"), DB::raw("count(case when curso = '$request->id_curso' then curso end) as igual"))
                         ->first(); //dd($cursos);
-                    if ($cursos->igual < 2 && $cursos->total < 6) {
+                    if ($cursos->igual < 2 && $cursos->total < 15) {
                         if($_SESSION['folio_grupo'] AND DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','<>','VINCULACION')->exists() == true) $_SESSION['folio_grupo'] = NULL;
                         if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();
                         //EXTRAER MATRICULA Y GUARDAR
