@@ -281,7 +281,7 @@ class aperturasController extends Controller
                     ->where('turnado','UNIDAD')
                     ->where('status_curso','SOLICITADO')
                     ->where('status','NO REPORTADO')
-                    ->where('munidad',$_SESSION['memo'])->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s'),'fecha_arc01'=>null]);                    
+                    ->where('munidad',$_SESSION['memo'])->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s'),'fecha_arc01'=>null,'file_arc01' => null]);                    
                     if($result){ 
                         $folios = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->pluck('folio_grupo');     
                         //var_dump($folios);exit;           
