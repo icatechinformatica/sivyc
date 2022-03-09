@@ -202,7 +202,25 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputfecha_validacion">FECHA DE SOLICITUD</label>
-                    <input type="date" name="fecha_solicitud" id="fecha_solicitud" class="form-control" aria-required="true" value="{{$especvalid->fecha_solicitud}}">
+                    <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true" value="{{$especvalid->fecha_solicitud}}">
+                </div>
+            </div>
+            <label for="inputexp_doc"><h2>Alta/baja de Especialidad Validada</h2></label>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    @if ($especvalid->activo == true)
+                        <label class="switch">
+                            <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
+                            <span class="slider round"></span>
+                        </label>
+                        <h5><p id="text1">Especialidad Validada Activa</p><p id="text2" style="display:none">Especialidad Validada Inactiva</p></h5>
+                    @else
+                        <label class="switch">
+                            <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
+                            <span class="slider round"></span>
+                        </label>
+                        <h5><p id="text1" style="display:none">Especialidad Validada Activa</p><p id="text2">Especialidad Validada Inactiva</p></h5>
+                    @endif
                 </div>
             </div>
             <div class="form-row">
@@ -213,7 +231,7 @@
             </div>
 
             <hr style="border-color:dimgray">
-            <h2>Selección de Cursos a Validar para Impartir</h2>
+            <h2>Selección de Cursos Validados para Impartir</h2>
 
             <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
                 <div class="card-header" style="background-color: white;">

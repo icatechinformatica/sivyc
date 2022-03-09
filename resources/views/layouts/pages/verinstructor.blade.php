@@ -428,54 +428,54 @@
                     <strong>Info!</strong> No hay Registros
                 </div>
             @endif
-                <div class="row">
-                    <div class="col-lg-12 margin-tb">
-                        <div class="pull-left">
-                            <caption>Lista de Cursos Validados para Impartir</caption>
-                        </div>
-                        <div class="pull-right">
-                            @can('instructor.editar_fase2')
-                                <a class="btn btn-info" href="{{ route('instructor-curso', ['id' => $datains->id]) }}">Agregar Curso Validado para Impartir</a>
-                            @endcan
-                        </div>
+            <div class="row">
+                <div class="col-lg-12 margin-tb">
+                    <div class="pull-left">
+                        <caption>Lista de Cursos Validados para Impartir</caption>
+                    </div>
+                    <div class="pull-right">
+                        @can('instructor.editar_fase2')
+                            <a class="btn btn-info" href="{{ route('instructor-curso', ['id' => $datains->id]) }}">Agregar Curso Validado para Impartir</a>
+                        @endcan
                     </div>
                 </div>
-                @can('instructor.altabaja')
-                    <hr style="border-color:dimgray">
-                    <label><h2>Estado General del Instructor</h2></label>
-                    <div class="form-group col-md-4">
-                        @if ($datains->estado == true)
-                            <label class="switch">
-                                <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
-                                <span class="slider round"></span>
-                            </label>
-                            <h5><p id="text1">Instructor Activo</p><p id="text2" style="display:none">Instructor Inactivo</p></h5>
-                        @else
-                            <label class="switch">
-                                <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
-                                <span class="slider round"></span>
-                            </label>
-                            <h5><p id="text1" style="display:none">Instructor Activo</p><p id="text2">Instructor Inactivo</p></h5>
-                        @endif
-                    </div>
-                    <label><h2>Alta/Baja al Instructor</h2></label>
-                    <div class="form-group col-md-8">
-                        <a class="btn btn-danger" href="{{ route('instructor-alta_baja', ['id' => $datains->id]) }}" >Alta/Baja</a>
-                        <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
-                    </div>
-                @endcan
+            </div>
+            @can('instructor.altabaja')
                 <hr style="border-color:dimgray">
-                <br>
-                <div class="row">
-                    <div class="col-lg-12 margin-tb">
-                        <div class="pull-left">
-                            <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
-                        </div>
-                        <div  class="pull-right">
-                            <button disabled id="savemodbuttonins" type="submit" class="btn btn-primary" >Guardar Cambios</button>
-                        </div>
+                <label><h2>Estado General del Instructor</h2></label>
+                <div class="form-group col-md-4">
+                    @if ($datains->estado == true)
+                        <label class="switch">
+                            <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
+                            <span class="slider round"></span>
+                        </label>
+                        <h5><p id="text1">Instructor Activo</p><p id="text2" style="display:none">Instructor Inactivo</p></h5>
+                    @else
+                        <label class="switch">
+                            <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
+                            <span class="slider round"></span>
+                        </label>
+                        <h5><p id="text1" style="display:none">Instructor Activo</p><p id="text2">Instructor Inactivo</p></h5>
+                    @endif
+                </div>
+                <label><h2>Alta/Baja al Instructor</h2></label>
+                <div class="form-group col-md-8">
+                    <a class="btn btn-danger" href="{{ route('instructor-alta_baja', ['id' => $datains->id]) }}" >Alta/Baja</a>
+                    <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
+                </div>
+            @endcan
+            <hr style="border-color:dimgray">
+            <br>
+            <div class="row">
+                <div class="col-lg-12 margin-tb">
+                    <div class="pull-left">
+                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                    </div>
+                    <div  class="pull-right">
+                        <button disabled id="savemodbuttonins" type="submit" class="btn btn-primary" >Guardar Cambios</button>
                     </div>
                 </div>
+            </div>
             <br>
         </form>
         <!--Modal-->

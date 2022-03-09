@@ -94,7 +94,7 @@
         <div class="card card-body">
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="inputvalido_perfil">PERFIL PROFESIONAL CON EL QUE SE VALIDA</label>
+                    <label for="inputvalido_perfil">PERFIL PROFESIONAL CON EL QUE SE VALIDO</label>
                     <select class="form-control" name="valido_perfil" id="valido_perfil">
                         <option value="sin especificar">SIN ESPECIFICAR</option>
                         @foreach ($perfil as $item)
@@ -122,13 +122,18 @@
                 </div>
             </div>
             <div class="form-row">
+
                 <div class="form-group col-md-4">
-                    <label for="inputmemorandum">MEMORANDUM DE SOLICITUD</label>
+                    <label for="inputmemorandum">MEMORANDUM DE VALIDACIÓN</label>
                     <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true" required>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputfecha_validacion">FECHA DE SOLICITUD</label>
-                    <input type="date" name="fecha_solicitud" id="fecha_solicitud" class="form-control" aria-required="true" required>
+                    <label for="inputfecha_validacion">FECHA DE VALIDACIÓN</label>
+                    <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputmemoranum_modificacion">MEMORANDUM DE REVALIDACIÓN</label>
+                    <input type="text" name="memorandum_modificacion" id="memorandum_modificacion" class="form-control" aria-required="true">
                 </div>
             </div>
             <div class="form-row">
@@ -139,7 +144,7 @@
             </div>
 
                 <hr style="border-color:dimgray">
-                <h2>SELECCIÓN DE CURSOS SOLICITADOS PARA IMPARTIR</h2>
+                <h2>SELECCIÓN DE CURSOS VALIDADOS PARA IMPARTIR</h2>
 
                 <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
                     <div class="card-header" style="background-color: white;">

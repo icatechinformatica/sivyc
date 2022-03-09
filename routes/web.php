@@ -314,6 +314,7 @@ Route::middleware(['auth'])->group(function () {
     // Crea instructor
     Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');
     Route::get('/instructor/crear', 'webController\InstructorController@crear_instructor')->name('instructor-crear');
+    Route::get('/instructor/crear/paso-2/{id}', 'webController\InstructorController@crear_instructor_p2')->name('instructor-crear-p2');
     Route::post('/instructor/guardar', 'webController\InstructorController@guardar_instructor')->name('instructor-guardar');
     Route::get('/instructor/ver/{id}', 'webController\InstructorController@ver_instructor')->name('instructor-ver');
     Route::get('/instructor/add/perfil-profesional/{id}', 'webController\InstructorController@add_perfil')->name('instructor-perfil');

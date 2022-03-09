@@ -84,8 +84,11 @@
                         <td>{{$itemData->status}}</td>
                         <td>
                             @if ($itemData->status == 'En Proceso')
-                                @can('instructor.validar')
-                                    <a class="btn btn-info" href="{{route('instructor-validar', ['id' => $itemData->id])}}">Validar</a>
+                                {{-- @can('instructor.validar')
+                                    <a class="btn btn-info" href="{{route('instructor-validar', ['id' => itemData->id])}}">Validar</a>
+                                @endcan --}}
+                                @can('instructor.create')
+                                    <a class="btn btn-info btn-md" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><small>Continuar Solicitud</small></a>
                                 @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
@@ -115,6 +118,39 @@
         <br>
     </div>
     <br>
+    <!-- Modal -->
+        <div class="modal fade" id="confirmsaveins" role="dialog">
+            <div class="modal-dialog">
+                <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">¿Esta seguro de ir al siguiente paso?<b></b></h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="form-row">
+                        <div class="form-group col-md-3"></div>
+                            {{-- <div class="form-group col-md-6">
+                                <label for="unidad" class="control-label">Esto Regresara la Validación Suficiencia Presupuestal a planeación para su correción</label>
+                            </div> --}}
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2"></div>
+                            <div class="form-group col-md-4">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <a id="valsupre_confirm" href="#" class="btn btn-primary" >Confirmar</a>
+                            </div>
+                            <div class="form-group col-md-1"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <!-- END -->
 @endsection
 @section('script_content_js')
     <script>

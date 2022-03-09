@@ -157,7 +157,7 @@
                     <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
                 </div>
                 <div class="form-group col-md-11" style="text-align: right;width:100%">
-                    <button type="submit" class="btn btn-primary" >Agregar</button>
+                    <button type="submit" class="btn btn-primary" >Guardar</button>
                 </div>
             </div>
             <br>

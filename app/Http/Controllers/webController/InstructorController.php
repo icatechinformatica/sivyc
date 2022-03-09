@@ -225,9 +225,10 @@ class InstructorController extends Controller
             }
             // dd($saveInstructor);
             $saveInstructor->save();
-
-            return redirect()->route('instructor-inicio')
-                        ->with('success','Perfil profesional agregado');
+            $idinst = $saveInstructor->id;
+            return redirect()->route('instructor-crear-p2',['id' => $idinst])
+                        ->with('success','Información basica agregada');
+            // return view('layouts.pages.frminstructorp2', compact('idinst'));
         }
         else
         {
@@ -235,6 +236,23 @@ class InstructorController extends Controller
             $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos al instructor con clave ".$clave_instructor.".";
             return redirect('/instructor/crear')->withErrors($mensaje);
         }
+    }
+
+    public function crear_instructor_p2($id)
+    {
+        $instructor_perfil = new InstructorPerfil();
+        $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
+
+        $validado = $instructor_perfil->SELECT('especialidades.nombre', 'especialidad_instructores.id as espinid',
+        'especialidad_instructores.observacion', 'especialidad_instructores.id AS especialidadinsid',
+        'especialidad_instructores.memorandum_solicitud','especialidad_instructores.criterio_pago_id',
+        'especialidad_instructores.fecha_solicitud','especialidad_instructores.activo','especialidad_instructores.status')
+                        ->WHERE('instructor_perfil.numero_control', '=', $id)
+                        ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
+                        ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+                        ->GET();
+
+        return view('layouts.pages.frminstructorp2', compact('perfil','validado','id'));
     }
 
     public function validar($id)
@@ -705,16 +723,17 @@ class InstructorController extends Controller
     {
             // dd($request);
         $userId = Auth::user()->id;
+        $status = instructor::WHERE('id', '=', $request->idins)->VALUE('status');
 
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
         //$espec_mod->especialidad_id = $request->idesp;
         $espec_mod->perfilprof_id = $request->valido_perfil;
         $espec_mod->unidad_solicita = $request->unidad_validacion;
-        $espec_mod->memorandum_validacion = $request->memorandum;
-        $espec_mod->fecha_validacion = $request->fecha_validacion;
-        $espec_mod->memorandum_modificacion = $request->memorandum_modificacion;
+        $espec_mod->fecha_solicitud = $request->fecha_solicitud;
+        $espec_mod->memorandum_solicitud = $request->memorandum;
         $espec_mod->observacion = $request->observaciones;
         $espec_mod->criterio_pago_id = $request->criterio_pago_mod;
+        $espec_mod->status = 'En Proceso';
         if(isset($request->estado))
         {
             $espec_mod->activo = TRUE;
@@ -792,8 +811,16 @@ class InstructorController extends Controller
             }
         }
 
-        //dd($request->itemEdit);
-        return back();
+        if($status == 'En Proceso')
+        {
+            return redirect()->route('instructor-crear-p2',['id' => $request->idins])
+                            ->with('success','Perfil Profesional Agregado');
+        }
+        else
+        {
+            return back();
+        }
+
         return redirect()->route('instructor-ver', ['id' => $request->idins])
                         ->with('success','Especialidad Para Impartir Modificada');
     }
@@ -835,6 +862,7 @@ class InstructorController extends Controller
     public function modperfilinstructor_save(Request $request)
     {
         $userId = Auth::user()->id;
+        $status = instructor::WHERE('id', '=', $request->idInstructor)->VALUE('status');
 
         $perfilInstructor = InstructorPerfil::find($request->id);
         #proceso de guardado
@@ -857,16 +885,27 @@ class InstructorController extends Controller
         $perfilInstructor->experiencia_docente = trim($request->exp_doc);
         $perfilInstructor->numero_control = trim($request->idInstructor);
         $perfilInstructor->lastUserId = $userId;
+        $perfilInstructor->status = 'En Proceso';
         $perfilInstructor->save(); // guardar registro
 
+        if($status == 'En Proceso')
+        {
+            return redirect()->route('instructor-crear-p2',['id' => $request->idInstructor])
+                            ->with('success','Perfil Profesional Agregado');
+        }
+        else
+        {
         return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Perfil profesional modificado');
+        }
 
     }
 
     public function perfilinstructor_save(Request $request)
     {
         $userId = Auth::user()->id;
+        $status = instructor::WHERE('id', '=', $request->idInstructor)->VALUE('status');
+        // dd($status);
 
         $perfilInstructor = new InstructorPerfil();
         #proceso de guardado
@@ -889,10 +928,19 @@ class InstructorController extends Controller
         $perfilInstructor->experiencia_docente = trim($request->exp_doc);
         $perfilInstructor->numero_control = trim($request->idInstructor);
         $perfilInstructor->lastUserId = $userId;
+        $perfilInstructor->status = 'En Proceso';
         $perfilInstructor->save(); // guardar registro
 
-        return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
-                        ->with('success','Perfil profesional agregado');
+        if($status == 'En Proceso')
+        {
+            return redirect()->route('instructor-crear-p2',['id' => $request->idInstructor])
+                            ->with('success','Perfil Profesional Agregado');
+        }
+        else
+        {
+            return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
+                            ->with('success','Perfil profesional agregado');
+        }
 
     }
 
@@ -929,19 +977,21 @@ class InstructorController extends Controller
     public function espec_val_save(Request $request)
     {
         $userId = Auth::user()->id;
-        //dd($request);
+        $status = instructor::WHERE('id', '=', $request->idInstructor)->VALUE('status');
+        // dd($request);
         $espec_save = new especialidad_instructor;
         $espec_save->especialidad_id = $request->idespec;
         $espec_save->perfilprof_id = $request->valido_perfil;
         $espec_save->unidad_solicita = $request->unidad_validacion;
-        $espec_save->memorandum_validacion = $request->memorandum;
-        $espec_save->fecha_validacion = $request->fecha_validacion;
+        $espec_save->memorandum_solicitud = $request->memorandum;
+        $espec_save->fecha_solicitud = $request->fecha_solicitud;
         $espec_save->memorandum_modificacion = $request->memorandum_modificacion;
         $espec_save->observacion = $request->observaciones;
         $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
         $espec_save->lastUserId = $userId;
         $espec_save->activo = TRUE;
         $espec_save->id_instructor = $request->idInstructor;
+        $espec_save->status = 'En Proceso';
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
         $especialidadInstrcutorId = $espec_save->id;
@@ -1009,8 +1059,17 @@ class InstructorController extends Controller
          limpiar array
         unset($pila);*/
 
-        return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
+        if($status == 'En Proceso')
+        {
+            return redirect()->route('instructor-crear-p2',['id' => $request->idInstructor])
+                            ->with('success','Perfil Profesional Agregado');
+        }
+        else
+        {
+            return redirect()->route('instructor-ver', ['id' => $request->idInstructor])
                         ->with('success','Especialidad Para Impartir Agregada');
+        }
+
     }
 
     public function alta_baja($id)
