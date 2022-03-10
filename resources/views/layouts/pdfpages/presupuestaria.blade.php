@@ -83,7 +83,7 @@ else{$tipo='CURSO';}
             <br>JEFE DE DEPARTAMENTO DE PROGRAMACION Y PRESUPUESTO.
             <br><br>Presente.
 
-            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 {{$uj->modinstructor}}, para la contratación de instructores para la impartición de
+            <br><p class="text-justify">Por medio del presente me permito solicitar suficiencia presupuestal, en la partida 12101 {{$uj[0]->modinstructor}}, para la contratación de instructores para la impartición de
             @if ($uj[0]->tipo_curso=='CERTIFICACION')
                 certificación extraordinaria
             @else
