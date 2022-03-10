@@ -149,9 +149,29 @@
                         <label for="inputrfc">RFC/Constancia Fiscal</label>
                         <input name='rfc' id='rfc' value="{{$datains->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputfolio_ine">Folio INE</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputtipo_identificacion">Tipo de Identificación</label>
+                        <select class="form-control" name="tipo_identificacion" id="tipo_identificacion" disabled>
+                            <option value="INE" @if($datains->tipo_identificacion == 'INE') selected @endif>INE</option>
+                            <option value="PASAPORTE" @if($datains->tipo_identificacion == 'PASAPORTE') selected @endif>PASAPORTE</option>
+                            <option value="LICENCIA DE CONDUCIR" @if($datains->tipo_identificacion == 'LICENCIA DE CONDUCIR') selected @endif>LICENCIA DE CONDUCIR</option>
+                            <option value="CARTILLA MILITAR" @if($datains->tipo_identificacion == 'CARTILLA MILITAR') selected @endif>CARTILLA MILITAR</option>
+                            <option value="CEDULA PROFESIONAL" @if($datains->tipo_identificacion == 'CEDULA PROFESIONAL') selected @endif>CEDULA PROFESIONAL</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfolio_ine">Folio de Identificación</label>
                         <input name='folio_ine' id='folio_ine' value="{{$datains->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputexpiracion_identificacion">Expiración de Identificación</label>
+                        <input name='expiracion_identificacion' id='expiracion_identificacion' value="{{$datains->expiracion_identificacion }}" type="date" disabled class="form-control" disabled aria-required="true">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_ine">Archivo Identificación</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
                     </div>
                 </div>
                 <div class="form-row">
@@ -252,10 +272,6 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="inputarch_ine">Archivo INE</label>
-                        <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
                         <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled>
                     </div>
@@ -266,6 +282,10 @@
                     <div class="form-group col-md-3">
                         <label for="inputarch_alta">Archivo Alta de Instructor</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_id">Archivo Otra Identificación</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
                     </div>
                 </div>
                 <div class="form-row">
@@ -284,12 +304,6 @@
                     <div class="form-group col-md-3">
                         <label for="inputarch_estudio">Archivo Grado de Estudios</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="inputarch_id">Archivo Otra Identificación</label>
-                        <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
                     </div>
                 </div>
                 <br>

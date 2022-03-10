@@ -447,7 +447,9 @@ class InstructorController extends Controller
         $modInstructor->apellidoMaterno = trim($request->apellido_materno);
         $modInstructor->curp = trim($request->curp);
         $modInstructor->rfc = trim($request->rfc);
+        $modInstructor->tipo_identificacion = trim($request->tipo_identificacion);
         $modInstructor->folio_ine = trim($request->folio_ine);
+        $modInstructor->expiracion_identificacion = trim($request->expiracion_identificacion);
         $modInstructor->sexo = trim($request->sexo);
         $modInstructor->estado_civil = trim($request->estado_civil);
         $modInstructor->fecha_nacimiento = $request->fecha_nacimientoins;

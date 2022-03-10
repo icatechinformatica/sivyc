@@ -48,6 +48,11 @@
             @else
                 <a class="btn btn-danger" disabled>Validación Suficiencia Presupuestal</a><br>
             @endif
+            @if ($data->comprobante_pago != NULL)
+                <a class="btn btn-info" href={{$data->comprobante_pago}} target="_blank">Comprobante Pago</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Comprobante Pago</a><br>
+            @endif
         </div>
         <div class="form-row">
             <div class="form-group col-md-5">
