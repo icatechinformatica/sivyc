@@ -140,7 +140,7 @@ class grupoController extends Controller
         if (isset($request->tipo) and isset($request->unidad) and isset($request->modalidad)) {
             $cursos = DB::table('cursos')->select('cursos.id', 'nombre_curso')
                 ->where('tipo_curso', $request->tipo)
-                ->where('modalidad', $request->modalidad)
+                ->where('modalidad','like',"%$request->modalidad%")
                 ->where('cursos.estado', true)
                 ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('cursos.nombre_curso')->get();
             $json = json_encode($cursos);
