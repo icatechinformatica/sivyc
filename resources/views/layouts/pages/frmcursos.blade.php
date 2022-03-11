@@ -136,7 +136,7 @@
                   <option value="">--SELECCIONAR--</option>
                   <option value="CAE">CAE</option>
                   <option value="EXT">EXT</option>
-                  <option value="EMP">EMP</option>
+                  <option value="CAE Y EXT">CAE Y EXT</option>
                 </select>
             </div>
             <!--clasificacion-->
