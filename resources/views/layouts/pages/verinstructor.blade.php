@@ -167,7 +167,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputexpiracion_identificacion">Expiración de Identificación</label>
-                        <input name='expiracion_identificacion' id='expiracion_identificacion' value="{{$datains->expiracion_identificacion }}" type="date" disabled class="form-control" disabled aria-required="true">
+                        <input name='expiracion_identificacion' id='expiracion_identificacion' value="{{$datains->expiracion_identificacion }}" type="date" disabled class="form-control" disabled aria-required="true" required>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputarch_ine">Archivo Identificación</label>
