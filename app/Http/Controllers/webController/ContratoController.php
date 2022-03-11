@@ -422,6 +422,7 @@ class ContratoController extends Controller
                                  'contratos.municipio','contratos.arch_factura','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
                                  'contratos.cantidad_numero','contratos.arch_factura','folios.iva','folios.id_cursos','folios.id_supre','tabla_supre.doc_validado',
                                  'tbl_cursos.clave','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod','tbl_cursos.pdf_curso',
+                                 'tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion',
                                  'instructores.nombre AS insnom','instructores.apellidoPaterno','instructores.tipo_honorario','tbl_cursos.dura',
                                  'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia',
                                  'tbl_cursos.hini','tbl_cursos.instructor_mespecialidad','tbl_cursos.hfin','tbl_cursos.folio_grupo','tbl_cursos.modinstructor','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
@@ -810,7 +811,7 @@ class ContratoController extends Controller
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id', 'tbl_cursos.clave','tbl_cursos.tipo_curso','tbl_cursos.horas','tbl_cursos.modinstructor','instructores.nombre',
-                                  'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.tipo_identificacion','instructores.folio_ine','instructores.rfc','instructores.curp',
+                                  'instructores.apellidoPaterno','instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion','instructores.rfc','instructores.curp',
                                   'instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
@@ -863,7 +864,7 @@ class ContratoController extends Controller
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
                                   'tbl_cursos.tipo_curso', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
-                                  'instructores.apellidoMaterno','instructores.tipo_identificacion','instructores.folio_ine','instructores.rfc','tbl_cursos.modinstructor',
+                                  'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion','instructores.rfc','tbl_cursos.modinstructor',
                                   'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
@@ -916,7 +917,7 @@ class ContratoController extends Controller
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
                                   'tbl_cursos.tipo_curso', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
-                                  'instructores.apellidoMaterno','instructores.tipo_identificacion','instructores.folio_ine','instructores.rfc',
+                                  'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion','instructores.rfc',
                                   'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
                           ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
