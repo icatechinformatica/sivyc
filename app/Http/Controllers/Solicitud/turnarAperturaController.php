@@ -104,9 +104,15 @@ class turnarAperturaController extends Controller
                 $file_result = $this->upload_file($file,$name_file);                
                 $url_file = $file_result["url_file"];
                 if($file_result){
-
+                    $cursos = DB::table('tbl_cursos')->select('tbl_cursos.*')->where('munidad',$_SESSION['memo'])->get();
                     switch($_SESSION['opt']){
                         case "ARC01":
+                            foreach ($cursos as $value) {
+                                if ($value->fecha_arc01 == null) {
+                                    $message = "La fecha del arc 01 no se ha generado, genere el memorandum pdf.";
+                                    return redirect('solicitud/apertura/turnar')->with('message',$message);
+                                }
+                            }
                             $titulo = 'Clave de Apertura';
                             $cuerpo = 'Solicitud de asignación de clave de apertura del memo '.$_SESSION['memo'];
                             $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
@@ -186,8 +192,10 @@ class turnarAperturaController extends Controller
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
                 
             if(count($reg_cursos)>0){   
-                if (!$reg_cursos[0]->fecha_arc01) {
-                    $result = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->update(['fecha_arc01'=>$request->fecha]);
+                foreach ($reg_cursos as $value) {
+                    if (!$value->fecha_arc01) {
+                        $result = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->update(['fecha_arc01'=>$request->fecha]);
+                    }
                 }  
                 $fecha_memo = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->pluck('fecha_arc01')->first();
                 $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
