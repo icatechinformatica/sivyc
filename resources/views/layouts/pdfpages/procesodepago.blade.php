@@ -1,8 +1,8 @@
 <?php
 if($data->tipo_curso=='CERTIFICACION'){
-    $tipo='LA CERTIFICACIÓN EXTRAORDINARIA';
+    $tipo='DE LA CERTIFICACIÓN EXTRAORDINARIA';
 }else{
-    $tipo='CURSO';
+    $tipo='DEL CURSO';
 }
 ?>
 <!DOCTYPE HTML>
@@ -110,9 +110,9 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <br><br><b>{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}.</b>
                 <br>{{$para->puesto}}.
                 <br><br>Presente.
-                <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura de <font style="text-transform:lowercase;"> {{$tipo}}</font> y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
+                <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura <font style="text-transform:lowercase;"> {{$tipo}}</font> y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
                 <div align=center>
-                    <FONT SIZE=2><b>DATOS DEL {{$tipo}}</b></FONT>
+                    <FONT SIZE=2><b>DATOS {{$tipo}}</b></FONT>
                 </div>
                 <table>
                     <tbody>
@@ -192,7 +192,7 @@ if($data->tipo_curso=='CERTIFICACION'){
                         @endif
                     </tbody>
                 </table>
-                <br><p class="text-left"><p>Nota: El Expediente Único soporte documental del <font style="text-transform:lowercase;"> {{$tipo}}</font>, obra en poder de la Unidad de Capacitación.</p></p>
+                <br><p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;"> {{$tipo}}</font>, obra en poder de la Unidad de Capacitación.</p></p>
                 <br><br><table class="table1">
                     <tr>
                         <td colspan="2"><p align="center">Atentamente</p></td>
