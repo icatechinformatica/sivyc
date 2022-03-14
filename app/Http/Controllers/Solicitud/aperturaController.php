@@ -222,7 +222,8 @@ class aperturaController extends Controller
                     $instructor = DB::table('instructores')
                         ->select('instructores.id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),
                         'curp','rfc','sexo','tipo_honorario','instructor_perfil.grado_profesional as escolaridad','instructor_perfil.estatus as titulo',
-                        'especialidad_instructores.memorandum_validacion as mespecialidad','especialidad_instructores.criterio_pago_id as cp')
+                        'especialidad_instructores.memorandum_validacion as mespecialidad','especialidad_instructores.criterio_pago_id as cp',
+                        'tipo_identificacion','folio_ine')
                         ->WHERE('estado',true)
                         ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre','!=','')->where('instructores.id',$request->instructor)
                         //->whereJsonContains('unidades_disponible', [$grupo->unidad])
@@ -396,7 +397,9 @@ class aperturaController extends Controller
                                 'id_gvulnerable'=>$grupo->id_vulnerable,
                                 'id_cerss' => $grupo->id_cerss,
                                 'created_at'=>$created_at,
-                                'updated_at'=>$updated_at
+                                'updated_at'=>$updated_at,
+                                'instructor_tipo_identificacion'=>$instructor->tipo_identificacion,
+                                'instructor_folio_identificacion'=>$instructor->folio_ine
                             ]
                         );
                         $agenda = DB::table('agenda')->where('id_curso',$_SESSION['folio'])->update(['id_instructor' => $instructor->id]);
