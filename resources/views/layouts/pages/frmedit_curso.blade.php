@@ -212,6 +212,7 @@
                   <option {{ trim($cursos[0]->modalidad) == "CAE" ? "selected" : "" }} value="CAE">CAE</option>
                   <option {{ trim($cursos[0]->modalidad) == "EXT" ? "selected" : "" }} value="EXT">EXT</option>
                   <option {{ trim($cursos[0]->modalidad) == "EMP" ? "selected" : "" }} value="EMP">EMP</option>
+                  <option {{ trim($cursos[0]->modalidad) == "CAE Y EXT" ? "selected" : "" }} value="CAE Y EXT">CAE Y EXT</option>
                 </select>
             </div>
             <div class="form-group col-md-3">
