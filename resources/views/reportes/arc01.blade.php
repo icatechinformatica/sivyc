@@ -97,8 +97,8 @@
                             <th style="padding: 0px;" rowspan="2">ZON<br>A<br>ECO<br>NOM<br>ICA</th>
                             <th style="padding: 0px;" rowspan="2">DEPENDEN<br>CIA<br>BENEFICIA<br>DA</th>
                             <th style="padding: 0px;" colspan="3">TIPO DE CUOTA</th>       
-                            <th style="padding: 0px;" rowspan="2">ESPACIO FISICO<br>MEDIO VIRTUAL</th>
-                            <th style="padding: 0px;" rowspan="2">OBSERVACIONES</th>
+                            <th style="padding: 0px;WIDTH: 10%;" rowspan="2">ESPACIO FISICO<br>MEDIO VIRTUAL</th>
+                            <th style="padding: 0px;WIDTH: 15%;" rowspan="2">OBSERVACIONES</th>
                         </tr>  
                         <tr> 
                             <th >PRES<br>EN</th>                 
