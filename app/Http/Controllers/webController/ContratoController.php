@@ -207,6 +207,7 @@ class ContratoController extends Controller
 
         //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
         $consecutivo = intval(substr($data->folio_validacion, 10, 3));
+        // dd($data->folio_validacion);
 
         // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
         /*$consecutivo = DB::TABLE('contratos')
@@ -271,6 +272,7 @@ class ContratoController extends Controller
         }
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        // dd($uni_contrato);
 
         return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato'));
     }
