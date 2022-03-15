@@ -33,3 +33,29 @@
         $('#textURL').val("OPERACI\u00D3N CANCELADA");
     }
 }
+
+function fileValidationpdf() {
+    var fileInput = document.getElementById('customFile');
+    var filePath = fileInput.value;
+    var fileSize = fileInput.files[0].size;
+    var allowedExtensions = /(.pdf)$/i;
+    if (!allowedExtensions.exec(filePath)) {
+        alert('Por favor solo cargar archivos pdf');
+        fileInput.value = '';
+        return false;
+    } else {
+        if (fileSize > 5000000) {
+            alert('Por favor el archivo debe pesar menos de 5MB');
+            fileInput.value = '';
+            return false;
+        }
+        //Image preview
+        if (fileInput.files && fileInput.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').innerHTML = '<img src="' + e.target.result + '"/>';
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+}
