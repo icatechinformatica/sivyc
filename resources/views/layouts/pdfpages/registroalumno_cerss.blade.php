@@ -172,7 +172,7 @@
                         <br>@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS EN CASO DE CONTAR CON EL
                         <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA DIGITAL O IMPRESA
                         <br>
-                                @if ($alumnos->chk_ficha_cerss == true)
+                                @if ($alumnos->numero_expediente)
                                     (X)
                                 @else
                                     ()
