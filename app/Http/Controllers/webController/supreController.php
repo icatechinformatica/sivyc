@@ -850,9 +850,13 @@ class supreController extends Controller
                 $doc = $request->file('doc_supre'); # obtenemos el archivo
                 $urldoc = $this->pdf_upload($doc, $request->idsupmod2, 'supre_firmado'); # invocamos el método
                 $supre->doc_supre = $urldoc; # guardamos el path
-            }
 
+                $folio = folio::WHERE('id_supre', '=', $request->idsupmod2)->FIRST();
+                $folio->permiso_editar = FALSE;
+                $folio->save();
+            }
             $supre->save();
+
             return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Firmada ha sido cargada con Extio');
         }
@@ -934,8 +938,9 @@ class supreController extends Controller
                   'importe_hora' => $importe_hora,
                   'importe_total' => $request->addmore[0]['importe'],
                   'id_supre' => $request->id_supre,
-                  'id_cursos' => $hora->id,
-                  'permiso_editar' => FALSE]);
+                  'id_cursos' => $hora->id//,
+                //   'permiso_editar' => FALSE
+                ]);
 
         $idc = DB::TABLE('contratos')->WHERE('id_folios', '=', $request->id_folio)->FIRST();
         // dd($idc);
@@ -945,7 +950,7 @@ class supreController extends Controller
                   ->update(['cantidad_numero' => round($request->addmore[0]['importe']-$request->addmore[0]['iva'], 2)]);
         }
 
-        return redirect()->route('supre-inicio')
+        return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
     }
 

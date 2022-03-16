@@ -184,6 +184,15 @@
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id_supre}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
                                     @endif
                                 @endif
                                 @if ($itemData->status == 'Validando_Contrato')
@@ -218,6 +227,15 @@
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id_supre}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
                                     @endif
                                 @endif
                                 @if ($itemData->status == 'Contrato_Rechazado')
@@ -246,6 +264,15 @@
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
+                                        @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id_supre}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
                                         @endcan
                                     @endif
                                 @endif
@@ -285,6 +312,15 @@
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id_supre}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
                                     @endif
                                 @endif
                                 @if ($itemData->status == 'Pago_Rechazado')
@@ -323,6 +359,15 @@
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id_supre}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
                                     @endif
                                 @endif
                                 @if ($itemData->status == 'Verificando_Pago')
@@ -355,6 +400,15 @@
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
+                                        @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id_supre}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
                                         @endcan
                                     @endif
                                     @if($itemData->recepcion == NULL)
@@ -401,6 +455,15 @@
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
+                                        @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id_supre}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
                                         @endcan
                                     @endif
                                 @endif
@@ -624,6 +687,31 @@
     </div>
 </div>
 <!-- END -->
+<div class="modal fade" id="DocSupreModal2" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('doc-supre-guardar') }}" id="doc_supre">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reemplazar Suficiencia Presupuestal Firmada</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <div style="text-align:center" class="form-group">
+                        <input type="file" accept="application/pdf" class="form-control" id="doc_supre" name="doc_supre" placeholder="Archivo PDF">
+                        <input id="idsupmod2" name="idsupmod2" hidden>
+                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <br>
 @endsection
 @section('script_content_js')

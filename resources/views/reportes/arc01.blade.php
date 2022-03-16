@@ -73,7 +73,7 @@
                     </tr>                                                                
                 </body>                
             </table><br>
-            <div><b>CC. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ARCHIVO MINUTARIO</b></div> <br>
+            <div><b>CC. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ARCHIVO MINUTARIO</b></div><br>
             <div class="table table-responsive">
                 <table class="tablas">
                     <thead>                        
@@ -97,8 +97,8 @@
                             <th style="padding: 0px;" rowspan="2">ZON<br>A<br>ECO<br>NOM<br>ICA</th>
                             <th style="padding: 0px;" rowspan="2">DEPENDEN<br>CIA<br>BENEFICIA<br>DA</th>
                             <th style="padding: 0px;" colspan="3">TIPO DE CUOTA</th>       
-                            <th style="padding: 0px;" rowspan="2">ESPACIO FISICO<br>MEDIO VIRTUAL</th>
-                            <th style="padding: 0px;" rowspan="2">OBSERVACIONES</th>
+                            <th style="padding: 0px;WIDTH: 10%;" rowspan="2">ESPACIO FISICO<br>MEDIO VIRTUAL</th>
+                            <th style="padding: 0px;WIDTH: 15%;" rowspan="2">OBSERVACIONES</th>
                         </tr>  
                         <tr> 
                             <th >PRES<br>EN</th>                 
@@ -157,35 +157,45 @@
                     </tr>
                 </table><br><br><br><br>
                 <table class="tablaf">
-                    <tr>
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><b>SOLICITA</b><br><br><br></td>
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>                
-                        <td align="center"><b>ELABORO</b><br><br><br></td>                    
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>                
-                        <td align="center"><b>Vo. Bo.</b><br><br><br></td>                
-                    </tr>
-                    <tr>
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><b>{{ $reg_unidad->vinculacion }}</b><br>_____________________________________________________</td>
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><b>{{ $reg_unidad->academico }}</b><br>_____________________________________________________</td>                    
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><b>{{ $reg_unidad->dunidad }}</b><br>_____________________________________________________</td>                
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><br><b>SELLO UNIDAD DE<br>CAPACITACION</b></td>                
-                    </tr>            
-                    <tr>
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><b>{{ $reg_unidad->pvinculacion }}</b></td>
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><b>{{ $reg_unidad->pacademico }}</b></td>                    
-                        <td> </td><td> </td><td> </td><td> </td><td> </td>
-                        <td align="center"><b>{{ $reg_unidad->pdunidad }}</b></td>                
-                    </tr>
+                    <thead>
+                        <th>
+                            <b>SOLICITA</b><br><br><br><br><br><br>
+                            <b>{{ $reg_unidad->vinculacion }}</b><br>_____________________________________________________
+                            <br>
+                            <b>{{ $reg_unidad->pvinculacion }}</b>
+                        </th>
+                        <th>
+                            <b>ELABORO</b><br><br><br><br><br><br>
+                            <b>{{ $reg_unidad->academico }}</b><br>_____________________________________________________
+                            <br>
+                            <b>{{ $reg_unidad->pacademico }}</b>
+                        </th>
+                        <th>
+                            <b>Vo. Bo.</b><br><br><br><br><br><br>
+                            <b>{{ $reg_unidad->dunidad }}</b><br>_____________________________________________________
+                            <br>
+                            <b>{{ $reg_unidad->pdunidad }}</b>
+                        </th>
+                        <th>
+                            <br><br><br><b>SELLO UNIDAD DE<br>CAPACITACION</b><br>
+                        </th>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot></tfoot>
                 </table>
             </div> 
         </div>
     </div>
+    <script type="text/php">
+        if ( isset($pdf) ) {
+            $pdf->page_script('
+                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                if ($PAGE_NUM != 1) {
+                    $pdf->text(600, 20, "MEMORANDUM NO. <?php echo $memo_apertura;?>", $font, 7);
+                }
+            ');
+        }
+    </script>
 </body>
 </html>

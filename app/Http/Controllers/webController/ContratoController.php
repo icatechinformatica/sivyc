@@ -73,7 +73,7 @@ class ContratoController extends Controller
         $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
         ->SELECT('tabla_supre.id','tabla_supre.no_memo',
         'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-        'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+        'folios.recepcion','folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
         'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
         'contratos.observacion','tbl_cursos.termino AS fecha_termino',
         'tbl_cursos.inicio AS fecha_inicio',
@@ -96,7 +96,7 @@ class ContratoController extends Controller
         $querySupre2 = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
             ->SELECT('tabla_supre.id','tabla_supre.no_memo',
             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-            'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+            'folios.recepcion','folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
             'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
             'contratos.observacion','tbl_cursos.termino AS fecha_termino',
             'tbl_cursos.inicio AS fecha_inicio',
@@ -207,6 +207,7 @@ class ContratoController extends Controller
 
         //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
         $consecutivo = intval(substr($data->folio_validacion, 10, 3));
+        // dd($data->folio_validacion);
 
         // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
         /*$consecutivo = DB::TABLE('contratos')
@@ -271,6 +272,7 @@ class ContratoController extends Controller
         }
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        // dd($uni_contrato);
 
         return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato'));
     }

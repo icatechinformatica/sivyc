@@ -124,7 +124,7 @@
                                             data-toggle="modal" data-placement="top"
                                             data-target="#DocSupreModal"
                                             data-id='{{$itemData->id}}'
-                                            title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                            title="Cargar Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     @endcan
