@@ -199,5 +199,13 @@
             </div> 
         </div>
     </div>
+    <script type="text/php">
+        if ( isset($pdf) ) {
+            $pdf->page_script('
+                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+            ');
+        }
+    </script>
 </body>
 </html>
