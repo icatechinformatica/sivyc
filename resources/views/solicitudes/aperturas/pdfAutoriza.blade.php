@@ -199,5 +199,16 @@
             </div> 
         </div>
     </div>
+    <script type="text/php">
+        if ( isset($pdf) ) {
+            $pdf->page_script('
+                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                if ($PAGE_NUM != 1) {
+                    $pdf->text(600, 20, "MEMORANDUM NO. <?php echo $memo;?>", $font, 7);
+                }
+            ');
+        }
+    </script>
 </body>
 </html>
