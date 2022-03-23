@@ -57,7 +57,7 @@ class grupoController extends Controller
                 'apellido_paterno',
                 'apellido_materno',
                 'ar.id_curso',
-                'c.modalidad',
+                'ar.mod',
                 'ar.tipo_curso',
                 'ar.id_cerss',
                 'ar.horario',
@@ -84,7 +84,7 @@ class grupoController extends Controller
                 THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
                 ELSE CONCAT('19',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
                 END AS fnacimiento")
-            )->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->join('cursos as c','c.id','ar.id_curso')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)
+            )->join('alumnos_pre as ap', 'ap.id', 'ar.id_pre')->where('ar.folio_grupo', $_SESSION['folio_grupo'])->where('ar.eliminado', false)
             ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')->get();
             //var_dump($alumnos);exit;
             if (count($alumnos) > 0) {
@@ -198,6 +198,7 @@ class grupoController extends Controller
                             $grupo_vulnerable = $a_reg->grupo_vulnerable;
                             $id_vulnerable = $a_reg->id_vulnerable;
                             $comprobante_pago = $a_reg->comprobante_pago;
+                            $modalidad = $a_reg->mod;
                         } else {
                             $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
                             $id_unidad = DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
@@ -215,6 +216,7 @@ class grupoController extends Controller
                             $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id',$request->grupo_vulnerable)->value('grupo');
                             $id_vulnerable = $request->grupo_vulnerable;
                             $comprobante_pago = null;
+                            $modalidad = $request->modalidad;
                         }
                         if ($id_cerss) $cerrs = true;
                         else $cerrs = NULL;
@@ -226,7 +228,7 @@ class grupoController extends Controller
                                     'horario'=>$horario, 'inicio' => $inicio, 'termino' => $termino, 'unidad' => $unidad, 'tipo_curso' => $tipo, 'clave_localidad' => $clave_localidad,
                                     'cct' => $this->data['cct_unidad'], 'realizo' => str_replace('ñ','Ñ',strtoupper($this->realizo)), 'no_control' => $matricula, 'ejercicio' => $this->ejercicio, 'id_muni' => $id_muni,
                                     'folio_grupo' => $_SESSION['folio_grupo'], 'iduser_created' => $this->id_user, 'comprobante_pago' => $comprobante_pago,
-                                    'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs,
+                                    'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs, 'mod' => $modalidad,
                                     'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable
                                 ]
                             );
@@ -248,7 +250,7 @@ class grupoController extends Controller
 
     public function update(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         if ($_SESSION['folio_grupo']) {
             $folio = $_SESSION['folio_grupo'];
             $file =  $request->customFile;
@@ -298,7 +300,7 @@ class grupoController extends Controller
             $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
                 [
                     'id_unidad' =>  $id_unidad, 'id_curso' => $request->id_curso, 'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
-                    'id_especialidad' =>  $id_especialidad, 'horario'=>$horario, 'unidad' => $request->unidad, 'tipo_curso' => $request->tipo,
+                    'id_especialidad' =>  $id_especialidad, 'horario'=>$horario, 'unidad' => $request->unidad, 'tipo_curso' => $request->tipo, 'mod'=>$request->modalidad,
                     'iduser_updated' => $this->id_user, 'updated_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_muni' => $request->id_municipio,
                     'inicio' => $request->inicio, 'termino' => $request->termino, 'id_organismo'=>$id_organismo, 'id_vulnerable' => $request->grupo_vulnerable,
                     'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $request->id_municipio, 'grupo_vulnerable' => $grupo_vulnerable, 'comprobante_pago'=>$url_comprobante
