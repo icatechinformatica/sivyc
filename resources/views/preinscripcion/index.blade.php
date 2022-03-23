@@ -30,7 +30,7 @@
             $folio = $alumnos[0]->folio_grupo;
             $turnado = $alumnos[0]->turnado;   
             $id_vulnerable = $alumnos[0]->id_vulnerable;  
-            $modalidad = $alumnos[0]->modalidad;                  
+            $modalidad = $alumnos[0]->mod;                  
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
