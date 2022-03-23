@@ -142,7 +142,7 @@ class aperturaController extends Controller
                     $convenio['fecha_firma'] = '';
                     $convenio['sector'] = null;
                 }
-                $sector = DB::table('organismos_publicos')->where('organismo',$grupo->organismo_publico)->value('sector');
+                $sector = DB::table('organismos_publicos')->where('id',$grupo->id_organismo)->value('sector');
                 $programa = $this->programa();
 
                 $instructor = $this->instructor($grupo->id_instructor);
