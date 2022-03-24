@@ -526,11 +526,12 @@ class ContratoController extends Controller
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
         $datac = $X::where('id_folios', '=', $id)->first();
+        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
                                       'instructores.no_cuenta','instructores.interbancaria')
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
-        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario'));
+        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario','regimen'));
     }
 
     public function save_doc(Request $request){
