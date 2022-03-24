@@ -92,6 +92,11 @@
                         <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
                         <input type="text" name="liquido" id="liquido" class="form-control" required>
                     </div>
+                @else
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control" required>
+                    </div>
                 @endif
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
