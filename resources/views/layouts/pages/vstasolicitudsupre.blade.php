@@ -156,15 +156,17 @@
                                         </button>
                                     @endcan
                                 @else
-                                    @can('supre.upload_valsupre')
-                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#DocModal2"
-                                            data-id='{{$itemData->id}}'
-                                            title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
-                                            <i class="fa fa-upload"></i>
-                                        </button>
-                                    @endcan
+                                    @if($itemData->permiso_editar == TRUE)
+                                        @can('supre.upload_valsupre')
+                                            <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocModal2"
+                                                data-id='{{$itemData->id}}'
+                                                title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                 @endif
                                 @can('supre.restart')
                                     <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
