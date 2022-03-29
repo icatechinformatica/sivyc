@@ -526,11 +526,12 @@ class ContratoController extends Controller
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
         $datac = $X::where('id_folios', '=', $id)->first();
+        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
                                       'instructores.no_cuenta','instructores.interbancaria')
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
-        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario'));
+        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario','regimen'));
     }
 
     public function save_doc(Request $request){
@@ -611,6 +612,7 @@ class ContratoController extends Controller
         $X = new contratos();
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
+        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $datac = $X::where('id_folios', '=', $id)->first();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
                                       'instructores.no_cuenta','instructores.interbancaria')
@@ -633,7 +635,7 @@ class ContratoController extends Controller
         $ccp2 = directorio::WHERE('id', '=', $directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $directorio->solpa_ccp3)->FIRST();
 
-        return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3','director'));
+        return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','regimen','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3','director'));
     }
 
     public function save_mod_solpa(Request $request){

@@ -62,6 +62,7 @@ class supreController extends Controller
 
         $supre = new supre();
         $data = $supre::BusquedaSupre($tipoSuficiencia, $busqueda_suficiencia, $tipoStatus, $unidad)
+                        ->SELECT('tabla_supre.*','folios.permiso_editar')
                         ->where('tabla_supre.id', '!=', '0')
                         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
@@ -850,6 +851,10 @@ class supreController extends Controller
                 $doc = $request->file('doc_supre'); # obtenemos el archivo
                 $urldoc = $this->pdf_upload($doc, $request->idsupmod2, 'supre_firmado'); # invocamos el método
                 $supre->doc_supre = $urldoc; # guardamos el path
+
+                $folio = folio::WHERE('id_supre', '=', $request->idsupmod2)->FIRST();
+                $folio->permiso_editar = FALSE;
+                $folio->save();
             }
 
             $supre->save();
@@ -935,7 +940,8 @@ class supreController extends Controller
                   'importe_total' => $request->addmore[0]['importe'],
                   'id_supre' => $request->id_supre,
                   'id_cursos' => $hora->id,
-                  'permiso_editar' => FALSE]);
+                //   'permiso_editar' => FALSE
+                ]);
 
         $idc = DB::TABLE('contratos')->WHERE('id_folios', '=', $request->id_folio)->FIRST();
         // dd($idc);

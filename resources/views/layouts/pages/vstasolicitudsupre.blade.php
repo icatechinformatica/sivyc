@@ -129,15 +129,17 @@
                                         </button>
                                     @endcan
                                 @else
-                                    @can('supre.upload_supre')
-                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#DocSupreModal2"
-                                            data-id='{{$itemData->id}}'
-                                            title="Reemplazar Suficiencia Presupuestal Firmada">
-                                            <i class="fa fa-upload"></i>
-                                        </button>
-                                    @endcan
+                                    @if($itemData->permiso_editar == TRUE)
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                 @endif
                                 <input hidden value={{$itemData->id}} id='pdfp'>
                             @endif
