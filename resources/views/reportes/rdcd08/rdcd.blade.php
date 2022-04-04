@@ -5,16 +5,16 @@ $mes= date("m");
 $periodo="0";
 switch( $mes){ 
     case($mes <="3"):
-    $periodo=1;
-    break;
-    case($mes<="6"):
-    $periodo=2;
-    break;
-    case($mes<="9"):
     $periodo=3;
     break;
-    case($mes<=12):
+    case($mes<="6"):
     $periodo=4;
+    break;
+    case($mes<="9"):
+    $periodo=1;
+    break;
+    case($mes<=12):
+    $periodo=2;
     break;
 }
 ?>
