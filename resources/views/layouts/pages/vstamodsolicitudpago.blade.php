@@ -100,8 +100,8 @@
                     <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputarch_evidencia" class="control-label">Evidencia Fotográfica</label>
-                    <input type="file" accept="application/pdf" name="arch_evidencia" id="arch_evidencia" class="form-control">
+                    <label for="inputarch_evidencia" class="control-label">Evidencia Fotográfica @if($regimen->tipo_curso == 'CERTIFICACION') (Opcional) @endif</label>
+                    <input type="file" accept="application/pdf" name="arch_evidencia" id="arch_evidencia" class="form-control" @if($regimen->tipo_curso == 'CURSO') required>
                 </div>
             </div>
             <br>

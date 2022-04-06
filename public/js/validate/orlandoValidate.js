@@ -682,10 +682,10 @@ $(function(){
                 required: true,
                 extension: "pdf"
             },
-            arch_evidencia:{
-                required: true,
-                extension: "pdf"
-            },
+            // arch_evidencia:{
+            //     required: true,
+            //     extension: "pdf"
+            // },
             ccpa1:{
                 required: true
             },
@@ -713,10 +713,10 @@ $(function(){
             liquido:{
                 required: 'Por favor ingrese el liquido final reflejado en la factura',
             },
-            arch_evidencia: {
-                required: 'Por favor ingrese la evidencia',
-                extension: "Por favor ingrese el documento con extension PDF"
-            },
+            // arch_evidencia: {
+            //     required: 'Por favor ingrese la evidencia',
+            //     extension: "Por favor ingrese el documento con extension PDF"
+            // },
             arch_asistencia: {
                 required: 'Por favor ingrese la asistencia',
                 extension: "Por favor ingrese el documento con extension PDF"
