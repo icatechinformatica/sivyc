@@ -27,6 +27,11 @@
                 <div class="pull-left">
                     <h2>Solicitudes para Suficiencia Presupuestal</h2>
                     {!! Form::open(['route' => 'supre-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="ejercicio" class="form-control mr-sm-2" id="ejercicio">
+                            @foreach ($array_ejercicio as $cad)
+                                <option value="{{$cad}}" @if($año_pointer == $cad) selected @endif>{{$cad}}</option>
+                            @endforeach
+                        </select>
                         <select name="tipo_suficiencia" class="form-control mr-sm-2" id="tipo_suficiencia">
                             <option value="">BUSCAR POR TIPO</option>
                             <option value="no_memorandum">N° MEMORANDUM</option>
@@ -104,7 +109,7 @@
                                     </a>
                                 @endcan
                                 @can('supre.delete')
-                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Eliminar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                     </a>
                                 @endcan
@@ -123,6 +128,18 @@
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     @endcan
+                                @else
+                                    @if($itemData->permiso_editar == TRUE)
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                 @endif
                                 <input hidden value={{$itemData->id}} id='pdfp'>
                             @endif
@@ -169,6 +186,24 @@
                                         <i class="fa fa-history"></i>
                                     </button>
                                 @endcan
+                                @can('supre.edit')
+                                    @if($itemData->permiso_editar == FALSE)
+                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#modchangevalmodal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Otorgar Permiso de Modificacion a Suficiencia Presupuestal Validado">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endif
+                                @endcan
+                                @can('supre.validar')
+                                    @if($itemData->permiso_editar == TRUE)
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $itemData->id])}}">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+                                    @endif
+                                @endcan
                             @endif
                             @if ($itemData->status == 'Rechazado')
                                 <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
@@ -189,7 +224,7 @@
                                     </button>
                                 @endcan
                                 @can('supre.delete')
-                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Eliminar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
                                         <i class="fa fa-wrench" aria-hidden="true"></i>
                                     </a>
                                 @endcan
@@ -412,6 +447,39 @@
                 </div>
             </div>
         <!-- END -->
+        <!-- Modal -->
+        <div class="modal fade" id="modchangevalmodal" role="dialog">
+            <div class="modal-dialog">
+                <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">¿Esta seguro de regresar a planeación la validación?<b></b></h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="form-row">
+                        <div class="form-group col-md-3"></div>
+                            <div class="form-group col-md-6">
+                                <label for="unidad" class="control-label">Esto Regresara la Validación Suficiencia Presupuestal a planeación para su correción</label>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2"></div>
+                            <div class="form-group col-md-4">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <a id="valsupre_confirm" href="#" class="btn btn-primary" >Confirmar</a>
+                            </div>
+                            <div class="form-group col-md-1"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <!-- END -->
     </div>
     <br>
 @endsection

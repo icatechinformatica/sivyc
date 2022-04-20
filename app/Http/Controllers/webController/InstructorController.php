@@ -68,7 +68,7 @@ class InstructorController extends Controller
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
-        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor')
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
             ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
@@ -97,9 +97,11 @@ class InstructorController extends Controller
     #----- instructor/guardar -----#
     public function guardar_instructor(Request $request)
     {
+        // dd('hola');
         $userId = Auth::user()->id;
 
         $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
+        // dd($verify);
         if(is_null($verify) == TRUE)
         {
             $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
@@ -197,7 +199,8 @@ class InstructorController extends Controller
         }
         else
         {
-            $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos.";
+            $clave_instructor = instructor::WHERE('curp', '=', $request->curp)->VALUE('numero_control');
+            $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos al instructor con clave ".$clave_instructor.".";
             return redirect('/instructor/crear')->withErrors($mensaje);
         }
     }
@@ -206,18 +209,19 @@ class InstructorController extends Controller
     {
         $instructor = new instructor();
         $getinstructor = $instructor->findOrFail($id);
-        $data2 = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+        $data2 = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->ORDERBY('unidad', 'ASC')->GET();
         $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.id','localidad','muni')
                         ->WHERE('tbl_localidades.id','!=','0')
                         ->LEFTJOIN('tbl_municipios','tbl_municipios.id','=','tbl_localidades.clave_municipio')
                         ->ORDERBY('localidad','ASC')->GET();
         $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
                         ->ORDERBY('muni','ASC')->GET();
+        $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
 
         // dd($municipios);
         // var_dump($data2);
         // echo $data2[0]['unidad'];
-        return view('layouts.pages.validarinstructor', compact('getinstructor','data2','localidades','municipios'));
+        return view('layouts.pages.validarinstructor', compact('getinstructor','data2','localidades','municipios','estados'));
     }
 
     public function rechazo_save(Request $request)
@@ -245,6 +249,9 @@ class InstructorController extends Controller
         'PALENQUE'];
         $locali = DB::TABLE('tbl_localidades')->SELECT('localidad')
                     ->WHERE('clave','=', $request->localidad)->FIRST();
+        $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
+        $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
+        // dd($request->localidad);
 
         $instructor = instructor::find($request->id);
 
@@ -253,8 +260,8 @@ class InstructorController extends Controller
         $instructor->sexo = trim($request->sexo);
         $instructor->estado_civil = trim($request->estado_civil);
         $instructor->fecha_nacimiento = $request->fecha_nacimientoins;
-        $instructor->entidad = trim($request->entidad);
-        $instructor->municipio = trim($request->municipio);
+        $instructor->entidad = $estado->nombre;
+        $instructor->municipio = $munic->muni;
         $instructor->asentamiento = trim($request->asentamiento);
         $instructor->telefono = trim($request->telefono);
         $instructor->correo = trim($request->correo);
@@ -268,7 +275,7 @@ class InstructorController extends Controller
         $instructor->localidad = $locali->localidad;
 
         //Creacion de el numero de control
-        $uni = substr($request->unidad_registra, -2);
+        $uni = substr($request->unidad_registra, -3, 2) * 1 . substr($request->unidad_registra, -1);
         $now = Carbon::now();
         $year = substr($now->year, -2);
         $rfcpart = substr($request->rfc, 0, 10);
@@ -374,6 +381,7 @@ class InstructorController extends Controller
 
     public function ver_instructor($id)
     {
+        $localidades = null;
         $estado_civil = null;
         $instructor_perfil = new InstructorPerfil();
         $curso_validado = new cursoValidado();
@@ -385,14 +393,27 @@ class InstructorController extends Controller
         {
             $estado_civil = estado_civil::WHERE('nombre', '=', $datains->estado_civil)->FIRST();
         }
-
+        $idest = DB::TABLE('estados')->WHERE('nombre','=',$datains->entidad)->FIRST();
         $unidad = tbl_unidades::WHERE('cct', '=', $datains->clave_unidad)->FIRST();
         $lista_unidad = tbl_unidades::WHERE('cct', '!=', $datains->clave_unidad)->GET();
-        $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.clave','localidad')
-                        ->WHERE('tbl_localidades.clave', '=', $datains->clave_loc)
-                        ->FIRST();
-        $municipios = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id_estado', '=', '7')
+        $estados = DB::TABLE('estados')->SELECT('id','nombre')->GET();
+        $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
                         ->ORDERBY('muni','ASC')->GET();
+
+        if($datains->municipio != NULL)
+        {
+            $munix = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')->WHERE('muni', '=', $datains->municipio)->FIRST();
+
+            if($munix != NULL)
+            {
+                $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.clave','localidad')
+                                ->WHERE('tbl_localidades.clave_municipio', '=', $munix->clave)
+                                ->WHERE('tbl_localidades.id_estado', '=', $munix->id_estado)
+                                ->ORDERBY('tbl_localidades.localidad', 'ASC')
+                                ->GET();
+            }
+            // dd($localidades);
+        }
 
         $perfil = $instructor_perfil->WHERE('numero_control', '=', $id)->GET();
         // consulta
@@ -404,7 +425,7 @@ class InstructorController extends Controller
                         ->RIGHTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id','=','instructor_perfil.id')
                         ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                         ->GET();
-        return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado', 'localidades','municipios'));
+        return view('layouts.pages.verinstructor', compact('datains','estado_civil','lista_civil','unidad','lista_unidad','perfil','validado', 'localidades','municipios','estados'));
     }
 
     public function save_ins(Request $request)
@@ -414,6 +435,8 @@ class InstructorController extends Controller
         $modInstructor = instructor::find($request->id);
         $locali = DB::TABLE('tbl_localidades')
                     ->WHERE('clave','=', $request->localidad)->VALUE('localidad');
+        $estado = DB::TABLE('estados')->SELECT('nombre')->WHERE('id', '=', $request->entidad)->FIRST();
+        $munic = DB::TABLE('tbl_municipios')->SELECT('muni')->WHERE('id', '=', $request->municipio)->FIRST();
         // dd ($locali);
 
         $old = $modInstructor->apellidoPaterno . ' ' . $modInstructor->apellidoMaterno . ' ' . $modInstructor->nombre;
@@ -424,12 +447,14 @@ class InstructorController extends Controller
         $modInstructor->apellidoMaterno = trim($request->apellido_materno);
         $modInstructor->curp = trim($request->curp);
         $modInstructor->rfc = trim($request->rfc);
+        $modInstructor->tipo_identificacion = trim($request->tipo_identificacion);
         $modInstructor->folio_ine = trim($request->folio_ine);
+        $modInstructor->expiracion_identificacion = trim($request->expiracion_identificacion);
         $modInstructor->sexo = trim($request->sexo);
         $modInstructor->estado_civil = trim($request->estado_civil);
         $modInstructor->fecha_nacimiento = $request->fecha_nacimientoins;
-        $modInstructor->entidad = trim($request->entidad);
-        $modInstructor->municipio = trim($request->municipio);
+        $modInstructor->entidad = $estado->nombre;
+        $modInstructor->municipio = $munic->muni;
         $modInstructor->asentamiento = trim($request->asentamiento);
         $modInstructor->telefono = trim($request->telefono);
         $modInstructor->correo = trim($request->correo);
@@ -449,7 +474,7 @@ class InstructorController extends Controller
             $modInstructor->estado = FALSE;
         }
 
-        $uni = substr($request->unidad_registra, -2);
+        $uni = substr($request->unidad_registra, -3, 2) * 1 . substr($request->unidad_registra, -1);
         $nuco = substr($modInstructor->numero_control, -12);
         $numero_control = $uni.$nuco;
         $modInstructor->numero_control = trim($numero_control);
@@ -541,11 +566,12 @@ class InstructorController extends Controller
         $especvalid = especialidad_instructor::WHERE('id', '=', $id)->FIRST();
         $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
         $data_pago = criterio_pago::ALL();
-        $data_unidad = tbl_unidades::ALL();
+        $data_unidad = tbl_unidades::WHERE('id', '!=', 0)->orderBy('unidad', 'ASC')->GET();
         $nomesp = especialidad::ALL();
         $catcursos = curso::SELECT('id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo',
                 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo')
                 ->WHERE('id_especialidad', '=', $especvalid->especialidad_id)
+                ->WHERE('estado', '=', TRUE)
                 ->orderby('nombre_curso','asc')
                 ->GET();
         $count = curso::SELECT(DB::raw("SUM(CASE WHEN id != 0 THEN 1 ELSE 0 END) as count"))
@@ -559,6 +585,7 @@ class InstructorController extends Controller
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)
                 ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
+                ->WHERE('cursos.estado', '=', TRUE)
                 ->orderby('cursos.nombre_curso','asc')
                 ->GET();
                 //   dd($listacursos);
@@ -587,6 +614,7 @@ class InstructorController extends Controller
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)
                 ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
+                ->WHERE('cursos.estado', '=', TRUE)
                 ->orderby('cursos.nombre_curso','asc')
                 ->GET();
             }
@@ -624,6 +652,7 @@ class InstructorController extends Controller
                 ->JOIN('cursos','cursos.id','=','especialidad_instructor_curso.curso_id')
                 ->WHERE('id_especialidad_instructor', '=', $id)
                 ->WHERE('id_especialidad','=',$especvalid->especialidad_id)
+                ->WHERE('cursos.estado', '=', TRUE)
                 ->orderby('cursos.nombre_curso','asc')
                 ->GET();
             }
@@ -655,6 +684,7 @@ class InstructorController extends Controller
             $espec_mod->activo = FALSE;
         }
         $espec_mod->lastUserId = $userId;
+        $espec_mod->id_instructor = $request->idins;
         $espec_mod->save();
         $espe = $espec_mod->especialidad_id;
         // $idespval = $espec_mod->id;
@@ -835,12 +865,25 @@ class InstructorController extends Controller
 
     public function cursoimpartir_form($id, $idins)
     {
-        $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
-        $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
-        $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
-        $cursos = curso::WHERE('id_especialidad', '=', $id)->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
-        $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
-        return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
+        $chckespecialidad = DB::TABLE('especialidad_instructores')
+                            ->WHERE('id_instructor', '=', $idins)
+                            ->WHERE('especialidad_id', '=', $id)
+                            ->FIRST();
+        if($chckespecialidad == NULL)
+        {
+            $perfil = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET(['id','grado_profesional','area_carrera']);
+            $pago = criterio_pago::SELECT('id','perfil_profesional')->WHERE('id', '!=', '0')->GET();
+            $data = tbl_unidades::SELECT('unidad','cct')->WHERE('id','!=','0')->GET();
+            $cursos = curso::WHERE('id_especialidad', '=', $id)->WHERE('estado', '=', TRUE)->ORDERBY('nombre_curso', 'ASC')->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
+            $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+            return view('layouts.pages.frmaddespecialidad', compact('id','idins','perfil','pago','data', 'cursos','nomesp'));
+        }
+        else
+        {
+            $esp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
+            $mensaje = "Lo sentimos, la especialidad ".$esp->nombre." ya esta asociada a este instructor.";
+            return redirect('instructor/add/curso-impartir/' . $idins)->withErrors($mensaje);
+        }
     }
 
     public function espec_val_save(Request $request)
@@ -858,6 +901,7 @@ class InstructorController extends Controller
         $espec_save->criterio_pago_id = $request->criterio_pago_instructor;
         $espec_save->lastUserId = $userId;
         $espec_save->activo = TRUE;
+        $espec_save->id_instructor = $request->idInstructor;
         $espec_save->save();
         // obtener el ultimo id que se ha registrado
         $especialidadInstrcutorId = $espec_save->id;
@@ -870,28 +914,38 @@ class InstructorController extends Controller
 
         foreach ($listacursos as $cadwell)
         {
-            // print('qhe ' . $cadwell->id . ' **** ');
-            foreach ($request->itemAdd as $key=>$new)
+            if($request->itemAdd != NULL)
             {
-                // print('ahi va '. $new['check_cursos']. ' -_-_- ');
-                if($cadwell->id == $new['check_cursos'])
+            // print('qhe ' . $cadwell->id . ' **** ');
+                foreach ($request->itemAdd as $key=>$new)
                 {
-                    // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                    DB::table('especialidad_instructor_curso')
-                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
-                                  'curso_id' => $cadwell->id,
-                                  'activo' => TRUE]);
-                    break;
+                    // print('ahi va '. $new['check_cursos']. ' -_-_- ');
+                    if($cadwell->id == $new['check_cursos'])
+                    {
+                        // print('true ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                        DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => TRUE]);
+                        break;
+                    }
+                    else if(array_key_last($request->itemAdd) == $key)
+                    {
+                        // print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
+                        DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => FALSE]);
+                        break;
+                    }
                 }
-                else if(array_key_last($request->itemAdd) == $key)
-                {
-                    // print('false ' . $cadwell->nombre_curso . 'id= ' . $cadwell->id .' // ');
-                    DB::table('especialidad_instructor_curso')
-                        ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
-                                  'curso_id' => $cadwell->id,
-                                  'activo' => FALSE]);
-                    break;
-                }
+            }
+            else
+            {
+                DB::table('especialidad_instructor_curso')
+                            ->insert(['id_especialidad_instructor' => $especialidadInstrcutorId,
+                                    'curso_id' => $cadwell->id,
+                                    'activo' => FALSE]);
             }
         }
         //dd($especialidadInstrcutorId);
@@ -938,7 +992,7 @@ class InstructorController extends Controller
             $av = instructor::SELECT('unidades_disponible')->WHERE('id', '=', $id)->FIRST();
         }
         $available = $av->unidades_disponible;
-        dd($av);
+        // dd($av);
         return view('layouts.pages.vstaltabajains', compact('id','available'));
     }
 
@@ -1174,14 +1228,15 @@ class InstructorController extends Controller
                 DB::raw("array(select memorandum_validacion from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
+                DB::raw("CASE WHEN instructores.estado = true THEN 'ACTIVO' ELSE 'INACTIVO' END"),
                 DB::raw("array(select observacion from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
-                ->WHERE('instructores.estado', '=', TRUE)
-                ->whereRaw("array(select especialidades.nombre from especialidad_instructores
-                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
-                LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
-                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
+                // ->WHERE('instructores.estado', '=', TRUE)
+                // ->whereRaw("array(select especialidades.nombre from especialidad_instructores
+                // LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                // LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
+                // where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
@@ -1189,7 +1244,7 @@ class InstructorController extends Controller
         $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
                     'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','SEXO','ESTADO_CIVIL',
-                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION','ACTIVO/INACTIVO',
                     'OBSERVACION'];
 
         $nombreLayout = "Catalogo de instructores.xlsx";
@@ -1289,11 +1344,29 @@ class InstructorController extends Controller
     {
         if (isset($request->valor)){
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $nombreMuni = $request->valor;
-            $idMuni = DB::TABLE('tbl_municipios')->SELECT('clave')->WHERE('muni', '=', $nombreMuni)->FIRST();
+            // $nombreMuni = $request->valor;
+            $idMuni = DB::TABLE('tbl_municipios')->SELECT('clave','id_estado')->WHERE('id', '=', $request->valor)->FIRST();
             $locals = DB::TABLE('tbl_localidades')->SELECT('clave', 'localidad')
                         ->WHERE('tbl_localidades.clave_municipio', '=', $idMuni->clave)
+                        ->WHERE('tbl_localidades.id_estado', '=', $idMuni->id_estado)
                         ->ORDERBY('localidad','ASC')
+                        ->GET();
+            $json=json_encode($locals);
+        }else{
+            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        }
+
+
+        return $json;
+    }
+
+    protected function getmunicipios(Request $request)
+    {
+        if (isset($request->valor)){
+            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+            $locals = DB::TABLE('tbl_municipios')->SELECT('id','muni')
+                        ->WHERE('tbl_municipios.id_estado', '=', $request->valor)
+                        ->ORDERBY('muni','ASC')
                         ->GET();
             $json=json_encode($locals);
         }else{

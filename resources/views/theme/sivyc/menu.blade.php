@@ -57,7 +57,9 @@
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         @endcan
                         <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
-
+                        @can('organismo.inicio')
+                        <a class="dropdown-item" href="{{route('organismos.index')}}">Organismos Publicos</a>
+                        @endcan
                         @can('convenios.index')
                             <a class="dropdown-item" href="{{route('convenios.index')}}">Convenios</a>
                         @endcan
@@ -303,6 +305,9 @@
                         @endcan
                         @can('consultas.cursos.iniciados')
                             <a class="dropdown-item" href="{{route('consulta-cursosval')}}">Cursos Iniciados</a>
+                        @endcan
+                        @can('consultas.cursosefisico')
+                            <a class="dropdown-item" href="{{route('consultas.cursosefisico')}}">Cursos EFisico</a>
                         @endcan
                     </div>
                 </li>

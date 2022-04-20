@@ -272,7 +272,7 @@
                     <div class="card-body">
                         @foreach ($listacursos as $key=>$itemDataCatCurso)
                         <div class="row" role="row">
-                            <div class="col-md-3" role="gridcell">
+                            <div class="col-md-3" role="gridcell" style="height: 125px; width: 250px;">
                                 <label><h5>NOMBRE</h5></label>
                                 <div class="form-control-plaintext">{{$itemDataCatCurso->nombre_curso}} // {{$itemDataCatCurso->id_especialidad}}</div>
                             </div>
@@ -316,7 +316,7 @@
                 <br>
                 <div class="form-row">
                     <div class="form-group col-md-1" style="text-align: right;width:0%">
-                        <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                        <a class="btn btn-danger" href="{{route('instructor-ver', ['id' => $idins])}}">Regresar</a>
                     </div>
                     <div class="form-group col-md-11" style="text-align: right;width:100%">
                         <button type="submit" class="btn btn-primary" >Modificar</button>

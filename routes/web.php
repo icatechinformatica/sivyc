@@ -26,7 +26,7 @@ Route::get('/contrato/historial/validado/{id}', 'webController\ContratoControlle
 Route::get('/contrato/eliminar/{id}', 'webController\ContratoController@delete')->name('eliminar-contrato');
 Route::get('/contrato/previsualizacion/{id}', 'webController\ContratoController@pre_contratoPDF')->name('pre_contrato');
 Route::get('/prueba', 'webController\InstructorController@prueba');
-Route::get('/prueba2', 'webController\supreController@getcursostats');
+Route::get('/prueba2', 'webController\CursosController@prueba2');
 Route::get('/contrato/reiniciar/{id}', 'webController\ContratoController@contractRestart')->name('reiniciar-contrato');
 
 //Ruta Manual
@@ -58,6 +58,7 @@ Route::post('/supre/folio/modificacion-especial','webController\SupreController@
 Route::post('/supre/delegado/upload_doc','webController\SupreController@doc_supre_upload')->name('doc-supre-guardar');
 Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
 Route::get('/supre/reiniciar/{id}', 'webController\SupreController@restartSupre')->name('restart-supre');
+Route::get('/valsupre/modespec/{id}', 'webController\SupreController@dar_permiso_valsupre')->name('darpermisovalsupre');
 Route::get('/folio/edicion_especial/{id}', 'webController\SupreController@folio_edicion_especial')->name('folio_especialedit');
 Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_solicitados')->name('reporte-solicitados');
 Route::get('/supre/reporte/solicitados/{un}/{ini}/{fin}', 'webController\supreController@reporte_solicitados_detail')->name('reporte-solicitados-detail');
@@ -154,6 +155,7 @@ Auth::routes();
 Route::get('/supre/solicitud/opc', 'webController\supreController@opcion')->name('solicitud-opcion');
 Route::get('/supre/solicitud/folio', 'webController\supreController@solicitud_folios')->name('solicitud-folio');
 Route::get('/supre/tabla-pdf/{id}', 'webController\supreController@tablasupre_pdf')->name('tablasupre-pdf');
+Route::get('/supre/valsupre_mod/{id}', 'webController\supreController@valsupre_mod')->name('valsupre-mod');
 Route::post('/supre/valsupre_checkmod/', 'webController\supreController@valsupre_checkmod')->name('valsupre-checkmod');
 
 //Ruta last-update 12102021
@@ -357,6 +359,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/convenios/mostrar/{id}', 'webController\ConveniosController@show')->name('convenios.show')
     ->middleware('can:convenios.show');
     Route::post('/convenios/sid/municipios', 'webController\ConveniosController@getmunicipios');
+    Route::get('/convenios/organismo', 'webController\ConveniosController@getcampos');
     /**
      * agregando financiero rutas -- DMC
      */
@@ -522,6 +525,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/consultas/cursosaperturados', 'Consultas\cursosaperturadosController@index')->name('consultas.cursosaperturados')->middleware('can:consultas.cursosaperturados');
     Route::post('/consultas/cursosaperturados/xls', 'Consultas\cursosaperturadosController@xls')->name('consultas.cursosaperturados.xls');
 
+    /*CURSOS EFISICO*/
+    Route::get('/consultas/cursosefisico', 'Consultas\cursosefisicoController@index')->name('consultas.cursosefisico')->middleware('can:consultas.cursosefisico');
+    Route::post('/consultas/cursosefisico', 'Consultas\cursosefisicoController@index')->name('consultas.cursosefisico')->middleware('can:consultas.cursosefisico');
+    Route::post('/consultas/cursosefisico/xls', 'Consultas\cursosefisicoController@xls')->name('consultas.cursosefisico.xls');
+
 
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/
     Route::get('/preinscripcion/grupo', 'Preinscripcion\grupoController@index')->name('preinscripcion.grupo')->middleware('can:preinscripcion.grupo');
@@ -532,6 +540,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@nuevo')->name('preinscripcion.grupo.nuevo');
     Route::post('/preinscripcion/grupo/turnar', 'Preinscripcion\grupoController@turnar')->name('preinscripcion.grupo.turnar')->middleware('can:preinscripcion.grupo.turnar');
     Route::get('/preinscripcion/grupo/eliminar', 'Preinscripcion\grupoController@delete')->name('preinscripcion.grupo.eliminar')->middleware('can:preinscripcion.grupo.eliminar');
+    Route::post('/preinscripcion/grupo/comrobante','Preinscripcion\grupoController@subir_comprobante')->name('preinscripcion.grupo.comprobante');
+    Route::get('/preinscripcion/municipio', 'Preinscripcion\grupoController@showlm');
 
     /*VINCULACION->PREINSCRIPCION=> BUSCAR GRUPO RPN*/
     Route::get('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');
@@ -542,8 +552,8 @@ Route::middleware(['auth'])->group(function () {
     /*Solicitud de Apertura ARC01 y ARC02 RPN*/
     Route::get('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
     Route::post('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
-    Route::get('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
-    Route::post('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
+    //Route::get('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
+    //Route::post('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
     Route::get('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion')->name('solicitud.apertura.mexon');
     Route::post('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion')->name('solicitud.apertura.mexon');
     Route::post('/solicitud/apertura/guardar', 'Solicitud\aperturaController@store')->name('solicitud.apertura.guardar')->middleware('can:solicitud.apertura.guardar');
@@ -577,6 +587,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
     Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
+
+    Route::get('/calendario/show/{id}', 'Solicitud\aperturaController@showCalendar')->name('calendario.show');
+    Route::post('/calendario/guardar','Solicitud\aperturaController@storeCalendar')->name('calendario.store');
+    Route::get('/calendario/{id}','Solicitud\aperturaController@destroy')->name('calendario.destroy');
+    Route::get('/organismos/inicio', 'organismosController@index')->name('organismos.index')->middleware('can:organismo.inicio');
+    Route::get('/organismos/agregar', 'organismosController@agregar')->name('organismos.agregar');
+    Route::post('/organismos/store', 'organismosController@store')->name('organismos.insert');
+    Route::post('/organismos/update', 'organismosController@update')->name('organismos.update');
+    Route::get('/organismo/municipio','organismosController@muni');
 
 });
 
@@ -733,6 +752,7 @@ Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoControl
 
 //Consulta de Localidades en instructores
 Route::post('/instructores/busqueda/localidad', 'webController\Instructorcontroller@getlocalidades')->name('instructores.busqueda.localidades');
+Route::post('/instructores/busqueda/municipio', 'webController\Instructorcontroller@getmunicipios')->name('instructores.busqueda.municipios');
  Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
 
 //  autocomplete localidad inscripcion alumnos

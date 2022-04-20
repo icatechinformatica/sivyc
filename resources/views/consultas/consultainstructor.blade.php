@@ -60,9 +60,11 @@
                     <tr>
                         <td>INSTRUCTOR</td>
                         <td>UNIDAD</td>
+                        <td>GRUPO</td>
                         <td>CURSO</td>
                         <td>ESPECIALIDAD</td>
                         <td>SERVICIO</td>
+                        <td>DURACION</td>
                         <td>TIPO DE CAPACITACIÓN</td>
                         <td>STATUS</td>
                         <td>FECHA DE INICIO</td>
@@ -70,16 +72,18 @@
                         <td>HORA INICIO</td>
                         <td>HORA TERMINO</td>
                         <td>DIAS</td>
-
+                        <td>LUGAR O ESPACIO FISICO</td>
                     </tr>
                     @isset($consulta)
                     @foreach ($consulta as $item)
                     <tr>
                         <td>{{$item->nombre}}</td>
                         <td>{{$item->unidad}}</td>
+                        <td>{{$item->folio_grupo}}</td>
                         <td>{{$item->curso}}</td>
                         <td>{{$item->espe}}</td>
                         <td>{{$item->tipo_curso}}</td>
+                        <td>{{$item->dura}}</td>
                         <td>{{$item->tcapacitacion}}</td>
                         <td>{{$item->status_curso}}</td>
                         <td>{{$item->inicio}}</td>
@@ -87,6 +91,7 @@
                         <td>{{$item->hini}}</td>
                         <td>{{$item->hfin}}</td>
                         <td>{{$item->dia}}</td>
+                        <td>{{$item->efisico }}</td>
                     </tr>
                     @endforeach
                     <tr>

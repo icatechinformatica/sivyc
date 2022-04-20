@@ -149,9 +149,29 @@
                         <label for="inputrfc">RFC/Constancia Fiscal</label>
                         <input name='rfc' id='rfc' value="{{$datains->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
                     </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputfolio_ine">Folio INE</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputtipo_identificacion">Tipo de Identificación</label>
+                        <select class="form-control" name="tipo_identificacion" id="tipo_identificacion" disabled>
+                            <option value="INE" @if($datains->tipo_identificacion == 'INE') selected @endif>INE</option>
+                            <option value="PASAPORTE" @if($datains->tipo_identificacion == 'PASAPORTE') selected @endif>PASAPORTE</option>
+                            <option value="LICENCIA DE CONDUCIR" @if($datains->tipo_identificacion == 'LICENCIA DE CONDUCIR') selected @endif>LICENCIA DE CONDUCIR</option>
+                            <option value="CARTILLA MILITAR" @if($datains->tipo_identificacion == 'CARTILLA MILITAR') selected @endif>CARTILLA MILITAR</option>
+                            <option value="CEDULA PROFESIONAL" @if($datains->tipo_identificacion == 'CEDULA PROFESIONAL') selected @endif>CEDULA PROFESIONAL</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfolio_ine">Folio de Identificación</label>
                         <input name='folio_ine' id='folio_ine' value="{{$datains->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputexpiracion_identificacion">Expiración de Identificación</label>
+                        <input name='expiracion_identificacion' id='expiracion_identificacion' value="{{$datains->expiracion_identificacion }}" type="date" disabled class="form-control" disabled aria-required="true" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_ine">Archivo Identificación</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
                     </div>
                 </div>
                 <div class="form-row">
@@ -186,14 +206,19 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="inputentidad">Entidad</label>
-                        <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true" disabled value="{{$datains->entidad}}">
+                        <select class="form-control" name="entidad" id="entidad" onchange="local2()" disabled>
+                            <option value="sin especificar">Sin Especificar</option>
+                            @foreach ($estados as $items)
+                                <option value="{{$items->id}}" @if($datains->entidad == $items->nombre) selected @endif>{{$items->nombre}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputmunicipio">Municipio</label>
-                        <select class="form-control" name="municipio" id="municipio" onchange="local()" disabled>
-                            <option value="sin especificar">Sin Especificar</option>
+                        <select class="form-control" name="municipio" id="municipio" onchange="local()" disabled required>
+                            <option value="">Sin Especificar</option>
                             @foreach ($municipios as $item)
-                                <option value="{{$item->muni}}" @if($datains->municipio == $item->muni) selected @endif>{{$item->muni}}</option>
+                                <option value="{{$item->id}}" @if($datains->municipio == $item->muni) selected @endif>{{$item->muni}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -203,11 +228,14 @@
                     </div>-->
                     <div class="form-group col-md-3">
                         <label for="inputmunicipio">Localidad</label>
-                        <select class="form-control" name="localidad" id="localidad" disabled>
+                        <select class="form-control" name="localidad" id="localidad" disabled required>
                             @if ($localidades == NULL)
-                                <option value="sin especificar">SELECCIONE</option>
+                                <option value="">SELECCIONE</option>
                             @else
-                                <option value="{{$localidades->clave}}">{{$localidades->localidad}}</option>
+                                @foreach ($localidades as $itemx)
+                                    <option value="{{$itemx->clave}}" @if($datains->clave_loc == $itemx->clave) selected @endif>{{$itemx->localidad}}</option>
+                                @endforeach
+
                             @endif
                         </select>
                     </div>
@@ -244,10 +272,6 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="inputarch_ine">Archivo INE</label>
-                        <input type="file" accept="application/pdf" class="form-control" id="arch_ine" name="arch_ine" placeholder="Archivo PDF" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
                         <label for="inputarch_domicilio">Archivo Comprobante de Domicilio</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF" disabled>
                     </div>
@@ -258,6 +282,10 @@
                     <div class="form-group col-md-3">
                         <label for="inputarch_alta">Archivo Alta de Instructor</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_id">Archivo Otra Identificación</label>
+                        <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
                     </div>
                 </div>
                 <div class="form-row">
@@ -276,12 +304,6 @@
                     <div class="form-group col-md-3">
                         <label for="inputarch_estudio">Archivo Grado de Estudios</label>
                         <input type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF" disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="inputarch_id">Archivo Otra Identificación</label>
-                        <input type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF" disabled>
                     </div>
                 </div>
                 <br>
@@ -319,28 +341,11 @@
                         <input id="numero_control" name="numero_control" value="{{$datains->numero_control }}" type="text" disabled class="form-control" aria-required="true">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="inputhonorario">Tipo de Honorario</label>
+                        <label for="inputhonorario">Regimen</label>
                         <select class="form-control" name="honorario" id="honorario" disabled>
-                            @if ($datains->tipo_honorario == 'HONORARIOS')
-                                <option selected value="HONORARIOS">Honorarios</option>
-                                <option value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option value="INTERNO">Interno</option>
-                            @endif
-                            @if ($datains->tipo_honorario == 'SIN HONORARIOS')
-                                <option value="HONORARIOS">Honorarios</option>
-                                <option selected value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option value="INTERNO">Interno</option>
-                            @endif
-                            @if ($datains->tipo_honorario == 'INTERNO')
-                                <option value="HONORARIOS">Honorarios</option>
-                                <option value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option selected value="INTERNO">Interno</option>
-                            @endif
-                            @if ($datains->tipo_honorario == NULL)
-                                <option selected value="HONORARIOS">Honorarios</option>
-                                <option value="SIN HONORARIOS">Sin Honorarios</option>
-                                <option value="INTERNO">Interno</option>
-                            @endif
+                            <option selected value="HONORARIOS" @if ($datains->tipo_honorario == 'HONORARIOS') selected @endif>Honorarios</option>
+                            <option value="ASIMILADOS A SALARIOS" @if ($datains->tipo_honorario == 'ASIMILADOS A SALARIOS') selected @endif>Asimilados a Salarios</option>
+                            <option value="HONORARIOS Y ASIMILADOS A SALARIOS" @if ($datains->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilado a Salarios</option>
                         </select>
                     </div>
                 </div>
@@ -558,6 +563,42 @@
                 newOption = document.createElement('option');
                 newOption.value = respuesta[i].clave;
                 newOption.text=respuesta[i].localidad;
+                // selectL.appendChild(option);
+                selectL.add(newOption);
+            }
+        });
+    }
+
+    function local2() {
+        // var x = document.getElementById("municipio").value;
+        // console.log(x);
+
+        var valor = document.getElementById("entidad").value;
+        var datos = {valor: valor};
+        // console.log('hola');
+        var url = '/instructores/busqueda/municipio';
+        var request = $.ajax
+        ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+
+        request.done(( respuesta) =>
+        {
+            $("#municipio").empty();
+            var selectL = document.getElementById('municipio'),
+            option,
+            i = 0,
+            il = respuesta.length;
+            // console.log(il);
+            // console.log( respuesta[1].id)
+            for (; i < il; i += 1)
+            {
+                newOption = document.createElement('option');
+                newOption.value = respuesta[i].id;
+                newOption.text=respuesta[i].muni;
                 // selectL.appendChild(option);
                 selectL.add(newOption);
             }

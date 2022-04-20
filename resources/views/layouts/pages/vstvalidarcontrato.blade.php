@@ -48,6 +48,11 @@
             @else
                 <a class="btn btn-danger" disabled>Validación Suficiencia Presupuestal</a><br>
             @endif
+            @if ($data->comprobante_pago != NULL)
+                <a class="btn btn-info" href={{$data->comprobante_pago}} target="_blank">Comprobante Pago</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Comprobante Pago</a><br>
+            @endif
         </div>
         <div class="form-row">
             <div class="form-group col-md-5">
@@ -62,11 +67,19 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="clavecurso" class="control-label">Memorándum de Validación</label>
-                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->memorandum_validacion}}">
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->instructor_mespecialidad}}">
             </div>
             <div class="form-group col-md-3">
                 <label for="clavecurso" class="control-label">Tipo Honorario</label>
-                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->tipo_honorario}}">
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->modinstructor}}">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="tipo_identificacion" class="control-label">Tipo identificación</label>
+                <input class="form-control" name="tipo_identificacion" disabled id="tipo_identificacion" value="{{$data->instructor_tipo_identificacion}}">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="folio_identificacion" class="control-label">Folio de Identificación</label>
+                <input class="form-control" name="folio_identificacion" disabled id="folio_identificacion" value="{{$data->instructor_folio_identificacion}}">
             </div>
         </div>
         <hr style="border-color:dimgray">

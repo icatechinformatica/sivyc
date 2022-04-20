@@ -15,8 +15,7 @@ class UnidadesController extends Controller
       $this->field = [1=>"ene",2=>"feb",3=>"mar",4=>"abr",5=>"may",6=>"jun",7=>"jul",8=>"ago",9=>"sep", 10=>"oct", 11=>"nov",12=>"dic"];
     }
 
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         $id_unidad = $request->get('id_unidad');
         $mes_inicio = $request->get('mes_inicio');
         $mes_fin = $request->get('mes_fin');
@@ -67,8 +66,6 @@ class UnidadesController extends Controller
                     $join->whereMonth('fecha_apertura','>=',$ini);
                     $join->whereMonth('fecha_apertura','<=',$fin);
                     $join->whereYear('fecha_apertura','=',$ejercicio);
-
-
             })
             ->leftJoin('folios as f', function($join){
                 $join->on('f.id_cursos', '=', 'c.id');
@@ -95,7 +92,7 @@ class UnidadesController extends Controller
         $dataP[] = array_column($dataTMP, 'horas_p');
         $dataR[] = array_column($dataTMP, 'horas_r');
         $dataR[] = array_column($dataTMP, 'inversion');
-         //var_dump($dataP[2]); exit;
+        //var_dump($dataP[2]); exit;
         /*FIN SUBTOTALES*/
 
         $breadcrumb = "Programados y Aperturados";
@@ -105,7 +102,8 @@ class UnidadesController extends Controller
 
        // var_dump($data); exit;
         $tthis = $this->tthis();
-        return view('tablero.unidades.index', compact('data','dataP','dataR','labels','lst_unidad','lst_ejercicio','ejercicio','breadcrumb','id_unidad','lst_meses','mes_inicio','mes_fin','tthis'));
+        return view('tablero.unidades.index', compact('data','dataP','dataR','labels','lst_unidad','lst_ejercicio','ejercicio',
+                                            'breadcrumb','id_unidad','lst_meses','mes_inicio','mes_fin','tthis'));
     }
 
     public function tthis(){

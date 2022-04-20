@@ -104,6 +104,7 @@ class rdcdController extends Controller
          ->where('tf.folio', '<=', $consulta[0]->ffinal)
          ->where('tf.folio', '>=', $consulta[0]->finicial)
          ->groupBy('tf.id_curso','tf.fecha_expedicion')
+         ->orderBy('mini')
          ->get();
  
          $fcancelados=DB::table('tbl_folios as tf')

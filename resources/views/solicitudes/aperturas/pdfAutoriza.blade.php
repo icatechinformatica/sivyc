@@ -98,7 +98,7 @@
                             <th style="padding: 0px;" rowspan="2" >SERVICIO</th>  
                             <th style="padding: 0px;" rowspan="2" >UNIDAD DE CAPACITACIÓN</th>    	  
                             <th style="padding: 0px;" rowspan="2" >ESPECIALIDAD</th>   
-                            <th style="padding: 0px;" rowspan="2" >NOMBRE</th>
+                            <th style="padding: 0px;" rowspan="2" width="8%" >NOMBRE</th>
                             <th style="padding: 0px;" rowspan="2" >CLAVE</th>  
                             <th style="padding: 0px;" rowspan="2" >MOD</th>               
                             <th style="padding: 0px;" colspan="2" >TIPO DE<br>CAPACI<BR/>TACIÓN</th>       
@@ -108,10 +108,10 @@
                             <th style="padding: 0px;" rowspan="2" >HORARIO</th>
                             <th style="padding: 0px;" rowspan="2" >DIAS</th>
                             <th style="padding: 0px;" rowspan="2" >C<br>U<br>P<br>O</th>     
-                            <th style="padding: 0px;" rowspan="2" >INSTRUCTOR</th>
+                            <th style="padding: 0px;" rowspan="2" width="8%" >INSTRUCTOR</th>
                             <th style="padding: 0px;" rowspan="2" >CRITE<br>RIO<br>DE<br>PAGO</th>
                             <th style="padding: 0px;" rowspan="2" >MUNICIPIO</th>
-                            <th style="padding: 0px;" rowspan="2" >ESPACIO FISICO<br>MEDIO VIRTUAL</th>
+                            <th style="padding: 0px;" rowspan="2" width="10%" >ESPACIO FISICO<br>MEDIO VIRTUAL</th>
                             <th style="padding: 0px;" rowspan="2" >ZON<br>A<br>ECO<br>NOM<br>ICA</th>
                             <th style="padding: 0px;" colspan="3" >TIPO DE <BR/> CUOTA</th>                            
                             <th style="padding: 0px;" rowspan="2" width='15%'>OBSERVACIONES</th>
@@ -199,5 +199,16 @@
             </div> 
         </div>
     </div>
+    <script type="text/php">
+        if ( isset($pdf) ) {
+            $pdf->page_script('
+                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                if ($PAGE_NUM != 1) {
+                    $pdf->text(600, 20, "MEMORANDUM NO. <?php echo $memo;?>", $font, 7);
+                }
+            ');
+        }
+    </script>
 </body>
 </html>

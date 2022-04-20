@@ -30,11 +30,7 @@
                         <td class="text-center">{{ $a->sexo }}</td>
                         <td >{{ $a->escolaridad }}</td>
                         <td class="text-center">{{ $a->tinscripcion }}</td>
-                        @if($grupo->clave=='0' AND !$grupo->status_curso)
-                            <td class="text-center">{{ Form::text('costo['.$a->id_reg.']', $a->costo , ['id'=>'costo['.$a->id_reg.']', 'class' => 'form-control numero', 'required' => 'required', 'size' => 1]) }}</td>
-                        @else
-                            <td class="text-center">{{ $a->costo }}</td>
-                        @endif
+                        <td class="text-center">{{ $a->costo }}</td>
                     </tr>
                  @endforeach                       
             </tbody>                   
@@ -44,10 +40,17 @@
     </table>
 </div>
 
- <div class="col-md-12 text-right">                
+ <div class="col-md-12 text-right">    
+    @if ($grupo->comprobante_pago)
+    <a href="{{$comprobante}}" target="_blank" class="btn  bg-warning">IMPRIMIR COMPROBANTE DE PAGO</a>
+    @endif            
     @if($grupo->clave=='0' AND !$grupo->status_curso)
-        <button type="button" class="btn bg-warning " id="regresar" ><< REGRESAR A VINCULACI&Oacute;N</button>
-        <button type="submit" class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp;       
+        <button type="button" class="btn bg-warning " id="regresar" ><< REGRESAR A VINCULACI&Oacute;N</button> 
+        {{--<button id="btnShowCalendarFlex" type="button" class="btn btn-amber">Agendar Horario Flexible</button>--}}
+        <button type="submit" class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp; 
+        @if ($instructor)
+        <button id="btnShowCalendar" type="button" class="btn btn-info">Agendar</button>
+        @endif      
     @elseif($grupo->clave!='0' AND $grupo->status_curso=="AUTORIZADO" AND $grupo->status=="NO REPORTADO" AND $mov == "INSERT") 
             <button type="button" class="btn bg-warning" id="inscribir" >ACEPTAR APERTURA </button>    
     @endif

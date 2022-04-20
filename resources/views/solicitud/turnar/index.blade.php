@@ -19,7 +19,7 @@
                     {{ Form::text('memo', $memo, ['id'=>'memo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
             </div>
             <div class="form-group col-md-2 mt-2">
-                    <input type="date" id="fecha" name="fecha" class="form-control" value="{{date('Y-m-d')}}"/>
+                    <input type="date" id="fecha" name="fecha" class="form-control" value="{{date('Y-m-d')}}" readonly/>
                 </div>  
             <div class="form-group col-md-1">
                 {{ Form::button('FILTRAR', ['id'=>'buscar','class' => 'btn']) }}

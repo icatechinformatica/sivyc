@@ -89,7 +89,7 @@ class foliosController extends Controller {
                             'c.status_curso',
                             'f.file_autorizacion')
                         ->where('f.folio','>','0');
-                        if($request->mod) $folios = $folios->where('f.mod',$request->mod);
+                        if($request->mod && $request->mod != 'GRAL') $folios = $folios->where('f.mod',$request->mod);
                         if($request->finicial) $folios = $folios->where('f.folio','>=',$request->finicial);
                         if($request->ffinal) $folios = $folios->where('f.folio','<=',$request->ffinal);
                         if($request->unidad) $folios = $folios->where('c.unidad',$request->unidad);  

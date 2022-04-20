@@ -32,6 +32,11 @@
                 <div class="pull-left">
                     <h2>Solicitudes de Pagos</h2>
                     {!! Form::open(['route' => 'pago-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                        <select name="ejercicio" class="form-control mr-sm-2" id="ejercicio">
+                            @foreach ($array_ejercicio as $cad)
+                                <option value="{{$cad}}" @if($año_pointer == $cad) selected @endif>{{$cad}}</option>
+                            @endforeach
+                        </select>
                         <select name="tipo_pago" class="form-control mr-sm-2" id="tipo_pago">
                             <option value="">BUSQUEDA POR TIPO</option>
                             <option value="no_contrato">N° DE CONTRATO</option>

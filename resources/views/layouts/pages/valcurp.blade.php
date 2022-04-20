@@ -182,10 +182,10 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-3">
+                            {{--<div class="form-group col-md-3">
                                 <label>Discapacidad:</label>
                                 {{ Form::select('discapacidad', $discapacidad, null, ['id' => 'discapacidad', 'class' => 'form-control mr-sm-2', 'placeholder' => '--SELECCIONAR--']) }}
-                            </div>
+                            </div>--}}
                             <!-- domicilio -->
                             <div class="form-group col-md-3">
                                 <label for="domicilio" class="control-label">Domicilio</label>
@@ -251,14 +251,28 @@
                                 <label><input id="inmigrante" name="inmigrante" type="checkbox" value="true">&nbsp;&nbsp;¿Es
                                     Inmigrante?</label>
                             </div>
-                            <div class="form-group col">
+                            {{--<div class="form-group col">
                                 <label>
                                     <input id="indigena" name="indigena" type="checkbox" value="true" />&nbsp;&nbsp¿Es
                                     Indígena?
                                 </label>
-                            </div>
+                            </div>--}}
                             <div class="form-group col">
                                 {{ Form::select('etnia', $etnia, null, ['id' => 'etnia', 'class' => 'form-control mr-sm-2', 'placeholder' => '--ETNIA--']) }}
+                            </div>
+                        </div>
+                        <br>
+                        <div>
+                            <div class="form-row">
+                                <label>&nbsp;&nbsp;¿El aspirante pertenece a algún Grupo Vulnerable?</label>
+                            </div>
+                            <br>
+                            <div class="form-row">
+                                    @foreach ($gvulnerable as $item)
+                                    <div class="form-group col-md-4">
+                                        <input type="checkbox" name="itemEdith[{{$item->grupo}}]" value="{{$item->id}}">&nbsp;&nbsp;{{$item->grupo}}</input>
+                                    </div>
+                                    @endforeach
                             </div>
                         </div>
                         <hr style="border-color:dimgray">
@@ -634,7 +648,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group col-md-3">
+                                {{--<div class="form-group col-md-3">
                                     <label>Discapacidad:</label>
                                     <select name="discapacidad_mod" id="discapacidad_mod" class="form-control mr-sm--2">
                                         @isset($alumno->discapacidad)<option value="{{ $alumno->discapacidad }}">
@@ -644,7 +658,7 @@
                                             <option value="{{ $item }}">{{ $item }}</option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div>--}}
                                 <!-- domicilio -->
                                 <div class="form-group col-md-3">
                                     <label for="domicilio_mod" class="control-label">Domicilio</label>
@@ -737,7 +751,7 @@
                                                 value="true">&nbsp;&nbsp;¿Es Inmigrante?</label>
                                     @endif
                                 </div>
-                                <div class="form-group col-md-2">
+                                {{--<div class="form-group col-md-2">
                                     @if ($alumno->indigena == 'true')
                                         <label><input id="indigena_mod" name="indigena_mod" type="checkbox" value="true" /
                                                 checked>&nbsp;&nbsp;¿Es Indígena?</label>
@@ -745,7 +759,7 @@
                                         <label><input id="indigena_mod" name="indigena_mod" type="checkbox"
                                                 value="true" />&nbsp;&nbsp;¿Es Indígena?</label>
                                     @endif
-                                </div>
+                                </div>--}}
                                 <div class="form-group col-md-2">
                                     <select name="etnia_mod" id="etnia_mod" class="form-control mr-sm--2"
                                         placeholder="--ETNIA--">
@@ -755,6 +769,24 @@
                                         <option value="{{ $item }}">{{ $item }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div>
+                            <div class="form-row">
+                                <label>&nbsp;&nbsp;¿El aspirante pertenece a algún Grupo Vulnerable?</label>
+                            </div>
+                            <br>
+                            <div class="form-row">
+                                    @foreach ($gvulnerable as $item)
+                                    <div class="form-group col-md-4">
+                                        @if ($alumno->id_gvulnerable && in_array($item->id, json_decode($alumno->id_gvulnerable)))
+                                        <input checked type="checkbox" name="itemEdith[{{$item->grupo}}]" value="{{$item->id}}">&nbsp;&nbsp;{{$item->grupo}}</input>
+                                        @else
+                                        <input type="checkbox" name="itemEdith[{{$item->grupo}}]" value="{{$item->id}}">&nbsp;&nbsp;{{$item->grupo}}</input>
+                                        @endif
+                                    </div>
+                                    @endforeach
                             </div>
                         </div>
                         <hr style="border-color:dimgray">

@@ -1,8 +1,8 @@
 <?php
 if($data->tipo_curso=='CERTIFICACION'){
-    $tipo='LA CERTIFICACIÓN EXTRAORDINARIA';
+    $tipo='DE LA CERTIFICACIÓN EXTRAORDINARIA';
 }else{
-    $tipo='CURSO';
+    $tipo='DEL CURSO';
 }
 ?>
 <!DOCTYPE HTML>
@@ -110,9 +110,9 @@ if($data->tipo_curso=='CERTIFICACION'){
                 <br><br><b>{{$para->nombre}} {{$para->apellidoPaterno}} {{$para->apellidoMaterno}}.</b>
                 <br>{{$para->puesto}}.
                 <br><br>Presente.
-                <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura de <font style="text-transform:lowercase;"> {{$tipo}}</font> y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
+                <br><p class="text-justify">En virtud de haber cumplido con los requisitos de apertura <font style="text-transform:lowercase;"> {{$tipo}}</font> y validación de instructor, solicito de la manera más atenta gire sus apreciables instrucciones a fin de que proceda el pago correspondiente, que se detalla a continuación:</p>
                 <div align=center>
-                    <FONT SIZE=2><b>DATOS DEL {{$tipo}}</b></FONT>
+                    <FONT SIZE=2><b>DATOS {{$tipo}}</b></FONT>
                 </div>
                 <table>
                     <tbody>
@@ -156,18 +156,43 @@ if($data->tipo_curso=='CERTIFICACION'){
                 </div>
                 <table>
                     <tbody>
-                        <tr>
-                            <td><small>Banco: {{$data->banco}}</small></td>
-                        </tr>
-                        <tr>
-                            <td><small>Número de Cuenta: {{$data->no_cuenta}}</small></td>
-                        </tr>
-                        <tr>
-                            <td><small>Clabe Interbancaria: {{$data->interbancaria}}</small></td>
-                        </tr>
+                        @if($data->modinstructor == 'HONORARIOS')
+                                <tr>
+                                    <td><small>Banco: {{$data->banco}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Número de Cuenta: {{$data->no_cuenta}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Clabe Interbancaria: {{$data->interbancaria}}</small></td>
+                                </tr>
+                        @endif
+                        @if($data->modinstructor == 'ASIMILADOS A SALARIOS')
+                            @if($data->banco == NULL)
+                                <tr>
+                                    <td><small>Banco: NO APLICA</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Número de Cuenta: NO APLICA</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Clabe Interbancaria: NO APLICA</small></td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td><small>Banco: {{$data->banco}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Número de Cuenta: {{$data->no_cuenta}}</small></td>
+                                </tr>
+                                <tr>
+                                    <td><small>Clabe Interbancaria: {{$data->interbancaria}}</small></td>
+                                </tr>
+                            @endif
+                        @endif
                     </tbody>
                 </table>
-                <br><p class="text-left"><p>Nota: El Expediente Único soporte documental del <font style="text-transform:lowercase;"> {{$tipo}}</font>, obra en poder de la Unidad de Capacitación.</p></p>
+                <br><p class="text-left"><p>Nota: El Expediente Único soporte documental <font style="text-transform:lowercase;"> {{$tipo}}</font>, obra en poder de la Unidad de Capacitación.</p></p>
                 <br><br><table class="table1">
                     <tr>
                         <td colspan="2"><p align="center">Atentamente</p></td>
@@ -188,11 +213,12 @@ if($data->tipo_curso=='CERTIFICACION'){
                         <td colspan="2"><div align="center">Director Administrativo</td></div>
                     </tr>
                 </table>
-                <p><FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimient</><br/>
-                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin</></FONT><br/>
-                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-Mismo fin</></FONT><br/>
-                <FONT SIZE=1><b><small>C.c.p.</C></b>Archivo/ Minutario<small></FONT><br/>
-                <FONT SIZE=1><b><small>C.c.p.</C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}</small></FONT></p>
+                <p><FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}.-{{$ccp1->puesto}}.-Para su conocimiento.<br/>
+                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}.-{{$ccp2->puesto}}.-Mismo fin.</FONT><br/>
+                <FONT SIZE=1><b><small>C.c.p.</C></b>{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}.-{{$ccp3->puesto}}.-Mismo fin.</FONT><br/>
+                <FONT SIZE=1><b><small></C></b>Archivo/ Minutario<small></FONT><br/>
+                <FONT SIZE=1><b><small></C></b>Validó: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}.- {{$elaboro->puesto}} {{$data->unidad_capacitacion}}.</small></FONT><br/>
+                <FONT SIZE=1><b><small></C></b>Elaboró: {{$elaboro->nombre}} {{$elaboro->apellidoPaterno}} {{$elaboro->apellidoMaterno}}.- {{$elaboro->puesto}} {{$data->unidad_capacitacion}}.</small></FONT></p>
             </div>
         </div>
         <footer>

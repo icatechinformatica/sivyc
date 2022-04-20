@@ -116,15 +116,21 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad</label>
-                    <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true">
+                    {{-- <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true"> --}}
+                    <select class="form-control" name="entidad" id="entidad" onchange="local2()">
+                        <option value="sin especificar">Sin Especificar</option>
+                        @foreach ($estados as $data)
+                            <option value="{{$data->id}}">{{$data->nombre}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio</label>
                     <select class="form-control" name="municipio" id="municipio" onchange="local()">
                         <option value="sin especificar">Sin Especificar</option>
-                        @foreach ($municipios as $data)
-                            <option value="{{$data->muni}}">{{$data->muni}}</option>
-                        @endforeach
+                        {{-- @foreach (municipios as data)
+                            <option value="{data->muni}}">{data->muni}}</option>
+                        @endforeach --}}
                     </select>
                 </div>
                 <!--<div class="form-group col-md-3">
@@ -159,12 +165,12 @@
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputhonorarios">Tipo de Honorarios</label>
+                    <label for="inputhonorarios">Regimen</label>
                     <select class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS">Honorarios</option>
-                        <option value="SIN HONORARIOS">Sin Honorarios</option>
-                        <option value="INTERNO">Interno</option>
+                        <option value="ASIMILADOS">Asimilados a Salarios</option>
+                        <option value="AMBOS">Honorarios y Asimilado a Salario</option>
                     </select>
                 </div>
             </div>
@@ -213,6 +219,42 @@
                 newOption = document.createElement('option');
                 newOption.value = respuesta[i].clave;
                 newOption.text=respuesta[i].localidad;
+                // selectL.appendChild(option);
+                selectL.add(newOption);
+            }
+        });
+    }
+
+    function local2() {
+        // var x = document.getElementById("municipio").value;
+        // console.log(x);
+
+        var valor = document.getElementById("entidad").value;
+        var datos = {valor: valor};
+        // console.log('hola');
+        var url = '/instructores/busqueda/municipio';
+        var request = $.ajax
+        ({
+            url: url,
+            method: 'POST',
+            data: datos,
+            dataType: 'json'
+        });
+
+        request.done(( respuesta) =>
+        {
+            $("#municipio").empty();
+            var selectL = document.getElementById('municipio'),
+            option,
+            i = 0,
+            il = respuesta.length;
+            // console.log(il);
+            // console.log( respuesta[1].id)
+            for (; i < il; i += 1)
+            {
+                newOption = document.createElement('option');
+                newOption.value = respuesta[i].id;
+                newOption.text=respuesta[i].muni;
                 // selectL.appendChild(option);
                 selectL.add(newOption);
             }

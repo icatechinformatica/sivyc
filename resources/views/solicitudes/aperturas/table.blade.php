@@ -3,8 +3,15 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
+                @if($opt=="ARC02")
+                    <th scope="col" class="text-center" >EDIT</th>                    
+                @else
+                    <th scope="col" class="text-center" >VER</th>
+                @endif
                 <th scope="col" class="text-center">ID</th> 
+                <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>
+                <th scope="col" class="text-center">GRUPO</th>
                 <!--<th scope="col" class="text-center" >MOTIVO</th> -->        
                 <th scope="col" class="text-center">SERVICIO</th>
                 <th scope="col" class="text-center">UNIDAD</th>
@@ -27,15 +34,14 @@
                 <th scope="col" class="text-center">TIPO</th>                 
                 <th scope="col" class="text-center">TURNADO</th>
                 <th scope="col" class="text-center">ESTATUS</th>  
-                <th scope="col" class="text-center">FORMATO T</th>         
+                <th scope="col" class="text-center">FORMATO T</th>  
+                <th scope="col" class="text-center">PLANTEL</th>       
                 <th scope="col" class="text-center">LUGAR</th>
                 <th scope="col" class="text-center">OBSERVACIONES</th>
                 <th scope="col" class="text-center">M.VALIDACIÓN</th>
-                @if($opt=="ARC02")
-                    <th scope="col" class="text-center" >EDIT</th>                    
-                @else
-                    <th scope="col" class="text-center" >VER</th>
-                @endif
+                <th scope="col" class="text-center">FECHA ARC02</th>
+                <th scope="col" class="text-center">CONVENIO</th>
+                <th scope="col" class="text-center">CONVENIO ESPECIFICO</th>
             </tr>
         </thead>
         @if(count($grupos)>0) 
@@ -66,7 +72,20 @@
                     }
                     ?>
                     <tr @if($rojo)class='text-danger' @endif >
+                        @if($opt == "ARC02")
+                            <td class='text-center'>
+                                <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
+                            </td>
+                        @else
+                            <td class='text-center'>
+                                <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-success" title="Ver detalle" onclick="show('{{$g->id}}')"></i></a>
+                                <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
+                                    <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
+                                </a>
+                            </td>
+                        @endif
                         <td class="text-center"> {{ $g->id }}</td>
+                        <td class="text-center"> {{$g->fecha_arc01}}</td>
                         <td class="text-center">
                             @if($g->clave=='0')
                                 <div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked></div>
@@ -74,6 +93,7 @@
                                 <div style="width:128px;">{{ $g->clave}}</div> 
                             @endif
                        </td> 
+                       <td class="text-center">{{$g->folio_grupo}}</td>
                        <!--
                         <td class="text-center"><div style="width:400px;">
                             <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
@@ -107,6 +127,7 @@
                         </td>                        
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif</td>
                         <td class="text-center"> {{ $g->status}}</td>
+                        <td class="text-center">{{$g->plantel }}</td>
                         <td> <div style="width:120px;"> {{ $g->efisico }} </div></td>
                         <td class="text-left">
                             <div style="width:700px;">
@@ -115,15 +136,9 @@
                             </div>    
                         </td>
                         <td class="text-center"> {{ $g->mvalida}}</td>
-                        @if($opt == "ARC02")
-                            <td class='text-center'>
-                                <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
-                            </td>
-                        @else
-                            <td class='text-center'>
-                                <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-success" title="Ver detalle" onclick="show('{{$g->id}}')"></i></a>
-                            </td>
-                        @endif
+                        <td class="text-center">{{$g->fecha_arc02}}</td>
+                        <td class="text-center">{{$g->cgeneral}} {{$g->fecha_vigencia}}</td>
+                        <td class="text-center">{{$g->cespecifico }} {{$g->fcespe}}</td>
                     </tr>
                  @endforeach                       
             </tbody>                   

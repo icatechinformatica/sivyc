@@ -57,14 +57,15 @@ class aperturasController extends Controller
         $_SESSION['grupos'] = NULL;        
         $grupos = $movimientos = [];
         //echo $memo;
+        $path = $this->path_files;
         if($memo){            
-            $grupos = DB::table('tbl_cursos as tc')->select('tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud')
-                ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo');
+            $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud', 'ar.comprobante_pago')
+                ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
+                ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral');
                if($opt == 'ARC01') $grupos = $grupos->where('tc.munidad',$memo);
                else $grupos = $grupos->where('tc.nmunidad',$memo);
-               $grupos = $grupos->groupby('tc.id','ar.turnado')->get();           
-            //var_dump($grupos);exit;
-            
+               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago','convenios.fecha_vigencia')->get();       
+               
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;
                 $_SESSION['memo'] = $memo;
@@ -104,9 +105,10 @@ class aperturasController extends Controller
             }else $message = "No se encuentran registros que mostrar.";
            
         }
+
         if(session('message')) $message = session('message');
         //var_dump($grupos);exit;
-        return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos'));
+        return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path'));
     }  
     
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
@@ -279,7 +281,7 @@ class aperturasController extends Controller
                     ->where('turnado','UNIDAD')
                     ->where('status_curso','SOLICITADO')
                     ->where('status','NO REPORTADO')
-                    ->where('munidad',$_SESSION['memo'])->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s')]);                    
+                    ->where('munidad',$_SESSION['memo'])->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s'),'fecha_arc01'=>null,'file_arc01' => null]);                    
                     if($result){ 
                         $folios = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->pluck('folio_grupo');     
                         //var_dump($folios);exit;           

@@ -85,7 +85,7 @@
                         <option value="">--SELECCIONAR MES--</option>
                         @foreach ($meses as $mun => $month)
                             <option value="{{ $mun }}">{{ $month }}</option>
-                        @endforeach 
+                        @endforeach
                     </select>
                 </div>
                 <div class="form-group col-md-4">
@@ -94,7 +94,7 @@
                 <div class="form-group col-md-4">
                     {!! Form::submit( 'FILTRAR', ['id'=>'formatot', 'class' => 'btn btn-outline-info my-2 my-sm-0 waves-effect waves-light', 'name' => 'submitbutton'])!!}
                 </div>
-                
+
             </div>
         {!! Form::close() !!} --}}
 
@@ -156,6 +156,19 @@
                                 <caption>CURSOS A ENVIAR POR UNIDADES</caption>
                                 <thead class="thead-dark">
                                     <tr align="center">
+                                        {{-- <th scope="col" colspan="59">GENERAL</th> --}}
+                                        <th scope="col" colspan="32" style="background-color: #621032;">FEDERAL</th>
+                                        <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
+                                        <th scope="col" colspan="32" style="background-color: #621032;">FEDERAL</th>
+                                        <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
+                                        <th scope="col" colspan="33" style="background-color: #AF9A5A;">ESTATAL</th>
+                                        <th scope="col" colspan="34" style="background-color: #AF9A5A;">ESTATAL</th>
+                                        <th scope="col" colspan="33" style="background-color: #AF9A5A;">ESTATAL</th>
+                                        <th scope="col" colspan="34" style="background-color: #AF9A5A;">ESTATAL</th>
+                                        <th scope="col" colspan="33" style="background-color: #AF9A5A;">ESTATAL</th>
+                                        <th scope="col" colspan="3"></th>
+                                    </tr>
+                                    <tr align="center">
                                         <th scope="col">N°</th>
                                         <th scope="col">
                                             <div style="width:100px; word-wrap: break-word">
@@ -189,10 +202,10 @@
                                         <th scope="col">DESERCIÓN</th>
                                         <th scope="col">C TOTAL CURSO PERSONA</th>
                                         <th scope="col">INGRESO TOTAL</th>
-                                        <th scope="col">EXO TOTAL MUJER</th>
-                                        <th scope="col">EXO TOTAL HOMBRE</th>
-                                        <th scope="col">EXO PARCIAL MUJER</th>
-                                        <th scope="col">EXO PARCIAL HOMBRE</th>
+                                        <th scope="col">EXONERACION MUJER</th>
+                                        <th scope="col">EXONERACION HOMBRE</th>
+                                        <th scope="col">REDUCCION CUOTA MUJER</th>
+                                        <th scope="col">REDUCCION CUOTA HOMBRE</th>
                                         <th scope="col">CONVENIO ESPECIFICO</th>
                                         <th scope="col">MEMO VALIDA CURSO</th>
                                         <th scope="col">ESPACIO FISICO</th>
@@ -216,6 +229,8 @@
                                         <th scope="col">CONVENIO GENERAL</th>
                                         <th scope="col">CONV SEC PUB O PRIV</th>
                                         <th scope="col">VALIDACION PAQUETERIA</th>
+                                        <th scope="col">GRUPO VULNERABLE</th>
+                                        {{-- RUBRO FEDERAL--}}
                                         <th scope="col">INSC EDAD M1</th>
                                         <th scope="col">INSC EDAD H1</th>
                                         <th scope="col">INSC EDAD M2</th>
@@ -232,6 +247,7 @@
                                         <th scope="col">INSC EDAD H7</th>
                                         <th scope="col">INSC EDAD M8</th>
                                         <th scope="col">INSC EDAD H8</th>
+
                                         <th scope="col">INSC ESCOL M1</th>
                                         <th scope="col">INSC ESCOL H1</th>
                                         <th scope="col">INSC ESCOL M2</th>
@@ -250,6 +266,7 @@
                                         <th scope="col">INSC ESCOL H8</th>
                                         <th scope="col">INSC ESCOL M9</th>
                                         <th scope="col">INSC ESCOL H9</th>
+
                                         <th scope="col">ACRE ESCOL M1</th>
                                         <th scope="col">ACRE ESCOL H1</th>
                                         <th scope="col">ACRE ESCOL M2</th>
@@ -268,6 +285,7 @@
                                         <th scope="col">ACRE ESCOL H8</th>
                                         <th scope="col">ACRE ESCOL M9</th>
                                         <th scope="col">ACRE ESCOL H9</th>
+
                                         <th scope="col">DESC ESCOL M1</th>
                                         <th scope="col">DESC ESCOL H1</th>
                                         <th scope="col">DESC ESCOL M2</th>
@@ -287,6 +305,182 @@
                                         <th scope="col">DESC ESCOL M9</th>
                                         <th scope="col">DESC ESCOL H9</th>
                                         <th scope="col" WIDTH="500">OBSERVACIONES</th>
+
+                                        {{-- RUBRO ESTATAL --}}
+                                        <th scope="col">INSCRITOS</th>
+                                        <th scope="col">FEM</th>
+                                        <th scope="col">MASC</th>
+                                        <th scope="col">LGBTTTI+</th>
+                                        <th scope="col">EGRESADO</th>
+                                        <th scope="col">EGRESADO FEM</th>
+                                        <th scope="col">EGRESADO MASC</th>
+                                        <th scope="col">EGRESADO LGBTTTI+</th>
+                                        <th scope="col">EXONERACION MUJER</th>
+                                        <th scope="col">EXONERACION HOMBRE</th>
+                                        <th scope="col">EXONERACION LGBTTTI+</th>
+                                        <th scope="col">REDUCCION CUOTA MUJER</th>
+                                        <th scope="col">REDUCCION CUOTA HOMBRE</th>
+                                        <th scope="col">REDUCCION CUOTA LGBTTTI+</th>
+
+                                        <th scope="col">INSC EDAD M1</th>
+                                        <th scope="col">INSC EDAD H1</th>
+                                        <th scope="col">INSC EDAD L1</th>
+                                        <th scope="col">INSC EDAD M2</th>
+                                        <th scope="col">INSC EDAD H2</th>
+                                        <th scope="col">INSC EDAD L2</th>
+                                        <th scope="col">INSC EDAD M3</th>
+                                        <th scope="col">INSC EDAD H3</th>
+                                        <th scope="col">INSC EDAD L3</th>
+                                        <th scope="col">INSC EDAD M4</th>
+                                        <th scope="col">INSC EDAD H4</th>
+                                        <th scope="col">INSC EDAD L4</th>
+
+                                        <th scope="col">INSC ESCOL M1</th>
+                                        <th scope="col">INSC ESCOL H1</th>
+                                        <th scope="col">INSC ESCOL L1</th>
+                                        <th scope="col">INSC ESCOL M2</th>
+                                        <th scope="col">INSC ESCOL H2</th>
+                                        <th scope="col">INSC ESCOL L2</th>
+                                        <th scope="col">INSC ESCOL M3</th>
+                                        <th scope="col">INSC ESCOL H3</th>
+                                        <th scope="col">INSC ESCOL L3</th>
+                                        <th scope="col">INSC ESCOL M4</th>
+                                        <th scope="col">INSC ESCOL H4</th>
+                                        <th scope="col">INSC ESCOL L4</th>
+                                        <th scope="col">INSC ESCOL M5</th>
+                                        <th scope="col">INSC ESCOL H5</th>
+                                        <th scope="col">INSC ESCOL L5</th>
+                                        <th scope="col">INSC ESCOL M6</th>
+                                        <th scope="col">INSC ESCOL H6</th>
+                                        <th scope="col">INSC ESCOL L6</th>
+                                        <th scope="col">INSC ESCOL M7</th>
+                                        <th scope="col">INSC ESCOL H7</th>
+                                        <th scope="col">INSC ESCOL L7</th>
+                                        <th scope="col">INSC ESCOL M8</th>
+                                        <th scope="col">INSC ESCOL H8</th>
+                                        <th scope="col">INSC ESCOL L8</th>
+                                        <th scope="col">INSC ESCOL M9</th>
+                                        <th scope="col">INSC ESCOL H9</th>
+                                        <th scope="col">INSC ESCOL L9</th>
+
+                                        <th scope="col">ACRE ESCOL M1</th>
+                                        <th scope="col">ACRE ESCOL H1</th>
+                                        <th scope="col">ACRE ESCOL L1</th>
+                                        <th scope="col">ACRE ESCOL M2</th>
+                                        <th scope="col">ACRE ESCOL H2</th>
+                                        <th scope="col">ACRE ESCOL L2</th>
+                                        <th scope="col">ACRE ESCOL M3</th>
+                                        <th scope="col">ACRE ESCOL H3</th>
+                                        <th scope="col">ACRE ESCOL L3</th>
+                                        <th scope="col">ACRE ESCOL M4</th>
+                                        <th scope="col">ACRE ESCOL H4</th>
+                                        <th scope="col">ACRE ESCOL L4</th>
+                                        <th scope="col">ACRE ESCOL M5</th>
+                                        <th scope="col">ACRE ESCOL H5</th>
+                                        <th scope="col">ACRE ESCOL L5</th>
+                                        <th scope="col">ACRE ESCOL M6</th>
+                                        <th scope="col">ACRE ESCOL H6</th>
+                                        <th scope="col">ACRE ESCOL L6</th>
+                                        <th scope="col">ACRE ESCOL M7</th>
+                                        <th scope="col">ACRE ESCOL H7</th>
+                                        <th scope="col">ACRE ESCOL L7</th>
+                                        <th scope="col">ACRE ESCOL M8</th>
+                                        <th scope="col">ACRE ESCOL H8</th>
+                                        <th scope="col">ACRE ESCOL L8</th>
+                                        <th scope="col">ACRE ESCOL M9</th>
+                                        <th scope="col">ACRE ESCOL H9</th>
+                                        <th scope="col">ACRE ESCOL L9</th>
+
+                                        <th scope="col">DESC ESCOL M1</th>
+                                        <th scope="col">DESC ESCOL H1</th>
+                                        <th scope="col">DESC ESCOL L1</th>
+                                        <th scope="col">DESC ESCOL M2</th>
+                                        <th scope="col">DESC ESCOL H2</th>
+                                        <th scope="col">DESC ESCOL L2</th>
+                                        <th scope="col">DESC ESCOL M3</th>
+                                        <th scope="col">DESC ESCOL H3</th>
+                                        <th scope="col">DESC ESCOL L3</th>
+                                        <th scope="col">DESC ESCOL M4</th>
+                                        <th scope="col">DESC ESCOL H4</th>
+                                        <th scope="col">DESC ESCOL L4</th>
+                                        <th scope="col">DESC ESCOL M5</th>
+                                        <th scope="col">DESC ESCOL H5</th>
+                                        <th scope="col">DESC ESCOL L5</th>
+                                        <th scope="col">DESC ESCOL M6</th>
+                                        <th scope="col">DESC ESCOL H6</th>
+                                        <th scope="col">DESC ESCOL L6</th>
+                                        <th scope="col">DESC ESCOL M7</th>
+                                        <th scope="col">DESC ESCOL H7</th>
+                                        <th scope="col">DESC ESCOL L7</th>
+                                        <th scope="col">DESC ESCOL M8</th>
+                                        <th scope="col">DESC ESCOL H8</th>
+                                        <th scope="col">DESC ESCOL L8</th>
+                                        <th scope="col">DESC ESCOL M9</th>
+                                        <th scope="col">DESC ESCOL H9</th>
+                                        <th scope="col">DESC ESCOL L9</th>
+
+                                        <th scope="col">GV AFROMEX M</th>
+                                        <th scope="col">GV AFROMEX H</th>
+                                        <th scope="col">GV AFROMEX L</th>
+                                        <th scope="col">GV DESPLAZADAS M</th>
+                                        <th scope="col">GV DESPLAZADAS H</th>
+                                        <th scope="col">GV DESPLAZADAS L</th>
+                                        <th scope="col">GV EMBARAZADAS M</th>
+                                        <th scope="col">GV EMBARAZADAS H</th>
+                                        <th scope="col">GV EMBARAZADAS L</th>
+                                        <th scope="col">GV SIT CALLE M</th>
+                                        <th scope="col">GV SIT CALLE H</th>
+                                        <th scope="col">GV SIT CALLE L</th>
+                                        <th scope="col">GV ESTUDIANTES M</th>
+                                        <th scope="col">GV ESTUDIANTES H</th>
+                                        <th scope="col">GV ESTUDIANTES L</th>
+                                        <th scope="col">GV FAM VIC M</th>
+                                        <th scope="col">GV FAM VIC H</th>
+                                        <th scope="col">GV FAM VIC L</th>
+                                        <th scope="col">GV INDIGENA M</th>
+                                        <th scope="col">GV INDIGENA H</th>
+                                        <th scope="col">GV INDIGENA L</th>
+                                        <th scope="col">GV JEFA FAM M</th>
+                                        <th scope="col">GV JEFA FAM H</th>
+                                        <th scope="col">GV JEFA FAM L</th>
+                                        <th scope="col">GV MIGRANTE M</th>
+                                        <th scope="col">GV MIGRANTE H</th>
+                                        <th scope="col">GV MIGRANTE L</th>
+                                        <th scope="col">GV LESBIANA M</th>
+                                        <th scope="col">GV LESBIANA H</th>
+                                        <th scope="col">GV LESBIANA L</th>
+                                        <th scope="col">GV CERSS M</th>
+                                        <th scope="col">GV CERSS H</th>
+                                        <th scope="col">GV CERSS L</th>
+                                        <th scope="col">GV TRANS M</th>
+                                        <th scope="col">GV TRANS H</th>
+                                        <th scope="col">GV TRANS L</th>
+                                        <th scope="col">GV TRAB HOGAR M</th>
+                                        <th scope="col">GV TRAB HOGAR H</th>
+                                        <th scope="col">GV TRAB HOGAR L</th>
+                                        <th scope="col">GV TRAB SEX M</th>
+                                        <th scope="col">GV TRAB SEX H</th>
+                                        <th scope="col">GV TRAB SEX L</th>
+                                        <th scope="col">GV VICT VIOLENCIA M</th>
+                                        <th scope="col">GV VICT VIOLENCIA H</th>
+                                        <th scope="col">GV VICT VIOLENCIA L</th>
+                                        <th scope="col">GV DISC VISUAL M</th>
+                                        <th scope="col">GV DISC VISUAL H</th>
+                                        <th scope="col">GV DISC VISUAL L</th>
+                                        <th scope="col">GV DISC AUDI M</th>
+                                        <th scope="col">GV DISC AUDI H</th>
+                                        <th scope="col">GV DISC AUDI L</th>
+                                        <th scope="col">GV DISC HABLA M</th>
+                                        <th scope="col">GV DISC HABLA H</th>
+                                        <th scope="col">GV DISC HABLA L</th>
+                                        <th scope="col">GV DISC MOTRIZ M</th>
+                                        <th scope="col">GV DISC MOTRIZ H</th>
+                                        <th scope="col">GV DISC MOTRIZ L</th>
+                                        <th scope="col">GV DISC MENTAL M</th>
+                                        <th scope="col">GV DISC MENTAL H</th>
+                                        <th scope="col">GV DISC MENTAL L</th>
+                                        {{-- FIN RUBRO ESTATAL --}}
+
                                         <th scope="col" width="500">COMENTARIOS</th>
                                         <th scope="col" width="500">COMENTARIOS ENLACES DTA</th>
                                         <th scope="col" width="500">OBSERVACIONES AUTOMATICAS</th>
@@ -296,29 +490,31 @@
                                     @foreach ($var_cursos as $key => $datas)
                                         <tr class="text-center"
                                             {{-- style="background-color:{{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }} {{ ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) ? '' : '#808080' }}" --}}
-                                            {{-- $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' 
+                                            {{-- $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F'
                                                 :  --}}
-                                                {{-- $datas->inscritosEdad - $datas->tinscritos != 0 || $datas->inscritosEsc - $datas->tinscritos != 0 
+                                                {{-- $datas->inscritosEdad - $datas->tinscritos != 0 || $datas->inscritosEsc - $datas->tinscritos != 0
                                                 || $datas->acreditadosEsc - $datas->egresado != 0 || $datas->desertoresEsc - $datas->desertado != 0 --}}
-                                                {{-- {{ (($datas->imujer + $datas->ihombre) - $datas->tinscritos) != 0 
+                                                {{-- {{ (($datas->imujer + $datas->ihombre) - $datas->tinscritos) != 0
                                                     ? '#ff8282' : '' }} --}}
-                                            style="background-color: 
+                                            style="background-color:
                                                 {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? '#FCF55F' : '' }}
-                                                {{ (($datas->inscritosEdad - $datas->tinscritos) != 0 
-                                                    || ($datas->inscritosEsc - $datas->tinscritos) != 0 
-                                                    || ($datas->acreditadosEsc - $datas->egresado) != 0 
+                                                {{ (($datas->inscritosEdad - $datas->tinscritos) != 0
+                                                    || ($datas->inscritosEdadFederal - $datas->tinscritos) != 0
+                                                    || ($datas->inscritosEsc - $datas->tinscritos) != 0
+                                                    || ($datas->acreditadosEsc - $datas->egresado) != 0
                                                     || ($datas->desertoresEsc - $datas->desertado) != 0
                                                     || ($datas->sumaHM - $datas->tinscritos) != 0
                                                     || ($datas->sumaED - $datas->tinscritos) != 0
                                                     || ($datas->sumaEmDe - $datas->tinscritos) != 0
-                                                    || ($datas->sumaEgresados - $datas->egresado) != 0) 
+                                                    || ($datas->sumaEgresados - $datas->egresado) != 0)
                                                     ? '#ff8282' : '' }}">
                                             <td>{{ $key + 1 }}</td>
                                             <td>
                                                 {{-- @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad) --}}
-                                                @if ($datas->inscritosEdad - $datas->tinscritos == 0 
+                                                @if ($datas->inscritosEdad - $datas->tinscritos == 0
+                                                    && $datas->inscritosEdadFederal - $datas->tinscritos == 0
                                                     && $datas->inscritosEsc - $datas->tinscritos == 0
-                                                    && $datas->acreditadosEsc - $datas->egresado == 0 
+                                                    && $datas->acreditadosEsc - $datas->egresado == 0
                                                     && $datas->desertoresEsc - $datas->desertado == 0
                                                     && $datas->sumaHM - $datas->tinscritos == 0
                                                     && $datas->sumaED - $datas->tinscritos == 0
@@ -406,22 +602,29 @@
                                             <td>{{ $datas->cgeneral }}</td>
                                             <td>{{ $datas->sector }}</td>
                                             <td>{{ $datas->mpaqueteria }}</td>
-                                            <td>{{ $datas->iem1 }}</td>
-                                            <td>{{ $datas->ieh1 }}</td>
-                                            <td>{{ $datas->iem2 }}</td>
-                                            <td>{{ $datas->ieh2 }}</td>
-                                            <td>{{ $datas->iem3 }}</td>
-                                            <td>{{ $datas->ieh3 }}</td>
-                                            <td>{{ $datas->iem4 }}</td>
-                                            <td>{{ $datas->ieh4 }}</td>
-                                            <td>{{ $datas->iem5 }}</td>
-                                            <td>{{ $datas->ieh5 }}</td>
-                                            <td>{{ $datas->iem6 }}</td>
-                                            <td>{{ $datas->ieh6 }}</td>
-                                            <td>{{ $datas->iem7 }}</td>
-                                            <td>{{ $datas->ieh7 }}</td>
-                                            <td>{{ $datas->iem8 }}</td>
-                                            <td>{{ $datas->ieh8 }}</td>
+                                            @if ($datas->grupo != NULL)
+                                                <td>{{ $datas->grupo }}</td>
+                                            @else
+                                                <td>NINGUNO</td>
+                                            @endif
+                                            {{-- RUBRO FEDERAL --}}
+                                            <td>{{ $datas->iem1f }}</td>
+                                            <td>{{ $datas->ieh1f }}</td>
+                                            <td>{{ $datas->iem2f }}</td>
+                                            <td>{{ $datas->ieh2f }}</td>
+                                            <td>{{ $datas->iem3f }}</td>
+                                            <td>{{ $datas->ieh3f }}</td>
+                                            <td>{{ $datas->iem4f }}</td>
+                                            <td>{{ $datas->ieh4f }}</td>
+                                            <td>{{ $datas->iem5f }}</td>
+                                            <td>{{ $datas->ieh5f }}</td>
+                                            <td>{{ $datas->iem6f }}</td>
+                                            <td>{{ $datas->ieh6f }}</td>
+                                            <td>{{ $datas->iem7f }}</td>
+                                            <td>{{ $datas->ieh7f }}</td>
+                                            <td>{{ $datas->iem8f }}</td>
+                                            <td>{{ $datas->ieh8f }}</td>
+
                                             <td>{{ $datas->iesm1 }}</td>
                                             <td>{{ $datas->iesh1 }}</td>
                                             <td>{{ $datas->iesm2 }}</td>
@@ -440,6 +643,7 @@
                                             <td>{{ $datas->iesh8 }}</td>
                                             <td>{{ $datas->iesm9 }}</td>
                                             <td>{{ $datas->iesh9 }}</td>
+
                                             <td>{{ $datas->aesm1 }}</td>
                                             <td>{{ $datas->aesh1 }}</td>
                                             <td>{{ $datas->aesm2 }}</td>
@@ -458,6 +662,7 @@
                                             <td>{{ $datas->aesh8 }}</td>
                                             <td>{{ $datas->aesm9 }}</td>
                                             <td>{{ $datas->aesh9 }}</td>
+
                                             <td>{{ $datas->naesm1 }}</td>
                                             <td>{{ $datas->naesh1 }}</td>
                                             <td>{{ $datas->naesm2 }}</td>
@@ -480,6 +685,181 @@
                                                 <div style="width:800px; word-wrap: break-word">{{ $datas->tnota }}
                                                 </div>
                                             </td>
+                                            {{-- RUBRO ESTATAL --}}
+                                            <td>{{ $datas->tinscritos }}</td>
+                                            <td>{{ $datas->imujerest }}</td>
+                                            <td>{{ $datas->ihombreest }}</td>
+                                            <td>{{ $datas->ilgbt }}</td>
+                                            <td>{{ $datas->egresado }}</td>
+                                            <td>{{ $datas->emujer }}</td>
+                                            <td>{{ $datas->ehombre }}</td>
+                                            <td>{{ $datas->elgbt }}</td>
+                                            <td>{{ $datas->etmujerest }}</td>
+                                            <td>{{ $datas->ethombreest }}</td>
+                                            <td>{{ $datas->etlgbt }}</td>
+                                            <td>{{ $datas->epmujerest }}</td>
+                                            <td>{{ $datas->ephombreest }}</td>
+                                            <td>{{ $datas->eplgbt }}</td>
+
+                                            <td>{{ $datas->iem1 }}</td>
+                                            <td>{{ $datas->ieh1 }}</td>
+                                            <td>{{ $datas->iel1 }}</td>
+                                            <td>{{ $datas->iem2 }}</td>
+                                            <td>{{ $datas->ieh2 }}</td>
+                                            <td>{{ $datas->iel2 }}</td>
+                                            <td>{{ $datas->iem3 }}</td>
+                                            <td>{{ $datas->ieh3 }}</td>
+                                            <td>{{ $datas->iel3 }}</td>
+                                            <td>{{ $datas->iem4 }}</td>
+                                            <td>{{ $datas->ieh4 }}</td>
+                                            <td>{{ $datas->iel4 }}</td>
+
+                                            <td>{{ $datas->iesmest1 }}</td>
+                                            <td>{{ $datas->ieshest1 }}</td>
+                                            <td>{{ $datas->ieslest1 }}</td>
+                                            <td>{{ $datas->iesmest2 }}</td>
+                                            <td>{{ $datas->ieshest2 }}</td>
+                                            <td>{{ $datas->ieslest2 }}</td>
+                                            <td>{{ $datas->iesmest3 }}</td>
+                                            <td>{{ $datas->ieshest3 }}</td>
+                                            <td>{{ $datas->ieslest3 }}</td>
+                                            <td>{{ $datas->iesmest4 }}</td>
+                                            <td>{{ $datas->ieshest4 }}</td>
+                                            <td>{{ $datas->ieslest4 }}</td>
+                                            <td>{{ $datas->iesmest5 }}</td>
+                                            <td>{{ $datas->ieshest5 }}</td>
+                                            <td>{{ $datas->ieslest5 }}</td>
+                                            <td>{{ $datas->iesmest6 }}</td>
+                                            <td>{{ $datas->ieshest6 }}</td>
+                                            <td>{{ $datas->ieslest6 }}</td>
+                                            <td>{{ $datas->iesmest7 }}</td>
+                                            <td>{{ $datas->ieshest7 }}</td>
+                                            <td>{{ $datas->ieslest7 }}</td>
+                                            <td>{{ $datas->iesmest8 }}</td>
+                                            <td>{{ $datas->ieshest8 }}</td>
+                                            <td>{{ $datas->ieslest8 }}</td>
+                                            <td>{{ $datas->iesmest9 }}</td>
+                                            <td>{{ $datas->ieshest9 }}</td>
+                                            <td>{{ $datas->ieslest9 }}</td>
+
+                                            <td>{{ $datas->aesmest1 }}</td>
+                                            <td>{{ $datas->aeshest1 }}</td>
+                                            <td>{{ $datas->aeslest1 }}</td>
+                                            <td>{{ $datas->aesmest2 }}</td>
+                                            <td>{{ $datas->aeshest2 }}</td>
+                                            <td>{{ $datas->aeslest2 }}</td>
+                                            <td>{{ $datas->aesmest3 }}</td>
+                                            <td>{{ $datas->aeshest3 }}</td>
+                                            <td>{{ $datas->aeslest3 }}</td>
+                                            <td>{{ $datas->aesmest4 }}</td>
+                                            <td>{{ $datas->aeshest4 }}</td>
+                                            <td>{{ $datas->aeslest4 }}</td>
+                                            <td>{{ $datas->aesmest5 }}</td>
+                                            <td>{{ $datas->aeshest5 }}</td>
+                                            <td>{{ $datas->aeslest5 }}</td>
+                                            <td>{{ $datas->aesmest6 }}</td>
+                                            <td>{{ $datas->aeshest6 }}</td>
+                                            <td>{{ $datas->aeslest6 }}</td>
+                                            <td>{{ $datas->aesmest7 }}</td>
+                                            <td>{{ $datas->aeshest7 }}</td>
+                                            <td>{{ $datas->aeslest7 }}</td>
+                                            <td>{{ $datas->aesmest8 }}</td>
+                                            <td>{{ $datas->aeshest8 }}</td>
+                                            <td>{{ $datas->aeslest8 }}</td>
+                                            <td>{{ $datas->aesmest9 }}</td>
+                                            <td>{{ $datas->aeshest9 }}</td>
+                                            <td>{{ $datas->aeslest9 }}</td>
+
+                                            <td>{{ $datas->naesmest1 }}</td>
+                                            <td>{{ $datas->naeshest1 }}</td>
+                                            <td>{{ $datas->naeslest1 }}</td>
+                                            <td>{{ $datas->naesmest2 }}</td>
+                                            <td>{{ $datas->naeshest2 }}</td>
+                                            <td>{{ $datas->naeslest2 }}</td>
+                                            <td>{{ $datas->naesmest3 }}</td>
+                                            <td>{{ $datas->naeshest3 }}</td>
+                                            <td>{{ $datas->naeslest3 }}</td>
+                                            <td>{{ $datas->naesmest4 }}</td>
+                                            <td>{{ $datas->naeshest4 }}</td>
+                                            <td>{{ $datas->naeslest4 }}</td>
+                                            <td>{{ $datas->naesmest5 }}</td>
+                                            <td>{{ $datas->naeshest5 }}</td>
+                                            <td>{{ $datas->naeslest5 }}</td>
+                                            <td>{{ $datas->naesmest6 }}</td>
+                                            <td>{{ $datas->naeshest6 }}</td>
+                                            <td>{{ $datas->naeslest6 }}</td>
+                                            <td>{{ $datas->naesmest7 }}</td>
+                                            <td>{{ $datas->naeshest7 }}</td>
+                                            <td>{{ $datas->naeslest7 }}</td>
+                                            <td>{{ $datas->naesmest8 }}</td>
+                                            <td>{{ $datas->naeshest8 }}</td>
+                                            <td>{{ $datas->naeslest8 }}</td>
+                                            <td>{{ $datas->naesmest9 }}</td>
+                                            <td>{{ $datas->naeshest9 }}</td>
+                                            <td>{{ $datas->naeslest9 }}</td>
+
+                                            <td>{{ $datas->gv1m }}</td>
+                                            <td>{{ $datas->gv1h }}</td>
+                                            <td>{{ $datas->gv1l }}</td>
+                                            <td>{{ $datas->gv2m }}</td>
+                                            <td>{{ $datas->gv2h }}</td>
+                                            <td>{{ $datas->gv2l }}</td>
+                                            <td>{{ $datas->gv3m }}</td>
+                                            <td>{{ $datas->gv3h }}</td>
+                                            <td>{{ $datas->gv3l }}</td>
+                                            <td>{{ $datas->gv4m }}</td>
+                                            <td>{{ $datas->gv4h }}</td>
+                                            <td>{{ $datas->gv4l }}</td>
+                                            <td>{{ $datas->gv5m }}</td>
+                                            <td>{{ $datas->gv5h }}</td>
+                                            <td>{{ $datas->gv5l }}</td>
+                                            <td>{{ $datas->gv6m }}</td>
+                                            <td>{{ $datas->gv6h }}</td>
+                                            <td>{{ $datas->gv6l }}</td>
+                                            <td>{{ $datas->gv7m }}</td>
+                                            <td>{{ $datas->gv7h }}</td>
+                                            <td>{{ $datas->gv7l }}</td>
+                                            <td>{{ $datas->gv8m }}</td>
+                                            <td>{{ $datas->gv8h }}</td>
+                                            <td>{{ $datas->gv8l }}</td>
+                                            <td>{{ $datas->gv9m }}</td>
+                                            <td>{{ $datas->gv9h }}</td>
+                                            <td>{{ $datas->gv9l }}</td>
+                                            <td>{{ $datas->gv11m }}</td>
+                                            <td>{{ $datas->gv11h }}</td>
+                                            <td>{{ $datas->gv11l }}</td>
+                                            <td>{{ $datas->gv12m }}</td>
+                                            <td>{{ $datas->gv12h }}</td>
+                                            <td>{{ $datas->gv12l }}</td>
+                                            <td>{{ $datas->gv13m }}</td>
+                                            <td>{{ $datas->gv13h }}</td>
+                                            <td>{{ $datas->gv13l }}</td>
+                                            <td>{{ $datas->gv15m }}</td>
+                                            <td>{{ $datas->gv15h }}</td>
+                                            <td>{{ $datas->gv15l }}</td>
+                                            <td>{{ $datas->gv16m }}</td>
+                                            <td>{{ $datas->gv16h }}</td>
+                                            <td>{{ $datas->gv16l }}</td>
+                                            <td>{{ $datas->gv17m }}</td>
+                                            <td>{{ $datas->gv17h }}</td>
+                                            <td>{{ $datas->gv17l }}</td>
+                                            <td>{{ $datas->gv18m }}</td>
+                                            <td>{{ $datas->gv18h }}</td>
+                                            <td>{{ $datas->gv18l }}</td>
+                                            <td>{{ $datas->gv19m }}</td>
+                                            <td>{{ $datas->gv19h }}</td>
+                                            <td>{{ $datas->gv19l }}</td>
+                                            <td>{{ $datas->gv20m }}</td>
+                                            <td>{{ $datas->gv20h }}</td>
+                                            <td>{{ $datas->gv20l }}</td>
+                                            <td>{{ $datas->gv21m }}</td>
+                                            <td>{{ $datas->gv21h }}</td>
+                                            <td>{{ $datas->gv21l }}</td>
+                                            <td>{{ $datas->gv22m }}</td>
+                                            <td>{{ $datas->gv22h }}</td>
+                                            <td>{{ $datas->gv22l }}</td>
+                                            {{-- FIN RURBO ESTATAL --}}
+
                                             <td>
                                                 {{-- @if ($datas->masculinocheck == $datas->ihombre and $datas->femeninocheck == $datas->imujer) --}}
                                                     <textarea name="comentarios_unidad[]"
@@ -494,14 +874,15 @@
                                             </td>
                                             <td class="text-white">
                                                 <div style="width:600px; word-wrap: break-word" align="justify">
-                                                    {!! ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO ESTATAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->inscritosEdadFederal - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO FEDERAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->inscritosEsc - $datas->tinscritos) != 0 ? '* LA SUMATORIA DE INSCRITOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
-                                                    {!! ($datas->acreditadosEsc - $datas->egresado) != 0 ? '* LA SUMATORIA DE ACREDITADOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!} 
+                                                    {!! ($datas->acreditadosEsc - $datas->egresado) != 0 ? '* LA SUMATORIA DE ACREDITADOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
                                                     {!! ($datas->desertoresEsc - $datas->desertado) != 0 ? '* LA SUMATORIA DE DESERTORES POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE DESERCIÓN <br>' : '' !!}
-                                                    {!! ($datas->sumaHM - $datas->tinscritos) != 0 ? '* LA SUMA  DE HOMBRES Y MUJERES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
+                                                    {!! ($datas->sumaHM - $datas->tinscritos) != 0 ? '* LA SUMA  DE HOMBRES, MUJERES y LGBTTTI+ NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaED - $datas->tinscritos) != 0 ? '* LA SUMA  DE EGRESADOS Y DESERTORES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEmDe - $datas->tinscritos) != 0 ? '* LA SUMA  DE EMPLEADOS Y DESEMPLEADOS NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
-                                                    {!! ($datas->sumaEgresados - $datas->egresado) != 0 ? '* LA SUMA  DE EGRESADOS FEMENINOS Y MASCULINOS NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
+                                                    {!! ($datas->sumaEgresados - $datas->egresado) != 0 ? '* LA SUMA  DE EGRESADOS FEMENINOS, MASCULINOS Y LGBTTTI+ NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
                                                 </div>
                                             </td>
                                         </tr>
@@ -633,7 +1014,7 @@
                     // }
                 });
             });
-            // 
+            //
 
             $('#send_to_dta').click(function() {
                 $('#formSendDta').validate({
@@ -688,7 +1069,7 @@
                     //                 $( ".alert" ).addClass("alert-success");
                     //                 $(".alert").append("<b>CURSOS ENVIADOS A DIRECCIÓN TÉCNICA ACADÉMICA PARA VALIDACIÓN</b>" );
                     //                 // redireccionar después de 5 segundos
-                    //                 setTimeout(function(){ 
+                    //                 setTimeout(function(){
                     //                     window.location.href = "{{ route('vista_formatot') }}";
                     //                  }, 3000);
                     //             }

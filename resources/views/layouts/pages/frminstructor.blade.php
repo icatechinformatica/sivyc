@@ -3,6 +3,11 @@
 @section('title', 'Registro de Instructor | Sivyc Icatech')
 @section('content')
     <section class="container g-py-40 g-pt-40 g-pb-0">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                {{ $errors->first() }}
+            </div>
+        @endif
         <form action="{{ url('/instructor/guardar') }}" method="post" id="reginstructor" enctype="multipart/form-data">
             @csrf
             <div class="text-center">

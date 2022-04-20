@@ -4,17 +4,24 @@
     });
      $("#unidad" ).change(function(){
         cmb_curso();
-    });  
+    }); 
+    $("#modalidad" ).change(function(){
+        cmb_curso();
+    });
+    $("#id_municipio" ).change(function(){
+        cmb_loc();
+    }); 
       
     function cmb_curso(){ 
         var tipo =$('#tipo').val();
-        var unidad =$('#unidad').val(); 
+        var unidad =$('#unidad').val();
+        var modalidad =$('#modalidad').val(); 
         $("#id_curso").empty();                            
-        if(tipo && unidad){
+        if(tipo && unidad && modalidad){
             $.ajax({
                 type: "GET",
                 url: "grupo/cmbcursos",
-                data:{tipo:tipo,unidad:unidad, _token:"{{csrf_token()}}"},
+                data:{tipo:tipo,unidad:unidad,modalidad:modalidad, _token:"{{csrf_token()}}"},
                 contentType: "application/json",              
                 dataType: "json",
                 success: function (data) {// console.log(data); 
@@ -28,6 +35,26 @@
                         
     };
  
+    function cmb_loc(){ 
+        var tipo =$('#id_municipio').val();
+        $("#localidad").empty();                            
+        if(tipo && unidad){
+            $.ajax({
+                type: "GET",
+                url: "municipio",
+                data:{estado_id:tipo, _token:"{{csrf_token()}}"},
+                contentType: "application/json",              
+                dataType: "json",
+                success: function (data) {// console.log(data); 
+                    $.each(data, function () {                                    
+                        //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');                                    
+                        $("#localidad").append('<option value="'+this['clave']+'">'+this['localidad']+'</option>');
+                    });
+                }
+            });                        
+        }
+                        
+    };
 
     if( $('#cerss_ok').is(':checked')){
             $('#cerss').prop('disabled', false);
@@ -53,6 +80,17 @@
             $( ".cerss" ).hide();                     
         }                
     });
+
+    $("#vulnerable_ok").click(function(){
+        if( $('#vulnerable_ok').prop('checked') ){
+            $('#grupo_vulnerable').prop('disabled', false);  
+        }else {
+            $('#grupo_vulnerable').prop('disabled', 'disabled');                     
+        }                
+    });
+    if( $('#vulnerable_ok').is(':checked')){
+        $('#grupo_vulnerable').prop('disabled', false); 
+    }
    
   }); 
    
@@ -91,5 +129,73 @@
                         
         return true; 
     }
+
+    $('#frm').validate({
+        rules:{
+            tipo:{
+                required: true
+            },
+            unidad:{
+                required: true
+            },
+            id_municipio:{
+                required: true
+            },
+            localidad:{
+                required: true
+            },
+            id_curso:{
+                required: true
+            },
+            inicio:{
+                required: true
+            },
+            termino:{
+                required: true
+            },
+            hini:{
+                required: true
+            },
+            hfin:{
+                required: true
+            },
+            dependencia:{
+                required: true
+            }
+
+        },
+        messages:{
+            tipo:{
+                required: 'Seleccione una opción'
+            },
+            unidad:{
+                required: 'Seleccione una opción'
+            },
+            id_municipio:{
+                required: 'Seleccione una opción'
+            },
+            localidad:{
+                required: 'Seleccione una opción'
+            },
+            id_curso:{
+                required: 'Seleccione una opción'
+            },
+            inicio:{
+                required: 'Agregue una fecha'
+            },
+            termino:{
+                required: 'Agregue una fecha'
+            },
+            hini:{
+                required: 'Agregue un horario'
+            },
+            hfin:{
+                required: 'Agregue un horario'
+            },
+            dependencia:{
+                required: 'Seleccione una opción'
+            }
+        }
+    });
     
     

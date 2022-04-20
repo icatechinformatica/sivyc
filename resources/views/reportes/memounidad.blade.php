@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>FORMATO T</title>
-    <style>      
+    <style>
         body{font-family: sans-serif}
         @page {margin: 20px 50px 120px 50px;size: letter;}
         header { position: fixed; left: 0px; top: 30px; right: 0px;text-align: center;width:100%;line-height: 30px;}
@@ -14,22 +14,22 @@
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 200px;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
-        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;} 
-        .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}     
+        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;}
+        .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
-        .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}     
+        .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
         footer { position:fixed;left:0px;bottom:0px;height:0px;width:100%;}
-        footer .page:after { content: counter(page, sans-serif);}   
-        .contenedor {  
+        footer .page:after { content: counter(page, sans-serif);}
+        .contenedor {
         position:RELATIVE;
-        top:120px;  
-        width:100%;   
+        top:120px;
+        width:100%;
         margin:auto;
-        
+
         /* Propiedad que ha sido agreda*/
-        
-        }  
+
+        }
     }
     </style>
 </head>
@@ -40,9 +40,9 @@
             <br>
             <h6>{{$leyenda}}</h6>
     </header>
-    <footer>  
+    <footer>
         <script type="text/php">
-            if (isset($pdf)) 
+            if (isset($pdf))
             {
                 $x = 275;
                 $y = 725;
@@ -60,7 +60,7 @@
                 <tr>
                     <td colspan="4" style="color:white;"><b>Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma</b></td>
                     {{-- <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td> --}}
-                </tr> 
+                </tr>
                 <tr>
                     <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, Chiapas; Telefono (961)6121621 Ext.601 C.P.29030</b></td>
                     {{-- <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td> --}}
@@ -69,13 +69,13 @@
                     <td colspan="4" style="color:white;"><b>Email: dtecnicaacademica@gmail.com</b></td>
                 </tr>
         </table>
-               
+
         <img class="derecha" src='img/icatech-imagen.png'>
     </footer>
     <div class= "contenedor">
         <div align=right style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></div>
-        <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $nume_memo }}</b></div>                        
-        <div align=right style="font-size:11px;"><b>TUXTLA GUTIERREZ, CHIAPAS; {{ $fecha_nueva }}</b></div>                        
+        <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $nume_memo }}</b></div>
+        <div align=right style="font-size:11px;"><b>TUXTLA GUTIERREZ, CHIAPAS; {{ $fecha_nueva }}</b></div>
         <br><br>
         <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}</b></div>
         <div align=left style="font-size:11px;"><b>PRESENTE.</b></div>
@@ -85,7 +85,7 @@
             @endphp
             <div class="table-responsive-sm">
                 <div align="justify" style="font-size:11px;">
-                    En seguimiento a la integración del Formato T del mes de {{$mesReportado2}} del presente 
+                    En seguimiento a la integración del Formato T del mes de {{$mesReportado2}} del presente
                     año de su Unidad de Capacitación, recibido el pasado {{$diaArray[0]}} de {{$mesReportado2}} al correo electronico
                     @switch($reg_unidad->ubicacion)
                         @case('REFORMA')
@@ -122,7 +122,7 @@
                             informesestadisticos.cert2@gmail.com
                             @break
                         @default
-                            
+
                     @endswitch
                     , le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                     RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
@@ -132,33 +132,33 @@
                 </div>
                 <br>
                 <table class="tablas">
-                    <thead>                       
-                        <tr>      	  
-                            <th>No.</th>     
-                            <th>MES</th>     
-                            <th>UNIDAD/ACCION MOVIL</th>               
-                            <th>ESPECIALIDAD</th>                                   
-                            <th>CURSO</th>  
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>MES</th>
+                            <th>UNIDAD/ACCION MOVIL</th>
+                            <th>ESPECIALIDAD</th>
+                            <th>CURSO</th>
                             <th>CLAVE</th>
                             <th>OBSERVACIONES</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($reg_cursos as $index => $a)
-                        <tr>                           	  
-                            <th>{{ $num }}</th>     
-                            <th>{{ $a->mes }}</th>               
-                            <th>{{ $a->unidad }}</th>                                   
-                            <th>{{ $a->espe }}</th>  
+                        <tr>
+                            <th>{{ $num }}</th>
+                            <th>{{ $a->mes }}</th>
+                            <th>{{ $a->unidad }}</th>
+                            <th>{{ $a->espe }}</th>
                             <th>{{ $a->curso }}</th>
                             <th>{{ $a->clave }}</th>
                             <th>{{ json_decode($a->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}</th>
                         </tr>
-                            @php 
+                            @php
                                 $num=$num+1;
                             @endphp
                         @endforeach
-                    </tbody>                                               
+                    </tbody>
                 </table>
                 <br>
                 <div align="justify" style="font-size:11px;">
@@ -171,8 +171,8 @@
                 <br><br>
                 <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
                 <br><br><br>
-                <div style="font-size:11px;"> <b>DR. ERICH ARMANDO CRUZ CASTELLANOS</b> </div>
-                <div style="font-size:11px;"> <b>DIRECTOR DE TÉCNICA ACADÉMICA</b> </div>
+                <div style="font-size:11px;"> <b>{{ $reg_unidad->dacademico }}</b> </div>
+                <div style="font-size:11px;"> <b>{{ $reg_unidad->pdacademico }}</b> </div>
                 <br><br><br>
                 <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div>
                 <div style="font-size:9px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
