@@ -26,7 +26,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $data = [];
+        $data = []; //prueba
         if($request->mes||$request->ejercicio){
             $mes = $request->mes;
             $anio = $request->ejercicio;
