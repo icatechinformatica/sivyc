@@ -36,6 +36,15 @@
                         </div>
                     </div>
                 @endif
+                @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
+                <div class="form-group col-md-3">
+                    @if ($opt== "ARC01")
+                    {{ Form::button('ARC 01 BORRADOR', ['id'=>'arc','class' => 'btn mt-1']) }}
+                    @else
+                    {{ Form::button('ARC 02 BORRADOR', ['id'=>'arc','class' => 'btn mt-1']) }}
+                    @endif
+                </div>
+                @endif
             @endif
         </div>
         @if ($message)
@@ -112,6 +121,13 @@
 
 
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitudes.aperturas')}}"); $('#frm').attr('target', '_self').submit();});
+                $("#arc" ).click(function(){
+                    if($("#opt" ).val() == "ARC01"){
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.barc')}}"); $('#frm').attr('target', '_blank').submit();
+                    }else if($("#opt" ).val() == "ARC02"){
+                        $('#frm').attr('action', "{{route('solicitudes.aperturas.barc')}}"); $('#frm').attr('target', '_blank').submit();
+                    } 
+                });
                 $("#aceptar" ).click(function(){// alert($("#movimiento").val());
                     if(confirm("Esta seguro de ejecutar la acción?")==true){
                         switch($("#movimiento").val()){
@@ -148,7 +164,23 @@
                 $("#generar" ).click(function(){                   
                     $('#frm').attr('action', "{{route('solicitudes.generar.autoriza')}}"); $('#frm').attr('target', '_blank').submit();                   
                 });
-                
+                $("#aceptar_preliminar" ).click(function(){// alert($("#movimiento").val());
+                    if(confirm("Esta seguro de ejecutar la acción?")==true){
+                        switch($("#pmovimiento").val()){
+                            case "RETORNADO":
+                                    $('#frm').attr('action', "{{route('solicitudes.aperturas.pretornar')}}");
+                                    $('#frm').attr('target', '_self').submit();
+                            break; 
+                            case "VALIDADO":
+                                    $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
+                                    $('#frm').attr('target', '_self').submit();
+                            break; 
+                            default:
+                                alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
+                            break;                   
+                        }
+                    }
+                });
             });        
         </script>
     @endsection 

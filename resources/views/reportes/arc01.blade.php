@@ -27,10 +27,32 @@
         .tablag { border-collapse: collapse; width: 100%;}     
         .tablag tr td{ font-size: 8px; padding: 0px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+        #watermark {
+            position: fixed;
+
+            /** 
+                Establece una posición en la página para tu imagen
+                Esto debería centrarlo verticalmente
+            **/
+            bottom:   .1cm;
+            left:     .1cm;
+
+            /** Cambiar las dimensiones de la imagen **/
+            width:    26cm;
+            height:   20cm;
+
+            /** Tu marca de agua debe estar detrás de cada contenido **/
+            z-index:  -1000;
+        }
     </style>
 </head>
 <body>
     <div class= "container g-pt-30">
+        @if ($marca)
+        <div id="watermark">
+            <img src="ocw_logo.png" height="100%" width="100%" />
+        </div>  
+        @endif
         <div id="content">
             <img class="izquierda" src='img/logohorizontalica1.png'>
             <img class="derecha" src='img/chiapas.png'>
@@ -156,6 +178,7 @@
                         <td colspan="4"><b>9. MAESTRIA (TITULO Y/O CEDULA) 10. DOCTORADO (PASANTE) 11. DOCTORADO(TITULO Y/O CEDULA) </b></td>
                     </tr>
                 </table><br><br><br><br>
+                @if (!$marca)
                 <table class="tablaf">
                     <thead>
                         <th>
@@ -183,6 +206,7 @@
                     <tbody></tbody>
                     <tfoot></tfoot>
                 </table>
+                @endif
             </div> 
         </div>
     </div>
