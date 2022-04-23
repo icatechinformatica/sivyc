@@ -477,8 +477,8 @@ Route::middleware(['auth'])->group(function () {
 
     /*Solicitudes(DTA) RPN*/
     /*Asignación de Clave de Aperturas*/
-    Route::post('/solicitudes/aperturas/validar_preliminar', 'Solicitudes\aperturasController@validar_preliminar')->name('solicitudes.aperturas.pvalidar')->middleware('can:solicitudes.aperturas.pvalidar');
-    Route::post('/solicitudes/aperturas/retornar_preliminar', 'Solicitudes\aperturasController@retornar_preliminar')->name('solicitudes.aperturas.pretornar')->middleware('can:solicitudes.aperturas.pretornar');
+    Route::post('/solicitudes/aperturas/validar_preliminar', 'Solicitudes\aperturasController@validar_preliminar')->name('solicitudes.aperturas.pvalidar');
+    Route::post('/solicitudes/aperturas/retornar_preliminar', 'Solicitudes\aperturasController@retornar_preliminar')->name('solicitudes.aperturas.pretornar');
     Route::post('/solicitudes/aperturas/arc', 'Solicitudes\aperturasController@barc')->name('solicitudes.aperturas.barc');
 
     Route::get('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
@@ -581,7 +581,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/solicitud/apertura/turnar', 'Solicitud\turnarAperturaController@index')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
     Route::post('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
     Route::get('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
-    Route::post('/solicitud/apertura/preliminar', 'Solicitud\turnarAperturaController@preliminar')->name('solicitud.apertura.preliminar')->middleware('can:solicitud.apertura.preliminar');
+    Route::post('/solicitud/apertura/preliminar', 'Solicitud\turnarAperturaController@preliminar')->name('solicitud.apertura.preliminar');
     Route::post('/solicitud/apertura/cmemo', 'Solicitud\turnarAperturaController@cambiar_memorandum')->name('solicitud.apertura.cmemo');
 
     Route::post('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->name('solicitud.apertura.modificar')->middleware('can:solicitud.apertura.modificar');
