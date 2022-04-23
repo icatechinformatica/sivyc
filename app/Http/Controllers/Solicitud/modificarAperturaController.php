@@ -66,9 +66,11 @@ class modificarAperturaController extends Controller
             $id_curso = $_SESSION['id_curso'];
             $result = tbl_curso::where('id',$id_curso)->update(
                 ['nmunidad' => strtoupper($request->nmunidad),
+                'num_revision_arc02' => strtoupper($request->nmunidad),
                 'opcion' => $request->opcion,
                 'motivo' => $request->opcion,
-                'arc' => '02',                               
+                'arc' => '02',  
+                'status_solicitud_arc02' => null,                             
                 'observaciones' => strtoupper($request->observaciones)
                 ]
             );
@@ -83,9 +85,11 @@ class modificarAperturaController extends Controller
             $id_curso = $_SESSION['id_curso'];
             $result = tbl_curso::where('id',$id_curso)->where('arc','02')->update(
                 ['nmunidad' => 0,
+                'num_revision_arc02' => null,
                 'opcion' => 'NINGUNO',
                 'arc' => '01',                
-                'status_curso' => 'AUTORIZADO',                
+                'status_curso' => 'AUTORIZADO',    
+                'status_solicitud_arc02' => null,            
                 'observaciones' => 'NINGUNO'                
                 ]
             );

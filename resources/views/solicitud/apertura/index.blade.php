@@ -281,7 +281,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        @if ($grupo->turnado != 'DTA')
+                        @if ($grupo->turnado != 'DTA' AND (!$grupo->status_solicitud OR $grupo->status_solicitud=='RETORNO'))
                         <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
                         {{--<button id="btnModificar" class="btn btn-warning">Modificar</button>--}}
                         <button id="btnBorrar" class="btn btn-danger">Borrar</button>
