@@ -517,7 +517,14 @@
                         $("#msgVolumen").html("Todos los campos son requeridos");
                         $(".toast").toast("show");
                 } else {
+                    if ($('#txtHora').val() < $('#txtHoraTermino').val()){
                         EnviarInformacion("", objEvento, 'insert');
+                    }else{
+                        $('#titleToast').html('Hora incorrecta');
+                        $("#msgVolumen").html("La hora de inicio debe ser menor a la hora de termino");
+                        $(".toast").toast("show");
+                    }
+                        
                 }
             });
             function recolectarDatos(method) {

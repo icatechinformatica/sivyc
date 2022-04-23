@@ -526,7 +526,7 @@ class ContratoController extends Controller
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
         $datac = $X::where('id_folios', '=', $id)->first();
-        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
+        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor','tipo_curso')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
                                       'instructores.no_cuenta','instructores.interbancaria')
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
@@ -552,10 +552,13 @@ class ContratoController extends Controller
         // guardamos en la base de datos
         $pago->arch_asistencia = trim($urldocs);
 
-        $file = $request->file('arch_evidencia'); # obtenemos el archivo
-        $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
-        // guardamos en la base de datos
-        $pago->arch_evidencia = trim($urldocs);
+        if ($request->arch_evidencia != NULL)
+        {
+            $file = $request->file('arch_evidencia'); # obtenemos el archivo
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
+            // guardamos en la base de datos
+            $pago->arch_evidencia = trim($urldocs);
+        }
         $pago->fecha_status = carbon::now();
         $pago->save();
 
@@ -612,7 +615,7 @@ class ContratoController extends Controller
         $X = new contratos();
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
-        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
+        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor','tipo_curso')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $datac = $X::where('id_folios', '=', $id)->first();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
                                       'instructores.no_cuenta','instructores.interbancaria')

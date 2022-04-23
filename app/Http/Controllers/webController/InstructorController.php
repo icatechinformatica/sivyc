@@ -1228,14 +1228,15 @@ class InstructorController extends Controller
                 DB::raw("array(select memorandum_validacion from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
+                DB::raw("CASE WHEN instructores.estado = true THEN 'ACTIVO' ELSE 'INACTIVO' END"),
                 DB::raw("array(select observacion from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
-                ->WHERE('instructores.estado', '=', TRUE)
-                ->whereRaw("array(select especialidades.nombre from especialidad_instructores
-                LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
-                LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
-                where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
+                // ->WHERE('instructores.estado', '=', TRUE)
+                // ->whereRaw("array(select especialidades.nombre from especialidad_instructores
+                // LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+                // LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
+                // where especialidad_instructores.perfilprof_id = ip.id) != '{}'")
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
@@ -1243,7 +1244,7 @@ class InstructorController extends Controller
         $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
                     'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','SEXO','ESTADO_CIVIL',
-                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION','ACTIVO/INACTIVO',
                     'OBSERVACION'];
 
         $nombreLayout = "Catalogo de instructores.xlsx";
