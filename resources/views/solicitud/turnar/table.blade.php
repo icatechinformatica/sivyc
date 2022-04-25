@@ -138,9 +138,7 @@
 <div class="form-row col-md-12 mt-4">
     @if ($activar)
         <div class=" form-group col-md-2">
-            @if($pdf_curso)  
-                <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>
-            @endif
+            
         </div>
         @if ((($opt=='ARC01')&&($grupos[0]->status_solicitud!='VALIDADO')) OR ($opt=='ARC02' && ($grupos[0]->status_solicitud_arc02 !='VALIDADO')) )
             <div class="form-group col-md-4"></div>
@@ -178,5 +176,8 @@
             @elseif($g->option =='ARC02') {{$nmunidad}} @endif
             .PDF
         </a> 
+    @endif
+    @if($pdf_curso)  
+        <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a>
     @endif
 </div>
