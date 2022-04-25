@@ -292,7 +292,6 @@ class grupoController extends Controller
                 }
                 Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
             }
-
             if ($request->cerss) $cerrs = true;
             else $cerrs = NULL;
             $horario= $request->hini.' A '.$request->hfin;

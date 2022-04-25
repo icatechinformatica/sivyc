@@ -74,7 +74,7 @@ class aperturaController extends Controller
             $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
                 'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','ar.mod','ar.horario','c.horas as dura','c.costo as costo_individual','c.id_especialidad','ar.comprobante_pago',
                 DB::raw("SUM(CASE WHEN substring(ap.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ap.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
-                'tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),'ar.id_muni','ar.clave_localidad','ar.organismo_publico','ar.id_organismo',
+                'tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),'ar.id_muni','ar.clave_localidad','ar.organismo_publico','ar.id_organismo','tc.status_solicitud',
                 'tc.id_municipio','tc.status_curso','tc.plantel', 'tc.dia', 'tdias', 'id_vulnerable', 'ar.turnado','tc.instructor_mespecialidad',
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
                 'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','c.rango_criterio_pago_maximo as cp')
@@ -154,7 +154,6 @@ class aperturaController extends Controller
                 $medio_virtual = $this->medio_virtual();
 
                 $tcurso = $this->tcurso();
-
                 //var_dump($instructor);exit;
                 if($grupo->clave !='0') $message = "Clave de Apertura Asignada";
                 elseif($grupo->status_curso) $message = "Estatus: ". $grupo->status_curso;
@@ -208,7 +207,7 @@ class aperturaController extends Controller
                     ->withInput();
         }else
         */
-
+        
         if($_SESSION['folio'] AND $_SESSION['grupo'] AND $_SESSION['alumnos']){
                 $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
                 $horas = round((strtotime($request->hfin)-strtotime($request->hini))/3600,2);
@@ -236,14 +235,14 @@ class aperturaController extends Controller
                         ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
                         ->first();
                    // var_dump($instructor);exit;
-
+                    
                     if($instructor){
                         //VALIDANDO INSTRUCTOR
                        $existe_instructor = DB::table('tbl_cursos')->where('folio_grupo','<>',$_SESSION['folio'])->where('curp', $instructor->curp)
                             ->where('inicio',$request->inicio)->where('termino',$request->termino)->where('hini',$hini)->where('hfin',$hfin)
                             ->where('dia', trim($request->dia))->where('status_curso','<>','CANCELADO')
                             ->exists();
-
+                            
                         if(!$existe_instructor){
                             /** CRITERIO DE PAGO */
                             if($instructor->cp > $grupo->cp)$cp = $grupo->cp;
@@ -401,7 +400,8 @@ class aperturaController extends Controller
                                 'created_at'=>$created_at,
                                 'updated_at'=>$updated_at,
                                 'instructor_tipo_identificacion'=>$instructor->tipo_identificacion,
-                                'instructor_folio_identificacion'=>$instructor->folio_ine
+                                'instructor_folio_identificacion'=>$instructor->folio_ine,
+                                'num_revision' => $request->munidad
                             ]
                         );
                         $agenda = DB::table('agenda')->where('id_curso',$_SESSION['folio'])->update(['id_instructor' => $instructor->id]);

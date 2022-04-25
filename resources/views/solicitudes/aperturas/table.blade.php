@@ -9,6 +9,11 @@
                     <th scope="col" class="text-center" >VER</th>
                 @endif
                 <th scope="col" class="text-center">ID</th> 
+                @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
+                    <th scope="col" class="text-center">OBSERVACIONES PRELIMINAR</th>
+                @elseif ($extemporaneo)
+                    <th scope="col" class="text-center" colspan="2">MOTIVO EXTEMPORANEO</th>
+                @endif
                 <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <th scope="col" class="text-center">GRUPO</th>
@@ -52,7 +57,7 @@
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
                     $status_curso = $grupos[0]->status_curso; 
-                    $pdf_curso = $grupos[0]->pdf_curso;             
+                    $pdf_curso = $grupos[0]->pdf_curso;           
                 ?>
                 @foreach($grupos as $g)
                     <?php 
@@ -65,9 +70,13 @@
                     switch($opt){
                         case "ARC01":
                             if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                            $mextemporaneo = $g->mextemporaneo;
+                            $rextemporaneo = $g->rextemporaneo;
                         break;
                         case "ARC02":
-                            if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD') $activar=false;
+                            if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD' OR $status_solicitud<>'VALIDADO') $activar=false;
+                            $mextemporaneo = $g->mextemporaneo_arc02;
+                            $rextemporaneo = $g->rextemporaneo_arc02;
                         break;
                     }
                     ?>
@@ -85,6 +94,14 @@
                             </td>
                         @endif
                         <td class="text-center"> {{ $g->id }}</td>
+                        @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
+                            <td> 
+                                <div style="width: 400px;">{{ Form::textarea('prespuesta['.$g->id.']', $g->obspreliminar, ['id' => 'prespuesta['.$g->id.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'3']) }}</div>
+                            </td>
+                        @elseif($extemporaneo)
+                            <td class="text-center">{{$mextemporaneo }}</td>
+                            <td class="text-center">{{$rextemporaneo}}</td>
+                        @endif
                         <td class="text-center"> {{$g->fecha_arc01}}</td>
                         <td class="text-center">
                             @if($g->clave=='0')
@@ -174,12 +191,21 @@
         <div class="form-group col-md-1 "> 
             {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-3']) }} 
         </div>
-    @endif
+    @elseif ($status_solicitud == 'TURNADO')
+        <div class="form-group col-md-3">
+            <label>MOVIMIENTO:</label>
+            {!! Form::select('pmovimiento',['' => '- SELECCIONAR -', 'RETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'], '', ['id'=>'pmovimiento','class' => 'form-control' ]) !!}
+        </div>
+        <div class="form-group col-md-1">
+            <br>
+            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar_preliminar','class' => 'btn  bg-danger mx-3']) }} 
+        </div>
+    @endif 
 
     @if($pdf_curso AND $activar == false)
         <div class="form-group col-md-8"></div> 
         <div class="form-group col-md-4"> 
-            <a href="{{$pdf_curso}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a> 
+            <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a> 
         </div>  
     @endif
 </div>
