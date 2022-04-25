@@ -47,7 +47,7 @@
         @endif
         @if ($marca)
         <div id="watermark">
-            <img src="ocw_logo.png" height="100%" width="100%" />
+            <img src="img/marcadeagua.png" height="100%" width="100%" />
         </div>  
         @endif
         <div>
