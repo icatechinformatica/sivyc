@@ -105,6 +105,7 @@ class grupoController extends Controller
                 $cursos = DB::table('cursos')
                     ->where('tipo_curso', $tipo)
                     ->where('cursos.estado', true)
+                    ->where('modalidad',$alumnos[0]->mod)
                     ->whereJsonContains('unidades_disponible', [$unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $_SESSION['folio_grupo'];
