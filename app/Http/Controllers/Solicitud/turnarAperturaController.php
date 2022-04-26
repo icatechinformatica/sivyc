@@ -405,7 +405,7 @@ class turnarAperturaController extends Controller
 
         if($ext == "pdf"){
             $name = trim($name.".pdf");
-            $path = "/UNIDAD/arc01/revision/".$name;
+            $path = "/UNIDAD/revision_arc01/".$name;
             Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
             //echo $url = Storage::disk('custom_folder_1')->url($path); exit;
             $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
