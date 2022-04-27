@@ -95,6 +95,7 @@ class grupoController extends Controller
                 }
                 $id_curso = $alumnos[0]->id_curso;
                 $tipo = $alumnos[0]->tipo_curso;
+                $mod = $alumnos[0]->mod;
                 if($alumnos[0]->comprobante_pago)$comprobante = $this->path_files.$alumnos[0]->comprobante_pago;
                 if ($alumnos[0]->turnado == 'VINCULACION' and isset($this->data['cct_unidad'])) $this->activar = true;
                 else $this->activar = false;
@@ -105,7 +106,7 @@ class grupoController extends Controller
                 $cursos = DB::table('cursos')
                     ->where('tipo_curso', $tipo)
                     ->where('cursos.estado', true)
-                    ->where('modalidad',$alumnos[0]->mod)
+                    ->where('modalidad','like',"%$mod%")
                     ->whereJsonContains('unidades_disponible', [$unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $_SESSION['folio_grupo'];
