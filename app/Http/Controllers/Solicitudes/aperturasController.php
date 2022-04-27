@@ -476,9 +476,9 @@ class aperturasController extends Controller
                 if(count($reg_cursos)>0){   
                     $fecha_memo=null;
                     $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
-                    $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');
-                    if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);                            
-                    $reg_unidad = $reg_unidad->first();            
+                    $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion')
+                                                        ->where('unidad',$reg_cursos[0]->unidad)
+                                                        ->first();     
                     
                     $pdf = PDF::loadView('reportes.arc01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca'));
                     $pdf->setpaper('letter','landscape');
@@ -499,9 +499,9 @@ class aperturasController extends Controller
                     $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
                 // var_dump($instituto);exit;
 
-                    $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');                
-                    if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);           
-                    $reg_unidad = $reg_unidad->first();                
+                    $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion')            
+                                                        ->where('unidad',$reg_cursos[0]->unidad)
+                                                        ->first();                
                         
                     $pdf = PDF::loadView('reportes.arc02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca'));
                     $pdf->setpaper('letter','landscape');
