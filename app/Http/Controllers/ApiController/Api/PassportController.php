@@ -23,7 +23,7 @@ class PassportController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request)
+    public function signUp(Request $request)
     {
         //
         $validator =  Validator::make($request->all(), [
@@ -36,18 +36,19 @@ class PassportController extends Controller
             return response()->json(['error'=>$validator->errors()], 401);
         }
 
-        $usuario = UsuarioSice::create([
+        UsuarioSice::create([
             'user' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
 
         /**
-         * modificaciones - vamos a enviar un token
+         * modificaciones
          */
 
-        $token = $usuario->createToken('MyAppToken')->accessToken;
-        return response()->json(['token' => $token ], 200);
+        return response()->json([
+            'message' => 'usuario creado exitosamente!'
+        ], 201);
     }
 
     /**
@@ -69,7 +70,7 @@ class PassportController extends Controller
 
         if ($loginData->fails()) {
             # code...
-            return response()->json(['errors'=>$loginData->errors()->all()], 422);
+            return response()->json(['errors'=>$validator->errors()->all()], 422);
         }
 
         $credentials = [

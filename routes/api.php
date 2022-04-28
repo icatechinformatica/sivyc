@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\ApiController\Api\PassportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,13 +65,13 @@ use App\Http\Controllers\ApiController\Api\PassportController;
 Route::group([
     'prefix' => 'auth'
 ], function () {
-    Route::post('login', [PassportController::class, 'login']);
-    Route::post('register', [PassportController::class, 'register']);
+    Route::post('login', 'ApiController\Api\PassportController@login');
+    Route::post('register', 'ApiController\Api\PassportController@signUp');
 
     Route::group([
       'middleware' => 'auth:api_sice'
     ], function() {
-        Route::get('details', 'ApiController\Api\PassportController@details');
+        Route::post('details', 'ApiController\Api\PassportController@details');
         Route::apiResource('afolios-check', 'ApiController\AfoliosController');
         Route::post('logout', 'ApiController\Api\PassportController@logout');
     });
