@@ -14,6 +14,23 @@
         .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 1px 1px autom;}
         .tablaf { border-collapse: collapse; width: 100%;}     
         .tablaf td { font-size: 8px; text-align: center; padding: 0px;}
+        #watermark {
+            position: fixed;
+
+            /** 
+                Establece una posición en la página para tu imagen
+                Esto debería centrarlo verticalmente
+            **/
+            bottom:   .1cm;
+            left:     .1cm;
+
+            /** Cambiar las dimensiones de la imagen **/
+            width:    26cm;
+            height:   20cm;
+
+            /** Tu marca de agua debe estar detrás de cada contenido **/
+            z-index:  -1000;
+        }
     }
     </style>
 </head>
@@ -27,6 +44,11 @@
             @php
                 $nombre_unidad= "ACCION MOVIL"
             @endphp
+        @endif
+        @if ($marca)
+        <div id="watermark">
+            <img src="img/marcadeagua.png" height="100%" width="100%" />
+        </div>  
         @endif
         <div>
             <img class="izquierda" src='img/logohorizontalica1.png'>
@@ -110,6 +132,7 @@
             </table>
         </div><br><br><br><br><br>
         <div>
+            @if (!$marca)
             <table class="tablaf">
                 <tr>
                     <td> </td><td> </td><td> </td><td> </td>                
@@ -131,7 +154,8 @@
                     <td> </td><td> </td><td> </td><td> </td><td> </td>
                     <td align="center"><b>{{ $reg_unidad->pdunidad }}</b></td>                
                 </tr>
-            </table>
+            </table>  
+            @endif
         </div>
     
     </div>

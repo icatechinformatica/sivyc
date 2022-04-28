@@ -11,17 +11,27 @@
     <div class="card card-body" style=" min-height:450px;">              
     {{ Form::open(['route' => 'solicitud.apertura.enviar', 'method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data']) }}
         @csrf
-         <div class="row">
-            <div class="form-group col-md-2 mt-2">
+        <div class="row">
+            <div class="form-group col-md-2 mt-4">
                 {{ Form::select('opt', ['ARC01'=>'ARC01','ARC02'=>'ARC02'], $opt, ['id'=>'opt','class' => 'form-control mr-sm-2'] ) }}
             </div>
-            <div class="form-group col-md-3 mt-2">
-                    {{ Form::text('memo', $memo, ['id'=>'memo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
+            <div class="form-group col-md-3">
+                <label for="">MEMORÁNDUM ARC</label>    
+                {{ Form::text('memo', $memo, ['id'=>'memo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
             </div>
-            <div class="form-group col-md-2 mt-2">
+            <div class="form-group col-md-2">
+                <label for="">NUMERO DE REVISION</label>
+                {{ Form::text('nmemo', $num_revision, ['id'=>'nmemo', 'class' => 'form-control', 'placeholder' => 'NUMERO DE REVISION', 'aria-label' => 'NUMERO DE REVISION','style'=>"background-color: silver !important;"]) }}
+            </div>
+            @if (($opt=='ARC01' AND $status_solicitud=='VALIDADO' AND !$grupos[0]->status_curso) OR ($opt=='ARC02' AND $status_solicitud=='VALIDADO' AND $grupos[0]->status_curso=='AUTORIZADO'))
+            <div class="form-group col-md-2 mt-4">
+                {{ Form::button('GUARDAR MEMORÁNDUM ARC', ['id'=>'mcambiar','class' => 'btn']) }}
+            </div>
+            @endif
+            <div class="form-group col-md-2 mt-4">
                     <input type="date" id="fecha" name="fecha" class="form-control" value="{{date('Y-m-d')}}" readonly/>
                 </div>  
-            <div class="form-group col-md-1">
+            <div class="form-group col-md-1 mt-3">
                 {{ Form::button('FILTRAR', ['id'=>'buscar','class' => 'btn']) }}
             </div>               
         </div>
@@ -42,12 +52,14 @@
         @endif
 
     {!! Form::close() !!}    
-</div>
+    </div>
     @section('script_content_js') 
         <script language="javascript">      
             $(document).ready(function(){
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura.turnar')}}"); $('#frm').attr('target', '_self').submit();});
+                $("#mcambiar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura.cmemo')}}"); $('#frm').attr('target', '_self').submit();});
                 $("#enviar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura.enviar')}}"); $('#frm').attr('target', '_self').submit();});
+                $("#preliminar" ).click(function(){ if(confirm("Esta seguro de ejecutar la acción?")==true) {$('#frm').attr('action', "{{route('solicitud.apertura.preliminar')}}"); $('#frm').attr('target', '_self').submit();}});
                 $("#generar" ).click(function(){
                     if($("#opt" ).val() == "ARC01"){
                         $('#frm').attr('action', "{{route('solicitud.generar.arc01')}}"); $('#frm').attr('target', '_blank').submit();

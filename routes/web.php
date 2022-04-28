@@ -280,12 +280,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contratos/crear/{id}', 'webController\ContratoController@create')->name('contratos.create');
 
 
-    Route::get('/', function () {
-        return view('layouts.pages.home');
-    });
-    Route::get('/home', function() {
-        return view('layouts.pages.home');
-    })->name('home');
+    // Route::get('/', function () {
+    //     return view('layouts.pages.home');
+    // });
+    // Route::get('/home', function() {
+    //     return view('layouts.pages.home');
+    // })->name('home');
+    Route::get('/','HomeController@index');
+    Route::get('/home','HomeController@index')->name('home');
+    Route::post('/', 'HomeController@index')->name('home.post');
     Route::get('/password/new','passwordController@index')->name('password.view');//->middleware('can:password.update');
     Route::post('/password/update','passwordController@updatePassword')->name('update.password');
 
@@ -474,6 +477,10 @@ Route::middleware(['auth'])->group(function () {
 
     /*Solicitudes(DTA) RPN*/
     /*Asignación de Clave de Aperturas*/
+    Route::post('/solicitudes/aperturas/validar_preliminar', 'Solicitudes\aperturasController@validar_preliminar')->name('solicitudes.aperturas.pvalidar');
+    Route::post('/solicitudes/aperturas/retornar_preliminar', 'Solicitudes\aperturasController@retornar_preliminar')->name('solicitudes.aperturas.pretornar');
+    Route::post('/solicitudes/aperturas/arc', 'Solicitudes\aperturasController@barc')->name('solicitudes.aperturas.barc');
+
     Route::get('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
     Route::post('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
     Route::post('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
@@ -574,6 +581,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/solicitud/apertura/turnar', 'Solicitud\turnarAperturaController@index')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
     Route::post('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
     Route::get('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
+    Route::post('/solicitud/apertura/preliminar', 'Solicitud\turnarAperturaController@preliminar')->name('solicitud.apertura.preliminar');
+    Route::post('/solicitud/apertura/cmemo', 'Solicitud\turnarAperturaController@cambiar_memorandum')->name('solicitud.apertura.cmemo');
 
     Route::post('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->name('solicitud.apertura.modificar')->middleware('can:solicitud.apertura.modificar');
     Route::get('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->name('solicitud.apertura.modificar')->middleware('can:solicitud.apertura.modificar');
