@@ -157,7 +157,8 @@ trait catApertura
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
             //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
             //->where('especialidad_instructor_curso.activo', true)
-            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino)
+            ->WHERE('fecha_validacion','<',$grupo->inicio)
+            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino);
             // ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id) as total from
 			// 								    (select id_instructor, id from tbl_cursos
 			// 								    where inicio >= '$hinimes'
@@ -168,7 +169,7 @@ trait catApertura
             /*->whereNotIn('instructores.id', [DB::raw("select id_instructor from agenda
                                                       where ((date(agenda.start)>='$fhini' and date(agenda.start)<='$ffinal' and cast(agenda.start as time)>='$hini' and cast(agenda.start as time)<'$hfin')
                                                       or (date(agenda.end)>='$fhini' and date(agenda.end)<='$ffinal' and cast(agenda.end as time)>'$hini' and cast(agenda.end as time)<='$hfin'))
-                                                      group by id_instructor")])*/;
+                                                      group by id_instructor")])*/
             
             //->orderby('instructor')
             //->pluck('instructor','instructores.id');
