@@ -11,15 +11,14 @@ use Illuminate\Support\Facades\DB;
 
 class SupervisionMovilController extends Controller
 {
-    //obtiene la informacion del grupo por clave
+    //
     public function getGrupo(Request $request)
     {
-        $tbl_cursos = DB::table('tbl_cursos')->select('id', 'curso', 'cct', 'unidad', 'clave', 'mod', 'inicio', 'termino', 'area', 'espe', 'tcapacitacion', 'depen', 'tipo_curso')->WHERE('clave', '=', $request->clave)->get();       
 
+        $tbl_cursos = DB::table('tbl_cursos')->select('id', 'curso', 'cct', 'unidad', 'clave', 'mod', 'inicio', 'termino', 'area', 'espe', 'tcapacitacion', 'depen', 'tipo_curso')->WHERE('clave', '=', $request->clave)->get();        
         return response()->json($tbl_cursos, 200);
     }
 
-    //obtiene todos los alumnos del grupo por id del grupo
     public function getAlumnos($id_tbl_curso)
     {
         $response = DB::SELECT(DB::raw("(SELECT 
