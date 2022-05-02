@@ -86,7 +86,8 @@ class turnarAperturaController extends Controller
                     $status_solicitud = $grupos[0]->status_solicitud;
                     $num_revision = $grupos[0]->num_revision;
                 } else if ($opt == 'ARC02') {
-                    $mextemporaneo = ['OBSERVACIONES DE FINANCIEROS'=>'OBSERVACIONES DE FINANCIEROS','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO'];
+                    $mextemporaneo = ['OBSERVACIONES DE FINANCIEROS'=>'OBSERVACIONES DE FINANCIEROS','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO',
+                                        'TRAMITES ADMINISTRATIVOS'=>'TRAMITES ADMINISTRATIVOS'];
                     $status_solicitud = $grupos[0]->status_solicitud_arc02;
                     $num_revision = $grupos[0]->num_revision_arc02;
                 }
