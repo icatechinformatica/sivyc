@@ -75,6 +75,7 @@ Route::group([
         Route::get('details', 'ApiController\Api\PassportController@details');
         Route::apiResource('afolios-check', 'ApiController\AfoliosController');
         Route::post('logout', 'ApiController\Api\PassportController@logout');
+        //rutas api app supervision
     });
 });
 
