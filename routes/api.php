@@ -55,8 +55,9 @@ use Illuminate\Http\Request;
      Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
      Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
 
-    //api app movil "supervision icatech"
-    Route::get('supervision/movil/curso/{clave}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getGrupo');
+
+    //api app movil "supervision icatech"eb
+    Route::get('supervision/movil/curso/{clave}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getCurso');
     Route::get('supervision/movil/alumnos/{idGrupo}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getAlumnos');
 
  });
