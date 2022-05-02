@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class SupervisionMovilController extends Controller
 {
+    
     //obtiene info de curso por clave 
     public function getCurso(Request $request)
     {
