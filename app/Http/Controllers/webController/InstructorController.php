@@ -664,6 +664,7 @@ class InstructorController extends Controller
     public function especval_mod_save(Request $request)
     {
             // dd($request);
+        set_time_limit(0);
         $userId = Auth::user()->id;
 
         $espec_mod = especialidad_instructor::findOrFail($request->idespec);
