@@ -206,8 +206,19 @@ class ContratoController extends Controller
         $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
 
         //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
-        $consecutivo = intval(substr($data->folio_validacion, 10, 3));
-        // dd($data->folio_validacion);
+        // $consecutivo = intval(substr($data->folio_validacion, 10, 3));
+        $xpld = explode('-', $data->folio_validacion);
+        $counter = strlen($xpld[3]);
+        if($counter == 4)
+        {
+            $consecutivo = $xpld[3];
+        }
+        if($counter == 3)
+        {
+            $consecutivo = '0' . $xpld[3];
+        }
+        // dd($consecutivo);
+
 
         // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
         /*$consecutivo = DB::TABLE('contratos')

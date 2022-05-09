@@ -84,36 +84,133 @@
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
-                    <tr>
-                    <th scope="row">{{$itemData->no_memo}}</th>
-                        <td>{{$itemData->unidad_capacitacion}}</td>
-                        <td>{{$itemData->fecha}}</td>
-                        <td>
-                            @if ($itemData->status == 'En_Proceso')
-                                En Proceso
-                            @else
-                                {{$itemData->status}}
-                            @endif
-                        </td>
-                        <td>
-                            {{$itemData->fecha_status}}
-                        </td>
-                        <td>
-                            @if ( $itemData->status == 'En_Proceso')
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
-                                    <i class="fa fa-file" aria-hidden="true"></i>
-                                </a>
-                                @can('supre.validar')
-                                    <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $itemData->id])}}">
-                                        <i class="fa fa-file-text" aria-hidden="true"></i>
+                    @if($itemData->doc_supre == NULL && $itemData->status != 'Validado')
+                        @can('supre.create')
+                        <tr>
+                            <th scope="row">{{$itemData->no_memo}}</th>
+                            <td>{{$itemData->unidad_capacitacion}}</td>
+                            <td>{{$itemData->fecha}}</td>
+                            <td>
+                                @if ($itemData->status == 'En_Proceso')
+                                    En Proceso
+                                @else
+                                    {{$itemData->status}}
+                                @endif
+                            </td>
+                            <td>
+                                {{$itemData->fecha_status}}
+                            </td>
+                            <td>
+                                @if ( $itemData->status == 'En_Proceso')
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                @endcan
-                                @can('supre.delete')
-                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
-                                        <i class="fa fa-wrench" aria-hidden="true"></i>
+                                    @can('supre.delete')
+                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
+                                    @if ($itemData->doc_supre == NULL)
+                                        @can('supre.edit')
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal"
+                                                data-id='{{$itemData->id}}'
+                                                title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @else
+                                        @can('supre.validar')
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $itemData->id])}}">
+                                                <i class="fa fa-file-text" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                        @if($itemData->permiso_editar == TRUE)
+                                            @can('supre.upload_supre')
+                                                <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                    data-toggle="modal" data-placement="top"
+                                                    data-target="#DocSupreModal2"
+                                                    data-id='{{$itemData->id}}'
+                                                    title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                    <i class="fa fa-upload"></i>
+                                                </button>
+                                            @endcan
+                                        @endif
+                                    @endif
+                                    <input hidden value={{$itemData->id}} id='pdfp'>
+                                @endif
+                                @if ($itemData->status == 'Validado')
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                @endcan
-                                @if ($itemData->doc_supre == NULL)
+                                    @if ($itemData->doc_validado == NULL)
+                                        @can('supre.upload_valsupre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocModal"
+                                                data-id='{{$itemData->id}}'
+                                                title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @else
+                                        @can('supre.upload_valsupre')
+                                            <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocModal2"
+                                                data-id='{{$itemData->id}}'
+                                                title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
+                                    @can('supre.restart')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#restartModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Reiniciar Suficiencia Presupuestal">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
+                                    @can('folio.modificar')
+                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#modfolioModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Otorgar Permiso de Modificacion a Folio Validado">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
+                                    @can('supre.edit')
+                                        @if($itemData->permiso_editar == FALSE)
+                                            <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#modchangevalmodal"
+                                                data-id='{{$itemData->id}}'
+                                                title="Otorgar Permiso de Modificacion a Suficiencia Presupuestal Validado">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        @endif
+                                    @endcan
+                                    @can('supre.validar')
+                                        @if($itemData->permiso_editar == TRUE)
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $itemData->id])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        @endif
+                                    @endcan
+                                @endif
+                                @if ($itemData->status == 'Rechazado')
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
                                     @can('supre.edit')
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -122,115 +219,171 @@
                                     @can('supre.upload_supre')
                                         <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
-                                            data-target="#DocSupreModal"
+                                            data-target="#DocSupreModal2"
                                             data-id='{{$itemData->id}}'
-                                            title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                            title="Reemplazar Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload"></i>
                                         </button>
                                     @endcan
+                                    @can('supre.delete')
+                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
+                                @endif
+                            </td>
+                        </tr>
+                        @endcan
+                    @endif
+                    @if($itemData->doc_supre != NULL || $itemData->status == 'Validado')
+                        <tr>
+                            <th scope="row">{{$itemData->no_memo}}</th>
+                            <td>{{$itemData->unidad_capacitacion}}</td>
+                            <td>{{$itemData->fecha}}</td>
+                            <td>
+                                @if ($itemData->status == 'En_Proceso')
+                                    En Proceso
                                 @else
-                                    @if($itemData->permiso_editar == TRUE)
+                                    {{$itemData->status}}
+                                @endif
+                            </td>
+                            <td>
+                                {{$itemData->fecha_status}}
+                            </td>
+                            <td>
+                                @if ( $itemData->status == 'En_Proceso')
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
+                                    @can('supre.delete')
+                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
+                                    @if ($itemData->doc_supre == NULL)
+                                        @can('supre.edit')
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
                                         @can('supre.upload_supre')
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                                 data-toggle="modal" data-placement="top"
-                                                data-target="#DocSupreModal2"
+                                                data-target="#DocSupreModal"
                                                 data-id='{{$itemData->id}}'
-                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @else
+                                        @can('supre.validar')
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $itemData->id])}}">
+                                                <i class="fa fa-file-text" aria-hidden="true"></i>
+                                            </a>
+                                        @endcan
+                                        @if($itemData->permiso_editar == TRUE)
+                                            @can('supre.upload_supre')
+                                                <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                    data-toggle="modal" data-placement="top"
+                                                    data-target="#DocSupreModal2"
+                                                    data-id='{{$itemData->id}}'
+                                                    title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                    <i class="fa fa-upload"></i>
+                                                </button>
+                                            @endcan
+                                        @endif
+                                    @endif
+                                    <input hidden value={{$itemData->id}} id='pdfp'>
+                                @endif
+                                @if ($itemData->status == 'Validado')
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
+                                    @if ($itemData->doc_validado == NULL)
+                                        @can('supre.upload_valsupre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocModal"
+                                                data-id='{{$itemData->id}}'
+                                                title="Cargar Validación de Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @else
+                                        @can('supre.upload_valsupre')
+                                            <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocModal2"
+                                                data-id='{{$itemData->id}}'
+                                                title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
                                                 <i class="fa fa-upload"></i>
                                             </button>
                                         @endcan
                                     @endif
-                                @endif
-                                <input hidden value={{$itemData->id}} id='pdfp'>
-                            @endif
-                            @if ($itemData->status == 'Validado')
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
-                                    <i class="fa fa-file" aria-hidden="true"></i>
-                                </a>
-                                @if ($itemData->doc_validado == NULL)
-                                    @can('supre.upload_valsupre')
-                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                    @can('supre.restart')
+                                        <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
-                                            data-target="#DocModal"
+                                            data-target="#restartModal"
                                             data-id='{{$itemData->id}}'
-                                            title="Cargar Validación de Suficiencia Presupuestal Firmada">
-                                            <i class="fa fa-upload"></i>
-                                        </button>
-                                    @endcan
-                                @else
-                                    @can('supre.upload_valsupre')
-                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#DocModal2"
-                                            data-id='{{$itemData->id}}'
-                                            title="Reemplazar Validación de Suficiencia Presupuestal Firmada">
-                                            <i class="fa fa-upload"></i>
-                                        </button>
-                                    @endcan
-                                @endif
-                                @can('supre.restart')
-                                    <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
-                                        data-toggle="modal" data-placement="top"
-                                        data-target="#restartModal"
-                                        data-id='{{$itemData->id}}'
-                                        title="Reiniciar Suficiencia Presupuestal">
-                                        <i class="fa fa-history"></i>
-                                    </button>
-                                @endcan
-                                @can('folio.modificar')
-                                    <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                        data-toggle="modal" data-placement="top"
-                                        data-target="#modfolioModal"
-                                        data-id='{{$itemData->id}}'
-                                        title="Otorgar Permiso de Modificacion a Folio Validado">
-                                        <i class="fa fa-history"></i>
-                                    </button>
-                                @endcan
-                                @can('supre.edit')
-                                    @if($itemData->permiso_editar == FALSE)
-                                        <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
-                                            data-toggle="modal" data-placement="top"
-                                            data-target="#modchangevalmodal"
-                                            data-id='{{$itemData->id}}'
-                                            title="Otorgar Permiso de Modificacion a Suficiencia Presupuestal Validado">
+                                            title="Reiniciar Suficiencia Presupuestal">
                                             <i class="fa fa-history"></i>
                                         </button>
-                                    @endif
-                                @endcan
-                                @can('supre.validar')
-                                    @if($itemData->permiso_editar == TRUE)
-                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $itemData->id])}}">
+                                    @endcan
+                                    @can('folio.modificar')
+                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#modfolioModal"
+                                            data-id='{{$itemData->id}}'
+                                            title="Otorgar Permiso de Modificacion a Folio Validado">
+                                            <i class="fa fa-history"></i>
+                                        </button>
+                                    @endcan
+                                    @can('supre.edit')
+                                        @if($itemData->permiso_editar == FALSE)
+                                            <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#modchangevalmodal"
+                                                data-id='{{$itemData->id}}'
+                                                title="Otorgar Permiso de Modificacion a Suficiencia Presupuestal Validado">
+                                                <i class="fa fa-history"></i>
+                                            </button>
+                                        @endif
+                                    @endcan
+                                    @can('supre.validar')
+                                        @if($itemData->permiso_editar == TRUE)
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $itemData->id])}}">
+                                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                                            </a>
+                                        @endif
+                                    @endcan
+                                @endif
+                                @if ($itemData->status == 'Rechazado')
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
+                                    @can('supre.edit')
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
-                                    @endif
-                                @endcan
-                            @endif
-                            @if ($itemData->status == 'Rechazado')
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
-                                    <i class="fa fa-file" aria-hidden="true"></i>
-                                </a>
-                                @can('supre.edit')
-                                    <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
-                                        <i class="fa fa-wrench" aria-hidden="true"></i>
-                                    </a>
-                                @endcan
-                                @can('supre.upload_supre')
-                                    <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
-                                        data-toggle="modal" data-placement="top"
-                                        data-target="#DocSupreModal2"
-                                        data-id='{{$itemData->id}}'
-                                        title="Reemplazar Suficiencia Presupuestal Firmada">
-                                        <i class="fa fa-upload"></i>
-                                    </button>
-                                @endcan
-                                @can('supre.delete')
-                                    <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
-                                        <i class="fa fa-wrench" aria-hidden="true"></i>
-                                    </a>
-                                @endcan
-                            @endif
-                        </td>
-                    </tr>
+                                    @endcan
+                                    @can('supre.upload_supre')
+                                        <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                            data-toggle="modal" data-placement="top"
+                                            data-target="#DocSupreModal2"
+                                            data-id='{{$itemData->id}}'
+                                            title="Reemplazar Suficiencia Presupuestal Firmada">
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                    @endcan
+                                    @can('supre.delete')
+                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
+                                @endif
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
             <tfoot>
