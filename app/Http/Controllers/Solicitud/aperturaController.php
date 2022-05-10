@@ -826,7 +826,7 @@ class aperturaController extends Controller
                                            ->where('tbl_cursos.status','!=','CANCELADO')
                                            ->where('agenda.id_instructor','=', $id_instructor)
                                            ->where('agenda.start','>=', $mesInicio)
-                                           ->where('agenda.end','<=', $mesFin)
+                                           ->where('agenda.start','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
@@ -846,7 +846,7 @@ class aperturaController extends Controller
                                            ->where('tbl_cursos.status','!=','CANCELADO')
                                            ->where('agenda.id_instructor','=', $id_instructor)
                                            ->where('agenda.start','>=', $mesInicio)
-                                           ->where('agenda.end','<=', $mesFin)
+                                           ->where('agenda.start','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
