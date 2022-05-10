@@ -817,7 +817,8 @@ class aperturaController extends Controller
         }
         //CRITERIO 5 MESES
         for ($i=1; $i < 6; $i++) {
-            $mesActivo= Carbon::parse($request->end)->addMonth($i);
+            $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
+            $mesActivo= Carbon::parse($f)->addMonth($i);
             $mes = Carbon::parse($mesActivo)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
@@ -837,7 +838,8 @@ class aperturaController extends Controller
             }
         }
         for ($i=1; $i < 6; $i++) {
-            $mesActivoSub= Carbon::parse($request->start)->subMonth($i);
+            $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
+            $mesActivoSub= Carbon::parse($f)->subMonth($i);
             $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
@@ -859,21 +861,21 @@ class aperturaController extends Controller
         if ($sumaMesInicio==5||$sumaMesFin==5) {
             return 'iguales5';
         } else {
-            if ( Carbon::parse($request->stat)->format('m-Y') == Carbon::parse($request->end)->format('m-Y')) {
+            //if ( Carbon::parse($request->stat)->format('m-Y') == Carbon::parse($request->end)->format('m-Y')) {
                 $total = ($sumaMesInicio + $sumaMesFin) + 1;
                 $total1 = $sumaMesInicio + 1;
                 $total2 = $sumaMesFin + 1;
                 if ($total > 5||$total1 > 5||$total2 > 5) {
                     return 'iguales5';
                 }
-            } else {
-                $total = ($sumaMesInicio + $sumaMesFin) + 2;
-                $total1 = $sumaMesInicio + 2;
-                $total2 = $sumaMesFin +2;
-                if ($total > 5||$total1 > 5||$total2 > 5) {
-                    return 'iguales5';
-                }
-            }
+            // } else {
+            //     $total = ($sumaMesInicio + $sumaMesFin) + 2;
+            //     $total1 = $sumaMesInicio + 2;
+            //     $total2 = $sumaMesFin +2;
+            //     if ($total > 5||$total1 > 5||$total2 > 5) {
+            //         return 'iguales5';
+            //     }
+            // }
         }
         //CRITERIO NO MÁS DE 4 CURSOS EN UN MES
         // $hinimes = Carbon::parse($fechaInicio)->firstOfMonth();
