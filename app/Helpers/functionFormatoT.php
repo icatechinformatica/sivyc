@@ -77,6 +77,8 @@ function dataFormatoT($unidad, $status, $fecha) {
             'c.cgeneral',
             'c.sector',
             'c.mpaqueteria',
+            'c.arc',
+            'c.status_solicitud_arc02',
             'gv.grupo',
             // --- RANGO DE EDADES EN RUBRO FEDERAL ---
             DB::raw("sum( case when EXTRACT(year from (age(c.inicio, ins.fecha_nacimiento))) < 15 and ins.sexo='M' then 1 else 0 end) as iem1f"),
@@ -385,6 +387,16 @@ function dataFormatoT($unidad, $status, $fecha) {
         ->WHERE('c.clave', '!=', 'null')
         ->where('ins.calificacion', '>', '0')
         ->where('m.id_estado', '=', '7')
+        // ->orwhere('c.arc', '=', '2')
+        // ->where('c.status_solicitud_arc02', '=', 'VALIDADO')
+        // ->WHERE('c.file_arc02', '!=', null)
+        // ->WHERE('u.ubicacion', '=', $unidad)
+        // ->WHEREIN('c.status', $status)
+        // ->WHERE('c.status_curso', '=', 'AUTORIZADO')
+        // ->where('ins.status', '=', 'INSCRITO')
+        // ->WHERE('c.clave', '!=', 'null')
+        // ->where('ins.calificacion', '>', '0')
+        // ->where('m.id_estado', '=', '7')
         ->groupby(
             'c.id',
             'c.status',

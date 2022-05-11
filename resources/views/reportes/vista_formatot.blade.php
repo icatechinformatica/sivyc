@@ -507,7 +507,9 @@
                                                     || ($datas->sumaED - $datas->tinscritos) != 0
                                                     || ($datas->sumaEmDe - $datas->tinscritos) != 0
                                                     || ($datas->sumaEgresados - $datas->egresado) != 0)
-                                                    ? '#ff8282' : '' }}">
+                                                    ? '#ff8282' : '' }}
+                                                @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') #ff8282 @endif">
+
                                             <td>{{ $key + 1 }}</td>
                                             <td>
                                                 {{-- @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad) --}}
@@ -524,7 +526,8 @@
                                                         class="checkbx" name="chkcursos_list[]"
                                                         value="{{ $datas->id_tbl_cursos }}"
                                                         {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}
-                                                        {{ $datas->estadocurso == 'EN_FIRMA' ? 'checked' : '' }} />
+                                                        {{ $datas->estadocurso == 'EN_FIRMA' ? 'checked' : '' }}
+                                                        @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') disabled @endif/>
                                                 @endif
                                             </td>
                                             <td>{{ $datas->unidad }}</td>
@@ -883,6 +886,7 @@
                                                     {!! ($datas->sumaED - $datas->tinscritos) != 0 ? '* LA SUMA  DE EGRESADOS Y DESERTORES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEmDe - $datas->tinscritos) != 0 ? '* LA SUMA  DE EMPLEADOS Y DESEMPLEADOS NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEgresados - $datas->egresado) != 0 ? '* LA SUMA  DE EGRESADOS FEMENINOS, MASCULINOS Y LGBTTTI+ NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
+                                                    @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') SOLICITUD DE ARC02 EN PROCESO <br> @endif
                                                 </div>
                                             </td>
                                         </tr>
