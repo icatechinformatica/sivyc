@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
 
     <div class="card-header">
-        Consulta de Cursos Terminados
+        Consulta de Cursos Aperturados
 
     </div>
     <div class="card card-body" style=" min-height:450px;">

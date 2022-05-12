@@ -259,16 +259,6 @@
                         @can('consultas.cursosaperturados')
                             <a class="dropdown-item" href="{{route('consultas.cursosaperturados')}}">Cursos Aperturados</a>
                         @endcan
-                        @can('consultas.instructor')
-                            <a class="dropdown-item" href="{{route('consultas.instructor')}}">Instructores</a>
-                        @endcan
-                        @can('academico.catalogo.cursos')
-                            <a class="dropdown-item" href="{{route('academico.exportar.cursos')}}">Exportar Cursos</a>
-                        @endcan
-                        @can('academico.catalogo.instructores')
-                            <a class="dropdown-item" data-toggle="modal" data-placement="top"
-                                data-target="#ModalExpIns">Exportar Instructores</a>
-                        @endcan
                         @can('planeacion.estadisticas')
                             <a class="dropdown-item" href="{{route('reportes.planeacion.estadisticas')}}">Estadisticas del Formato T</a>
                         @endcan
@@ -277,12 +267,15 @@
                         @endcan
                         @can('planeacion.ingresos.propios')
                             <a class="dropdown-item" href="{{route('reportes.planeacion.ingresos_propios')}}">Ingresos Propios</a>
-                        @endcan
-                        @can('consultas.cursos.iniciados')
-                            <a class="dropdown-item" href="{{route('consulta-cursosval')}}">Cursos Iniciados</a>
-                        @endcan
+                        @endcan                        
                         @can('consultas.cursosefisico')
                             <a class="dropdown-item" href="{{route('consultas.cursosefisico')}}">Cursos EFisico</a>
+                        @endcan
+                        @can('consultas.instructor')
+                            <a class="dropdown-item" href="{{route('consultas.instructor')}}">Instructores Asignados</a>
+                        @endcan
+                        @can('consultas.instructores.disponibles')
+                            <a class="dropdown-item" href="{{route('consultas.instructores.disponibles')}}">Instructores Disponibles</a>
                         @endcan
                     </div>
                 </li>
