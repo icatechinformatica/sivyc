@@ -16,8 +16,8 @@ trait catUnidades
             ->value('roles.slug'); 
         if($rol){
             $uni = DB::table('tbl_unidades')->select(DB::raw('SUBSTR(cct,1,5) as clave'),DB::raw('SUBSTR(cct,6,10) as cct'),'ubicacion','unidad')->where('id',$id_unidad)->first();
-            $unidades = DB::table('tbl_unidades')->where('ubicacion',$uni->unidad)->pluck('unidad','unidad');         
-            if(count($unidades)==0)$unidades = DB::table('tbl_unidades')->where('unidad',$uni->unidad)->pluck('unidad','unidad');
+            $unidades = DB::table('tbl_unidades')->where('ubicacion',$uni->unidad)->orderby('unidad','ASC')->pluck('unidad','unidad');         
+            if(count($unidades)==0)$unidades = DB::table('tbl_unidades')->where('unidad',$uni->unidad)->orderby('unidad','ASC')->pluck('unidad','unidad');
             
             if($uni->clave == '07EIC')$cct= $uni->cct;
             else $cct = DB::table('tbl_unidades')->where('unidad',$uni->ubicacion)->value(DB::raw('SUBSTR(cct,6,10) as cct'));
@@ -28,7 +28,7 @@ trait catUnidades
             $data['cct_unidad'] = $cct;
             $unidad = $uni->unidad;         
         }
-        if(!$unidades) $unidades = DB::table('tbl_unidades')->pluck('unidad','unidad');
+        if(!$unidades) $unidades = DB::table('tbl_unidades')->orderby('unidad','ASC')->pluck('unidad','unidad');
         $data ['unidad'] = $unidad;
         $data ['unidades'] = $unidades;
         $data ['slug'] = $rol;

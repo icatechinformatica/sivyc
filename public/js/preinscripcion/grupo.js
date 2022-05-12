@@ -10,25 +10,26 @@
     });
     $("#id_municipio" ).change(function(){
         cmb_loc();
-    }); 
-      
+    });     
+    
     function cmb_curso(){ 
         var tipo =$('#tipo').val();
         var unidad =$('#unidad').val();
-        var modalidad =$('#modalidad').val(); 
+        var modalidad =$('#modalidad').val();
         $("#id_curso").empty();                            
         if(tipo && unidad && modalidad){
             $.ajax({
                 type: "GET",
-                url: "grupo/cmbcursos",
+                url: "/preinscripcion/grupo/cmbcursos",
                 data:{tipo:tipo,unidad:unidad,modalidad:modalidad, _token:"{{csrf_token()}}"},
                 contentType: "application/json",              
                 dataType: "json",
                 success: function (data) {// console.log(data); 
+                    $("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');
                     $.each(data, function () {                                    
-                        //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');                                    
                         $("#id_curso").append('<option value="'+this['id']+'">'+this['nombre_curso']+'</option>');
                     });
+                    
                 }
             });                        
         }

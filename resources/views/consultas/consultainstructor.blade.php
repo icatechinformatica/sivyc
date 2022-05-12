@@ -6,7 +6,7 @@
         table tr th .nav-link {padding: 0; margin: 0;}
     </style>
     <div class="card-header">
-        Consulta de Instructores
+        Consulta de Instructores Asignados
     </div>
     <div class="card card-body" >
         <br />
