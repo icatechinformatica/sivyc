@@ -619,31 +619,20 @@ class aperturaController extends Controller
         $sumaMesInicio = 0;
         $sumaMesFin = 0;
         //CRITERIO DISPONIBILIDAD FECHA Y HORA
-        $data['events'] = //Agenda::where('id_instructor', '=', $id_instructor)->get();
-                                DB::table('agenda')->select('agenda.*')->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
-                                ->where('agenda.id_instructor', '=', $id_instructor)
-                                ->where('tbl_cursos.status','!=','CANCELADO')
-                                ->get();
-        foreach($data['events'] as $evento) {
-            $date = Carbon::parse($evento->start)->format('d-m-Y');
-            $datefin = Carbon::parse($evento->end)->format('d-m-Y');
-            if (carbon::parse($fechaInicio)->greaterThanOrEqualTo(carbon::parse($date))) {
-                if (carbon::parse($fechaInicio)->lessThanOrEqualTo(carbon::parse($datefin))) {
-                    if ($horaInicio >= Carbon::parse($evento->start)->format('H:i')
-                    && $horaInicio < Carbon::parse($evento->end)->format('H:i')) {
-                        $isEquals = true;
-                    }
-                }
-            }
-            //
-            if (carbon::parse($fechaTermino)->greaterThanOrEqualTo(carbon::parse($date))) {
-                if (carbon::parse($fechaTermino)->lessThanOrEqualTo(carbon::parse($datefin)) ) {
-                    if ($horaTermino > Carbon::parse($evento->start)->format('H:i')
-                    && $horaTermino <= Carbon::parse($evento->end)->format('H:i')) {
-                    $isEquals2 = true;
-                }
-                }
-            }
+        $fi = Carbon::parse($request->start)->format('Y-m-d');
+        $ft = Carbon::parse($request->end)->format('Y-m-d');
+        $hi = Carbon::parse($request->start)->format('H:i');
+        $ht = Carbon::parse($request->end)->format('H:i');
+        $evento = DB::table('agenda')
+                    ->select('agenda.id_curso','agenda.start','agenda.end')
+                    ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                    ->where('agenda.id_instructor',$id_instructor)
+                    ->where('tbl_cursos.status','!=','CANCELADO')
+                    ->whereRaw("((date(agenda.start) >= '$fi' and date(agenda.start) <= '$ft' and cast(agenda.start as time) >= '$hi' and cast(agenda.start as time) < '$ht') OR 
+                                (date(agenda.end) >= '$fi' and date(agenda.end) <= '$ft' and cast(agenda.end as time) > '$hi' and cast(agenda.end as time) <= '$ht'))")
+                    ->get();
+        if (count($evento) > 0) {
+            $isEquals = true;
         }
         //CRITERIO 8hrs
         foreach ($period as $value) {
