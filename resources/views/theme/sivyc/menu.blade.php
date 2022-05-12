@@ -21,7 +21,7 @@
                         Cursos Validados
                     </a>
                 </li>
-                <!--SUPERVISIONES
+                {{--  <!--SUPERVISIONES
                 @can('supervision.escolar')
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -33,7 +33,7 @@
                             @endcan
                         </div>
                     </li>
-                @endcan-->
+                @endcan-->  --}}
                 <!--AGREGAR NUEVO ELEMENTO EN EL MENU END-->
                 @can('preinscripcion.grupo')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -53,7 +53,7 @@
                         </div>
                     </li>
                 @endcan
-               <!-- @can('solicitud.apertura')-->
+               {{--  <!-- @can('solicitud.apertura')-->  --}}
                     <li class="nav-item g-mx-5--lg dropdown">
                         <a class="nav-link g-color-white--hover" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Solicitud
@@ -75,7 +75,7 @@
                             @endcan
                         </div>
                     </li>                
-                <!--@endcan-->
+                {{--  <!--@endcan-->  --}}
                 {{-- Grupo calificaciones --}}
                 @can('grupos.calificaciones')
                     <li class="nav-item g-mx-5--lg dropdown">

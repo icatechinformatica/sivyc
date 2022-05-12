@@ -559,7 +559,7 @@
                         if (tipo == 'insert' || tipo == 'update') {
                             if (msg == 'iguales') { //hay registro con la fecha y hora
                                 $('#titleToast').html('Fecha incorrecta');
-                                $("#msgVolumen").html("La fecha y hora de inicio ya se encuentra en uso");
+                                $("#msgVolumen").html("El instructor no se encuentra disponible en fecha y hora");
                                 $(".toast").toast("show");
                             } else if (msg == 'iguales2') {
                                 $('#titleToast').html('Fecha incorrecta');
