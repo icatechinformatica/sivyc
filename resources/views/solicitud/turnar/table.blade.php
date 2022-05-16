@@ -75,6 +75,10 @@
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "EL CURSO HA SOBREPASADO EL LIMITE DE TIEMPO PARA REALIZAR SU SOLICITUD ARC 01";
+                    }else if( !$g->nombre ){
+                        $activar = false;
+                        $rojo = true;                         
+                        $aviso = "EL NOMBRE DEL INSTRUCTOR NO SE HA REGISTRADO";
                     }else $rojo = false;         
                     
                     if ($g->option =='ARC01'){
@@ -137,10 +141,8 @@
 
 <div class="form-row col-md-12 mt-4">
     @if ($activar)
-        <div class=" form-group col-md-2">
-            
-        </div>
         @if ((($opt=='ARC01')&&($grupos[0]->status_solicitud!='VALIDADO')) OR ($opt=='ARC02' && ($grupos[0]->status_solicitud_arc02 !='VALIDADO')) )
+            <div class=" form-group col-md-2"></div>
             <div class="form-group col-md-4"></div>
             <div class="custom-file mt-1 form-group col-md-3">
                 <input type="file" id="file_autorizacion" name="file_autorizacion" accept="application/pdf" class="custom-file-input" required />
@@ -154,8 +156,12 @@
                 @endif
             </div>
         @else
-            <div class="form-group col-md-3">
-                
+            <div class="form-group col-md-3 mt-3">
+                <label for="">MEMORÁNDUM ARC:</label>
+                {{ Form::text('nmemo', $memo, ['id'=>'nmemo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
+            </div>
+            <div class="form-group col-md-2">
+                {{ Form::button('GUARDAR MEMORÁNDUM ARC', ['id'=>'mcambiar','class' => 'btn mt-5']) }}
             </div>
             <div class="form-group col-md-2">
                 {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn mt-5']) }}

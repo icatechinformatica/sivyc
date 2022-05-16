@@ -66,9 +66,13 @@ class supreController extends Controller
                         ->where('tabla_supre.id', '!=', '0')
                         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
+                        ->WHERE('tabla_supre.status', '!=', 'Cancelado')
                         ->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                         ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                        ->latest()->paginate(25, ['tabla_supre.*']);
+                        // ->latest()
+                        ->OrderBy('tabla_supre.status','ASC')
+                        ->OrderBy('tabla_supre.updated_at','DESC')
+                        ->paginate(25, ['tabla_supre.*']);
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
 
         return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer'));
