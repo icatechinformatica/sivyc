@@ -207,8 +207,32 @@
     @section('script_content_js')     
         <script src="{{ asset('js/solicitud/apertura.js') }}"></script>             
 
-        <script language="javascript">  
-            $(document).ready(function(){                
+        <script language="javascript">
+            $(document).ready(function(){ 
+                $('#frm').validate({
+                            rules:{
+                                nmunidad:{
+                                    required: true
+                                },
+                                opcion:{
+                                    required: true
+                                },
+                                observaciones:{
+                                    required: true
+                                }
+                            },
+                            messages:{
+                                nmunidad:{
+                                    required: 'Seleccione una opción'
+                                },
+                                opcion:{
+                                    required: 'Seleccione una opción'
+                                },
+                                observaciones:{
+                                    required: 'Seleccione una opción'
+                                }
+                            }
+                });               
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura.modificar')}}"); $('#frm').submit();}); 
                 $("#guardar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.modguardar')}}"); $('#frm').submit();}});
                 $("#deshacer" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.moddeshacer')}}"); $('#frm').submit();}});

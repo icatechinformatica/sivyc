@@ -183,7 +183,8 @@ class aperturaController extends Controller
         if($_SESSION['folio']){
             $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
             $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
-            $curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dia'=>null,'fecha_arc01'=>null]);
+            $curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dia'=>null,'fecha_arc01'=>null,
+                                                                                                'id_instructor'=>null]);
             //$_SESSION['folio'] = null;
            // unset($_SESSION['folio']);
            if($result){
@@ -619,31 +620,20 @@ class aperturaController extends Controller
         $sumaMesInicio = 0;
         $sumaMesFin = 0;
         //CRITERIO DISPONIBILIDAD FECHA Y HORA
-        $data['events'] = //Agenda::where('id_instructor', '=', $id_instructor)->get();
-                                DB::table('agenda')->select('agenda.*')->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
-                                ->where('agenda.id_instructor', '=', $id_instructor)
-                                ->where('tbl_cursos.status','!=','CANCELADO')
-                                ->get();
-        foreach($data['events'] as $evento) {
-            $date = Carbon::parse($evento->start)->format('d-m-Y');
-            $datefin = Carbon::parse($evento->end)->format('d-m-Y');
-            if (carbon::parse($fechaInicio)->greaterThanOrEqualTo(carbon::parse($date))) {
-                if (carbon::parse($fechaInicio)->lessThanOrEqualTo(carbon::parse($datefin))) {
-                    if ($horaInicio >= Carbon::parse($evento->start)->format('H:i')
-                    && $horaInicio < Carbon::parse($evento->end)->format('H:i')) {
-                        $isEquals = true;
-                    }
-                }
-            }
-            //
-            if (carbon::parse($fechaTermino)->greaterThanOrEqualTo(carbon::parse($date))) {
-                if (carbon::parse($fechaTermino)->lessThanOrEqualTo(carbon::parse($datefin)) ) {
-                    if ($horaTermino > Carbon::parse($evento->start)->format('H:i')
-                    && $horaTermino <= Carbon::parse($evento->end)->format('H:i')) {
-                    $isEquals2 = true;
-                }
-                }
-            }
+        $fi = Carbon::parse($request->start)->format('Y-m-d');
+        $ft = Carbon::parse($request->end)->format('Y-m-d');
+        $hi = Carbon::parse($request->start)->format('H:i');
+        $ht = Carbon::parse($request->end)->format('H:i');
+        $evento = DB::table('agenda')
+                    ->select('agenda.id_curso','agenda.start','agenda.end')
+                    ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
+                    ->where('agenda.id_instructor',$id_instructor)
+                    ->where('tbl_cursos.status','!=','CANCELADO')
+                    ->whereRaw("((date(agenda.start) >= '$fi' and date(agenda.start) <= '$ft' and cast(agenda.start as time) >= '$hi' and cast(agenda.start as time) < '$ht') OR 
+                                (date(agenda.end) >= '$fi' and date(agenda.end) <= '$ft' and cast(agenda.end as time) > '$hi' and cast(agenda.end as time) <= '$ht'))")
+                    ->get();
+        if (count($evento) > 0) {
+            $isEquals = true;
         }
         //CRITERIO 8hrs
         foreach ($period as $value) {
@@ -817,7 +807,8 @@ class aperturaController extends Controller
         }
         //CRITERIO 5 MESES
         for ($i=1; $i < 6; $i++) {
-            $mesActivo= Carbon::parse($request->end)->addMonth($i);
+            $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
+            $mesActivo= Carbon::parse($f)->addMonth($i);
             $mes = Carbon::parse($mesActivo)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
@@ -826,7 +817,7 @@ class aperturaController extends Controller
                                            ->where('tbl_cursos.status','!=','CANCELADO')
                                            ->where('agenda.id_instructor','=', $id_instructor)
                                            ->where('agenda.start','>=', $mesInicio)
-                                           ->where('agenda.end','<=', $mesFin)
+                                           ->where('agenda.start','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
@@ -837,7 +828,8 @@ class aperturaController extends Controller
             }
         }
         for ($i=1; $i < 6; $i++) {
-            $mesActivoSub= Carbon::parse($request->start)->subMonth($i);
+            $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
+            $mesActivoSub= Carbon::parse($f)->subMonth($i);
             $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
@@ -846,7 +838,7 @@ class aperturaController extends Controller
                                            ->where('tbl_cursos.status','!=','CANCELADO')
                                            ->where('agenda.id_instructor','=', $id_instructor)
                                            ->where('agenda.start','>=', $mesInicio)
-                                           ->where('agenda.end','<=', $mesFin)
+                                           ->where('agenda.start','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
@@ -859,21 +851,21 @@ class aperturaController extends Controller
         if ($sumaMesInicio==5||$sumaMesFin==5) {
             return 'iguales5';
         } else {
-            if ( Carbon::parse($request->stat)->format('m-Y') == Carbon::parse($request->end)->format('m-Y')) {
+            //if ( Carbon::parse($request->stat)->format('m-Y') == Carbon::parse($request->end)->format('m-Y')) {
                 $total = ($sumaMesInicio + $sumaMesFin) + 1;
                 $total1 = $sumaMesInicio + 1;
                 $total2 = $sumaMesFin + 1;
                 if ($total > 5||$total1 > 5||$total2 > 5) {
                     return 'iguales5';
                 }
-            } else {
-                $total = ($sumaMesInicio + $sumaMesFin) + 2;
-                $total1 = $sumaMesInicio + 2;
-                $total2 = $sumaMesFin +2;
-                if ($total > 5||$total1 > 5||$total2 > 5) {
-                    return 'iguales5';
-                }
-            }
+            // } else {
+            //     $total = ($sumaMesInicio + $sumaMesFin) + 2;
+            //     $total1 = $sumaMesInicio + 2;
+            //     $total2 = $sumaMesFin +2;
+            //     if ($total > 5||$total1 > 5||$total2 > 5) {
+            //         return 'iguales5';
+            //     }
+            // }
         }
         //CRITERIO NO MÁS DE 4 CURSOS EN UN MES
         // $hinimes = Carbon::parse($fechaInicio)->firstOfMonth();

@@ -206,8 +206,19 @@ class ContratoController extends Controller
         $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
 
         //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
-        $consecutivo = intval(substr($data->folio_validacion, 10, 3));
-        // dd($data->folio_validacion);
+        // $consecutivo = intval(substr($data->folio_validacion, 10, 3));
+        $xpld = explode('-', $data->folio_validacion);
+        $counter = strlen($xpld[3]);
+        if($counter == 4)
+        {
+            $consecutivo = $xpld[3];
+        }
+        if($counter == 3)
+        {
+            $consecutivo = '0' . $xpld[3];
+        }
+        // dd($consecutivo);
+
 
         // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
         /*$consecutivo = DB::TABLE('contratos')
@@ -536,31 +547,46 @@ class ContratoController extends Controller
 
     public function save_doc(Request $request){
         $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
+        $urldocs = null;
         if(isset($check_pago))
         {
             return back()->withErrors(sprintf('LO SENTIMOS, EL MEMORANDUM DE PAGO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->no_memo));
         }
 
-        $pago = new pago();
-        $pago->no_memo = $request->no_memo;
-        $pago->id_contrato = $request->id_contrato;
-        $pago->liquido = $request->liquido;
-        $pago->solicitud_fecha = $request->solicitud_fecha;
+        // $pago = new pago();
+        // $pago->no_memo = $request->no_memo;
+        // $pago->id_contrato = $request->id_contrato;
+        // $pago->liquido = $request->liquido;
+        // $pago->solicitud_fecha = $request->solicitud_fecha;
 
         $file = $request->file('arch_asistencia'); # obtenemos el archivo
         $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
-        // guardamos en la base de datos
-        $pago->arch_asistencia = trim($urldocs);
+        // // guardamos en la base de datos
+        // $pago->arch_asistencia = trim($urldocs);
 
         if ($request->arch_evidencia != NULL)
         {
             $file = $request->file('arch_evidencia'); # obtenemos el archivo
-            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
+            $urldocs2 = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
             // guardamos en la base de datos
-            $pago->arch_evidencia = trim($urldocs);
+            // $pago->arch_evidencia = trim($urldocs);
         }
-        $pago->fecha_status = carbon::now();
-        $pago->save();
+        // $pago->fecha_status = carbon::now();
+        // $pago->save();
+
+        pago::updateOrInsert(
+            ['id_contrato' => $request->id_contrato],
+            [
+                'no_memo' => $request->no_memo,
+                'liquido' => $request->liquido,
+                'solicitud_fecha' => $request->solicitud_fecha,
+                'arch_asistencia' => trim($urldocs),
+                'arch_evidencia' => trim($urldocs2),
+                'fecha_status' => carbon::now(),
+                'created_at' => carbon::now(),
+                'updated_at' => carbon::now()
+            ]
+        );
 
         contrato_directorio::where('id_contrato', '=', $request->id_contrato)
         ->update(['solpa_iddirector' => $request->id_remitente,
@@ -597,10 +623,10 @@ class ContratoController extends Controller
         //Notificacion!!
         $letter = [
             'titulo' => 'Solicitud de Pago',
-            'cuerpo' => 'La solicitud de pago ' . $pago->no_memo . ' ha sido agregada para su validación',
-            'memo' => $pago->no_memo,
+            'cuerpo' => 'La solicitud de pago ' . $request->no_memo . ' ha sido agregada para su validación',
+            'memo' => $request->no_memo,
             'unidad' => Auth::user()->unidad,
-            'url' => '/pago/verificar_pago/' . $pago->id_contrato,
+            'url' => '/pago/verificar_pago/' . $request->id_contrato,
         ];
         //$users = User::where('id', 1)->get();
         // dd($users);
