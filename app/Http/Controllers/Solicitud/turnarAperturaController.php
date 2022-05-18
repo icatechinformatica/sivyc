@@ -500,7 +500,7 @@ class turnarAperturaController extends Controller
                     $r = DB::table('tbl_cursos')->where('num_revision',$request->memo)->orWhere('munidad',$request->memo)->value('num_revision');
                     $result = DB::table('tbl_cursos')->where('num_revision',$r)->update(['munidad' => $request->nmemo]);
                     if ($result) {
-                        $result2 = DB::table('tbl_cursos_history')->where('num_revision',$request->memo)->update(['munidad' => $request->nmemo]);
+                        $result2 = DB::table('tbl_cursos_history')->where('munidad',$r)->update(['munidad' => $request->nmemo,'num_revision'=>$r]);
                         $_SESSION['memo'] = $request->nmemo;
                         $message = "El Guardado del Memorándum fué exitoso";
                     }else{
@@ -514,7 +514,7 @@ class turnarAperturaController extends Controller
                     $r = DB::table('tbl_cursos')->where('num_revision_arc02',$request->memo)->orWhere('nmunidad',$request->memo)->value('num_revision_arc02');
                     $result = DB::table('tbl_cursos')->where('num_revision_arc02',$r)->update(['nmunidad' => $request->nmemo]);
                     if ($result) {
-                        $result2 = DB::table('tbl_cursos_history')->where('num_revision',$request->memo)->update(['nmunidad' => $request->nmemo]);
+                        $result2 = DB::table('tbl_cursos_history')->where('nmunidad',$r)->update(['nmunidad' => $request->nmemo, 'num_revision'=>$r]);
                         $_SESSION['memo'] = $request->nmemo;
                         $message = "El Guardado del Memorándum fué exitoso";
                     }else{
