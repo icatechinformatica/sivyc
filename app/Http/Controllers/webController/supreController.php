@@ -85,6 +85,7 @@ class supreController extends Controller
     }
 
     public function store(Request $request) {
+        // dd($request);
         $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
         if (is_null($memo))
         {
@@ -145,7 +146,14 @@ class supreController extends Controller
                 $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                         ->WHERE('tbl_cursos.clave', '=', $clave)
                         ->FIRST();
-                $importe = $value['importe']/1.16;
+                if($value['iva'] == 0)
+                {
+                    $importe = $value['importe'];
+                }
+                else
+                {
+                    $importe = $value['importe']/1.16;
+                }
                 $X = $hora->dura;
                 if ($X != NULL)
                 {
@@ -285,7 +293,14 @@ class supreController extends Controller
             $hora = $curso_validado->SELECT('tbl_cursos.dura','tbl_cursos.id')
                     ->WHERE('tbl_cursos.clave', '=', $clave)
                     ->FIRST();
-            $importe = $value['importe']/1.16;
+            if($value['iva'] == 0)
+            {
+                $importe = $value['importe'];
+            }
+            else
+            {
+                $importe = $value['importe']/1.16;
+            }
             $importe_hora = $importe / $hora->dura;
             $folio->importe_hora = $importe_hora;
             $folio->importe_total = $value['importe'];
