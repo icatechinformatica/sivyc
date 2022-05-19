@@ -498,28 +498,38 @@ class turnarAperturaController extends Controller
                     $message = "El memorándum ya se encuentra en uso..";
                 } else {
                     $r = DB::table('tbl_cursos')->where('num_revision',$request->memo)->orWhere('munidad',$request->memo)->value('num_revision');
-                    $result = DB::table('tbl_cursos')->where('num_revision',$r)->update(['munidad' => $request->nmemo]);
-                    if ($result) {
-                        $result2 = DB::table('tbl_cursos_history')->where('munidad',$r)->update(['munidad' => $request->nmemo,'num_revision'=>$r]);
-                        $_SESSION['memo'] = $request->nmemo;
-                        $message = "El Guardado del Memorándum fué exitoso";
-                    }else{
+                    if ($r) {
+                        $result = DB::table('tbl_cursos')->where('num_revision',$r)->update(['munidad' => $request->nmemo]);
+                        if ($result) {
+                            $result2 = DB::table('tbl_cursos_history')->where('munidad',$r)->update(['munidad' => $request->nmemo,'num_revision'=>$r]);
+                            $_SESSION['memo'] = $request->nmemo;
+                            $message = "El Guardado del Memorándum fué exitoso";
+                        }else{
+                            $message = "Operación fallida, vuelva a intentar..";
+                        }
+                    } else {
                         $message = "Operación fallida, vuelva a intentar..";
                     }
+                    
                 } 
             }else {
                 if ((DB::table('tbl_cursos')->where('nmunidad',$request->nmemo)->value('id'))) {
                     $message = "El memorándum ya se encuentra en uso..";
                 } else {
                     $r = DB::table('tbl_cursos')->where('num_revision_arc02',$request->memo)->orWhere('nmunidad',$request->memo)->value('num_revision_arc02');
-                    $result = DB::table('tbl_cursos')->where('num_revision_arc02',$r)->update(['nmunidad' => $request->nmemo]);
-                    if ($result) {
-                        $result2 = DB::table('tbl_cursos_history')->where('nmunidad',$r)->update(['nmunidad' => $request->nmemo, 'num_revision'=>$r]);
-                        $_SESSION['memo'] = $request->nmemo;
-                        $message = "El Guardado del Memorándum fué exitoso";
-                    }else{
+                    if ($r) {
+                        $result = DB::table('tbl_cursos')->where('num_revision_arc02',$r)->update(['nmunidad' => $request->nmemo]);
+                        if ($result) {
+                            $result2 = DB::table('tbl_cursos_history')->where('nmunidad',$r)->update(['nmunidad' => $request->nmemo, 'num_revision'=>$r]);
+                            $_SESSION['memo'] = $request->nmemo;
+                            $message = "El Guardado del Memorándum fué exitoso";
+                        }else{
+                            $message = "Operación fallida, vuelva a intentar..";
+                        }
+                    } else {
                         $message = "Operación fallida, vuelva a intentar..";
                     }
+                    
                 }
             }
         }
