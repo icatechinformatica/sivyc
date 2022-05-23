@@ -299,6 +299,17 @@
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
+                                    @if($itemData->permiso_editar == TRUE)
+                                        @can('supre.upload_supre')
+                                            <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
+                                                data-toggle="modal" data-placement="top"
+                                                data-target="#DocSupreModal2"
+                                                data-id='{{$itemData->id}}'
+                                                title="Reemplazar Suficiencia Presupuestal Firmada">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endcan
+                                    @endif
                                     @if ($itemData->doc_validado == NULL)
                                         @can('supre.upload_valsupre')
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"

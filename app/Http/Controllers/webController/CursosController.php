@@ -152,6 +152,11 @@ class CursosController extends Controller
     public function store(Request $request)
     {
         // dd($request);
+        $chkcur = curso::WHERE('nombre_curso','=', $request->nombrecurso)->WHERE('tipo_curso','=', $request->tipo_curso)->FIRST();
+        if(isset($chkcur))
+        {
+            return back()->withErrors(['msg' => 'EL CURSO YA ESTA REGISTRADO EN EL CATALOGO']);
+        }
         try {
             //validación de archivos
             $gv = [];
