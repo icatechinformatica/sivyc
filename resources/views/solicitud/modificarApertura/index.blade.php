@@ -208,33 +208,17 @@
         <script src="{{ asset('js/solicitud/apertura.js') }}"></script>             
 
         <script language="javascript">
-            $(document).ready(function(){ 
-                $('#frm').validate({
-                            rules:{
-                                nmunidad:{
-                                    required: true
-                                },
-                                opcion:{
-                                    required: true
-                                },
-                                observaciones:{
-                                    required: true
-                                }
-                            },
-                            messages:{
-                                nmunidad:{
-                                    required: 'Seleccione una opción'
-                                },
-                                opcion:{
-                                    required: 'Seleccione una opción'
-                                },
-                                observaciones:{
-                                    required: 'Seleccione una opción'
-                                }
-                            }
-                });               
+            $(document).ready(function(){                
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura.modificar')}}"); $('#frm').submit();}); 
-                $("#guardar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.modguardar')}}"); $('#frm').submit();}});
+                $("#guardar" ).click(function(){
+                    if ($('#nmunidad').val()==''||$('#opcion').val()==''||$('#observaciones').val()==''||$('#observaciones').val()==' ') {
+                        alert("Todos los campos deben ser llenados!! ");
+                    } else {
+                        if(confirm("Esta seguro de ejecutar la acción?")==true){
+                            $('#frm').attr('action', "{{route('solicitud.apertura.modguardar')}}"); $('#frm').submit();
+                        }
+                    }
+                });
                 $("#deshacer" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.moddeshacer')}}"); $('#frm').submit();}});
             });       
         </script>  
