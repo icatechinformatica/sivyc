@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers\consultas;
-
 use App\Http\Controllers\Controller;
 use App\Models\instructor;
 use App\Models\tbl_curso;
@@ -11,74 +9,53 @@ use Illuminate\Support\Facades\DB;
 class instructorconsuController extends Controller
 {
     public function index(Request $request){
-
         $tipo = $request->tipo;
         $buscar= $request->busqueda;   //dd($request->all());
         $fecha_inicio = $request->fecha_inicio;
         $fecha_termino = $request->fecha_termino;
-        $unidad = DB::table('tbl_unidades')->pluck('unidad'); //dd($unidades);
-        $consulta = DB::table('instructores')->join('tbl_cursos as tc','instructores.id','=','tc.id_instructor');
-        if (!empty($tipo)) {
-            # entramos y validamos
-            if (!empty($buscar)) {
-                # empezamos
+        $unidad = $request->unidad;
+        $unidades = DB::table('tbl_unidades')->pluck('unidad','unidad'); //dd($unidades);
+        $consulta = null;
+        if($unidad OR ($tipo AND $buscar) OR $fecha_inicio OR $fecha_termino){
+            $consulta = DB::table('instructores')->join('tbl_cursos as tc','instructores.id','=','tc.id_instructor');
+            if (!empty($tipo) AND !empty($buscar)) {
                 switch ($tipo) {
-                    case 'nombre_instructor':
-                        # code...
+                    case 'instructor':                        
                          $buscar = trim($buscar,' ');
-                         $buscar = $this->eliminar_tildes($buscar);    //dd($buscar);
-                        //  dd($buscar);
-                         //$consulta->where( DB::raw('(btrim(CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores.nombre)))'), 'LIKE', "%$buscar%");
-                         //$consulta->where(DB::raw('replace(REPLACE(REPLACE(REPLACE(REPLACE(upper(CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores.nombre)), Á, A), É,E), Í, I), Ó, O), Ú,U)'),'like',"%$buscar%");
+                         $buscar = $this->eliminar_tildes($buscar);
                          $consulta->where( DB::raw('replace(REPLACE(REPLACE(REPLACE(REPLACE(btrim(upper(CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores.nombre)),\' \'), \'Á\', \'A\'), \'É\',\'E\'), \'Í\', \'I\'), \'Ó\', \'O\'), \'Ú\',\'U\')'), 'LIKE', "%$buscar%");
                         break;
                     case 'curp':
                          $consulta->where( 'instructores.curp', '=', $buscar);
                         break;
-                    case 'curso':
+                    case 'clave':
                          $consulta->where( 'tc.clave', '=', $buscar);
                         break;
-                    case 'nombre_curso':
+                    case 'curso':
                          $buscar = trim($buscar,' ');
-                         $buscar = $this->eliminar_tildes($buscar); //dd($buscar);
-                         //$consulta->where(DB::raw('UPPER(tc.curso)'), 'like', "%$buscar%");
+                         $buscar = $this->eliminar_tildes($buscar);                         
                          $consulta->where(DB::raw("replace(REPLACE(REPLACE(REPLACE(REPLACE(upper(btrim(tc.curso,' ')), 'Á', 'A'), 'É','E'), 'Í', 'I'), 'Ó', 'O'), 'Ú','U')"), 'like', "%$buscar%");
-                         //dd($consulta);
-                        break;
-                    default:
-                        # code...
-                        break;
+                         
+                        break;                    
                 }
+            
             }
-        }
-        if(isset($fecha_inicio)&&isset($fecha_termino)){
-                /*$consulta = $consulta->where(function ($query,$fecha_inicio,$fecha_termino) {
-                                        $query->where('tc.inicio', '>=', $fecha_inicio)
-                                              ->Where('tc.termino', '<=', $fecha_termino);})
-                                    ->orWhere(function ($query,$fecha_inicio,$fecha_termino) {
-                                        $query->where('tc.inicio','>=', $fecha_inicio)
-                                              ->where('tc.inicio','<=', $fecha_termino);})
-                                    ->orWhere(function ($query,$fecha_inicio,$fecha_termino) {
-                                        $query->where('tc.termino','>=', $fecha_inicio)
-                                              ->where('tc.termino','<=', $fecha_termino);
-                                    });*/
-                $consulta = $consulta->whereRaw("(tc.inicio >= '$fecha_inicio' and tc.termino <= '$fecha_termino'
-                                                OR tc.inicio >= '$fecha_inicio' and tc.inicio <= '$fecha_termino'
-                                                OR tc.termino >= '$fecha_inicio' and tc.termino <= '$fecha_termino')");
-                                    //  ->orwhereRaw("tc.inicio >= '$fecha_inicio' and tc.inicio <= '$fecha_termino'")
-                                    //  ->orWhereRaw("tc.termino >= '$fecha_inicio' and tc.termino <= '$fecha_termino')");
-        }elseif(isset($fecha_inicio)&&empty($fecha_termino)){
-            $consulta = $consulta->where('tc.inicio','>=',$fecha_inicio);
-        }elseif(empty($fecha_inicio)&&isset($fecha_termino)){
-            $consulta = $consulta->where('tc.termino','<=',$fecha_termino);
-        }
+            if(isset($fecha_inicio)&&isset($fecha_termino)){
+                                $consulta = $consulta->whereRaw("(tc.inicio >= '$fecha_inicio' and tc.termino <= '$fecha_termino'
+                                                    OR tc.inicio >= '$fecha_inicio' and tc.inicio <= '$fecha_termino'
+                                                    OR tc.termino >= '$fecha_inicio' and tc.termino <= '$fecha_termino')");
+            }elseif(isset($fecha_inicio)&&empty($fecha_termino)){
+                $consulta = $consulta->where('tc.inicio','>=',$fecha_inicio);
+            }elseif(empty($fecha_inicio)&&isset($fecha_termino)){
+                $consulta = $consulta->where('tc.termino','<=',$fecha_termino);
+            }
 
-        if(isset($request->unidad)){
-            $consulta = $consulta->where('tc.unidad','=',$request->unidad);
+            if(isset($request->unidad)){
+                $consulta = $consulta->where('tc.unidad','=',$request->unidad);
+            }
+            $consulta = $consulta->orderBy('tc.termino','desc')->paginate(15,[DB::raw('CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores."nombre") as nombre'),'tc.efisico','tc.folio_grupo','tc.unidad','tc.curso','tc.status_curso','tc.inicio','tc.termino','tc.dia','tc.hini','tc.hfin','tc.horas','tipo_curso','tc.dura','tcapacitacion','espe'])->setPath('');
         }
-        $consulta = $consulta->orderBy('tc.termino','desc')->paginate(15,[DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno") as nombre'),'tc.efisico','tc.folio_grupo','tc.unidad','tc.curso','tc.status_curso','tc.inicio','tc.termino','tc.dia','tc.hini','tc.hfin','tc.horas','tipo_curso','tc.dura','tcapacitacion','espe']);
-        // dd($consulta);
-        return view('consultas.consultainstructor',compact('consulta','unidad'));
+        return view('consultas.consultainstructor',compact('consulta','unidades','request'));
     }
 
     public function eliminar_tildes($cadena){
