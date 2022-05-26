@@ -812,12 +812,12 @@ class aperturaController extends Controller
             $mes = Carbon::parse($mesActivo)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
-            $consulta = DB::table('agenda')->select('agenda.id')
-                                           ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
-                                           ->where('tbl_cursos.status','!=','CANCELADO')
-                                           ->where('agenda.id_instructor','=', $id_instructor)
-                                           ->where('agenda.start','>=', $mesInicio)
-                                           ->where('agenda.start','<=', $mesFin)
+            $consulta = DB::table('tbl_cursos')->select('id')
+                                           ->where('status','!=','CANCELADO')
+                                           ->where('id_instructor','=', $id_instructor)
+                                           ->where('folio_grupo','!=',$id_curso)
+                                           ->where('inicio','>=', $mesInicio)
+                                           ->where('inicio','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
@@ -833,12 +833,12 @@ class aperturaController extends Controller
             $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
-            $consulta = DB::table('agenda')->select('agenda.id')
-                                           ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
-                                           ->where('tbl_cursos.status','!=','CANCELADO')
-                                           ->where('agenda.id_instructor','=', $id_instructor)
-                                           ->where('agenda.start','>=', $mesInicio)
-                                           ->where('agenda.start','<=', $mesFin)
+            $consulta = DB::table('tbl_cursos')->select('id')
+                                           ->where('status','!=','CANCELADO')
+                                           ->where('id_instructor','=', $id_instructor)
+                                           ->where('folio_grupo','!=',$id_curso)
+                                           ->where('inicio','>=', $mesInicio)
+                                           ->where('inicio','<=', $mesFin)
                                            ->get();
             $conteo = $consulta->count();
             if ($conteo >= 1) {
