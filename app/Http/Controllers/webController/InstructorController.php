@@ -1233,7 +1233,7 @@ class InstructorController extends Controller
                 DB::raw("array(select observacion from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
-                // ->WHERE('instructores.estado', '=', TRUE)
+                ->WHERE('instructores.estado', '=', TRUE)
                 // ->whereRaw("array(select especialidades.nombre from especialidad_instructores
                 // LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
                 // LEFT JOIN instructor_perfil ip on ip.numero_control = instructores.id
