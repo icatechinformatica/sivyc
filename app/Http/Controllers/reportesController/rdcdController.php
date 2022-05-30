@@ -75,7 +75,7 @@ class rdcdController extends Controller
         $cuerpo2 = [];
         foreach ($actas as $acta) {
             $cuerpo=DB::table('tbl_folios as tf')
-                ->select(DB::raw("(sum(case when tf.movimiento in ('EXPEDIDO','CANCELADO') then 1 else 0 end) )as expedidos"))
+                ->select(DB::raw("(sum(case when tf.movimiento in ('EXPEDIDO','CANCELADO','REEXPEDIDO','DUPLICADO') then 1 else 0 end) )as expedidos"))
                 ->where('tf.folio', '<=', $acta->ffinal)
                 ->where('tf.folio', '>=', $acta->finicial)
                 ->get();
