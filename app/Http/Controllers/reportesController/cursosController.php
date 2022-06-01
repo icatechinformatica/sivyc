@@ -272,7 +272,8 @@ class cursosController extends Controller
                 }
                 $data = DB::table('tbl_inscripcion as i')
                     ->select('i.alumno','i.curp',
-                        DB::raw("REPLACE('".$curso->curso."','.','') as nombre_curso"),
+                        // DB::raw("REPLACE('".$curso->curso."','.','') as nombre_curso"),
+                        DB::raw("E'".addslashes($curso->curso)."' as nombre_curso"),
                         DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha"),
                         DB::raw("LPAD('".$curso->dia_termino."',2,'0') as dia"),
                         DB::raw("'".$this->mes[$curso->mes_termino]."' as mes"),
