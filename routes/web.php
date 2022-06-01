@@ -610,6 +610,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/organismos/update', 'organismosController@update')->name('organismos.update');
     Route::get('/organismo/municipio','organismosController@muni');
 
+
+    Route::get('paqueterias', 'webController\PaqueteriaDidacticaController@index')->name('paqueteriasDidacticas');
+
 });
 
 /*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
@@ -770,3 +773,6 @@ Route::post('/instructores/busqueda/municipio', 'webController\Instructorcontrol
 
 //  autocomplete localidad inscripcion alumnos
 Route::get('inscripciones/localidad', 'webController\AlumnoController@localidadAutocomplete')->name('autocomplete.localidad');
+
+
+
