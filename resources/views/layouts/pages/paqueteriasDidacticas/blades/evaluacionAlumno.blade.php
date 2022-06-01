@@ -14,6 +14,6 @@
 <div class="form-row">
     <div class="form-group col-md-10 col-sm-10">
         <label for="instrucciones" class="control-label">PREGUNTA</label>
-        
+        <input type="text">
     </div>
 </div>
