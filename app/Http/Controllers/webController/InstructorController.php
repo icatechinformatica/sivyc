@@ -71,7 +71,7 @@ class InstructorController extends Controller
         if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'depto_academico_instructor' || $roles[0]->role_name == 'auxiliar_cursos')
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor)->WHERE('id', '!=', '0')
-            ->WHERE('estado' ,'=', true)
+            ->WHEREIN('estado' , [TRUE,FALSE])
             ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
         }
         else
