@@ -135,3 +135,19 @@ input[type=text], select, textarea {
     padding-right: 1.1rem;
     }
     }
+
+
+    /*
+    *
+    * ==========================================
+    * CUSTOM PAQ DIDACTICAS
+    * ==========================================
+    *
+    */
+    
+    .resp-abierta {
+      border:none;
+      border-bottom: 1px solid #621132;
+      padding: 5px 10px;
+      outline: none;
+    }

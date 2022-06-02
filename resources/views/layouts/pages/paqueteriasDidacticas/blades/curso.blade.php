@@ -1,4 +1,3 @@
-
 <hr style="border-color:dimgray">
 <label>
     <h2>INFORMACIÓN TÉCNICA DEL CURSO</h2>
@@ -115,7 +114,7 @@
 
 <div class="form-row">
     <label for="objetivos" class="control-label">Objetivos especificos por tema:</label>
-    <textarea placeholder="Objetivos especificos por tema" class="form-control" id="objetivos" name="objetivos" cols="15" rows="5"></textarea>
+    <textarea placeholder="Objetivos especificos por tema" class="form-control" id="summary-ckeditor" name="summary-ckeditor" cols="15" rows="5"></textarea>
 </div>
 
 <br>
@@ -158,3 +157,4 @@
         </table>
     </div>
 </div>
+

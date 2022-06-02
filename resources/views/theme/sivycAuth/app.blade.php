@@ -69,6 +69,7 @@
     <script src="{{asset("vendor/dzsparallaxer/advancedscroller/plugin.js") }}"></script>
     <script src="{{asset("vendor/fancybox/jquery.fancybox.min.js") }}"></script>
     <script src="{{asset("vendor/slick-carousel/slick/slick.js") }}"></script>
+    
 
     <script src="{{asset("js/hs.core.js") }}"></script>
     <script src="{{asset("vendor/typedjs/typed.min.js") }}"></script>
