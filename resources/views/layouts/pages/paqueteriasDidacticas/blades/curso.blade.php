@@ -75,7 +75,7 @@
     <div class="row col-md-4 col-sm-12">
         <div class="form-group col-md-12 col-sm-12">
             <label for="aprendizajeesperado" class="control-label">Aprendizaje Esperado</label>
-            <textarea placeholder="Aprendizaje Esperado" class="form-control" id="aprendizajeesperado" name="aprendizajeesperado" cols="15" rows="5"></textarea>
+            <textarea placeholder="Aprendizaje Esperado" class="form-control col-md-12" id="aprendizajeesperado" name="aprendizajeesperado" cols="20" rows="5"></textarea>
         </div>
     </div>
 

@@ -32,18 +32,18 @@
         </div>
 
 
-        <div class="form-row col-md-7 respuestas-area" id="parent-resp">
-            <div class="input-group mb-3" id="child-resp1">
+        <div class="form-row col-md-7 opcion-area" id="parent-opc">
+            <div class="input-group mb-3" id="p1-opc-1">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input" id="respuesta1-p1">
+                        <input type="checkbox" aria-label="Checkbox for following text input" id="resp-1-p1">
                     </div>
                 </div>
-                <input placeholder="Opcion" type="text" class="form-control" id="opcion1-p1" name="opcion1-p1">
+                <input placeholder="Opcion" type="text" class="form-control" id="opcion1-p1" name="opcion-1-p1">
             </div>
         </div>
 
-        <div class="form-row col-md-6 respuestas-area">
+        <div class="form-row col-md-6 opcion-area">
             <div class="input-group mb-3">
                 <a style="cursor: default;" onclick="agregarOpcion()">Agregar opcion</a>
             </div>
@@ -61,4 +61,4 @@
 
 <div class="form-group col-md-2 col-sm-6">
     <a style="cursor: default;" onclick="agregarPregunta()" class="btn btn-primary">Agregar Pregunta</a>
-</div>|
+</div>
