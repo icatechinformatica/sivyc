@@ -37,7 +37,7 @@
             </li>
         </ul>
         <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
+            <div class="tab-pane fade  " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.curso')
             </div>
             <div class="tab-pane fade show active" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
@@ -56,6 +56,8 @@
 <script src="{{asset('vendor/ckeditor/ckeditor.js') }}"></script>
 <script >
     CKEDITOR.replace('summary-ckeditor');
+    CKEDITOR.replace('aprendizajeesperado');
+
     // $("#cke_summary-ckeditor").addClass("col-md-12");
 </script>
 <script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}" ></script>

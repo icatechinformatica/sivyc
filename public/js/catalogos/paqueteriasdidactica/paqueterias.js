@@ -1,9 +1,12 @@
 var ponderacionTotal = 0;
-$(document).ready(function () {
-    console.log('paqueterias')
-    // $("#cke_summary-ckeditor").addClass("col-md-12");
-
-});
+   /*
+    *
+    * ==========================================
+    * CURSO JS
+    * ==========================================
+    *
+    */
+    
 
 function agregarponderacion() {
     var tbodyElement = document.getElementById('tEvaluacion');
@@ -55,6 +58,7 @@ function agregarContenidoT() {
     var estrategiaD = document.createElement('td');
     var proceso = document.createElement('td');
     var duracion = document.createElement('td');
+    var contenidoExtra = document.createElement('td');
     var accionElement = document.createElement('td');
     var aElement = document.createElement('a');
     var iElement = document.createElement('i');
@@ -68,6 +72,7 @@ function agregarContenidoT() {
     estrategiaD.innerText = $('#estrategiadidactica').val();
     proceso.innerText = $('#procesoevaluacion').val();
     duracion.innerText = $('#duracionT').val();
+    contenidoExtra.innerText = $('#contenidoExtra').val();
 
 
     trElement.setAttribute("id", 'contenido' + numelement);
@@ -83,6 +88,7 @@ function agregarContenidoT() {
     trElement.appendChild(estrategiaD);
     trElement.appendChild(proceso);
     trElement.appendChild(duracion);
+    trElement.appendChild(contenidoExtra);
     trElement.appendChild(accionElement);
     tbodyElement.appendChild(trElement);
 
@@ -90,6 +96,47 @@ function agregarContenidoT() {
     $('#estrategiadidactica').val('');
     $('#procesoevaluacion').val('');
     $('#duracionT').val('');
+}
+function agregarRecursosD() {
+    var tbodyElement = document.getElementById('tRecursosD');
+    var numelement = tbodyElement.rows.length;
+    var trElement = document.createElement('tr');
+    var elementoApoyo = document.createElement('td');
+    var auxEnseñanza = document.createElement('td');
+    var referencias = document.createElement('td');
+    var accionElement = document.createElement('td');
+    var aElement = document.createElement('a');
+    var iElement = document.createElement('i');
+
+
+    if (!$('#elementoapoyo').val() || !$('#auxenseñanza').val() || !$('#referencias').val() )
+        return
+
+
+    elementoApoyo.innerText = $('#elementoapoyo').val();
+    auxEnseñanza.innerText = $('#auxenseñanza').val();
+    referencias.innerText = $('#referencias').val();
+
+
+    trElement.setAttribute("id", 'recurso' + numelement);
+    aElement.setAttribute("onclick", 'removerRecurso(' + numelement + ')');
+
+    iElement.classList.add("material-icons");
+    iElement.innerHTML = '&#xE872;';
+
+    aElement.appendChild(iElement);
+    accionElement.appendChild(aElement);
+
+    trElement.appendChild(elementoApoyo);
+    trElement.appendChild(auxEnseñanza);
+    trElement.appendChild(referencias);
+    trElement.appendChild(accionElement);
+    tbodyElement.appendChild(trElement);
+
+    $('#elementoapoyo').val('');
+    $('#auxenseñanza').val('');
+    $('#referencias').val('');
+    
 }
 
 function removerContenido(idContenido) {
@@ -104,6 +151,11 @@ function removerCriterio(idCriterio) {
     changeSiblings(tr);
     document.getElementById('tEvaluacion').removeChild(tr);
 }
+function removerRecurso(idRecurso) {
+    var tr = document.getElementById('recurso' + idRecurso);
+    changeSiblings(tr);
+    document.getElementById('tRecursosD').removeChild(tr);
+}
 
 function changeSiblings(tr) {
     while (tr = tr.nextSibling) {
@@ -112,50 +164,63 @@ function changeSiblings(tr) {
     }
 }
 
-function cambiarTipoPregunta() {
-    var value = $("#tipopregunta option:selected").text();
+
+
+   /*
+    *
+    * ==========================================
+    * EVAL ALUMNO JS
+    * ==========================================
+    *
+    */
+    
+function cambiarTipoPregunta(idPregunta) {
+    var value = $("#tipopregunta-"+idPregunta+" option:selected").text();
+    
     if (value == 'Abierta') {
         console.log('hide multiple')
-        $(".respuestas-area").css('display', 'none');
-        $(".respuesta-abierta-area").css('display', 'block');
+        $(".opcion-area-"+idPregunta+"").css('display', 'none');
+        $(".ra-"+idPregunta).css('display', 'block');
     } else {
-        $(".respuesta-abierta-area").css('display', 'none');
-        $(".respuestas-area").css('display', 'block');
+        $(".ra-"+idPregunta).css('display', 'none');
+        $(".opcion-area-"+idPregunta).css('display', 'block');
 
     }
 }
 
-function agregarOpcion() {
-    var numChildrenPregunta = $("#preguntas-area-parent").children() + 1;
-    var numChildren = $("#parent-opc").children() + 1;
+function agregarOpcion(idPregunta) {
+    var numChildren = $('#opc-p'+idPregunta).children().length + 1;
+
     var nuevaOpcion = $(
-        '<div class="input-group mb-3" id="p'+numChildrenPregunta+'-opc-'+numChildren+'">' +
+        '<div class="input-group mb-3 " id="opc-'+numChildren+'-'+idPregunta+'">' +
         '<div class="input-group-prepend">' +
         '<div class="input-group-text">' +
-        '<input type="checkbox" aria-label="Checkbox for following text input" id="resp-'+numChildren+'-p'+numChildrenPregunta+'"' +
+        '<input type="checkbox" aria-label="Checkbox for following text input" id="resp-'+numChildren+'-'+idPregunta+'">' +
         '</div>' +
         '</div>' +
-        ' <input placeholder="Opcion" type="text" class="form-control" id="opcion0" name="opcion0">' +
+        ' <input placeholder="Opcion" type="text" class="form-control" id="opcion-'+numChildren+'-'+idPregunta+'" name="opcion-'+numChildren+'-'+idPregunta+'">' +
         '</div>');
-    $('#parent-resp').append(nuevaOpcion);
+    $('#opc-'+idPregunta).append(nuevaOpcion);
 }
 
 
 function agregarPregunta() {
-    var numChildren = $("#preguntas-area-parent").children() + 1;
+    var numChildren = $("#preguntas-area-parent").children().length + 1;
+    var opcion = `p${numChildren}`;
+    
     var nuevaPregunta = $(
-        '<div class="row col-md-12" id = "preguntas-area-children' + numChildren + '" >' +
+        '<div class="row col-md-12" id = "pregunta' + numChildren + '" >' +
         '<div class="form-row col-md-7 col-sm-12">' +
         '<div class="form-group col-md-12 col-sm-10">' +
         '<label for="pregunta0" class="control-label">PREGUNTA</label>' +
-        '<textarea placeholder="pregunta" class="form-control" id="pregunta0" name="pregunta0" cols="15" rows="2"></textarea>' +
+        '<textarea placeholder="pregunta" class="form-control" id="p'+numChildren+'" name="p'+numChildren+'" cols="15" rows="2"></textarea>' +
         '</div>' +
         '</div>' +
 
         '<div class="form-row col-md-5 ">' +
         '<div class="form-group col-md-12 col-sm-6">' +
         '<label for="tipopregunta" class="control-label">TIPO DE PREGUNTA</label>' +
-        '<select onchange="cambiarTipoPregunta()" class="form-control" id="tipopregunta" name="tipopregunta">' +
+        '<select onchange="cambiarTipoPregunta(\'p'+numChildren+'\')" class="form-control" id="tipopregunta-p'+numChildren+'" name="tipopregunta-p'+numChildren+'">' +
         '<option value="multiple" selected>Multiple</option>' +
         '<option value="abierta">Abierta</option>' +
         '</select>' +
@@ -163,24 +228,24 @@ function agregarPregunta() {
         '</div>' +
 
 
-        '<div class="form-row col-md-7 respuestas-area" id="parent-resp">' +
-        '<div class="input-group mb-3" id="child-resp1">' +
+        '<div class="form-row col-md-7 opcion-area-p'+numChildren+'" id="opc-p'+numChildren+'">' +
+        '<div class="input-group mb-3" id="opc-1-p'+numChildren+'">' +
         '<div class="input-group-prepend">' +
         '<div class="input-group-text">' +
-        '<input type="checkbox" aria-label="Checkbox for following text input" id="respuesta1-p1">' +
+        '<input type="checkbox" aria-label="Checkbox for following text input" id="resp-1-p'+numChildren+'">' +
         '</div>' +
         '</div>' +
-        '<input placeholder="Opcion" type="text" class="form-control" id="opcion1-p1" name="opcion1-p1">' +
+        '<input placeholder="Opcion" type="text" class="form-control" id="opcion1-p'+numChildren+'" name="opcion-1-p'+numChildren+'">' +
         '</div>' +
         '</div>' +
 
-        '<div class="form-row col-md-6 respuestas-area">' +
+        '<div class="form-row col-md-6 opcion-area-p'+numChildren+'">' +
         '<div class="input-group mb-3">' +
-        '<a style="cursor: default;" onclick="agregarOpcion()">Agregar opcion</a>' +
+        '<a style="cursor: default;" onclick="agregarOpcion(\'p'+numChildren+'\')">Agregar opcion</a>' +
         '</div>' +
         '</div>' +
-        '<!--se oculta por medio del class-- >' +
-        '<div class="form-row col-md-7 respuesta-abierta-area" style="display: none">' +
+        
+        '<div class="form-row col-md-7 respuesta-abierta-area ra-p'+numChildren+'" style="display: none">'+
         '<div class="input-group mb-3">' +
         '<input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">' +
         '</div>' +

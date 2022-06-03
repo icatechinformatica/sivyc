@@ -13,18 +13,18 @@
 
 <div class="row col-md-12" id="preguntas-area-parent">
 
-    <div class="row col-md-12" id="preguntas-area-children1">
+    <div class="row col-md-12" id="pregunta1">
         <div class="form-row col-md-7 col-sm-12">
             <div class="form-group col-md-12 col-sm-10">
-                <label for="pregunta0" class="control-label">PREGUNTA</label>
-                <textarea placeholder="pregunta" class="form-control" id="pregunta0" name="pregunta0" cols="15" rows="2"></textarea>
+                <label for="p1" class="control-label">PREGUNTA</label>
+                <textarea placeholder="pregunta" class="form-control" id="p1" name="p1" cols="15" rows="2"></textarea>
             </div>
         </div>
 
         <div class="form-row col-md-5 ">
             <div class="form-group col-md-12 col-sm-6">
                 <label for="tipopregunta" class="control-label">TIPO DE PREGUNTA</label>
-                <select onchange="cambiarTipoPregunta()" class="form-control" id="tipopregunta" name="tipopregunta">
+                <select onchange="cambiarTipoPregunta('p1')" class="form-control" id="tipopregunta-p1" name="tipopregunta-p1">
                     <option value="multiple" selected>Multiple</option>
                     <option value="abierta">Abierta</option>
                 </select>
@@ -32,24 +32,24 @@
         </div>
 
 
-        <div class="form-row col-md-7 opcion-area" id="parent-opc">
-            <div class="input-group mb-3" id="p1-opc-1">
+        <div class="form-row col-md-7 opcion-area-p1" id="opc-p1">
+            <div class="input-group mb-3 " id="opc-1-p1">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
                         <input type="checkbox" aria-label="Checkbox for following text input" id="resp-1-p1">
                     </div>
                 </div>
-                <input placeholder="Opcion" type="text" class="form-control" id="opcion1-p1" name="opcion-1-p1">
+                <input placeholder="Opcion" type="text" class="form-control" id="opcion-1-p1" name="opcion-1-p1">
             </div>
         </div>
 
-        <div class="form-row col-md-6 opcion-area">
+        <div class="form-row col-md-6 opcion-area-p1">
             <div class="input-group mb-3">
-                <a style="cursor: default;" onclick="agregarOpcion()">Agregar opcion</a>
+                <a style="cursor: default;" onclick="agregarOpcion('p1')">Agregar opcion</a>
             </div>
         </div>
         <!--se oculta por medio del class-->
-        <div class="form-row col-md-7 respuesta-abierta-area" style="display: none">
+        <div class="form-row col-md-7 respuesta-abierta-area ra-p1" style="display: none">
             <div class="input-group mb-3">
                 <input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">
             </div>

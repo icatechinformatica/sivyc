@@ -22,11 +22,15 @@
         <input placeholder="Ciclo escolar" type="text" class="form-control" id="cicloescolar" name="cicloescolar">
     </div>
     <div class="form-group col-md-4">
-        <label for="modalidad" class="control-label">Nivel</label>
+        <label for="programaestrategico" class="control-label">Programa estrategico (Caso aplicable )</label>
+        <input placeholder="Ciclo escolar" type="text" class="form-control" id="programaestrategico" name="programaestrategico">
+    </div>
+    <div class="form-group col-md-4">
+        <label for="modalidad" class="control-label">Modalidad</label>
         <select class="form-control" id="modalidad" name="modalidad">
             <option value="" selected disabled>--SELECCIONAR--</option>
             <option value="EXT">EXT</option>
-            <option value="CAT">CAT</option>
+            <option value="CAE">CAE</option>
         </select>
     </div>
 </div>
@@ -35,9 +39,9 @@
         <label for="tipo" class="contro-label">Tipo</label>
         <select class="form-control" id="tipo" name="tipo">
             <option value="" selected disabled>--SELECCIONAR--</option>
-            <option value="distancia">Distancia</option>
-            <option value="presencial">Presencias</option>
-            <option value="ambos">Distancia y Presencial</option>
+            <option value="A DISTANCIA">A DISTANCIA</option>
+            <option value="PRESENCIA">PRESENCIAL</option>
+            <option value="A DISTANCIA Y PRESENCIAL">A DISTANICA Y PRESENCIAL</option>
         </select>
     </div>
     <div class="form-group col-md-4">
@@ -56,7 +60,7 @@
         <input placeholder="Formacion Laboral" type="text" class="form-control" id="formacionlaboral" name="formacionlaboral">
     </div>
     <div class="form-group col-md-4">
-        <label for="especialidad" class="control-label">Especialidad</label>
+        <label for="especialidad" class="control-label">Especialidad (BUSCADOR) </label>
         <input placeholder="Especialidad" type="text" class="form-control" id="especialidad" name="especialidad">
     </div>
     <div class="form-group col-md-4">
@@ -72,14 +76,14 @@
 <hr style="border-color:dimgray">
 <div class="form-row">
 
-    <div class="row col-md-4 col-sm-12">
+    <div class="row col-md-7 col-sm-12">
         <div class="form-group col-md-12 col-sm-12">
-            <label for="aprendizajeesperado" class="control-label">Aprendizaje Esperado</label>
+            <label for="aprendizajeesperado" class="control-label">Objetivo General (Aprendizaje Esperado)</label>
             <textarea placeholder="Aprendizaje Esperado" class="form-control col-md-12" id="aprendizajeesperado" name="aprendizajeesperado" cols="20" rows="5"></textarea>
         </div>
     </div>
 
-    <div class="row col-md-8 col-sm-12" id="row-criterios">
+    <div class="row col-md-5 col-sm-12" id="row-criterios">
         <div class="form-group col-md-5 col-sm-5">
             <label for="criterio" class="control-label">Proceso de evaluacion</label>
             <input placeholder="P.E. Examen" type="text" class="form-control" id="criterio" name="criterio">
@@ -117,6 +121,11 @@
     <textarea placeholder="Objetivos especificos por tema" class="form-control" id="summary-ckeditor" name="summary-ckeditor" cols="15" rows="5"></textarea>
 </div>
 
+<div class="form-group col-md-4">
+        <label for="transversabilidad" class="control-label">Transversabilidad con otros Cursos </label>
+        <input placeholder="Transversabilidad" type="text" class="form-control" id="transversabilidad" name="transversabilidad">
+    </div>
+
 <br>
 <div class="form-row">
     <div class="form-group col-md-3 col-sm-6">
@@ -135,6 +144,10 @@
         <label for="duracion" class="control-label">Duracion</label>
         <input placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT">
     </div>
+    <div class="form-group col-md-2 col-sm-6">
+        <label for="contenidoExtra" class="control-label">Contenido Extra</label>
+        <input placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra">
+    </div>
     <div class="form-group col-md-1 col-sm-2">
         <a class="btn btn-warning" onclick="agregarContenidoT()">Agregar</a>
     </div>
@@ -149,6 +162,7 @@
                     <th>Estrategia Didactica</th>
                     <th>Proceso Evaluacion</th>
                     <th>Duracion</th>
+                    <th>Contenido Extra</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -158,3 +172,44 @@
     </div>
 </div>
 
+<br>
+<div class="form-row">
+    <label for="objetivos" class="control-label">Observaciones:</label>
+    <textarea placeholder="Observaciones" class="form-control" id="summary-ckeditor" name="summary-ckeditor" cols="15" rows="5"></textarea>
+</div>
+<br>
+
+<div class="form-row">
+    <div class="form-group col-md-3 col-sm-6">
+        <label for="elementoapoyo" class="control-label">Elementos de Apoyo</label>
+        <input placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo">
+    </div>
+    <div class="form-group col-md-3 col-sm-6">
+        <label for="auxenseñanza" class="control-label">Auxiliares de la enseñanza</label>
+        <input placeholder="Contenido Tematico" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza">
+    </div>
+    <div class="form-group col-md-3 col-sm-6">
+        <label for="referencias" class="control-label">Referencias</label>
+        <input placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias">
+    </div>
+    <div class="form-group col-md-1 col-sm-2">
+        <a class="btn btn-warning" onclick="agregarRecursosD()">Agregar</a>
+    </div>
+
+</div>
+<div class="form-row">
+    <div class="form group col-md-12 col-sm-12">
+        <table id="" class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Elementos de Apoyo</th>
+                    <th>Auxiliares de la enseñanzas</th>
+                    <th>Referecias</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tRecursosD">
+            </tbody>
+        </table>
+    </div>
+</div>
