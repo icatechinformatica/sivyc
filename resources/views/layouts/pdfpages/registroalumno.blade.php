@@ -106,7 +106,7 @@
                     <td><b>EDAD:</b> </td>
                     <td>{{$edad}} AÑOS</td>
                     <td><b>TELEFONO:</b></td>
-                    <td>@php if($alumnos->telefono){echo ($alumnos->telefono); }else{if($alumnos->telefono_casa){echo($alumnos->telefono_casa);}else{echo($alumnos->telefono_personal);} } @endphp</td>
+                    <td>@php if($alumnos->telefono_casa){echo ($alumnos->telefono_casa); }else{if($alumnos->telefono_personal){echo($alumnos->telefono_personal);}else{echo($alumnos->telefono);} } @endphp</td>
                 </tr>
                 <tr>
                     <td><b>DOMICILIO: </b></td>
