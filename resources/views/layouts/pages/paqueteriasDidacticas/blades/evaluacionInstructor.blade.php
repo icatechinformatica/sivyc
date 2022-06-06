@@ -303,5 +303,13 @@
     </div>
 </div>
 
-
-
+<div class="row">
+    <div class="col-lg-12 margin-tb">>
+        <div class="pull-right">
+            <!-- @can('cursos.store') -->
+            <!-- <button type="submit" class="btn btn-primary">Guardar</button> -->
+            <a type="button" class="btn btn-primary" onclick="creacion()">Guardar</a>
+            <!-- @endcan -->
+        </div>
+    </div>
+</div>

@@ -8,8 +8,14 @@ use Illuminate\Http\Request;
 class PaqueteriaDidacticaController extends Controller
 {
     //
-    public function index()
+    public function index($idCurso)
     {
-        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas');
+        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas',compact('idCurso'));
+    }
+
+    public function store(Request $request, $idCurso)
+    {
+        //
+        dd($request->toArray());
     }
 }

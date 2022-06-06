@@ -112,7 +112,7 @@
         </div>
 
     </div>
-
+    <input name="ponderacion" id="storePonderacion" class="@error('ponderacion')  is-invalid @enderror" value="{{old('ponderacion')}}">
 
 </div>
 
@@ -130,23 +130,23 @@
 <div class="form-row">
     <div class="form-group col-md-3 col-sm-6">
         <label for="contenidotematico" class="control-label">Contenido Tematico</label>
-        <input placeholder="Contenido Tematico" type="text" class="form-control" id="contenidotematico" name="contenidotematico">
+        <input placeholder="Contenido Tematico" type="text" class="form-control" id="contenidotematico" name="contenidotematico" >
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="estrategiadidactica" class="control-label">Estrategia Didactica</label>
-        <input placeholder="Contenido Tematico" type="text" class="form-control" id="estrategiadidactica" name="estrategiadidactica">
+        <input placeholder="Contenido Tematico" type="text" class="form-control" id="estrategiadidactica" name="estrategiadidactica" >
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="procesoevaluacion" class="control-label">Proceso Evaluacion</label>
-        <input placeholder="Proceso Evaluacion" type="text" class="form-control" id="procesoevaluacion" name="procesoevaluacion">
+        <input placeholder="Proceso Evaluacion" type="text" class="form-control" id="procesoevaluacion" name="procesoevaluacion" >
     </div>
     <div class="form-group col-md-2 col-sm-6">
         <label for="duracion" class="control-label">Duracion</label>
-        <input placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT">
+        <input placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT" >
     </div>
     <div class="form-group col-md-2 col-sm-6">
         <label for="contenidoExtra" class="control-label">Contenido Extra</label>
-        <input placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra">
+        <input placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra" >
     </div>
     <div class="form-group col-md-1 col-sm-2">
         <a class="btn btn-warning" onclick="agregarContenidoT()">Agregar</a>
@@ -171,6 +171,7 @@
         </table>
     </div>
 </div>
+<input hidden ="true" name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror" >
 
 <br>
 <div class="form-row">
@@ -182,15 +183,15 @@
 <div class="form-row">
     <div class="form-group col-md-3 col-sm-6">
         <label for="elementoapoyo" class="control-label">Elementos de Apoyo</label>
-        <input placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo">
+        <input placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo" >
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="auxenseñanza" class="control-label">Auxiliares de la enseñanza</label>
-        <input placeholder="Contenido Tematico" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza">
+        <input placeholder="Contenido Tematico" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza" >
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="referencias" class="control-label">Referencias</label>
-        <input placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias">
+        <input placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias" >
     </div>
     <div class="form-group col-md-1 col-sm-2">
         <a class="btn btn-warning" onclick="agregarRecursosD()">Agregar</a>
@@ -213,3 +214,5 @@
         </table>
     </div>
 </div>
+
+<input hidden ="true" name="recursosD" id="storeRecursosD" class="@error('recursosD')  is-invalid @enderror" >

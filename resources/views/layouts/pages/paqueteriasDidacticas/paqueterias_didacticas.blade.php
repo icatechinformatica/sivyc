@@ -15,7 +15,7 @@
         </ul>
     </div><br />
     @endif
-    <form method="POST" action="" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
+    <form method="POST" action="{{route('paqueteriasGuardar',$idCurso)}}" id="creacion" enctype="multipart/form-data">
         @csrf
         @method('POST')
 
@@ -54,12 +54,16 @@
 
 @section('script_content_js')
 <script src="{{asset('vendor/ckeditor/ckeditor.js') }}"></script>
-<script >
+<script>
     CKEDITOR.replace('summary-ckeditor');
     CKEDITOR.replace('aprendizajeesperado');
 
+
+    function creacion() {
+        document.getElementById('creacion').submit();
+    }
     // $("#cke_summary-ckeditor").addClass("col-md-12");
 </script>
-<script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}" ></script>
+<script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}"></script>
 @endsection
 @endsection

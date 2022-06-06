@@ -202,7 +202,6 @@
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
                         @endcan
                         
-                            <a class="dropdown-item" href="{{route('paqueteriasDidacticas')}}">Paqueterias Didacticas</a>
                         
                     </div>
                 </li>

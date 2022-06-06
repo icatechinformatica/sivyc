@@ -611,7 +611,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/organismo/municipio','organismosController@muni');
 
 
-    Route::get('paqueterias', 'webController\PaqueteriaDidacticaController@index')->name('paqueteriasDidacticas');
+    // validacion paqueterias didacticas 
+    Route::get('paqueterias/{idCurso}', 'webController\PaqueteriaDidacticaController@index')->name('paqueteriasDidacticas');
+    Route::post('paqueterias/guardar/{idCurso}', 'webController\PaqueteriaDidacticaController@store')->name('paqueteriasGuardar');
 
 });
 

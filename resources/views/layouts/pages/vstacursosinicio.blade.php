@@ -78,6 +78,7 @@
                         <th scope="col">Acciones</th>
                     @endcan
                     <th scope="col">Registros</th>
+                    <th scope="col">Paqueterias</th>
                 </tr>
             </thead>
             <tbody>
@@ -106,6 +107,13 @@
                                 data-id="{{$itemData->id}}">
                                 <i class="fa fa-info"></i>
                             </button>
+                        </td>
+                        <td>
+                            <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Paquetes">
+                            <i class="fa fa-folder"></i>
+                            </a>
+                                
+                            
                         </td>
                     </tr>
                 @endforeach

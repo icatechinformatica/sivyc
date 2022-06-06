@@ -33,19 +33,23 @@
 
 
         <div class="form-row col-md-7 opcion-area-p1" id="opc-p1">
-            <div class="input-group mb-3 " id="opc-1-p1">
+            <div class="input-group mb-3 ">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
-                        <input type="checkbox" aria-label="Checkbox for following text input" id="resp-1-p1">
+                        <input type="checkbox" onclick="setAceptedAnswer(this)"  id="resp-1-p1">
                     </div>
                 </div>
-                <input placeholder="Opcion" type="text" class="form-control" id="opcion-1-p1" name="opcion-1-p1">
+                &nbsp;&nbsp;&nbsp;
+                <input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" >
+                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >
+                    <i class="fa fa-minus"></i>
+                </a>
             </div>
         </div>
 
         <div class="form-row col-md-6 opcion-area-p1">
             <div class="input-group mb-3">
-                <a style="cursor: default;" onclick="agregarOpcion('p1')">Agregar opcion</a>
+                <a style="cursor: default;" onclick="agregarOpcion(this)">Agregar opcion</a>
             </div>
         </div>
         <!--se oculta por medio del class-->
