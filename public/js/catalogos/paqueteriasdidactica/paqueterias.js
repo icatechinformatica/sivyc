@@ -241,6 +241,119 @@ function changeSiblings(tr) {
  *
  */
 
+var contPreguntas = 1;
+var opcion = 0;
+
+
+
+function agregarPregunta() {
+    var numChildren = contPreguntas + 1;
+
+    var nuevaPregunta = $(
+        '<div class="row col-md-12" id = "pregunta' + numChildren + '" >' +
+            '<div class="form-row col-md-7 col-sm-12">' +
+                '<div class="form-group col-md-12 col-sm-10">' +
+                    '<label for="pregunta0" class="control-label">PREGUNTA</label>' +
+                    '<textarea placeholder="pregunta" class="form-control" name="pregunta' + numChildren + '" cols="15" rows="2"></textarea>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="form-row col-md-4 col-sm-6 ">' +
+                '<div class="form-group col-md-12 col-sm-12">' +
+                    '<label for="tipopregunta" class="control-label">TIPO DE PREGUNTA</label>' +
+                    '<select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta' + numChildren + '-tipo">'+
+                        '<option value="multiple" selected>Multiple</option>' +
+                        '<option value="abierta">Abierta</option>' +
+                    '</select>' +
+                '</div>' +
+            '</div>' +
+
+
+            '<div class="form-row col-md-1 col-sm-6">' +
+                '<div class="form-group col-md-1 col-sm-12>' +
+                    '<label for="">Eliminar pregunta</label>' +
+                    '<button type="button" class="btn btn-danger" onclick="removerPregunta(this)">' +
+                    '<i class="fa fa-trash"></i>' +
+                '</div>' +
+            '</div> ' +
+
+
+            '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="pregunta' + numChildren + '-opc">' +
+                '<div class="input-group mb-3">' +
+                    '<div class="input-group-prepend">' +
+                        '<div class="input-group-text">' +
+                            '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
+                        '</div>' +
+                    '</div>' +
+                    '&nbsp;&nbsp;&nbsp;' +
+                    '<input placeholder="Opcion" type="text" class="form-control resp-abierta" name="pregunta'+numChildren+'-opc[]">' +
+                    '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
+                        '<i class="fa fa-minus"></i>' +
+                    '</a>' +
+                '</div>' +
+            '</div>' +
+
+
+            '<div class="form-row col-md-6 opcion-area-pregunta' + numChildren + '">' +
+                '<div class="input-group mb-3">' +
+                    '<a style="cursor: default;" onclick="agregarOpcion(this)">Agregar opcion</a>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="form-row col-md-7 respuesta-abierta-area ra-p' + numChildren + '" style="display: none">' +
+                '<div class="input-group mb-3">' +
+                    '<input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">' +
+                '</div>' +
+            '</div>' +
+        '</div >');
+
+    $('#preguntas-area-parent').append(nuevaPregunta);
+    contPreguntas ++
+}
+
+
+function agregarOpcion(opcion) {
+    var idParent = $(opcion).parents(':eq(2)')[0].id; // 
+    // console.log(idParent);
+    var divParent = $('#' + idParent).children()[3].id;
+    var numChildren = $('#' + divParent).children().length + 1;
+
+    var nuevaOpcion = $(
+        '<div class="input-group mb-3">' +
+            '<div class="input-group-prepend">' +
+                '<div class="input-group-text">' +
+                    '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
+                '</div>' +
+            '</div>' +
+            '&nbsp;&nbsp;&nbsp;' +
+            '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="'+idParent+'-opc[]" >' +
+            '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
+                '<i class="fa fa-minus"></i>' +
+            '</a>' +
+        '</div>'
+    );
+    $('#' + divParent).append(nuevaOpcion);
+}
+
+
+function removerPregunta(pregunta) {
+
+    var idParent = $(pregunta).parents(':eq(2)')[0].id; // 
+    var divMain = $('#' + idParent).parent().attr('id');
+    
+    $('#' + idParent).remove();
+
+    fixAllIds(divMain)
+}
+
+
+function removerOpcion(opcion) {
+    var divParent = $(opcion).parent()[0]
+    $(divParent).remove();    
+}
+
+
+
 function cambiarTipoPregunta(idPregunta) {
     var value = $("#tipopregunta-" + idPregunta + " option:selected").text();
 
@@ -255,103 +368,39 @@ function cambiarTipoPregunta(idPregunta) {
     }
 }
 
-function agregarOpcion(pregunta) {
-    var divParent = $(pregunta).parents(':eq(2)')[0].id
-    console.log(divParent, pregunta)
-    // var numChildren = $('#opc-' + divParent).children().length + 1;
-    // console.log(numChildren, idPregunta);
+function fixAllIds(divMain) {
 
-    // var nuevaOpcion = $(
-    //     '<div class="input-group mb-3 " id="opc-' + numChildren + '-' + idPregunta + '">' +
-    //     '<div class="input-group-prepend">' +
-    //     '<div class="input-group-text">' +
-    //     '<input type="checkbox" onclick="setAceptedAnswer(this)" id="resp-' + numChildren + '-' + idPregunta + '">' +
-    //     '</div>' +
-    //     '</div>' +
-    //     '&nbsp;&nbsp;&nbsp;' +
-    //     '<input placeholder="Opcion" type="text" class="form-control resp-abierta" id="opcion-' + numChildren + '-' + idPregunta + '" name="opcion-' + numChildren + '-' + idPregunta + '">' +
-    //     '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerPregunta(\'opc-' + numChildren + '-' + idPregunta + '\')">' +
-    //     '<i class="fa fa-minus"></i>' +
-    //     '</a>' +
-    //     '</div>'
-    // );
-    // $('#opc-' + idPregunta).append(nuevaOpcion);
-}
+    // pregunta1-opc
+    // paqueterias.js:342 
 
-
-function agregarPregunta() {
-    var numChildren = $("#preguntas-area-parent").children().length + 1;
-    var opcion = `p${numChildren}`;
-
-    var nuevaPregunta = $(
-        '<div class="row col-md-12" id = "pregunta' + numChildren + '" >' +
-        '<div class="form-row col-md-7 col-sm-12">' +
-        '<div class="form-group col-md-12 col-sm-10">' +
-        '<label for="pregunta0" class="control-label">PREGUNTA</label>' +
-        '<textarea placeholder="pregunta" class="form-control" id="p' + numChildren + '" name="p' + numChildren + '" cols="15" rows="2"></textarea>' +
-        '</div>' +
-        '</div>' +
-
-        '<div class="form-row col-md-5 ">' +
-        '<div class="form-group col-md-12 col-sm-6">' +
-        '<label for="tipopregunta" class="control-label">TIPO DE PREGUNTA</label>' +
-        '<select onchange="cambiarTipoPregunta(\'p' + numChildren + '\')" class="form-control" id="tipopregunta-p' + numChildren + '" name="tipopregunta-p' + numChildren + '">' +
-        '<option value="multiple" selected>Multiple</option>' +
-        '<option value="abierta">Abierta</option>' +
-        '</select>' +
-        '</div>' +
-        '</div>' +
-
-
-        '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="opc-p' + numChildren + '">' +
-        '<div class="input-group mb-3" id="opc-1-p' + numChildren + '">' +
-        '<div class="input-group-prepend">' +
-        '<div class="input-group-text">' +
-        '<input type="checkbox" aria-label="Checkbox for following text input" id="resp-1-p' + numChildren + '">' +
-        '</div>' +
-        '</div>' +
-        '&nbsp;&nbsp;&nbsp;' +
-        '<input placeholder="Opcion" type="text" class="form-control resp-abierta" id="opcion1-p' + numChildren + '" name="opcion-1-p' + numChildren + '">' +
-        '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" >' +
-        '<i class="fa fa-minus"></i>' +
-        '</a>' +
-        '</div>' +
-        '</div>' +
+    fixId(divMain)
+    var childrens = $('#' + divMain).children();
+    console.log(divMain, childrens);
+    for (var i = 0; i < childrens.length; i++) {
+        var childID = childrens[i].id
+        var div = childrens[i].children[3];
+        console.log(div)
+        // fixIdDigits(divMain)
+        fixIdDigits(div.id)
         
-
-        '<div class="form-row col-md-6 opcion-area-p' + numChildren + '">' +
-        '<div class="input-group mb-3">' +
-        '<a style="cursor: default;" onclick="agregarOpcion(\'p' + numChildren + '\')">Agregar opcion</a>' +
-        '</div>' +
-        '</div>' +
-
-        '<div class="form-row col-md-7 respuesta-abierta-area ra-p' + numChildren + '" style="display: none">' +
-        '<div class="input-group mb-3">' +
-        '<input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">' +
-        '</div>' +
-        '</div>' +
-        '</div >');
-
-    $('#preguntas-area-parent').append(nuevaPregunta);
+    }
 }
 
-
-function removerOpcion(idOpcion){
-    
-    var divParent = $(idOpcion).parents(':eq(1)')[0].id
-    
-    // var divParent = $('#'+idOpcion).parent().attr('id');
-    $('#' + divParent).remove();
-
-    // fixId(divParent)
+function fixIdDigits(div){
+    var numChildren = $('#' + div).children().length;
+        for (var i = 1; i <= numChildren; i++) {
+            var id = $('#' + div).children().eq(i - 1).attr('id');
+            var newId = id.replace(/[0-9]/g, -1);
+            $('#' + div).children().eq(i - 1).attr('id', newId);
+        }
 }
 
-function fixId(div){
-    var numChildren = $('#'+div).children().length;
-    for(var i = 1; i <= numChildren; i++){
-        var id = $('#'+div).children().eq(i-1).attr('id');
-        var newId = id.replace(/\d+/, i);
-        $('#'+div).children().eq(i-1).attr('id', newId);
+function fixId(div) {
+    var numChildren = $('#' + div).children().length;
+    for (var i = 1; i <= numChildren; i++) {
+        var id = $('#' + div).children().eq(i - 1).attr('id');
+        var newId = id.replace(/.$/, i);
+        $('#' + div).children().eq(i - 1).attr('id', newId);
     }
 }
 
@@ -359,6 +408,7 @@ function setAceptedAnswer(opcion) {
     console.log(opcion);
 }
 
+// var newId = id.replace(/\d+/, i);
 
 /*
  *
