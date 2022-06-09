@@ -26,17 +26,17 @@
 
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link " id="pills-tecnico-tab" data-toggle="pill" href="#pills-tecnico" role="tab" aria-controls="pills-tecnico" aria-selected="true">Informacion Curso</a>
+                <a class="nav-link active" id="pills-tecnico-tab" data-toggle="pill" href="#pills-tecnico" role="tab" aria-controls="pills-tecnico" aria-selected="true">Informacion Curso</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
+                <a class="nav-link " id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
             </li>
         </ul>
         <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade  " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
+            <div class="tab-pane fade show active " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.curso')
             </div>
-            <div class="tab-pane fade show active" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
+            <div class="tab-pane fade" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.evaluacionAlumno')
             </div>
         </div>
@@ -48,13 +48,16 @@
 @section('script_content_js')
 <script src="{{asset('vendor/ckeditor/ckeditor.js') }}"></script>
 <script>
-    CKEDITOR.replace('summary-ckeditor');
+    CKEDITOR.replace('objetivoespecifico');
     CKEDITOR.replace('aprendizajeesperado');
+    CKEDITOR.replace('observaciones');
 
     function confirmacion() {
         var opcion = confirm("¿Desea Guardar Esta Paqueterias Para Este Curso?");
         if (opcion == true) {
-            submit()
+            var value = $('#cke_observaciones').val();
+            console.log(value);
+            // submit()
         }
     }
 
@@ -104,10 +107,10 @@
                 var opcion = divOpciones.children[j].children[1].value;
                 
                 if(checkbox){
-                    opcionesCorrectas += abecedario[j] + ','
+                    opcionesCorrectas += abecedario[j] + '$=$'
                 }
 
-                opciones += opcion + ',';    
+                opciones += opcion + '$=$';    
             }
 
             evaluacionAlumno.push({
@@ -117,7 +120,7 @@
             });
         }
         
-        console.log(evaluacionAlumno);
+        
 
         
         $.ajax({

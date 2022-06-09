@@ -18,6 +18,38 @@ var idRecursos = 0;
 var valRecursosD = [];
 var storeRecursosD = document.getElementById('storeRecursosD');
 
+function getID(e) {
+    index = e;
+}
+function buscarEspecialidad() {
+    
+    var especialidad = document.getElementById("especialidad").value.toUpperCase()
+    
+    if (especialidad !== "") {
+        $.ajax({
+            url: '/especialidadBuscador/',
+            type: 'get',
+            data: { "especialidad": especialidad },
+            dataType: 'json',
+            success: function (response) {
+                var len = response.length;
+                $("#searchResult").empty();
+                for (var i = 0; i < len; i++) {
+                    var id = response[i]['id']
+                    var nombre = response[i]['nombre'];
+                    $("#searchResult").append("<li onclick='getID(this.id)' id='" + i + "' value='" + id + "'> " + nombre + "</li>");
+                }
+                $("#searchResult li").on("click", function () {
+                    $("#especialidad").val(nombre);
+                    $("#searchResult").empty();
+                });
+            }
+        });
+    }else {        
+        $("#searchResult").empty();
+    }
+}
+
 function agregarponderacion() {
     var tbodyElement = document.getElementById('tEvaluacion');
     var numelement = tbodyElement.rows.length;
@@ -374,16 +406,6 @@ function fixAllIds(divMain) {
     // paqueterias.js:342 
 
     fixId(divMain)
-    var childrens = $('#' + divMain).children();
-    console.log(divMain, childrens);
-    for (var i = 0; i < childrens.length; i++) {
-        var childID = childrens[i].id
-        var div = childrens[i].children[3];
-        console.log(div)
-        // fixIdDigits(divMain)
-        // fixIdDigits(div.id)
-
-    }
 }
 
 function fixIdDigits(div) {
@@ -404,9 +426,6 @@ function fixId(div) {
     }
 }
 
-function setAceptedAnswer(opcion) {
-    console.log(opcion);
-}
 
 // var newId = id.replace(/\d+/, i);
 

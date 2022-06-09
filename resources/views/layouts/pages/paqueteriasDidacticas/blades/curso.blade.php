@@ -23,7 +23,7 @@
     </div>
     <div class="form-group col-md-4">
         <label for="programaestrategico" class="control-label">Programa estrategico (Caso aplicable )</label>
-        <input placeholder="Ciclo escolar" type="text" class="form-control" id="programaestrategico" name="programaestrategico">
+        <input placeholder="Programa Estrategico" type="text" class="form-control" id="programaestrategico" name="programaestrategico">
     </div>
     <div class="form-group col-md-4">
         <label for="modalidad" class="control-label">Modalidad</label>
@@ -60,8 +60,9 @@
         <input placeholder="Formacion Laboral" type="text" class="form-control" id="formacionlaboral" name="formacionlaboral">
     </div>
     <div class="form-group col-md-4">
-        <label for="especialidad" class="control-label">Especialidad (BUSCADOR) </label>
-        <input placeholder="Especialidad" type="text" class="form-control" id="especialidad" name="especialidad">
+        <label for="especialidad" class="control-label">Especialidad  </label>
+        <input placeholder="Especialidad" type="text" class="form-control " id="especialidad" name="especialidad" onkeyup="buscarEspecialidad()">
+        <ul id="searchResult" class="searchResult" ></ul>
     </div>
     <div class="form-group col-md-4">
         <label for="publico" class="control-label">Publico o personal al que va dirigido</label>
@@ -118,7 +119,7 @@
 
 <div class="form-row">
     <label for="objetivos" class="control-label">Objetivos especificos por tema:</label>
-    <textarea placeholder="Objetivos especificos por tema" class="form-control" id="summary-ckeditor" name="summary-ckeditor" cols="15" rows="5"></textarea>
+    <textarea placeholder="Objetivos especificos por tema" class="form-control" id="objetivoespecifico" name="objetivoespecifico" cols="15" rows="5"></textarea>
 </div>
 
 <div class="form-group col-md-4">
@@ -176,7 +177,7 @@
 <br>
 <div class="form-row">
     <label for="objetivos" class="control-label">Observaciones:</label>
-    <textarea placeholder="Observaciones" class="form-control" id="summary-ckeditor" name="summary-ckeditor" cols="15" rows="5"></textarea>
+    <textarea placeholder="Observaciones" class="form-control" id="observaciones" name="observaciones" cols="15" rows="5"></textarea>
 </div>
 <br>
 
@@ -187,7 +188,7 @@
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="auxenseñanza" class="control-label">Auxiliares de la enseñanza</label>
-        <input placeholder="Contenido Tematico" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza" >
+        <input placeholder="Auxiliares de le enseñanza" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza" >
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="referencias" class="control-label">Referencias</label>

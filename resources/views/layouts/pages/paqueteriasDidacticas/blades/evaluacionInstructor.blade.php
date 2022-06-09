@@ -302,14 +302,3 @@
         <label for="pregunta2">5.- Finalmente ¿algún comentario acerca del curso o taller?</label>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-lg-12 margin-tb">>
-        <div class="pull-right">
-            <!-- @can('cursos.store') -->
-            <!-- <button type="submit" class="btn btn-primary">Guardar</button> -->
-            <a type="button" class="btn btn-primary" onclick="confirmacion()">Guardar</a>
-            <!-- @endcan -->
-        </div>
-    </div>
-</div>
