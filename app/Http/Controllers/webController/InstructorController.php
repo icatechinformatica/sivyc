@@ -128,6 +128,7 @@ class InstructorController extends Controller
             $saveInstructor->domicilio = $request->domicilio;
             $saveInstructor->numero_control = "Pendiente";
             $saveInstructor->status = "En Proceso";
+            $saveInstructor->estado = TRUE;
             $saveInstructor->lastUserId = $userId;
 
             if ($request->file('arch_ine') != null)
