@@ -361,6 +361,7 @@ class supreController extends Controller
         $supre->status = 'Validado';
         $supre->folio_validacion = $request->folio_validacion;
         $supre->fecha_validacion = $request->fecha_val;
+        $supre->financiamiento = $request->financiamiento;
         $supre->permiso_editar = FALSE;
         $supre->fecha_status = carbon::now();
         $supre->save();
@@ -1174,13 +1175,16 @@ class supreController extends Controller
             $hm = $h->hombre+$m->mujer;
             $tipop = tbl_curso::SELECT('modinstructor')->WHERE('id', '=', $item->id_cursos)->FIRST();
             //printf($item->id_cursos  . $h . ' + ' . $m . '=' . $hm . ' // ');
-            if ($hm < 10)
+            if($data2->financiamiento == NULL)
             {
-                $recursos[$i] = "Estatal";
-            }
-            else
-            {
-                $recursos[$i] = "Federal";
+                if ($hm < 10)
+                {
+                    $recursos[$i] = "Estatal";
+                }
+                else
+                {
+                    $recursos[$i] = "Federal";
+                }
             }
             $i++;
         }

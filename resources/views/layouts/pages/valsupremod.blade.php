@@ -43,6 +43,14 @@
                         <label for="inputfecha_validacion">Fecha de Validación</label>
                         <input name="fecha_val" id="fecha_val" type="date" class="form-control" value="{{$data->fecha_validacion}}">
                     </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfinanciamiento">Fuente de Financiamiento</label>
+                        <select class="form-control" name="financiamiento" id="financiamiento" required>
+                            <option value="">SELECCIONE</option>
+                            <option value="FEDERAL" @if($data->financiamiento == 'FEDERAL') selected @endif>FEDERAL</option>
+                            <option value="ESTATAL" @if($data->financiamiento == 'ESTATAL') selected @endif>ESTATAL</option>
+                        </select>
+                    </div>
                 </div>
                 <!--
                 <div class="form-row">

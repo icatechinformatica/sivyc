@@ -223,7 +223,13 @@ else{
                                 <td><small style="font-size: 8px;">@if($item->modinstructor == 'HONORARIOS')12101 Honorarios @else 12101 Asimilados a Salarios @endif</small></td>
                                 <td><small style="font-size: 8px;">{{$item->importe_total}}</small></td>
                                 <!--<script>alumn(hombre{key}}.value, mujer{key}}.value);</script>-->
-                                <td style="text-align: center; font-size: 10px;"><small>{{$recursos[$key]}}</small></td>
+                                <td style="text-align: center; font-size: 10px;"><small>
+                                    @if($data2->financiamiento == NULL)
+                                        {{$recursos[$key]}}
+                                    @else
+                                        {{$data2->financiamiento}}
+                                    @endif
+                                </small></td>
                                 <td><small style="font-size: 8px;">{{$item->comentario}}</small></td>
                             </tr>
                         @endforeach

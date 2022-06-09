@@ -75,6 +75,14 @@
                         <label for="inputfecha_validacion">Fecha de Validación</label>
                         <input name="fecha_val" id="fecha_val" type="date" class="form-control">
                     </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfinanciamiento">Fuente de Financiamiento</label>
+                        <select class="form-control" name="financiamiento" id="financiamiento" required>
+                            <option value="">SELECCIONE</option>
+                            <option value="FEDERAL">FEDERAL</option>
+                            <option value="ESTATAL">ESTATAL</option>
+                        </select>
+                    </div>
                 </div>
                 <!--<div id="div2" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
