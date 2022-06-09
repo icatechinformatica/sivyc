@@ -31,9 +31,6 @@
             <li class="nav-item">
                 <a class="nav-link active" id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link " id="pills-evalinstr-tab" data-toggle="pill" href="#pills-evalinstr" role="tab" aria-controls="pills-evalinstr" aria-selected="false">Evaluacion Instructor y Curso</a>
-            </li>
         </ul>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade  " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
@@ -41,9 +38,6 @@
             </div>
             <div class="tab-pane fade show active" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.evaluacionAlumno')
-            </div>
-            <div class="tab-pane fade " id="pills-evalinstr" role="tabpanel" aria-labelledby="pills-evalinstr-tab">
-                @include('layouts.pages.paqueteriasDidacticas.blades.evaluacionInstructor')
             </div>
         </div>
     </form>
