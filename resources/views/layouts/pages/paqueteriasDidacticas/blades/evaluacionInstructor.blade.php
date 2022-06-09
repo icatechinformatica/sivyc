@@ -308,7 +308,7 @@
         <div class="pull-right">
             <!-- @can('cursos.store') -->
             <!-- <button type="submit" class="btn btn-primary">Guardar</button> -->
-            <a type="button" class="btn btn-primary" onclick="creacion()">Guardar</a>
+            <a type="button" class="btn btn-primary" onclick="confirmacion()">Guardar</a>
             <!-- @endcan -->
         </div>
     </div>

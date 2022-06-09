@@ -17,7 +17,6 @@
     @endif
     <form method="POST" action="{{route('paqueteriasGuardar',$idCurso)}}" id="creacion" enctype="multipart/form-data">
         @csrf
-        @method('POST')
 
         <div style="text-align: right;width:65%">
             <label for="tituloformulariocurso">
@@ -58,9 +57,85 @@
     CKEDITOR.replace('summary-ckeditor');
     CKEDITOR.replace('aprendizajeesperado');
 
+    function confirmacion() {
+        var opcion = confirm("¿Desea Guardar Esta Paqueterias Para Este Curso?");
+        if (opcion == true) {
+            submit()
+        }
+    }
 
-    function creacion() {
-        document.getElementById('creacion').submit();
+
+    function submit() {
+
+        var url = window.location.pathname;
+        var idCurso = url.substring(url.lastIndexOf('/') + 1);
+        var infoCursoTecnico = [];
+        var evaluacionAlumno = [];
+
+        infoCursoTecnico.push({
+
+            'nombrecurso': $('#nombrecurso').val(),
+            'entidadfederativa': $('#entidadfederativa').val(),
+            'cicloescolar': $('#cicloescolar').val(),
+            'programaestrategico': $('#programaestrategico').val(),
+            'modalidad': $('#modalidad').val(),
+            'tipo': $('#tipo').val(),
+            'perfilidoneop': $('#perfilidoneop').val(),
+            'duracion': $('#duracion').val(),
+            'formacionlaboral': $('#formacionlaboral').val(),
+            'especialidad': $('#especialidad').val(),
+            'publico': $('#publico').val(),
+            'aprendizajeesperado': $('#aprendizajeesperado').val(),
+            'criterio': $('#criterio').val(),
+            'ponderacion': $('#storePonderacion').val(),
+            'transversabilidad': $('#transversabilidad').val(),
+            'contenidotematico': $('#storeContenidoT').val(),
+            'observaciones': $('.observaciones').val(),
+            'recursos': $('#storeRecursosD').val(),
+        });
+
+        var divParentPreguntas = $('#preguntas-area-parent').children();
+        var abecedario = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        
+        for (var i = 0; i < divParentPreguntas.length; i++) {
+            var opciones = ''
+            var opcionesCorrectas = ''
+            var pregunta = divParentPreguntas[i].children[0].children[0].children[1].value
+            
+            
+            var divOpciones = divParentPreguntas[i].children[3];
+
+            for (var j = 0; j < divOpciones.children.length; j++) {
+                var checkbox = divOpciones.children[j].children[0].children[0].children[0].checked//.checked;
+                var opcion = divOpciones.children[j].children[1].value;
+                
+                if(checkbox){
+                    opcionesCorrectas += abecedario[j] + ','
+                }
+
+                opciones += opcion + ',';    
+            }
+
+            evaluacionAlumno.push({
+                'pregunta': pregunta,
+                'opcionesCorrectas': opcionesCorrectas,
+                'opciones': opciones,
+            });
+        }
+        
+        console.log(evaluacionAlumno);
+
+        
+        $.ajax({
+            url: '/paqueterias/guardar/' + idCurso,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                '_token': '{{ csrf_token() }}',
+                'infoCursoTecnico': infoCursoTecnico,
+                'evaluacionAlumno': evaluacionAlumno,
+            }
+        });
     }
     // $("#cke_summary-ckeditor").addClass("col-md-12");
 </script>

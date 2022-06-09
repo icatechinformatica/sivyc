@@ -44,7 +44,7 @@
             <div class="input-group mb-3 " >
                 <div class="input-group-prepend">
                     <div class="input-group-text">
-                        <input type="checkbox" onclick="setAceptedAnswer(this)"  class="">
+                        <input type="checkbox" onclick="setAceptedAnswer(this)"  name="pregunta1-opc-correc[]">
                     </div>
                 </div>
                 &nbsp;&nbsp;&nbsp;

@@ -251,64 +251,64 @@ function agregarPregunta() {
 
     var nuevaPregunta = $(
         '<div class="row col-md-12" id = "pregunta' + numChildren + '" >' +
-            '<div class="form-row col-md-7 col-sm-12">' +
-                '<div class="form-group col-md-12 col-sm-10">' +
-                    '<label for="pregunta0" class="control-label">PREGUNTA</label>' +
-                    '<textarea placeholder="pregunta" class="form-control" name="pregunta' + numChildren + '" cols="15" rows="2"></textarea>' +
-                '</div>' +
-            '</div>' +
+        '<div class="form-row col-md-7 col-sm-12">' +
+        '<div class="form-group col-md-12 col-sm-10">' +
+        '<label for="pregunta0" class="control-label">PREGUNTA</label>' +
+        '<textarea placeholder="pregunta" class="form-control" name="pregunta' + numChildren + '" cols="15" rows="2"></textarea>' +
+        '</div>' +
+        '</div>' +
 
-            '<div class="form-row col-md-4 col-sm-6 ">' +
-                '<div class="form-group col-md-12 col-sm-12">' +
-                    '<label for="tipopregunta" class="control-label">TIPO DE PREGUNTA</label>' +
-                    '<select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta' + numChildren + '-tipo">'+
-                        '<option value="multiple" selected>Multiple</option>' +
-                        '<option value="abierta">Abierta</option>' +
-                    '</select>' +
-                '</div>' +
-            '</div>' +
-
-
-            '<div class="form-row col-md-1 col-sm-6">' +
-                '<div class="form-group col-md-1 col-sm-12>' +
-                    '<label for="">Eliminar pregunta</label>' +
-                    '<button type="button" class="btn btn-danger" onclick="removerPregunta(this)">' +
-                    '<i class="fa fa-trash"></i>' +
-                '</div>' +
-            '</div> ' +
+        '<div class="form-row col-md-4 col-sm-6 ">' +
+        '<div class="form-group col-md-12 col-sm-12">' +
+        '<label for="tipopregunta" class="control-label">TIPO DE PREGUNTA</label>' +
+        '<select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta' + numChildren + '-tipo">' +
+        '<option value="multiple" selected>Multiple</option>' +
+        '<option value="abierta">Abierta</option>' +
+        '</select>' +
+        '</div>' +
+        '</div>' +
 
 
-            '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="pregunta' + numChildren + '-opc">' +
-                '<div class="input-group mb-3">' +
-                    '<div class="input-group-prepend">' +
-                        '<div class="input-group-text">' +
-                            '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
-                        '</div>' +
-                    '</div>' +
-                    '&nbsp;&nbsp;&nbsp;' +
-                    '<input placeholder="Opcion" type="text" class="form-control resp-abierta" name="pregunta'+numChildren+'-opc[]">' +
-                    '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
-                        '<i class="fa fa-minus"></i>' +
-                    '</a>' +
-                '</div>' +
-            '</div>' +
+        '<div class="form-row col-md-1 col-sm-6">' +
+        '<div class="form-group col-md-1 col-sm-12>' +
+        '<label for="">Eliminar pregunta</label>' +
+        '<button type="button" class="btn btn-danger" onclick="removerPregunta(this)">' +
+        '<i class="fa fa-trash"></i>' +
+        '</div>' +
+        '</div> ' +
 
 
-            '<div class="form-row col-md-6 opcion-area-pregunta' + numChildren + '">' +
-                '<div class="input-group mb-3">' +
-                    '<a style="cursor: default;" onclick="agregarOpcion(this)">Agregar opcion</a>' +
-                '</div>' +
-            '</div>' +
+        '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="pregunta' + numChildren + '-opc">' +
+        '<div class="input-group mb-3">' +
+        '<div class="input-group-prepend">' +
+        '<div class="input-group-text">' +
+        '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
+        '</div>' +
+        '</div>' +
+        '&nbsp;&nbsp;&nbsp;' +
+        '<input placeholder="Opcion" type="text" class="form-control resp-abierta" name="pregunta' + numChildren + '-opc[]">' +
+        '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
+        '<i class="fa fa-minus"></i>' +
+        '</a>' +
+        '</div>' +
+        '</div>' +
 
-            '<div class="form-row col-md-7 respuesta-abierta-area ra-p' + numChildren + '" style="display: none">' +
-                '<div class="input-group mb-3">' +
-                    '<input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">' +
-                '</div>' +
-            '</div>' +
+
+        '<div class="form-row col-md-6 opcion-area-pregunta' + numChildren + '">' +
+        '<div class="input-group mb-3">' +
+        '<a style="cursor: default;" onclick="agregarOpcion(this)">Agregar opcion</a>' +
+        '</div>' +
+        '</div>' +
+
+        '<div class="form-row col-md-7 respuesta-abierta-area ra-p' + numChildren + '" style="display: none">' +
+        '<div class="input-group mb-3">' +
+        '<input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">' +
+        '</div>' +
+        '</div>' +
         '</div >');
 
     $('#preguntas-area-parent').append(nuevaPregunta);
-    contPreguntas ++
+    contPreguntas++
 }
 
 
@@ -320,16 +320,16 @@ function agregarOpcion(opcion) {
 
     var nuevaOpcion = $(
         '<div class="input-group mb-3">' +
-            '<div class="input-group-prepend">' +
-                '<div class="input-group-text">' +
-                    '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
-                '</div>' +
-            '</div>' +
-            '&nbsp;&nbsp;&nbsp;' +
-            '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="'+idParent+'-opc[]" >' +
-            '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
-                '<i class="fa fa-minus"></i>' +
-            '</a>' +
+        '<div class="input-group-prepend">' +
+        '<div class="input-group-text">' +
+        '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
+        '</div>' +
+        '</div>' +
+        '&nbsp;&nbsp;&nbsp;' +
+        '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="' + idParent + '-opc[]" >' +
+        '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
+        '<i class="fa fa-minus"></i>' +
+        '</a>' +
         '</div>'
     );
     $('#' + divParent).append(nuevaOpcion);
@@ -340,7 +340,7 @@ function removerPregunta(pregunta) {
 
     var idParent = $(pregunta).parents(':eq(2)')[0].id; // 
     var divMain = $('#' + idParent).parent().attr('id');
-    
+
     $('#' + idParent).remove();
 
     fixAllIds(divMain)
@@ -349,7 +349,7 @@ function removerPregunta(pregunta) {
 
 function removerOpcion(opcion) {
     var divParent = $(opcion).parent()[0]
-    $(divParent).remove();    
+    $(divParent).remove();
 }
 
 
@@ -381,18 +381,18 @@ function fixAllIds(divMain) {
         var div = childrens[i].children[3];
         console.log(div)
         // fixIdDigits(divMain)
-        fixIdDigits(div.id)
-        
+        // fixIdDigits(div.id)
+
     }
 }
 
-function fixIdDigits(div){
+function fixIdDigits(div) {
     var numChildren = $('#' + div).children().length;
-        for (var i = 1; i <= numChildren; i++) {
-            var id = $('#' + div).children().eq(i - 1).attr('id');
-            var newId = id.replace(/[0-9]/g, -1);
-            $('#' + div).children().eq(i - 1).attr('id', newId);
-        }
+    for (var i = 1; i <= numChildren; i++) {
+        var id = $('#' + div).children().eq(i - 1).attr('id');
+        var newId = id.replace(/\d+/, i);
+        $('#' + div).children().eq(i - 1).attr('id', newId);
+    }
 }
 
 function fixId(div) {
@@ -417,3 +417,11 @@ function setAceptedAnswer(opcion) {
  * ==========================================
  *
  */
+
+
+
+
+
+
+
+

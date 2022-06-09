@@ -8,7 +8,7 @@
     <!-- Unidad -->
     <div class="form-group col-md-6">
         <label for="areaCursos" class="control-label">Nombre del curso</label>
-        <input placeholder="Nombre del curso" type="text" class="form-control" id="nombrecurso" name="nombrecurso">
+        <input placeholder="Nombre del curso" type="text" class="form-control" id="nombrecurso" name="nombrecurso" value="{{old('nombrecurso', $curso->nombre_curso)}}">
     </div>
 </div>
 
@@ -29,8 +29,8 @@
         <label for="modalidad" class="control-label">Modalidad</label>
         <select class="form-control" id="modalidad" name="modalidad">
             <option value="" selected disabled>--SELECCIONAR--</option>
-            <option value="EXT">EXT</option>
-            <option value="CAE">CAE</option>
+            <option value="EXT" {{$curso->modalidad == 'EXT' ? 'selected' : ''}}>EXT</option>
+            <option value="CAE" {{$curso->modalidad == 'CAE' ? 'selected' : ''}}>CAE</option>
         </select>
     </div>
 </div>
@@ -39,8 +39,8 @@
         <label for="tipo" class="contro-label">Tipo</label>
         <select class="form-control" id="tipo" name="tipo">
             <option value="" selected disabled>--SELECCIONAR--</option>
-            <option value="A DISTANCIA">A DISTANCIA</option>
-            <option value="PRESENCIA">PRESENCIAL</option>
+            <option value="A DISTANCIA" {{$curso->tipo_curso == 'A DISTANCIA' ? 'selected' : ''}}>A DISTANCIA</option>
+            <option value="PRESENCIA" {{$curso->tipo_curso == 'PRESENCIAL' ? 'selected' : ''}}>PRESENCIAL</option>
             <option value="A DISTANCIA Y PRESENCIAL">A DISTANICA Y PRESENCIAL</option>
         </select>
     </div>
@@ -50,7 +50,7 @@
     </div>
     <div class="form-group col-md-4">
         <label for="duracion" class="control-label">Duracion en horas</label>
-        <input placeholder="Horas" type="number" class="form-control" id="duracion" name="duracion">
+        <input placeholder="Horas" type="number" class="form-control" id="duracion" name="duracion" value="{{old('duracion', $curso->duracion)}}">
     </div>
 </div>
 
@@ -112,7 +112,7 @@
         </div>
 
     </div>
-    <input name="ponderacion" id="storePonderacion" class="@error('ponderacion')  is-invalid @enderror" value="{{old('ponderacion')}}">
+    <input hidden="true" name="ponderacion" id="storePonderacion" class="@error('ponderacion')  is-invalid @enderror" value="{{old('ponderacion')}}">
 
 </div>
 
