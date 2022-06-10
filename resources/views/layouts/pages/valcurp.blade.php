@@ -515,7 +515,7 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                @if ($rol == 'unidad_vinculacion' || $rol == 'admin')
+                                @if ($rol == 'admin')
                                     <div class="form-group col-md-4">
                                         <label for="curp_mod" class="control-label">Curp Aspirante</label>
                                         {{ Form::text('curp_mod', $alumno->curp, ['id' => 'curp_mod', 'name' => 'curp_mod', 'class' => 'form-control', 'placeholder' => 'CURP', 'oninput' => 'validarInputMod(this)']) }}
