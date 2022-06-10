@@ -109,4 +109,16 @@ class PaqueteriaDidacticaController extends Controller
             ->get();
         return response()->json($especialidades);
     }
+
+
+    public function DescargarPaqueteria($idCurso){
+        $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where('id_curso', $idCurso)->first();
+        $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
+        $evalAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
+        // dd($paqueteriasDidacticas, $cartaDescriptiva, $evalAlumno);
+        $curso = curso::toBase()->where('id', $idCurso)->first();
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva', 'evalAlumno', 'curso'));
+
+        return $pdf->stream('paqueteriaDidactica.pdf');    
+    }
 }
