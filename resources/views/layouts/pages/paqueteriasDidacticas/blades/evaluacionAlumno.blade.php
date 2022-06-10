@@ -12,7 +12,7 @@
 </div>
 
 <div class="row col-md-12" id="preguntas-area-parent">
-
+    <input type="number" hidden id="numPreguntas" name="numPreguntas">
     <div class="row col-md-12" id="pregunta1">
         <div class="form-row col-md-7 col-sm-12">
             <div class="form-group col-md-12 col-sm-10">
@@ -41,6 +41,7 @@
 
 
         <div class="form-row col-md-7 opcion-area-p1" id="pregunta1-opc">
+            <input type="text" hidden id="pregunta1-opc-answer" name="pregunta1-opc-answer">
             <div class="input-group mb-3 " >
                 <div class="input-group-prepend">
                     <div class="input-group-text">

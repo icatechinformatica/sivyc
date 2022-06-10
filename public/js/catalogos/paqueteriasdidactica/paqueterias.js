@@ -275,11 +275,14 @@ function changeSiblings(tr) {
 
 var contPreguntas = 1;
 var opcion = 0;
+var numPreguntas = 1;
 
 
 
 function agregarPregunta() {
     var numChildren = contPreguntas + 1;
+    numPreguntas ++;
+    $('#numPreguntas').val(numPreguntas);
 
     var nuevaPregunta = $(
         '<div class="row col-md-12" id = "pregunta' + numChildren + '" >' +
@@ -304,17 +307,18 @@ function agregarPregunta() {
         '<div class="form-row col-md-1 col-sm-6">' +
         '<div class="form-group col-md-1 col-sm-12>' +
         '<label for="">Eliminar pregunta</label>' +
-        '<button type="button" class="btn btn-danger" onclick="removerPregunta(this)">' +
+        '<button type="button" class="btn btn-danger" onclick="removerPregunta(this)"  >' +
         '<i class="fa fa-trash"></i>' +
         '</div>' +
         '</div> ' +
 
 
         '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="pregunta' + numChildren + '-opc">' +
+        '<input type="text" hidden id="pregunta' + numChildren + '-opc-answer" name="pregunta' + numChildren + '-opc-answer">'+
         '<div class="input-group mb-3">' +
         '<div class="input-group-prepend">' +
         '<div class="input-group-text">' +
-        '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
+        '<input type="checkbox" onclick="setAceptedAnswer(this)" name="pregunta' + numChildren + '-opc-correc[]">' +
         '</div>' +
         '</div>' +
         '&nbsp;&nbsp;&nbsp;' +
@@ -345,8 +349,7 @@ function agregarPregunta() {
 
 
 function agregarOpcion(opcion) {
-    var idParent = $(opcion).parents(':eq(2)')[0].id; // 
-    // console.log(idParent);
+    var idParent = $(opcion).parents(':eq(2)')[0].id; //     // console.log(idParent);
     var divParent = $('#' + idParent).children()[3].id;
     var numChildren = $('#' + divParent).children().length + 1;
 
@@ -354,7 +357,7 @@ function agregarOpcion(opcion) {
         '<div class="input-group mb-3">' +
         '<div class="input-group-prepend">' +
         '<div class="input-group-text">' +
-        '<input type="checkbox" onclick="setAceptedAnswer(this)" >' +
+        '<input type="checkbox" onclick="setAceptedAnswer(this)" name="' + divParent + '-correc[]">' +
         '</div>' +
         '</div>' +
         '&nbsp;&nbsp;&nbsp;' +
@@ -373,9 +376,13 @@ function removerPregunta(pregunta) {
     var idParent = $(pregunta).parents(':eq(2)')[0].id; // 
     var divMain = $('#' + idParent).parent().attr('id');
 
+
+    numPreguntas --;
+    $('#numPreguntas').val(numPreguntas);
+
     $('#' + idParent).remove();
 
-    fixAllIds(divMain)
+    // fixAllIds(divMain)
 }
 
 
@@ -400,30 +407,25 @@ function cambiarTipoPregunta(idPregunta) {
     }
 }
 
-function fixAllIds(divMain) {
 
-    // pregunta1-opc
-    // paqueterias.js:342 
-
-    fixId(divMain)
-}
-
-function fixIdDigits(div) {
-    var numChildren = $('#' + div).children().length;
-    for (var i = 1; i <= numChildren; i++) {
-        var id = $('#' + div).children().eq(i - 1).attr('id');
-        var newId = id.replace(/\d+/, i);
-        $('#' + div).children().eq(i - 1).attr('id', newId);
-    }
-}
-
-function fixId(div) {
-    var numChildren = $('#' + div).children().length;
-    for (var i = 1; i <= numChildren; i++) {
-        var id = $('#' + div).children().eq(i - 1).attr('id');
-        var newId = id.replace(/.$/, i);
-        $('#' + div).children().eq(i - 1).attr('id', newId);
-    }
+function setAceptedAnswer(checkboxSelected) {
+    var divParent = $(checkboxSelected).parents(':eq(3)')[0]; // 
+    var opciones = $(divParent).children();
+    var input = document.getElementById($(divParent).children()[0].id)
+    var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    for (var i = 0; i < opciones.length; i++) {
+        var opcion = opciones[i];
+        var checkbox = $(opcion).children().children().children()[0];
+        if(checkbox != checkboxSelected){
+            $(checkbox).prop('checked', false);
+        }else{
+            if($(checkboxSelected).prop('checked')){
+                input.value = abecedario[i];
+            }else{
+                input.value = 0;
+            }
+        }
+    }    
 }
 
 

@@ -25,29 +25,79 @@ class PaqueteriaDidacticaController extends Controller
     public function store(Request $request, $idCurso)
     {
         //
-        dd($request->toArray());
+        $paqueteriasDidacticas = new PaqueteriasDidacticas();
+        $preguntas = [];
+
+        $cartaDescriptiva = [
+            'nombrecurso' => $request->nombrecurso,
+            'entidadfederativa' => $request->entidadfederativa,
+            'cicloescolar' => $request->cicloescolar,
+            'programaestrategico' => $request->programaestrategico,
+            'modalidad' => $request->modalidad,
+            'tipo' => $request->tipo,
+            'perfilidoneo' => $request->perfilidoneo,
+            'duracion' => $request->duracion,
+            'formacionlaboral' => $request->formacionlaboral,
+            'especialidad' => $request->especialidad,
+            'publico' => $request->publico,
+            'aprendizajeesperado' => $request->aprendizajeesperado,
+            'criterio' => $request->criterio,
+            'ponderacion' => $request->ponderacion,
+            'objetivoespecifico' => $request->objetivoespecifico,
+            'transversabilidad' => $request->transversabilidad,
+            'contenidoTematico' => $request->contenidoT,
+            'observaciones' => $request->observaciones,
+            'recursosDidacticos' => $request->recursosD,
+        ];
+        
+        // dd($diff);
+        // dump (array_count_values($request->toArray()));
+        $i = 0;
+        $contPreguntas = 0;
+        $auxContPreguntas = $request->numPreguntas;
+        while(true) {
+            $i++;
+            if($contPreguntas == $auxContPreguntas )
+                break;
+            
+            $numPregunta = 'pregunta'.$i;
+            $tipoPregunta = 'pregunta'.$i.'-tipo';
+            $opcPregunta = 'pregunta'.$i.'-opc';
+            $respuesta = 'pregunta'.$i.'-opc-answer';
+            
+
+            if($request->$numPregunta != null){
+                $tempPregunta = [
+                    'descripcion' => $request->$numPregunta,
+                    'tipo' => $request->$tipoPregunta,
+                    'opciones' => $request->$opcPregunta,
+                    'respuesta' => $request->$respuesta
+                ];
+                array_push($preguntas, $tempPregunta);
+                $contPreguntas++;
+            }
+        }
+        
 
         DB::beginTransaction();
         try {
             PaqueteriasDidacticas::create([
                 'id_curso' => $idCurso,
-                'carta_descriptiva' => json_encode($request->infoCursoTecnico),
-                'eval_alumno' => json_encode($request->evaluacionAlumno),
+                'carta_descriptiva' => json_encode($cartaDescriptiva),
+                'eval_alumno' => json_encode($preguntas),
                 'estatus' => 1,
                 'created_at' => Carbon::now(),
                 'id_user_created' => Auth::id(),
                 // 'idUsuarioUMod' => Auth::id()
             ]);
             DB::commit();
-            session(['message' => 'El registro se ha guardado']);
-            session(['alert' => 'alert-success']);
+            return redirect()->route('curso-inicio')->with('success', 'SE HA GUARDADO LA PAQUETERIA DIDACTICA!');
         } catch (\Exception $e) {
             DB::rollback();
-            throw $e;
-            session(['message' => 'Algo salió mal intente nuevamente']);
-            session(['alert' => 'alert-danger']);
-            return $e;
+            
+            return redirect()->route('curso-inicio')->with('error', 'HUBO UN ERROR AL GUARDAR LA PAQUETERIA DIDACTICA!');
         }
+        
     }
 
     public function buscadorEspecialidades(Request $request)
