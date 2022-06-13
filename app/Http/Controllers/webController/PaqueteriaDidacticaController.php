@@ -102,8 +102,6 @@ class PaqueteriaDidacticaController extends Controller
 
     public function buscadorEspecialidades(Request $request)
     {
-
-
         $especialidades = DB::table('especialidades')
             ->where('nombre', 'like', '%' . $request->especialidad .'%')
             ->get();
@@ -112,13 +110,20 @@ class PaqueteriaDidacticaController extends Controller
 
 
     public function DescargarPaqueteria($idCurso){
-        $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where('id_curso', $idCurso)->first();
+        $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1] ])->first();
         $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
+        $cartaDescriptiva->ponderacion = json_decode($cartaDescriptiva->ponderacion);
+        $cartaDescriptiva->contenidoTematico = json_decode($cartaDescriptiva->contenidoTematico);
+        $cartaDescriptiva->recursosDidacticos = json_decode($cartaDescriptiva->recursosDidacticos);
+        
         $evalAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
         // dd($paqueteriasDidacticas, $cartaDescriptiva, $evalAlumno);
         $curso = curso::toBase()->where('id', $idCurso)->first();
-        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva', 'evalAlumno', 'curso'));
 
+        
+        // dd($cartaDescriptiva, $evalAlumno, $curso);
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva', 'evalAlumno', 'curso'));
+        
         return $pdf->stream('paqueteriaDidactica.pdf');    
     }
 }

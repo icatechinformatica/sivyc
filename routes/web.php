@@ -615,10 +615,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('paqueterias/{idCurso}', 'webController\PaqueteriaDidacticaController@index')->name('paqueteriasDidacticas');
     Route::post('paqueterias/guardar/{idCurso}', 'webController\PaqueteriaDidacticaController@store')->name('paqueteriasGuardar');
     Route::get('especialidadBuscador/', 'webController\PaqueteriaDidacticaController@buscadorEspecialidades')->name('BuscadorEspecialidades');
+    Route::get('descargarpaqueteria/{idCurso}', 'webController\PaqueteriaDidacticaController@DescargarPaqueteria')->name('DescargarPaqueteria');
     
 
 });
-Route::get('descargarpaqueteria/{idCurso}', 'webController\PaqueteriaDidacticaController@DescargarPaqueteria')->name('DescargarPaqueteria');
 /*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
 Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');
 Route::post('/form/instructor-guardar', 'supervisionController\client\frmInstructorController@guardar')->middleware('checktoken');

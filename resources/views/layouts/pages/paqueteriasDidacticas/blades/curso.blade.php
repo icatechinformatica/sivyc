@@ -40,7 +40,7 @@
         <select class="form-control" id="tipo" name="tipo">
             <option value="" selected disabled>--SELECCIONAR--</option>
             <option value="A DISTANCIA" {{$curso->tipo_curso == 'A DISTANCIA' ? 'selected' : ''}}>A DISTANCIA</option>
-            <option value="PRESENCIA" {{$curso->tipo_curso == 'PRESENCIAL' ? 'selected' : ''}}>PRESENCIAL</option>
+            <option value="PRESENCIAL" {{$curso->tipo_curso == 'PRESENCIAL' ? 'selected' : ''}}>PRESENCIAL</option>
             <option value="A DISTANCIA Y PRESENCIAL">A DISTANICA Y PRESENCIAL</option>
         </select>
     </div>
