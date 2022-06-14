@@ -198,7 +198,8 @@ class AlumnoController extends Controller {
                 return redirect('alumnos/valsid')->withErrors($validator)->withInput();
             }else{
                 // CONSULTAMOS SI HAY REGISTRO EN registro_alumnos-sice, SI HAY SE CAPTURA LA MATRICULA Y LA AGREGAMOS AL NUEVO REGISTRO
-                $municipio = Municipio::where('clave', $request->municipio)->first();
+                $id_estado = DB::table('estados')->where('nombre',$request->estado)->value('id');
+                $municipio = Municipio::where('clave', $request->municipio)->where('id_estado',$id_estado)->first();
                 $matricula = DB::table('registro_alumnos_sice')->where('curp','=',$curp_formateada)->where('eliminado','=',false)->select('no_control as matricula')->first() ;    //dd($matricula); 
                 // CONTUINAMOS CON LA CAPTURA
                 $usuarioUnidad = Auth::user()->unidad;
@@ -435,7 +436,8 @@ class AlumnoController extends Controller {
                 $sexo='FEMENINO';
             }
             
-            $municipio = Municipio::where('clave', $request->municipios_mod)->first();
+            $id_estado = DB::table('estados')->where('nombre',$request->estados_mod)->value('id');
+            $municipio = Municipio::where('clave', $request->municipios_mod)->where('id_estado',$id_estado)->first();
 
             //GRUPOS VULNERABLES
             $gvulnerable = [];
