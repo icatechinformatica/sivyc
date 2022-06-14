@@ -25,8 +25,9 @@ class PaqueteriaDidacticaController extends Controller
     public function store(Request $request, $idCurso)
     {
         //
+        
         $paqueteriasDidacticas = new PaqueteriasDidacticas();
-        $preguntas = [];
+        $preguntas = ['instrucciones'=>$request->instrucciones];
 
         $cartaDescriptiva = [
             'nombrecurso' => $request->nombrecurso,
@@ -55,6 +56,7 @@ class PaqueteriaDidacticaController extends Controller
         $i = 0;
         $contPreguntas = 0;
         $auxContPreguntas = $request->numPreguntas;
+        
         while(true) {
             $i++;
             if($contPreguntas == $auxContPreguntas )
@@ -117,12 +119,13 @@ class PaqueteriaDidacticaController extends Controller
         $cartaDescriptiva->recursosDidacticos = json_decode($cartaDescriptiva->recursosDidacticos);
         
         $evalAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
-        // dd($paqueteriasDidacticas, $cartaDescriptiva, $evalAlumno);
+        // dd($evalAlumno);
         $curso = curso::toBase()->where('id', $idCurso)->first();
+        $abecedario = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
 
-        
+        // dd($evalAlumno);
         // dd($cartaDescriptiva, $evalAlumno, $curso);
-        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva', 'evalAlumno', 'curso'));
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva', 'evalAlumno', 'abecedario', 'curso'));
         
         return $pdf->stream('paqueteriaDidactica.pdf');    
     }
