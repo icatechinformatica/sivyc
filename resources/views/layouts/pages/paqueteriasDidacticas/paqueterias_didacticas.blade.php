@@ -31,6 +31,11 @@
             <li class="nav-item">
                 <a class="nav-link " id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
             </li>
+            @if($paqueterias != null)
+            <li class="nav-item">
+                <a class="nav-link " id="pills-paqdid-tab" data-toggle="pill" href="#pills-paqdid" role="tab" aria-controls="pills-paqdid" aria-selected="false">Evaluacion Alumno</a>
+            </li>
+            @endif
         </ul>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
@@ -38,6 +43,9 @@
             </div>
             <div class="tab-pane fade" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.evaluacionAlumno')
+            </div>
+            <div class="tab-pane fade" id="pills-paqdid" role="tabpanel" aria-labelledby="pills-paqdid-tab">
+                @include('layouts.pages.paqueteriasDidacticas.blades.descargarPaqueteria')
             </div>
         </div>
     </form>

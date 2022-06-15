@@ -17,9 +17,9 @@ class PaqueteriaDidacticaController extends Controller
     {
 
         $curso = curso::toBase()->where('id', $idCurso)->first();
-
+        $paqueterias = PaqueteriasDidacticas::toBase()->where('id_curso', $idCurso)->first();
         // dump($curso );
-        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso'));
+        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'paqueterias'));
     }
 
     public function store(Request $request, $idCurso)
