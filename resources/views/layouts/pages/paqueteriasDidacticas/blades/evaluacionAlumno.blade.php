@@ -29,6 +29,12 @@
                     <option value="abierta">Abierta</option>
                 </select>
             </div>
+            <div class="form-group col-md-12 col-sm-6">
+                <label for="contenidoTematicoP" class="control-label">CONTENIDO TEMATICO</label>
+                <select class="form-control contenidoTematicoPregunta" name="pregunta1-contenidoT">
+                    
+                </select>
+            </div>
         </div>
 
         <div class="form-row col-md-1">

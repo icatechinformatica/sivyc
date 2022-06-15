@@ -75,20 +75,26 @@
     <h2>INFORMACION ACADEMICA DEL CURSO</h2>
 </label>
 <hr style="border-color:dimgray">
+<div class="form-group col-md-4">
+    <label for="transversabilidad" class="control-label">Transversabilidad con otros Cursos </label>
+    <input placeholder="Transversabilidad" type="text" class="form-control" id="transversabilidad" name="transversabilidad">
+</div>
 <div class="form-row">
 
     <div class="row col-md-7 col-sm-12">
         <div class="form-group col-md-12 col-sm-12">
             <label for="aprendizajeesperado" class="control-label">Objetivo General (Aprendizaje Esperado)</label>
-            <textarea placeholder="Aprendizaje Esperado" class="form-control col-md-12" id="aprendizajeesperado" name="aprendizajeesperado" cols="20" rows="5"></textarea>
+            <textarea placeholder="Objetivo General del Curso" class="form-control col-md-12" id="aprendizajeesperado" name="aprendizajeesperado" cols="20" rows="5"></textarea>
         </div>
     </div>
 
+    
     <div class="row col-md-5 col-sm-12" id="row-criterios">
         <div class="form-group col-md-5 col-sm-5">
             <label for="criterio" class="control-label">Proceso de evaluacion</label>
             <input placeholder="P.E. Examen" type="text" class="form-control" id="criterio" name="criterio">
         </div>
+        
         <div class="form-group col-md-4 col-sm-4">
             <label for="ponderacion" class="control-label">Ponderacion</label>
             <input placeholder="%" type="number" class="form-control" id="ponderacion" name="ponderacion">
@@ -118,42 +124,43 @@
 </div>
 
 <div class="form-row">
-    <label for="objetivos" class="control-label">Objetivos especificos por tema:</label>
-    <textarea placeholder="Objetivos especificos por tema" class="form-control" id="objetivoespecifico" name="objetivoespecifico" cols="15" rows="5"></textarea>
+    <div class="row col-md-12 col-sm-12">
+        <label for="objetivos col-md-12" class="control-label">Objetivos especificos por tema:</label>
+    </div>
+    <div class="row col-md-12 col-sm-12">
+        <textarea placeholder="Objetivos especificos por tema" class="form-control" id="objetivoespecifico" name="objetivoespecifico" cols="15" rows="5"></textarea>
+    </div>
 </div>
 
-<div class="form-group col-md-4">
-        <label for="transversabilidad" class="control-label">Transversabilidad con otros Cursos </label>
-        <input placeholder="Transversabilidad" type="text" class="form-control" id="transversabilidad" name="transversabilidad">
-    </div>
 
 <br>
 <div class="form-row">
-    <div class="form-group col-md-3 col-sm-6">
+    <div class="form-group col-md-6 col-sm-6">
         <label for="contenidotematico" class="control-label">Contenido Tematico</label>
-        <input placeholder="Contenido Tematico" type="text" class="form-control" id="contenidotematico" name="contenidotematico" >
+        <textarea placeholder="Contenido Tematico" class="form-control" id="contenidotematico" name="contenidotematico" ></textarea>
     </div>
-    <div class="form-group col-md-3 col-sm-6">
+    <div class="form-group col-md-6 col-sm-6">
         <label for="estrategiadidactica" class="control-label">Estrategia Didactica</label>
-        <input placeholder="Contenido Tematico" type="text" class="form-control" id="estrategiadidactica" name="estrategiadidactica" >
+        <textarea placeholder="Contenido Tematico" class="form-control" id="estrategiadidactica" name="estrategiadidactica" > </textarea>
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="procesoevaluacion" class="control-label">Proceso Evaluacion</label>
-        <input placeholder="Proceso Evaluacion" type="text" class="form-control" id="procesoevaluacion" name="procesoevaluacion" >
+        <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="procesoevaluacion" name="procesoevaluacion" ></textarea>
     </div>
-    <div class="form-group col-md-2 col-sm-6">
+    <div class="form-group col-md-3 col-sm-6">
         <label for="duracion" class="control-label">Duracion</label>
-        <input placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT" >
+        <textarea placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT" ></textarea>
     </div>
-    <div class="form-group col-md-2 col-sm-6">
+    <div class="form-group col-md-6 col-sm-6">
         <label for="contenidoExtra" class="control-label">Contenido Extra</label>
-        <input placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra" >
+        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra" ></textarea>
     </div>
-    <div class="form-group col-md-1 col-sm-2">
+    <div class="form-group col-md-6 col-sm-2">
         <a class="btn btn-warning" onclick="agregarContenidoT()">Agregar</a>
     </div>
 
 </div>
+<br><br><br><br>
 <div class="form-row">
     <div class="form group col-md-12 col-sm-12">
         <table id="" class="table table-hover table-bordered">
@@ -174,7 +181,7 @@
 </div>
 <input hidden ="true" name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror" >
 
-<br>
+<br><br><br><br>
 <div class="form-row">
     <label for="objetivos" class="control-label">Observaciones:</label>
     <textarea placeholder="Observaciones" class="form-control" id="observaciones" name="observaciones" cols="15" rows="5"></textarea>
@@ -182,17 +189,17 @@
 <br>
 
 <div class="form-row">
-    <div class="form-group col-md-3 col-sm-6">
+    <div class="form-group col-md-4 col-sm-6">
         <label for="elementoapoyo" class="control-label">Elementos de Apoyo</label>
-        <input placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo" >
+        <textarea placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo" ></textarea>
     </div>
-    <div class="form-group col-md-3 col-sm-6">
+    <div class="form-group col-md-4 col-sm-6">
         <label for="auxenseñanza" class="control-label">Auxiliares de la enseñanza</label>
-        <input placeholder="Auxiliares de le enseñanza" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza" >
+        <textarea placeholder="Auxiliares de le enseñanza" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza" ></textarea>
     </div>
-    <div class="form-group col-md-3 col-sm-6">
+    <div class="form-group col-md-4 col-sm-6">
         <label for="referencias" class="control-label">Referencias</label>
-        <input placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias" >
+        <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias" ></textarea>
     </div>
     <div class="form-group col-md-1 col-sm-2">
         <a class="btn btn-warning" onclick="agregarRecursosD()">Agregar</a>

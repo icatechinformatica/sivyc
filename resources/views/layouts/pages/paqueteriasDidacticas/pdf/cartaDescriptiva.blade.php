@@ -167,10 +167,14 @@
 
                         @foreach ($cartaDescriptiva->contenidoTematico as $contenido)
                         <tr>
-                            <td colspan="2"><label class="contenido">{{ $contenido->contenido }}</label> </td>
-                            <td colspan="2">{{ $contenido->estrategia }}</td>
-                            <td colspan="2">{{ $contenido->proceso }} </td>
-                            <td colspan="4">{{ $contenido->duracion }} </td>
+                            <td colspan="2">
+                                <label class="contenido">
+                                    <?php echo htmlspecialchars_decode(stripslashes($contenido->contenido));?>
+                                </label> 
+                            </td>
+                            <td colspan="2"><?php echo htmlspecialchars_decode(stripslashes($contenido->estrategia)); ?></td>
+                            <td colspan="2"><?php echo htmlspecialchars_decode(stripslashes($contenido->proceso)); ?> </td>
+                            <td colspan="4"><?php echo htmlspecialchars_decode(stripslashes($contenido->duracion)); ?> </td>
                         </tr>
                         @endforeach
                         
@@ -194,9 +198,9 @@
                         </tr>
                         @foreach($cartaDescriptiva->recursosDidacticos as $recursos)
                         <tr>
-                            <td colspan="3">{{ $recursos->elementoapoyo }}</td>
-                            <td colspan="4">{{ $recursos->auxenseñanza }}</td>
-                            <td colspan="3">{{ $recursos->referencias }} </td>
+                            <td colspan="3"> <?php echo htmlspecialchars_decode(stripslashes($recursos->elementoapoyo)) ?> </td>
+                            <td colspan="4"> <?php echo htmlspecialchars_decode(stripslashes($recursos->auxenseñanza)) ?> </td>
+                            <td colspan="3"> <?php echo htmlspecialchars_decode(stripslashes($recursos->referencias)) ?>  </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -337,7 +341,7 @@
                         @foreach($evalAlumno as $pregunta)
                         <tr >
                             <td style="text-align:center;">{{$loop->index + 1}}</td>
-                            <td>{{$pregunta->descripcion}}</td>
+                            <td>{{$pregunta->contenidoTematico}}</td>
                             <td style="text-align:center;">{{$pregunta->respuesta}}</td>
                         </tr>
                         @endforeach

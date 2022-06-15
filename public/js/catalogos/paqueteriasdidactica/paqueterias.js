@@ -22,9 +22,9 @@ function getID(e) {
     index = e;
 }
 function buscarEspecialidad() {
-    
+
     var especialidad = document.getElementById("especialidad").value.toUpperCase()
-    
+
     if (especialidad !== "") {
         $.ajax({
             url: '/especialidadBuscador/',
@@ -45,7 +45,7 @@ function buscarEspecialidad() {
                 });
             }
         });
-    }else {        
+    } else {
         $("#searchResult").empty();
     }
 }
@@ -105,6 +105,7 @@ function agregarponderacion() {
 function agregarContenidoT() {
     var tbodyElement = document.getElementById('tTemario');
 
+
     var trElement = document.createElement('tr');
     var contenidoT = document.createElement('td');
     var estrategiaD = document.createElement('td');
@@ -116,15 +117,15 @@ function agregarContenidoT() {
     var iElement = document.createElement('i');
 
 
-    if (!$('#contenidotematico').val() || !$('#estrategiadidactica').val() || !$('#procesoevaluacion').val() || !$('#duracionT').val())
-        return
+    // if (!editorContenidoT.getData() || !editorEstrategiaD.getData() || !editorProcesoE.getData() || !editorDuracionT.getData() || !editorContenidoE.getData())
+    //     return
 
 
-    contenidoT.innerText = $('#contenidotematico').val();
-    estrategiaD.innerText = $('#estrategiadidactica').val();
-    proceso.innerText = $('#procesoevaluacion').val();
-    duracion.innerText = $('#duracionT').val();
-    contenidoExtra.innerText = $('#contenidoExtra').val();
+    contenidoT.innerHTML = editorContenidoT.getData();
+    estrategiaD.innerHTML = editorEstrategiaD.getData();
+    proceso.innerHTML = editorProcesoE.getData();
+    duracion.innerHTML = editorDuracionT.getData();
+    contenidoExtra.innerHTML = editorContenidoE.getData();
 
 
     trElement.setAttribute("id", 'contenido' + idContenido);
@@ -147,27 +148,29 @@ function agregarContenidoT() {
 
     valContenidoT.push({
         'id': idContenido,
-        'contenido': $('#contenidotematico').val(),
-        'estrategia': $('#estrategiadidactica').val(),
-        'proceso': $('#procesoevaluacion').val(),
-        'duracion': $('#duracionT').val(),
-        'contenidoExtra': $('#contenidoExtra').val(),
+        'contenido': editorContenidoT.getData(),
+        'estrategia': editorEstrategiaD.getData(),
+        'proceso': editorProcesoE.getData(),
+        'duracion': editorDuracionT.getData(),
+        'contenidoExtra': editorContenidoE.getData(),
     });
 
 
     storeContenidoT.value = JSON.stringify(valContenidoT);
 
-    $('#contenidotematico').val('');
-    $('#estrategiadidactica').val('');
-    $('#procesoevaluacion').val('');
-    $('#duracionT').val('');
-    $('#contenidoExtra').val('');
+    addContenidoToSelect(JSON.parse(storeContenidoT.value));
+
+    editorContenidoT.data.set("<ul><li><strong>Tema</strong><ul><li>Subtema 1&nbsp;</li><li>Subtema 2</li></ul></li></ul>");
+    editorEstrategiaD.data.set("");
+    editorProcesoE.data.set("");
+    editorDuracionT.data.set("");
+    editorContenidoE.data.set("<h2>Tema</h2><ul><li>Contenido…..</li></ul><h4>Subtema 1</h4><ul><li>Contenido …</li></ul><h4>Subtemas 2</h4><ul><li>Contenido …</li></ul>");
 
     idContenido++;
 }
 function agregarRecursosD() {
     var tbodyElement = document.getElementById('tRecursosD');
-    var numelement = tbodyElement.rows.length;
+
     var trElement = document.createElement('tr');
     var elementoApoyo = document.createElement('td');
     var auxEnseñanza = document.createElement('td');
@@ -177,13 +180,12 @@ function agregarRecursosD() {
     var iElement = document.createElement('i');
 
 
-    if (!$('#elementoapoyo').val() || !$('#auxenseñanza').val() || !$('#referencias').val())
+    if (!editorElementoA.getData() || !editorAuxE.getData() || !editorReferencias.getData())
         return
 
-
-    elementoApoyo.innerText = $('#elementoapoyo').val();
-    auxEnseñanza.innerText = $('#auxenseñanza').val();
-    referencias.innerText = $('#referencias').val();
+    elementoApoyo.innerHTML = editorElementoA.getData();
+    auxEnseñanza.innerHTML = editorAuxE.getData();
+    referencias.innerHTML = editorReferencias.getData();
 
 
     trElement.setAttribute("id", 'recurso' + idRecursos);
@@ -204,16 +206,16 @@ function agregarRecursosD() {
 
     valRecursosD.push({
         'id': idRecursos,
-        'elementoapoyo': $('#elementoapoyo').val(),
-        'auxenseñanza': $('#auxenseñanza').val(),
-        'referencias': $('#referencias').val(),
+        'elementoapoyo': editorElementoA.getData(),
+        'auxenseñanza': editorAuxE.getData(),
+        'referencias': editorReferencias.getData(),
     });
 
     storeRecursosD.value = JSON.stringify(valRecursosD);
 
-    $('#elementoapoyo').val('');
-    $('#auxenseñanza').val('');
-    $('#referencias').val('');
+    editorElementoA.data.set("");
+    editorAuxE.data.set("");
+    editorReferencias.data.set("");
 
     idRecursos++;
 }
@@ -229,6 +231,7 @@ function removerContenido(idContenido) {
 
     var tr = document.getElementById('contenido' + idContenido);
     document.getElementById('tTemario').removeChild(tr);
+    addContenidoToSelect(JSON.parse(storeContenidoT.value))
 }
 
 function removerCriterio(idCriterio) {
@@ -278,10 +281,31 @@ var opcion = 0;
 var numPreguntas = 1;
 
 
+function addContenidoToSelect(contenido) {
+    $('.contenidoTematicoPregunta')
+        .find('option')
+        .remove()
+        ;
+    for (var i = 0; i < contenido.length; i++) {
+        var temas = contenido[i].contenido;
+
+        var contenidoT = temas.substring(
+            temas.indexOf("<strong>") + 1,
+            temas.lastIndexOf("</strong>")
+        );
+        contenidoT = contenidoT.replace('strong>', "");
+        $('.contenidoTematicoPregunta').append($('<option>', {
+            value: contenidoT,
+            text: contenidoT
+        }));
+    }
+
+}
 
 function agregarPregunta() {
+    console.log(storeContenidoT.value)
     var numChildren = contPreguntas + 1;
-    numPreguntas ++;
+    numPreguntas++;
     $('#numPreguntas').val(numPreguntas);
 
     var nuevaPregunta = $(
@@ -301,6 +325,11 @@ function agregarPregunta() {
         '<option value="abierta">Abierta</option>' +
         '</select>' +
         '</div>' +
+        '<div class="form-group col-md-12 col-sm-6">' +
+        '<label for="contenidoTematicoP" class="control-label">CONTENIDO TEMATICO</label>' +
+        '<select class="form-control contenidoTematicoPregunta" name="pregunta'+numChildren+'-contenidoT">' +
+        '</select>' +
+        '</div>' +
         '</div>' +
 
 
@@ -314,7 +343,7 @@ function agregarPregunta() {
 
 
         '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="pregunta' + numChildren + '-opc">' +
-        '<input type="text" hidden id="pregunta' + numChildren + '-opc-answer" name="pregunta' + numChildren + '-opc-answer">'+
+        '<input type="text" hidden id="pregunta' + numChildren + '-opc-answer" name="pregunta' + numChildren + '-opc-answer">' +
         '<div class="input-group mb-3">' +
         '<div class="input-group-prepend">' +
         '<div class="input-group-text">' +
@@ -345,6 +374,7 @@ function agregarPregunta() {
 
     $('#preguntas-area-parent').append(nuevaPregunta);
     contPreguntas++
+    addContenidoToSelect(JSON.parse(storeContenidoT.value));
 }
 
 
@@ -377,7 +407,7 @@ function removerPregunta(pregunta) {
     var divMain = $('#' + idParent).parent().attr('id');
 
 
-    numPreguntas --;
+    numPreguntas--;
     $('#numPreguntas').val(numPreguntas);
 
     $('#' + idParent).remove();
@@ -416,16 +446,17 @@ function setAceptedAnswer(checkboxSelected) {
     for (var i = 0; i < opciones.length; i++) {
         var opcion = opciones[i];
         var checkbox = $(opcion).children().children().children()[0];
-        if(checkbox != checkboxSelected){
+        if (checkbox != checkboxSelected) {
             $(checkbox).prop('checked', false);
-        }else{
-            if($(checkboxSelected).prop('checked')){
-                input.value = abecedario[i];
-            }else{
+        } else {
+            if ($(checkboxSelected).prop('checked')) {
+                input.value = abecedario[i-1];
+                console.log(input.value);
+            } else {
                 input.value = 0;
             }
         }
-    }    
+    }
 }
 
 

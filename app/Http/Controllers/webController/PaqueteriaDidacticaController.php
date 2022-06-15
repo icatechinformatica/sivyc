@@ -17,7 +17,7 @@ class PaqueteriaDidacticaController extends Controller
     {
 
         $curso = curso::toBase()->where('id', $idCurso)->first();
-        $paqueterias = PaqueteriasDidacticas::toBase()->where('id_curso', $idCurso)->first();
+        $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
         // dump($curso );
         return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'paqueterias'));
     }
@@ -25,6 +25,7 @@ class PaqueteriaDidacticaController extends Controller
     public function store(Request $request, $idCurso)
     {
         //
+        dd($request->toArray());
         
         $paqueteriasDidacticas = new PaqueteriasDidacticas();
         $preguntas = ['instrucciones'=>$request->instrucciones];
@@ -66,6 +67,7 @@ class PaqueteriaDidacticaController extends Controller
             $tipoPregunta = 'pregunta'.$i.'-tipo';
             $opcPregunta = 'pregunta'.$i.'-opc';
             $respuesta = 'pregunta'.$i.'-opc-answer';
+            $contenidoT = 'pregunta'.$i.'-contenidoT';
             
 
             if($request->$numPregunta != null){
@@ -73,12 +75,15 @@ class PaqueteriaDidacticaController extends Controller
                     'descripcion' => $request->$numPregunta,
                     'tipo' => $request->$tipoPregunta,
                     'opciones' => $request->$opcPregunta,
-                    'respuesta' => $request->$respuesta
+                    'respuesta' => $request->$respuesta,
+                    'contenidoTematico' => $request->$contenidoT,
                 ];
                 array_push($preguntas, $tempPregunta);
                 $contPreguntas++;
             }
         }
+
+        // dd($preguntas);
         
 
         DB::beginTransaction();
@@ -123,6 +128,7 @@ class PaqueteriaDidacticaController extends Controller
         $curso = curso::toBase()->where('id', $idCurso)->first();
         $abecedario = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
 
+        
         // dd($evalAlumno);
         // dd($cartaDescriptiva, $evalAlumno, $curso);
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva', 'evalAlumno', 'abecedario', 'curso'));

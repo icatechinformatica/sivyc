@@ -181,3 +181,8 @@ a.isDisabled {
   background: #9f2241;
   color: white;
 }
+
+.ck-editor__editable_inline {
+    min-height: 100px;
+}
+
