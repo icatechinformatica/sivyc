@@ -56,11 +56,10 @@ class PaqueteriaDidacticaController extends Controller
         // dump (array_count_values($request->toArray()));
         $i = 0;
         $contPreguntas = 0;
-        $auxContPreguntas = $request->numPreguntas;
         
         while(true) {
             $i++;
-            if($contPreguntas == $auxContPreguntas )
+            if($contPreguntas == $request->numPreguntas )
                 break;
             
             $numPregunta = 'pregunta'.$i;

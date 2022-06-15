@@ -424,15 +424,16 @@ function removerOpcion(opcion) {
 
 
 function cambiarTipoPregunta(idPregunta) {
-    var value = $("#tipopregunta-" + idPregunta + " option:selected").text();
+    var value = $(idPregunta).val();
+    console.log(value);
 
-    if (value == 'Abierta') {
+    if (value == 'abierta') {
         console.log('hide multiple')
-        $(".opcion-area-" + idPregunta + "").css('display', 'none');
+        $(".opcion-area-p" + idPregunta + "").css('display', 'none');
         $(".ra-" + idPregunta).css('display', 'block');
     } else {
         $(".ra-" + idPregunta).css('display', 'none');
-        $(".opcion-area-" + idPregunta).css('display', 'block');
+        $(".opcion-area-p" + idPregunta).css('display', 'block');
 
     }
 }

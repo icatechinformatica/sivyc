@@ -54,10 +54,11 @@
 
 
 @section('script_content_js')
-<script src="{{asset('vendor/ckeditor/ckeditor.js') }}" ></script>
-<script src="{{asset('vendor/ckeditor/translations/es.js') }}" ></script>
-<script>
+<script src="{{asset('vendor/ckeditor/ckeditor.js') }}"></script>
+<script src="{{asset('vendor/ckeditor/translations/es.js') }}"></script>
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
 
+<script>
     //inicializacion de text areas ckeditor 5
     var editorContenidoT;
     var editorEstrategiaD;
@@ -69,111 +70,153 @@
     var editorAuxE;
     var editorReferencias;
     ClassicEditor
-            .create( document.querySelector( '#objetivoespecifico' ),{
-                language: 'es'
-            } )
-            .catch( error => {
-                console.error( error );
-            } );
-    
+        .create(document.querySelector('#objetivoespecifico'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     ClassicEditor
-            .create( document.querySelector( '#aprendizajeesperado' ),{
-                language: 'es'
-            } )
-            .catch( error => {
-                console.error( error );
-            } );
-    
+        .create(document.querySelector('#aprendizajeesperado'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     ClassicEditor
-            .create( document.querySelector( '#observaciones' ),{
-                language: 'es'
-            } )
-            .catch( error => {
-                console.error( error );
-            } );
-    
+        .create(document.querySelector('#observaciones'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     ClassicEditor
-            .create( document.querySelector( '#contenidotematico' ),{
-                language: 'es'
-            } )
-            .then ( editor =>{
-                editor.data.set("<ul><li><strong>Tema</strong><ul><li>Subtema 1&nbsp;</li><li>Subtema 2</li></ul></li></ul>");
-                editorContenidoT = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
+        .create(document.querySelector('#contenidotematico'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+
+        })
+        .then(editor => {
+            editor.data.set("<ul><li><strong>Tema</strong><ul><li>Subtema 1&nbsp;</li><li>Subtema 2</li></ul></li></ul>");
+            editorContenidoT = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     ClassicEditor
-            .create( document.querySelector( '#estrategiadidactica' ),{
-                language: 'es'
-            } )
-            .then ( editor =>{
-                editorEstrategiaD = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
+        .create(document.querySelector('#estrategiadidactica'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+
+        })
+        .then(editor => {
+            editorEstrategiaD = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     ClassicEditor
-            .create( document.querySelector( '#procesoevaluacion' ),{
-                language: 'es'
-            } )
-            .then( editor =>{
-                editorProcesoE = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
+        .create(document.querySelector('#procesoevaluacion'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+
+        })
+        .then(editor => {
+            editorProcesoE = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     ClassicEditor
-            .create( document.querySelector( '#duracionT' ),{
-                language: 'es'
-            } )
-            .then( editor =>{
-                editorDuracionT = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
+        .create(document.querySelector('#duracionT'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+
+        })
+        .then(editor => {
+            editorDuracionT = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     ClassicEditor
-            .create( document.querySelector( '#contenidoExtra' ),{
-            language: 'es'} )
-            .then ( editor =>{
-                editor.data.set("<h2>Tema</h2><ul><li>Contenido…..</li></ul><h4>Subtema 1</h4><ul><li>Contenido …</li></ul><h4>Subtemas 2</h4><ul><li>Contenido …</li></ul>");
-                editorContenidoE = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
+        .create(document.querySelector('#contenidoExtra'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+        })
+        .then(editor => {
+            editor.data.set("<h2>Tema</h2><ul><li>Contenido…..</li></ul><h4>Subtema 1</h4><ul><li>Contenido …</li></ul><h4>Subtemas 2</h4><ul><li>Contenido …</li></ul>");
+            editorContenidoE = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
 
 
     ClassicEditor
-            .create( document.querySelector( '#elementoapoyo' ),{
-            language: 'es'} )
-            .then ( editor =>{
-                editorElementoA = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
+        .create(document.querySelector('#elementoapoyo'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+        })
+        .then(editor => {
+            editorElementoA = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     ClassicEditor
-            .create( document.querySelector( '#auxenseñanza' ),{
-            language: 'es'} )
-            .then ( editor =>{
-                editorAuxE = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
+        .create(document.querySelector('#auxenseñanza'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+        })
+        .then(editor => {
+            editorAuxE = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     ClassicEditor
-            .create( document.querySelector( '#referencias' ),{
-            language: 'es'} )
-            .then ( editor =>{
-                editorReferencias = editor;
-            })
-            .catch( error => {
-                console.error( error );
-            } );
-    
-
+        .create(document.querySelector('#referencias'), {
+            language: 'es',
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            }
+        })
+        .then(editor => {
+            editorReferencias = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
 </script>
 <script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}"></script>
 @endsection

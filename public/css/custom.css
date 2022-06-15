@@ -185,4 +185,8 @@ a.isDisabled {
 .ck-editor__editable_inline {
     min-height: 100px;
 }
+.ck-editor__editable {
+  max-height: 200px;
+}
+
 
