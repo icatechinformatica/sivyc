@@ -36,6 +36,7 @@
         <link rel="stylesheet" href="{{asset("css/unify-globals.css") }}">
 
         <link rel="stylesheet" href="{{asset("css/custom.css") }}">
+        <link rel="stylesheet" href="{{asset("css/paqueterias.css") }}">
         <link rel="stylesheet" href="{{asset("css/mdb.min.css") }}">
         <link rel="stylesheet" href="{{asset("css/jquery-ui.css") }}">
 

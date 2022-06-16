@@ -25,7 +25,9 @@
         <label for="programaestrategico" class="control-label">Programa estrategico (Caso aplicable )</label>
         <input placeholder="Programa Estrategico" type="text" class="form-control" id="programaestrategico" name="programaestrategico">
     </div>
-    <div class="form-group col-md-4">
+</div>
+<div class="form-row">
+    <div class="form-group col-md-3">
         <label for="modalidad" class="control-label">Modalidad</label>
         <select class="form-control" id="modalidad" name="modalidad">
             <option value="" selected disabled>--SELECCIONAR--</option>
@@ -33,9 +35,7 @@
             <option value="CAE" {{$curso->modalidad == 'CAE' ? 'selected' : ''}}>CAE</option>
         </select>
     </div>
-</div>
-<div class="form-row">
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <label for="tipo" class="contro-label">Tipo</label>
         <select class="form-control" id="tipo" name="tipo">
             <option value="" selected disabled>--SELECCIONAR--</option>
@@ -44,11 +44,11 @@
             <option value="A DISTANCIA Y PRESENCIAL">A DISTANICA Y PRESENCIAL</option>
         </select>
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <label for="perfilidoneo" class="control-label">Perfil Idoneo del Instructor</label>
         <input placeholder="Pefil idoneo" type="text" class="form-control" id="perfilidoneo" name="perfilidoneo">
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <label for="duracion" class="control-label">Duracion en horas</label>
         <input placeholder="Horas" type="number" class="form-control" id="duracion" name="duracion" value="{{old('duracion', $curso->duracion)}}">
     </div>
@@ -60,9 +60,9 @@
         <input placeholder="Formacion Laboral" type="text" class="form-control" id="formacionlaboral" name="formacionlaboral">
     </div>
     <div class="form-group col-md-4">
-        <label for="especialidad" class="control-label">Especialidad  </label>
+        <label for="especialidad" class="control-label">Especialidad </label>
         <input placeholder="Especialidad" type="text" class="form-control " id="especialidad" name="especialidad" onkeyup="buscarEspecialidad()">
-        <ul id="searchResult" class="searchResult" ></ul>
+        <ul id="searchResult" class="searchResult"></ul>
     </div>
     <div class="form-group col-md-4">
         <label for="publico" class="control-label">Publico o personal al que va dirigido</label>
@@ -70,41 +70,51 @@
     </div>
 </div>
 
-<hr style="border-color:dimgray">
+<br><br>
 <label>
     <h2>INFORMACION ACADEMICA DEL CURSO</h2>
 </label>
 <hr style="border-color:dimgray">
-<div class="form-group col-md-4">
-    <label for="transversabilidad" class="control-label">Transversabilidad con otros Cursos </label>
-    <input placeholder="Transversabilidad" type="text" class="form-control" id="transversabilidad" name="transversabilidad">
-</div>
+
+
 <div class="form-row">
-
-    <div class="row col-md-7 col-sm-12">
-        <div class="form-group col-md-12 col-sm-12">
-            <label for="aprendizajeesperado" class="control-label">Objetivo General (Aprendizaje Esperado)</label>
-            <textarea placeholder="Objetivo General del Curso" class="form-control col-md-12" id="aprendizajeesperado" name="aprendizajeesperado" cols="20" rows="5"></textarea>
-        </div>
+    <div class="form-group col-md-12 col-sm-12">
+        <label for="aprendizajeesperado" class="control-label">Objetivo General (Aprendizaje Esperado)</label>
     </div>
+    <div class="form-group col-md-12 col-sm-12">
+        <textarea placeholder="Objetivo General del Curso" class="form-control col-md-12" id="aprendizajeesperado" name="aprendizajeesperado" c¿></textarea>
+    </div>
+</div>
 
-    
-    <div class="row col-md-5 col-sm-12" id="row-criterios">
-        <div class="form-group col-md-5 col-sm-5">
-            <label for="criterio" class="control-label">Proceso de evaluacion</label>
-            <input placeholder="P.E. Examen" type="text" class="form-control" id="criterio" name="criterio">
-        </div>
-        
-        <div class="form-group col-md-4 col-sm-4">
-            <label for="ponderacion" class="control-label">Ponderacion</label>
-            <input placeholder="%" type="number" class="form-control" id="ponderacion" name="ponderacion">
-        </div>
 
-        <div class="form-group col-md-2 col-sm-2">
-            <a class="btn btn-warning" onclick="agregarponderacion()">Agregar</a>
-        </div>
+<div class="form-row">
+    <div class="form-group col-md-12 col-sm-12">
+        <label for="objetivos col-md-12" class="control-label">Objetivos especificos por tema:</label>
+    </div>
+    <div class="form-group col-md-12 col-sm-12">
+        <textarea placeholder="Objetivos especificos por tema" class="form-control" id="objetivoespecifico" name="objetivoespecifico"></textarea>
+    </div>
+</div>
 
+<div class="form-row">
+    <div class="form-group col-md-12">
+        <label for="transversabilidad" class="control-label">Transversabilidad con otros Cursos </label>
+        <input placeholder="Transversabilidad" type="text" class="form-control" id="transversabilidad" name="transversabilidad">
+    </div>
+    <div class="form-group col-md-12">
+        <label for="publico" class="control-label">Publico o personal al que va dirigido</label>
+        <textarea placeholder="Publico o personal al que va dirigido" class="form-control" id="publico" name="publico" cols="15" rows="2"></textarea>
+    </div>
+    <div class="form-group col-md-12">
+        <label for="objetivos" class="control-label">Observaciones:</label>
+        <textarea placeholder="Observaciones" class="form-control" id="observaciones" name="observaciones" cols="15" rows="5"></textarea>
+    </div>
+</div>
+
+
+<div class="form-row">
         <div class="form group col-md-12 col-sm-12">
+            <label for="criterio" class="control-label">Proceso de evaluacion</label>
             <table id="" class="table table-hover table-bordered">
                 <thead>
                     <tr>
@@ -114,46 +124,44 @@
                     </tr>
                 </thead>
                 <tbody id="tEvaluacion">
+                    <tr>
+                        <td><input placeholder="P.E. Examen" type="text" class="form-control" id="criterio" name="criterio"></td>
+                        <td><input placeholder="%" type="number" class="form-control" id="ponderacion" name="ponderacion"></td>
+                        <td><a class="btn btn-success" onclick="agregarponderacion()">Agregar</a></td>
+                        
+                    </tr>
                 </tbody>
             </table>
         </div>
-
-    </div>
     <input hidden="true" name="ponderacion" id="storePonderacion" class="@error('ponderacion')  is-invalid @enderror" value="{{old('ponderacion')}}">
-
-</div>
-
-<div class="form-row">
-    <div class="row col-md-12 col-sm-12">
-        <label for="objetivos col-md-12" class="control-label">Objetivos especificos por tema:</label>
-    </div>
-    <div class="row col-md-12 col-sm-12">
-        <textarea placeholder="Objetivos especificos por tema" class="form-control" id="objetivoespecifico" name="objetivoespecifico" cols="15" rows="5"></textarea>
-    </div>
 </div>
 
 
-<br>
+<br><br>
+<label>
+    <h2>CONTENIDO TEMATICO</h2>
+</label>
+<hr style="border-color:dimgray">
 <div class="form-row">
     <div class="form-group col-md-6 col-sm-6">
         <label for="contenidotematico" class="control-label">Contenido Tematico</label>
-        <textarea placeholder="Contenido Tematico" class="form-control" id="contenidotematico" name="contenidotematico" ></textarea>
+        <textarea placeholder="Contenido Tematico" class="form-control" id="contenidotematico" name="contenidotematico"></textarea>
     </div>
     <div class="form-group col-md-6 col-sm-6">
         <label for="estrategiadidactica" class="control-label">Estrategia Didactica</label>
-        <textarea placeholder="Contenido Tematico" class="form-control" id="estrategiadidactica" name="estrategiadidactica" > </textarea>
+        <textarea placeholder="Contenido Tematico" class="form-control" id="estrategiadidactica" name="estrategiadidactica"> </textarea>
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="procesoevaluacion" class="control-label">Proceso Evaluacion</label>
-        <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="procesoevaluacion" name="procesoevaluacion" ></textarea>
+        <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="procesoevaluacion" name="procesoevaluacion"></textarea>
     </div>
     <div class="form-group col-md-3 col-sm-6">
         <label for="duracion" class="control-label">Duracion</label>
-        <textarea placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT" ></textarea>
+        <textarea placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT"></textarea>
     </div>
     <div class="form-group col-md-6 col-sm-6">
         <label for="contenidoExtra" class="control-label">Contenido Extra</label>
-        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra" ></textarea>
+        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra"></textarea>
     </div>
     <div class="form-group col-md-6 col-sm-2">
         <a class="btn btn-warning" onclick="agregarContenidoT()">Agregar</a>
@@ -179,7 +187,7 @@
         </table>
     </div>
 </div>
-<input hidden ="true" name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror" >
+<input hidden="true" name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror">
 
 <br><br><br><br>
 <div class="form-row">
@@ -191,15 +199,15 @@
 <div class="form-row">
     <div class="form-group col-md-4 col-sm-6">
         <label for="elementoapoyo" class="control-label">Elementos de Apoyo</label>
-        <textarea placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo" ></textarea>
+        <textarea placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo"></textarea>
     </div>
     <div class="form-group col-md-4 col-sm-6">
         <label for="auxenseñanza" class="control-label">Auxiliares de la enseñanza</label>
-        <textarea placeholder="Auxiliares de le enseñanza" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza" ></textarea>
+        <textarea placeholder="Auxiliares de le enseñanza" type="text" class="form-control" id="auxenseñanza" name="auxenseñanza"></textarea>
     </div>
     <div class="form-group col-md-4 col-sm-6">
         <label for="referencias" class="control-label">Referencias</label>
-        <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias" ></textarea>
+        <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias"></textarea>
     </div>
     <div class="form-group col-md-1 col-sm-2">
         <a class="btn btn-warning" onclick="agregarRecursosD()">Agregar</a>
@@ -223,4 +231,4 @@
     </div>
 </div>
 
-<input hidden ="true" name="recursosD" id="storeRecursosD" class="@error('recursosD')  is-invalid @enderror" >
+<input hidden="true" name="recursosD" id="storeRecursosD" class="@error('recursosD')  is-invalid @enderror">

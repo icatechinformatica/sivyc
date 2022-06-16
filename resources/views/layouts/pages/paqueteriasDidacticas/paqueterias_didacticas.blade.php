@@ -38,7 +38,7 @@
             @endif
         </ul>
         <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
+            <div class="tab-pane fade show active" id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.curso')
             </div>
             <div class="tab-pane fade" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
@@ -56,7 +56,7 @@
 @section('script_content_js')
 <script src="{{asset('vendor/ckeditor/ckeditor.js') }}"></script>
 <script src="{{asset('vendor/ckeditor/translations/es.js') }}"></script>
-<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
 
 <script>
     //inicializacion de text areas ckeditor 5

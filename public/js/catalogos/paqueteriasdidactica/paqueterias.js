@@ -54,39 +54,20 @@ function agregarponderacion() {
     var tbodyElement = document.getElementById('tEvaluacion');
     var numelement = tbodyElement.rows.length;
 
-    var trElement = document.createElement('tr');
-    var criterio = document.createElement('td');
-    var porcentaje = document.createElement('td');
-    var accionElement = document.createElement('td');
-    var aElement = document.createElement('a');
-    var iElement = document.createElement('i');
-
-
     if (numelement > 4 || !$('#criterio').val() || !$('#ponderacion').val() || parseInt($('#ponderacion').val()) + ponderacionTotal > 100 || parseInt($('#ponderacion').val()) < 0 || parseInt($('#ponderacion').val()) == 0)
         return
-
-    ponderacionTotal += parseInt($('#ponderacion').val());
-    console.log(ponderacionTotal);
-
-
-
-    criterio.innerText = $('#criterio').val();
-    porcentaje.innerText = $('#ponderacion').val();
-
-    trElement.setAttribute("id", 'criterio' + idPonderacion);
-    aElement.setAttribute("onclick", 'removerCriterio(' + idPonderacion + ')');
-
-    iElement.classList.add("material-icons");
-    iElement.innerHTML = '&#xE872;';
-
-    aElement.appendChild(iElement);
-    accionElement.appendChild(aElement);
-
-    trElement.appendChild(criterio);
-    trElement.appendChild(porcentaje);
-    trElement.appendChild(accionElement);
-    tbodyElement.appendChild(trElement);
-
+  
+    // tbodyElement.appendChild(trElement);
+    $('<tr id="criterio'+idPonderacion+'">'+
+            '<td>'+ $('#criterio').val() +'</td>'+
+            '<td>'+ $('#ponderacion').val() +'</td>'+
+            '<td> '+
+                '<a class="btn btn-info btn-circle m-1 btn-circle-sm" onclick="removerCriterio('+idPonderacion+')">'+
+                '   <i class="fa fa-window-close" aria-hidden="true"></i>'+
+                '</a>'+
+            '</td>'+
+        '</tr>').prependTo(tbodyElement);
+    
 
     valPonderacion.push({
         'id': idPonderacion,
@@ -377,7 +358,6 @@ function agregarPregunta() {
     addContenidoToSelect(JSON.parse(storeContenidoT.value));
 }
 
-
 function agregarOpcion(opcion) {
     var idParent = $(opcion).parents(':eq(2)')[0].id; //     // console.log(idParent);
     var divParent = $('#' + idParent).children()[3].id;
@@ -423,18 +403,34 @@ function removerOpcion(opcion) {
 
 
 
-function cambiarTipoPregunta(idPregunta) {
-    var value = $(idPregunta).val();
-    console.log(value);
+function cambiarTipoPregunta(opcion) {
+    var value = $(opcion).val();
+    var divParent = $(opcion).parents(':eq(2)')[0]
+    console.log(divParent);
+    var preguntaAbierta = divParent.children[5]
+    var opcionMultiple = divParent.children[3].id
+   
+    console.log();
+    console.log(opcionMultiple);
+    // console.log(value);
+    // console.log(idPregunta)
 
+    // if (value == 'abierta') {
+    //     console.log('hide multiple')
+    //     $(".opcion-area-p" + idPregunta + "").css('display', 'none');
+    //     $(".ra-" + idPregunta).css('display', 'block');
+    // } else {
+    //     $(".ra-" + idPregunta).css('display', 'none');
+    //     $(".opcion-area-p" + idPregunta).css('display', 'block');
+
+    // }
     if (value == 'abierta') {
         console.log('hide multiple')
-        $(".opcion-area-p" + idPregunta + "").css('display', 'none');
-        $(".ra-" + idPregunta).css('display', 'block');
+        $('#'+opcionMultiple).css('display', 'none');
+        $(preguntaAbierta).css('display','block')
     } else {
-        $(".ra-" + idPregunta).css('display', 'none');
-        $(".opcion-area-p" + idPregunta).css('display', 'block');
-
+        $('#'+opcionMultiple).css('display', 'block');
+        $(preguntaAbierta).css('display','none')
     }
 }
 
