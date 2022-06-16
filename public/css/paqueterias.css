@@ -1,4 +1,3 @@
-
 /*
     *
     * ==========================================
@@ -7,126 +6,140 @@
     *
     */
 
-    .resp-abierta {
-        border: none;
-        border-bottom: 1px solid #621132;
-        padding: 5px 10px;
-        outline: none;
-      }
-      
-      .searchResult {
-        list-style: none;
-        padding: 0px;
-        width: 100%;
-        position: absolute;
-        margin: 0;
-      }
-      
-      .searchResult li {
-        background: lavender;
-        padding: 4px;
-        margin-bottom: 0px;
-      }
-      
-      .searchResult li:hover{
-        cursor: pointer;
-        background: #9f2241;
-        color: white;
-      }
-      
-      .ck-editor__editable_inline {
-          min-height: 100px;
-      }
-      .ck-editor__editable {
-        max-height: 200px;
-      }
-      
-      input, textarea {
-        background-color: #d1d1d1;
-      }
-      
-      .card {
-          position: relative;
-          width: auto;
-          height: auto;
-          background: rgba(255, 255, 255, 0.05);
-          margin: 20px;
-          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-          border-radius: 15px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          backdrop-filter: blur(10px);
-      }
-      
-      .card .content {
-          position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          transition: 0.5s;
-      }
-      
-      .card:hover .content {
-          transform: translateY(-20px);
-      }
-      
-      .card .content .imgBx {
-          position: relative;
-          width: 150px;
-          height: 150px;
-          overflow: hidden;
-      }
-      
-      .card .content .imgBx img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-      }
-      
-      .card .content .contentBx h3 {
-          color: rgb(199, 199, 199);
-          text-transform: uppercase;
-          letter-spacing: 2px;
-          font-weight: 500;
-          font-size: 18px;
-          text-align: center;
-          margin: 20px 0 10px;
-          line-height: 1.1em;
-      }
-      
-      .card .content .contentBx h3 span {
-          font-size: 12px;
-          font-weight: 300;
-          text-transform: initial;
-      }
-      
-      .card .sci {
-          position: absolute;
-          bottom: 50px;
-          display: flex;
-      }
-      
-      .card .sci li {
-          list-style: none;
-          margin: 0 10px;
-          transform: translateY(40px);
-          transition: 0.5s;
-          opacity: 0;
-      }
-      
-      .card:hover .sci li {
-          transform: translateY(0px);
-          opacity: 1;
-      }
-      
-      .card .sci li a {
-          color: rgb(0, 0, 0);
-          font-size: 20px;
-      }
-      
-      
+.resp-abierta {
+    border: none;
+    border-bottom: 1px solid #621132;
+    padding: 5px 10px;
+    outline: none;
+}
+
+.searchResult {
+    list-style: none;
+    padding: 0px;
+    width: 100%;
+    position: absolute;
+    margin: 0;
+}
+
+.searchResult li {
+    background: lavender;
+    padding: 4px;
+    margin-bottom: 0px;
+}
+
+.searchResult li:hover {
+    cursor: pointer;
+    background: #9f2241;
+    color: white;
+}
+
+.ck-editor__editable_inline {
+    min-height: 100px;
+}
+
+.ck-editor__editable {
+    max-height: 200px;
+}
+
+input[type=text] {
+    background-color: #fff;
+    
+    -webkit-transition: all .2s ease-out;
+    -moz-transition: all .2s ease-out;
+    -ms-transition: all .2s ease-out;
+    -o-transition: all .2s ease-out;
+    transition: all .2s ease-out
+}
+
+input[type=text]:focus {
+    border-color: #ccc;
+    
+    background: #f2f2f2;
+    outline: 0
+    /* f2f2f2 */
+}
+
+.card {
+    position: relative;
+    width: auto;
+    height: auto;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+/* 
+.card .content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: 0.5s;
+}
+
+.card:hover .sci {
+    transform: translateY(-10px);
+}
+
+.card .content .imgBx {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+}
+
+.card .content .imgBx img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card .content .contentBx h3 {
+    color: rgb(199, 199, 199);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    margin: 20px 0 10px;
+    line-height: 1.1em;
+}
+
+.card .content .contentBx h3 span {
+    font-size: 12px;
+    font-weight: 300;
+    text-transform: initial;
+}
+
+.card .sci {
+    position: absolute;
+    /* bottom: 50px; */
+    display: flex;
+    border-color:dimgray;
+}
+
+.card .sci li {
+    list-style: none;
+    margin: 0 10px;
+    /* transform: translateY(40px); */
+    transition: 0.5s;
+    opacity: 0;
+}
+
+.card:hover .sci li {
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+.card .sci li a {
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+} */
