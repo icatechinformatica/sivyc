@@ -6,6 +6,7 @@ var ponderacionTotal = 0;
  * ==========================================
  *
  */
+
 var idPonderacion = 0;
 var valPonderacion = [];
 var storePonderacion = document.getElementById('storePonderacion');
@@ -56,18 +57,18 @@ function agregarponderacion() {
 
     if (numelement > 4 || !$('#criterio').val() || !$('#ponderacion').val() || parseInt($('#ponderacion').val()) + ponderacionTotal > 100 || parseInt($('#ponderacion').val()) < 0 || parseInt($('#ponderacion').val()) == 0)
         return
-  
+
     // tbodyElement.appendChild(trElement);
-    $('<tr id="criterio'+idPonderacion+'">'+
-            '<td>'+ $('#criterio').val() +'</td>'+
-            '<td>'+ $('#ponderacion').val() +'</td>'+
-            '<td> '+
-                '<a class="btn btn-info btn-circle m-1 btn-circle-sm" onclick="removerCriterio('+idPonderacion+')">'+
-                '   <i class="fa fa-window-close" aria-hidden="true"></i>'+
-                '</a>'+
-            '</td>'+
+    $('<tr id="criterio' + idPonderacion + '">' +
+        '<td>' + $('#criterio').val() + '</td>' +
+        '<td>' + $('#ponderacion').val() + '</td>' +
+        '<td> ' +
+        '<a class="btn btn-info btn-circle m-1 btn-circle-sm" onclick="removerCriterio(' + idPonderacion + ')">' +
+        '   <i class="fa fa-window-close" aria-hidden="true"></i>' +
+        '</a>' +
+        '</td>' +
         '</tr>').prependTo(tbodyElement);
-    
+
 
     valPonderacion.push({
         'id': idPonderacion,
@@ -290,72 +291,87 @@ function agregarPregunta() {
     $('#numPreguntas').val(numPreguntas);
 
     var nuevaPregunta = $(
-        '<div class="row col-md-12" id = "pregunta' + numChildren + '" >' +
-        '<div class="form-row col-md-7 col-sm-12">' +
-        '<div class="form-group col-md-12 col-sm-10">' +
-        '<label for="pregunta0" class="control-label">PREGUNTA</label>' +
-        '<textarea placeholder="pregunta" class="form-control" name="pregunta' + numChildren + '" cols="15" rows="2"></textarea>' +
-        '</div>' +
-        '</div>' +
+        '<div class="card col-md-12">'+
+        '<div class="contentBx col-md-12">'+
+            '<br>'+
+            '<div class="row col-md-12"  id="pregunta' + numChildren + '" >'+
+                '<div class="form-row col-md-12 hideable">'+
+                    '<!-- selects -->'+
 
-        '<div class="form-row col-md-4 col-sm-6 ">' +
-        '<div class="form-group col-md-12 col-sm-12">' +
-        '<label for="tipopregunta" class="control-label">TIPO DE PREGUNTA</label>' +
-        '<select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta' + numChildren + '-tipo">' +
-        '<option value="multiple" selected>Multiple</option>' +
-        '<option value="abierta">Abierta</option>' +
-        '</select>' +
-        '</div>' +
-        '<div class="form-group col-md-12 col-sm-6">' +
-        '<label for="contenidoTematicoP" class="control-label">CONTENIDO TEMATICO</label>' +
-        '<select class="form-control contenidoTematicoPregunta" name="pregunta'+numChildren+'-contenidoT">' +
-        '</select>' +
-        '</div>' +
-        '</div>' +
+                    '<div class="form-group col-md-6 col-sm-6">'+
+                        '<select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta' + numChildren + '-tipo">' +
+                            '<option value="multiple" selected>Multiple</option>'+
+                            '<option value="abierta">Abierta</option>'+
+                        '</select>'+
+                    '</div>'+
+                    '<div class="form-group col-md-6 col-sm-6">'+
 
+                        '<select class="form-control contenidoTematicoPregunta" name="pregunta' + numChildren + '-contenidoT">' +
+                            '<option disbled selected value="">Contenido tematico de la pregunta</option>'+
+                        '</select>'+
+                    '</div>'+
 
-        '<div class="form-row col-md-1 col-sm-6">' +
-        '<div class="form-group col-md-1 col-sm-12>' +
-        '<label for="">Eliminar pregunta</label>' +
-        '<button type="button" class="btn btn-danger" onclick="removerPregunta(this)"  >' +
-        '<i class="fa fa-trash"></i>' +
-        '</div>' +
-        '</div> ' +
+                '</div>'+
+                '<div class="form-row col-md-7 col-sm-12">'+
+                    '<div class="form-group col-md-12 col-sm-10">'+
+                        '<input placeholder="Pregunta sin texto" type="text" class="form-control resp-abierta g-input">'+
+                    '</div>'+
+                '</div>'+
 
 
-        '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="pregunta' + numChildren + '-opc">' +
-        '<input type="text" hidden id="pregunta' + numChildren + '-opc-answer" name="pregunta' + numChildren + '-opc-answer">' +
-        '<div class="input-group mb-3">' +
-        '<div class="input-group-prepend">' +
-        '<div class="input-group-text">' +
-        '<input type="checkbox" onclick="setAceptedAnswer(this)" name="pregunta' + numChildren + '-opc-correc[]">' +
-        '</div>' +
-        '</div>' +
-        '&nbsp;&nbsp;&nbsp;' +
-        '<input placeholder="Opcion" type="text" class="form-control resp-abierta" name="pregunta' + numChildren + '-opc[]">' +
-        '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
-        '<i class="fa fa-minus"></i>' +
-        '</a>' +
-        '</div>' +
-        '</div>' +
 
+                '<div class="form-row col-md-7 opcion-area-p' + numChildren + '" id="pregunta' + numChildren + '-opc">' +
+                    '<input type="text" hidden id="pregunta' + numChildren + '-opc-answer" name="pregunta' + numChildren + '-opc-answer">' +
+                    '<div class="input-group mb-3 ">'+
+                        
+                            '<div class="input-group-text">'+
+                                '<input type="radio" onclick="setAceptedAnswer(this)" name="pregunta' + numChildren + '-opc-correc[]">' +
+                            '</div>'+
+                        
+                        '&nbsp;&nbsp;&nbsp;'+
+                        '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="pregunta' + numChildren + '-opc[]">' +
+                        '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)">'+
+                            '<i class="fa fa-minus"></i>'+
+                        '</a>'+
+                    '</div>'+
+                '</div>'+
 
-        '<div class="form-row col-md-6 opcion-area-pregunta' + numChildren + '">' +
-        '<div class="input-group mb-3">' +
-        '<a style="cursor: default;" onclick="agregarOpcion(this)">Agregar opcion</a>' +
-        '</div>' +
-        '</div>' +
+                '<div class="form-row col-md-6 opcion-area-pregunta' + numChildren + '">' +
+                    '<div class="input-group mb-3">'+
+                        '<a style="cursor: default;" onclick="agregarOpcion(this)">Agregar opcion</a>'+
+                    '</div>'+
+                '</div>'+
 
-        '<div class="form-row col-md-7 respuesta-abierta-area ra-p' + numChildren + '" style="display: none">' +
-        '<div class="input-group mb-3">' +
-        '<input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">' +
-        '</div>' +
-        '</div>' +
-        '</div >');
+                '<div class="form-row col-md-7 respuesta-abierta-area ra-p' + numChildren + '" style="display: none">' +
+                    '<div class="input-group mb-3">'+
+                        '<input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+
+            '<div class="row opciones col-md-12">'+
+                '<div class="col-md-10">'+
+                    '<div class="form-group col-md-4">'+
+                        '<a style="cursor: default;" onclick="agregarPregunta()" class="btn btn-success">Agregar Pregunta</a>'+
+                    '</div>'+
+                '</div>'+
+                '<div class="form-row col-md-2">'+
+                    '<div class="form-group col-md-1 col-sm-6">'+
+
+                        '<button type="button" class="btn btn-danger" onclick="removerPregunta(this)">'+
+                            '<i class="fa fa-trash"></i>'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
+    '</div>'
+    );
 
     $('#preguntas-area-parent').append(nuevaPregunta);
     contPreguntas++
-    addContenidoToSelect(JSON.parse(storeContenidoT.value));
+    if(storeContenidoT.value != ""){
+        addContenidoToSelect(JSON.parse(storeContenidoT.value));
+    }
 }
 
 function agregarOpcion(opcion) {
@@ -382,17 +398,10 @@ function agregarOpcion(opcion) {
 
 
 function removerPregunta(pregunta) {
-
-    var idParent = $(pregunta).parents(':eq(2)')[0].id; // 
-    var divMain = $('#' + idParent).parent().attr('id');
-
-
+    var divParent = $(pregunta).parents(':eq(4)')[0]; // 
     numPreguntas--;
     $('#numPreguntas').val(numPreguntas);
-
-    $('#' + idParent).remove();
-
-    // fixAllIds(divMain)
+    $(divParent).remove();
 }
 
 
@@ -409,7 +418,7 @@ function cambiarTipoPregunta(opcion) {
     console.log(divParent);
     var preguntaAbierta = divParent.children[5]
     var opcionMultiple = divParent.children[3].id
-   
+
     console.log();
     console.log(opcionMultiple);
     // console.log(value);
@@ -426,11 +435,11 @@ function cambiarTipoPregunta(opcion) {
     // }
     if (value == 'abierta') {
         console.log('hide multiple')
-        $('#'+opcionMultiple).css('display', 'none');
-        $(preguntaAbierta).css('display','block')
+        $('#' + opcionMultiple).css('display', 'none');
+        $(preguntaAbierta).css('display', 'block')
     } else {
-        $('#'+opcionMultiple).css('display', 'block');
-        $(preguntaAbierta).css('display','none')
+        $('#' + opcionMultiple).css('display', 'block');
+        $(preguntaAbierta).css('display', 'none')
     }
 }
 
@@ -447,7 +456,7 @@ function setAceptedAnswer(checkboxSelected) {
             $(checkbox).prop('checked', false);
         } else {
             if ($(checkboxSelected).prop('checked')) {
-                input.value = abecedario[i-1];
+                input.value = abecedario[i - 1];
                 console.log(input.value);
             } else {
                 input.value = 0;

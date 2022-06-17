@@ -6,6 +6,11 @@
     *
     */
 
+.mb-0,
+.my-0 {
+    margin-bottom: 0 !important;
+}
+
 .resp-abierta {
     border: none;
     border-bottom: 1px solid #621132;
@@ -43,7 +48,7 @@
 
 input[type=text] {
     background-color: #fff;
-    
+
     -webkit-transition: all .2s ease-out;
     -moz-transition: all .2s ease-out;
     -ms-transition: all .2s ease-out;
@@ -53,10 +58,10 @@ input[type=text] {
 
 input[type=text]:focus {
     border-color: #ccc;
-    
+
     background: #f2f2f2;
     outline: 0
-    /* f2f2f2 */
+        /* f2f2f2 */
 }
 
 .card {
@@ -72,7 +77,7 @@ input[type=text]:focus {
     align-items: center;
     backdrop-filter: blur(10px);
 }
-/* 
+
 .card .content {
     position: relative;
     display: flex;
@@ -81,65 +86,3 @@ input[type=text]:focus {
     flex-direction: column;
     transition: 0.5s;
 }
-
-.card:hover .sci {
-    transform: translateY(-10px);
-}
-
-.card .content .imgBx {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    overflow: hidden;
-}
-
-.card .content .imgBx img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.card .content .contentBx h3 {
-    color: rgb(199, 199, 199);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 500;
-    font-size: 18px;
-    text-align: center;
-    margin: 20px 0 10px;
-    line-height: 1.1em;
-}
-
-.card .content .contentBx h3 span {
-    font-size: 12px;
-    font-weight: 300;
-    text-transform: initial;
-}
-
-.card .sci {
-    position: absolute;
-    /* bottom: 50px; */
-    display: flex;
-    border-color:dimgray;
-}
-
-.card .sci li {
-    list-style: none;
-    margin: 0 10px;
-    /* transform: translateY(40px); */
-    transition: 0.5s;
-    opacity: 0;
-}
-
-.card:hover .sci li {
-    transform: translateY(0px);
-    opacity: 1;
-}
-
-.card .sci li a {
-    color: rgb(0, 0, 0);
-    font-size: 20px;
-} */
