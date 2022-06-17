@@ -113,26 +113,26 @@
 
 
 <div class="form-row">
-        <div class="form group col-md-12 col-sm-12">
-            <label for="criterio" class="control-label">Proceso de evaluacion</label>
-            <table id="" class="table table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th>Criterio</th>
-                        <th>%</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tEvaluacion">
-                    <tr>
-                        <td><input placeholder="P.E. Examen" type="text" class="form-control" id="criterio" name="criterio"></td>
-                        <td><input placeholder="%" type="number" class="form-control" id="ponderacion" name="ponderacion"></td>
-                        <td><a class="btn btn-success" onclick="agregarponderacion()">Agregar</a></td>
-                        
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="form group col-md-12 col-sm-12">
+        <label for="criterio" class="control-label">Proceso de evaluacion</label>
+        <table id="" class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Criterio</th>
+                    <th>%</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tEvaluacion">
+                <tr>
+                    <td><input placeholder="P.E. Examen" type="text" class="form-control" id="criterio" name="criterio"></td>
+                    <td><input placeholder="%" type="number" class="form-control" id="ponderacion" name="ponderacion"></td>
+                    <td><a class="btn btn-success" onclick="agregarponderacion()">Agregar</a></td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <input hidden="true" name="ponderacion" id="storePonderacion" class="@error('ponderacion')  is-invalid @enderror" value="{{old('ponderacion')}}">
 </div>
 
@@ -147,26 +147,6 @@
         <label for="contenidotematico" class="control-label">Contenido Tematico</label>
         <textarea placeholder="Contenido Tematico" class="form-control" id="contenidotematico" name="contenidotematico"></textarea>
     </div>
-    <div class="form-group col-md-6 col-sm-6">
-        <label for="estrategiadidactica" class="control-label">Estrategia Didactica</label>
-        <textarea placeholder="Contenido Tematico" class="form-control" id="estrategiadidactica" name="estrategiadidactica"> </textarea>
-    </div>
-    <div class="form-group col-md-3 col-sm-6">
-        <label for="procesoevaluacion" class="control-label">Proceso Evaluacion</label>
-        <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="procesoevaluacion" name="procesoevaluacion"></textarea>
-    </div>
-    <div class="form-group col-md-3 col-sm-6">
-        <label for="duracion" class="control-label">Duracion</label>
-        <textarea placeholder="Duracion" type="text" class="form-control" id="duracionT" name="duracionT"></textarea>
-    </div>
-    <div class="form-group col-md-6 col-sm-6">
-        <label for="contenidoExtra" class="control-label">Contenido Extra</label>
-        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra"></textarea>
-    </div>
-    <div class="form-group col-md-6 col-sm-2">
-        <a class="btn btn-warning" onclick="agregarContenidoT()">Agregar</a>
-    </div>
-
 </div>
 <br><br><br><br>
 <div class="form-row">
@@ -183,6 +163,28 @@
                 </tr>
             </thead>
             <tbody id="tTemario">
+                <input type="text" id="contenidoValues[]" hidden>
+                <tr id="0">
+                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="contenido-0" onclick="showEditorTxtModal(this)">
+                        Click aqui para agregar contenido
+                    </td>
+                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="estrategias-0" onclick="showEditorTxtModal(this)">
+                        Click aqui para agregar contenido
+                    </td>
+                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="proceso-0" onclick="showEditorTxtModal(this)">
+                        Click aqui para agregar contenido
+                    </td>
+                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="duracion-0" onclick="showEditorTxtModal(this)">
+                        Click aqui para agregar contenido
+                    </td>
+                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="contenido-0" onclick="showEditorTxtModal(this)">
+                        Click aqui para agregar contenido
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-tr">Eliminar</button>
+                        <button type="button" class="btn btn-success" onclick="addRowContenidoT()">Agregar</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -232,3 +234,37 @@
 </div>
 
 <input hidden="true" name="recursosD" id="storeRecursosD" class="@error('recursosD')  is-invalid @enderror">
+
+
+
+<!-- Full Height Modal Right -->
+<div class="modal fade right" id="modalTxtEditor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+    <div class="modal-dialog modal-full-height modal-right" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="titleModal"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-12 col-sm-6">
+                        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra"></textarea>
+                    </div>
+                    <div class="form-group col-md-12 col-sm-2">
+                        <a class="btn btn-warning" onclick="setValuesEditor()">Guardar</a>
+                    </div>
+
+                </div>
+                <div id="contextoModalTextArea"></div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Full Height Modal Right -->
