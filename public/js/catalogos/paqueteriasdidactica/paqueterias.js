@@ -187,7 +187,7 @@ function setValuesEditor() {
     
     var idParent = $(rowSelected).parent()[0].id;
     
-    if(valContenidoT.find(x => x.id === idParent)){
+    if(valContenidoT.find(x => x.id == idParent)){
         console.log('editar')
     }else{
         console.log('nuevo')
