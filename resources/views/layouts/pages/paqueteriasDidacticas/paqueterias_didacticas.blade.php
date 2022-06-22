@@ -25,8 +25,8 @@
         </div>
 
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="pills-tecnico-tab" data-toggle="pill" href="#pills-tecnico" role="tab" aria-controls="pills-tecnico" aria-selected="true">Informacion Curso</a>
+            <li class="nav-item active">
+                <a class="nav-link" id="pills-tecnico-tab" data-toggle="pill" href="#pills-tecnico" role="tab" aria-controls="pills-tecnico" aria-selected="true">Informacion Curso</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
@@ -41,7 +41,7 @@
             <div class="tab-pane fade show active" id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.curso')
             </div>
-            <div class="tab-pane fade " id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
+            <div class="tab-pane fade" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.evaluacionAlumno')
             </div>
             <div class="tab-pane fade" id="pills-paqdid" role="tabpanel" aria-labelledby="pills-paqdid-tab">
@@ -69,6 +69,20 @@
     var editorElementoA;
     var editorAuxE;
     var editorReferencias;
+    // DecoupledEditor
+    //     .create(document.querySelector('#editor'), {
+    //         // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+    //     })
+    //     .then(editor => {
+    //         const toolbarContainer = document.querySelector('main .toolbar-container');
+
+    //         toolbarContainer.prepend(editor.ui.view.toolbar.element);
+
+    //         window.editor = editor;
+    //     })
+    //     .catch(err => {
+    //         console.error(err.stack);
+    //     });
     ClassicEditor
         .create(document.querySelector('#objetivoespecifico'), {
             language: 'es',
@@ -105,73 +119,16 @@
             console.error(error);
         });
 
-    // ClassicEditor
-    //     .create(document.querySelector('#contenidotematico'), {
-    //         language: 'es',
-    //         ckfinder: {
-    //             uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-    //         }
-
-    //     })
-    //     .then(editor => {
-    //         editor.data.set("<ul><li><strong>Tema</strong><ul><li>Subtema 1&nbsp;</li><li>Subtema 2</li></ul></li></ul>");
-    //         editorContenidoT = editor;
-    //     })
-    //     .catch(error => {
-    //         console.error(error);
-    //     });
-    // ClassicEditor
-    //     .create(document.querySelector('#estrategiadidactica'), {
-    //         language: 'es',
-    //         ckfinder: {
-    //             uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-    //         }
-
-    //     })
-    //     .then(editor => {
-    //         editorEstrategiaD = editor;
-    //     })
-    //     .catch(error => {
-    //         console.error(error);
-    //     });
-    // ClassicEditor
-    //     .create(document.querySelector('#procesoevaluacion'), {
-    //         language: 'es',
-    //         ckfinder: {
-    //             uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-    //         }
-
-    //     })
-    //     .then(editor => {
-    //         editorProcesoE = editor;
-    //     })
-    //     .catch(error => {
-    //         console.error(error);
-    //     });
-    // ClassicEditor
-    //     .create(document.querySelector('#duracionT'), {
-    //         language: 'es',
-    //         ckfinder: {
-    //             uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-    //         }
-
-    //     })
-    //     .then(editor => {
-    //         editorDuracionT = editor;
-    //     })
-    //     .catch(error => {
-    //         console.error(error);
-    //     });
-    ClassicEditor
-        .create(document.querySelector('#contenidoExtra'), {
+        ClassicEditor
+        .create(document.querySelector('#contenidoT-inp'), {
             language: 'es',
             ckfinder: {
                 uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
             }
+
         })
         .then(editor => {
-            editor.data.set("<h2>Tema</h2><ul><li>Contenido…..</li></ul><h4>Subtema 1</h4><ul><li>Contenido …</li></ul><h4>Subtemas 2</h4><ul><li>Contenido …</li></ul>");
-            editorContenidoE = editor;
+            editorContenidoT = editor;
         })
         .catch(error => {
             console.error(error);
@@ -217,6 +174,23 @@
         .catch(error => {
             console.error(error);
         });
+
+    $(document).ready(function() {
+        $("#botonCARTADESCPDF").click(function() {
+            $('#creacion').attr('action', "{{route('DescargarPaqueteria',$idCurso)}}");
+            $('#creacion').submit();
+        });
+        $("#botonEVALALUMNPDF").click(function() {
+            $('#creacion').attr('action', "{{route('DescargarEvalAlumno',$idCurso)}}");
+            $('#creacion').submit();
+        });
+        $("#botonEVALINSTRUCTORPDF").click(function() {
+            $('#creacion').attr('action', "{{route('DescargarEvalInstructor',$idCurso)}}");
+            $('#creacion').submit();
+        });
+
+
+    });
 </script>
 <script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}"></script>
 @endsection

@@ -615,9 +615,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('paqueterias/{idCurso}', 'webController\PaqueteriaDidacticaController@index')->name('paqueteriasDidacticas');
     Route::post('paqueterias/guardar/{idCurso}', 'webController\PaqueteriaDidacticaController@store')->name('paqueteriasGuardar');
     Route::get('especialidadBuscador/', 'webController\PaqueteriaDidacticaController@buscadorEspecialidades')->name('BuscadorEspecialidades');
-    Route::get('descargarpaqueteria/{idCurso}', 'webController\PaqueteriaDidacticaController@DescargarPaqueteria')->name('DescargarPaqueteria');
-    
-
+    Route::post('descargar/cartadescriptiva/{idCurso}', 'webController\PaqueteriaDidacticaController@DescargarPaqueteria')->name('DescargarPaqueteria');
+    Route::post('descargar/evaluacionalumno/{idCurso}', 'webController\PaqueteriaDidacticaController@DescargarPaqueteriaEvalAlumno')->name('DescargarEvalAlumno');
+    Route::post('descargar/evaluacioninstructor/{idCurso}', 'webController\PaqueteriaDidacticaController@DescargarPaqueteriaEvalInstructor')->name('DescargarEvalInstructor');
 });
 /*SUPERVISION ESCOLAR Y ENCUESTA RPN*/
 Route::get('/form/instructor/{url}', 'supervisionController\UrlController@form')->name('form.instructor');

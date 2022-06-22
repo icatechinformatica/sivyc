@@ -13,8 +13,8 @@
 
 <div class="row col-md-12" id="preguntas-area-parent">
     <input type="number" hidden id="numPreguntas" name="numPreguntas">
-    
-    <div class="card col-md-12">
+
+    <div class="card-paq col-md-12">
         <div class="contentBx col-md-12">
             <br>
             <div class="row col-md-12" id="pregunta1">
@@ -23,7 +23,7 @@
 
                     <div class="form-group col-md-6 col-sm-6">
                         <select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta1-tipo">
-                            <option value="multiple" selected>Multiple</option>
+                            <option value="multiple">Multiple</option>
                             <option value="abierta">Abierta</option>
                         </select>
                     </div>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="form-row col-md-7 col-sm-12">
                     <div class="form-group col-md-12 col-sm-10">
-                        <input placeholder="Pregunta sin texto" type="text" class="form-control resp-abierta g-input">
+                        <input placeholder="Pregunta sin texto" type="text" class="form-control resp-abierta g-input" name="pregunta1">
                     </div>
                 </div>
 
@@ -46,11 +46,11 @@
                 <div class="form-row col-md-7 opcion-area-p1" id="pregunta1-opc">
                     <input type="text" hidden id="pregunta1-opc-answer" name="pregunta1-opc-answer">
                     <div class="input-group mb-3 ">
-                        
-                            <div class="input-group-text">
-                                <input type="radio" onclick="setAceptedAnswer(this)" name="pregunta1-opc-correc[]">
-                            </div>
-                        
+
+                        <div class="input-group-text">
+                            <input type="radio" onclick="setAceptedAnswer(this)" name="pregunta1-opc-correc[]">
+                        </div>
+
                         &nbsp;&nbsp;&nbsp;
                         <input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="pregunta1-opc[]">
                         <a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)">
@@ -67,7 +67,7 @@
 
                 <div class="form-row col-md-7 respuesta-abierta-area ra-p1" style="display: none">
                     <div class="input-group mb-3">
-                        <input disabled placeholder="Texto de la respuesta abierta" type="text" class="form-control resp-abierta">
+                        <input placeholder="Texto de la respuesta abierta" name="pregunta-1-resp-abierta" type="text" class="form-control resp-abierta">
                     </div>
                 </div>
             </div>

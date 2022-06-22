@@ -64,10 +64,6 @@
         <input placeholder="Especialidad" type="text" class="form-control " id="especialidad" name="especialidad" onkeyup="buscarEspecialidad()">
         <ul id="searchResult" class="searchResult"></ul>
     </div>
-    <div class="form-group col-md-4">
-        <label for="publico" class="control-label">Publico o personal al que va dirigido</label>
-        <textarea placeholder="Publico o personal al que va dirigido" class="form-control" id="publico" name="publico" cols="15" rows="5"></textarea>
-    </div>
 </div>
 
 <br><br>
@@ -151,7 +147,7 @@
 <br><br><br><br>
 <div class="form-row">
     <div class="form group col-md-12 col-sm-12">
-        <table id="" class="table table-hover table-bordered">
+        <table id="tableContenidoT" class="table table-hover table-bordered">
             <thead>
                 <tr>
                     <th>Contenido Tematico</th>
@@ -163,33 +159,22 @@
                 </tr>
             </thead>
             <tbody id="tTemario">
-                <input type="text" id="contenidoValues[]" hidden>
-                <tr id="0">
-                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="contenido-0" onclick="showEditorTxtModal(this)">
-                        Click aqui para agregar contenido
-                    </td>
-                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="estrategias-0" onclick="showEditorTxtModal(this)">
-                        Click aqui para agregar contenido
-                    </td>
-                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="proceso-0" onclick="showEditorTxtModal(this)">
-                        Click aqui para agregar contenido
-                    </td>
-                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="duracion-0" onclick="showEditorTxtModal(this)">
-                        Click aqui para agregar contenido
-                    </td>
-                    <td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" id="contenido-0" onclick="showEditorTxtModal(this)">
-                        Click aqui para agregar contenido
-                    </td>
+                <tr id="1">
+                    <td data-toggle="modal" class="contenidoT" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
+                    <td data-toggle="modal" class="estrategiaD" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
+                    <td data-toggle="modal" class="procesoE" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
+                    <td data-toggle="modal" class="duracion" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
+                    <td data-toggle="modal" class="contenidoE" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
                     <td>
-                        <button type="button" class="btn btn-danger remove-tr">Eliminar</button>
-                        <button type="button" class="btn btn-success" onclick="addRowContenidoT()">Agregar</button>
+                        <button type="button" class="btn btn-danger remove-tr" onclick="deleteRowContenidoT(this)" style="display: none;">Eliminar</button>
+                        <button type="button" class="btn btn-success" onclick="addRowContenidoT(this)">Agregar</button>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-<input hidden="true" name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror">
+<input hidden name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror">
 
 <br><br><br><br>
 <div class="form-row">
@@ -249,20 +234,31 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
                 <div class="form-row">
-                    <div class="form-group col-md-12 col-sm-6">
-                        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoExtra" name="contenidoExtra"></textarea>
+                <input type="text" name="" id="contenidoValues" hidden>
+                <input type="text" name="" id="estrategiaValues" hidden>
+                <input type="text" name="" id="procesoValues" hidden>
+                <input type="text" name="" id="duracionValues" hidden>
+                <input type="text" name="" id="contenidoExtraValues" hidden>
+                    <div class="form-group col-md-12" style="display: none" id="temaPrincipal">
+                        <label for="mainSubject" class="control-label">Tema Principal </label>
+                        <input placeholder="Tema principal del modulo" type="text" class="form-control" id="inpTemaPrincipal">
                     </div>
-                    <div class="form-group col-md-12 col-sm-2">
+                    <div class="form-group col-md-12 col-sm-6" id="contenidoT"  >
+                        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoT-inp" name="contenidoT-inp"></textarea>
+                    </div>
+                    <div class="form-group col-md-12 col-sm-2" >
                         <a class="btn btn-warning" onclick="setValuesEditor()">Guardar</a>
                     </div>
 
                 </div>
                 <div id="contextoModalTextArea"></div>
             </div>
+
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="cerrarModal()">Cerrar</button>
             </div>
         </div>
     </div>
