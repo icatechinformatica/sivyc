@@ -29,7 +29,7 @@
                           <div class="col-lg-6">
                             <div class="form-group">
                               <label class="form-control-label" for="permisoNameEdit">NOMBRE</label>
-                              <input type="text" id="permisoNameEdit" id="permisoNameEdit" class="form-control" value="{{ $permiso->name }}">
+                              <input type="text" id="permisoNameEdit" name="permisoNameEdit" class="form-control" value="{{ $permiso->name }}">
                             </div>
                           </div>
 
