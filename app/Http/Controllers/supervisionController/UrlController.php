@@ -25,14 +25,34 @@ class UrlController extends Controller
              $curso = DB::table('tbl_cursos')->where('id',$id)->first();
              $id_curso = $curso->id;
              $id_instructor = $curso->id_instructor;
+<<<<<<< HEAD
+             $instructor = DB::table('instructores')->select('telefono','correo')->where('id',$id_instructor)->first();             
+             //var_dump($instructor);
+             $datos = "\n\n** DATOS DEL INSTRUCTOR **\nTELEFONO: ".$instructor->telefono."\n CORREO: ".$instructor->correo;
+             
+=======
              $instructor = DB::table('instructores')->select('telefono','correo')->where('id',$id_instructor)->first();
              //var_dump($instructor);
              $datos = "\n\n** DATOS DEL INSTRUCTOR **\nTELEFONO: ".$instructor->telefono."\n CORREO: ".$instructor->correo;
 
+>>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
              $token = DB::table('supervision_tokens')->where('id_supervisor',$id_user)->where('id_curso',$id_curso)->where('id_instructor',$id_instructor)->value('url_token');
        }elseif($tipo=="alumno"){ //comprobar si existe el alumno
             //$inscript = DB::table('tbl_inscripcion')->where('id',$id)->first();
             $inscript = DB::table('tbl_inscripcion as i')->select('i.id','i.id_curso','a_pre.telefono','a_pre.correo')
+<<<<<<< HEAD
+                ->where('i.id',$id)->where('i.status','INSCRITO')                                      
+                ->Join('alumnos_registro as a_reg', function($join){                                    
+                    $join->on('a_reg.no_control', '=', 'i.matricula');
+                    $join->groupby('a_reg.no_control');          
+                }) 
+                ->Join('alumnos_pre as a_pre', function($join){
+                    $join->on('a_pre.id', '=', 'a_reg.id_pre');
+                })->groupby('i.id','i.id_curso','a_pre.telefono','a_pre.correo')->first();            
+            $id_curso = $inscript->id_curso;
+            $id_alumno = $inscript->id;            
+            $datos = "\n\n** DATOS DEL INSTRUCTOR **\nTELEFONO: ".$inscript->telefono."\n CORREO: ".$inscript->correo;           
+=======
                 ->where('i.id',$id)->where('i.status','INSCRITO')
                 ->Join('alumnos_registro as a_reg', function($join){
                     $join->on('a_reg.no_control', '=', 'i.matricula');
@@ -44,6 +64,7 @@ class UrlController extends Controller
             $id_curso = $inscript->id_curso;
             $id_alumno = $inscript->id;
             $datos = "\n\n** DATOS DEL INSTRUCTOR **\nTELEFONO: ".$inscript->telefono."\n CORREO: ".$inscript->correo;
+>>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
             ///comprobar si existe el token
             $token = DB::table('supervision_tokens')->where('id_supervisor',$id_user)->where('id_curso',$id_curso)->where('id_alumno',$id_alumno)->value('url_token');
        }
@@ -61,9 +82,15 @@ class UrlController extends Controller
             if($id_instructor) $t->id_instructor = $id_instructor;
             else $t->id_alumno = $id_alumno;
             $t->ttl = $currentTime + (1440 * 60); //24 horas 1440
+<<<<<<< HEAD
+            $t->save();        
+       } 
+              
+=======
             $t->save();
        }
 
+>>>>>>> c693001952b3a9dcb6987fb59509e3dead0d12b5
        $url = url("{$path}{$token}".$datos);
        return $url;
 
