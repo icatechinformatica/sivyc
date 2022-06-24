@@ -12,7 +12,7 @@
 </div>
 
 <div class="row col-md-12" id="preguntas-area-parent">
-    <input type="number" hidden id="numPreguntas" name="numPreguntas">
+    <input type="number" hidden id="numPreguntas" name="numPreguntas" value="1">
 
     <div class="card-paq col-md-12">
         <div class="contentBx col-md-12">
@@ -67,7 +67,7 @@
 
                 <div class="form-row col-md-7 respuesta-abierta-area ra-p1" style="display: none">
                     <div class="input-group mb-3">
-                        <input placeholder="Texto de la respuesta abierta" name="pregunta-1-resp-abierta" type="text" class="form-control resp-abierta">
+                        <input placeholder="Texto de la respuesta abierta" name="pregunta1-resp-abierta" type="text" class="form-control resp-abierta">
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
             <div class="row opciones col-md-12">
                 <div class="col-md-10">
                     <div class="form-group col-md-4">
-                        <a style="cursor: default;" onclick="agregarPregunta()" class="btn btn-success">Agregar Pregunta</a>
+                        <a style="cursor: default;" onclick="agregarPregunta(this)" class="btn btn-success">Agregar Pregunta</a>
                     </div>
                 </div>
                 <div class="form-row col-md-2">

@@ -15,7 +15,6 @@ class PaqueteriaDidacticaController extends Controller
     //
     public function index($idCurso)
     {
-
         $curso = curso::toBase()->where('id', $idCurso)->first();
         $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
         // dump($curso );
@@ -59,7 +58,7 @@ class PaqueteriaDidacticaController extends Controller
         
         $auxContPreguntas = $request->numPreguntas;
         
-        while(true) {
+        while(true) {//ciclo para encontrar las preguntas del formulario
             $i++;
             if($contPreguntas == $auxContPreguntas )
                 break;
@@ -68,24 +67,33 @@ class PaqueteriaDidacticaController extends Controller
             $tipoPregunta = 'pregunta'.$i.'-tipo';
             $opcPregunta = 'pregunta'.$i.'-opc';
             $respuesta = 'pregunta'.$i.'-opc-answer';
-            $contenidoT = 'pregunta'.$i.'-contenidoT';
             
+            $contenidoT = 'pregunta'.$i.'-contenidoT';
 
             if($request->$numPregunta != null){
-                $tempPregunta = [
-                    'descripcion' => $request->$numPregunta,
-                    'tipo' => $request->$tipoPregunta,
-                    'opciones' => $request->$opcPregunta,
-                    'respuesta' => $request->$respuesta,
-                    'contenidoTematico' => $request->$contenidoT,
-                ];
+                if($request->$tipoPregunta =='multiple'){
+                    $tempPregunta = [
+                        'descripcion' => $request->$numPregunta,
+                        'tipo' => $request->$tipoPregunta,
+                        'opciones' => $request->$opcPregunta,
+                        'respuesta' => $request->$respuesta,
+                        'contenidoTematico' => $request->$contenidoT,
+                    ];
+                }else{
+                    $respuesta = 'pregunta'.$i.'-resp-abierta';
+                    $tempPregunta = [
+                        'descripcion' => $request->$numPregunta,
+                        'tipo' => $request->$tipoPregunta,
+                        'opciones' => $request->$opcPregunta,
+                        'respuesta' => $request->$respuesta,
+                        'contenidoTematico' => $request->$contenidoT,
+                    ];
+                    
+                }
                 array_push($preguntas, $tempPregunta);
                 $contPreguntas++;
             }
-            
         }
-
-        // dd($preguntas);
         
 
         DB::beginTransaction();
@@ -97,7 +105,6 @@ class PaqueteriaDidacticaController extends Controller
                 'estatus' => 1,
                 'created_at' => Carbon::now(),
                 'id_user_created' => Auth::id(),
-                // 'idUsuarioUMod' => Auth::id()
             ]);
             DB::commit();
             return redirect()->route('curso-inicio')->with('success', 'SE HA GUARDADO LA PAQUETERIA DIDACTICA!');
@@ -121,41 +128,32 @@ class PaqueteriaDidacticaController extends Controller
     public function DescargarPaqueteria($idCurso){
         $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1] ])->first();
         
-        // dd($paqueteriasDidacticas);
+        // 
         $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
         $cartaDescriptiva->ponderacion = json_decode($cartaDescriptiva->ponderacion);
         $cartaDescriptiva->contenidoTematico = json_decode($cartaDescriptiva->contenidoTematico);
         $cartaDescriptiva->recursosDidacticos = json_decode($cartaDescriptiva->recursosDidacticos);
         
-        $evalAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
-        // dd($evalAlumno);
+      
         $curso = curso::toBase()->where('id', $idCurso)->first();
-        $abecedario = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
-
-        
-        // dd($evalAlumno);
-        // dd($cartaDescriptiva, $evalAlumno, $curso);
-        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva', 'evalAlumno', 'abecedario', 'curso'));
-        
+      
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.cartaDescriptiva', compact('cartaDescriptiva'));
+        $pdf->setPaper('A4','landscape');
         return $pdf->stream('paqueteriaDidactica.pdf');    
     }
     public function DescargarPaqueteriaEvalAlumno($idCurso){
         $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1] ])->first();
         $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
-        $cartaDescriptiva->ponderacion = json_decode($cartaDescriptiva->ponderacion);
-        $cartaDescriptiva->contenidoTematico = json_decode($cartaDescriptiva->contenidoTematico);
-        $cartaDescriptiva->recursosDidacticos = json_decode($cartaDescriptiva->recursosDidacticos);
-        
         $evalAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
-        // dd($evalAlumno);
         $curso = curso::toBase()->where('id', $idCurso)->first();
         $abecedario = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.eval_alumno_pdf', compact('evalAlumno', 'abecedario', 'curso','cartaDescriptiva'));
+        
+        return $pdf->stream('EvaluacionAlumno.pdf');    
+    }
 
-        
-        // dd($evalAlumno);
-        // dd($cartaDescriptiva, $evalAlumno, $curso);
-        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.eval_alumno_pdf', compact('cartaDescriptiva', 'evalAlumno', 'abecedario', 'curso'));
-        
-        return $pdf->stream('paqueteriaDidactica.pdf');    
+    public function DescargarPaqueteriaEvalInstructor(){
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.evaInstructorCurso_pdf');
+        return $pdf->stream('evaluacionInstructor');
     }
 }

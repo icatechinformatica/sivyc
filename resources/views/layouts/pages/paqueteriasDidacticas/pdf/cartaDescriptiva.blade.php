@@ -6,55 +6,44 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CARTA DESCRIPTIVA</title>
     <style>      
-        body{margin-top: 50px; margin-bottom: 80px; font-family: OpenSans, Gotham}
-        @page {margin: 40px 30px 10px 30px;}
+        body{margin-top: 50px; margin-bottom: 80px; }
+        @page {margin: 40px 70px 10px 70px;}
             
-            header { position: fixed; left: 0px;  right: 0px; text-align: center;}
-            header h1{height:0; line-height: 14px; padding: 9px; margin: 0;}
-            header h2{margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
-            footer {position:fixed;   left:0px;   bottom:-50px;   height:150px;   width:100%;}
-            footer .page:after { content: counter(page, sans-serif);}
-            img.izquierda {float: right;width: 200px;height: 60px;}
-            img.izquierdabot {position: absolute;left: 50px;width: 350px;height: 60px;}
-            img.derechabot {position: absolute;right: 50px;width: 350px;height: 60px;}
-            img.derecha { float: right; width: 200px; height: 60px; }
-            img.centro { float: right;width: 200px;height: 60px;}
+        header { position: fixed; left: 0px;  right: 0px; text-align: center;}
+        header h1{height:0; line-height: 14px; padding: 9px; margin: 0;}
+        header h2{margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
+        footer {position:fixed;   left:0px;   bottom:-50px;   height:150px;   width:100%;}
+        footer .page:after { content: counter(page, sans-serif);}
+            
+        img.derecha { float: right; width: 200px; height: 60px; }
+        img.centro { float: right;width: 200px;height: 60px;}
         table { page-break-before: avoid !important;}
-        .tablas {border-collapse: collapse; width: 100%; height: auto; margin-top: 20px; }
-        .tablas tr{font-style: Gotham; font-size: 12px; border: black 2px solid;  padding: 1px 1px;}
-        .tablas th{font-style: Gotham; font-size: 12px; border: black 2px solid; text-align: center; padding: 1px 1px;}
-        .tablas td{font-style: Gotham; font-size: 12px; border: black 2px solid; text-align: left; padding: 1px 1px;}
-        .tablaf { border-collapse: collapse; width: 100%; position: absolute; bottom:210px; font-size:20px; text-align: center; }     
-        .tablaf tr { border: black 2px solid; text-align: center; padding: 1px 1px; }
-        .tablaf th { border: black 2px solid; text-align: center; padding: 1px 1px; }
-        .tablaf td { border: black 2px solid; text-align: center; padding: 1px 1px; }
+        .tablas {border-collapse: collapse; width: 100%; height: auto; margin-top: 20px; padding-bottom: 10px;}
+        .tablas tr{ font-size: 12px; border: black 2px solid;  padding: 1px 1px;}
+        .tablas th{ font-size: 12px; border: black 2px solid; text-align: center; padding: 1px 1px;}
+        .tablas td{ font-size: 12px; border: black 2px solid; text-align: left; padding: 1px 1px;}
 
-        
-        .tablar tr td{  border-collapse: collapse; font-size: 12px; text-align: center; padding: 0px 0px; border: black 1px solid;}
-        
-
-        .tablad { border-collapse: collapse;}     
-        .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
-        .tablag { border-collapse: collapse; width: 100%;}     
-        .tablag tr td{ font-size: 8px; padding: 0px;}
-        .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
         .marco {border-style: solid; padding-right: 80px; padding-left: 80px; }
         .page_break { page-break-before: always; }
 
         .encabezado{position: fixed; top: -50; }
         .img-fondo{position: relative; left: -20;}
         .logos{position: absolute; top: 30; left: 0;}
-
-        .titulos img{float: left;width: 100px;height: 100px; margin-left: 100px; padding-right: 50px}
-        .titulos h2{ position: relative;  top: 18px;  left: 10px;}
-        .titulos2 img{float: left;width: 80px;height: 80px; margin-left: 100px; padding-right: 10px}
-        .titulos h3{ position: relative;  top: 18px;  left: 10px;}
-
         .contenido{font-weight: bold; font-size: 12px; }
 
-        .preguntas{padding-right: 50px; padding: left 50px;  text-align: justify;}
+        
+
+        .segoeUI { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+        label { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-style: normal;}
 
         
+        .top-title{text-transform:capitalize;line-height:normal; text-align:right; height:100px; }
+        .header-image{ width:20%;margin-right:5%;margin-top:-5%;text-align:right; float: left;}
+        .pic-img{height:10vw; width:19.15vw;}
+        .header-titles{width:65%; margin-left:10%;text-align: left; float: left;}
+        .tip-title{font-size:4.5vw; margin-bottom:5%;}
+        .title-subheader{ font-size:2vw;}
+
         
     </style>
 </head>
@@ -80,22 +69,20 @@
         <div id="content">
             <br>
             <br>
-            
-            <div class="titulos" ><br> 
-                <img class="" " src='img/paqueterias/carta.png'>
-                <h2>CARTA DESCRIPTIVA</h2>
+            <div class="top-title">
+                <div class="header-image">
+                    <img   src='img/paqueterias/carta.png'>
+                </div>
+                <div class="header-titles">
+                    <h2 class="segoeUI tip-tittle" >CARTA DESCRIPTIVA</h2>
+                </div>
             </div>
             
-            <br>
-            <br>
             
             <div >
                 <table class="tablas">
                     <thead>
-                        <tr>
-                            <th colspan="10">DATOS GENERALES</th>
-                        </tr>
-
+                        <tr> <th colspan="10" class="segoeUI">DATOS GENERALES</th> </tr>
                     </thead>
                     <tbody>
                         
@@ -112,7 +99,7 @@
                             <td>@if($cartaDescriptiva->modalidad == 'CAE') X @endif</td>
                         </tr>
                         <tr>
-                            <td colspan="5"><label class="contenido">Tipo:  &nbsp;&nbsp;&nbsp;&nbsp;  Presencial</label> (@if($cartaDescriptiva->tipo== 'PRESENCIAL') X @endif)  <label class="contenido">&nbsp;&nbsp;&nbsp;&nbsp; A Distancia</label>( @if($cartaDescriptiva->tipo == 'A DISTANCIA') X @endif)</td>
+                            <td colspan="5"><label class="contenido">Tipo:  &nbsp;&nbsp;&nbsp;&nbsp;  Presencial</label> (@if($cartaDescriptiva->tipo== 'PRESENCIAL') X @endif)  <label class="contenido">&nbsp;nbsp;&nbsp;&nbsp; A Distancia</label>( @if($cartaDescriptiva->tipo == 'A DISTANCIA') X @endif)</td>
                             <td colspan="5"> <label class="contenido">Especialidad:</label> {{ $cartaDescriptiva->especialidad }}</td>
                         </tr>
                         <tr>

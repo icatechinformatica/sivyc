@@ -43,7 +43,8 @@ function buscarEspecialidad() {
                     $("#searchResult").append("<li onclick='getID(this.id)' id='" + i + "' value='" + id + "'> " + nombre + "</li>");
                 }
                 $("#searchResult li").on("click", function () {
-                    $("#especialidad").val(nombre);
+                    var especialidad = response[index]['nombre'];
+                    $("#especialidad").val(especialidad);
                     $("#searchResult").empty();
                 });
             }
@@ -122,19 +123,19 @@ function addRowContenidoT(row) {
     var tbodyElement = document.getElementById('tTemario');
     var nuevaOpcion = $(
         '<tr id="' + idContenido + '">' +
-        '<td data-toggle="modal" data-placement="top" class="temario" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="contenidoT" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
-        '<td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="estrategiaD" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
-        '<td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="procesoE" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
-        '<td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="duracion" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
-        '<td data-toggle="modal" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="contenidoE" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
         '<td>' +
@@ -211,10 +212,6 @@ function showEditorTxtModal(row) {
     rowSelected = row;
 }
 
-function cerrarModal() {
-    var className = $(rowSelected).attr('class');
-
-}
 
 function agregarRecursosD() {
     var tbodyElement = document.getElementById('tRecursosD');
@@ -347,7 +344,8 @@ function addContenidoToSelect(contenido) {
 
 }
 
-function agregarPregunta() {
+function agregarPregunta(boton) {
+    $(boton).css('display','none')
     var numChildren = contPreguntas + 1;
     numPreguntas++;
     $('#numPreguntas').val(numPreguntas);
@@ -414,7 +412,7 @@ function agregarPregunta() {
         '<div class="row opciones col-md-12">' +
         '<div class="col-md-10">' +
         '<div class="form-group col-md-4">' +
-        '<a style="cursor: default;" onclick="agregarPregunta()" class="btn btn-success">Agregar Pregunta</a>' +
+        '<a style="cursor: default;" onclick="agregarPregunta(this)" class="btn btn-success">Agregar Pregunta</a>' +
         '</div>' +
         '</div>' +
         '<div class="form-row col-md-2">' +

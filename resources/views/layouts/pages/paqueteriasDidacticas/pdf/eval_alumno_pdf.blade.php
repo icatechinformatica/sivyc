@@ -4,26 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>CARTA DESCRIPTIVA</title>
+    <title>Evaluacion De Aprendizaje al Alumno</title>
     <style>      
-        body{margin-top: 50px; margin-bottom: 80px; font-family: OpenSans, Gotham}
-        @page {margin: 40px 30px 10px 30px;}
+        body{margin-top: 50px; margin-bottom: 100px; }
+        @page {margin: 40px 70px 10px 70px;    }
             
-            header { position: fixed; left: 0px;  right: 0px; text-align: center;}
-            header h1{height:0; line-height: 14px; padding: 9px; margin: 0;}
-            header h2{margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
-            footer {position:fixed;   left:0px;   bottom:-50px;   height:150px;   width:100%;}
-            footer .page:after { content: counter(page, sans-serif);}
-            img.izquierda {float: right;width: 200px;height: 60px;}
-            img.izquierdabot {position: absolute;left: 50px;width: 350px;height: 60px;}
-            img.derechabot {position: absolute;right: 50px;width: 350px;height: 60px;}
-            img.derecha { float: right; width: 200px; height: 60px; }
-            img.centro { float: right;width: 200px;height: 60px;}
+        header { position: fixed; left: 0px;  right: 0px; text-align: center;}
+        header h1{height:0; line-height: 14px; padding: 9px; margin: 0;}
+        header h2{margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: justify;}
+        footer {position:fixed;   left:0px;   bottom:-50px;   height:150px;   width:100%;}
+        footer .page:after { content: counter(page, sans-serif);}
+        img.izquierda {float: right;width: 200px;height: 60px;}
+        img.izquierdabot {position: absolute;left: 50px;width: 350px;height: 60px;}
+        img.derechabot {position: absolute;right: 50px;width: 350px;height: 60px;}
+        img.derecha { float: right; width: 200px; height: 60px; }
+        img.centro { float: right;width: 200px;height: 60px;}
         table { page-break-before: avoid !important;}
         .tablas {border-collapse: collapse; width: 100%; height: auto; margin-top: 20px; }
-        .tablas tr{font-style: Gotham; font-size: 12px; border: black 2px solid;  padding: 1px 1px;}
-        .tablas th{font-style: Gotham; font-size: 12px; border: black 2px solid; text-align: center; padding: 1px 1px;}
-        .tablas td{font-style: Gotham; font-size: 12px; border: black 2px solid; text-align: left; padding: 1px 1px;}
+        .tablas tr{ font-size: 12px; border: black 1px solid;  padding-bottom: 10px;}
+        .tablas th{ font-size: 12px; border: black 1px solid; text-align: center; padding-bottom: 10px;}
+        .tablas td{ font-size: 12px; border: black 1px solid; text-align: left; padding-bottom: 10px;}
         .tablaf { border-collapse: collapse; width: 100%; position: absolute; bottom:210px; font-size:20px; text-align: center; }     
         .tablaf tr { border: black 2px solid; text-align: center; padding: 1px 1px; }
         .tablaf th { border: black 2px solid; text-align: center; padding: 1px 1px; }
@@ -48,11 +48,12 @@
         .titulos img{float: left;width: 100px;height: 100px; margin-left: 100px; padding-right: 50px}
         .titulos h2{ position: relative;  top: 18px;  left: 10px;}
         .titulos2 img{float: left;width: 80px;height: 80px; margin-left: 100px; padding-right: 10px}
+        .segoeUI { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
         .titulos h3{ position: relative;  top: 18px;  left: 10px;}
 
         .contenido{font-weight: bold; font-size: 12px; }
 
-        .preguntas{padding-right: 50px; padding: left 50px;  text-align: justify;}
+        .preguntas{padding-left: 10px;  text-align: justify;}
 
         
         
@@ -84,46 +85,52 @@
                 
                 <div class="titulos2" ><br> 
                     <img class="" " src='img/paqueterias/logo_eval_alumno.png'>
-                    <h3 style="color:#692E41">EVALUACIÓN DE APRENDIZAJE AL ALUMNO</h3>
+                    <h3 class="segoeUI" style="color:#692E41; font-size:22px;">EVALUACIÓN DE APRENDIZAJE AL ALUMNO</h3>
                 </div>
-                <br><br><br>
-                <label style="font-style: italic; text-align: left; ">(Estos datos deben ser llenados por el departamento académico de la Unidad)</label>
+                <br>
+                
             </div>
             <br>
             
             <div class="table table-responsive"style="padding-left: 20px; padding-right: 20px;">
+                <label class="segoeUI" style="font-style: italic; text-align: left; font-size: 12px;">(Estos datos deben ser llenados por el departamento académico de la Unidad)</label>
                 <table class="tablas" >
                     <tbody>
                         <tr>
-                            <td colspan="7"><label class="contenido" style="font-size: 14px;">Unidad de Capacitación: </label></td>
+                            <td colspan="7"><label class="contenido segoeUI" style="font-size: 14px;">Unidad de Capacitación: {{$curso->unidad_amovil}} </label></td>
                         </tr>
                         <tr>
-                            <td colspan="7"><label class="contenido" style="font-size: 14px;">Nombre del Curso de Capacitación:</label></td>
+                            <td colspan="7"><label class="contenido segoeUI" style="font-size: 14px;">Nombre del Curso de Capacitación: {{$curso->nombre_curso}}</label></td>
                         </tr>
                         <tr>
-                            <td colspan="7"><label class="contenido" style="font-size: 14px;">Especialidad:</label></td>
+                            <td colspan="7"><label class="contenido segoeUI" style="font-size: 14px;">Especialidad: {{$cartaDescriptiva->especialidad}} </label></td>
                         </tr>
                         <tr>
-                            <td colspan="7"><label class="contenido" style="font-size: 14px;">Nombre del Instructor: </label></td>
+                            <td colspan="7"><label class="contenido segoeUI" style="font-size: 14px;">Nombre del Instructor: </label></td>
                         </tr>
                         <tr>
-                            <td colspan="5"><label class="contenido" style="font-size: 14px;">Nombre completo del Alumno: </label></td>
-                            <td colspan="2"><label class="contenido" style="font-size: 14px;">No de Control: </label></td>
+                            <td colspan="5"><label class="contenido segoeUI" style="font-size: 14px;">Nombre completo del Alumno: </label></td>
+                            <td colspan="2"><label class="contenido segoeUI" style="font-size: 14px;">No de Control: </label></td>
                         </tr>
                         <tr>
-                            <td colspan="7"><label class="contenido" style="font-size: 14px;">Lugar y Fecha de aplicación:</label></td>
+                            <td colspan="7"><label class="contenido segoeUI" style="font-size: 14px;">Lugar y Fecha de aplicación:</label></td>
                         </tr>
                         
                     </tbody>
                 </table>
                 <br><br>
-                <label >Instrucciones</label><br>
+                <label >Instrucciones: {{$evalAlumno->instrucciones}}</label><br>
             </div> 
 
 
+
             <div class="preguntas">
+                <label for="segoeUI" style="font-weight: bold; font: size 12px;">(Preguntas)</label><br>
                 @foreach($evalAlumno as $pregunta)
-                {{ $loop->index + 1}} .- {{$pregunta->descripcion}} <br><br>
+                
+                @if(isset($pregunta->descripcion))
+                
+               <label class="segoeUI" style="font-weight: bold;"> {{ $loop->index + 1}} .- {{$pregunta->descripcion}}</label> <br><br>
                 @if($pregunta->tipo == 'multiple')
                     @foreach($pregunta->opciones as $indice => $opcion)
                         &nbsp;&nbsp;&nbsp;&nbsp;{{ $abecedario[$indice] }} .- {{$opcion }} <br>
@@ -132,6 +139,8 @@
                     <br><br><br>
                 @endif
                 <br>
+
+                @endif
                 @endforeach
             </div>
 
@@ -156,8 +165,6 @@
     <div class="page_break"></div>
     <!--================================= end of page =================================-->
 
-
-    <br><br><br><br>
     <div class="marco">
         <div >
             <div style="color:#692E41" align=center><br> 
@@ -200,11 +207,13 @@
                     </thead>
                     <tbody>
                         @foreach($evalAlumno as $pregunta)
+                        @if(isset($pregunta->respuesta))
                         <tr >
                             <td style="text-align:center;">{{$loop->index + 1}}</td>
-                            <td>{{$pregunta->contenidoTematico}}</td>
+                            <td>{{$pregunta->contenidoTematico ?? ''}}</td>
                             <td style="text-align:center;">{{$pregunta->respuesta}}</td>
                         </tr>
+                        @endif
                         @endforeach
                         
                     </tbody>

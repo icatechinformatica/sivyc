@@ -138,13 +138,8 @@
     <h2>CONTENIDO TEMATICO</h2>
 </label>
 <hr style="border-color:dimgray">
-<div class="form-row">
-    <div class="form-group col-md-6 col-sm-6">
-        <label for="contenidotematico" class="control-label">Contenido Tematico</label>
-        <textarea placeholder="Contenido Tematico" class="form-control" id="contenidotematico" name="contenidotematico"></textarea>
-    </div>
-</div>
-<br><br><br><br>
+
+
 <div class="form-row">
     <div class="form group col-md-12 col-sm-12">
         <table id="tableContenidoT" class="table table-hover table-bordered">
@@ -176,12 +171,7 @@
 </div>
 <input hidden name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror">
 
-<br><br><br><br>
-<div class="form-row">
-    <label for="objetivos" class="control-label">Observaciones:</label>
-    <textarea placeholder="Observaciones" class="form-control" id="observaciones" name="observaciones" cols="15" rows="5"></textarea>
-</div>
-<br>
+<br><br>
 
 <div class="form-row">
     <div class="form-group col-md-4 col-sm-6">
@@ -226,7 +216,7 @@
 <div class="modal fade right" id="modalTxtEditor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
     <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
-    <div class="modal-dialog modal-full-height modal-right" role="document">
+    <div class="modal-dialog modal-full-height modal-right" role="document" style="width: 650px !important;">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title w-100" id="titleModal"></h4>
@@ -237,28 +227,26 @@
 
             <div class="modal-body">
                 <div class="form-row">
-                <input type="text" name="" id="contenidoValues" hidden>
-                <input type="text" name="" id="estrategiaValues" hidden>
-                <input type="text" name="" id="procesoValues" hidden>
-                <input type="text" name="" id="duracionValues" hidden>
-                <input type="text" name="" id="contenidoExtraValues" hidden>
+                    <input type="text" name="" id="contenidoValues" hidden>
+                    <input type="text" name="" id="estrategiaValues" hidden>
+                    <input type="text" name="" id="procesoValues" hidden>
+                    <input type="text" name="" id="duracionValues" hidden>
+                    <input type="text" name="" id="contenidoExtraValues" hidden>
+
+
                     <div class="form-group col-md-12" style="display: none" id="temaPrincipal">
                         <label for="mainSubject" class="control-label">Tema Principal </label>
                         <input placeholder="Tema principal del modulo" type="text" class="form-control" id="inpTemaPrincipal">
                     </div>
-                    <div class="form-group col-md-12 col-sm-6" id="contenidoT"  >
+                    <div class="form-group col-md-12 col-sm-6" id="contenidoT">
                         <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoT-inp" name="contenidoT-inp"></textarea>
                     </div>
-                    <div class="form-group col-md-12 col-sm-2" >
+                    <div class="form-group col-md-12 col-sm-2">
                         <a class="btn btn-warning" onclick="setValuesEditor()">Guardar</a>
                     </div>
 
                 </div>
                 <div id="contextoModalTextArea"></div>
-            </div>
-
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="cerrarModal()">Cerrar</button>
             </div>
         </div>
     </div>

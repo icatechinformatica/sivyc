@@ -5,6 +5,8 @@
     * ==========================================
     *
     */
+    /* custom width modal */
+    .modal .modal-full-height{position:absolute;top:0;right:0;display:-webkit-box;display:-ms-flexbox;display:flex;width:600px;height:auto;min-height:100%;margin:0}
 
 .mb-0,
 .my-0 {
@@ -24,6 +26,7 @@
     width: 100%;
     position: absolute;
     margin: 0;
+    z-index: 100;
 }
 
 .searchResult li {
