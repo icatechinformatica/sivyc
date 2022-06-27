@@ -159,7 +159,7 @@
                     <td data-toggle="modal" class="estrategiaD" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
                     <td data-toggle="modal" class="procesoE" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
                     <td data-toggle="modal" class="duracion" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
-                    <td data-toggle="modal" class="contenidoE" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
+                    <td data-toggle="modal" class="contenidoE text-preview" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
                     <td>
                         <button type="button" class="btn btn-danger remove-tr" onclick="deleteRowContenidoT(this)" style="display: none;">Eliminar</button>
                         <button type="button" class="btn btn-success" onclick="addRowContenidoT(this)">Agregar</button>
@@ -173,7 +173,7 @@
 
 <br><br>
 
-<div class="form-row">
+<div class="form-row ">
     <div class="form-group col-md-4 col-sm-6">
         <label for="elementoapoyo" class="control-label">Elementos de Apoyo</label>
         <textarea placeholder="Elementos de Apoyo" type="text" class="form-control" id="elementoapoyo" name="elementoapoyo"></textarea>
@@ -239,7 +239,7 @@
                         <input placeholder="Tema principal del modulo" type="text" class="form-control" id="inpTemaPrincipal">
                     </div>
                     <div class="form-group col-md-12 col-sm-6" id="contenidoT">
-                        <textarea placeholder="Duracion" type="text" class="form-control" id="contenidoT-inp" name="contenidoT-inp"></textarea>
+                        <textarea placeholder="Introduzca el contenido" type="text" class="form-control" id="contenidoT-inp" name="contenidoT-inp"></textarea>
                     </div>
                     <div class="form-group col-md-12 col-sm-2">
                         <a class="btn btn-warning" onclick="setValuesEditor()">Guardar</a>

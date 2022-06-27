@@ -93,3 +93,10 @@ input[type=text]:focus {
 .row-clickeable {
     display: table-row;
 }
+.text-preview {
+    width: auto; 
+    display: -webkit-box;
+    -webkit-line-clamp: 16;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

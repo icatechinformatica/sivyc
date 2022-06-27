@@ -2,10 +2,18 @@
 @section('title', 'Paqueterias Didacticas | SIVyC Icatech')
 @section('css_content')
 <link rel="stylesheet" href="{{ asset('css/paqueterias/paqueterias.css') }}" />
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+<link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
+
 @endsection
 @section('content')
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+<link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 
-<div class="container g-pt-50">
+<div class="card-header">
+Formulario de Paqueterias Didacticas
+</div>
+<div class="card card-body" style=" min-height:450px;">
     @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -20,7 +28,7 @@
 
         <div style="text-align: right;width:65%">
             <label for="tituloformulariocurso">
-                <h1>Formulario de Paqueterias Didacticas</h1>
+                
             </label>
         </div>
 
@@ -54,8 +62,10 @@
 
 
 @section('script_content_js')
-<script src="{{asset('vendor/ckeditor/ckeditor.js') }}"></script>
-<script src="{{asset('vendor/ckeditor/translations/es.js') }}"></script>
+<!-- <script src="{{asset('vendor/ckeditor/ckeditor.js') }}"></script>
+<script src="{{asset('vendor/ckeditor/translations/es.js') }}"></script> -->
+<script src="{{asset('vendor/ckeditor5-decoupled-document/ckeditor.js') }}"></script>
+<!-- <script src="{{asset('vendor/ckeditor5-decoupled-document/translations/es.js') }}"></script> -->
 
 
 <script>
@@ -86,9 +96,6 @@
     ClassicEditor
         .create(document.querySelector('#objetivoespecifico'), {
             language: 'es',
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            }
 
         })
         .catch(error => {
@@ -98,9 +105,6 @@
     ClassicEditor
         .create(document.querySelector('#aprendizajeesperado'), {
             language: 'es',
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            }
 
         })
         .catch(error => {
@@ -110,21 +114,17 @@
     ClassicEditor
         .create(document.querySelector('#observaciones'), {
             language: 'es',
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            }
 
         })
         .catch(error => {
             console.error(error);
         });
 
-        ClassicEditor
+    ClassicEditor
         .create(document.querySelector('#contenidoT-inp'), {
             language: 'es',
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            }
+            filebrowserUploadUrl: "{{route('ckeditorUpload', ['_token' => csrf_token() ])}}",
+            filebrowserUploadMethod: 'form'
 
         })
         .then(editor => {
@@ -138,9 +138,6 @@
     ClassicEditor
         .create(document.querySelector('#elementoapoyo'), {
             language: 'es',
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            }
         })
         .then(editor => {
             editorElementoA = editor;
@@ -151,9 +148,6 @@
     ClassicEditor
         .create(document.querySelector('#auxenseñanza'), {
             language: 'es',
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            }
         })
         .then(editor => {
             editorAuxE = editor;
@@ -164,9 +158,6 @@
     ClassicEditor
         .create(document.querySelector('#referencias'), {
             language: 'es',
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            }
         })
         .then(editor => {
             editorReferencias = editor;
