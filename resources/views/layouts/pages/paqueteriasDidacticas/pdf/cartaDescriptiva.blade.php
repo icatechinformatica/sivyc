@@ -183,13 +183,13 @@
                             <td colspan="4" >Auxiliares de la enseñanza: </td>
                             <td colspan="3" >Referencias: </td>
                         </tr>
-                        @foreach($cartaDescriptiva->recursosDidacticos as $recursos)
+                        
                         <tr>
-                            <td colspan="3"> <?php echo htmlspecialchars_decode(stripslashes($recursos->elementoapoyo)) ?> </td>
-                            <td colspan="4"> <?php echo htmlspecialchars_decode(stripslashes($recursos->auxenseñanza)) ?> </td>
-                            <td colspan="3"> <?php echo htmlspecialchars_decode(stripslashes($recursos->referencias)) ?>  </td>
+                            <td colspan="3"> <?php echo htmlspecialchars_decode(stripslashes($cartaDescriptiva->elementoapoyo)) ?> </td>
+                            <td colspan="4"> <?php echo htmlspecialchars_decode(stripslashes($cartaDescriptiva->auxenseñanza)) ?> </td>
+                            <td colspan="3"> <?php echo htmlspecialchars_decode(stripslashes($cartaDescriptiva->referencias)) ?>  </td>
                         </tr>
-                        @endforeach
+                        
                     </tbody>
                 </table>
                

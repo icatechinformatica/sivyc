@@ -140,7 +140,7 @@
 <hr style="border-color:dimgray">
 
 
-<div class="form-row">
+<div class="form-row scrollable-cont-t" >
     <div class="form group col-md-12 col-sm-12">
         <table id="tableContenidoT" class="table table-hover table-bordered">
             <thead>
@@ -172,7 +172,10 @@
 <input hidden name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror">
 
 <br><br>
-
+<label>
+    <h2>RECURSOS DIDACTICOS</h2>
+</label>
+<hr style="border-color:dimgray">
 <div class="form-row ">
     <div class="form-group col-md-4 col-sm-6">
         <label for="elementoapoyo" class="control-label">Elementos de Apoyo</label>
@@ -186,37 +189,13 @@
         <label for="referencias" class="control-label">Referencias</label>
         <textarea placeholder="Proceso Evaluacion" type="text" class="form-control" id="referencias" name="referencias"></textarea>
     </div>
-    <div class="form-group col-md-1 col-sm-2">
-        <a class="btn btn-warning" onclick="agregarRecursosD()">Agregar</a>
-    </div>
-
 </div>
-<div class="form-row">
-    <div class="form group col-md-12 col-sm-12">
-        <table id="" class="table table-hover table-bordered">
-            <thead>
-                <tr>
-                    <th>Elementos de Apoyo</th>
-                    <th>Auxiliares de la enseñanzas</th>
-                    <th>Referecias</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tRecursosD">
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<input hidden="true" name="recursosD" id="storeRecursosD" class="@error('recursosD')  is-invalid @enderror">
-
-
 
 <!-- Full Height Modal Right -->
-<div class="modal fade right" id="modalTxtEditor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade bottom" id="modalTxtEditor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
     <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
-    <div class="modal-dialog modal-full-height modal-right" role="document" style="width: 650px !important;">
+    <div class="modal-dialog modal-full-height modal-bottom" role="document" >
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title w-100" id="titleModal"></h4>

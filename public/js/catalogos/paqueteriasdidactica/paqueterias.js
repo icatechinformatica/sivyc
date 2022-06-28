@@ -123,16 +123,16 @@ function addRowContenidoT(row) {
     var tbodyElement = document.getElementById('tTemario');
     var nuevaOpcion = $(
         '<tr id="' + idContenido + '">' +
-        '<td data-toggle="modal" data-placement="top" class="contenidoT text-preview" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="contenidoT" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
-        '<td data-toggle="modal" data-placement="top" class="estrategiaD text-preview" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="estrategiaD" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
-        '<td data-toggle="modal" data-placement="top" class="procesoE text-preview" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="procesoE" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
-        '<td data-toggle="modal" data-placement="top" class="duracion text-preview" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
+        '<td data-toggle="modal" data-placement="top" class="duracion" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +
         ' Click aqui para agregar contenido' +
         '</td>' +
         '<td data-toggle="modal" data-placement="top" class="contenidoE text-preview" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">' +

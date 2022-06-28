@@ -6,7 +6,7 @@
     *
     */
     /* custom width modal */
-    .modal .modal-full-height{position:absolute;top:0;right:0;display:-webkit-box;display:-ms-flexbox;display:flex;width:600px;height:auto;min-height:100%;margin:0}
+    /* .modal .modal-full-height{position:absolute;top:0;right:0;display:-webkit-box;display:-ms-flexbox;display:flex;width:600px;height:auto;min-height:100%;margin:0} */
 
 .mb-0,
 .my-0 {
@@ -46,7 +46,7 @@
 }
 
 .ck-editor__editable {
-    max-height: 200px;
+    max-height: 500px;
 }
 
 input[type=text] {
@@ -100,3 +100,10 @@ input[type=text]:focus {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+.scrollable-cont-t {
+    background-color: #f2f2f2;/* #fAfAfA; */
+    width: 100%;
+    height: 510px;
+    overflow: auto;
+  }

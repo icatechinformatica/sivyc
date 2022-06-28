@@ -78,7 +78,7 @@
                         <a style="cursor: default;" onclick="agregarPregunta(this)" class="btn btn-success">Agregar Pregunta</a>
                     </div>
                 </div>
-                <div class="form-row col-md-2">
+                <div class="form-row col-md-2" style="display:none">
                     <div class="form-group col-md-1 col-sm-6">
 
                         <button type="button" class="btn btn-danger" onclick="removerPregunta(this)">

@@ -48,7 +48,9 @@ class PaqueteriaDidacticaController extends Controller
             'transversabilidad' => $request->transversabilidad,
             'contenidoTematico' => $request->contenidoT,
             'observaciones' => $request->observaciones,
-            'recursosDidacticos' => $request->recursosD,
+            'elementoapoyo' => $request->elementoapoyo,
+            'auxenseñanza' => $request->auxenseñanza,
+            'referencias' => $request->referencias,
         ];
         
         // dd($cartaDescriptiva);
@@ -117,22 +119,15 @@ class PaqueteriaDidacticaController extends Controller
     }
 
     function uploadImg(Request $request){
-        if($request->hasFile('upload')) {
-            $originName = $request->file('upload')->getClientOriginalName();
-            $fileName = pathinfo($originName, PATHINFO_FILENAME);
-            $extension = $request->file('upload')->getClientOriginalExtension();
-            $fileName = $fileName.'_'.time().'.'.$extension;
+        $archivo = $request->file('upload') ?? null;
+        $nombre = $archivo->getClientOriginalName();
+        $destino = 'files/archivosservicios';
+
+        $request->upload->move($destino, $nombre);
         
-            $request->file('upload')->move(public_path('images'), $fileName);
-   
-            $CKEditorFuncNum = $request->input('CKEditorFuncNum');
-            $url = asset('images/'.$fileName); 
-            $msg = 'Image uploaded successfully'; 
-            $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
-               
-            @header('Content-type: text/html; charset=utf-8'); 
-            echo $response;
-        }
+        return response()->json([
+            'url' => 'https://media-cdn.tripadvisor.com/media/photo-s/15/a4/9b/77/legacy-hotel-at-img-academy.jpg',
+        ]);
     }
 
     public function buscadorEspecialidades(Request $request)
@@ -146,13 +141,14 @@ class PaqueteriaDidacticaController extends Controller
 
     public function DescargarPaqueteria($idCurso){
         $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1] ])->first();
-        
+        // dd($paqueteriasDidacticas);
         // 
         $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
+        
+
         $cartaDescriptiva->ponderacion = json_decode($cartaDescriptiva->ponderacion);
         $cartaDescriptiva->contenidoTematico = json_decode($cartaDescriptiva->contenidoTematico);
-        $cartaDescriptiva->recursosDidacticos = json_decode($cartaDescriptiva->recursosDidacticos);
-        
+
       
         $curso = curso::toBase()->where('id', $idCurso)->first();
       
@@ -174,5 +170,9 @@ class PaqueteriaDidacticaController extends Controller
     public function DescargarPaqueteriaEvalInstructor(){
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.evaInstructorCurso_pdf');
         return $pdf->stream('evaluacionInstructor');
+    }
+    public function DescargarManualDidactico(){
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf');
+        return $pdf->stream('manualDidactico');
     }
 }
