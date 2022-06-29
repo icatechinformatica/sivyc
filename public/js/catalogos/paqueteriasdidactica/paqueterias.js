@@ -58,8 +58,20 @@ function agregarponderacion() {
     var tbodyElement = document.getElementById('tEvaluacion');
     var numelement = tbodyElement.rows.length;
 
-    if (numelement > 4 || !$('#criterio').val() || !$('#ponderacion').val() || parseInt($('#ponderacion').val()) + ponderacionTotal > 100 || parseInt($('#ponderacion').val()) < 0 || parseInt($('#ponderacion').val()) == 0)
+    if (!$('#criterio').val() || !$('#ponderacion').val() ){
+        $('#alert-evaluacion').css('display', 'block');
+        $('#eval-msg').text("No se aceptan valores vacios, intente de nuevo!");    
         return
+    }else if(parseInt($('#ponderacion').val()) + ponderacionTotal > 100){
+        $('#alert-evaluacion').css('display', 'block');
+        $('#eval-msg').text("La sumatoria de los criterios debe ser 100%");    
+        return
+    }else if( parseInt($('#ponderacion').val()) < 0 ||  parseInt($('#ponderacion').val()) == 0){
+        $('#alert-evaluacion').css('display', 'block');
+        $('#eval-msg').text("Introduzca valores positivos por favor!");    
+        return
+    }else
+        $('#alert-evaluacion').css('display', 'none');
 
     // tbodyElement.appendChild(trElement);
     $('<tr id="criterio' + idPonderacion + '">' +
@@ -98,8 +110,13 @@ function addRowContenidoT(row) {
     
     
 
-    // if(contenidoVal.includes("Click aqui para agregar"))
-    //     return
+    if(contenidoVal.includes("Click aqui para agregar")){
+        $('#alert-contenido').css('display', 'block');
+        $('#contenido-msg').text("No se aceptan valores vacios, intente de nuevo!");    
+        return
+    }else{
+        $('#alert-contenido').css('display', 'none');
+    }
     $(row).siblings('.remove-tr').css('display', 'block');//muestra boton eliminar tr 
     $(row).css('display', 'none');
 
@@ -345,8 +362,8 @@ var numPreguntas = 1;
 
 $('#preguntas-area-parent').on("click",'div.card-paq',function(e) {
     e.preventDefault();
-    var selected = $(this).find('div.card-paq, .hideable').show();
-    var notselected =$("#preguntas-area-parent div.card-paq .hideable").not(selected).hide()
+    var selected = $(this).find('div.card-paq, .hideable').show(200)
+    var notselected =$("#preguntas-area-parent div.card-paq .hideable").not(selected).hide(200)
 
     // // $(selected).css('display','block');
     console.log(selected)
@@ -561,6 +578,9 @@ function setAceptedAnswer(checkboxSelected) {
  */
 
 
+function validacion(){
+    document.getElementById('creacion').submit();
+}
 
 
 

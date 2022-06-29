@@ -5,8 +5,28 @@
     * ==========================================
     *
     */
-    /* custom width modal */
-    /* .modal .modal-full-height{position:absolute;top:0;right:0;display:-webkit-box;display:-ms-flexbox;display:flex;width:600px;height:auto;min-height:100%;margin:0} */
+/* custom width modal */
+/* .modal .modal-full-height{position:absolute;top:0;right:0;display:-webkit-box;display:-ms-flexbox;display:flex;width:600px;height:auto;min-height:100%;margin:0} */
+.alert-custom {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+}
+
+.closebtn-p {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn-p:hover {
+    color: black;
+}
 
 .mb-0,
 .my-0 {
@@ -93,8 +113,9 @@ input[type=text]:focus {
 .row-clickeable {
     display: table-row;
 }
+
 .text-preview {
-    width: auto; 
+    width: auto;
     display: -webkit-box;
     -webkit-line-clamp: 16;
     -webkit-box-orient: vertical;
@@ -102,8 +123,9 @@ input[type=text]:focus {
 }
 
 .scrollable-cont-t {
-    background-color: #f2f2f2;/* #fAfAfA; */
+    background-color: #f2f2f2;
+    /* #fAfAfA; */
     width: 100%;
     height: 510px;
     overflow: auto;
-  }
+}

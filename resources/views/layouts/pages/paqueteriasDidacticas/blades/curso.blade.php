@@ -15,15 +15,15 @@
 <div class="form-row">
     <div class="form-group col-md-4">
         <label for="entidadfederativa" class="contro-label">Entidad Federativa</label>
-        <input placeholder="Entidad Federativa" type="text" class="form-control" id="entidadfederativa" name="entidadfederativa">
+        <input placeholder="Entidad Federativa" type="text" class="form-control" id="entidadfederativa" name="entidadfederativa" value="{{old('entidadfederativa', $cartaDescriptiva->entidadfederativa ?? '')}}">
     </div>
     <div class="form-group col-md-4">
         <label for="cicloescolar" class="control-label">Ciclo Escolar</label>
-        <input placeholder="Ciclo escolar" type="text" class="form-control" id="cicloescolar" name="cicloescolar">
+        <input placeholder="Ciclo escolar" type="text" class="form-control" id="cicloescolar" name="cicloescolar" value="{{old('cicloescolar', $cartaDescriptiva->cicloescolar ?? '')}}">
     </div>
     <div class="form-group col-md-4">
         <label for="programaestrategico" class="control-label">Programa estrategico (Caso aplicable )</label>
-        <input placeholder="Programa Estrategico" type="text" class="form-control" id="programaestrategico" name="programaestrategico">
+        <input placeholder="Programa Estrategico" type="text" class="form-control" id="programaestrategico" name="programaestrategico" value="{{old('programaestrategico', $cartaDescriptiva->programaestrategico ?? '')}}">
     </div>
 </div>
 <div class="form-row">
@@ -46,11 +46,11 @@
     </div>
     <div class="form-group col-md-3">
         <label for="perfilidoneo" class="control-label">Perfil Idoneo del Instructor</label>
-        <input placeholder="Pefil idoneo" type="text" class="form-control" id="perfilidoneo" name="perfilidoneo">
+        <input placeholder="Pefil idoneo" type="text" class="form-control" id="perfilidoneo" name="perfilidoneo" value="{{old('perfilidoneo', $cartaDescriptiva->perfilidoneo ?? '') }}">
     </div>
     <div class="form-group col-md-3">
         <label for="duracion" class="control-label">Duracion en horas</label>
-        <input placeholder="Horas" type="number" class="form-control" id="duracion" name="duracion" value="{{old('duracion', $curso->duracion)}}">
+        <input placeholder="Horas" type="number" class="form-control" id="duracion" name="duracion" value="{{old('duracion', $cartaDescriptiva->duracion ?? $curso->duracion)}}">
     </div>
 </div>
 
@@ -128,6 +128,10 @@
                 </tr>
             </tbody>
         </table>
+        <div class="alert-custom" id="alert-evaluacion" style="display: none">
+            <span class="closebtn-p" onclick="this.parentElement.style.display='none';">&times;</span> 
+            <strong><label for="" id="eval-msg"></label></strong> 
+        </div>
     </div>
     <input hidden="true" name="ponderacion" id="storePonderacion" class="@error('ponderacion')  is-invalid @enderror" value="{{old('ponderacion')}}">
 </div>
@@ -167,6 +171,10 @@
                 </tr>
             </tbody>
         </table>
+        <div class="alert-custom" id="alert-contenido" style="display: none">
+            <span class="closebtn-p" onclick="this.parentElement.style.display='none';">&times;</span> 
+            <strong><label for="" id="contenido-msg"></label></strong> 
+        </div>
     </div>
 </div>
 <input hidden name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror">

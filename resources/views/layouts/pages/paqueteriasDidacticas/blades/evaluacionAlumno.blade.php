@@ -5,9 +5,13 @@
 
 <hr style="border-color:dimgray">
 <div class="form-row">
-    <div class="form-group col-md-12 col-sm-12">
-        <label for="instrucciones" class="control-label">INSTRUCCIONES</label>
-        <textarea placeholder="Agrege aqui las instrucciones para la evaluacion del alumno" class="form-control" id="instrucciones" name="instrucciones" cols="15" rows="5"></textarea>
+    <div class="card-paq col-md-12">
+        <div class="contentBx col-md-12">
+            <div class="form-group col-md-12 col-sm-12">
+                <label for="instrucciones" class="control-label">INSTRUCCIONES</label>
+                <textarea placeholder="Agrege aqui las instrucciones para la evaluacion del alumno" class="form-control" id="instrucciones" name="instrucciones" cols="15" rows="5"></textarea>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -101,8 +105,8 @@
     <div class="col-lg-12 margin-tb">
         <div class="pull-right">
             <!-- @can('cursos.store') -->
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <!-- <a type="button" class="btn btn-primary" onclick="confirmacion()">Guardar</a> -->
+            
+            <a type="button" class="btn btn-primary" onclick="confirmacion()" id="btn-guardar">Guardar</a>
             <!-- @endcan -->
         </div>
     </div>
