@@ -171,8 +171,11 @@ class PaqueteriaDidacticaController extends Controller
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.evaInstructorCurso_pdf');
         return $pdf->stream('evaluacionInstructor');
     }
-    public function DescargarManualDidactico(){
-        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf');
+    public function DescargarManualDidactico($idCurso){
+        $curso = curso::toBase()->where('id', $idCurso)->first();
+        $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
+        // dd($curso, $paqueterias);
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueterias'));
         return $pdf->stream('manualDidactico');
     }
 }

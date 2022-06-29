@@ -95,8 +95,8 @@ function addRowContenidoT(row) {
     var duracionVal = $(row).parents(':eq(1)').children()[3];
     var contenidoExtraVal = $(row).parents(':eq(1)').children()[4];
 
-    console.log(contenidoVal, estrategiaVal, procesoVal, duracionVal, contenidoExtraVal)
-    console.log($(contenidoVal).children())
+    
+    
 
     // if(contenidoVal.includes("Click aqui para agregar"))
     //     return
@@ -115,9 +115,9 @@ function addRowContenidoT(row) {
         'contenidoExtra': $('#contenidoExtraValues').val(),
     });
     storeContenidoT.value = JSON.stringify(valContenidoT);
-    console.log(storeContenidoT.value)
-    addContenidoToSelect(JSON.parse(storeContenidoT.value));
     
+    addContenidoToSelect(JSON.parse(storeContenidoT.value));
+
     idContenido++;
 
     var tbodyElement = document.getElementById('tTemario');
@@ -148,16 +148,7 @@ function addRowContenidoT(row) {
 }
 
 
-function updateContenido(index){
-    valContenidoT.forEach(function (item, index, object) {
-        if (item.id === (idContenido)) {
-            object.splice(index, 1);
-        }
-    });
-    storeContenidoT.value = JSON.stringify(valContenidoT);
 
-    addContenidoToSelect(JSON.parse(storeContenidoT.value))
-}
 function deleteRowContenidoT(tr) {
     var divParent = $(tr).parents(':eq(1)')[0]; // 
     valContenidoT.forEach(function (item, index, object) {
@@ -174,28 +165,45 @@ var getU = (idCurso) => {
 }
 
 function setValuesEditor() {
-    
+
     if ($(rowSelected).hasClass('contenidoT')) $('#contenidoValues').val(editorContenidoT.getData())
-    else if ($(rowSelected).hasClass('estrategiaD')) $('#estrategiaValues').val(editorContenidoT.getData())  
-    else if ($(rowSelected).hasClass('procesoE')) $('#procesoValues').val(editorContenidoT.getData())  
-    else if ( $(rowSelected).hasClass('duracion')) $('#duracionValues').val(editorContenidoT.getData())  
-    else if ( $(rowSelected).hasClass('contenidoE')) $('#contenidoExtraValues').val(editorContenidoT.getData())  
-    
-    if ($(rowSelected).hasClass('contenidoT')) 
+    else if ($(rowSelected).hasClass('estrategiaD')) $('#estrategiaValues').val(editorContenidoT.getData())
+    else if ($(rowSelected).hasClass('procesoE')) $('#procesoValues').val(editorContenidoT.getData())
+    else if ($(rowSelected).hasClass('duracion')) $('#duracionValues').val(editorContenidoT.getData())
+    else if ($(rowSelected).hasClass('contenidoE')) $('#contenidoExtraValues').val(editorContenidoT.getData())
+
+    if ($(rowSelected).hasClass('contenidoT'))
         rowSelected.innerHTML = '<h1><strong>' + $('#inpTemaPrincipal').val() + '</strong></h1>' + editorContenidoT.getData();
     else
-        rowSelected.innerHTML =  editorContenidoT.getData();
-    
+        rowSelected.innerHTML = editorContenidoT.getData();
+
     var idParent = $(rowSelected).parent()[0].id;
-    
-    if(valContenidoT.find(x => x.id == idParent)){
-        console.log('editar')
-    }else{
-        console.log('nuevo')
+
+    if (valContenidoT.find(x => x.id == idParent)) {
+        
+        valContenidoT.forEach(function (item, index, object) {
+            if (item.id == (idParent)) {
+                
+                if ($(rowSelected).hasClass('contenidoT')) item.contenido = editorContenidoT.getData()
+                else if ($(rowSelected).hasClass('estrategiaD')) item.estrategia = editorContenidoT.getData()
+                else if ($(rowSelected).hasClass('procesoE')) item.proceso = editorContenidoT.getData()
+                else if ($(rowSelected).hasClass('duracion')) item.duracion = editorContenidoT.getData()
+                else if ($(rowSelected).hasClass('contenidoE')) item.contenidoExtra = editorContenidoT.getData()
+
+                if ($(rowSelected).hasClass('contenidoT'))
+                    item.tema_principal = $('#inpTemaPrincipal').val()
+            }
+        });
+
+        storeContenidoT.value = JSON.stringify(valContenidoT);
+        
+        addContenidoToSelect(JSON.parse(storeContenidoT.value));
+    } else {
+        
     }
     $('#btnCloseModal').trigger('click');
 
-    console.log(valContenidoT)
+    
 
 }
 function showEditorTxtModal(row) {
@@ -330,7 +338,6 @@ var numPreguntas = 1;
 
 
 function addContenidoToSelect(contenido) {
-    console.log(contenido);
     $('.contenidoTematicoPregunta')
         .find('option')
         .remove()
@@ -345,7 +352,7 @@ function addContenidoToSelect(contenido) {
 }
 
 function agregarPregunta(boton) {
-    $(boton).css('display','none')
+    $(boton).css('display', 'none')
     var numChildren = contPreguntas + 1;
     numPreguntas++;
     $('#numPreguntas').val(numPreguntas);
@@ -438,16 +445,17 @@ function agregarOpcion(opcion) {
 
     var divParent = $(opcion).parents(':eq(2)').children()[2];
     var idParent = divParent.id
+    console.log(idParent);
     var nuevaOpcion = $(
         '<div class="input-group mb-3">' +
-        '<div class="input-group-text">' +
-        '<input type="radio" onclick="setAceptedAnswer(this)" name="' + divParent + '-correc[]">' +
-        '</div>' +
-        '&nbsp;&nbsp;&nbsp;' +
-        '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="' + idParent + '[]" >' +
-        '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
-        '<i class="fa fa-minus"></i>' +
-        '</a>' +
+            '<div class="input-group-text">' +
+                '<input type="radio" onclick="setAceptedAnswer(this)" name="' + idParent + '-correc[]">' +
+            '</div>' +
+            '&nbsp;&nbsp;&nbsp;' +
+            '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="' + idParent + '[]" >' +
+            '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
+                '<i class="fa fa-minus"></i>' +
+            '</a>' +
         '</div>'
     );
     $(divParent).append(nuevaOpcion);
@@ -462,7 +470,7 @@ function removerPregunta(pregunta) {
     var lastPregunta = $('#preguntas-area-parent').children().last()[0]
     lastPregunta = $(lastPregunta).children().children()[2]
     $(lastPregunta).children().children().children().css('display', 'block')
-    console.log(lastPregunta);
+    
 }
 
 
@@ -476,7 +484,7 @@ function removerOpcion(opcion) {
 function cambiarTipoPregunta(opcion) {
     var value = $(opcion).val();
     var divParent = $(opcion).parents(':eq(2)')[0]
-    console.log(divParent);
+    
     var preguntaAbierta = divParent.children[4]
     var opcionMultiple = divParent.children[2].id
 
@@ -505,12 +513,12 @@ function setAceptedAnswer(checkboxSelected) {
     var input = document.getElementById($(divParent).children()[0].id)
     var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-    console.log(checkboxSelected)
+    
     for (var i = 0; i < opciones.length; i++) {
         var opcion = opciones[i];
-        console.log(opcion)
+        
         var checkbox = $(opcion).children().children()[0];
-        console.log(checkbox)
+        
         if (checkbox != checkboxSelected) {
             $(checkbox).prop('checked', false);
         } else {
@@ -542,3 +550,19 @@ function setAceptedAnswer(checkboxSelected) {
 
 
 
+
+function filtar(filtro) {
+
+    var target = '.solicitud';
+
+    $(target + '.' + filtro).css('display', 'block');
+    $(target).not('.' + filtro).css('display', 'none');
+    $('#filtro' + filtro).css('display', 'block');
+}
+
+function quitarFiltro(filtro) {
+    $('#filtro' + filtro).css('display', 'none');
+
+    var target = '.solicitud';
+    $(target).not('.' + filtro).css('display', 'block');
+}
