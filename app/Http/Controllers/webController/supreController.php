@@ -1455,6 +1455,8 @@ class supreController extends Controller
                     'tbl_cursos.clave',
                     'tbl_cursos.ze',
                     'tbl_cursos.dura',
+                    'tbl_cursos.muni',
+                    'tbl_localidades.localidad',
                     \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99') AS importe_hora"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99') AS importe_iva_16"),
                     \DB::raw("'12101 Honorarios' AS partida_concepto"),
@@ -1471,6 +1473,7 @@ class supreController extends Controller
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->LEFTJOIN('tbl_localidades', 'tbl_localidades.clave', '=', 'tbl_cursos.clave_localidad')
                            ->GET();
         }
         else if ($filtrotipo == 'curso')
@@ -1484,7 +1487,10 @@ class supreController extends Controller
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
                     'tbl_cursos.clave',
-                    'tbl_cursos.ze', 'tbl_cursos.dura',
+                    'tbl_cursos.ze',
+                    'tbl_cursos.dura',
+                    'tbl_cursos.muni',
+                    'tbl_localidades.localidad',
                     \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),
@@ -1502,6 +1508,7 @@ class supreController extends Controller
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->LEFTJOIN('tbl_localidades', 'tbl_localidades.clave', '=', 'tbl_cursos.clave_localidad')
                            ->GET();
         }
         else if ($filtrotipo == 'unidad')
@@ -1511,7 +1518,11 @@ class supreController extends Controller
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso', 'tbl_cursos.clave',
-                    'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    'tbl_cursos.ze',
+                    'tbl_cursos.dura',
+                    'tbl_cursos.muni',
+                    'tbl_localidades.localidad',
+                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),
                     \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') END"),
@@ -1528,6 +1539,7 @@ class supreController extends Controller
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->LEFTJOIN('tbl_localidades', 'tbl_localidades.clave', '=', 'tbl_cursos.clave_localidad')
                            ->GET();
         }
         else if ($filtrotipo == 'instructor')
@@ -1537,7 +1549,11 @@ class supreController extends Controller
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso', 'tbl_cursos.clave',
-                    'tbl_cursos.ze', 'tbl_cursos.dura', \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
+                    'tbl_cursos.ze',
+                    'tbl_cursos.dura',
+                    'tbl_cursos.muni',
+                    'tbl_localidades.localidad',
+                    \DB::raw("TO_CHAR(folios.importe_hora, '999,999.99')"),
                     \DB::raw("TO_CHAR(folios.iva, '999,999.99')"),
                     \DB::raw("'12101 Honorarios'"),
                     \DB::raw("CASE WHEN (tbl_cursos.hombre + tbl_cursos.mujer) >= 10 THEN TO_CHAR(folios.importe_total, '999,999.99') ELSE 0 END"),
@@ -1553,13 +1569,14 @@ class supreController extends Controller
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+                           ->LEFTJOIN('tbl_localidades', 'tbl_localidades.clave', '=', 'tbl_cursos.clave_localidad')
                            ->GET();
         }
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA DE CREACION EN EL SISTEMA', 'FECHA',
             'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CLAVE DEL GRUPO',
-            'Z.E.', 'HSM', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
+            'Z.E.','HSM','MUNICIPIO','LOCALIDAD',  'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES'
         ];
