@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="row opciones col-md-12">
+            <div class="row opciones col-md-12 hideable">
                 <div class="col-md-10">
                     <div class="form-group col-md-4">
                         <a style="cursor: default;" onclick="agregarPregunta(this)" class="btn btn-success">Agregar Pregunta</a>
@@ -98,7 +98,7 @@
 
 
 <div class="row">
-    <div class="col-lg-12 margin-tb">>
+    <div class="col-lg-12 margin-tb">
         <div class="pull-right">
             <!-- @can('cursos.store') -->
             <button type="submit" class="btn btn-primary">Guardar</button>

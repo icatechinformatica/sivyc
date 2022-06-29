@@ -337,6 +337,23 @@ var opcion = 0;
 var numPreguntas = 1;
 
 
+
+
+
+
+
+
+$('#preguntas-area-parent').on("click",'div.card-paq',function(e) {
+    e.preventDefault();
+    var selected = $(this).find('div.card-paq, .hideable').show();
+    var notselected =$("#preguntas-area-parent div.card-paq .hideable").not(selected).hide()
+
+    // // $(selected).css('display','block');
+    console.log(selected)
+    console.log(notselected)
+    
+});
+
 function addContenidoToSelect(contenido) {
     $('.contenidoTematicoPregunta')
         .find('option')
@@ -352,7 +369,7 @@ function addContenidoToSelect(contenido) {
 }
 
 function agregarPregunta(boton) {
-    $(boton).css('display', 'none')
+    
     var numChildren = contPreguntas + 1;
     numPreguntas++;
     $('#numPreguntas').val(numPreguntas);
@@ -403,7 +420,7 @@ function agregarPregunta(boton) {
         '</div>' +
         '</div>' +
 
-        '<div class="form-row col-md-6 opcion-area-pregunta' + numChildren + '">' +
+        '<div class="form-row col-md-6 opcion-area-pregunta' + numChildren + ' hideable">' +
         '<div class="input-group mb-3">' +
         '<a style="cursor: default;" onclick="agregarOpcion(this)">Agregar opcion</a>' +
         '</div>' +
@@ -416,7 +433,7 @@ function agregarPregunta(boton) {
         '</div>' +
         '</div>' +
 
-        '<div class="row opciones col-md-12">' +
+        '<div class="row opciones col-md-12 hideable">' +
         '<div class="col-md-10">' +
         '<div class="form-group col-md-4">' +
         '<a style="cursor: default;" onclick="agregarPregunta(this)" class="btn btn-success">Agregar Pregunta</a>' +
@@ -550,19 +567,3 @@ function setAceptedAnswer(checkboxSelected) {
 
 
 
-
-function filtar(filtro) {
-
-    var target = '.solicitud';
-
-    $(target + '.' + filtro).css('display', 'block');
-    $(target).not('.' + filtro).css('display', 'none');
-    $('#filtro' + filtro).css('display', 'block');
-}
-
-function quitarFiltro(filtro) {
-    $('#filtro' + filtro).css('display', 'none');
-
-    var target = '.solicitud';
-    $(target).not('.' + filtro).css('display', 'block');
-}
