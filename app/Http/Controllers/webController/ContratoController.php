@@ -571,8 +571,13 @@ class ContratoController extends Controller
             // guardamos en la base de datos
             // $pago->arch_evidencia = trim($urldocs);
         }
+        else
+        {
+            $urldocs2 = NULL;
+        }
         // $pago->fecha_status = carbon::now();
         // $pago->save();
+
 
         pago::updateOrInsert(
             ['id_contrato' => $request->id_contrato],
