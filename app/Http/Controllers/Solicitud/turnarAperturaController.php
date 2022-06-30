@@ -157,6 +157,12 @@ class turnarAperturaController extends Controller
                                             $extemporaneo = true;
                                         }
                                     }
+                                    foreach ($request->mrespuesta as $i => $x) {
+                                        if (($i == $value->id) AND ($x == null)) {
+                                            $message = "Escriba la razón extemporaneo.";
+                                            return redirect('solicitud/apertura/turnar')->with('message',$message);
+                                        }
+                                    }
                                 }
                             }
                             $titulo = 'Clave de Apertura';
