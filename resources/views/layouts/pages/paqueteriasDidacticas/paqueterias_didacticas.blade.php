@@ -35,10 +35,10 @@
 
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="pills-tecnico-tab" data-toggle="pill" href="#pills-tecnico" role="tab" aria-controls="pills-tecnico" aria-selected="true">Informacion Curso</a>
+                <a class="nav-link " id="pills-tecnico-tab" data-toggle="pill" href="#pills-tecnico" role="tab" aria-controls="pills-tecnico" aria-selected="true">Informacion Curso</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
+                <a class="nav-link active" id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
             </li>
             @if($paqueterias != null)
             <li class="nav-item">
@@ -47,10 +47,10 @@
             @endif
         </ul>
         <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active" id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
+            <div class="tab-pane fade " id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.curso')
             </div>
-            <div class="tab-pane fade" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
+            <div class="tab-pane fade show active" id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.evaluacionAlumno')
             </div>
             <div class="tab-pane fade" id="pills-paqdid" role="tabpanel" aria-labelledby="pills-paqdid-tab">
@@ -278,5 +278,12 @@
     });
 </script>
 <script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}"></script>
+
+<script defer>
+    // $('#preguntas-area-parent .card-paq').remove()
+    var values = Object.values(JSON.parse({!!json_encode($evaluacionAlumno, JSON_HEX_TAG) !!}));
+    //   console.log(values.length)
+    
+</script>
 @endsection
 @endsection

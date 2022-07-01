@@ -21,6 +21,64 @@ var valRecursosD = [];
 var storeRecursosD = document.getElementById('storeRecursosD');
 
 
+$(document).ready(function () {
+
+    if ($('#storePonderacionOld').val() != '') {
+
+        var valuesPonderacion = Object.values(JSON.parse($('#storePonderacionOld').val()))
+
+        valuesPonderacion.forEach(element => {
+            $('#criterio').val(element.criterio)
+            $('#ponderacion').val(element.ponderacion)
+            document.getElementById('addPonderacion').click()
+        });
+    }
+
+    if ($('#storeContenidoTOld').val() != '') {
+        storeContenidoT.value = $('#storeContenidoTOld').val()
+        addContenidoToSelect(JSON.parse(storeContenidoT.value));
+        console.log($('.contenidoTematicoPregunta option').length);
+    }
+
+
+    if (values != '' || !values) {//auto completa formulario de evaluacion de alumno con datos de la DB
+        var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        for (let i = 0; i < values.length-1; i++) {
+            const element = values[i];
+            console.log(element)
+            
+
+                $('select[name="pregunta' + (i + 1) + '-tipo"] option[value="' + element.tipo + '"]').attr("selected", "selected");
+                $('select[name="pregunta' + (i + 1) + '-contenidoT"]').children('option[value="'+element.contenidoTematico+'"]').attr("selected", "selected")
+                
+                $('input[name="pregunta' + (i + 1) + '"]').val(element.descripcion);
+
+                var opciones = element.opciones
+                
+                $('#pregunta' + (i + 1) + '-opc .input-group').remove();
+                for (var j = 0; j < opciones.length; j++) {
+                    $('#pregunta' + (i + 1) + '-opc').append(opcionTemplate('pregunta' + (i + 1) + '-opc'));
+                }
+                var opcionesInp = $('#pregunta' + (i + 1) + '-opc').children('.input-group')
+                for (let j = 0; j < opcionesInp.length; j++) {
+                    $(opcionesInp[j]).children('.form-control').val(opciones[j])
+                    if (element.respuesta == abecedario[j]) {
+                        $(opcionesInp[j]).children('.input-group-text').children('input:radio').attr('checked', true);
+                    }
+                }
+                
+                agregarPregunta()
+            
+        }
+    }
+
+
+});
+
+function printData() {
+
+    console.log(storeContenidoT.value)
+}
 function getID(e) {
     index = e;
 }
@@ -58,22 +116,23 @@ function agregarponderacion() {
     var tbodyElement = document.getElementById('tEvaluacion');
     var numelement = tbodyElement.rows.length;
 
-    if (!$('#criterio').val() || !$('#ponderacion').val() ){
+    if (!$('#criterio').val() || !$('#ponderacion').val()) {
         $('#alert-evaluacion').css('display', 'block');
-        $('#eval-msg').text("No se aceptan valores vacios, intente de nuevo!");    
+        $('#eval-msg').text("No se aceptan valores vacios, intente de nuevo!");
         return
-    }else if(parseInt($('#ponderacion').val()) + ponderacionTotal > 100){
+    } else if (parseInt($('#ponderacion').val()) + ponderacionTotal > 100) {
         $('#alert-evaluacion').css('display', 'block');
-        $('#eval-msg').text("La sumatoria de los criterios debe ser 100%");    
+        $('#eval-msg').text("La sumatoria de los criterios debe ser 100%");
         return
-    }else if( parseInt($('#ponderacion').val()) < 0 ||  parseInt($('#ponderacion').val()) == 0){
+    } else if (parseInt($('#ponderacion').val()) < 0 || parseInt($('#ponderacion').val()) == 0) {
         $('#alert-evaluacion').css('display', 'block');
-        $('#eval-msg').text("Introduzca valores positivos por favor!");    
+        $('#eval-msg').text("Introduzca valores positivos por favor!");
         return
-    }else
+    } else
         $('#alert-evaluacion').css('display', 'none');
 
     // tbodyElement.appendChild(trElement);
+    ponderacionTotal += parseInt($('#ponderacion').val());
     $('<tr id="criterio' + idPonderacion + '">' +
         '<td>' + $('#criterio').val() + '</td>' +
         '<td>' + $('#ponderacion').val() + '</td>' +
@@ -100,23 +159,22 @@ function agregarponderacion() {
 }
 
 function addRowContenidoT(row) {
-
     var contenidoVal = $(row).parents(':eq(1)').children()[0];
     var estrategiaVal = $(row).parents(':eq(1)').children()[1];
     var procesoVal = $(row).parents(':eq(1)').children()[2];
     var duracionVal = $(row).parents(':eq(1)').children()[3];
     var contenidoExtraVal = $(row).parents(':eq(1)').children()[4];
 
-    
-    
 
-    if(contenidoVal.includes("Click aqui para agregar")){
-        $('#alert-contenido').css('display', 'block');
-        $('#contenido-msg').text("No se aceptan valores vacios, intente de nuevo!");    
-        return
-    }else{
-        $('#alert-contenido').css('display', 'none');
-    }
+
+
+    // if(contenidoVal.includes("Click aqui para agregar")){
+    //     $('#alert-contenido').css('display', 'block');
+    //     $('#contenido-msg').text("No se aceptan valores vacios, intente de nuevo!");    
+    //     return
+    // }else{
+    //     $('#alert-contenido').css('display', 'none');
+    // }
     $(row).siblings('.remove-tr').css('display', 'block');//muestra boton eliminar tr 
     $(row).css('display', 'none');
 
@@ -132,7 +190,7 @@ function addRowContenidoT(row) {
         'contenidoExtra': $('#contenidoExtraValues').val(),
     });
     storeContenidoT.value = JSON.stringify(valContenidoT);
-    
+
     addContenidoToSelect(JSON.parse(storeContenidoT.value));
 
     idContenido++;
@@ -197,10 +255,10 @@ function setValuesEditor() {
     var idParent = $(rowSelected).parent()[0].id;
 
     if (valContenidoT.find(x => x.id == idParent)) {
-        
+
         valContenidoT.forEach(function (item, index, object) {
             if (item.id == (idParent)) {
-                
+                console.log('editar')
                 if ($(rowSelected).hasClass('contenidoT')) item.contenido = editorContenidoT.getData()
                 else if ($(rowSelected).hasClass('estrategiaD')) item.estrategia = editorContenidoT.getData()
                 else if ($(rowSelected).hasClass('procesoE')) item.proceso = editorContenidoT.getData()
@@ -213,15 +271,13 @@ function setValuesEditor() {
         });
 
         storeContenidoT.value = JSON.stringify(valContenidoT);
-        
+
         addContenidoToSelect(JSON.parse(storeContenidoT.value));
+
     } else {
-        
+        console.log('nuevo')
     }
-    $('#btnCloseModal').trigger('click');
-
-    
-
+    document.getElementById('btnCloseModal').click()
 }
 function showEditorTxtModal(row) {
 
@@ -338,9 +394,6 @@ function changeSiblings(tr) {
 }
 
 
-
-
-
 /*
  *
  * ==========================================
@@ -354,21 +407,10 @@ var opcion = 0;
 var numPreguntas = 1;
 
 
+$('#preguntas-area-parent').on("click", 'div.card-paq', function (e) {
 
-
-
-
-
-
-$('#preguntas-area-parent').on("click",'div.card-paq',function(e) {
-    e.preventDefault();
     var selected = $(this).find('div.card-paq, .hideable').show(200)
-    var notselected =$("#preguntas-area-parent div.card-paq .hideable").not(selected).hide(200)
-
-    // // $(selected).css('display','block');
-    console.log(selected)
-    console.log(notselected)
-    
+    var notselected = $("#preguntas-area-parent div.card-paq .hideable").not(selected).hide(200)
 });
 
 function addContenidoToSelect(contenido) {
@@ -383,10 +425,11 @@ function addContenidoToSelect(contenido) {
         }));
     }
 
+
 }
 
 function agregarPregunta(boton) {
-    
+
     var numChildren = contPreguntas + 1;
     numPreguntas++;
     $('#numPreguntas').val(numPreguntas);
@@ -480,19 +523,24 @@ function agregarOpcion(opcion) {
     var divParent = $(opcion).parents(':eq(2)').children()[2];
     var idParent = divParent.id
     console.log(idParent);
+    var nuevaOpcion = opcionTemplate(idParent)
+    $(divParent).append(nuevaOpcion);
+}
+
+function opcionTemplate(idParent) {
     var nuevaOpcion = $(
         '<div class="input-group mb-3">' +
-            '<div class="input-group-text">' +
-                '<input type="radio" onclick="setAceptedAnswer(this)" name="' + idParent + '-correc[]">' +
-            '</div>' +
-            '&nbsp;&nbsp;&nbsp;' +
-            '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="' + idParent + '[]" >' +
-            '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
-                '<i class="fa fa-minus"></i>' +
-            '</a>' +
+        '<div class="input-group-text">' +
+        '<input type="radio" onclick="setAceptedAnswer(this)" name="' + idParent + '-correc[]">' +
+        '</div>' +
+        '&nbsp;&nbsp;&nbsp;' +
+        '<input placeholder="Opcion" type="text" class="form-control resp-abierta multiple" name="' + idParent + '[]" >' +
+        '<a class="btn btn-warning btn-circle m-1 btn-circle-sm" onclick="removerOpcion(this)" >' +
+        '<i class="fa fa-minus"></i>' +
+        '</a>' +
         '</div>'
     );
-    $(divParent).append(nuevaOpcion);
+    return nuevaOpcion
 }
 
 
@@ -504,7 +552,7 @@ function removerPregunta(pregunta) {
     var lastPregunta = $('#preguntas-area-parent').children().last()[0]
     lastPregunta = $(lastPregunta).children().children()[2]
     $(lastPregunta).children().children().children().css('display', 'block')
-    
+
 }
 
 
@@ -518,7 +566,7 @@ function removerOpcion(opcion) {
 function cambiarTipoPregunta(opcion) {
     var value = $(opcion).val();
     var divParent = $(opcion).parents(':eq(2)')[0]
-    
+
     var preguntaAbierta = divParent.children[4]
     var opcionMultiple = divParent.children[2].id
 
@@ -547,12 +595,12 @@ function setAceptedAnswer(checkboxSelected) {
     var input = document.getElementById($(divParent).children()[0].id)
     var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-    
+
     for (var i = 0; i < opciones.length; i++) {
         var opcion = opciones[i];
-        
+
         var checkbox = $(opcion).children().children()[0];
-        
+
         if (checkbox != checkboxSelected) {
             $(checkbox).prop('checked', false);
         } else {
@@ -578,7 +626,7 @@ function setAceptedAnswer(checkboxSelected) {
  */
 
 
-function validacion(){
+function confirmacion() {
     document.getElementById('creacion').submit();
 }
 

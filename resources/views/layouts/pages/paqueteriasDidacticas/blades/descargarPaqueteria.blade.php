@@ -27,6 +27,36 @@
                     </a>
                 </th>
             </tr>
+           
+            <tr>
+                <th class="h6" scope="row"> MANUAL DIDACTICO</th>
+                <th></th>
+                <th class="text-center">
+                    <a id="botonMANUALDIDPDF" class="nav-link">
+                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                    </a>
+                </th>
+                <th class="text-center">
+                    <a id="botonMANUALWORD" class="nav-link">
+                        <i class="fa fa-file-word-o  fa-2x fa-lg text-info"></i>
+                    </a>
+                </th>
+            </tr>
+            <tr>
+                <th class="h6" scope="row"> GUIA DE APRENDIZAJE</th>
+                <th></th>
+                <th class="text-center">
+                    <a id="botonMANUALDIDPDF" class="nav-link">
+                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                    </a>
+                </th>
+                <th class="text-center">
+                    <a id="botonMANUALWORD" class="nav-link">
+                        <i class="fa fa-file-word-o  fa-2x fa-lg text-info"></i>
+                    </a>
+                </th>
+            </tr>
+
             <tr>
                 <th class="h6" scope="row"> EVALUACION ALUMNO </th>
                 <th></th>
@@ -51,20 +81,6 @@
                 </th>
                 <th class="text-center">
                     <a id="botonEVALINSTRUCTORWORD" class="nav-link">
-                        <i class="fa fa-file-word-o  fa-2x fa-lg text-info"></i>
-                    </a>
-                </th>
-            </tr>
-            <tr>
-                <th class="h6" scope="row"> MANUAL DIDACTICO</th>
-                <th></th>
-                <th class="text-center">
-                    <a id="botonMANUALDIDPDF" class="nav-link">
-                        <i class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
-                    </a>
-                </th>
-                <th class="text-center">
-                    <a id="botonMANUALWORD" class="nav-link">
                         <i class="fa fa-file-word-o  fa-2x fa-lg text-info"></i>
                     </a>
                 </th>

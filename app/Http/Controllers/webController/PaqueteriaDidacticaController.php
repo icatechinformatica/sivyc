@@ -16,14 +16,22 @@ class PaqueteriaDidacticaController extends Controller
     public function index($idCurso)
     {
         $curso = curso::toBase()->where('id', $idCurso)->first();
+        // dd($curso);
         $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
         $cartaDescriptiva = [];
+        $contenidoT = [];
+        $evaluacionAlumno = [];
         if(isset($paqueterias)){
             $cartaDescriptiva = json_decode($paqueterias->carta_descriptiva);
+            $contenidoT = json_decode($cartaDescriptiva->contenidoTematico);
+            $evaluacionAlumno = ($paqueterias->eval_alumno);
+           
+            // dd($curso,$evaluacionAlumno,$paqueterias->eval_alumno);
         }
+        // dd( $cartaDescriptiva, $contenidoT);
         // dd($paqueterias, $cartaDescriptiva);
         // dump($curso );2
-        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'paqueterias', 'cartaDescriptiva'));
+        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'paqueterias', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno'));
     }
 
     public function store(Request $request, $idCurso)
@@ -182,5 +190,15 @@ class PaqueteriaDidacticaController extends Controller
         // dd($curso, $paqueterias);
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueterias'));
         return $pdf->stream('manualDidactico');
+    }
+    public function mergeArray($registro) //metodo para hacer un arreglo de n dimensiones en 1 (arreglo de arreglos en arreglo)
+    {
+        $reporte = [];
+        foreach ($registro as $r) {
+            foreach ($r as $item) {
+                array_push($reporte, $item);
+            }
+        }
+        return $reporte;
     }
 }

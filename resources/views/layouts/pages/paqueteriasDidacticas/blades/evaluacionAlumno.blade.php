@@ -9,7 +9,7 @@
         <div class="contentBx col-md-12">
             <div class="form-group col-md-12 col-sm-12">
                 <label for="instrucciones" class="control-label">INSTRUCCIONES</label>
-                <textarea placeholder="Agrege aqui las instrucciones para la evaluacion del alumno" class="form-control" id="instrucciones" name="instrucciones" cols="15" rows="5"></textarea>
+                <textarea placeholder="Agrege aqui las instrucciones para la evaluacion del alumno" class="form-control" id="instrucciones" name="instrucciones" cols="15" rows="5"><?php if(isset($evaluacionAlumno->instrucciones)) echo $evaluacionAlumno->instrucciones;?></textarea>
             </div>
         </div>
     </div>
@@ -17,7 +17,6 @@
 
 <div class="row col-md-12" id="preguntas-area-parent">
     <input type="number" hidden id="numPreguntas" name="numPreguntas" value="1">
-
     <div class="card-paq col-md-12">
         <div class="contentBx col-md-12">
             <br>
@@ -27,8 +26,8 @@
 
                     <div class="form-group col-md-6 col-sm-6">
                         <select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta1-tipo">
-                            <option value="multiple">Multiple</option>
                             <option value="abierta">Abierta</option>
+                            <option value="multiple">Multiple</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6 col-sm-6">
@@ -106,7 +105,7 @@
         <div class="pull-right">
             <!-- @can('cursos.store') -->
             
-            <a type="button" class="btn btn-primary" onclick="confirmacion()" id="btn-guardar">Guardar</a>
+            <button type="submit" class="btn btn-primary">Guardar</button>
             <!-- @endcan -->
         </div>
     </div>

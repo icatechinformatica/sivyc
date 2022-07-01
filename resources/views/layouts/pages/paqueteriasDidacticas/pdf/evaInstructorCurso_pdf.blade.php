@@ -26,7 +26,7 @@
         .page_break {page-break-before: always; }
         .encabezado{ position: fixed; top: -50; }
         .img-fondo{ position: relative; left: -20;}
-        .logos{position: absolute; top: 55; left: 0; border: 1px solid red;}
+        .logos{position: absolute; top: 55; left: 0; }
       
         .titulos2 img{float: left;width: 80px;height: 80px; margin-left: 100px; padding-right: 10px; }
         .titulos2 h3{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
