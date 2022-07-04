@@ -80,6 +80,7 @@ $(document).ready(function () {
                 agregarPregunta()
             
         }
+        $('.card-paq:last').remove()
     }
 
 
