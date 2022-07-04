@@ -2,34 +2,34 @@
 <label>
     <h2>INFORMACIÓN TÉCNICA DEL CURSO</h2>
 </label>
-<a  class="btn btn-primary" onclick="printData()">print datos</a>
+
 <hr style="border-color:dimgray">
 <div class="form-row">
     <!-- Unidad -->
     <div class="form-group col-md-6">
         <label for="areaCursos" class="control-label">Nombre del curso</label>
-        <input placeholder="Nombre del curso" type="text" class="form-control" id="nombrecurso" name="nombrecurso" value="{{old('nombrecurso', $curso->nombre_curso)}}">
+        <input disabled placeholder="Nombre del curso" type="text" class="form-control" id="nombrecurso" name="nombrecurso" value="{{old('nombrecurso', $curso->nombre_curso)}}">
     </div>
 </div>
 
 <div class="form-row">
     <div class="form-group col-md-4">
         <label for="entidadfederativa" class="contro-label">Entidad Federativa</label>
-        <input placeholder="Entidad Federativa" type="text" class="form-control" id="entidadfederativa" name="entidadfederativa" value="{{old('entidadfederativa', $cartaDescriptiva->entidadfederativa ?? '')}}">
+        <input disabled placeholder="Entidad Federativa" type="text" class="form-control" id="entidadfederativa" name="entidadfederativa" value="{{old('entidadfederativa', $cartaDescriptiva->entidadfederativa ?? '')}}">
     </div>
     <div class="form-group col-md-4">
         <label for="cicloescolar" class="control-label">Ciclo Escolar</label>
-        <input placeholder="Ciclo escolar" type="text" class="form-control" id="cicloescolar" name="cicloescolar" value="{{old('cicloescolar', $cartaDescriptiva->cicloescolar ?? '')}}">
+        <input disabled placeholder="Ciclo escolar" type="text" class="form-control" id="cicloescolar" name="cicloescolar" value="{{old('cicloescolar', $cartaDescriptiva->cicloescolar ?? '')}}">
     </div>
     <div class="form-group col-md-4">
         <label for="programaestrategico" class="control-label">Programa estrategico (Caso aplicable )</label>
-        <input placeholder="Programa Estrategico" type="text" class="form-control" id="programaestrategico" name="programaestrategico" value="{{old('programaestrategico', $cartaDescriptiva->programaestrategico ?? '')}}">
+        <input disabled placeholder="Programa Estrategico" type="text" class="form-control" id="programaestrategico" name="programaestrategico" value="{{old('programaestrategico', $cartaDescriptiva->programaestrategico ?? '')}}">
     </div>
 </div>
 <div class="form-row">
     <div class="form-group col-md-3">
         <label for="modalidad" class="control-label">Modalidad</label>
-        <select class="form-control" id="modalidad" name="modalidad">
+        <select disabled  class="form-control" id="modalidad" name="modalidad">
             <option value="" selected disabled>--SELECCIONAR--</option>
             @if(isset ($cartaDescriptiva->modalidad)  )
             <option value="EXT" {{$cartaDescriptiva->modalidad == 'EXT' ? 'selected' : ''}}>EXT</option>
@@ -42,7 +42,7 @@
     </div>
     <div class="form-group col-md-3">
         <label for="tipo" class="contro-label">Tipo</label>
-        <select class="form-control" id="tipo" name="tipo">
+        <select disabled class="form-control" id="tipo" name="tipo">
             <option value="" selected disabled>--SELECCIONAR--</option>
             <option value="A DISTANCIA" {{$curso->tipo_curso == 'A DISTANCIA' ? 'selected' : ''}}>A DISTANCIA</option>
             <option value="PRESENCIAL" {{$curso->tipo_curso == 'PRESENCIAL' ? 'selected' : ''}}>PRESENCIAL</option>
@@ -51,22 +51,22 @@
     </div>
     <div class="form-group col-md-3">
         <label for="perfilidoneo" class="control-label">Perfil Idoneo del Instructor</label>
-        <input placeholder="Pefil idoneo" type="text" class="form-control" id="perfilidoneo" name="perfilidoneo" value="{{old('perfilidoneo', $cartaDescriptiva->perfilidoneo ?? '') }}">
+        <input disabled placeholder="Pefil idoneo" type="text" class="form-control" id="perfilidoneo" name="perfilidoneo" value="{{old('perfilidoneo', $curso->perfil ?? '') }}">
     </div>
     <div class="form-group col-md-3">
         <label for="duracion" class="control-label">Duracion en horas</label>
-        <input placeholder="Horas" type="number" class="form-control" id="duracion" name="duracion" value="{{old('duracion', $cartaDescriptiva->duracion ?? $curso->duracion)}}">
+        <input disabled placeholder="Horas" type="number" class="form-control" id="duracion" name="duracion" value="{{old('duracion', $cartaDescriptiva->duracion ?? $curso->duracion)}}">
     </div>
 </div>
 
 <div class="form-row">
     <div class="form-group col-md-4">
         <label for="formacionlaboral" class="contro-label">Campo de Formacion Laboral Profesional</label>
-        <input placeholder="Formacion Laboral" type="text" class="form-control" id="formacionlaboral" name="formacionlaboral" value="{{ old('formacionlaboral', $cartaDescriptiva->formacionlaboral ?? '') }}">
+        <input disabled placeholder="Formacion Laboral" type="text" class="form-control" id="formacionlaboral" name="formacionlaboral" value="{{ old('formacionlaboral', $cartaDescriptiva->formacionlaboral ?? '') }}">
     </div>
     <div class="form-group col-md-4">
         <label for="especialidad" class="control-label">Especialidad </label>
-        <input placeholder="Especialidad" type="text" class="form-control " id="especialidad" name="especialidad" onkeyup="buscarEspecialidad()" value="{{old('especialidad', $cartaDescriptiva->especialidad ?? '')}}">
+        <input disabled placeholder="Especialidad" type="text" class="form-control " id="especialidad" name="especialidad" onkeyup="buscarEspecialidad()" value="{{old('especialidad', $curso->especialidad ?? '')}}">
         <ul id="searchResult" class="searchResult"></ul>
     </div>
 </div>
@@ -175,6 +175,7 @@
             </thead>
             <tbody id="tTemario">
                 @if( isset($cartaDescriptiva->contenidoTematico) )
+                
                 @foreach($contenidoT as $value)
                 <tr id="{{ $value->id }}">
                     <td data-toggle="modal" class="contenidoT" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">
@@ -198,7 +199,7 @@
                 </tr>
                 @endforeach
                 @endif
-                <tr id="1">
+                <tr class="body-element" id="1">
                     <td data-toggle="modal" class="contenidoT" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
                     <td data-toggle="modal" class="estrategiaD" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
                     <td data-toggle="modal" class="procesoE" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">Click aqui para agregar contenido</td>
@@ -211,6 +212,7 @@
                 </tr>
             </tbody>
         </table>
+        
         <div class="alert-custom" id="alert-contenido" style="display: none">
             <span class="closebtn-p" onclick="this.parentElement.style.display='none';">&times;</span> 
             <strong><label for="" id="contenido-msg"></label></strong> 
@@ -221,6 +223,7 @@
 <input hidden name="contenidoT" id="storeContenidoT" class="@error('contenidoT')  is-invalid @enderror">
 
 <br><br>
+
 <label>
     <h2>RECURSOS DIDACTICOS</h2>
 </label>
@@ -272,7 +275,9 @@
                         <input placeholder="Tema principal del modulo" type="text" class="form-control" id="inpTemaPrincipal">
                     </div>
                     <div class="form-group col-md-12 col-sm-6" id="contenidoT">
-                        <textarea placeholder="Introduzca el contenido" type="text" class="form-control" id="contenidoT-inp" name="contenidoT-inp"></textarea>
+                        <textarea placeholder="Introduzca el contenido" type="text" class="form-control" id="contenidoT-inp" name="contenidoT-inp">
+                            
+                        </textarea>
                     </div>
                     <div class="form-group col-md-12 col-sm-2">
                         <a class="btn btn-warning" onclick="setValuesEditor()">Guardar</a>

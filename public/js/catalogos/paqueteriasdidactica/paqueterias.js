@@ -26,7 +26,7 @@ $(document).ready(function () {
     if ($('#storePonderacionOld').val() != '') {
 
         var valuesPonderacion = Object.values(JSON.parse($('#storePonderacionOld').val()))
-
+    
         valuesPonderacion.forEach(element => {
             $('#criterio').val(element.criterio)
             $('#ponderacion').val(element.ponderacion)
@@ -35,17 +35,23 @@ $(document).ready(function () {
     }
 
     if ($('#storeContenidoTOld').val() != '') {
+        valContenidoT = JSON.parse($('#storeContenidoTOld').val() )
+        idContenido = valContenidoT.length+1
+        
         storeContenidoT.value = $('#storeContenidoTOld').val()
         addContenidoToSelect(JSON.parse(storeContenidoT.value));
-        console.log($('.contenidoTematicoPregunta option').length);
+        $('.body-element').attr("id",valContenidoT.length+1); 
+        
     }
 
 
-    if (values != '' || !values) {//auto completa formulario de evaluacion de alumno con datos de la DB
+    if (evaluacion != '' || !evaluacion) {//auto completa formulario de evaluacion de alumno con datos de la DB// 
+        
+        $('#numPreguntas').val(evaluacion.length-1);
+        //evaluacion viene de paqueterias_didacticas.blade 
         var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-        for (let i = 0; i < values.length-1; i++) {
-            const element = values[i];
-            console.log(element)
+        for (let i = 0; i < evaluacion.length-1; i++) {
+            const element = evaluacion[i];
             
 
                 $('select[name="pregunta' + (i + 1) + '-tipo"] option[value="' + element.tipo + '"]').attr("selected", "selected");
@@ -64,9 +70,13 @@ $(document).ready(function () {
                     $(opcionesInp[j]).children('.form-control').val(opciones[j])
                     if (element.respuesta == abecedario[j]) {
                         $(opcionesInp[j]).children('.input-group-text').children('input:radio').attr('checked', true);
+                        var checkbox = $(opcionesInp[j]).children('.input-group-text').children('input:radio')[0]
+                        
+
+                        setAceptedAnswer(checkbox)
                     }
                 }
-                
+                // break;
                 agregarPregunta()
             
         }
@@ -75,10 +85,6 @@ $(document).ready(function () {
 
 });
 
-function printData() {
-
-    console.log(storeContenidoT.value)
-}
 function getID(e) {
     index = e;
 }
@@ -189,6 +195,7 @@ function addRowContenidoT(row) {
         'duracion': $('#duracionValues').val(),
         'contenidoExtra': $('#contenidoExtraValues').val(),
     });
+    
     storeContenidoT.value = JSON.stringify(valContenidoT);
 
     addContenidoToSelect(JSON.parse(storeContenidoT.value));
@@ -258,7 +265,7 @@ function setValuesEditor() {
 
         valContenidoT.forEach(function (item, index, object) {
             if (item.id == (idParent)) {
-                console.log('editar')
+                
                 if ($(rowSelected).hasClass('contenidoT')) item.contenido = editorContenidoT.getData()
                 else if ($(rowSelected).hasClass('estrategiaD')) item.estrategia = editorContenidoT.getData()
                 else if ($(rowSelected).hasClass('procesoE')) item.proceso = editorContenidoT.getData()
@@ -275,7 +282,7 @@ function setValuesEditor() {
         addContenidoToSelect(JSON.parse(storeContenidoT.value));
 
     } else {
-        console.log('nuevo')
+        
     }
     document.getElementById('btnCloseModal').click()
 }
@@ -522,7 +529,7 @@ function agregarOpcion(opcion) {
 
     var divParent = $(opcion).parents(':eq(2)').children()[2];
     var idParent = divParent.id
-    console.log(idParent);
+    
     var nuevaOpcion = opcionTemplate(idParent)
     $(divParent).append(nuevaOpcion);
 }

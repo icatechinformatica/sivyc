@@ -78,7 +78,9 @@
                         <th scope="col">Acciones</th>
                     @endcan
                     <th scope="col">Registros</th>
+                    @can('paqueteriasdidacticas')
                     <th scope="col">Paqueterias</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -108,13 +110,13 @@
                                 <i class="fa fa-info"></i>
                             </button>
                         </td>
+                        @can('paqueteriasdidacticas')
                         <td>
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Paquetes">
                             <i class="fa fa-folder"></i>
                             </a>
-                                
-                            
                         </td>
+                        @endcan
                     </tr>
                 @endforeach
             </tbody>
