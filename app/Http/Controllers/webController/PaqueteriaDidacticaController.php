@@ -216,19 +216,5 @@ class PaqueteriaDidacticaController extends Controller
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueterias'));
         return $pdf->stream('manualDidactico');
     }
-    public function mergeArray($registro) //metodo para hacer un arreglo de n dimensiones en 1 (arreglo de arreglos en arreglo)
-    {
-        $reporte = [];
-        foreach ($registro as $r) {
-            foreach ($r as $item) {
-                array_push($reporte, $item);
-            }
-        }
-        return $reporte;
-    }
-
-
-    public function update(Request $request)
-    {
-    }
+    
 }

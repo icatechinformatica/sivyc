@@ -71,8 +71,6 @@ $(document).ready(function () {
                     if (element.respuesta == abecedario[j]) {
                         $(opcionesInp[j]).children('.input-group-text').children('input:radio').attr('checked', true);
                         var checkbox = $(opcionesInp[j]).children('.input-group-text').children('input:radio')[0]
-                        
-
                         setAceptedAnswer(checkbox)
                     }
                 }
@@ -90,7 +88,6 @@ function getID(e) {
     index = e;
 }
 function buscarEspecialidad() {
-
     var especialidad = document.getElementById("especialidad").value.toUpperCase()
 
     if (especialidad !== "") {
