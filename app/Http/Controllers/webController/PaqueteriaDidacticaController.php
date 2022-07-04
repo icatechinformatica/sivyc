@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\webController;
 
 use App\Http\Controllers\Controller;
+use App\Models\Area;
 use App\Models\curso;
 use App\Models\PaqueteriasDidacticas;
 use Carbon\Carbon;
@@ -17,6 +18,49 @@ class PaqueteriaDidacticaController extends Controller
     {
         $curso = new curso();
         $curso=$curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
+        'cursos.costo','cursos.duracion','cursos.tipo_curso','cursos.documento_memo_validacion','cursos.documento_memo_actualizacion','cursos.documento_solicitud_autorizacion',
+        'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
+        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
+        'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
+                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria', 'cursos.documento_memo_validacion',
+                    'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
+                    'cursos.rango_criterio_pago_minimo', 'rango_criterio_pago_maximo','cursos.observacion',
+                    'cursos.grupo_vulnerable', 'cursos.dependencia')
+                    ->WHERE('cursos.id', '=', $idCurso)
+                    ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
+                    ->first();
+                    
+        $area = Area::find($curso->area);
+        
+        $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
+        $cartaDescriptiva = [];
+        $contenidoT = [];
+        $evaluacionAlumno = [];
+        if (isset($paqueterias)) {
+            $cartaDescriptiva = json_decode($paqueterias->carta_descriptiva);
+            $contenidoT = json_decode($cartaDescriptiva->contenidoTematico);
+            $evaluacionAlumno = ($paqueterias->eval_alumno);
+            
+
+            
+        }
+        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'area' ,'paqueterias', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno'));
+    }
+
+    public function store(Request $request, $idCurso)
+    {
+        
+
+        $this->validate($request, [
+            'entidadfederativa' => 'required',
+            'cicloescolar' => 'required',
+            'programaestrategico' => 'required',
+        ]);
+
+        $preguntas = ['instrucciones' => $request->instrucciones];
+
+        $curso = new curso();
+        $curso=$curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
                     'cursos.costo','cursos.duracion','cursos.tipo_curso','cursos.documento_memo_validacion','cursos.documento_memo_actualizacion','cursos.documento_solicitud_autorizacion',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
@@ -28,37 +72,18 @@ class PaqueteriaDidacticaController extends Controller
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->first();
-                    // dd($curso->toArray());
-        $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
-        $cartaDescriptiva = [];
-        $contenidoT = [];
-        $evaluacionAlumno = [];
-        if (isset($paqueterias)) {
-            $cartaDescriptiva = json_decode($paqueterias->carta_descriptiva);
-            $contenidoT = json_decode($cartaDescriptiva->contenidoTematico);
-            $evaluacionAlumno = ($paqueterias->eval_alumno);
-
-            
-        }
-        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'paqueterias', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno'));
-    }
-
-    public function store(Request $request, $idCurso)
-    {
-
-        $preguntas = ['instrucciones' => $request->instrucciones];
-
+        $area = Area::find($curso->area);
         $cartaDescriptiva = [
-            'nombrecurso' => $request->nombrecurso,
+            'nombrecurso' => $curso->nombre_curso,
             'entidadfederativa' => $request->entidadfederativa,
             'cicloescolar' => $request->cicloescolar,
             'programaestrategico' => $request->programaestrategico,
-            'modalidad' => $request->modalidad,
-            'tipo' => $request->tipo,
-            'perfilidoneo' => $request->perfilidoneo,
-            'duracion' => $request->duracion,
-            'formacionlaboral' => $request->formacionlaboral,
-            'especialidad' => $request->especialidad,
+            'modalidad' => $curso->modalidad,
+            'tipo' => $curso->tipo_curso,
+            'perfilidoneo' => $curso->perfil,
+            'duracion' => $curso->horas,
+            'formacionlaboral' => $area->formacion_profesional,
+            'especialidad' => $curso->especialidad,
             'publico' => $request->publico,
             'aprendizajeesperado' => $request->aprendizajeesperado,
             'criterio' => $request->criterio,
@@ -74,6 +99,7 @@ class PaqueteriaDidacticaController extends Controller
 
         
         
+        
         $i = 0;
         $contPreguntas = 0;
 
@@ -81,7 +107,7 @@ class PaqueteriaDidacticaController extends Controller
 
         while (true) { //ciclo para encontrar las preguntas del formulario
             $i++;
-            if ($contPreguntas == $auxContPreguntas)
+            if ($contPreguntas == $auxContPreguntas-1)
                 break;
 
             $numPregunta = 'pregunta' . $i;
