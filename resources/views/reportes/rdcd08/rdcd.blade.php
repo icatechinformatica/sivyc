@@ -30,7 +30,7 @@ switch( $mes){
     @page{margin: 20px 30px 40px}
     .tabla_madre{border: 1px solid black;}
     .table{width: 100%; text-align: center; border-collapse: collapse;}
-    .centrado{width:50%;padding:8px;margin:auto; text-align:center;}
+    .centrado{width:50%;padding:1px;margin:auto; text-align:center;}
     div{font_size: 12px;}
     .p{text-decoration: overline;}
     .variable{text-align: center;border: 1px solid black;}
@@ -43,9 +43,46 @@ switch( $mes){
 <body>
     <div>
         <img src="img/sep.png" class="izquierda">
-        <p style="font_size: 14px;width:50%;padding:8px;margin:auto; text-align:center;">SUBSECRETARIA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>REPORTE DE DIPLOMAS O COSTANCIAS EXPEDIDOS <br>(RDCD-08)</p>
+        <p style="font_size: 14px;width:80%;padding:8px;margin:auto; text-align:center;">SUBSECRETARIA DE EDUCACIÓN E INVESTIGACIÓN TECNOLÓGICAS <br>DIRECCIÓN GENERAL DE CENTROS DE FORMACIÓN PARA EL TRABAJO <br>REPORTE DE DIPLOMAS O COSTANCIAS EXPEDIDOS <br>(RDCD-08)</p>
     </div>
-    <div class="tabla_madre">
+    <table style="border: 1px solid black; width: 100%; font_size: 12px;">
+        <tr style="text-align: center; padding: 1px;">
+            <td colspan="7">
+                INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNOLÓGICA <br> DEL ESTADO DE CHIAPAS
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5"></td>
+            <td colspan="2">
+                TIPO DE DOCUMENTO:
+            </td>
+        </tr>
+        <tr>
+            <td>
+                UNIDAD DE CAPACITACIÓN: {{$unidad}} <br>
+                CLAVE CCT: {{$cct->cct}} <br>
+                PERIODO QUE SE REPORTA:{{$periodo}} <br>
+                FECHA: {{$fecha}}
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="text-align: right;">
+                DIPLOMA  <br><br>
+                CONSTANCIA 
+            </td>
+            <td style="text-align: right;">
+                CURSO( ) <br>
+                ESPECIALIDAD( )<br>
+                R.O.C.O.( ) <br>
+                @php if($modalidad=="CAE"){echo "CAE(X)";} else {echo"CAE( )";} @endphp <br>
+                @php if($modalidad=="EXT"){echo "EXT(X)";} else {echo"EXT( )";} @endphp <br>
+                @php if($modalidad=="GRAL"){echo "GRAL(X)";} else {echo"GRAL( )";} @endphp
+            </td>
+        </tr>
+    </table>
+    {{-- <div class="tabla_madre">
         <div class="centrado"><p>INSTITUTO DE CAPACITACIÓN Y VINCULACIÓN TECNILÓGICA DEL ESTADO DE CHIAPAS</p></div>
         <div >
             <table width="100%">
@@ -82,7 +119,7 @@ switch( $mes){
                 </tr>
             </table>
         </div>
-    </div>
+    </div> --}}
     <div><p class="centrado">SERIE ASIGNADA A LA UNIDAD</p></div>
     <div>
         <table class="table">
@@ -124,14 +161,14 @@ switch( $mes){
                 <td class="variable">@php $total= $total- ($item->expedidos + $item->cancelados); @endphp {{$total}}</td>
             </tr>
             @endforeach
-            
+            @if (count($fcancelados)>0)
             <tr>
-                 <td colspan="6" class="variable">@foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach</td>
+                <td colspan="6" class="variable">@foreach($fcancelados as $alo)FOLIOS CANCELADOS: {{$alo->cance}} POR {{$alo->motivo}},@endforeach</td>
             </tr>
-            
+            @endif
         </table>
     </div>
-    <div><br><br><br><br><br><br><br><br><br><br></div>
+    <br><br><br><br>
     <div>
         <table class="table">
             <tr>
