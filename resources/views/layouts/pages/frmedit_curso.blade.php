@@ -358,7 +358,7 @@
                 <select class="form-control" id="tipo_curso" name="tipo_curso">
                     <option {{$cursos[0]->tipo_curso == 'PRESENCIAL' ? "selected" : "" }} value="PRESENCIAL">PRESENCIAL</option>
                     <option {{$cursos[0]->tipo_curso == 'A DISTANCIA' ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
-                    <option {{$cursos[0]->tipo_curso == 'A DISTANCIA Y PRESENCIAL' ? "selected" : "" }} value="A DISTANCIA Y PRESENCIAL">A DISTANCIA Y PRESENCIAL</option>
+                    <option {{$cursos[0]->tipo_curso == 'PRESENCIAL Y A DISTANCIA' ? "selected" : "" }} value="PRESENCIAL Y A DISTANCIA">PRESENCIAL Y A DISTANCIA</option>
                 </select>
             </div>
             <div class="form-group col-md-4">
