@@ -104,7 +104,7 @@ class grupoController extends Controller
                 $clave = DB::table('tbl_municipios')->where('id', $alumnos[0]->id_muni)->value('clave');
                 $localidad = DB::table('tbl_localidades')->where('clave_municipio', '=', $clave)->pluck('localidad', 'clave');
                 $cursos = DB::table('cursos')
-                    ->where('tipo_curso', $tipo)
+                    ->where('tipo_curso','like',"%$tipo%")
                     ->where('cursos.estado', true)
                     ->where('modalidad','like',"%$mod%")
                     ->whereJsonContains('unidades_disponible', [$alumnos[0]->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
@@ -141,7 +141,7 @@ class grupoController extends Controller
         //$request->unidad = 'TUXTLA';
         if (isset($request->tipo) and isset($request->unidad) and isset($request->modalidad)) {
             $cursos = DB::table('cursos')->select('cursos.id', 'nombre_curso')
-                ->where('tipo_curso', $request->tipo)
+                ->where('tipo_curso','like',"%$request->tipo%")
                 ->where('modalidad','like',"%$request->modalidad%")
                 ->where('cursos.estado', true)
                 ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('cursos.nombre_curso')->get();
