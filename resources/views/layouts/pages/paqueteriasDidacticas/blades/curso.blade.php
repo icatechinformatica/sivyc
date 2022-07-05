@@ -192,7 +192,7 @@
                 @if( isset($cartaDescriptiva->contenidoTematico) )
 
                 @foreach($contenidoT as $value)
-                <tr id="{{ $value->id }}">
+                <tr id="{{ $loop->index+1 }}">
                     <td data-toggle="modal" class="contenidoT" data-placement="top" data-target="#modalTxtEditor" onclick="showEditorTxtModal(this)">
                         <?php echo htmlspecialchars_decode(stripslashes($value->contenido)); ?>
                     </td>

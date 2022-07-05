@@ -37,8 +37,10 @@ $(document).ready(function () {
     if ($('#storeContenidoTOld').val() != '') {
         valContenidoT = JSON.parse($('#storeContenidoTOld').val() )
         idContenido = valContenidoT.length+1
+        for(var i=0; i<valContenidoT.length; i++)
+            valContenidoT[i].id = (i+1)//fix id's
         
-        storeContenidoT.value = $('#storeContenidoTOld').val()
+        storeContenidoT.value = JSON.stringify(valContenidoT)
         addContenidoToSelect(JSON.parse(storeContenidoT.value));
         $('.body-element').attr("id",valContenidoT.length+1); 
         
@@ -251,11 +253,12 @@ function setValuesEditor() {
     else if ($(rowSelected).hasClass('procesoE')) $('#procesoValues').val(editorContenidoT.getData())
     else if ($(rowSelected).hasClass('duracion')) $('#duracionValues').val(editorContenidoT.getData())
     else if ($(rowSelected).hasClass('contenidoE')) $('#contenidoExtraValues').val(editorContenidoT.getData())
+    
+    rowSelected.innerHTML = editorContenidoT.getData();
+    if ($(rowSelected).hasClass('contenidoT')){
 
-    if ($(rowSelected).hasClass('contenidoT'))
-        rowSelected.innerHTML = '<h1><strong>' + $('#inpTemaPrincipal').val() + '</strong></h1>' + editorContenidoT.getData();
-    else
-        rowSelected.innerHTML = editorContenidoT.getData();
+    }
+    
 
     var idParent = $(rowSelected).parent()[0].id;
 
@@ -285,9 +288,14 @@ function setValuesEditor() {
     document.getElementById('btnCloseModal').click()
 }
 function showEditorTxtModal(row) {
-
+    idContenido = $(row).parents(':eq(0)')[0].id
     if ($(row).hasClass('contenidoT')) {
         $('#temaPrincipal').css('display', 'block')
+        valContenidoT.forEach(function (item, index, object) {
+            if (item.id == idContenido ) {
+                $('#inpTemaPrincipal').val(item.tema_principal)
+            }
+        });
     } else {
         $('#temaPrincipal').css('display', 'none')
     }
