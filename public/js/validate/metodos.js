@@ -136,7 +136,9 @@ $(function(){
    // * modificacion de los input a uppercase
 
 
-   $("input[type=text], textarea, select").keyup(function () {
-        $(this).val($(this).val().toUpperCase());
+    $("input[type=text], textarea, select").keyup(function () {
+        var inputPosition = this.selectionStart;
+        this.value = this.value.toUpperCase();
+        this.selectionStart = this.selectionEnd = inputPosition;
     });
 });
