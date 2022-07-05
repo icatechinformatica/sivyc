@@ -189,7 +189,7 @@
                 </tr>
             </thead>
             <tbody id="tTemario">
-                @if( isset($cartaDescriptiva->contenidoTematico) )
+                @if( isset($cartaDescriptiva->contenidoTematico) && $cartaDescriptiva->contenidoTematico!=null )
 
                 @foreach($contenidoT as $value)
                 <tr id="{{ $loop->index+1 }}">

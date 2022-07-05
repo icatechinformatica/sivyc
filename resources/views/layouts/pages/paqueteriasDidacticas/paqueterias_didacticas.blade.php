@@ -40,12 +40,21 @@
             <li class="nav-item">
                 <a class="nav-link" id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
             </li>
-            @if($paqueterias != null)
+            
             <li class="nav-item">
                 <a class="nav-link " id="pills-paqdid-tab" data-toggle="pill" href="#pills-paqdid" role="tab" aria-controls="pills-paqdid" aria-selected="false">Paqueterias Didacticas</a>
             </li>
-            @endif
         </ul>
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
+        @if ($message = Session::get('warning'))
+            <div class="alert alert-warning">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.curso')
@@ -270,8 +279,10 @@
             $('#creacion').submit();
         });
         $("#botonMANUALDIDPDF").click(function() {
-            $('#creacion').attr('action', "{{route('DescargarManualDidactico',$idCurso)}}");
-            $('#creacion').submit();
+            // $('#creacion').attr('action', "{{route('DescargarManualDidactico',$idCurso)}}");
+            // $('#creacion').submit();
+            $('#alert-files').css('display', 'block');
+            $('#files-msg').text("La generacion de este archivo estara disponible pronto!");
         });
 
 

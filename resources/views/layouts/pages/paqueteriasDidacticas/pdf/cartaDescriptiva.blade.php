@@ -135,9 +135,11 @@
                         </tr>
                         <tr>
                             <td colspan="10"><label class="contenido">Proceso de evaluacion:</label> <br>
+                            @if($cartaDescriptiva->ponderacion != null)
                             @foreach ($cartaDescriptiva->ponderacion as $ponderacion)
                             {{ $ponderacion->criterio }} &nbsp;&nbsp;.................... {{ $ponderacion->ponderacion }}% <br>
                             @endforeach
+                            @endif
                             </td>
                         </tr>
                         <tr>
@@ -151,7 +153,7 @@
                             <td colspan="2">Proceso de Evaluacion </td>
                             <td colspan="4">Duracion (EN HORAS)</td>
                         </tr>
-
+                        @if($cartaDescriptiva->contenidoTematico!=null)
                         @foreach ($cartaDescriptiva->contenidoTematico as $contenido)
                         <tr>
                             <td colspan="2">
@@ -164,7 +166,7 @@
                             <td colspan="4"><?php echo htmlspecialchars_decode(stripslashes($contenido->duracion)); ?> </td>
                         </tr>
                         @endforeach
-                        
+                        @endif
                     </tbody>
                 </table>
                 <br>

@@ -29,22 +29,64 @@ class PaqueteriaDidacticaController extends Controller
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->first();
-                    
         $area = Area::find($curso->area);
-        
-        $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
+
+        $cartaDescriptiva = [
+            'nombrecurso' => $curso->nombre_curso,
+            'entidadfederativa' => '',
+            'cicloescolar' => '',
+            'programaestrategico' => '',
+            'modalidad' => $curso->modalidad,
+            'tipo' => $curso->tipo_curso,
+            'perfilidoneo' => $curso->perfil,
+            'duracion' => $curso->horas,
+            'formacionlaboral' => $area->formacion_profesional,
+            'especialidad' => $curso->especialidad,
+            'publico' => '',
+            'aprendizajeesperado' => '',
+            'criterio' => '',
+            'ponderacion' => '',
+            'objetivoespecifico' => '',
+            'transversabilidad' => '',
+            'contenidoTematico' => '',
+            'observaciones' => '',
+            'elementoapoyo' => '',
+            'auxenseñanza' => '',
+            'referencias' => '',
+        ];
+                
+        DB::beginTransaction();
+        try {
+            $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
+            if (!isset($paqueteriasDidacticas)) {
+                PaqueteriasDidacticas::create([
+                    'id_curso' => $idCurso,
+                    'carta_descriptiva' => json_encode($cartaDescriptiva),
+                    'eval_alumno' => json_encode(''),
+                    'estatus' => 1,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => null,
+                    'id_user_created' => Auth::id(),
+                ]);
+            } 
+            DB::commit();
+        } catch (\Exception $e) {
+            throw $e;
+            DB::rollback();
+            return redirect()->route('curso-inicio')->with('error', 'HUBO UN ERROR INESPERADO!');
+        }
         $cartaDescriptiva = [];
         $contenidoT = [];
         $evaluacionAlumno = [];
-        if (isset($paqueterias)) {
-            $cartaDescriptiva = json_decode($paqueterias->carta_descriptiva);
+        if (isset($paqueteriasDidacticas)) {
+            $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
             $contenidoT = json_decode($cartaDescriptiva->contenidoTematico);
-            $evaluacionAlumno = ($paqueterias->eval_alumno);
+            $evaluacionAlumno = ($paqueteriasDidacticas->eval_alumno);
             
 
             
         }
-        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'area' ,'paqueterias', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno'));
+        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'area' ,'paqueteriasDidacticas', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno'));
     }
 
     public function store(Request $request, $idCurso)
@@ -139,6 +181,7 @@ class PaqueteriaDidacticaController extends Controller
                 array_push($preguntas, $tempPregunta);
                 $contPreguntas++;
             }
+            
         }
 
 
@@ -202,7 +245,10 @@ class PaqueteriaDidacticaController extends Controller
     public function DescargarPaqueteria($idCurso)
     {
         $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
-        
+        if(!isset($paqueteriasDidacticas)){
+            
+            return redirect()->back()->with('warning','No se puede generar pdf con la informacion actual');
+        }
         // 
         $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
 
@@ -220,8 +266,14 @@ class PaqueteriaDidacticaController extends Controller
     public function DescargarPaqueteriaEvalAlumno($idCurso)
     {
         $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
+        if(!isset($paqueteriasDidacticas) ){
+            return redirect()->back()->with('warning','No se puede generar pdf con la informacion actual');
+        }
         $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
         $evalAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
+        if(!isset($evalAlumno) || !isset($paqueteriasDidacticas) ){
+            return redirect()->back()->with('warning','No se puede generar pdf con la informacion actual');
+        }
         $curso = curso::toBase()->where('id', $idCurso)->first();
         $abecedario = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.eval_alumno_pdf', compact('evalAlumno', 'abecedario', 'curso', 'cartaDescriptiva'));
@@ -236,6 +288,9 @@ class PaqueteriaDidacticaController extends Controller
     }
     public function DescargarManualDidactico($idCurso)
     {
+        return redirect()->back()->with('warning','No se puede generar pdf con la informacion actual');
+        $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
+        
         $curso = curso::toBase()->where('id', $idCurso)->first();
         $paqueterias = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
         

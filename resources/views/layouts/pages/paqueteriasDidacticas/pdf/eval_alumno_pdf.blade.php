@@ -119,13 +119,14 @@
                     </tbody>
                 </table>
                 <br><br>
-                <label >Instrucciones: {{$evalAlumno->instrucciones}}</label><br>
+                <label >Instrucciones: {{$evalAlumno->instrucciones ?? ''}} </label><br>
             </div> 
 
 
 
             <div class="preguntas">
                 <label for="segoeUI" style="font-weight: bold; font: size 12px;">(Preguntas)</label><br>
+                @if($evalAlumno != null)
                 @foreach($evalAlumno as $pregunta)
                 
                 @if(isset($pregunta->descripcion))
@@ -142,6 +143,7 @@
 
                 @endif
                 @endforeach
+                @endif
             </div>
 
                 
@@ -206,15 +208,18 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if($evalAlumno != null)
                         @foreach($evalAlumno as $pregunta)
-                        @if(isset($pregunta->respuesta))
+                        
+                        @if(isset($pregunta->contenidoTematico))
                         <tr >
                             <td style="text-align:center;">{{$loop->index + 1}}</td>
                             <td>{{$pregunta->contenidoTematico ?? ''}}</td>
-                            <td style="text-align:center;">{{$pregunta->respuesta}}</td>
+                            <td style="text-align:center;">{{$pregunta->respuesta ?? 'N/A'}}</td>
                         </tr>
                         @endif
                         @endforeach
+                        @endif
                         
                     </tbody>
                 </table>
