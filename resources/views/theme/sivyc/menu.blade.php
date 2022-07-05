@@ -201,6 +201,8 @@
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
                         @endcan
+                        
+                        
                     </div>
                 </li>
                 <li class="nav-item g-mx-5--lg dropdown">

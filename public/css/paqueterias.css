@@ -1,0 +1,131 @@
+/*
+    *
+    * ==========================================
+    * CUSTOM PAQ DIDACTICAS
+    * ==========================================
+    *
+    */
+/* custom width modal */
+/* .modal .modal-full-height{position:absolute;top:0;right:0;display:-webkit-box;display:-ms-flexbox;display:flex;width:600px;height:auto;min-height:100%;margin:0} */
+.alert-custom {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+}
+
+.closebtn-p {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.closebtn-p:hover {
+    color: black;
+}
+
+.mb-0,
+.my-0 {
+    margin-bottom: 0 !important;
+}
+
+.resp-abierta {
+    border: none;
+    border-bottom: 1px solid #621132;
+    padding: 5px 10px;
+    outline: none;
+}
+
+.searchResult {
+    list-style: none;
+    padding: 0px;
+    width: 100%;
+    position: absolute;
+    margin: 0;
+    z-index: 100;
+}
+
+.searchResult li {
+    background: lavender;
+    padding: 4px;
+    margin-bottom: 0px;
+}
+
+.searchResult li:hover {
+    cursor: pointer;
+    background: #9f2241;
+    color: white;
+}
+
+.ck-editor__editable_inline {
+    min-height: 100px;
+}
+
+.ck-editor__editable {
+    max-height: 500px;
+}
+
+input[type=text] {
+    background-color: #fff;
+
+    -webkit-transition: all .2s ease-out;
+    -moz-transition: all .2s ease-out;
+    -ms-transition: all .2s ease-out;
+    -o-transition: all .2s ease-out;
+    transition: all .2s ease-out
+}
+
+input[type=text]:focus {
+    border-color: #ccc;
+
+    background: #f2f2f2;
+    outline: 0
+        /* f2f2f2 */
+}
+
+.card-paq {
+    position: relative;
+    width: auto;
+    height: auto;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.card-paq .content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: 0.5s;
+}
+
+.row-clickeable {
+    display: table-row;
+}
+
+.text-preview {
+    width: auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 16;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.scrollable-cont-t {
+    background-color: #f2f2f2;
+    /* #fAfAfA; */
+    width: 100%;
+    height: 510px;
+    overflow: auto;
+}
