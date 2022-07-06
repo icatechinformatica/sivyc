@@ -40,7 +40,7 @@ class AlumnoRegistradoController extends Controller
                 ->PAGINATE(25, [
                     'alumnos_pre.nombre', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno',
                     'alumnos_registro.no_control', 'alumnos_registro.id AS id_registro',
-                    'cursos.nombre_curso', 'alumnos_pre.es_cereso'
+                    'alumnos_registro.folio_grupo','cursos.nombre_curso', 'alumnos_pre.es_cereso'
                 ]);
 
         return view('layouts.pages.alumnos_registrados', compact('alumnos'));

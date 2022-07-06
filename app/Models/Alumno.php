@@ -52,6 +52,9 @@ class Alumno extends Model
                         # code...
                         return $query->where('alumnos_registro.no_control', '=', $buscar);
                         break;
+                    case 'folio_grupo':
+                        return $query->where('alumnos_registro.folio_grupo', '=', $buscar);
+                        break;
                     case 'nombres':
                         # code...
                         return $query->where( \DB::raw("CONCAT(alumnos_pre.apellido_paterno, ' ',alumnos_pre.apellido_materno,' ',alumnos_pre.nombre)"), 'LIKE', "%$buscar%");

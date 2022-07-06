@@ -21,6 +21,7 @@
                         <select name="tipo_busqueda" class="form-control mr-sm-2" id="tipo_busqueda">
                             <option value="">BUSCAR POR TIPO</option>
                             <option value="no_control">N° DE CONTROL</option>
+                            <option value="folio_grupo">N° DE GRUPO</option>
                             <option value="curso">CURSO</option>
                             <option value="nombres">NOMBRE</option>
                             <option value="curp">CURP</option>
@@ -39,9 +40,10 @@
                 <thead>
                     <tr>
                         <th scope="col">N° CONTROL</th>
+                        <th width="90px">N° GRUPO</th>
                         <th scope="col">CURSOS</th>
                         <th scope="col">NOMBRE</th>
-                        <th width="160px">ACCIONES</th>
+                        <th width="100px">ACCIONES</th>
                         @can('alumno.inscrito.edit')
                             <th scope="col">MODIFICAR</th>
                         @endcan
@@ -52,6 +54,7 @@
                     @foreach ($alumnos as $itemData)
                         <tr>
                             <td>{{$itemData->no_control}}</td>
+                            <td>{{$itemData->folio_grupo}}</td>
                             <td scope="row">{{ $itemData->nombre_curso }}</td>
                             <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
                             @can('alumno.inscrito.show')
