@@ -56,8 +56,9 @@ class PaqueteriaDidacticaController extends Controller
         ];
                 
         DB::beginTransaction();
-        try {
+        try {//se guarda la informacion inicial de la paqueteria
             $paqueteriasDidacticas = PaqueteriasDidacticas::toBase()->where([['id_curso', $idCurso], ['estatus', 1]])->first();
+            
             if (!isset($paqueteriasDidacticas)) {
                 PaqueteriasDidacticas::create([
                     'id_curso' => $idCurso,
@@ -82,9 +83,6 @@ class PaqueteriaDidacticaController extends Controller
             $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
             $contenidoT = json_decode($cartaDescriptiva->contenidoTematico);
             $evaluacionAlumno = ($paqueteriasDidacticas->eval_alumno);
-            
-
-            
         }
         return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'area' ,'paqueteriasDidacticas', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno'));
     }
@@ -149,7 +147,7 @@ class PaqueteriaDidacticaController extends Controller
 
         while (true) { //ciclo para encontrar las preguntas del formulario
             $i++;
-            if ($contPreguntas == $auxContPreguntas-1)
+            if ($contPreguntas == $auxContPreguntas)
                 break;
 
             $numPregunta = 'pregunta' . $i;
@@ -158,24 +156,25 @@ class PaqueteriaDidacticaController extends Controller
             $respuesta = 'pregunta' . $i . '-opc-answer';
 
             $contenidoT = 'pregunta' . $i . '-contenidoT';
-
-            if ($request->$numPregunta != null) {
+            
+            if ($request->$numPregunta != null || $request->numPreguntas == 1) {
+                
                 if ($request->$tipoPregunta == 'multiple') {
                     $tempPregunta = [
-                        'descripcion' => $request->$numPregunta,
-                        'tipo' => $request->$tipoPregunta,
-                        'opciones' => $request->$opcPregunta,
-                        'respuesta' => $request->$respuesta,
-                        'contenidoTematico' => $request->$contenidoT,
+                        'descripcion' => $request->$numPregunta ?? 'N/A',
+                        'tipo' => $request->$tipoPregunta ?? 'N/A',
+                        'opciones' => $request->$opcPregunta ,
+                        'respuesta' => $request->$respuesta ?? 'N/A',
+                        'contenidoTematico' => $request->$contenidoT ?? 'N/A',
                     ];
                 } else {
                     $respuesta = 'pregunta' . $i . '-resp-abierta';
                     $tempPregunta = [
-                        'descripcion' => $request->$numPregunta,
-                        'tipo' => $request->$tipoPregunta,
-                        'opciones' => $request->$opcPregunta,
-                        'respuesta' => $request->$respuesta,
-                        'contenidoTematico' => $request->$contenidoT,
+                        'descripcion' => $request->$numPregunta ?? 'N/A',
+                        'tipo' => $request->$tipoPregunta ?? 'N/A',
+                        'opciones' => $request->$opcPregunta ,
+                        'respuesta' => $request->$respuesta ?? 'N/A',
+                        'contenidoTematico' => $request->$contenidoT ?? 'N/A',
                     ];
                 }
                 array_push($preguntas, $tempPregunta);
@@ -183,7 +182,7 @@ class PaqueteriaDidacticaController extends Controller
             }
             
         }
-
+        
 
         DB::beginTransaction();
         try {

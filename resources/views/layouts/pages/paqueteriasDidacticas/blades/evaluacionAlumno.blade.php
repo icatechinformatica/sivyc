@@ -26,8 +26,8 @@
 
                     <div class="form-group col-md-6 col-sm-6">
                         <select onchange="cambiarTipoPregunta(this)" class="form-control" name="pregunta1-tipo">
-                            <option value="abierta">Abierta</option>
                             <option value="multiple">Multiple</option>
+                            <option value="abierta">Abierta</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6 col-sm-6">

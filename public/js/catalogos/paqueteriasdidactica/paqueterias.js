@@ -50,6 +50,7 @@ $(document).ready(function () {
     if (evaluacion != '' || !evaluacion) {//auto completa formulario de evaluacion de alumno con datos de la DB// 
         
         $('#numPreguntas').val(evaluacion.length-1);
+        console.log($('#numPreguntas').val());
         //evaluacion viene de paqueterias_didacticas.blade 
         var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         for (let i = 0; i < evaluacion.length-1; i++) {
@@ -77,10 +78,14 @@ $(document).ready(function () {
                     }
                 }
                 // break;
+                
                 agregarPregunta()
             
         }
-        $('.card-paq:last').remove()
+        $ultimaPregunta = $('.card-paq:last').remove()
+        numPreguntas--;
+        $('#numPreguntas').val(numPreguntas);
+        
     }
 
 
@@ -415,7 +420,7 @@ function changeSiblings(tr) {
  *
  */
 
-var contPreguntas = 1;
+var idPregunta = 1;
 var opcion = 0;
 var numPreguntas = 1;
 
@@ -443,8 +448,10 @@ function addContenidoToSelect(contenido) {
 
 function agregarPregunta(boton) {
 
-    var numChildren = contPreguntas + 1;
+    idPregunta ++
+    var numChildren = idPregunta 
     numPreguntas++;
+    console.log(idPregunta, numPreguntas);
     $('#numPreguntas').val(numPreguntas);
 
     var nuevaPregunta = $(
@@ -525,7 +532,7 @@ function agregarPregunta(boton) {
     );
 
     $('#preguntas-area-parent').append(nuevaPregunta);
-    contPreguntas++
+    
     if (storeContenidoT.value != "") {
         addContenidoToSelect(JSON.parse(storeContenidoT.value));
     }
@@ -557,8 +564,8 @@ function opcionTemplate(idParent) {
 }
 
 
-function removerPregunta(pregunta) {
-    var divParent = $(pregunta).parents(':eq(4)')[0]; //
+function removerPregunta(btnEliminar) {
+    var divParent = $(btnEliminar).parents(':eq(4)')[0]; //
     numPreguntas--;
     $('#numPreguntas').val(numPreguntas);
     $(divParent).remove();
