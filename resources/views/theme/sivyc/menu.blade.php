@@ -16,11 +16,13 @@
             </ul>
         @else
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">
-                        Cursos Validados
-                    </a>
-                </li>
+                @can('show.cursos.validados')
+                    <li class="nav-item active">
+                        <a class="nav-link g-mx-5--lg" href="{{ route('cursos_validados.index') }}">
+                            Cursos Validados
+                        </a>
+                    </li>
+                @endcan
                 {{--  <!--SUPERVISIONES
                 @can('supervision.escolar')
                     <li class="nav-item g-mx-5--lg dropdown">
@@ -201,8 +203,8 @@
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
                         @endcan
-                        
-                        
+
+
                     </div>
                 </li>
                 <li class="nav-item g-mx-5--lg dropdown">

@@ -338,7 +338,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
     // Validar Cursos
-    Route::get('/cursos_validados/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos_validados.index');
+    Route::get('/cursos_validados/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos_validados.index')->middleware('can:show.cursos.validados');;
     Route::post('/cursos/fill1', 'webController\CursoValidadoController@fill1');
     Route::post("/cursos/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
 
@@ -536,11 +536,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consultas/cursosefisico', 'Consultas\cursosefisicoController@index')->name('consultas.cursosefisico')->middleware('can:consultas.cursosefisico');
     Route::post('/consultas/cursosefisico', 'Consultas\cursosefisicoController@index')->name('consultas.cursosefisico')->middleware('can:consultas.cursosefisico');
     Route::post('/consultas/cursosefisico/xls', 'Consultas\cursosefisicoController@xls')->name('consultas.cursosefisico.xls');
- 
+
     /*CURSOS INSTRUCTORES DISPONIBLES*/
     Route::get('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->name('consultas.instructores.disponibles')->middleware('can:consultas.instructores.disponibles');
-    Route::post('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->name('consultas.instructores.disponibles')->middleware('can:consultas.instructores.disponibles');   
-    
+    Route::post('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->name('consultas.instructores.disponibles')->middleware('can:consultas.instructores.disponibles');
+
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/
     Route::get('/preinscripcion/grupo', 'Preinscripcion\grupoController@index')->name('preinscripcion.grupo')->middleware('can:preinscripcion.grupo');
     Route::get('/preinscripcion/grupo/cmbcursos', 'Preinscripcion\grupoController@cmbcursos')->name('preinscripcion.grupo.cmbcursos');
@@ -610,7 +610,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/organismo/municipio','organismosController@muni');
 
 
-    //paqueterias didacticas 
+    //paqueterias didacticas
     Route::get('paqueterias/{idCurso}', 'webController\PaqueteriaDidacticaController@index')->name('paqueteriasDidacticas')->middleware('can:paqueteriasdidacticas');
     Route::post('paqueterias/guardar/{idCurso}', 'webController\PaqueteriaDidacticaController@store')->name('paqueteriasGuardar')->middleware('can:paqueteriasdidacticas');
     Route::get('especialidadBuscador/', 'webController\PaqueteriaDidacticaController@buscadorEspecialidades')->name('BuscadorEspecialidades')->middleware('can:paqueteriasdidacticas');
