@@ -318,7 +318,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');
     Route::get('/instructor/crear', 'webController\InstructorController@crear_instructor')->name('instructor-crear');
     Route::post('/instructor/guardar', 'webController\InstructorController@guardar_instructor')->name('instructor-guardar');
-    Route::get('/instructor/ver/{id}', 'webController\InstructorController@ver_instructor')->name('instructor-ver');
+    Route::get('/instructor/ver/{id}', 'webController\InstructorController@ver_instructor')->name('instructor-ver')->middleware('can:instructor.index');
     Route::get('/instructor/add/perfil-profesional/{id}', 'webController\InstructorController@add_perfil')->name('instructor-perfil');
     Route::get('/instructor/add/curso-impartir/{id}','webController\InstructorController@add_cursoimpartir')->name('instructor-curso');
     Route::post('/perfilinstructor/guardar', 'webController\InstructorController@perfilinstructor_save')->name('perfilinstructor-guardar');
@@ -338,7 +338,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/supre/solicitud/mod-save',"webController\supreController@solicitud_mod_guardar")->name('supre-mod-save');
 
     // Validar Cursos
-    Route::get('/cursos_validados/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos_validados.index')->middleware('can:show.cursos.validados');;
+    Route::get('/cursos_validados/inicio', 'webController\CursoValidadoController@cv_inicio')->name('cursos_validados.index')->middleware('can:show.cursos.validados');
     Route::post('/cursos/fill1', 'webController\CursoValidadoController@fill1');
     Route::post("/cursos/guardar","webController\CursoValidadoController@cv-guardar")->name('addcv');
 

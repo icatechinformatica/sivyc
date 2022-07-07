@@ -178,7 +178,9 @@
                         @can('cursos.index')
                              <a class="dropdown-item" href="{{route('curso-inicio')}}">Cursos</a>
                         @endcan
-                        <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
+                        @can('instructor.index')
+                            <a class="dropdown-item" href="{{route('instructor-inicio')}}">Instructor</a>
+                        @endcan
                         @can('organismo.inicio')
                         <a class="dropdown-item" href="{{route('organismos.index')}}">Organismos Publicos</a>
                         @endcan
