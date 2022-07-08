@@ -113,6 +113,22 @@
                     
         }
     }
+
+    function validarRemplazo(input) {
+        if( !$('#cerss_ok').prop('checked') ){                        
+            var curp = input.value.toUpperCase(),
+            resultado = document.getElementById("resultado1"),valido = "No válido";
+                        
+            if (curpValida(curp)) {
+                valido = "Válido";
+                resultado.classList.add("ok");
+            } else {
+                resultado.classList.remove("ok");
+            }
+            resultado.innerText = "  Formato: " + valido;
+                    
+        }
+    }
                 
     function curpValida(curp) {                    
         var re = /^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0\d|1[0-2])(?:[0-2]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/,

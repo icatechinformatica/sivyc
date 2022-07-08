@@ -153,10 +153,8 @@
                 <br />   
                              
             </form>
-        </div>    
-              
-    </div>
-
+        </div> 
+    </div>   
     @section('script_content_js') 
         <script src="{{asset('js/preinscripcion/grupo.js')}}"></script>        
         <script src="{{asset('js/preinscripcion/tableAlumnos.js')}}"></script>        	
@@ -166,7 +164,8 @@
                 $("#nuevo").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.nuevo')}}"); $('#frm').submit(); });
                 $("#update").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.update')}}"); $('#frm').submit(); });
                 $("#turnar").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.turnar')}}"); $('#frm').submit(); });
-                $("#comprobante").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.comprobante')}}"); $('#frm').submit(); }); 
+                $("#comprobante").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.comprobante')}}"); $('#frm').submit(); });
+                $("#btnremplazo").click(function(){if (confirm("Est\u00E1 seguro de ejecutar la acci\u00F3n?")==true) {$('#frm').attr('action', "{{route('preinscripcion.grupo.remplazar')}}"); $('#frm').submit();}}); 
 
             });
         </script>

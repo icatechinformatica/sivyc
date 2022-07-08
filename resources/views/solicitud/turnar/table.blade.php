@@ -63,7 +63,7 @@
                         $activar = false;
                         $rojo = true; 
                         $aviso = "GRUPO TURNADO A VINCULACIOÓN"; 
-                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion == null)) { 
+                    }elseif($g->tipo!='PINS' AND $g->mod=='CAE' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0')) { 
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 

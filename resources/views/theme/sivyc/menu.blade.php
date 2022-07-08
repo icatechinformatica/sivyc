@@ -66,8 +66,12 @@
                                 <a class="dropdown-item" href="{{route('solicitud.apertura.modificar')}}">Modificaci&oacute;n Apertura ARC02</a>
                                 <a class="dropdown-item" href="{{route('solicitud.apertura.turnar')}}">Turnar Solicitud ARC</a>
                             @endcan
-                            @can('supre.index')
-                                <a class="dropdown-item" href="{{route('supre-inicio')}}">Suficiencia Presupuestal</a>
+                            @can('solicitud.exoneracion')
+                                <a class="dropdown-item" href="{{ route('solicitud.exoneracion')}}">Exoneración y/o Reducción de Cuotas</a>
+                                <a class="dropdown-item" href="{{ route('solicitud.exoneracion.search')}}">Buscar Exoneración</a> 
+                            @endcan
+                            @can('supre.index')                    
+                                <a class="dropdown-item" href="{{route('supre-inicio')}}">Suficiencia Presupuestal</a>                    
                             @endcan
                             @can('contratos.index')
                                 <a class="dropdown-item" href="{{route('contrato-inicio')}}">Contratos</a>
@@ -157,6 +161,10 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitudes.aperturas')
                                 <a class="dropdown-item" href="{{route('solicitudes.aperturas')}}">Aperturas ARC01 y ARC02</a>
+                            @endcan
+                            @can('solicitudes.exoneracion')
+                                <a class="dropdown-item" href="{{route('solicitudes.exoneracion')}}">Exoneración y/o Reducción de Cuotas</a>
+                                <a class="dropdown-item" href="{{ route('solicitudes.exoneracion.search')}}">Buscar Exoneración</a>
                             @endcan
                             @can('solicitudes.folios')
                                 <a class="dropdown-item" href="{{route('solicitudes.folios')}}">Lote de Folios</a>

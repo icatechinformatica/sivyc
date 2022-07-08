@@ -59,3 +59,9 @@ function fileValidationpdf() {
         }
     }
 }
+
+function rem(id){
+    var id = id;
+    $('#curpo').val(id);
+    $('#exampleModal').modal('show')
+}
