@@ -268,16 +268,9 @@ class PaqueteriaDidacticaController extends Controller
         foreach($contenidos as $manual){
            $manual->contenidoExtra = str_replace($replace, '', $manual->contenidoExtra);
         }
-        
-        
-    
-        // dd($carta_descriptiva);
-        
-        
 
         $curso = curso::toBase()->where('id', $idCurso)->first();
-
-        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueteriasDidacticas','contenidos'));
+        $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueteriasDidacticas','contenidos', 'carta_descriptiva'));
         return $pdf->stream('manualDidactico');
     }
 
