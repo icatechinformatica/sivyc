@@ -183,15 +183,19 @@ class aperturaController extends Controller
    public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
-            $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
-            $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
-            $curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dia'=>null,'fecha_arc01'=>null,
-                                                                                                'id_instructor'=>0]);
-            //$_SESSION['folio'] = null;
-           // unset($_SESSION['folio']);
-           if($result){
-                $message = "El grupo fué turnado correctamente a VINCULACIÓN";
-                unset($_SESSION['folio']);
+            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', null)->where('status','!=','CANCELADO')->exists()) {
+                $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
+            } else {
+                $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
+                $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
+                $curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dia'=>null,'fecha_arc01'=>null,
+                                                                                                    'id_instructor'=>0]);
+                //$_SESSION['folio'] = null;
+                // unset($_SESSION['folio']);
+                if($result){
+                    $message = "El grupo fué turnado correctamente a VINCULACIÓN";
+                    unset($_SESSION['folio']);
+                }
             }
         }
         return redirect('solicitud/apertura')->with('message',$message);
