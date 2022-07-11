@@ -159,7 +159,7 @@
         <hr style="border-color:dimgray">
         <label><h2>Vista de Documentos</h2></label>
         <div class="form-row">
-            @if ($cursos[0]->documento_memo_validacion) 
+            @if ($cursos[0]->documento_memo_validacion)
             <a class="btn btn-warning" href="{{$cursos[0]->documento_memo_validacion}}" target="_blank">
                 MEMORÁNDUM VALIDACIÓN
             </a>
@@ -459,7 +459,7 @@
                 </div>
                 <div class="pull-right">
                     @can('cursos.update')
-                        <button type="submit" class="btn btn-primary" >Actualizar</button>
+                        <button type="submit" class="btn btn-primary" >Guardar Cambios</button>
                     @endcan
                 </div>
             </div>
