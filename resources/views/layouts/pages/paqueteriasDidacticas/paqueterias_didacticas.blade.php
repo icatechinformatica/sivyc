@@ -40,20 +40,20 @@
             <li class="nav-item">
                 <a class="nav-link" id="pills-evalalum-tab" data-toggle="pill" href="#pills-evalalum" role="tab" aria-controls="pills-evalalum" aria-selected="false">Evaluacion Alumno</a>
             </li>
-            
+
             <li class="nav-item">
                 <a class="nav-link " id="pills-paqdid-tab" data-toggle="pill" href="#pills-paqdid" role="tab" aria-controls="pills-paqdid" aria-selected="false">Paqueterias Didacticas</a>
             </li>
         </ul>
         @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
+        <div class="alert alert-success">
+            <p>{{ $message }}</p>
+        </div>
         @endif
         @if ($message = Session::get('warning'))
-            <div class="alert alert-warning">
-                <p>{{ $message }}</p>
-            </div>
+        <div class="alert alert-warning">
+            <p>{{ $message }}</p>
+        </div>
         @endif
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-tecnico" role="tabpanel" aria-labelledby="pills-tecnico-tab">
@@ -73,8 +73,6 @@
 
 @section('script_content_js')
 <script src="{{asset('vendor/ckeditor5-decoupled-document/ckeditor.js') }}"></script>
-
-
 <script>
     //inicializacion de text areas ckeditor 5
     var editorContenidoT;
@@ -86,54 +84,57 @@
     var editorElementoA;
     var editorAuxE;
     var editorReferencias;
+
+    //Define an adapter to upload the files
     class MyUploadAdapter {
         constructor(loader) {
             // The file loader instance to use during the upload. It sounds scary but do not
             // worry — the loader will be passed into the adapter later on in this guide.
             this.loader = loader;
+
+            // URL where to send files.
+            this.url = '{{ route('ckeditorUpload') }}';
+
+            //
         }
-
-
         // Starts the upload process.
         upload() {
-            return this.loader.file
-                .then(file => new Promise((resolve, reject) => {
+            return this.loader.file.then(
+                (file) =>
+                new Promise((resolve, reject) => {
                     this._initRequest();
                     this._initListeners(resolve, reject, file);
                     this._sendRequest(file);
-                }));
+                })
+            );
         }
-
         // Aborts the upload process.
         abort() {
             if (this.xhr) {
                 this.xhr.abort();
             }
         }
-
+        // Initializes the XMLHttpRequest object using the URL passed to the constructor.
         _initRequest() {
-            const xhr = this.xhr = new XMLHttpRequest();
-            let token = document.head.querySelector('meta[name="csrf-token"]');
+            const xhr = (this.xhr = new XMLHttpRequest());
             // Note that your request may look different. It is up to you and your editor
             // integration to choose the right communication channel. This example uses
             // a POST request with JSON as a data structure but your configuration
             // could be different.
-            xhr.open('POST', '{{ route('ckeditorUpload') }}', true);
-            xhr.setRequestHeader('x-csrf-token', token.content);
-            xhr.responseType = 'json';
+            // xhr.open('POST', this.url, true);
+            xhr.open("POST", this.url, true);
+            xhr.setRequestHeader("x-csrf-token", "{{ csrf_token() }}");
+            xhr.responseType = "json";
         }
-
         // Initializes XMLHttpRequest listeners.
         _initListeners(resolve, reject, file) {
             const xhr = this.xhr;
             const loader = this.loader;
             const genericErrorText = `Couldn't upload file: ${file.name}.`;
-
-            xhr.addEventListener('error', () => reject(genericErrorText));
-            xhr.addEventListener('abort', () => reject());
-            xhr.addEventListener('load', () => {
+            xhr.addEventListener("error", () => reject(genericErrorText));
+            xhr.addEventListener("abort", () => reject());
+            xhr.addEventListener("load", () => {
                 const response = xhr.response;
-
                 // This example assumes the XHR server's "response" object will come with
                 // an "error" which has its own "message" that can be passed to reject()
                 // in the upload promise.
@@ -143,21 +144,19 @@
                 if (!response || response.error) {
                     return reject(response && response.error ? response.error.message : genericErrorText);
                 }
-
                 // If the upload is successful, resolve the upload promise with an object containing
                 // at least the "default" URL, pointing to the image on the server.
                 // This URL will be used to display the image in the content. Learn more in the
                 // UploadAdapter#upload documentation.
                 resolve({
-                    default: response.url
+                    default: response.url,
                 });
             });
-
             // Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
             // properties which are used e.g. to display the upload progress bar in the editor
             // user interface.
             if (xhr.upload) {
-                xhr.upload.addEventListener('progress', evt => {
+                xhr.upload.addEventListener("progress", (evt) => {
                     if (evt.lengthComputable) {
                         loader.uploadTotal = evt.total;
                         loader.uploaded = evt.loaded;
@@ -165,25 +164,28 @@
                 });
             }
         }
-
         // Prepares the data and sends the request.
         _sendRequest(file) {
             // Prepare the form data.
             const data = new FormData();
-
-            data.append('upload', file);
-
+            data.append("upload", file);
             // Important note: This is the right place to implement security mechanisms
             // like authentication and CSRF protection. For instance, you can use
             // XMLHttpRequest.setRequestHeader() to set the request headers containing
             // the CSRF token generated earlier by your application.
-
             // Send the request.
             this.xhr.send(data);
         }
-
-
+        // ...
     }
+
+    function SimpleUploadAdapterPlugin(editor) {
+        editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+            // Configure the URL to the upload script in your back-end here!
+            return new MyUploadAdapter(loader);
+        };
+    }
+
 
     function SimpleUploadAdapterPlugin(editor) {
         editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
@@ -279,10 +281,10 @@
             $('#creacion').submit();
         });
         $("#botonMANUALDIDPDF").click(function() {
-            // $('#creacion').attr('action', "{{route('DescargarManualDidactico',$idCurso)}}");
-            // $('#creacion').submit();
-            $('#alert-files').css('display', 'block');
-            $('#files-msg').text("La generacion de este archivo estara disponible pronto!");
+            $('#creacion').attr('action', "{{route('DescargarManualDidactico',$idCurso)}}");
+            $('#creacion').submit();
+            // $('#alert-files').css('display', 'block');
+            // $('#files-msg').text("La generacion de este archivo estara disponible pronto!");
         });
 
 
@@ -293,8 +295,7 @@
 <script defer>
     // $('#preguntas-area-parent .card-paq').remove()
     var evaluacion = Object.values(JSON.parse({!!json_encode($evaluacionAlumno, JSON_HEX_TAG) !!}));
-    //   console.log(values.length)
-    
+    //   console.log(values.length
 </script>
 @endsection
 @endsection

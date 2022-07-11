@@ -52,6 +52,7 @@
         .tip-title{font-size:4.5vw; margin-bottom:5%;}
         .title-subheader{ font-size:2vw;}
 
+        .page_break { page-break-before: always; }
         
     </style>
 </head>
@@ -83,11 +84,15 @@
 
 
             <div class="portada">
-                <img src="img/paqueterias/portada_man_didactico.png" alt="" class="">
+                <img src="/paqueterias/image.png" alt="" class="">
             </div>
-           
+            <div class="page_break"></div>
+            @foreach($contenidos as $manual)
+            <?php echo htmlspecialchars_decode(stripslashes($manual->contenidoExtra)); ?>
+            @endforeach
         </div>
     </div>
+
 
 
    
