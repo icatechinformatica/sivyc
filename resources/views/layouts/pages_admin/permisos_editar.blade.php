@@ -75,7 +75,6 @@
                 rules: {
                     permisoNameEdit: {
                         required: true,
-                        email: true
                     },
                     permisoSlugEdit: {
                         required: true,
