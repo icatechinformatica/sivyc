@@ -291,6 +291,9 @@
                         @can('consultas.instructores.disponibles')
                             <a class="dropdown-item" href="{{route('consultas.instructores.disponibles')}}">Instructores Disponibles</a>
                         @endcan
+                        @can('consultas.poa')
+                            <a class="dropdown-item" href="{{route('consultas.poa')}}">POA&Autorizados</a>
+                        @endcan
                     </div>
                 </li>
 

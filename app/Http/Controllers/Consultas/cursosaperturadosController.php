@@ -71,7 +71,7 @@ class cursosaperturadosController extends Controller
         //var_dump($data);exit;
         return view('consultas.cursosaperturados', compact('message','unidades','data','unidad', 'fecha1', 'fecha2','opcion', 'valor'));
     }
-
+    
     public function xls(Request $request){
         $unidad = $request->unidad;
         $fecha1 = $request->fecha1;

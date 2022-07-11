@@ -541,6 +541,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->name('consultas.instructores.disponibles')->middleware('can:consultas.instructores.disponibles');
     Route::post('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->name('consultas.instructores.disponibles')->middleware('can:consultas.instructores.disponibles');
 
+    /*POA & AUTORIZADO*/
+    Route::get('/consultas/poa/index', 'Consultas\poaController@index')->name('consultas.poa')->middleware('can:consultas.poa');
+    Route::post('/consultas/poa/index', 'Consultas\poaController@index')->name('consultas.poa')->middleware('can:consultas.poa');
+    Route::post('/consultas/poa/xls', 'Consultas\poaController@xls')->name('consultas.poa.xls');
+    Route::get('/consultas/poa/xls', 'Consultas\poaController@xls')->name('consultas.poa.xls');
+
+
+
     /*VINCULACION->PREINSCRIPCION=> NUEVO GRUPO RPN*/
     Route::get('/preinscripcion/grupo', 'Preinscripcion\grupoController@index')->name('preinscripcion.grupo')->middleware('can:preinscripcion.grupo');
     Route::get('/preinscripcion/grupo/cmbcursos', 'Preinscripcion\grupoController@cmbcursos')->name('preinscripcion.grupo.cmbcursos');
