@@ -281,10 +281,10 @@
             $('#creacion').submit();
         });
         $("#botonMANUALDIDPDF").click(function() {
-            $('#creacion').attr('action', "{{route('DescargarManualDidactico',$idCurso)}}");
-            $('#creacion').submit();
-            // $('#alert-files').css('display', 'block');
-            // $('#files-msg').text("La generacion de este archivo estara disponible pronto!");
+            // $('#creacion').attr('action', "{{route('DescargarManualDidactico',$idCurso)}}");
+            // $('#creacion').submit();
+            $('#alert-files').css('display', 'block');
+            $('#files-msg').text("La generacion de este archivo estara disponible pronto!");
         });
 
 
