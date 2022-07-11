@@ -183,7 +183,7 @@ class aperturaController extends Controller
    public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
-            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', null)->where('status','!=','CANCELADO')->exists()) {
+            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio'])->where('status','!=', null)->where('status','!=','CANCELADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
             } else {
                 $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
