@@ -13,7 +13,6 @@
         $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = "";       
         if($curso){
             $id_curso = $curso->id;
-            $tipo = $curso->tipo_curso;
             $id_cerss = $alumnos[0]->id_cerss;
         }
         if($alumnos){ 
@@ -30,7 +29,8 @@
             $folio = $alumnos[0]->folio_grupo;
             $turnado = $alumnos[0]->turnado;   
             $id_vulnerable = $alumnos[0]->id_vulnerable;  
-            $modalidad = $alumnos[0]->mod;                  
+            $modalidad = $alumnos[0]->mod; 
+            $tipo = $alumnos[0]->tipo_curso;                 
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
