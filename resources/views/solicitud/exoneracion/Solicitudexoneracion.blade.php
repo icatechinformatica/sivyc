@@ -93,10 +93,10 @@
         <div class="container">
             <table style="border-collapse: collapse;">
                 <tr>
-                    <td><b>{{$reg_unidad->dgeneral}}.</b></td>
+                    <td><b>Mtra. Ana Ivette Camacho Prado.</b></td>
                 </tr>
                 <tr>
-                    <td><b>Director(a) General del ICATECH.</b></td>
+                    <td><b>Representante legal del ICATECH.</b></td>
                 </tr>
                 <tr>
                     <td><b>Presente.</b></td>
@@ -228,12 +228,12 @@
                     </td>
                     <td style="padding: 0px;">
                         <div style="border: black 1px solid;">
-                            <b>Con fundamento en el artículo 14</b><br>
-                            <b>Fracción I, del Reglamento Interior</b><br>
+                            <b>Con fundamento en el artículo 13</b><br>
+                            <b>Fracciones XIII y XXI, del Reglamento Interno</b><br>
                             <b>Autoriza</b><br><br>
                             ________________________________________________ <br>
-                            <b>{{$reg_unidad->dgeneral}}</b> <br>
-                            Director(a) General del ICATECH
+                            <b>Mtra. Ana Ivette Camacho Prado</b> <br>
+                            Representante Legal del ICATECH
                         </div>
                         <div style="border: black 1px solid;">
                             <b>Vo.Bo.</b><br><br>

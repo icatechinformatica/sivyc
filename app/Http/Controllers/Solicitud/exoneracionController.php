@@ -92,6 +92,9 @@ class ExoneracionController extends Controller
                 if (($curso->tipo != 'EXO') AND (count(DB::table('alumnos_registro')->where('folio_grupo',$curso->folio_grupo)->where('tinscripcion','=','EXONERACION')->get())>0)) {
                     return redirect()->route('solicitud.exoneracion')->with(['message' => 'EL GRUPO NO DEBE TENER EXONERADOS PARA SOLICITUD DE REDUCIÓN DE CUOTA..']);
                 }
+                if (DB::table('exoneraciones')->where('folio_grupo',$curso->folio_grupo)->where(function($query) { $query->where('status','!=','CANCELADO')->orWhere('status', null); })->exists()) {
+                    return redirect()->route('solicitud.exoneracion')->with(['message' => 'EL GRUPO SE ENCUENTRA EN USO..']);
+                }
                 if (($curso->dura == $curso->horas_agenda)) {
                     $organismo = null;
                     if ($_SESSION['revision']) {
