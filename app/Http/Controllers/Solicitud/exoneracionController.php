@@ -293,7 +293,8 @@ class ExoneracionController extends Controller
                                     ->first(); //dd($reg_unidad);
                 $depen = $cursos[0]->depen;
                 $date = $cursos[0]->fecha_memorandum;
-                $mexoneracion = $cursos[0]->no_memorandum;
+                if($cursos[0]->no_memorandum)$mexoneracion = $cursos[0]->no_memorandum;
+                else $mexoneracion = $cursos[0]->nrevision;
                 foreach ($cursos as $key => $value) {
                     $alumnos = DB::table('alumnos_registro as ar')
                                     ->select('ap.apellido_paterno','ap.apellido_materno','ap.nombre','ap.sexo','ar.costo',DB::raw("CONCAT(ap.apellido_paterno,' ', ap.apellido_materno,' ',ap.nombre) as alumno"),

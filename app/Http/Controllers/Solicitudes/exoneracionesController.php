@@ -198,7 +198,7 @@ class exoneracionesController extends Controller
                             ->select('tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura',
                                     DB::raw("to_char(DATE (tc.inicio)::date, 'DD-MM-YYYY') as inicio"),
                                     DB::raw("to_char(DATE (tc.termino)::date, 'DD-MM-YYYY') as termino"),
-                                    'tc.mujer','tc.hombre','e.fini','e.ffin',
+                                    'tc.mujer','tc.hombre','e.fini','e.ffin','e.nrevision',
                                     'tc.nombre as instructor','e.tipo_exoneracion','e.no_convenio','e.noficio',DB::raw("to_char(DATE (e.foficio)::date, 'DD-MM-YYYY') as foficio"),
                                     'e.razon_exoneracion','e.observaciones',
                                     'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia',
@@ -210,14 +210,15 @@ class exoneracionesController extends Controller
                             ->groupBy('tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','tc.mujer','tc.hombre','e.fini','e.ffin',
                             'tc.nombre','e.tipo_exoneracion','e.no_convenio','e.noficio','e.foficio','e.razon_exoneracion','e.observaciones',
                             'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia','tc.folio_grupo',
-                            'e.no_memorandum','e.fecha_memorandum')
+                            'e.no_memorandum','e.fecha_memorandum','e.nrevision')
                             ->get();    //dd($cursos);
             $reg_unidad = DB::table('tbl_unidades')->select('ubicacion','dgeneral','dunidad','academico','vinculacion','dacademico','pdgeneral','pdacademico',
                                 'pdunidad','pacademico','pvinculacion','municipio')
                                 ->where('id',$cursos[0]->id_unidad_capacitacion)
                                 ->first(); //dd($reg_unidad);
             $depen = $cursos[0]->depen; //ucwords(strtolower($cursos[0]->depen));
-            $date = $cursos[0]->fecha_memorandum;
+            if($cursos[0]->no_memorandum)$mexoneracion = $cursos[0]->no_memorandum;
+            else $mexoneracion = $cursos[0]->nrevision;
             foreach ($cursos as $key => $value) {
                 $alumnos = DB::table('alumnos_registro as ar')
                                 ->select('ap.apellido_paterno','ap.apellido_materno','ap.nombre','ap.sexo','ar.costo',
