@@ -57,8 +57,8 @@ class poaController extends Controller
                     )
                     ->join('tbl_inscripcion as ti','ti.id_curso','tc.id')                    
                     ->where('tc.proceso_terminado',true)->where('tc.status_curso','AUTORIZADO')
-                    ->where('tc.fecha_apertura','>=',$fecha1)
-                    ->where('tc.fecha_apertura','<=',$fecha2)
+                    ->where('tc.fecha_turnado','>=',$fecha1)
+                    ->where('tc.fecha_turnado','<=',$fecha2)
                     ->groupby('tc.unidad','ti.costo')
                     ->orderby('ti.costo','ASC')->orderby(DB::raw('count(distinct(tc.id))'),'DESC')->orderby('tc.unidad','ASC')
                     ->get();                    

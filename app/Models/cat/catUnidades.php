@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\cat;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -33,7 +32,6 @@ trait catUnidades
         $data ['unidades'] = $unidades;
         $data ['slug'] = $rol;
         return $data;
-
     }
 
     protected function unidad_user(){
@@ -62,8 +60,5 @@ trait catUnidades
         $data ['unidades'] = $unidades;
         $data ['slug'] = $rol;
         return $data;
-
     }
-
-
 }
