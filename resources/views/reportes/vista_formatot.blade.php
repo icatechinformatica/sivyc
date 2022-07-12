@@ -157,7 +157,7 @@
                                 <thead class="thead-dark">
                                     <tr align="center">
                                         {{-- <th scope="col" colspan="59">GENERAL</th> --}}
-                                        <th scope="col" colspan="32" style="background-color: #621032;">FEDERAL</th>
+                                        <th scope="col" colspan="33" style="background-color: #621032;">FEDERAL</th>
                                         <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
                                         <th scope="col" colspan="32" style="background-color: #621032;">FEDERAL</th>
                                         <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
@@ -202,6 +202,7 @@
                                         <th scope="col">DESERCIÓN</th>
                                         <th scope="col">C TOTAL CURSO PERSONA</th>
                                         <th scope="col">INGRESO TOTAL</th>
+                                        <th scope="col">CUOTA MIXTA</th>
                                         <th scope="col">EXONERACION MUJER</th>
                                         <th scope="col">EXONERACION HOMBRE</th>
                                         <th scope="col">REDUCCION CUOTA MUJER</th>
@@ -564,6 +565,7 @@
                                             <td>{{ $datas->desertado }}</td>
                                             <td>{{ $datas->costo }}</td>
                                             <td>{{ $datas->ctotal }}</td>
+                                            <td>{{ $datas->cuotamixta}}</td>
                                             <td>{{ $datas->etmujer }}</td>
                                             <td>{{ $datas->ethombre }}</td>
                                             <td>{{ $datas->epmujer }}</td>

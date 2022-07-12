@@ -38,8 +38,9 @@ function dataFormatoT($unidad, $status, $fecha) {
             DB::raw("SUM(CASE WHEN ins.calificacion <> 'NP' and ins.sexo='H' THEN 1 ELSE 0 END) as ehombre"),
 
             DB::raw("SUM(CASE WHEN ins.calificacion = 'NP' THEN 1 ELSE 0 END) as desertado"),
-            DB::raw("SUM(DISTINCT(ins.costo)) as costo"),
+            DB::raw("ROUND(SUM(ins.costo) / COUNT(distinct(ins.id)), 2) as costo"),
             DB::raw("SUM(ins.costo) as ctotal"),
+            DB::raw("CASE WHEN COUNT(distinct(ins.costo)) = 1 THEN 'NO' ELSE 'SI' END AS cuotamixta"),
 
             // SUMA DE HOMBRES Y MUJERES CON EXONERACION TOTAL SIN RESTAR EL GENERO LGBTTTI+ ---
             DB::raw("sum(case when ins.abrinscri='ET' and ins.sexo='M' then 1 else 0 end) as etmujer"),
@@ -472,8 +473,9 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("SUM(CASE WHEN ins.calificacion <> 'NP' and ins.sexo='H' THEN 1 ELSE 0 END) as ehombre"),
 
             DB::raw("SUM(CASE WHEN ins.calificacion = 'NP' THEN 1 ELSE 0 END) as desertado"),
-            DB::raw("SUM(DISTINCT(ins.costo)) as costo"),
+            DB::raw("ROUND(SUM(ins.costo) / COUNT(distinct(ins.id)), 2) as costo"),
             DB::raw("SUM(ins.costo) as ctotal"),
+            DB::raw("CASE WHEN COUNT(distinct(ins.costo)) = 1 THEN 'NO' ELSE 'SI' END AS cuotamixta"),
 
             // --- SUMA DE EXONERACION TOTAL SIN RESTAR LGBT ---
             DB::raw("sum(case when ins.abrinscri='ET' and ins.sexo='M' then 1 else 0 end) as etmujer"),
