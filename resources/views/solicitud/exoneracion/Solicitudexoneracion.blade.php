@@ -158,7 +158,7 @@
                         <td>{{$item->instructor}}</td>
                         <td >@if ($item->tipo_exoneracion == 'EXO') {{"X"}}  @endif</td>
                         <td >@if ($item->tipo_exoneracion == 'EPAR') {{"X"}} @endif</td>
-                        <td>{{$item->no_convenio}} <br> {{$item->noficio}} <br> {{$item->foficio}}</td>
+                        <td>@if ($item->no_convenio) {{$item->no_convenio}} @else {{$item->noficio}} <br> {{$item->foficio}} @endif</td>
                         <td>{{$item->razon_exoneracion}}</td>
                         <td>{{$item->observaciones}}</td>
                     </tr>

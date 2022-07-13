@@ -252,7 +252,7 @@
                     }
                 });
                 $("#agregar" ).click(function(){ 
-                    if ($("#grupo").val()==''||$("#opt").val()==''||$("#observaciones").val()=='') {
+                    if ($("#grupo").val()==''||$("#opt").val()==''||$("#observaciones").val()==''||$("#oficio").val()=='') {
                         alert("Todos los campos deben ser llenados!! "); 
                     }else{
                         if(confirm("¿Esta seguro de ejecutar la acción?")==true){ $('#frm').attr('action', "{{route('solicitud.exoneracion.agregar')}}"); $('#frm').attr('target', '_self').submit();}
