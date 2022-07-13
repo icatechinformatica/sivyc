@@ -199,6 +199,8 @@ Route::middleware(['auth'])->group(function () {
      */
     //Route::get('/alumnos/indice', 'webController\AlumnoController@index')
         //   ->name('alumnos.index')->middleware('can:alumnos.index');
+    Route::post('/alumnos/exoneracion/permiso','webController\AlumnoController@activarPermiso')->name('activar.permiso.exo');
+    Route::get('/alumnos/exoneracion/permiso/desactivar','webController\AlumnoController@quitarPermiso')->name('quitar.permiso.exo');
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')
         ->name('alumnos.index')->middleware('can:alumnos.index');
 

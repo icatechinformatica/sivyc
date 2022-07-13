@@ -50,8 +50,10 @@
                             @can('alumnos.inscritos.index')
                                 <a class="dropdown-item" href="{{ route('alumnos.inscritos') }}">Alumnos</a>
                             @endcan
-                            <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
-                            <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
+                            @can('preinscripcion.grupo.save')
+                                <a class="dropdown-item" href="{{route('preinscripcion.grupo.nuevo')}}">Nuevo Grupo</a>
+                                <a class="dropdown-item" href="{{route('preinscripcion.buscar')}}">Buscar Grupo</a>
+                            @endcan
                         </div>
                     </li>
                 @endcan
