@@ -861,6 +861,8 @@ class ContratoController extends Controller
                                                 ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
                                                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
                                                 ->FIRST();
+        $fecha_act = new Carbon('23-06-2022');
+        $fecha_fir = new Carbon($data_contrato->fecha_firma);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $date = strtotime($data_contrato->fecha_firma);
         $D = date('d', $date);
@@ -874,14 +876,14 @@ class ContratoController extends Controller
         if($data->tipo_curso == 'CURSO')
         {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.precontratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.precontratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }
         }
         else
         {
-            $pdf = PDF::loadView('layouts.pdfpages.precontratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+            $pdf = PDF::loadView('layouts.pdfpages.precontratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
         }
 
         return $pdf->stream("Precontrato-Instructor-$data_contrato->numero_contrato.pdf");
@@ -889,7 +891,6 @@ class ContratoController extends Controller
 
     public function contrato_pdf($id)
     {
-
         $contrato = new contratos();
 
         $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
@@ -914,6 +915,9 @@ class ContratoController extends Controller
                                                 ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
                                                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
                                                 ->FIRST();
+
+        $fecha_act = new Carbon('23-06-2022');
+        $fecha_fir = new Carbon($data_contrato->fecha_firma);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $date = strtotime($data_contrato->fecha_firma);
         $D = date('d', $date);
@@ -926,14 +930,14 @@ class ContratoController extends Controller
         if($data->tipo_curso == 'CURSO')
         {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }
         }
         else
         {
-            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
         }
 
         $pdf->setPaper('LETTER', 'Portrait');
