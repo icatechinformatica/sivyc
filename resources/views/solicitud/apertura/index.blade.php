@@ -150,7 +150,7 @@
                 </div>                        
                 <div class="form-group col-md-3">
                      <label>No. Memor&aacute;dum de Exoneraci&oacute;n:</label>
-                     {{ Form::select('mexoneracion', $exoneracion, $grupo->mexoneracion, ['id'=>'mexoneracion','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                     <input name='mexoneracion' id='mexoneracion' type="text" class="form-control" aria-required="true" value="{{$grupo->mexoneracion}}" readonly/>
                 </div>  
                 <div class="form-group col-md-3">
                     <label>Domicilio, Lugar o Espacio F&iacute;sico:</label>
