@@ -57,7 +57,7 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
-        
+
         <div class="row">
             <div class="col-lg-8 margin-tb">
                 <div>
@@ -73,7 +73,7 @@
                         <option value="">--SELECCIONAR MES--</option>
                         @foreach ($meses as $mun => $month)
                             <option value="{{ $month }}">{{ $month }}</option>
-                        @endforeach 
+                        @endforeach
                     </select>
                 </div>
                 <div class="form-group col-md-4">
@@ -82,10 +82,10 @@
                 <div class="form-group col-md-4">
                     {!! Form::submit( 'FILTRAR', ['id'=>'formatot', 'class' => 'btn btn-outline-info my-2 my-sm-0 waves-effect waves-light', 'name' => 'submitbutton'])!!}
                 </div>
-                
+
             </div>
         {!! Form::close() !!}
-            
+
         <hr style="border-color:dimgray">
         @if (count($cursos_reportados) > 0)
             <form id="dtaformGetDocument" method="POST" action="{{ route('formatot.send.dta') }}" target="_blank">
@@ -93,13 +93,13 @@
                 <div class="form-row">
                     <div class="form-group col-md-8 mb-2">
                         <input type="text" name="filterClaveCurso" id="filterClaveCurso" class="form-control" placeholder="BUSQUEDA POR CLAVE DE CURSO">
-                    </div> 
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="table-responsive container-fluid mt-2">
                         <div class="col-sm-12">
                             <table  id="table-instructor" class="table" style='width: 100%; margin-left: -1.8em;'>
-                                <caption>CURSOS REPORTADOS POR LA UNIDAD {{ $unidad }}</caption>         
+                                <caption>CURSOS REPORTADOS POR LA UNIDAD {{ $unidad }}</caption>
                                 <thead class="thead-dark">
                                     <tr align="center">
                                         <th scope="col">MES REPORTADO</th>
@@ -223,7 +223,7 @@
                                         <th scope="col">DESC ESCOL H8</th>
                                         <th scope="col">DESC ESCOL M9</th>
                                         <th scope="col">DESC ESCOL H9</th>
-                                        <th scope="col" WIDTH="500">OBSERVACIONES</th>                                
+                                        <th scope="col" WIDTH="500">OBSERVACIONES</th>
                                     </tr>
                                 </thead>
                                 <tbody style="height: 300px; overflow-y: auto">
@@ -350,15 +350,15 @@
                                             <td>{{ $datas->naesh8 }}</td>
                                             <td>{{ $datas->naesm9 }}</td>
                                             <td>{{ $datas->naesh9 }}</td>
-                                            <td><div style = "width:800px; word-wrap: break-word">{{ $datas->tnota }}</div></td>           
+                                            <td><div style = "width:800px; word-wrap: break-word">{{ $datas->tnota }}</div></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>   
+                        </div>
                     </div>
                 </div>
-            </form>  
+            </form>
         @else
             <h2><b>NO HAY REGISTROS PARA MOSTRAR</b></h2>
         @endif
@@ -368,7 +368,7 @@
     <!-- ESTO MOSTRARÁ EL SPINNER -->
     <div hidden id="spinner"></div>
     <!--MODAL ENDS-->
-    
+
 @endsection
 @section('script_content_js')
 <script src="{{ asset('js/scripts/datepicker-es.js') }}"></script>
@@ -383,7 +383,7 @@
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
-        
+
     });
 </script>
 @endsection
