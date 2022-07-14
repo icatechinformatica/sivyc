@@ -379,7 +379,7 @@ function dataFormatoT($unidad, $status, $fecha) {
         )
         ->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
-        ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
+        ->JOIN('tbl_municipios as m', 'm.id', '=', 'c.id_municipio')
         ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')
         ->WHERE('u.ubicacion', '=', $unidad)
         ->WHEREIN('c.status', $status)
@@ -391,7 +391,7 @@ function dataFormatoT($unidad, $status, $fecha) {
         // ->orwhere('c.arc', '=', '2')
         // ->where('c.status_solicitud_arc02', '=', 'VALIDADO')
         // ->WHERE('c.file_arc02', '!=', null)
-        // ->WHERE('u.ubicacion', '=', $unidad)
+        // ->WHERE('u.ubicacion', '=',  $unidad)
         // ->WHEREIN('c.status', $status)
         // ->WHERE('c.status_curso', '=', 'AUTORIZADO')
         // ->where('ins.status', '=', 'INSCRITO')
@@ -831,7 +831,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
         })*/
         // ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
-        ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
+        ->JOIN('tbl_municipios as m', 'm.id', '=', 'c.id_municipio')
         ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')
         ->whereMonth('c.fecha_turnado', $mesSearch) // new
         ->WHERE('c.status', '=', $status) // new
