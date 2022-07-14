@@ -60,13 +60,13 @@ class aperturasController extends Controller
         $path = $this->path_files;
         if($memo){            
             $grupos = DB::table('tbl_cursos as tc')->select('convenios.fecha_vigencia','tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud', 
-                'ar.comprobante_pago','e.memo_soporte_dependencia as soporte_exo')
+                'ar.comprobante_pago','e.memo_soporte_dependencia as soporte_exo','e.nrevision as rev_exo')
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftjoin('convenios','convenios.no_convenio','=','tc.cgeneral')
                 ->leftJoin('exoneraciones as e','tc.mexoneracion','=','e.no_memorandum');
                if($opt == 'ARC01') $grupos = $grupos->where('tc.munidad',$memo);
                else $grupos = $grupos->where('tc.nmunidad',$memo);
-               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago','convenios.fecha_vigencia','e.memo_soporte_dependencia')->get();       
+               $grupos = $grupos->groupby('tc.id','ar.turnado', 'ar.comprobante_pago','convenios.fecha_vigencia','e.memo_soporte_dependencia','e.nrevision')->get();      
                
             if(count($grupos)>0){
                 $_SESSION['grupos'] = $grupos;

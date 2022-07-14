@@ -92,7 +92,8 @@
                                     <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
                                 </a>
                                 @if ($g->mod=='CAE' AND $g->tipo!='PINS' AND $g->soporte_exo)
-                                    <a href="{{$path.$g->soporte_exo}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF EXONERACION">
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF EXONERACION"
+                                        @if ($g->rev_exo) href="{{$path.$g->soporte_exo}}" @else href="{{$g->soporte_exo}}" @endif>
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 @endif
