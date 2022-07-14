@@ -309,10 +309,10 @@ class grupoController extends Controller
                             $message = "Alumno excede el limite de cursos " . $curp . ".";
                             return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
                         }
-                        if ($pago > $costo_individual) {
-                            $message = "El monto del alumno excede el costo del curso " . $curp . ".";
-                            return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
-                        }
+                        // if ($pago > $costo_individual) {
+                        //     $message = "El monto del alumno excede el costo del curso " . $curp . ".";
+                        //     return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
+                        // }
                         if (!$pago) {
                             $pago = 0;
                         }

@@ -10,10 +10,11 @@
 @section('content')   
     <?php 
         $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable =
-        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = "";       
+        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = "";    $costo = null;   
         if($curso){
             $id_curso = $curso->id;
             $id_cerss = $alumnos[0]->id_cerss;
+            $costo = $curso->costo;
         }
         if($alumnos){ 
             $hfin = substr($alumnos[0]->horario, 8, 5);

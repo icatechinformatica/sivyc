@@ -1812,7 +1812,11 @@ class AlumnoController extends Controller {
                 $message = "Formato de Archivo no válido, sólo PDF.";
             }
         } else {
-            $message = "Ingrese el archivo pdf.";
+            // $message = "Ingrese el archivo pdf.";
+            $result = DB::table('alumnos_pre')->where('curp',$curp)->update(['permiso_exoneracion'=>true]);
+            if ($result) {
+                $message = "Operación exitosa!";
+            }
         }
         return redirect()->route('alumnos.index')->with('success',$message);
     }
