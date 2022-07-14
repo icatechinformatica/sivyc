@@ -9,7 +9,7 @@
       <th class="h6" scope="col" width="8%">Fec. Nac.</th>
       <th class="h6" scope="col">Escolaridad</th>
       <th scope="col" class="h6">TIPO DE INSCRIPCI&Oacute;N</th>
-      <th scope="col" class="h6 text-center">COUTA</th>
+      <th scope="col" class="h6 text-center" width="7%">COUTA</th>
       <th class="h6 text-center" scope="col"> @if($activar){{'Eliminar'}}@endif</th>                               
       <th class="h6 text-center" scope="col">SID</th>
       <th class="h6 text-center" scope="col">CURP</th>

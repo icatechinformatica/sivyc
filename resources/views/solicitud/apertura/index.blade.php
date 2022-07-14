@@ -27,7 +27,11 @@
                     $disabled = 'disabled';
                     $grupo->medio_virtual='';
                     $grupo->link_virtual='';
-                }  
+                }  else {
+                    if ($exonerado) {
+                        $disabled = 'readonly';
+                    }
+                }
             } 
             if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;            
         ?>
@@ -99,7 +103,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>INSTRUCTOR DISPONIBLE:</label>
-                    <select name="instructor" id="instructor" class="form-control mr-sm--2">
+                    <select name="instructor" id="instructor" class="form-control mr-sm--2" @if ($exonerado) style="background-color: lightGray;" @endif>
                         @if ($instructor)
                             <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
                         @else
@@ -120,8 +124,7 @@
                     {{ Form::select('plantel', $plantel, $grupo->plantel, ['id'=>'plantel','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                 </div>
             </div>
-            <div class="form-row" >                   
-               
+            <div class="form-row" >
                 <div class="form-group col-md-4">
                     <label>Programa Estrat&eacute;gico:</label>
                     {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
@@ -150,11 +153,11 @@
                 </div>                        
                 <div class="form-group col-md-3">
                      <label>No. Memor&aacute;dum de Exoneraci&oacute;n:</label>
-                     {{ Form::select('mexoneracion', $exoneracion, $grupo->mexoneracion, ['id'=>'mexoneracion','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                     <input name='mexoneracion' id='mexoneracion' type="text" class="form-control" aria-required="true" value="{{$grupo->mexoneracion}}" readonly/>
                 </div>  
                 <div class="form-group col-md-3">
                     <label>Domicilio, Lugar o Espacio F&iacute;sico:</label>
-                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}">
+                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" @if ($exonerado) readonly @endif>
                 </div>             
             </div>
             <div class="form-row" >
