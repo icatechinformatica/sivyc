@@ -93,7 +93,7 @@
         <div class="container">
             <table style="border-collapse: collapse;">
                 <tr>
-                    <td><b>{{$reg_unidad->dgeneral}}.</b></td>
+                    <td><b>MTRA. ANA IVETTE CAMACHO PRADO.</b></td>
                 </tr>
                 <tr>
                     <td><b>Representante Legal del ICATECH.</b></td>
@@ -232,7 +232,7 @@
                             <b>Fracciones XIII y XXI, del Reglamento Interno</b><br>
                             <b>Autoriza</b><br><br>
                             ________________________________________________ <br>
-                            <b>{{$reg_unidad->dgeneral}}.</b> <br>
+                            <b>MTRA. ANA IVETTE CAMACHO PRADO.</b> <br>
                             Representante Legal del ICATECH
                         </div>
                         <div style="border: black 1px solid;">
