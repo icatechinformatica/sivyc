@@ -403,6 +403,7 @@ class grupoController extends Controller
                                     ->where('ejercicio',date('y'))
                                     ->where('abrinscri','!=','PI')
                                     ->where('mod','CAE')
+                                    ->where('turnado','!=','VINCULACION')
                                     ->value(DB::raw('count(id)'));
                                 if ($exoneraciones > 3) {
                                     if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
@@ -427,6 +428,7 @@ class grupoController extends Controller
                                 ->where('ejercicio',date('y'))
                                 ->where('abrinscri','!=','PI')
                                 ->where('mod','CAE')
+                                ->where('turnado','!=','VINCULACION')
                                 ->value(DB::raw('count(id)'));
                             if ($exoneraciones > 3) {
                                 if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
