@@ -12,7 +12,7 @@ class Exoneraciones extends Model
     protected $fillable = [
         'id', 'id_unidad_capacitacion', 'no_memorandum', 'id_estado', 'id_municipio', 'localidad', 'fecha_memorandum',
         'tipo_exoneracion', 'porcentaje', 'razon_exoneracion', 'grupo_beneficiado', 'observaciones', 'no_convenio',
-        'memo_soporte_dependencia', 'status', 'activo'
+        'memo_soporte_dependencia', 'status', 'activo','nrevision'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

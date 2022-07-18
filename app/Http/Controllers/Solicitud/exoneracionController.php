@@ -53,7 +53,7 @@ class ExoneracionController extends Controller
                 if ($cursos[0]->memo_soporte_dependencia) {
                     $pdf = $this->path_files.$cursos[0]->memo_soporte_dependencia;
                 }
-                $movimientos = ['SOLICITUD EDITAR'=>'EDITAR LISTA DE ALUMNOS','SOLICITUD CANCELAR'=>'CANCELACIÓN'];
+                $movimientos = ['ACTUALIZACION SOPORTE'=>'ACTUALIZACION DE SOPORTES','SOLICITUD EDITAR'=>'EDITAR LISTA DE ALUMNOS','SOLICITUD CANCELAR'=>'CANCELACIÓN'];
             }else{
                 $message = "No se encuentran registros que mostrar.";
                 $valor = null;
@@ -249,8 +249,13 @@ class ExoneracionController extends Controller
     public function generar(Request $request){
         if ($request->memo AND $_SESSION['revision']) {
             $_SESSION['memo'] = $request->memo;
+            if (DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->value('fecha_memorandum')) {
+                $fecha = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->value('fecha_memorandum');
+            } else {
+                $fecha = $request->fecha;
+            }
             $result = DB::table('exoneraciones')->where('nrevision', $_SESSION['revision'])
-                ->update(['no_memorandum' => $_SESSION['memo'], 'fecha_memorandum' => $request->fecha]);
+                ->update(['no_memorandum' => $_SESSION['memo'], 'fecha_memorandum' => $fecha]);
             $cursos = DB::table('exoneraciones')->where('no_memorandum',$_SESSION['memo'])->get();
             foreach ($cursos as $key => $value) {
                 $year = date('y');

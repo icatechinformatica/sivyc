@@ -50,8 +50,8 @@ class exoneracionesController extends Controller
                 }else {
                     $movimientos = ['RETORNAR_VALIDADO'=>'RETORNAR','RETORNAR'=>'REINICIAR','CANCELAR'=>'CANCELAR','AUTORIZAR'=>'AUTORIZAR'];
                 }
-                if (($status == 'SOLICITUD EDITAR') OR ($status == 'SOLICITUD CANCELAR')) {
-                    $movimientos = ['SOLICITUD EDITAR'=>'EDITAR','SOLICITUD CANCELAR'=>'CANCELAR'];
+                if (($status == 'SOLICITUD EDITAR') OR ($status == 'SOLICITUD CANCELAR') OR ($status=='ACTUALIZACION SOPORTE')) {
+                    $movimientos = ['ACTUALIZACION SOPORTE'=>'ACTUALIZACION DE SOPORTES','SOLICITUD EDITAR'=>'EDITAR','SOLICITUD CANCELAR'=>'CANCELAR'];
                     $edicion = $cursos[0]->motivo;
                 }
             } else {
@@ -345,4 +345,31 @@ class exoneracionesController extends Controller
         return redirect()->route('solicitudes.exoneracion')->with(['message'=>$message]);
     }
 
+    public function asoporte(Request $request){
+        $message = 'Operación fallida, vuelva a intentar..';
+        if (isset($_SESSION['memo'])) {
+            if ($request->movimiento) {
+                $result = DB::table('exoneraciones')->where('no_memorandum',$_SESSION['memo'])
+                        ->update(['status'=>'VALIDADO', 'frespuesta'=>date('Y-m-d H:i:s'), 'turnado'=>'UNIDAD']);
+                if ($result) {
+                    $cursos = DB::table('exoneraciones')->where('no_memorandum', $_SESSION['memo'])->get();
+                    foreach ($cursos as $key => $value) {
+                        $result2 = DB::table('history_exoneraciones')->insert([
+                            'id_exoneracion' => $value->id, 'folio_grupo' => $value->folio_grupo, 'id_unidad_capacitacion' => $value->id_unidad_capacitacion,
+                            'no_memorandum' => $value->no_memorandum, 'fecha_memorandum' => $value->fecha_memorandum, 'tipo_exoneracion' => $value->tipo_exoneracion,
+                            'razon_exoneracion' => $value->razon_exoneracion, 'observaciones' => $value->observaciones, 'no_convenio' => $value->no_convenio,
+                            'memo_soporte_dependencia' => $value->memo_soporte_dependencia, 'iduser_created' => $value->iduser_created,
+                            'iduser_updated' => $value->iduser_updated, 'created_at' => $value->created_at, 'updated_at' => $value->updated_at, 'status' => 'ACTUALIZACION SOPORTE',
+                            'nrevision' => $value->nrevision, 'noficio' => $value->noficio, 'foficio' => $value->foficio, 'fini' => $value->fini, 'ffin' => $value->ffin,
+                            'realizo' => $value->realizo, 'valido'=>strtoupper(Auth::user()->name), 'fenvio' => $value->fenvio, 'frespuesta' => $value->frespuesta,
+                            'pobservacion' => $value->pobservacion, 'cct' => $value->cct, 'ejercicio' => $value->ejercicio, 'activo' => $value->activo,
+                            'turnado' => $value->turnado, 'motivo' => $value->motivo
+                        ]); 
+                    }
+                    $message = "La solicitud fue retonado a la Unidad.";
+                }
+            }
+        }
+        return redirect()->route('solicitudes.exoneracion')->with(['message'=>$message]);
+    }
 }

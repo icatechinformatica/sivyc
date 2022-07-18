@@ -224,6 +224,10 @@
                                     $('#frm').attr('target', '_self').submit();
                                 }
                             break;
+                            case "ACTUALIZACION SOPORTE":
+                                    $('#frm').attr('action', "{{route('solicitudes.exoneracion.asoporte')}}");
+                                    $('#frm').attr('target', '_self').submit();
+                            break;
                             default:
                                 alert("POR FAVOR SELECCIONE UN MOVIMIENTO.")
                             break;                   

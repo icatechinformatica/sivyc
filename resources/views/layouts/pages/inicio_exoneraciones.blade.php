@@ -68,11 +68,20 @@
                         <td class="text-center">
                             <div class="custom-file">
                                 @if (isset($exoneracion->memo_soporte_dependencia))
-                                    <a href="{{ $exoneracion->memo_soporte_dependencia }}" target="_blank"
-                                        rel="{{ $exoneracion->memo_soporte_dependencia }}">
-                                        <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
-                                            height="50px">
-                                    </a>
+                                    @if ($exoneracion->nrevision)
+                                        <a href="{{ '/storage/uploadFiles'.$exoneracion->memo_soporte_dependencia }}" target="_blank"
+                                            rel="{{ '/storage/uploadFiles'.$exoneracion->memo_soporte_dependencia }}">
+                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
+                                                height="50px">
+                                        </a> 
+                                    @else
+                                       <a href="{{ $exoneracion->memo_soporte_dependencia }}" target="_blank"
+                                            rel="{{ $exoneracion->memo_soporte_dependencia }}">
+                                            <img class="rounded" src="{{ asset('img/pdf.png') }}" alt="{{ asset('img/pdf.png') }}" width="50px"
+                                                height="50px">
+                                        </a> 
+                                    @endif
+                                    
                                 @else
                                     NO ADJUNTADO
                                 @endif
