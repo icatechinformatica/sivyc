@@ -405,7 +405,7 @@ class grupoController extends Controller
                                     ->where('mod','CAE')
                                     ->where('turnado','!=','VINCULACION')
                                     ->value(DB::raw('count(id)'));
-                                if ($exoneraciones > 3) {
+                                if ($exoneraciones > 2) {
                                     if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
                                         $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
                                     } else {
@@ -430,7 +430,7 @@ class grupoController extends Controller
                                 ->where('mod','CAE')
                                 ->where('turnado','!=','VINCULACION')
                                 ->value(DB::raw('count(id)'));
-                            if ($exoneraciones > 3) {
+                            if ($exoneraciones > 2) {
                                 if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
                                     $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
                                 } else {
