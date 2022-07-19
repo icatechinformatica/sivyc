@@ -53,7 +53,7 @@ class ExoneracionController extends Controller
                 if ($cursos[0]->memo_soporte_dependencia) {
                     $pdf = $this->path_files.$cursos[0]->memo_soporte_dependencia;
                 }
-                $movimientos = ['ACTUALIZACION SOPORTE'=>'ACTUALIZACION DE SOPORTES','SOLICITUD EDITAR'=>'EDITAR LISTA DE ALUMNOS','SOLICITUD CANCELAR'=>'CANCELACIÓN'];
+                $movimientos = ['SOPORTES ACTUALIZACION'=>'ACTUALIZACION DE SOPORTES','SOLICITUD EDITAR'=>'EDITAR LISTA DE ALUMNOS','SOLICITUD CANCELAR'=>'CANCELACIÓN'];
             }else{
                 $message = "No se encuentran registros que mostrar.";
                 $valor = null;

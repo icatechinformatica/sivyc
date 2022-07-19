@@ -161,8 +161,9 @@
                     <div class="form-group col-md-3">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="">MOVIMIENTO:</label>
-                        {{ Form::select('movimiento', $movimientos, $status, ['id'=>'movimiento','class' => 'form-control', 'placeholder'=>'- SELECCIONAR MOVIMIENTO -'] ) }}
+                        <label for="">SOLICITUD DE:</label>
+                        {!! Form::text('movimiento', $movimientos, ['id'=>'movimiento','class' => 'form-control','readonly'=>'readonly']) !!}
+                        {{-- {{ Form::select('movimiento', $movimientos, $status, ['id'=>'movimiento','class' => 'form-control', 'placeholder'=>'- SELECCIONAR MOVIMIENTO -'] ) }} --}}
                     </div>
                     <div class="form-group col-md-3">
                         <label for="">MOTIVO EDICIÓN:</label>
@@ -208,7 +209,7 @@
                                     $('#frm').attr('target', '_self').submit();
                                 }
                             break;
-                            case "SOLICITUD CANCELAR":
+                            case "CANCELACION SOLICITUD DE EXONERACION":
                                 if (($("#motivo").val()=='') || ($("#motivo").val()==' ')) {
                                     alert("POR FAVOR ESCRIBA EL MOTIVO DE LA CANCELACIÓN.")
                                 } else {
@@ -216,7 +217,7 @@
                                     $('#frm').attr('target', '_self').submit();
                                 }
                             break;
-                            case "SOLICITUD EDITAR":
+                            case "EDICION LISTA DE ALUMNOS":
                                 if (($("#motivo").val()=='') || ($("#motivo").val()==' ')) {
                                     alert("POR FAVOR ESCRIBA EL MOTIVO DE LA EDICIÓN.")
                                 } else {
@@ -224,7 +225,7 @@
                                     $('#frm').attr('target', '_self').submit();
                                 }
                             break;
-                            case "ACTUALIZACION SOPORTE":
+                            case "ACTUALIZACION SOPORTES":
                                     $('#frm').attr('action', "{{route('solicitudes.exoneracion.asoporte')}}");
                                     $('#frm').attr('target', '_self').submit();
                             break;

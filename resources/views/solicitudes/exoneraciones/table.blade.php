@@ -41,7 +41,8 @@
                             } else {
                                 $pdf = $item->memo_soporte_dependencia;
                             }
-                            if (($item->status=='SOLICITADO') OR ($item->status=='PREVALIDACION')) {
+                            if (($item->status=='SOLICITADO') OR ($item->status=='PREVALIDACION') OR ($item->status=='SOLICITUD EDITAR') OR 
+                                ($item->status=='SOPORTES ACTUALIZACION') OR ($item->status=='SOLICITUD CANCELAR')) {
                                 $rojo = true;
                             }
                         @endphp
