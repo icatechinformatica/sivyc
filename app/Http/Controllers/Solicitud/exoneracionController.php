@@ -291,6 +291,7 @@ class ExoneracionController extends Controller
                                 'tc.nombre','e.tipo_exoneracion','e.no_convenio','e.noficio','e.foficio','e.razon_exoneracion','e.observaciones',
                                 'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia','tc.folio_grupo',
                                 'e.no_memorandum','e.fecha_memorandum')
+                                ->orderBy('e.fini','asc')
                                 ->get();    //dd($cursos);
                 $reg_unidad = DB::table('tbl_unidades')->select('ubicacion','dgeneral','dunidad','academico','vinculacion','dacademico','pdgeneral','pdacademico',
                                     'pdunidad','pacademico','pvinculacion','municipio')
