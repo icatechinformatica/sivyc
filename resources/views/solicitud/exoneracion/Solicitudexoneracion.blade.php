@@ -174,7 +174,7 @@
             <br>
             <div style="text-align: justify;">Lo anterior, con la finalidad de atender grupos en situación de vulnerabilidad que por sus características presentan desventaja por sexo, estado civil,
                  nivel educativo, origen étnico, situación o condición física y/o mental y requieren de un esfuerzo adicional para incorporarse al desarrollo 
-                y a la convivencia, como  lo señala el artículo 32 de la Ley General de Educación y artículo 32 de la Ley General de Educación y artículo 23, de los 
+                y a la convivencia, como  lo señala el artículo 32 de la Ley General de Educación y artículo 23, de los 
                 lineamientos para los procesos de vinculación y capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. <br>
                 Considerando que los costos de los cursos que imparte esta Institución, varían de los $100.00 (Cien pesos 00/100 M.N.) a los $1,200.00 (Mil Doscientos 00/100 M.N.); 
                 según su tipo Oficios, Profesionalización, Especialidad y Salud, así como su clasificación Básico, Medio o Avanzado y duración total de horas de capacitación. <br>
