@@ -118,7 +118,7 @@ class PaqueteriaDidacticaController extends Controller
             'cicloescolar' => $request->cicloescolar,
             'programaestrategico' => $request->programaestrategico,
             'modalidad' => $curso->modalidad,
-            'tipo' => $curso->tipo_curso,
+            'tipo' => $request->tipo,
             'perfilidoneo' => $curso->perfil,
             'duracion' => $curso->horas,
             'formacionlaboral' => $area->formacion_profesional,

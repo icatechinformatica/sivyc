@@ -99,7 +99,7 @@
                             <td>@if($cartaDescriptiva->modalidad == 'CAE') X @endif</td>
                         </tr>
                         <tr>
-                            <td colspan="5"><label class="contenido">Tipo:  &nbsp;&nbsp;&nbsp;&nbsp;  Presencial</label> (@if($cartaDescriptiva->tipo== 'PRESENCIAL') X @endif)  <label class="contenido">&nbsp;nbsp;&nbsp;&nbsp; A Distancia</label>( @if($cartaDescriptiva->tipo == 'A DISTANCIA') X @endif)</td>
+                            <td colspan="5"><label class="contenido">Tipo:  &nbsp;&nbsp;&nbsp;&nbsp;  Presencial</label> (@if($cartaDescriptiva->tipo== 'PRESENCIAL') X @endif)  <label class="contenido">&nbsp;&nbsp;&nbsp; A Distancia</label>( @if($cartaDescriptiva->tipo == 'A DISTANCIA') X @endif)&nbsp;&nbsp;&nbsp;&nbsp; <label class="contenido">Presencial y a Distancia </label>(@if($cartaDescriptiva->tipo== 'PRESENCIAL Y A DISTANCIA') X @endif) </td>
                             <td colspan="5"> <label class="contenido">Especialidad:</label> {{ $cartaDescriptiva->especialidad }}</td>
                         </tr>
                         <tr>
