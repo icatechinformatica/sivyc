@@ -97,7 +97,7 @@ class CursosController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
-        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'auxiliar_cursos')
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'auxiliar_paqueteias-todos' || $roles[0]->role_name == 'titular-innovacion')
         {
         $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')

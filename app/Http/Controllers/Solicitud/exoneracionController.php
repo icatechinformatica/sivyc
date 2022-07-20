@@ -84,7 +84,8 @@ class ExoneracionController extends Controller
                         ->where('tc.status_curso','=',null)
                         ->where('tc.status_solicitud','=',null)
                         ->where('ar.turnado','=','UNIDAD')
-                        ->where('tc.mod','=','CAE')
+                        // ->where('tc.mod','=','CAE')
+                        ->where('ar.id_organismo','!=',242)
                         ->whereIn('tc.tipo',['EXO','EPAR'])
                         ->where('tc.folio_grupo',$request->grupo)
                         ->first();

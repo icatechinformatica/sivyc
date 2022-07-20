@@ -63,7 +63,7 @@
                         $activar = false;
                         $rojo = true; 
                         $aviso = "GRUPO TURNADO A VINCULACIOÓN"; 
-                    }elseif($g->tipo!='PINS' AND $g->mod=='CAE' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0')) { 
+                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0') AND ($g->depen!='INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS')) { 
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
