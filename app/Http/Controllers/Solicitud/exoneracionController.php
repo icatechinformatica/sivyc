@@ -115,7 +115,7 @@ class ExoneracionController extends Controller
                         }  
                     }
                     if (!$_SESSION['revision'] AND $curso) {
-                        $consec = (DB::table('exoneraciones')->where('ejercicio',$curso->ejercicio)->where('cct',$curso->cct)->value(DB::RAW('max(cast(substring(nrevision,9,4) as int))'))) + 1;
+                        $consec = (DB::table('exoneraciones')->where('ejercicio',$curso->ejercicio)->where('cct',$curso->cct)->value(DB::RAW("max(cast(substring(nrevision from '.{4}$') as int))"))) + 1;
                         $consec = str_pad($consec, 4, "0", STR_PAD_LEFT);
                         $revision = "EXO-".$curso->cct.$curso->ejercicio.$consec;
                         $_SESSION['revision'] = $revision;
