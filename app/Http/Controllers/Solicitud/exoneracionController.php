@@ -82,7 +82,10 @@ class ExoneracionController extends Controller
                          'tc.dura','tc.status_curso','ar.id_organismo','ar.folio_grupo')
                         ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                         ->where('tc.status_curso','=',null)
-                        ->where('tc.status_solicitud','=',null)
+                        ->where(function($query) {
+                            $query->where('tc.status_solicitud','=',null)
+                                  ->orWhere('tc.status_solicitud', '=', 'RETORNO');
+                        })
                         ->where('ar.turnado','=','UNIDAD')
                         // ->where('tc.mod','=','CAE')
                         ->where('ar.id_organismo','!=',242)
