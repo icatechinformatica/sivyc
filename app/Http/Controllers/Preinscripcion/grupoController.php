@@ -393,55 +393,27 @@ class grupoController extends Controller
                         $conteo += 1;
                     }
                 }
-                if ($costo > 0) {
-                    if ($comprobante) {
-                        foreach ($alumnos as $a) {
-                            if ($a->mod=='CAE' AND $a->abrinscri!='PI') {
-                                $exoneraciones = DB::table('alumnos_registro')
-                                    ->where('id_pre',$a->id_pre)
-                                    ->where('eliminado',false)
-                                    ->where('ejercicio',date('y'))
-                                    ->where('abrinscri','!=','PI')
-                                    ->where('mod','CAE')
-                                    ->where('turnado','!=','VINCULACION')
-                                    ->value(DB::raw('count(id)'));
-                                if ($exoneraciones > 2) {
-                                    if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
-                                        $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
-                                    } else {
-                                        $message = "El alumno excede el limite de exoneraciones permitidas " .$a->curp. ".";
-                                        return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
-                                    }
-                                }
-                            }
-                        }
-                    $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
-                    }else {
-                        return redirect()->route('preinscripcion.grupo')->with(['message' => 'FAVOR DE CARGAR EL COMPROBANTE DE PAGO']);
-                    }
-                } else {
-                    foreach ($alumnos as $a) {
-                        if ($a->mod=='CAE' AND $a->abrinscri!='PI') {
-                            $exoneraciones = DB::table('alumnos_registro')
-                                ->where('id_pre',$a->id_pre)
-                                ->where('eliminado',false)
-                                ->where('ejercicio',date('y'))
-                                ->where('abrinscri','!=','PI')
-                                ->where('mod','CAE')
-                                ->where('turnado','!=','VINCULACION')
-                                ->value(DB::raw('count(id)'));
-                            if ($exoneraciones > 2) {
-                                if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
-                                    $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
-                                } else {
-                                    $message = "El alumno excede el limite de exoneraciones permitidas " .$a->curp. ".";
-                                    return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
-                                }
+                foreach ($alumnos as $a) {
+                    if ($a->mod=='CAE' AND $a->abrinscri!='PI') {
+                        $exoneraciones = DB::table('alumnos_registro')
+                            ->where('id_pre',$a->id_pre)
+                            ->where('eliminado',false)
+                            ->where('ejercicio',date('y'))
+                            ->where('abrinscri','!=','PI')
+                            ->where('mod','CAE')
+                            ->where('turnado','!=','VINCULACION')
+                            ->value(DB::raw('count(id)'));
+                        if ($exoneraciones > 2) {
+                            if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
+                                $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
+                            } else {
+                                $message = "El alumno excede el limite de exoneraciones permitidas " .$a->curp. ".";
+                                return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
                             }
                         }
                     }
-                    $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d'), 'comprobante_pago' => null]);
                 }
+                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
             }
         }
         return redirect()->route('preinscripcion.grupo');

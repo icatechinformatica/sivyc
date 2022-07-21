@@ -63,10 +63,6 @@
                         $activar = false;
                         $rojo = true; 
                         $aviso = "GRUPO TURNADO A VINCULACIOÓN"; 
-                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0') AND ($g->depen!='INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS')) { 
-                        $activar = false;
-                        $rojo = true;                         
-                        $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
                     }elseif( $g->option =='ARC01' AND (($g->horas_agenda < $g->dura) or ($g->horas_agenda > $g->dura)) ){
                         $activar = false;
                         $rojo = true;                         
@@ -79,6 +75,14 @@
                         $activar = false;
                         $rojo = true;                         
                         $aviso = "EL NOMBRE DEL INSTRUCTOR NO SE HA REGISTRADO";
+                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0') AND ($g->depen!='INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS')) { 
+                        $activar = false;
+                        $rojo = true;                         
+                        $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN"; 
+                    }elseif (!$g->comprobante_pago AND $g->tipo!='EXO') {
+                        $activar = false;
+                        $rojo = true;                         
+                        $aviso = "CARGE EL COMPROBANTE DE PAGO";
                     }else $rojo = false;         
                     
                     if ($g->option =='ARC01'){

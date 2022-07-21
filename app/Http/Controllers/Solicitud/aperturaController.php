@@ -330,6 +330,25 @@ class aperturaController extends Controller
                                 $tipo_honorario = 'HONORARIOS';
                             }
                             $exonerado = DB::table('exoneraciones')->where('folio_grupo',$grupo->folio_grupo)->where('status','<>',null)->where('status','<>','CANCELADO')->exists();
+                            if ($request->hasFile('file_pago')) {
+                                $file = $request->file_pago;
+                                $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
+                                $ext = $file->getClientOriginalExtension(); // extension de la imagen
+                                if ($ext == "pdf") {
+                                    # nuevo nombre del archivo
+                                    $documentFile = trim("comprobante_pago" . "_" . $grupo->folio_grupo . "_" . date('YmdHis') . "." . $ext);
+                                    $path_pdf = "/UNIDAD/comprobantes_pagos/";
+                                    $path = $path_pdf . $documentFile;
+                                    Storage::disk('custom_folder_1')->put($path, file_get_contents($file)); // guardamos el archivo en la carpeta storage
+                                    //$documentUrl = storage::url($path); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+                                    $documentUrl = $path;
+                                    $res = DB::table('alumnos_registro')->update(['comprobante_pago'=>$documentUrl]);
+                                }else {
+                                    return redirect('solicitud/apertura')->with('message',"Formato de Archivo no válido, sólo PDF.");
+                                }
+                            }else {
+                                $documentUrl = $grupo->comprobante_pago;
+                            }
                             if ($exonerado) {
                                 $result = DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
                                     ['folio_grupo' => $_SESSION['folio']],
@@ -337,7 +356,8 @@ class aperturaController extends Controller
                                     'programa' => $request->programa,
                                     'cespecifico' => strtoupper($request->cespecifico),
                                     'fcespe' => $request->fcespe,
-                                    'munidad' => $request->munidad]
+                                    'munidad' => $request->munidad,
+                                    'comprobante_pago'=>$documentUrl]
                                 );
                             }else {
                                 $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
@@ -420,7 +440,7 @@ class aperturaController extends Controller
                                     'instructor_tipo_identificacion'=>$instructor->tipo_identificacion,
                                     'instructor_folio_identificacion'=>$instructor->folio_ine,
                                     'num_revision' => $request->munidad,
-                                    'comprobante_pago'=>$grupo->comprobante_pago
+                                    'comprobante_pago'=>$documentUrl
                                 ]);
                                 $agenda = DB::table('agenda')->where('id_curso',$_SESSION['folio'])->update(['id_instructor' => $instructor->id]);
                             }
