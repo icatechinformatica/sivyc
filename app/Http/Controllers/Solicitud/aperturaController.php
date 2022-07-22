@@ -342,7 +342,7 @@ class aperturaController extends Controller
                                     Storage::disk('custom_folder_1')->put($path, file_get_contents($file)); // guardamos el archivo en la carpeta storage
                                     //$documentUrl = storage::url($path); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
                                     $documentUrl = $path;
-                                    $res = DB::table('alumnos_registro')->update(['comprobante_pago'=>$documentUrl]);
+                                    $res = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['comprobante_pago'=>$documentUrl]);
                                 }else {
                                     return redirect('solicitud/apertura')->with('message',"Formato de Archivo no válido, sólo PDF.");
                                 }
@@ -839,7 +839,8 @@ class aperturaController extends Controller
         //CRITERIO 5 MESES
         for ($i=1; $i < 6; $i++) {
             $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
-            $mesActivo= Carbon::parse($f)->addMonth($i);
+            $finicio = Carbon::parse($f)->firstOfMonth();
+            $mesActivo= Carbon::parse($finicio)->addMonth($i);
             $mes = Carbon::parse($mesActivo)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
@@ -860,7 +861,8 @@ class aperturaController extends Controller
         }
         for ($i=1; $i < 6; $i++) {
             $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
-            $mesActivoSub= Carbon::parse($f)->subMonth($i);
+            $finicio = Carbon::parse($f)->firstOfMonth();
+            $mesActivoSub= Carbon::parse($finicio)->subMonth($i);
             $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
