@@ -13,12 +13,12 @@
         $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = "";    $costo = null;   
         if($curso){
             $id_curso = $curso->id;
-            $id_cerss = $alumnos[0]->id_cerss;
             $costo = $curso->costo;
         }
-        if($alumnos){ 
+        if(count($alumnos)>0){ 
             $hfin = substr($alumnos[0]->horario, 8, 5);
-            $hini = substr($alumnos[0]->horario, 0, 5);                 
+            $hini = substr($alumnos[0]->horario, 0, 5);
+            $id_cerss = $alumnos[0]->id_cerss;               
             //$hini = $alumnos[0]->hini;
             //$hfin = $alumnos[0]->hfin;
             $inicio = $alumnos[0]->inicio;
