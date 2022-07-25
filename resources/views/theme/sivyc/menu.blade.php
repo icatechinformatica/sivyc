@@ -65,6 +65,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitud.apertura')
                                 <a class="dropdown-item" href="{{route('solicitud.apertura')}}">Clave de Apertura ARC01</a>
+                                <a class="dropdown-item" href="{{route('solicitud.apertura.search')}}">Busqueda Clave de Apertura ARC01</a>
                                 <a class="dropdown-item" href="{{route('solicitud.apertura.modificar')}}">Modificaci&oacute;n Apertura ARC02</a>
                                 <a class="dropdown-item" href="{{route('solicitud.apertura.turnar')}}">Turnar Solicitud ARC</a>
                             @endcan
@@ -163,6 +164,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             @can('solicitudes.aperturas')
                                 <a class="dropdown-item" href="{{route('solicitudes.aperturas')}}">Aperturas ARC01 y ARC02</a>
+                                <a class="dropdown-item" href="{{route('solicitudes.aperturas.search')}}">Busqueda Aperturas ARC01</a>
                             @endcan
                             @can('solicitudes.exoneracion')
                                 <a class="dropdown-item" href="{{route('solicitudes.exoneracion')}}">Exoneración y/o Reducción de Cuotas</a>

@@ -127,6 +127,26 @@ class aperturasController extends Controller
         //var_dump($grupos);exit;
         return view('solicitudes.aperturas.index', compact('message','grupos','memo', 'file','opt', 'movimientos', 'path','status_solicitud','extemporaneo'));
     }  
+
+    public function search(Request $request){
+        $_SESSION = null;
+        $aperturas = DB::table('tbl_cursos as tc')
+            ->select('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
+            ->leftJoin('alumnos_registro as a','tc.folio_grupo','=','a.folio_grupo')
+            ->where('a.turnado','!=','VINCULACION')
+            ->where(function($query) {
+                $query->where('status_curso','!=',null)
+                      ->orWhere('status_solicitud','=','TURNADO');
+            });
+        if ($request->valor) {
+            $aperturas = $aperturas->where('tc.munidad',$request->valor)
+                ->orWhere('tc.num_revision',$request->valor);
+        }
+        $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
+            ->orderBy('tc.fecha_apertura','desc')
+            ->paginate(50);
+        return view('solicitudes.aperturas.buzon',compact('aperturas'));
+    }
     
     public function autorizar(Request $request){ //ENVIAR PDF DE AUTORIZACIÓN Y CAMBIAR ESTATUS A AUTORIZADO
         $result = NULL;

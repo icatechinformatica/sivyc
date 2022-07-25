@@ -167,6 +167,24 @@ class aperturaController extends Controller
             'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','muni','instructores','convenio','localidad','exonerado'));
     }
 
+    public function search(Request $request){
+        $_SESSION = null;
+        $aperturas = DB::table('tbl_cursos as tc')
+            ->select('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
+            ->leftJoin('alumnos_registro as a','tc.folio_grupo','=','a.folio_grupo')
+            ->leftJoin('tbl_unidades as u', 'tc.unidad','=','u.unidad')
+            ->where('a.turnado','<>','VINCULACION')
+            ->where('u.id','=',Auth::user()->unidad);
+        if ($request->valor) {
+            $aperturas = $aperturas->where('tc.munidad','=',$request->valor)
+                ->orWhere('tc.num_revision','=',$request->valor);
+        }
+        $aperturas = $aperturas->groupBy('tc.unidad','tc.num_revision','tc.munidad','tc.file_arc01','tc.turnado','tc.status_curso','tc.status_solicitud','tc.status','tc.pdf_curso','tc.fecha_apertura')
+            ->orderBy('tc.fecha_apertura','desc')
+            ->paginate(50);
+        return view('solicitud.apertura.buzon',compact('aperturas'));
+    }
+
     public function cgral(Request $request){
         $convenio = $json = [];
         if($request->id AND $request->mod=='CAE')

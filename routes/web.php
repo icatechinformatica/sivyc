@@ -489,6 +489,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
     Route::post('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
     Route::get('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
+    Route::get('/solicitudes/aperturas/busqueda', 'Solicitudes\aperturasController@search')->name('solicitudes.aperturas.search')->middleware('can:solicitudes.aperturas');
+    Route::post('/solicitudes/aperturas/busqueda', 'Solicitudes\aperturasController@search')->name('solicitudes.aperturas.search')->middleware('can:solicitudes.aperturas');
 
     Route::post('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
     Route::get('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
@@ -573,6 +575,8 @@ Route::middleware(['auth'])->group(function () {
     /*Solicitud de Apertura ARC01 y ARC02 RPN*/
     Route::get('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
     Route::post('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
+    Route::get('/solicitud/apertura/busqueda', 'Solicitud\aperturaController@search')->name('solicitud.apertura.search')->middleware('can:solicitud.apertura');
+    Route::post('/solicitud/apertura/busqueda', 'Solicitud\aperturaController@search')->name('solicitud.apertura.search')->middleware('can:solicitud.apertura');
     //Route::get('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
     //Route::post('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
     Route::get('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion')->name('solicitud.apertura.mexon');
