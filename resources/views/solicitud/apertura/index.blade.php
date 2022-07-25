@@ -602,6 +602,10 @@
                                 $('#titleToast').html('Horario incorrecto');
                                 $("#msgVolumen").html("La diferencia de tiempo de viaje entre unidades no es valida");
                                 $(".toast").toast("show");
+                            }else if (msg == 'iguales8') {
+                                $('#titleToast').html('Duplicidad en alumnos');
+                                $("#msgVolumen").html("El alumno no se encuentra disponible en fecha y hora");
+                                $(".toast").toast("show");
                             }else if (msg == 'duplicado') {
                                 $('#titleToast').html('Datos incorrectos');
                                 $("#msgVolumen").html("Los datos ingresados coinciden con registros existentes");

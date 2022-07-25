@@ -674,6 +674,25 @@ class aperturaController extends Controller
         if (count($evento) > 0) {
             $isEquals = true;
         }
+        //VALIDACION DISPONIBILIDAD FECHA Y HORA X ALUMNO
+        $alumnos = DB::table('alumnos_registro as ar')->select('ar.id_pre','ap.curp')
+            ->leftJoin('alumnos_pre as ap','ar.id_pre','=','ap.id')
+            ->where('ar.folio_grupo',$id_curso)->where('ar.eliminado',false)->get();
+        if (count($alumnos)>0) {
+            foreach ($alumnos as $key => $value) {
+                $existe_dupli = DB::table('agenda as a')
+                    ->select('a.id_curso')
+                    ->leftJoin('alumnos_registro as ar','a.id_curso','=','ar.folio_grupo')
+                    ->whereRaw("((date(a.start) >= '$fi' and date(a.start) <= '$ft' and cast(a.start as time) >= '$hi' and cast(a.start as time) < '$ht') OR
+                    (date(a.end) >= '$fi' and date(a.end) <= '$ft' and cast(a.end as time) > '$hi' and cast(a.end as time) <= '$ht'))")
+                    ->where('ar.eliminado',false)
+                    ->where('ar.id_pre',$value->id_pre)
+                    ->get();
+                if (count($existe_dupli)>0) {
+                    return "iguales8";
+                }
+            }
+        }
         //CRITERIO 8hrs
         foreach ($period as $value) {
             $total = 0;

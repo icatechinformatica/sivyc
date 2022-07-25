@@ -226,20 +226,6 @@ class grupoController extends Controller
                         if ($_SESSION['folio_grupo']) {
                             if ((((explode('-',$inicio))[0]) == date('Y')) AND ((explode('-',$termino))[0]) == date('Y')) {
                                 if ($inicio <= $termino) {
-                                    $disponible = DB::table('alumnos_registro as ar')
-                                        ->select('ar.id_curso')
-                                        ->leftJoin('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
-                                        ->where('ap.curp', $curp)
-                                        ->where('ar.eliminado', false)
-                                        ->whereRaw(
-                                            "ar.ejercicio >= 22 and 
-                                            ((date(ar.inicio) >= '$request->inicio' and date(ar.inicio) <= '$request->termino' and 
-                                            cast(substring(ar.horario,1,5) as time) >= '$request->hini' and cast(substring(ar.horario,1,5) as time) < '$request->hfin') OR 
-                                            (date(ar.termino) >= '$request->inicio' and date(ar.termino) <= '$request->termino' and 
-                                            cast(substring(horario,9,5) as time) > '$request->hini' and cast(substring(horario,9,5) as time) <= '$request->hfin'))"
-                                        )
-                                        ->get();
-                                    if (count($disponible) < 1) {
                                         $result = DB::table('alumnos_registro')->UpdateOrInsert(
                                             ['id_pre' => $alumno->id_pre, 'folio_grupo' => $_SESSION['folio_grupo']],
                                             [
@@ -252,9 +238,6 @@ class grupoController extends Controller
                                             ]
                                         );
                                         if ($result) $message = "Operación Exitosa!!";
-                                    } else {
-                                        $message = 'El alumno no se encuentra disponible en fecha y hora';
-                                    }
                                 } else {
                                     $message = 'La fecha de termino no puede ser menor a la de inicio';
                                 }
