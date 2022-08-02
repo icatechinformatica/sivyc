@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="{{ asset('fullCalendar/daygrid/main.css') }}">
     <link rel="stylesheet" href="{{ asset('fullCalendar/list/main.css') }}">
     <link rel="stylesheet" href="{{ asset('fullCalendar/timegrid/main.css') }}">
-    
+
     <div class="card-header">
-        Solicitud / Clave de Apertura        
+        Solicitud / Clave de Apertura
     </div>
-    <div class="card card-body" style=" min-height:450px;">       
+    <div class="card card-body" style=" min-height:450px;">
         <?php
             $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = NULL;
             $activar = true;
@@ -21,7 +21,7 @@
                 $valor = $grupo->folio_grupo;
                 $modalidad = $grupo->mod;
                 $hfin = substr($grupo->horario, 8, 5);
-                $hini = substr($grupo->horario, 0, 5);               
+                $hini = substr($grupo->horario, 0, 5);
                 if(isset($grupo->munidad)) $munidad = $grupo->munidad;
                 if($grupo->tcapacitacion=='PRESENCIAL'){
                     $disabled = 'disabled';
@@ -32,8 +32,8 @@
                         $disabled = 'readonly';
                     }
                 }
-            } 
-            if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;            
+            }
+            if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;
         ?>
     {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
         @csrf
@@ -44,7 +44,7 @@
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
             </div>
-                
+
         </div>
         @if ($message)
             <div class="row ">
@@ -53,24 +53,24 @@
                 </div>
             </div>
         @endif
-        
-        @if(isset($grupo))           
-            <h5><b>DEL CURSO</b></h5> 
+
+        @if(isset($grupo))
+            <h5><b>DEL CURSO</b></h5>
             @if($grupo->clave)
                 <div class="row bg-light" style="padding:15px;">
-                    <div class="form-group col-md-3">CLAVE DE APERTURA: <b>{{ $grupo->clave}}</b></div>                    
+                    <div class="form-group col-md-3">CLAVE DE APERTURA: <b>{{ $grupo->clave}}</b></div>
                     <div class="form-group col-md-4">ESTATUS DEL CURSO: <b>{{ $grupo->status }}</b></div>
                     <div class="form-group col-md-1">ARC: <b>{{ $grupo->arc }}</b></div>
                     <div class="form-group col-md-3">ESTATUS: <b>{{ $grupo->status_curso}}</b></div>
-                </div>   
-            @endif  
+                </div>
+            @endif
             <div class="row bg-light" style="padding:15px">
                 <div class="form-group col-md-3">UNIDAD/ACCI&Oacute;N M&Oacute;VIL: <b>{{ $grupo->unidad }}</b></div>
                 <div class="form-group col-md-5">CURSO: <b>@if($grupo->clave){{ $grupo->id }}@endif {{ $grupo->curso }}</b></div> <input type="hidden" name="curso" id="curso" value="{{$grupo->curso}}">
                 <div class="form-group col-md-4">ESPECIALIDAD: <b>{{ $grupo->clave_especialidad }} &nbsp{{ $grupo->espe }}</b></div>
                 <div class="form-group col-md-3">&Aacute;REA: <b>{{ $grupo->area }}</b></div>
                 <div class="form-group col-md-2">MODALIDAD: <b>{{ $grupo->mod}}</b></div>
-                <div class="form-group col-md-3">TIPO CAPACITACI&Oacute;N: <b>{{ $grupo->tcapacitacion}}</b></div>            
+                <div class="form-group col-md-3">TIPO CAPACITACI&Oacute;N: <b>{{ $grupo->tcapacitacion}}</b></div>
                 <div class="form-group col-md-4">DURACI&Oacute;N: <b>@if ($grupo->dura)
                     {{ $grupo->dura }}
                 @else
@@ -84,22 +84,22 @@
                 <div class="form-group col-md-2">Fecha T&eacute;rmino: <b>{{ $grupo->termino }}</b></div>   <input type="hidden" name="termino" id="termino" value="{{$grupo->termino}}">
                 @if ($grupo->tdias)
                 <div class="form-group col-md-2">TOTAL DIAS: <b>{{$grupo->tdias}}</b></div>
-                <div class="form-group col-md-4">DIAS: <b>{{$grupo->dia}}</b></div> 
+                <div class="form-group col-md-4">DIAS: <b>{{$grupo->dia}}</b></div>
                 @endif
                 <div class="form-group col-md-3">MUNICIPIO: <b>{{$muni}}</b></div>
                 <div class="form-group col-md-3">LOCALIDAD: <b>{{$localidad}}</b></div>
                 <div class="form-group col-md-3">ORGANISMO PUBLICO: <b>{{$grupo->organismo_publico}}</b></div>
-            </div>         
-            
+            </div>
+
             <h5><b>DE LA APERTURA</b></h5>
             <hr />
             @if($munidad)
                 <div class="row bg-light" style="padding:15px;">
                     <div class="form-group col-md-3">COUTA TOTAL: <b>{{ $grupo->costo}}</b></div>
-                    <div class="form-group col-md-3">TIPO CUOTA: <b>{{ $tcuota }}</b></div> 
-                    <div class="form-group col-md-4">MEMORANDUM DE VALIDACION DEL INSTRUCTOR: <b>{{ $grupo->instructor_mespecialidad }}</b></div>                    
-                </div>   
-            @endif 
+                    <div class="form-group col-md-3">TIPO CUOTA: <b>{{ $tcuota }}</b></div>
+                    <div class="form-group col-md-4">MEMORANDUM DE VALIDACION DEL INSTRUCTOR: <b>{{ $grupo->instructor_mespecialidad }}</b></div>
+                </div>
+            @endif
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>INSTRUCTOR DISPONIBLE:</label>
@@ -109,7 +109,7 @@
                         @else
                             <option value="">- SELECCIONAR -</option>
                         @endif
-                        
+
                         @foreach ($instructores as $item)
                             <option value="{{$item->id}}">{{$item->instructor}}</option>
                         @endforeach
@@ -118,7 +118,7 @@
                 <div class="form-group col-md-3">
                     <label>Memor&aacute;ndum de Apertura:</label>
                     <input name='munidad' id='munidad' type="text" class="form-control" aria-required="true" value="@if($munidad){{$munidad}}@else{{old('nombre')}}@endif"/>
-                </div>           
+                </div>
                 <div class="form-group col-md-3">
                     <label>Plantel:</label>
                     {{ Form::select('plantel', $plantel, $grupo->plantel, ['id'=>'plantel','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
@@ -128,20 +128,20 @@
                 <div class="form-group col-md-4">
                     <label>Programa Estrat&eacute;gico:</label>
                     {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
-                </div> 
+                </div>
                 <div class="form-group col-md-2">
                     <label>Convenio General:</label>
                     <input name='cgeneral' id='cgeneral' type="text" class="form-control" aria-required="true" value="{{$convenio['no_convenio']}}" readonly/>
-                </div>  
+                </div>
                 <div class="form-group col-md-2">
-                    <label>Fecha Convenio General:</label>                    
+                    <label>Fecha Convenio General:</label>
                    <input type="date" id="fcgen" name="fcgen" class="form-control"  aria-required="true" value="{{$convenio['fecha_firma']}}" readonly/ >
-                </div>                                             
+                </div>
                 <div class="form-group col-md-3">
                     <label>Sector:</label>
                     <input name='sector' id='sector' type="text" class="form-control" aria-required="true" value="{{$sector}}" readonly/>
                 </div>
-            </div> 
+            </div>
             <div class="form-row" >
                 <div class="form-group col-md-3">
                     <label>Convenio Espec&iacute;fico:</label>
@@ -150,21 +150,21 @@
                 <div class="form-group col-md-3">
                     <label>Fecha Convenio Espec&iacute;fico:</label>
                     <input type="date" id="fcespe" name="fcespe" aria-required="true" class="form-control" value="{{$grupo->fcespe}}">
-                </div>                        
+                </div>
                 <div class="form-group col-md-3">
                      <label>No. Memor&aacute;dum de Exoneraci&oacute;n:</label>
                      <input name='mexoneracion' id='mexoneracion' type="text" class="form-control" aria-required="true" value="{{$grupo->mexoneracion}}" readonly/>
-                </div>  
+                </div>
                 <div class="form-group col-md-3">
                     <label>Domicilio, Lugar o Espacio F&iacute;sico:</label>
                     <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" @if ($exonerado) readonly @endif>
-                </div>             
+                </div>
             </div>
             <div class="form-row" >
                 <div class="form-group col-md-2">
                     <label>Servicio:</label>
                     {{ Form::select('tcurso', $tcurso, $grupo->tipo_curso, ['id'=>'tcurso','class' => 'form-control mr-sm-2'] ) }}
-                </div> 
+                </div>
                 <div class="form-group col-md-2">
                      <label>Medio Virtual:</label>
                      {{ Form::select('medio_virtual', $medio_virtual, $grupo->medio_virtual, ['id'=>'medio_virtual','class' => 'form-control mr-sm-2','disabled'=>$disabled] ) }}
@@ -174,7 +174,7 @@
                      <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual}}" {{$disabled}} />
                 </div>
             </div>
-            <div class="form-row" >            
+            <div class="form-row" >
                 <div class="form-group col-md-12">
                     <label>Observaciones:</label>
                     <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
@@ -186,17 +186,17 @@
                     <label for="file_pago" class="custom-file-label">PDF COMPROBANTE DE PAGO</label>
                 </div>
             </div><br />
-                    
-           
-            <hr/>              
-                
+
+
+            <hr/>
+
             <h4><b>ALUMNOS</b></h4>
             <div class="row">
                 @include('solicitud.apertura.table')
             </div>
-                 
+
         @endif
-    {!! Form::close() !!}    
+    {!! Form::close() !!}
 </div>
 @if (isset($grupo))
 <!-- modal para mostrar el calendario -->
@@ -308,9 +308,9 @@
     </div>
 </div>
 @endif
-    @section('script_content_js')     
-        <script src="{{ asset('js/solicitud/apertura.js') }}"></script>     
-        <script src="{{ asset('edit-select/jquery-editable-select.min.js') }}"></script>    
+    @section('script_content_js')
+        <script src="{{ asset('js/solicitud/apertura.js') }}"></script>
+        <script src="{{ asset('edit-select/jquery-editable-select.min.js') }}"></script>
 
         <script src="{{ asset('fullCalendar/core/main.js') }}" defer></script>
         <script src="{{ asset('fullCalendar/core/locales-all.js') }}" defer></script>
@@ -321,27 +321,27 @@
 
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-        <script language="javascript">  
+        <script language="javascript">
             $(document).ready(function(){
                 $('#medio_virtual').editableSelect();
-                
-                $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura')}}"); $('#frm').submit();}); 
-                $("#regresar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.regresar')}}"); $('#frm').submit();}}); 
+
+                $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.apertura')}}"); $('#frm').submit();});
+                $("#regresar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.regresar')}}"); $('#frm').submit();}});
                 $("#guardar" ).click(function(){
                     validaCERT();
                     if(confirm("Esta seguro de ejecutar la acción?")==true){
-                        $('#frm').attr('action', "{{route('solicitud.apertura.guardar')}}"); 
+                        $('#frm').attr('action', "{{route('solicitud.apertura.guardar')}}");
                         $('#frm').attr('enctype', "multipart/form-data");
                         $('#frm').submit();
                     }
-                }); 
+                });
                 $("#inscribir" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.aceptar')}}"); $('#frm').submit();}});
 
-                $('#dia').keyup(function (){                    
+                $('#dia').keyup(function (){
                     this.value = (this.value + '').replace(/[^LUNES A VIERNES MARTES MIERCOLES JUEVES SABADO Y DOMINGO]/g, '');
                 });
-                
-                
+
+
                 $("#tcurso").change(function(){
                    validaCERT();
                 });
@@ -352,11 +352,11 @@
                         var hfin = $("#hfin").val();
                         var inicio = $("#inicio").val();
                         var termino = $("#termino").val();
-                        if(inicio==termino){ 
+                        if(inicio==termino){
                             var d1= "2014-02-14 "+hfin+":00";
                             var d2 = "2014-02-14 "+hini+":00";
                             var a = new Date(d1);
-                            var b = new Date(d2);                            
+                            var b = new Date(d2);
                             var c = ((a-b)/1000);
                             if(c!=36000){
                                  alert("Para el servicio de CERTIFICACI\u00D3N, se deben cubrir 10 horas. ");
@@ -369,8 +369,8 @@
                     }
                 }
 
-            });       
-        </script>  
+            });
+        </script>
         <script type="text/javascript">
             var calendarEl = document.getElementById('calendar');
             var calendar, idEvento, objEvento;
@@ -411,7 +411,7 @@
                 horafin= document.getElementById("hfin").value;
                 $('#txtHora').val(horahini);
                 $('#txtHoraTermino').val(horafin);
-    
+
                 $('#btnAgregar').prop('disabled', false);
                 $('#btnModificar').prop('disabled', true);
                 $('#btnBorrar').prop('disabled', true);
@@ -424,20 +424,20 @@
                 }
                 calendar = new FullCalendar.Calendar(calendarEl, {
                     plugins: ['dayGrid', 'interaction', 'timeGrid', 'list'],
-    
+
                     header: {
                         left: 'prev,next today',
                         center: 'title',
                         right: 'dayGridMonth, timeGridWeek, timeGridDay',
                     },
-    
+
                     eventClick: function(info) {
                         $('#btnAgregar').prop('disabled', true);
                         $('#btnModificar').prop('disabled', false);
                         $('#btnBorrar').prop('disabled', false);
-    
+
                         // $('#txtTitulo').val(info.event.title);
-    
+
                         // fecha y hora inicial
                         mes = (info.event.start.getMonth() + 1);
                         dia = (info.event.start.getDate());
@@ -449,7 +449,7 @@
                         minutos = (minutos < 10) ? '0' + minutos : minutos;
                         hora = (hora < 10) ? '0' + hora : hora;
                         horario = (hora + ':' + minutos);
-    
+
                         // fecha y hora final
                         mes2 = (info.event.end.getMonth() + 1);
                         dia2 = (info.event.end.getDate());
@@ -461,7 +461,7 @@
                         minutos2 = (minutos2 < 10) ? '0' + minutos2 : minutos2;
                         hora2 = (hora2 < 10) ? '0' + hora2 : hora2;
                         horario2 = (hora2 + ':' + minutos2);
-    
+
                         idEvento = info.event.id;
                         $('#txtId').val(info.event.id);
                         $('#fecha_firma').val(dia + '-' + mes + '-' + anio);
@@ -469,7 +469,7 @@
                         $('#fecha_termino').val(dia2 + '-' + mes2 + '-' + anio2);
                         $('#txtHoraTermino').val(horario2);
                         $('#observaciones_mod').val(info.event.extendedProps.observaciones);
-                    }, 
+                    },
                     events: ("{{ url('/calendario/show') }}" + ('/' + document.getElementById('instructor').value.split(',')[0])),
                 });
                 calendar.setOption('locale', 'es');
@@ -527,7 +527,7 @@
                 isEquals2 = false;
                 objEvento = null;
                 objEvento = recolectarDatos("POST");
-                if ($('#fecha_firma').val() == '' || $('#txtHora').val() == '' || $('#fecha_termino').val() == '' 
+                if ($('#fecha_firma').val() == '' || $('#txtHora').val() == '' || $('#fecha_termino').val() == ''
                     || $('#txtHoraTermino').val() == '') {
                         objEvento = null;
                         $('#titleToast').html('Campos vacios');
@@ -541,7 +541,7 @@
                         $("#msgVolumen").html("La hora de inicio debe ser menor a la hora de termino");
                         $(".toast").toast("show");
                     }
-                        
+
                 }
             });
             function recolectarDatos(method) {
@@ -566,7 +566,7 @@
                 link = ((tipo == 'insert') ? "{{ url('/calendario/guardar') }}" : (tipo == 'update') ?
                     "{{ url('/calendario/update') }}" + accion : "{{ url('/calendario') }}" + accion);
                 tipo2 = (tipo == 'insert') ? 'POST' : (tipo == 'update') ? 'POST' : 'GET';
-    
+
                 $.ajax({
                     type: tipo2,
                     url: link,
@@ -637,8 +637,8 @@
                 isEquals2 = false;
                 objEvento = null;
                 objEvento = recolectarDatos("POST");
-    
-                if ($('#fecha_firma').val() == '' || $('#txtHora').val() == '' || $('#fecha_termino').val() == '' 
+
+                if ($('#fecha_firma').val() == '' || $('#txtHora').val() == '' || $('#fecha_termino').val() == ''
                     || $('#txtHoraTermino').val() == '' || $('#observaciones').val() == '') {
                     $('#titleToast').html('Campos vacios');
                     $("#msgVolumen").html("Todos los campos son requeridos");
@@ -651,7 +651,7 @@
                         $("#msgVolumen").html("La hora de inicio debe ser menor a la hora de termino");
                         $(".toast").toast("show");
                     }
-                } 
+                }
             });
             function popup(){
                 if (document.getElementById('instructor').value) {
@@ -667,6 +667,6 @@
                     console.log('no se selecciono instructor');
                 }
             }
-        </script> 
+        </script>
     @endsection
 @endsection

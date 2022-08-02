@@ -8,24 +8,24 @@ use Carbon\carbon;
 use Carbon\CarbonPeriod;
 
 trait catApertura
-{      
+{
     protected function motivo_arc02(){
         $tcuota= ["REPROGRAMACIÓN FECHA/HORA"=>"REPROGRAMACIÓN FECHA/HORA","CAMBIO DE INSTRUCTOR"=>"CAMBIO DE INSTRUCTOR","ERROR MECANOGRÁFICO"=>"ERROR MECANOGRÁFICO","CANCELACIÓN"=>"CANCELACIÓN"];
         return $tcuota;
-       
+
     }
 
     protected function tcuota(){
         //$tcuota= ["PINS"=>"PAGO DE INSCRIPCION","EXO"=>"EXONERACION TOTAL DE PAGO","EPAR"=>"EXONERACION PARCIAL DE PAGO"];
         $tcuota= ["PINS"=>"PAGO ORDINARIO","EXO"=>"EXONERACION","EPAR"=>"REDUCCION DE CUOTA"];
         return $tcuota;
-       
-    }    
+
+    }
     protected function tinscripcion(){
         //$tinscripcion= ["PAGO DE INSCRIPCION"=>"PAGO ORDINARIO","EXONERACION TOTAL DE PAGO"=>"EXONERACION","EXONERACION PARCIAL DE PAGO"=>"REDUCCION DE CUOTA","OTRO TIPO DE BECA"=>"OTRO TIPO DE BECA"];
         $tinscripcion= ["PAGO ORDINARIO"=>"PAGO ORDINARIO","EXONERACION"=>"EXONERACION","REDUCCION DE CUOTA"=>"REDUCCION DE CUOTA","OTRO TIPO DE BECA"=>"OTRO TIPO DE BECA"];
         return $tinscripcion;
-       
+
     }
     protected function abrinscri(){
         //$abrinscri = ["PAGO DE INSCRIPCION"=>"PI","EXONERACION TOTAL DE PAGO"=>"ET","EXONERACION PARCIAL DE PAGO"=>"EP","OTRO TIPO DE BECA"=>"OT"];
@@ -63,63 +63,63 @@ trait catApertura
     }
     protected function tcurso(){
         $tcurso = ["CURSO"=>"CURSO","CERTIFICACION"=>"CERTIFICACION"];
-        return $tcurso;       
+        return $tcurso;
     }
     protected function medio_virtual(){
         $medio = ["ICATECH VIRTUAL"=>"ICATECH VIRTUAL","JITSI"=>"JITSI","MEET"=>"MEET","TELMEX"=>"TELMEX","SKYPE"=>"SKYPE","ZOOM"=>"ZOOM"];
-        return $medio;       
-    }
-    
-    protected function sector(){
-        $sector = ["PRIVADO"=>"PRIVADO","PUBLICO"=>"PUBLICO","SOCIAL"=>"SOCIAL"];
-        return $sector;       
+        return $medio;
     }
 
-    protected function plantel(){  
+    protected function sector(){
+        $sector = ["PRIVADO"=>"PRIVADO","PUBLICO"=>"PUBLICO","SOCIAL"=>"SOCIAL"];
+        return $sector;
+    }
+
+    protected function plantel(){
         $plantel = ["UNIDAD"=>"UNIDAD DE CAPACITACIÓN","AULA MÓVIL"=>"AULA MÓVIL","ACCIÓN MÓVIL"=>"ACCIÓN MÓVIL", "CAPACITACIÓN EXTERNA"=>"CAPACITACIÓN EXTERNA","A DISTANCIA"=>"A DISTANCIA"];
-        return $plantel;       
+        return $plantel;
     }
 
     protected function efisico(){
         $efisico = ["EN LINEA"=>"EN LINEA","ACCIÓN MÓVIL"=>"ACCIÓN MÓVIL", "UNIDAD DE CAPACITACIÓN"=>"UNIDAD DE CAPACITACIÓN","AULA MÓVIL"=>"AULA MÓVIL", "OTRO"=>"OTRO"];
         return $efisico;
     }
-    
-    protected function dependencia($unidad){  
-        $dependencia = DB::table('convenios')->where('unidades','like','%'.$unidad.'%')->orderby('institucion')->distinct('institucion')->pluck('institucion','institucion');    
-        return $dependencia;       
+
+    protected function dependencia($unidad){
+        $dependencia = DB::table('convenios')->where('unidades','like','%'.$unidad.'%')->orderby('institucion')->distinct('institucion')->pluck('institucion','institucion');
+        return $dependencia;
     }
-    
-    protected function convenio($unidad,$tipo){  
+
+    protected function convenio($unidad,$tipo){
         $convenio = DB::table('convenios')->where('tipo_convenio',$tipo)->where('activo','true')
         ->WHERE('fecha_vigencia','>=',DB::raw("TO_DATE(to_char(CURRENT_DATE,'YYYY-MM-DD'),'YYYY-MM-DD')"))
-        ->where('unidades','like','%'.$unidad.'%')->orderby('no_convenio')->pluck('no_convenio','id');    
-        return $convenio;       
-    }
-    
-    protected function exoneracion($id_unidad){  
-        $exoneracion = DB::table('exoneraciones')->where('activo','true')->whereIn('id_unidad_capacitacion',[$id_unidad,0])->orderby('no_memorandum')->pluck('no_memorandum','no_memorandum');        
-        return $exoneracion;       
+        ->where('unidades','like','%'.$unidad.'%')->orderby('no_convenio')->pluck('no_convenio','id');
+        return $convenio;
     }
 
-    protected function programa(){  
+    protected function exoneracion($id_unidad){
+        $exoneracion = DB::table('exoneraciones')->where('activo','true')->whereIn('id_unidad_capacitacion',[$id_unidad,0])->orderby('no_memorandum')->pluck('no_memorandum','no_memorandum');
+        return $exoneracion;
+    }
+
+    protected function programa(){
         $programa = DB::table('tbl_cursos')->where('programa','!=','0')->where('programa','!=','N')->where('programa', 'not like', '%21%')
-        ->where('programa','!=','NINGUNA')->distinct()->orderby('programa')->pluck('programa','programa');    
-        return $programa;       
+        ->where('programa','!=','NINGUNA')->distinct()->orderby('programa')->pluck('programa','programa');
+        return $programa;
     }
 
-    protected function municipio(){  
-        $municipio = DB::table('tbl_municipios')->where('id_estado','7')->orderby('muni')->pluck('muni','id');    
-        return $municipio;       
+    protected function municipio(){
+        $municipio = DB::table('tbl_municipios')->where('id_estado','7')->orderby('muni')->pluck('muni','id');
+        return $municipio;
     }
 
-    protected function instructor($id){         
+    protected function instructor($id){
         $instructor = DB::table('instructores')
             ->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))
             ->where('id',$id)
             ->first();
 
-        return $instructor;       
+        return $instructor;
     }
 
     protected function instructores($grupo){
@@ -130,9 +130,9 @@ trait catApertura
         $id_curso = $grupo->id;
         $fhini = $grupo->inicio;    //$fhini = '2021-09-01 16:00:00';
         $ffinal = $grupo->termino;    //$ffinal = '2021-09-30 18:00:00';
-        $hini = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5)))); 
+        $hini = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5))));
         $hfin = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 8, 5))));
-        $hinimes = Carbon::parse($fhini)->firstOfMonth();   
+        $hinimes = Carbon::parse($fhini)->firstOfMonth();
         $finmes = Carbon::parse($fhini)->endOfMonth();
         $es_lunes= Carbon::parse($fhini)->is('monday');
         $period = CarbonPeriod::create($fhini,$ffinal);
@@ -157,8 +157,8 @@ trait catApertura
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
             //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
             //->where('especialidad_instructor_curso.activo', true)
-            ->WHERE('fecha_validacion','<',$grupo->inicio)
-            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino);
+            ->WHERE('fecha_validacion','<',$grupo->inicio);
+            // ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino);
             // ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id) as total from
 			// 								    (select id_instructor, id from tbl_cursos
 			// 								    where inicio >= '$hinimes'
@@ -170,7 +170,7 @@ trait catApertura
                                                       where ((date(agenda.start)>='$fhini' and date(agenda.start)<='$ffinal' and cast(agenda.start as time)>='$hini' and cast(agenda.start as time)<'$hfin')
                                                       or (date(agenda.end)>='$fhini' and date(agenda.end)<='$ffinal' and cast(agenda.end as time)>'$hini' and cast(agenda.end as time)<='$hfin'))
                                                       group by id_instructor")])*/
-            
+
             //->orderby('instructor')
             //->pluck('instructor','instructores.id');
             //->groupBy('t.id_instructor','instructores.id')
@@ -179,7 +179,7 @@ trait catApertura
         // foreach ($period as $value) {
         //     $suma = 0;
         //     $a= Carbon::parse($value)->format('d-m-Y 22:00');
-        //     $b= Carbon::parse($value)->format('d-m-Y 00:00');   
+        //     $b= Carbon::parse($value)->format('d-m-Y 00:00');
         //     $instructores_perio = DB::table('instructores')
         //         //->select('instructores.id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))
         //         ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
@@ -352,9 +352,9 @@ trait catApertura
         //     $array1=[];
         //     foreach($period as $pan){
         //         if($pan <= $datefin){
-        //             $total= $total+$segundos_curso; 
+        //             $total= $total+$segundos_curso;
         //         }else{
-        //             $array1[]=$pan; 
+        //             $array1[]=$pan;
         //         }
         //     }
         //     $consulta_fechas= DB::table(DB::raw("(select id_instructor,
@@ -418,7 +418,7 @@ trait catApertura
         //                     if (empty(in_array($value,$id))) {
         //                         $id[]= $value;
         //                     }
-        //                 }  
+        //                 }
         //             if (!empty($array3)) {
         //                 $fechaInicio= Carbon::parse($array3[0])->format('d-m-Y 00:00:00');      //dd($array3);
         //                 $datefin= Carbon::parse($fechaInicio)->format('d-m-Y 22:00:00');
@@ -431,7 +431,7 @@ trait catApertura
         //                     }else{
         //                         $array4[]= $item;
         //                     }
-        //                 } 
+        //                 }
         //                 $consulta_fechas4= DB::table(DB::raw("(select id_instructor,
         //                                                   ( (sum(extract(Epoch from cast(age(agenda.end,agenda.start) as time) )) ) * ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )+ '$total4' as total
         //                                                   from agenda
@@ -470,19 +470,19 @@ trait catApertura
         //                         }
         //                     }
         //                 }
-        //             } 
+        //             }
         //         }
-                
+
         //     }
         // }
         // //CRITERIO 5 MESES
-        // $fivem = [];    
-        // for ($i=-5; $i < 5; $i++) { 
+        // $fivem = [];
+        // for ($i=-5; $i < 5; $i++) {
         //     $mesActivo= Carbon::parse($ffinal)->addMonth($i);   //dd($mesActivo);
         //     $mes = Carbon::parse($mesActivo)->format('d-m-Y');
         //     $mesInicio = Carbon::parse($mes)->firstOfMonth();
         //     $mesFin = Carbon::parse($mes)->endOfMonth();
-        //     $consulta = DB::table(DB::raw('(select id_instructor, 
+        //     $consulta = DB::table(DB::raw('(select id_instructor,
         //                                 count(id_instructor) as total,
         //                                 start,
         //                                 agenda.end
@@ -522,7 +522,7 @@ trait catApertura
         //             foreach ($uno as $key=>$item) {
         //                 if (in_array($uno[$key]['idis'],$dos)) {
         //                     $uno[$key]['conteo'] += 1;
-                            
+
         //                 }
         //                 if (in_array($uno[$key]['idis'],$tres)) {
         //                     $uno[$key]['conteo'] += 1;
@@ -562,7 +562,7 @@ trait catApertura
         //             foreach ($huno as $key=>$item) {
         //                 if (in_array($huno[$key]['idis'],$hdos)) {
         //                     $huno[$key]['conteo'] += 1;
-                            
+
         //                 }
         //                 if (in_array($huno[$key]['idis'],$htres)) {
         //                     $huno[$key]['conteo'] += 1;
@@ -625,7 +625,7 @@ trait catApertura
         //                                                  ->where('end','>=',$b)
         //                                                  ->orderByRaw("extract(hour from start) asc")
         //                                                  ->get();    //dd($consulta_unidad);
-        //             foreach ($consulta_unidad as $fecha) { 
+        //             foreach ($consulta_unidad as $fecha) {
         //                 if ($fecha->id_municipio != $id_muni) {
         //                     $tiempo_distance = 60;  //consulta tabla de tiempos
         //                     $horaInicio= Carbon::parse($fecha->start)->format('H:i');
@@ -681,12 +681,12 @@ trait catApertura
         //         }
         //     }*/
         // }
-        
+
         // foreach ($fivem as $key => $value) {
         //     if (empty(in_array($value,$id))) {
         //         $id[]= $value;
         //     }
-        // } 
+        // }
         $instructores = $instructores//->whereNotIn('instructores.id',$id)
                         /*->where(function ($query){
                             $query->whereExists('instructores.clave_loc', '=', 'TUXTLA GUTIERREZ')
@@ -705,27 +705,27 @@ trait catApertura
                         }else{
                            $instructores = $instructores->take(5)->get();
                         }*/
-                        //dd($instructores);    
+                        //dd($instructores);
         return $instructores;
     }
 
     protected function instructores_disponibles($request){
-        
-        //$id_muni = $grupo->id_muni;   
+
+        //$id_muni = $grupo->id_muni;
         $tipo_curso = $request->tipo;
-        $unidad = $request->unidad;        
+        $unidad = $request->unidad;
         $id_curso = $request->id_curso;
         if($request->inicio)
-            $fhini = $request->inicio; 
+            $fhini = $request->inicio;
         else $fhini = date("Y-m-d");
-       
+
         $ffinal = $request->termino;
         $hini = $request->hini;
         $hfin = $request->hfin;
 
-        //$hini = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5)))); 
+        //$hini = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5))));
         //$hfin = date('H:i',strtotime(str_replace('.','',substr($grupo->horario, 0, 5))));
-        $hinimes = Carbon::parse($fhini)->firstOfMonth();   
+        $hinimes = Carbon::parse($fhini)->firstOfMonth();
         $finmes = Carbon::parse($fhini)->endOfMonth();
         $es_lunes= Carbon::parse($fhini)->is('monday');
         $period = CarbonPeriod::create($fhini,$ffinal);
@@ -770,7 +770,7 @@ trait catApertura
                                                       where ((date(agenda.start)>='$fhini' and date(agenda.start)<='$ffinal' and cast(agenda.start as time)>='$hini' and cast(agenda.start as time)<'$hfin')
                                                       or (date(agenda.end)>='$fhini' and date(agenda.end)<='$ffinal' and cast(agenda.end as time)>'$hini' and cast(agenda.end as time)<='$hfin'))
                                                       group by id_instructor")]);
-            
+
             //->orderby('instructor')
             //->pluck('instructor','instructores.id');
             //->groupBy('t.id_instructor','instructores.id')
@@ -779,7 +779,7 @@ trait catApertura
         foreach ($period as $value) {
             $suma = 0;
             $a= Carbon::parse($value)->format('d-m-Y 22:00');
-            $b= Carbon::parse($value)->format('d-m-Y 00:00');   
+            $b= Carbon::parse($value)->format('d-m-Y 00:00');
             $instructores_perio = DB::table('instructores')
                 //->select('instructores.id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'))
                 ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
@@ -952,9 +952,9 @@ trait catApertura
             $array1=[];
             foreach($period as $pan){
                 if($pan <= $datefin){
-                    $total= $total+$segundos_curso; 
+                    $total= $total+$segundos_curso;
                 }else{
-                    $array1[]=$pan; 
+                    $array1[]=$pan;
                 }
             }
             $consulta_fechas= DB::table(DB::raw("(select id_instructor,
@@ -1018,7 +1018,7 @@ trait catApertura
                             if (empty(in_array($value,$id))) {
                                 $id[]= $value;
                             }
-                        }  
+                        }
                     if (!empty($array3)) {
                         $fechaInicio= Carbon::parse($array3[0])->format('d-m-Y 00:00:00');      //dd($array3);
                         $datefin= Carbon::parse($fechaInicio)->format('d-m-Y 22:00:00');
@@ -1031,7 +1031,7 @@ trait catApertura
                             }else{
                                 $array4[]= $item;
                             }
-                        } 
+                        }
                         $consulta_fechas4= DB::table(DB::raw("(select id_instructor,
                                                           ( (sum(extract(Epoch from cast(age(agenda.end,agenda.start) as time) )) ) * ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) )+ '$total4' as total
                                                           from agenda
@@ -1070,19 +1070,19 @@ trait catApertura
                                 }
                             }
                         }
-                    } 
+                    }
                 }
-                
+
             }
         }
         // //CRITERIO 5 MESES
-        $fivem = [];    
-        for ($i=-5; $i < 5; $i++) { 
+        $fivem = [];
+        for ($i=-5; $i < 5; $i++) {
             $mesActivo= Carbon::parse($ffinal)->addMonth($i);   //dd($mesActivo);
             $mes = Carbon::parse($mesActivo)->format('d-m-Y');
             $mesInicio = Carbon::parse($mes)->firstOfMonth();
             $mesFin = Carbon::parse($mes)->endOfMonth();
-            $consulta = DB::table(DB::raw('(select id_instructor, 
+            $consulta = DB::table(DB::raw('(select id_instructor,
                                         count(id_instructor) as total,
                                         start,
                                         agenda.end
@@ -1122,7 +1122,7 @@ trait catApertura
                     foreach ($uno as $key=>$item) {
                         if (in_array($uno[$key]['idis'],$dos)) {
                             $uno[$key]['conteo'] += 1;
-                            
+
                         }
                         if (in_array($uno[$key]['idis'],$tres)) {
                             $uno[$key]['conteo'] += 1;
@@ -1162,7 +1162,7 @@ trait catApertura
                     foreach ($huno as $key=>$item) {
                         if (in_array($huno[$key]['idis'],$hdos)) {
                             $huno[$key]['conteo'] += 1;
-                            
+
                         }
                         if (in_array($huno[$key]['idis'],$htres)) {
                             $huno[$key]['conteo'] += 1;
@@ -1225,7 +1225,7 @@ trait catApertura
         //                                                  ->where('end','>=',$b)
         //                                                  ->orderByRaw("extract(hour from start) asc")
         //                                                  ->get();    //dd($consulta_unidad);
-        //             foreach ($consulta_unidad as $fecha) { 
+        //             foreach ($consulta_unidad as $fecha) {
         //                 if ($fecha->id_municipio != $id_muni) {
         //                     $tiempo_distance = 60;  //consulta tabla de tiempos
         //                     $horaInicio= Carbon::parse($fecha->start)->format('H:i');
@@ -1281,12 +1281,12 @@ trait catApertura
         //         }
         //     }*/
         // }
-        
+
         // foreach ($fivem as $key => $value) {
         //     if (empty(in_array($value,$id))) {
         //         $id[]= $value;
         //     }
-        // } 
+        // }
         $instructores = $instructores//->whereNotIn('instructores.id',$id)
                         /*->where(function ($query){
                             $query->whereExists('instructores.clave_loc', '=', 'TUXTLA GUTIERREZ')
@@ -1306,7 +1306,7 @@ trait catApertura
                         }else{
                            $instructores = $instructores->take(5)->get();
                         }*/
-                        //dd($instructores);    
+                        //dd($instructores);
         return $instructores;
     }
 
