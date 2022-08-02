@@ -9,18 +9,18 @@
 <style type="text/css">
     @page{margin: 60px 30px 20px; font-size: 9px}
     @font-face {
-        font-family: "Baby sweet";           
+        font-family: "Baby sweet";
         src: url("/fonts/gotham-light.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
 
-    }  
+    }
     body{
         font-family: sans-serif;
     }
     table {
         width: 100%;
-        border-collapse: collapse; 
+        border-collapse: collapse;
     }
     td{
         padding: 0px;
@@ -87,10 +87,10 @@
     <br>
     <div style="border: 1px solid black;">
         <table>
-            
+
                 <tr><td colspan="7" class="variable"><b>DATOS PERSONALES</b></td></tr>
-            
-            
+
+
                 <tr>
                     <td colspan="2" style="padding-top: 5px;"><b> NOMBRE DEL ASPIRANTE: </b></td>
                     <td colspan="2" style="padding-top: 5px;">{{ strtoupper($alumnos->apellido_paterno) }} <br><b> PRIMER APELLIDO</b></td>
@@ -146,7 +146,7 @@
                     <TD colspan="2"></TD>
                     <TD></TD>
                 </tr>
-            
+
         </table>
     </div>
     <br>
@@ -163,7 +163,7 @@
                     <td>CURSO:</td>
                     <td>{{ strtoupper($alumnos->nombre_curso) }}</td>
                     <td>TIPO:</td>
-                    <td>{{strtoupper($alumnos->tipo_curso)}}</td>
+                    <td>{{strtoupper($alumnos->tipocurso)}}</td>
                 </tr>
                 <tr>
                     <td>HORARIO: </td>
@@ -179,7 +179,7 @@
                     <td colspan="4"><b>DOCUMENTACIÓN ENTREGADA: </b><br>
                                 @if($alumnos->chk_acta_nacimiento == TRUE || $alumnos->chk_curp == TRUE)(X) @else() ( ) @endif COPIA DE ACTA DE NACIMIENTO (NO MAYOR A 2 AÑOS) O CURP (VIGENCIA UN AÑO)
                             <br>@if($alumnos->chk_comprobante_ultimo_grado == TRUE)(X) @else() ( ) @endif COPIA COMPROBANTE DEL ULTIMO GRADO DE ESTUDIOS EN CASO DE CONTAR CON EL
-                            <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA DIGITAL O IMPRESA</se> 
+                            <br>@if($alumnos->chk_fotografia == TRUE)(X) @else() ( ) @endif FOTOGRAFÍA DIGITAL O IMPRESA</se>
                 </tr>
                 <tr>
                     <td colspan="4"><b>EXTRANJEROS ANEXAR</b></td>
