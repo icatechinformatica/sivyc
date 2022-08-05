@@ -376,26 +376,26 @@ class grupoController extends Controller
                         $conteo += 1;
                     }
                 }
-                foreach ($alumnos as $a) {
-                    if ($a->mod=='CAE' AND $a->abrinscri!='PI') {
-                        $exoneraciones = DB::table('alumnos_registro')
-                            ->where('id_pre',$a->id_pre)
-                            ->where('eliminado',false)
-                            ->where('ejercicio',date('y'))
-                            ->where('abrinscri','!=','PI')
-                            ->where('mod','CAE')
-                            ->where('turnado','!=','VINCULACION')
-                            ->value(DB::raw('count(id)'));
-                        if ($exoneraciones > 2) {
-                            if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
-                                $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
-                            } else {
-                                $message = "El alumno excede el limite de exoneraciones permitidas " .$a->curp. ".";
-                                return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
-                            }
-                        }
-                    }
-                }
+                // foreach ($alumnos as $a) {
+                //     if ($a->mod=='CAE' AND $a->abrinscri!='PI') {
+                //         $exoneraciones = DB::table('alumnos_registro')
+                //             ->where('id_pre',$a->id_pre)
+                //             ->where('eliminado',false)
+                //             ->where('ejercicio',date('y'))
+                //             ->where('abrinscri','!=','PI')
+                //             ->where('mod','CAE')
+                //             ->where('turnado','!=','VINCULACION')
+                //             ->value(DB::raw('count(id)'));
+                //         if ($exoneraciones > 2) {
+                //             if (DB::table('alumnos_pre')->where('id',$a->id_pre)->value('permiso_exoneracion')==true) {
+                //                 $quitar_permiso = DB::table('alumnos_pre')->where('id',$a->id_pre)->update(['permiso_exoneracion'=>false]);
+                //             } else {
+                //                 $message = "El alumno excede el limite de exoneraciones permitidas " .$a->curp. ".";
+                //                 return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
+                //             }
+                //         }
+                //     }
+                // }
                 $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
             }
         }
@@ -488,14 +488,14 @@ class grupoController extends Controller
                             } else {
                                 $message = "Los generos no coiniciden..";
                             }
-                            
+
                         } else {
                             $message ="La edad del alumno invalida..";
                         }
-                        
+
                     } else {
                         $message = "Alumno no registrado " . $request->busqueda1 . ".";
-                    } 
+                    }
                 } else {
                     $message = "Alumno no registrado " . $request->curpo . ".";
                 }
