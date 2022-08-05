@@ -655,7 +655,7 @@ class aperturaController extends Controller
         return response()->json($id);
     }
     public function storeCalendar(Request $request) {
-
+        set_time_limit(0);
         $isEquals = false;
         $isEquals2 = false;
         $isEquals3 = false;
