@@ -157,8 +157,8 @@ trait catApertura
             ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
             //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
             //->where('especialidad_instructor_curso.activo', true)
-            ->WHERE('fecha_validacion','<',$grupo->inicio);
-            // ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino);
+            ->WHERE('fecha_validacion','<',$grupo->inicio)
+            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$grupo->termino);
             // ->whereNotIn('instructores.id', [DB::raw("select id_instructor from (select id_instructor, count(id) as total from
 			// 								    (select id_instructor, id from tbl_cursos
 			// 								    where inicio >= '$hinimes'
