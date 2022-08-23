@@ -181,7 +181,15 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="custom-file form-group col-md-3">
+                <div class="form-group col-md-2">
+                    <label for="">Folio del pago</label>
+                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="">Fecha del pago</label>
+                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}">
+                </div>
+                <div class="custom-file form-group col-md-3 mt-4">
                     <input type="file" id="file_pago" name="file_pago" accept="application/pdf" class="custom-file-input"/>
                     <label for="file_pago" class="custom-file-label">PDF COMPROBANTE DE PAGO</label>
                 </div>
