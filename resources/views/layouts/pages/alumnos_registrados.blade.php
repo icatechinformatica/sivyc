@@ -4,7 +4,12 @@
 @section('title', 'Alumnos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
-    <div class="container g-pt-50">
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+<link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
+<div class="card-header">
+    PREINSCRIPCIÓN
+</div>
+<div class="card card-body" style=" min-height:450px;">
         @if (Session::has('success'))
             <div class="alert alert-success">
                 {{ Session::get('success') }}
@@ -35,7 +40,7 @@
         </div>
         <hr style="border-color:dimgray">
 
-            <table  id="table-instructor" class="table table-bordered Datatables">
+            <table class="table table-bordered">
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>
