@@ -41,7 +41,7 @@
 </div>
 
  <div class="col-md-12 text-right">    
-    @if ($grupo->comprobante_pago)
+    @if ($comprobante)
     <a href="{{$comprobante}}" target="_blank" class="btn  bg-warning">IMPRIMIR COMPROBANTE DE PAGO</a>
     @endif            
     @if($grupo->clave=='0' AND !$grupo->status_curso AND (!$grupo->status_solicitud OR $grupo->status_solicitud=='RETORNO'))

@@ -161,13 +161,13 @@
         <script src="{{asset('js/preinscripcion/tableAlumnos.js')}}"></script>        	
         <script language="javascript">            
             $(document).ready(function(){    
-                $("#agregar").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.save')}}"); $('#frm').submit(); });
-                $("#nuevo").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.nuevo')}}"); $('#frm').submit(); });
-                $("#update").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.update')}}"); $('#frm').submit(); });
-                $("#turnar").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.turnar')}}"); $('#frm').submit(); });
+                $("#agregar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.save')}}",'target':'_self'}); $('#frm').submit(); });
+                $("#nuevo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.nuevo')}}",'target':'_self'}); $('#frm').submit(); });
+                $("#update").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'}); $('#frm').submit(); });
+                $("#turnar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'}); $('#frm').submit(); });
                 $("#comprobante").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.comprobante')}}"); $('#frm').submit(); });
-                $("#btnremplazo").click(function(){if (confirm("Est\u00E1 seguro de ejecutar la acci\u00F3n?")==true) {$('#frm').attr('action', "{{route('preinscripcion.grupo.remplazar')}}"); $('#frm').submit();}}); 
-
+                $("#btnremplazo").click(function(){if (confirm("Est\u00E1 seguro de ejecutar la acci\u00F3n?")==true) {$('#frm').attr({'action':"{{route('preinscripcion.grupo.remplazar')}}",'target':'_self'}); $('#frm').submit();}});
+                $("#generar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.generar')}}", 'target':'_target'}); $('#frm').submit(); });
             });
         </script>
     @endsection

@@ -77,7 +77,8 @@ class aperturaController extends Controller
                 'tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),'ar.id_muni','ar.clave_localidad','ar.organismo_publico','ar.id_organismo','tc.status_solicitud',
                 'tc.id_municipio','tc.status_curso','tc.plantel', 'tc.dia', 'tdias', 'id_vulnerable', 'ar.turnado','tc.instructor_mespecialidad','tc.dura',
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
-                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','c.rango_criterio_pago_maximo as cp')
+                'tc.id_instructor','tc.tipo','tc.link_virtual','tc.munidad','tc.costo','tc.tipo','tc.status','tc.id','e.clave as clave_especialidad','tc.arc','tc.tipo_curso','ar.id_cerss','c.rango_criterio_pago_maximo as cp',
+                'ar.folio_pago','ar.fecha_pago')
                 ->join('alumnos_pre as ap','ap.id','ar.id_pre')
                 ->join('cursos as c','ar.id_curso','c.id')
                 ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
@@ -86,13 +87,16 @@ class aperturaController extends Controller
                 ->where('ar.folio_grupo',$valor);
             if($_SESSION['unidades']) $grupo = $grupo->whereIn('ar.unidad',$_SESSION['unidades']);
             $grupo = $grupo->groupby('ar.mod','ar.id_curso','ar.unidad','ar.horario', 'ar.folio_grupo','ar.tipo_curso','ar.horario','tc.arc','ar.id_cerss','ar.clave_localidad','ar.organismo_publico','ar.id_organismo',
-                'e.id','a.formacion_profesional','tc.id','c.id','ar.inicio','ar.termino','ar.comprobante_pago','ar.id_muni','ar.id_vulnerable','ar.turnado')->first(); //dd($grupo);
+                'e.id','a.formacion_profesional','tc.id','c.id','ar.inicio','ar.termino','ar.comprobante_pago','ar.id_muni','ar.id_vulnerable','ar.turnado',
+                'ar.folio_pago','ar.fecha_pago')->first(); //dd($grupo);
 
             // var_dump($grupo);exit;
             if($grupo){
                 $_SESSION['folio'] = $grupo->folio_grupo;
                 $anio_hoy = date('y');
-                $comprobante = $this->path_files.$grupo->comprobante_pago;
+                if ($grupo->comprobante_pago) {
+                    $comprobante = $this->path_files.$grupo->comprobante_pago;
+                }
                 $muni = DB::table('tbl_municipios')->where('id_estado','7')->where('id',$grupo->id_muni)->orderby('muni')->pluck('muni')->first();
                 $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
 
@@ -376,8 +380,12 @@ class aperturaController extends Controller
                                     'fcespe' => $request->fcespe,
                                     'munidad' => $request->munidad,
                                     'plantel' => $request->plantel,
-                                    'comprobante_pago'=>$documentUrl]
+                                    'comprobante_pago'=>$documentUrl,
+                                    'folio_pago'=>$request->folio_pago,
+                                    'fecha_pago'=>$request->fecha_pago]
                                 );
+                                $fpago = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['folio_pago'=>$request->folio_pago,
+                                'fecha_pago'=>$request->fecha_pago]);
                             }else {
                                 $result =  DB::table('tbl_cursos')->where('clave','0')->updateOrInsert(
                                     ['folio_grupo' => $_SESSION['folio']],
@@ -459,8 +467,12 @@ class aperturaController extends Controller
                                     'instructor_tipo_identificacion'=>$instructor->tipo_identificacion,
                                     'instructor_folio_identificacion'=>$instructor->folio_ine,
                                     'num_revision' => $request->munidad,
-                                    'comprobante_pago'=>$documentUrl
+                                    'comprobante_pago'=>$documentUrl,
+                                    'folio_pago'=>$request->folio_pago,
+                                    'fecha_pago'=>$request->fecha_pago
                                 ]);
+                                $fpago = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['folio_pago'=>$request->folio_pago,
+                                'fecha_pago'=>$request->fecha_pago]);
                                 $agenda = DB::table('agenda')->where('id_curso',$_SESSION['folio'])->update(['id_instructor' => $instructor->id]);
                             }
                             if($result)$message = 'Operación Exitosa!!';
