@@ -84,7 +84,7 @@
 </table>
 @if ($activar AND $folio_grupo)
   <div class="form-group col-md-2">
-    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$folio_pago}}">
+    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO DEL COMPROBANTE DE PAGO" value="{{$folio_pago}}">
   </div>
   <div class="form-group col-md-2">
     <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$fecha_pago}}">

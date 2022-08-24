@@ -182,7 +182,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-2">
-                    <label for="">Folio del pago</label>
+                    <label for="">Folio del comprobante de pago</label>
                     <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}">
                 </div>
                 <div class="form-group col-md-2">
