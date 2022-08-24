@@ -40,9 +40,11 @@
                 <thead>
                     <tr>
                         <th scope="col">N° CONTROL</th>
-                        <th width="90px">N° GRUPO</th>
-                        <th scope="col">CURSOS</th>
                         <th scope="col">NOMBRE</th>
+                        <th width="85px">N° GRUPO</th>
+                        <th scope="col">CURSOS</th>
+                        <th scope="col">FECHAS</th>
+                        <th scope="col">HORARIO</th>
                         <th width="100px">ACCIONES</th>
                         @can('alumno.inscrito.edit')
                             <th scope="col">MODIFICAR</th>
@@ -54,9 +56,11 @@
                     @foreach ($alumnos as $itemData)
                         <tr>
                             <td>{{$itemData->no_control}}</td>
+                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
                             <td>{{$itemData->folio_grupo}}</td>
                             <td scope="row">{{ $itemData->nombre_curso }}</td>
-                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
+                            <td scope="row">{{$itemData->inicio}} AL {{$itemData->termino}}</td>
+                            <td scope="row">{{$itemData->horario}}</td>
                             @can('alumno.inscrito.show')
                                 <td>
                                     <a href="{{route('alumnos.inscritos.detail', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER REGISTRO">
@@ -64,7 +68,6 @@
                                     </a>
                                 </td>
                             @endcan
-
                             @can('alumno.inscrito.edit')
                                 <td>
                                     <a href="{{route('alumnos.update.registro', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
@@ -72,7 +75,6 @@
                                     </a>
                                 </td>
                             @endcan
-
                             <td>
                                 @if ($itemData->es_cereso == true)
                                     <a href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID DE CERSS" target="_blank">
