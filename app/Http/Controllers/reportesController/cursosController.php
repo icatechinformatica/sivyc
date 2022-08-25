@@ -175,11 +175,11 @@ class cursosController extends Controller
 
             if($curso){
                 $consec_curso = $curso->id_curso;
-                $fecha_termino = $curso->termino;
+                $fecha_inicio = $curso->inicio;
                 $alumnos = DB::table('tbl_inscripcion as i')
                 ->select(
                     'i.matricula','i.alumno','i.sexo','i.escolaridad','i.discapacidad','i.abrinscri', 'i.id_gvulnerable',
-                        DB::raw("EXTRACT(year from (age('".$fecha_termino."',i.fecha_nacimiento))) as edad"),
+                        DB::raw("EXTRACT(year from (age('".$fecha_inicio."',i.fecha_nacimiento))) as edad"),
                         DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado")
                 )->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
 
@@ -217,11 +217,11 @@ class cursosController extends Controller
             //echo $curso->id; exit;
             if($curso){
                 $consec_curso = $curso->id_curso;
-                $fecha_termino = $curso->termino;
+                $fecha_inicio = $curso->inicio;
                 $alumnos = DB::table('tbl_inscripcion as i')
                     ->select(
                         'i.matricula','i.alumno','i.sexo','i.escolaridad','i.discapacidad','i.abrinscri', 'i.id_gvulnerable',
-                            DB::raw("EXTRACT(year from (age('".$fecha_termino."',i.fecha_nacimiento))) as edad"),
+                            DB::raw("EXTRACT(year from (age('".$fecha_inicio."',i.fecha_nacimiento))) as edad"),
                             DB::raw("(CASE WHEN i.calificacion!='NP' THEN 'X' END) as acreditado"),'f.folio',DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha_expedicion")
                     )->leftjoin('tbl_folios as f','f.id','=','i.id_folio')
                     ->where('i.id_curso',$curso->id)->where('i.status','INSCRITO')->orderby('i.alumno')->get();
