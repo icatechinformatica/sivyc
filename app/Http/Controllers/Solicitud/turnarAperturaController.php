@@ -55,8 +55,7 @@ class turnarAperturaController extends Controller
  			from agenda
 			where id_curso = tc.folio_grupo) as t) as horas_agenda"),
                                                             'tc.*',DB::raw("'$opt' as option"),'ar.turnado as turnado_solicitud',
-                                                            DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"),
-                                                            DB::raw("date(tc.inicio + cast('2 days' as interval)) as extemporaneo"))
+                                                            DB::raw("date(tc.termino + cast('14 days' as interval)) as soltermino"))
                                                             ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo');
                 if($opt == 'ARC01'){ 
                    $grupos = $grupos->whereRaw("(tc.num_revision = '$memo' OR (tc.munidad = '$memo'))");
@@ -74,8 +73,23 @@ class turnarAperturaController extends Controller
                 if($opt == 'ARC01' AND $grupos[0]->file_arc01) $file =  $this->path_files.$grupos[0]->file_arc01;
                 elseif($opt == 'ARC02' AND $grupos[0]->file_arc02) $file =  $this->path_files.$grupos[0]->file_arc02;
                 foreach ($grupos as $grupo) {
-                    if ($opt == 'ARC01' AND ($grupo->extemporaneo < date('Y-m-d'))) {
-                        $extemporaneo = true;
+                    if ($opt == 'ARC01') {
+                        $dia_sem = intval(date('N', strtotime($grupo->inicio)));
+                        if (($dia_sem >= 4) AND ($dia_sem <= 6)) {
+                            $add = 4;
+                        } elseif ($dia_sem==7) {
+                            $add = 3;
+                        } else {
+                            $add = 2;
+                        }
+                        $dias_fes = DB::table('dias_inhabiles')->where('fecha','>=',$grupo->inicio)
+                            ->where('fecha','<=', date('Y-m-d', strtotime($grupo->inicio. (' + '.$add.' days'))))
+                            ->value(DB::raw('count(id)'));
+                        $sum = $add + $dias_fes;
+                        $dia_ext = date('Y-m-d', strtotime($grupo->inicio. (' + '.$sum.' days')));
+                        if ($dia_ext < date('Y-m-d')) {
+                            $extemporaneo = true;
+                        }
                     } elseif ($opt == 'ARC02') {
                         $interval = (Carbon::parse($grupo->termino)->diffInDays($grupo->inicio))/2; 
                         $interval = intval(ceil($interval));
@@ -142,25 +156,38 @@ class turnarAperturaController extends Controller
                 if($file_result){
                     switch($_SESSION['opt']){
                         case "ARC01":
-                            $cursos = DB::table('tbl_cursos')->select('tbl_cursos.*',DB::raw("date(tbl_cursos.inicio + cast('2 days' as interval)) as extemporaneo"))->where('munidad',$_SESSION['memo'])->get();
+                            $cursos = DB::table('tbl_cursos')->select('tbl_cursos.*')->where('munidad',$_SESSION['memo'])->get();
                             foreach ($cursos as $key => $value) {
                                 if ($value->fecha_arc01 == null) {
                                     $message = "La fecha del arc 01 no se ha generado, genere el memorandum pdf.";
                                     return redirect('solicitud/apertura/turnar')->with('message',$message);
                                 }
-                                if ( $value->extemporaneo < date('Y-m-d')) {
+                                $dia_sem = intval(date('N', strtotime($value->inicio)));
+                                if (($dia_sem >= 4) AND ($dia_sem <= 6)) {
+                                    $add = 4;
+                                } elseif ($dia_sem==7) {
+                                    $add = 3;
+                                } else {
+                                    $add = 2;
+                                }
+                                $dias_fes = DB::table('dias_inhabiles')->where('fecha','>=',$value->inicio)
+                                    ->where('fecha','<=', date('Y-m-d', strtotime($value->inicio. (' + '.$add.' days'))))
+                                    ->value(DB::raw('count(id)'));
+                                $sum = $add + $dias_fes;
+                                $dia_ext = date('Y-m-d', strtotime($value->inicio. (' + '.$sum.' days')));
+                                if ($dia_ext < date('Y-m-d')) {
                                     foreach ($request->motivo as $m => $motivo) {
+                                        foreach ($request->mrespuesta as $i => $x) {
+                                            if (($i == $value->id) AND ($x == null)) {
+                                                $message = "Escriba la razón extemporaneo.";
+                                                return redirect('solicitud/apertura/turnar')->with('message',$message);
+                                            }
+                                        }
                                         if (($value->id == $m) AND ($motivo == null)) {
                                             $message = "Seleccione el motivo extemporaneo.";
                                             return redirect('solicitud/apertura/turnar')->with('message',$message);
                                         }else {
                                             $extemporaneo = true;
-                                        }
-                                    }
-                                    foreach ($request->mrespuesta as $i => $x) {
-                                        if (($i == $value->id) AND ($x == null)) {
-                                            $message = "Escriba la razón extemporaneo.";
-                                            return redirect('solicitud/apertura/turnar')->with('message',$message);
                                         }
                                     }
                                 }
