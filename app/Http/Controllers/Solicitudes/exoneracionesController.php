@@ -213,7 +213,7 @@ class exoneracionesController extends Controller
                                     DB::raw("to_char(DATE (tc.termino)::date, 'DD-MM-YYYY') as termino"),
                                     'tc.mujer','tc.hombre','e.fini','e.ffin','e.nrevision',
                                     'tc.nombre as instructor','e.tipo_exoneracion','e.no_convenio','e.noficio',DB::raw("to_char(DATE (e.foficio)::date, 'DD-MM-YYYY') as foficio"),
-                                    'e.razon_exoneracion','e.observaciones',
+                                    'e.razon_exoneracion','e.observaciones','tc.hini','tc.hfin',
                                     'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia',
                                     'tc.folio_grupo','e.no_memorandum',DB::raw("to_char(DATE (e.fecha_memorandum)::date, 'DD-MM-YYYY') as fecha_memorandum"))
                             ->leftJoin('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
@@ -223,7 +223,7 @@ class exoneracionesController extends Controller
                             ->groupBy('tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','tc.mujer','tc.hombre','e.fini','e.ffin',
                             'tc.nombre','e.tipo_exoneracion','e.no_convenio','e.noficio','e.foficio','e.razon_exoneracion','e.observaciones',
                             'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia','tc.folio_grupo',
-                            'e.no_memorandum','e.fecha_memorandum','e.nrevision')
+                            'e.no_memorandum','e.fecha_memorandum','e.nrevision','tc.hini','tc.hfin')
                             ->get();    //dd($cursos);
             $reg_unidad = DB::table('tbl_unidades')->select('ubicacion','dgeneral','dunidad','academico','vinculacion','dacademico','pdgeneral','pdacademico',
                                 'pdunidad','pacademico','pvinculacion','municipio')
@@ -239,10 +239,11 @@ class exoneracionesController extends Controller
                                 ->leftJoin('alumnos_pre as ap','ar.id_pre','=','ap.id')
                                 ->where('ar.folio_grupo',$value->folio_grupo)
                                 ->get();
+                $horario = date('H:i', strtotime(str_replace(['a.m.','p.m.'],['am','pm'],$value->hini))).' A '.date('H:i', strtotime(str_replace(['a.m.','p.m.'],['am','pm'],$value->hfin)));
                 $data[$key]['curso'] = $value->curso;
                 $data[$key]['mod'] = $value->mod;
                 $data[$key]['dura'] = $value->dura;
-                $data[$key]['horario'] = $value->horario;
+                $data[$key]['horario'] = $horario;
                 $data[$key]['inicio'] = $value->inicio;
                 $data[$key]['termino'] = $value->termino;
                 if ($value->tcapacitacion=='PRESENCIAL') {
