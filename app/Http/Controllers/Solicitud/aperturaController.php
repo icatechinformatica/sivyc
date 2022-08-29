@@ -387,24 +387,39 @@ class aperturaController extends Controller
                             $documentUrl = $grupo->comprobante_pago;
                         }
                         if ($exonerado) {
-                            $result = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(
-                                ['folio_grupo' => $_SESSION['folio']],
-                                [
-                                    'nota' => $request->observaciones,
-                                    'programa' => $request->programa,
-                                    'cespecifico' => strtoupper($request->cespecifico),
-                                    'fcespe' => $request->fcespe,
-                                    'munidad' => $request->munidad,
-                                    'plantel' => $request->plantel,
-                                    'comprobante_pago' => $documentUrl,
+                            $instru = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio'])->value('id_instructor');
+                            if ($instructor->id == $instru) {
+                                $result = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(
+                                    ['folio_grupo' => $_SESSION['folio']],
+                                    [
+                                        'nota' => $request->observaciones,
+                                        'programa' => $request->programa,
+                                        'cespecifico' => strtoupper($request->cespecifico),
+                                        'fcespe' => $request->fcespe,
+                                        'munidad' => $request->munidad,
+                                        'plantel' => $request->plantel,
+                                        'comprobante_pago' => $documentUrl,
+                                        'folio_pago' => $request->folio_pago,
+                                        'fecha_pago' => $request->fecha_pago,
+                                        'cp' => $cp,
+                                        'nombre' => $instructor->instructor,
+                                        'curp' => $instructor->curp,
+                                        'rfc' => $instructor->rfc,
+                                        'id_instructor' => $instructor->id,
+                                        'modinstructor' => $tipo_honorario,
+                                        'instructor_escolaridad' => $instructor->escolaridad,
+                                        'instructor_titulo' => $instructor->titulo,
+                                        'instructor_sexo' => $instructor->sexo,
+                                        'instructor_mespecialidad' => $instructor->mespecialidad,
+                                        'instructor_tipo_identificacion' => $instructor->tipo_identificacion,
+                                        'instructor_folio_identificacion' => $instructor->folio_ine
+                                    ]
+                                );
+                                $fpago = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio'])->update([
                                     'folio_pago' => $request->folio_pago,
                                     'fecha_pago' => $request->fecha_pago
-                                ]
-                            );
-                            $fpago = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio'])->update([
-                                'folio_pago' => $request->folio_pago,
-                                'fecha_pago' => $request->fecha_pago
-                            ]);
+                                ]);
+                            }
                         } else {
                             $result =  DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(
                                 ['folio_grupo' => $_SESSION['folio']],
