@@ -45,11 +45,8 @@ class CursosController extends Controller
     public function store(Request $request)
     {
         //
-        try {
-            //code
-            /*$validador = Validator::make($request->all(), [
-
-            ]);*/
+       /* try {
+            
 
                 # enviar o generar codigo que si funciona
                 $Curso= new Curso();
@@ -131,7 +128,7 @@ class CursosController extends Controller
                 return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
-        }
+        }*/
     }
 
     /**
