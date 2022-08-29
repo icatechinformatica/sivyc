@@ -533,6 +533,7 @@
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 <script>
     function local() {
         // var x = document.getElementById("municipio").value;
