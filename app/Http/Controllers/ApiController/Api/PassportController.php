@@ -77,8 +77,8 @@ class PassportController extends Controller
             'password'=> $request->password
         ];
 
-        config(['auth.guards.api_sice.driver'=>'session']); 
-        
+        config(['auth.guards.api_sice.driver'=>'session']);
+
         if (!Auth::guard('api_sice')->attempt($credentials)) {
             # modificaciones de una condicion
             return response()->json(['error'=>'No autorizado'], 422);

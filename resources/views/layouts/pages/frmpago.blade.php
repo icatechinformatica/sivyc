@@ -101,4 +101,5 @@
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 @endsection

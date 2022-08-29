@@ -170,9 +170,9 @@ class CursosController extends Controller
             //return response()->json($request->all(), 200);
             //exit;
             //$Cursos= new Curso();
-            //$cursosArray = 
-            
-                DB::table('tbl_cursos')->where('id', $id)->update(                
+            //$cursosArray =
+
+                DB::table('tbl_cursos')->where('id', $id)->update(
                 [
                 /*'cct' => trim($request->cct),
                 'unidad' => trim($request->unidad),
