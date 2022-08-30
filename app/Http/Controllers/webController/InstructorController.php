@@ -31,27 +31,65 @@ use App\Exports\FormatoTReport;
 class InstructorController extends Controller
 {
     public function prueba()
-    {
-        $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
+    {$ejercicio = '2022'; $fecha1= '01-01-2022'; $fecha2='30/08/2022';
 
-        foreach ($idesin as $key => $cadwell)
-        {
-            $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
-                          ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
-                          ->WHERE('activo', '=', TRUE)
-                          ->OrderBy('curso_id', 'ASC')
-                          ->GET();
+        $desercion = null;
 
-            $array = [];
-            foreach ($cursos as $data)
-            {
-                array_push($array, $data->curso_id);
-            }
+        $data_total_ze = DB::table('tbl_unidades as u')
+                 ->select(DB::raw('MAX(poa.id) as poa_id'),'u.ubicacion as unidad',DB::raw('sum(poa.total_cursos) as cursos_programados'),
+                 DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN 1 ELSE 0 END)  as cursos_autorizados"),
+                 DB::raw('count(ts.*) as suficiencia_autorizada'),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
+                 DB::raw('MAX(poa.total_horas) as horas_programadas'),
+                 DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN tc.dura ELSE 0 END)  as horas_impartidas"),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END )- sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as egresados'),
+                 DB::raw("sum(CASE WHEN tc.proceso_terminado=true THEN tc.dura ELSE 0 END)  as horas_reportadas"),
+                 DB::raw("'-1' as plantel"),'u.ze',DB::raw("'poa.ze' as poa_ze"),DB::raw("'2' as orden")
+                 )
+                 ->leftjoin('poa', function ($join) use($ejercicio){
+                     $join->on('poa.tbl_unidades_unidad','=','u.unidad')
+                     ->where('poa.ejercicio',$ejercicio)->where('poa.id_unidad','1')
+                     ->where('poa.id_plantel','>',0);
 
-            especialidad_instructor::WHERE('id', '=', $cadwell->id)
-                                ->update(['cursos_impartir' => $array]);
-        }
-        dd('Lock&Load');
+                 })
+                 ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
+                     $join->on('tc.unidad','=','u.unidad')
+                     ->whereBetween('fecha_apertura', [$fecha1, $fecha2])
+                     ->leftjoinSub($desercion, 'd', function($join){
+                         $join->on('tc.id','=','d.id_curso');
+                     })
+                     ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
+                         $join->on('f.id_cursos','=','tc.id')
+                         ->leftjoin('tabla_supre as ts','ts.id','=','f.id_supre')
+                         ->where('ts.status','Validado')
+                         ->whereBetween('fecha_validacion', [$fecha1, $fecha2]);
+                     }) ;
+                 })
+                //  ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
+                 ->groupby('u.ubicacion','u.ze');
+
+        // $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
+
+        // foreach ($idesin as $key => $cadwell)
+        // {
+        //     $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
+        //                   ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
+        //                   ->WHERE('activo', '=', TRUE)
+        //                   ->OrderBy('curso_id', 'ASC')
+        //                   ->GET();
+
+        //     $array = [];
+        //     foreach ($cursos as $data)
+        //     {
+        //         array_push($array, $data->curso_id);
+        //     }
+
+        //     especialidad_instructor::WHERE('id', '=', $cadwell->id)
+        //                         ->update(['cursos_impartir' => $array]);
+        // }
+        // dd('Lock&Load');
     }
 
     public function index(Request $request)
