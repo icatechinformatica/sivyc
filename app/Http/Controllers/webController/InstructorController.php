@@ -33,10 +33,12 @@ class InstructorController extends Controller
     public function prueba()
     {$ejercicio = '2022'; $fecha1= '01-01-2022'; $fecha2='30/08/2022';
 
-        $desercion = null;
+        $desercion = DB::table('tbl_inscripcion as d')
+        ->select('d.id_curso',DB::raw("sum(CASE WHEN d.status= 'INSCRITO' and d.calificacion='NP' THEN 1 ELSE 0 END)  as desercion"))
+        ->groupby('d.id_curso');;
 
         $data_total_ze = DB::table('tbl_unidades as u')
-                 ->select(DB::raw('MAX(poa.id) as poa_id'),'u.ubicacion as unidad',DB::raw('sum(poa.total_cursos) as cursos_programados'),
+                 ->select(DB::raw('MAX(poa.id) as poa_id'),'u.ubicacion as unidad','xpoa.xpoatc AS cursos_programados',
                  DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN 1 ELSE 0 END)  as cursos_autorizados"),
                  DB::raw('count(ts.*) as suficiencia_autorizada'),
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
@@ -46,7 +48,7 @@ class InstructorController extends Controller
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END )- sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as egresados'),
                  DB::raw("sum(CASE WHEN tc.proceso_terminado=true THEN tc.dura ELSE 0 END)  as horas_reportadas"),
-                 DB::raw("'-1' as plantel"),'u.ze',DB::raw("'poa.ze' as poa_ze"),DB::raw("'2' as orden")
+                 DB::raw("'-1' as plantel"),'xpoa.ze',DB::raw("'poa.ze' as poa_ze"),DB::raw("'2' as orden")
                  )
                  ->leftjoin('poa', function ($join) use($ejercicio){
                      $join->on('poa.tbl_unidades_unidad','=','u.unidad')
@@ -54,6 +56,13 @@ class InstructorController extends Controller
                      ->where('poa.id_plantel','>',0);
 
                  })
+                 ->leftjoin(DB::raw("(select MAX(poa.id) AS xpoaid, SUM(poa.total_cursos) as xpoatc, tbl_unidades.ze
+                    FROM tbl_unidades
+                    LEFT JOIN poa ON poa.tbl_unidades_unidad = tbl_unidades.unidad
+                    WHERE poa.ejercicio = '2022'
+                    AND poa.id_unidad = '1'
+                    AND poa.id_plantel > 0
+                    GROUP BY tbl_unidades.ze) AS xpoa"), 'xpoa.ze', '=', 'u.ze')
                  ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
                      $join->on('tc.unidad','=','u.unidad')
                      ->whereBetween('fecha_apertura', [$fecha1, $fecha2])
@@ -68,7 +77,7 @@ class InstructorController extends Controller
                      }) ;
                  })
                 //  ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
-                 ->groupby('u.ubicacion','u.ze');
+                 ->groupby('u.ubicacion','xpoa.ze','xpoa.xpoatc'); dd($data_total_ze);
 
         // $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
 
