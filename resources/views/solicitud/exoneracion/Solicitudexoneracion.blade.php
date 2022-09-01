@@ -115,6 +115,7 @@
                         <th rowspan="2">SERVICIO</th>
                         <th rowspan="2">UNIDAD DE CAPACITACIÓN Y/O ACCIÓN MÓVIL</th> 
                         <th rowspan="2">NOMBRE DEL CURSO</th>
+                        <th rowspan="2">MOD</th>
                         <th rowspan="2">COSTO</th>
                         <th rowspan="2">HORAS</th>
                         <th rowspan="2">FECHA INICIO</th>       
@@ -146,6 +147,7 @@
                         <td>{{$item->tipo_curso}}</td>
                         <td>{{$item->unidad}}</td>
                         <td>{{$item->curso}}</td>
+                        <td>{{$item->mod}}</td>
                         <td>{{$item->costo}}</td>
                         <td>{{$item->dura}}</td>
                         <td>{{$item->inicio}}</td>
@@ -169,7 +171,7 @@
             <p style="width: 100%; border: black 1px solid; font-size: 8px; padding: 1px;">
                 GLOSARIO: <br>
                 Tipo de exoneración:&nbsp;&nbsp;EXO <span class="fa-arrow-right"></span> EXONERACIÓN&nbsp;&nbsp;&nbsp;REDU <span class="fa-arrow-right"></span> REDUCCIÓN DE PAGO <br>
-                Razón de la exoneración:&nbsp;&nbsp;MS <span class="fa-arrow-right"></span> MADRES SOLTERAS&nbsp;&nbsp;AM <span class="fa-arrow-right"></span> ADULTOS MAYORES&nbsp;&nbsp;BR <span class="fa-arrow-right"></span> BAJOS RECURSOS&nbsp;&nbsp;D <span class="fa-arrow-right"></span> DISCAPACITADOS&nbsp;&nbsp;PPL <span class="fa-arrow-right"></span> PERSONAS PRIVADAS DE LA LIBERTAD&nbsp;&nbsp;GRS <span class="fa-arrow-right"></span> GRUPOS DE REINSERCIÓN SOCIAL&nbsp;&nbsp;O <span class="fa-arrow-right"></span> OTRO
+                Razón de la exoneración:&nbsp;&nbsp;AM <span class="fa-arrow-right"></span> ADULTOS MAYORES&nbsp;&nbsp;BR <span class="fa-arrow-right"></span> BAJOS RECURSOS&nbsp;&nbsp;D <span class="fa-arrow-right"></span> DISCAPACITADOS&nbsp;&nbsp;MS <span class="fa-arrow-right"></span> MADRES SOLTERAS&nbsp;&nbsp;PPL <span class="fa-arrow-right"></span> PERSONAS PRIVADAS DE LA LIBERTAD&nbsp;&nbsp;GRS <span class="fa-arrow-right"></span> GRUPOS DE REINSERCIÓN SOCIAL&nbsp;&nbsp;O <span class="fa-arrow-right"></span> OTRO
             </p>
             <br>
             <div style="text-align: justify;">Lo anterior, con la finalidad de atender grupos en situación de vulnerabilidad que por sus características presentan desventaja por sexo, estado civil,
@@ -177,7 +179,7 @@
                 y a la convivencia, como  lo señala el artículo 32 de la Ley General de Educación y artículo 23, de los 
                 lineamientos para los procesos de vinculación y capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. <br>
                 Considerando que los costos de los cursos que imparte esta Institución, varían de los $100.00 (Cien pesos 00/100 M.N.) a los $1,200.00 (Mil Doscientos 00/100 M.N.); 
-                según su tipo Oficios, Profesionalización, Especialidad y Salud, así como su clasificación Básico, Medio o Avanzado y duración total de horas de capacitación. <br>
+                según su tipo Oficios, Profesionalización, Especialización y Salud, así como su clasificación Básico, Medio o Avanzado y duración total de horas de capacitación. <br>
                 Se anexa(n) lista de alumnos y solicitud de la parte interesada. <br>
                 Atentamente.
             </div>
@@ -212,7 +214,8 @@
                     <td style="padding: 0px;">
                         <div style="border: black 1px solid;"><br>
                             <b>Con fundamento en el artículo 13</b><br>
-                            <b>Fracción II y XXV, del Reglamento Interno</b><br>
+                            <b>Fracciones II y XXV del Reglamento Interior del Instituto de</b><br>
+                            <b>Capacitación y Vinculación Tecnológica del Estado de Chiapas</b><br>
                             <b>Autoriza</b><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->dgeneral}}.</b> <br>
