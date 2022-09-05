@@ -86,45 +86,7 @@
             <div class="table-responsive-sm">
                 <div align="justify" style="font-size:11px;">
                     En seguimiento a la integración del Formato T del mes de {{$mesReportado2}} del presente
-                    año de su Unidad de Capacitación, recibido el pasado {{$diaArray[0]}} de {{$mesReportado2}} al correo electronico
-                    @switch($reg_unidad->ubicacion)
-                        @case('REFORMA')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('VILLAFLORES')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('TUXTLA')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('TONALA')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('SAN CRISTOBAL')
-                            formatot.icatech.dta@gmail.com
-                            @break
-                        @case('YAJALON')
-                            formatot.icatech.dta@gmail.com
-                            @break
-                        @case('OCOSINGO')
-                            formatot.icatech.dta@gmail.com
-                            @break
-                        @case('CATAZAJA')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @case('TAPACHULA')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @case('JIQUIPILAS')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @case('COMITAN')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @default
-
-                    @endswitch
-                    , le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
+                    año de su Unidad de Capacitación, recibido el pasado {{$diaArray[0]}} de {{$mesReportado2}} al correo electronico {{$correo_institucional}}, le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                     RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
                     digitalizados con firmas y sellos de un total de {{ $sum_total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
                     hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección

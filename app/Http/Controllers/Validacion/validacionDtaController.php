@@ -398,6 +398,7 @@ class validacionDtaController extends Controller {
 
                                 $comentarios_enviados = $_POST['comentarios_enlaces'];
                                 $elabora = Auth::user()->name;
+                                $correo_institucional = Auth::user()->correo_institucional;
                                 $reg_unidad = DB::table('tbl_unidades')->select(
                                     'unidad',
                                     'dunidad',
@@ -414,7 +415,7 @@ class validacionDtaController extends Controller {
                                 )->where('unidad', $unidadSeleccionada)->first();
                                 $leyenda = Instituto::first();
                                 $leyenda = $leyenda->distintivo;
-                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda'));
+                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional'));
                                 return $pdf->download('Memo_Unidad.pdf');
                             } else {
                                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
