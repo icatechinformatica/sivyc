@@ -421,6 +421,10 @@ class aperturaController extends Controller
                                 ]);
                             }
                         } else {
+                            $instru = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio'])->value('id_instructor');
+                            if ($instructor->id <> $instru) {
+                                $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
+                            }
                             $result =  DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(
                                 ['folio_grupo' => $_SESSION['folio']],
                                 [
@@ -511,7 +515,6 @@ class aperturaController extends Controller
                                 'folio_pago' => $request->folio_pago,
                                 'fecha_pago' => $request->fecha_pago
                             ]);
-                            $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->update(['id_instructor' => $instructor->id]);
                         }
                         if ($result) $message = 'Operación Exitosa!!';
                     } else $message = "El instructor no se encuentra disponible en el horario y fecha requerido.";
