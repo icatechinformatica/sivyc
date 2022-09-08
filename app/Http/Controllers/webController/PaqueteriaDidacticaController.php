@@ -155,6 +155,9 @@ class PaqueteriaDidacticaController extends Controller
 
             $contenidoT = 'pregunta' . $i . '-contenidoT';
 
+            if($request->$numPregunta === null)
+                return redirect()->route('paqueteriasDidacticas', $idCurso)->with('warning', 'NO SE PUEDEN GUARDAR LA PREGUNTAS VACIAS!');
+
             if ($request->$numPregunta != null || $request->numPreguntas == 1) {
 
                 if ($request->$tipoPregunta == 'multiple') {
@@ -197,7 +200,7 @@ class PaqueteriaDidacticaController extends Controller
             throw $e;
             DB::rollback();
 
-            return redirect()->route('curso-inicio')->with('error', 'HUBO UN ERROR AL GUARDAR LA PAQUETERIA DIDACTICA!');
+            return redirect()->route('curso-inicio')->with('warnining', 'HUBO UN ERROR AL GUARDAR LA PAQUETERIA DIDACTICA!');
         }
     }
 
