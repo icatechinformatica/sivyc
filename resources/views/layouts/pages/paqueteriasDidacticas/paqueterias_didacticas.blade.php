@@ -270,18 +270,26 @@
     $(document).ready(function() {
         $("#botonCARTADESCPDF").click(function() {
             $('#creacion').attr('action', "{{route('DescargarPaqueteria',$idCurso)}}");
+            $('#creacion').attr('target', "_blank");
+            
             $('#creacion').submit();
         });
         $("#botonEVALALUMNPDF").click(function() {
             $('#creacion').attr('action', "{{route('DescargarEvalAlumno',$idCurso)}}");
+            $('#creacion').attr('target', "_blank");
+            
             $('#creacion').submit();
         });
         $("#botonEVALINSTRUCTORPDF").click(function() {
             $('#creacion').attr('action', "{{route('DescargarEvalInstructor')}}");
+            $('#creacion').attr('target', "_blank}");
+            
             $('#creacion').submit();
         });
         $("#botonMANUALDIDPDF").click(function() {
             $('#creacion').attr('action', "{{route('DescargarManualDidactico',$idCurso)}}");
+            $('#creacion').attr('target', "_blank");
+            
             $('#creacion').submit();
             // $('#alert-files').css('display', 'block');
             // $('#files-msg').text("La generacion de este archivo estara disponible pronto!");
@@ -289,6 +297,13 @@
 
 
     });
+
+    function save(blade) {
+        console.log(blade);
+        var $form = $("#creacion");
+        $form.append("<input type='hidden' name='blade' value='"+blade+"'/>");
+        $('#creacion').submit();
+    }
 </script>
 <script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}"></script>
 

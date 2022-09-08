@@ -305,3 +305,13 @@
     </div>
 </div>
 <!-- Full Height Modal Right -->
+<div class="row">
+    <div class="col-lg-12 margin-tb">
+        <div class="pull-right">
+            <!-- @can('cursos.store') -->
+            
+            <a onclick="save('carta')" type="submit" class="btn btn-primary">Guardar</a>
+            <!-- @endcan -->
+        </div>
+    </div>
+</div>
