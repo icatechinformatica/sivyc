@@ -186,39 +186,20 @@
         };
     }
 
-
-    function SimpleUploadAdapterPlugin(editor) {
-        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-
-            // Configure the URL to the upload script in your back-end here!
-            return new MyUploadAdapter(loader);
-        };
-    }
-
     ClassicEditor
-        .create(document.querySelector('#objetivoespecifico'), {
-
-            language: 'es',
-
-        })
+        .create(document.querySelector('#objetivoespecifico'), {language: 'es',})
         .catch(error => {
             console.error(error);
         });
 
     ClassicEditor
-        .create(document.querySelector('#aprendizajeesperado'), {
-            language: 'es',
-
-        })
+        .create(document.querySelector('#aprendizajeesperado'), {language: 'es',})
         .catch(error => {
             console.error(error);
         });
 
     ClassicEditor
-        .create(document.querySelector('#observaciones'), {
-            language: 'es',
-
-        })
+        .create(document.querySelector('#observaciones'), {language: 'es',})
         .catch(error => {
             console.error(error);
         });

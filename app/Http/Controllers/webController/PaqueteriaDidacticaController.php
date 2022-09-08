@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Str;
 class PaqueteriaDidacticaController extends Controller
 {
     //
@@ -281,16 +281,21 @@ class PaqueteriaDidacticaController extends Controller
 
     public function upload(Request $request)
     {
+      
         if ($request->hasFile('upload')) {
             $originName = $request->file('upload')->getClientOriginalName();
-            $fileName = pathinfo($originName, PATHINFO_FILENAME);
+            $fileName = pathinfo(Str::random(10), PATHINFO_FILENAME);
             $extension = $request->file('upload')->getClientOriginalExtension();
             $fileName = $fileName . '.' . $extension;
+            // dump($fileName, $originName, $extension, $request->file('upload'));
 
             $request->file('upload')->move(public_path('images/paqueterias'), $fileName);
             $url = asset('images/paqueterias/' . $fileName);
             @header('Content-type: text/html; charset=utf-8');
             return response()->json(['url' => $url]);
+        }
+        else{
+            dd('no file');
         }
     }
 }
