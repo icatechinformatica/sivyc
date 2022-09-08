@@ -241,7 +241,7 @@ class aperturaController extends Controller
         if ($_SESSION['folio'] and $_SESSION['grupo'] and $_SESSION['alumnos']) {
             $grupo = $_SESSION['grupo'];   //var_dump($grupo);exit;
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
-            if (DB::table('tbl_cursos')->where('folio_grupo', '!=', $_SESSION['folio'])->whereNotNull('status_solicitud')
+            if (DB::table('tbl_cursos')->where('folio_grupo', '!=', $_SESSION['folio'])->whereRaw("status_solicitud NOT NULL AND status_solicitud != 'RETORNO'")
             ->whereRaw("(munidad = '$request->munidad' or num_revision = '$request->munidad')")->exists()) {
                 return redirect('solicitud/apertura')->with('message', 'El numero de revisión ya esta ocupado.');
             }
