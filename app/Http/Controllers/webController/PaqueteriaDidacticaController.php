@@ -138,17 +138,12 @@ class PaqueteriaDidacticaController extends Controller
 
 
         $i = 0;
-
-        $contPreguntas = 0;
-
-        $auxContPreguntas = $request->numPreguntas;
+        
+        
 
         if($request->blade === 'evaluacion'){
-            while (true) { //ciclo para encontrar las preguntas del formulario
+            foreach($request->toArray() as $key => $value) {
                 $i++;
-                if ($contPreguntas == $auxContPreguntas)
-                    break;
-    
                 $numPregunta = 'pregunta' . $i;
                 $tipoPregunta = 'pregunta' . $i . '-tipo';
                 $opcPregunta = 'pregunta' . $i . '-opc';
@@ -156,11 +151,8 @@ class PaqueteriaDidacticaController extends Controller
     
                 $contenidoT = 'pregunta' . $i . '-contenidoT';
     
-                if($request->$numPregunta === null)
-                    return redirect()->route('paqueteriasDidacticas', $idCurso)->with('warning', 'NO SE PUEDEN GUARDAR LA PREGUNTAS VACIAS!');
-    
-                if ($request->$numPregunta != null || $request->numPreguntas == 1) {
-    
+                if($request->$numPregunta){
+                    
                     if ($request->$tipoPregunta == 'multiple') {
                         $tempPregunta = [
                             'descripcion' => $request->$numPregunta ?? 'N/A',
@@ -180,7 +172,7 @@ class PaqueteriaDidacticaController extends Controller
                         ];
                     }
                     array_push($preguntas, $tempPregunta);
-                    $contPreguntas++;
+                    
                 }
             }
         }
