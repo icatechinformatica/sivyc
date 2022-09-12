@@ -84,7 +84,7 @@
     var editorElementoA;
     var editorAuxE;
     var editorReferencias;
-
+    var idCurso = <?php echo json_encode($idCurso); ?>;
     //Define an adapter to upload the files
     class MyUploadAdapter {
         constructor(loader) {
@@ -94,6 +94,7 @@
 
             // URL where to send files.
             this.url = '{{ route('ckeditorUpload') }}';
+            
 
             //
         }
@@ -167,8 +168,10 @@
         // Prepares the data and sends the request.
         _sendRequest(file) {
             // Prepare the form data.
+            
             const data = new FormData();
             data.append("upload", file);
+            data.append("idCurso", idCurso);
             // Important note: This is the right place to implement security mechanisms
             // like authentication and CSRF protection. For instance, you can use
             // XMLHttpRequest.setRequestHeader() to set the request headers containing
@@ -282,8 +285,11 @@
     function save(blade) {
         console.log(blade);
         var $form = $("#creacion");
+        $('#creacion').attr('action', "{{route('paqueteriasGuardar',$idCurso)}}");
+        $('#creacion').removeAttr('target');
+       
         $form.append("<input type='hidden' name='blade' value='"+blade+"'/>");
-        $('#creacion').submit();
+        $('#creacion').submit();k
     }
 </script>
 <script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}"></script>

@@ -265,7 +265,7 @@ class PaqueteriaDidacticaController extends Controller
         foreach($contenidos as $manual){
            $manual->contenidoExtra = str_replace($replace, '', $manual->contenidoExtra);
         }
-
+        
         $curso = curso::toBase()->where('id', $idCurso)->first();
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueteriasDidacticas','contenidos', 'carta_descriptiva'));
         return $pdf->stream('manualDidactico');
@@ -281,8 +281,8 @@ class PaqueteriaDidacticaController extends Controller
             $fileName = $fileName . '.' . $extension;
             // dump($fileName, $originName, $extension, $request->file('upload'));
 
-            $request->file('upload')->move(public_path('images/paqueterias'), $fileName);
-            $url = asset('images/paqueterias/' . $fileName);
+            $request->file('upload')->move(public_path('images/paqueterias/id_curso_'.$request->idCurso), $fileName);
+            $url = asset('images/paqueterias/id_curso_'.$request->idCurso.'/' . $fileName);
             @header('Content-type: text/html; charset=utf-8');
             return response()->json(['url' => $url]);
         }
