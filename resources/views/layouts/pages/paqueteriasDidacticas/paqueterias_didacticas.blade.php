@@ -283,13 +283,13 @@
     });
 
     function save(blade) {
-        console.log(blade);
+        
         var $form = $("#creacion");
         $('#creacion').attr('action', "{{route('paqueteriasGuardar',$idCurso)}}");
         $('#creacion').removeAttr('target');
        
         $form.append("<input type='hidden' name='blade' value='"+blade+"'/>");
-        $('#creacion').submit();k
+        $('#creacion').submit();
     }
 </script>
 <script src="{{asset('js/catalogos/paqueteriasdidactica/paqueterias.js')}}"></script>
