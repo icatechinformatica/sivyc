@@ -65,28 +65,23 @@ class poaController extends Controller
                 break;
                 default:
                     $desercion = DB::table('tbl_inscripcion as d')
-                    ->select('d.id_curso',DB::raw('count(d.id) as desercion'))->where('d.status','INSCRITO')->where('d.calificacion','=','NP')->groupby('d.id_curso');
+                    ->select('d.id_curso',DB::raw("sum(CASE WHEN d.status= 'INSCRITO' and d.calificacion='NP' THEN 1 ELSE 0 END)  as desercion"))
+                    ->groupby('d.id_curso');
 
-                    $total_autorizado = DB::table('tbl_cursos as c')
-                    ->select('tu.ubicacion', DB::raw('count(c.id) as total_autorizado'))
-                    ->join('tbl_unidades as tu','tu.ubicacion','=','c.unidad')
-                    ->where('c.status_curso','AUTORIZADO')
-                    ->where('c.fecha_apertura','>=',$fecha1)
-                    ->where('c.fecha_apertura','<=',$fecha2)
-                    ->groupby('tu.ubicacion');
-
-                /*TOTALES*/
-                    $desercion_total = DB::table('tbl_inscripcion as d')
-                    ->select('d.id_curso',DB::raw('count(d.id) as desercion'))->where('d.status','INSCRITO')->where('d.calificacion','=','NP')->groupby('d.id_curso');
-
+                /*TOTALES*/                    
                     $data_total = DB::table('tbl_unidades as u')
-                    ->select('poa.id','u.ubicacion as unidad',DB::raw('MAX(poa.total_cursos) as cursos_programados'),
-                    DB::raw('count(tc.*) as cursos_autorizados'),DB::raw('count(ts.*) as suficiencia_autorizada'),
-                    DB::raw('count(tc2.*) as cursos_reportados'),DB::raw('MAX(poa.total_horas) as horas_programadas'),
-                    DB::raw('SUM(tc2.dura) as horas_impartidas'),DB::raw('SUM(tc2.hombre+tc2.mujer) as inscritos'),
-                    DB::raw('SUM(d.desercion) as desercion'), DB::raw('SUM(tc2.hombre+tc2.mujer) - SUM(d.desercion) as egresados'),
+                    ->select('poa.id_unidad','u.ubicacion as unidad',DB::raw('poa.total_cursos as cursos_programados'),
+                    DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN 1 ELSE 0 END)  as cursos_autorizados"),
+                    DB::raw('count(ts.*) as suficiencia_autorizada'),
+                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),                    
+                    DB::raw('MAX(poa.total_horas) as horas_programadas'),
+                    DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN tc.dura ELSE 0 END)  as horas_impartidas"),
+                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
+                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
+                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END )- sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as egresados'),
+                    DB::raw("sum(CASE WHEN tc.proceso_terminado=true THEN tc.dura ELSE 0 END)  as horas_reportadas"),
                     DB::raw("'-1' as plantel"),
-                    DB::raw("'A' as ze"),DB::raw("'A' as poa_ze")
+                    DB::raw("'A' as ze"),DB::raw("'A' as poa_ze"),DB::raw("1 as orden")
                     )
 
                     ->leftjoin('poa', function ($join) use($ejercicio){
@@ -95,138 +90,113 @@ class poaController extends Controller
                         ->where('poa.id_plantel','=',0);
 
                     })
-                    ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2){
-                        $join->on('tc.unidad','=','u.unidad')
-                        ->where('tc.status_curso','AUTORIZADO')
-                        ->where('tc.fecha_apertura','>=',$fecha1)
-                        ->where('tc.fecha_apertura','<=',$fecha2)
+                    ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
+                        $join->on('tc.unidad','=','u.unidad')                        
+                        ->whereBetween('fecha_apertura', [$fecha1, $fecha2])   
+                        ->leftjoinSub($desercion, 'd', function($join){
+                            $join->on('tc.id','=','d.id_curso');
+                        })
                         ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
                             $join->on('f.id_cursos','=','tc.id')
                             ->leftjoin('tabla_supre as ts','ts.id','=','f.id_supre')
                             ->where('ts.status','Validado')
-                            ->where('ts.fecha_validacion','>=',$fecha1)
-                            ->where('ts.fecha_validacion','<=',$fecha2);
-                        });
-                    })
-                    ->leftjoin('tbl_cursos as tc2', function ($join) use($fecha1, $fecha2, $desercion){
-                        $join->on('tc2.id','=','tc.id')
-                        ->where('tc2.proceso_terminado',true)
-                        ->where('tc2.fecha_apertura','>=',$fecha1)
-                        ->where('tc2.fecha_apertura','<=',$fecha2);
-
-                    })
-                    ->leftjoin('tbl_cursos as tc3', function ($join) use($desercion_total){
-                        $join->on('tc3.id','=','tc2.id')
-                        ->joinSub($desercion_total, 'd', function($join){
-                            $join->on('tc3.id','=','d.id_curso');
-                        });
-                    })
-                    ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
-                    ->groupby('u.ubicacion','poa.id');
-
-                /***DETALLE POR UNIDAD */
-                   $data_unidad = DB::table('tbl_unidades as u')
-                   ->select('poa.id','u.unidad','poa.total_cursos as cursos_programados',DB::raw('count(tc.*) as cursos_autorizados'),
-                   DB::raw('count(ts.*) as suficiencia_autorizada'),DB::raw('count(tc2.*) as cursos_reportados'),
-                   'poa.total_horas as horas_programadas',DB::raw('SUM(tc2.dura) as horas_impartidas'),
-                   DB::raw('SUM(tc2.hombre+tc2.mujer) as inscritos'),
-                   DB::raw('SUM(d.desercion) as desercion'), DB::raw('SUM(tc2.hombre+tc2.mujer) - SUM(d.desercion) as egresados'),
-                   'poa.tbl_unidades_plantel as plantel',DB::raw("'B' as ze"),DB::raw("'B' as poa_ze")
-                   )
-                   ->leftjoin('poa', function ($join) use($ejercicio){
-                       $join->on('poa.tbl_unidades_unidad','=','u.unidad')
-                       ->where('poa.ejercicio',$ejercicio)
-                       ->where('poa.tbl_unidades_plantel','>',0);
-                   })
-                   ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2){
-                       $join->on('tc.unidad','=','u.unidad')
-                       ->where('tc.status_curso','AUTORIZADO')
-                       ->where('tc.fecha_apertura','>=',$fecha1)
-                       ->where('tc.fecha_apertura','<=',$fecha2)
-                       ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
-                           $join->on('f.id_cursos','=','tc.id')
-                           ->leftjoin('tabla_supre as ts','ts.id','=','f.id_supre')
-                           ->where('ts.status','Validado')
-                           ->where('ts.fecha_validacion','>=',$fecha1)
-                           ->where('ts.fecha_validacion','<=',$fecha2);
-                       });
-                   })
-                   ->leftjoin('tbl_cursos as tc2', function ($join) use($fecha1, $fecha2, $desercion){
-                       $join->on('tc2.id','=','tc.id')
-                       ->where('tc2.proceso_terminado',true)
-                       ->where('tc2.fecha_apertura','>=',$fecha1)
-                       ->where('tc2.fecha_apertura','<=',$fecha2);
-
-                   })
-                   ->leftjoin('tbl_cursos as tc3', function ($join) use($desercion){
-                       $join->on('tc3.id','=','tc2.id')
-                       ->joinSub($desercion, 'd', function($join){
-                           $join->on('tc3.id','=','d.id_curso');
-                       });
-                   })
-                   ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
-                   ->groupby('tc.unidad','u.unidad','poa.total_cursos','u.order_poa','poa.total_horas','tc.cct','poa.id',
-                   'poa.tbl_unidades_plantel');
-
-                /***DETALLE POR ZONA***/
-
-                    $data = DB::table('tbl_unidades as u')
-                    ->select('poa.id','u.unidad','poa.total_cursos as cursos_programados',DB::raw('count(tc.*) as cursos_autorizados'),
-                    DB::raw('count(ts.*) as suficiencia_autorizada'),DB::raw('count(tc2.*) as cursos_reportados'),
-                    'poa.total_horas as horas_programadas',DB::raw('SUM(tc2.dura) as horas_impartidas'),
-                    DB::raw('SUM(tc2.hombre+tc2.mujer) as inscritos'),
-                    DB::raw('SUM(d.desercion) as desercion'), DB::raw('SUM(tc2.hombre+tc2.mujer) - SUM(d.desercion) as egresados'),
-                    'poa.tbl_unidades_plantel as plantel','tc.ze','poa.ze as poa_ze'
-                    )
-
-                    ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio){
-                        $join->on('tc.unidad','=','u.unidad')
-                        ->where('tc.status_curso','AUTORIZADO')
-                        ->where('tc.fecha_apertura','>=',$fecha1)
-                        ->where('tc.fecha_apertura','<=',$fecha2)
-                        ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
-                            $join->on('f.id_cursos','=','tc.id')
-                            ->leftjoin('tabla_supre as ts','ts.id','=','f.id_supre')
-                            ->where('ts.status','Validado')
-                            ->where('ts.fecha_validacion','>=',$fecha1)
-                            ->where('ts.fecha_validacion','<=',$fecha2);
+                            ->whereBetween('fecha_validacion', [$fecha1, $fecha2]);                            
                         }) ;
-
-                    })
-                    ->leftjoin('poa', function ($join) use($ejercicio){
-                        $join->on('poa.tbl_unidades_unidad','=','u.unidad')
-                        //->on('poa.ze','=','tc.ze')
-                        ->where('poa.ejercicio','=',$ejercicio)
-                        ->where('poa.tbl_unidades_plantel','>',0);
-                    })
-                    ->leftjoin('tbl_cursos as tc2', function ($join) use($fecha1, $fecha2, $desercion){
-                        $join->on('tc2.id','=','tc.id')
-                        ->where('tc2.proceso_terminado',true)
-                        ->where('tc2.fecha_apertura','>=',$fecha1)
-                        ->where('tc2.fecha_apertura','<=',$fecha2);
-
-                    })
-                    ->leftjoin('tbl_cursos as tc3', function ($join) use($desercion){
-                        $join->on('tc3.id','=','tc2.id')
-                        ->joinSub($desercion, 'd', function($join){
-                            $join->on('tc3.id','=','d.id_curso');
-                        });
-                    })
+                    })  
                     ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
-                    ->groupby('tc.unidad','u.unidad','poa.total_cursos','u.order_poa','poa.total_horas','tc.cct','poa.id',
-                    'poa.tbl_unidades_plantel','tc.ze')//->get();
-                    ->union($data_unidad)
-                    ->union($data_total);
-                    $data2 = $data->toSql();
-                    $data = DB::table(DB::raw("($data2 order by id,ze asc) as a"))->mergeBindings($data)->get();
+                    ->groupby('poa.id_unidad','u.ubicacion','poa.id');               
 
+                
+                 /*TOTALES POR ZONA*/  
+                 
+                 $data_total_ze = DB::table('tbl_unidades as u')
+                 ->select(DB::raw('CASE WHEN COALESCE(poa.id_unidad)>0 THEN poa.id_unidad ELSE  0 END as id_unidad'),'u.ubicacion as unidad',
+                 
+                 DB::raw("(SELECT sum(p.total_cursos) FROM poa as p, tbl_unidades as tu
+                 WHERE p.id_unidad=tu.id  and p.ejercicio='2022' and p.ze is not null and p.id_unidad=poa.id_unidad and p.ze=poa.ze
+                 group by p.id_unidad,tu.unidad,p.ze
+                 order by p.id_unidad) AS total_curso"),                 
+                 DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN 1 ELSE 0 END)  as cursos_autorizados"),
+                 DB::raw('count(ts.*) as suficiencia_autorizada'),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
+                 DB::raw('MAX(poa.total_horas) as horas_programadas'),
+                 DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN tc.dura ELSE 0 END)  as horas_impartidas"),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
+                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END )- sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as egresados'),
+                 DB::raw("sum(CASE WHEN tc.proceso_terminado=true THEN tc.dura ELSE 0 END)  as horas_reportadas"),
+                 DB::raw("'-1' as plantel"),'poa.ze',DB::raw("'poa.ze' as poa_ze"),DB::raw("2 as orden")
+                 )
+                 ->leftjoin('poa', function ($join) use($ejercicio){
+                     $join->on('poa.tbl_unidades_unidad','=','u.unidad')
+                     ->where('poa.ejercicio',$ejercicio)
+                     ->where('poa.id_plantel','>',0);
+
+                 })               
+                 ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
+                     $join->on('tc.unidad','=','u.unidad')
+                     ->whereBetween('fecha_apertura', [$fecha1, $fecha2])
+                     ->leftjoinSub($desercion, 'd', function($join){
+                         $join->on('tc.id','=','d.id_curso');
+                     })
+                     ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
+                         $join->on('f.id_cursos','=','tc.id')
+                         ->leftjoin('tabla_supre as ts','ts.id','=','f.id_supre')
+                         ->where('ts.status','Validado')
+                         ->whereBetween('fecha_validacion', [$fecha1, $fecha2]);
+                     }) ;
+                 })
+                  ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
+                 ->groupby('u.ubicacion','poa.id_unidad','u.ze','poa.ze');
+
+                 /***DETALLE POR UNIDAD */
+                 
+                 $data_unidad = DB::table('tbl_unidades as u')
+                 ->select(DB::raw('poa.id_unidad'),'u.unidad','poa.total_cursos as cursos_programados',
+                  DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN 1 ELSE 0 END)  as cursos_autorizados"),
+                  DB::raw('count(ts.*) as suficiencia_autorizada'),
+                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),                    
+                  'poa.total_horas as horas_programadas',
+                  DB::raw("sum(CASE WHEN tc.status_curso='AUTORIZADO' THEN tc.dura ELSE 0 END)  as horas_impartidas"),
+                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
+                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
+                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END )- sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as egresados'),
+                  DB::raw("sum(CASE WHEN tc.proceso_terminado=true THEN tc.dura ELSE 0 END)  as horas_reportadas"),                   
+                 'poa.tbl_unidades_plantel as plantel',DB::raw("'Z' as ze"),DB::raw("'Z' as poa_ze"),DB::raw("poa.id as orden")
+                 )
+                 ->leftjoin('poa', function ($join) use($ejercicio){
+                     $join->on('poa.tbl_unidades_unidad','=','u.unidad')
+                     ->where('poa.ejercicio',$ejercicio)                     
+                     ->where('poa.id_plantel','>',0);
+                 })
+                 ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
+                      $join->on('tc.unidad','=','u.unidad')                        
+                      ->whereBetween('fecha_apertura', [$fecha1, $fecha2])   
+                      ->leftjoinSub($desercion, 'd', function($join){
+                          $join->on('tc.id','=','d.id_curso');
+                      })
+                      ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
+                          $join->on('f.id_cursos','=','tc.id')
+                          ->leftjoin('tabla_supre as ts','ts.id','=','f.id_supre')
+                          ->where('ts.status','Validado')
+                          ->whereBetween('fecha_validacion', [$fecha1, $fecha2]);                            
+                      }) ;
+                  })                                  
+                 ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
+                 ->groupby('tc.unidad','u.unidad','poa.total_cursos','poa.total_horas','tc.cct','poa.id',
+                 'poa.tbl_unidades_plantel')
+                 ->union($data_total_ze)
+                 ->union($data_total);
+                 $data2 = $data_unidad->toSql();
+                 $data = DB::table(DB::raw("($data2 order by id_unidad,orden ASC) as a"))->mergeBindings($data_unidad)->get();
+                 /*
+                 $data_total = $data_total->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
+                 ->union($data_total_ze);
+                 $data2 = $data_total->toSql();
+                 $data = DB::table(DB::raw("($data2 order by id_unidad,orden ASC) as a"))->mergeBindings($data_total)->get();
+               */
                 break;
             }
-
-
-
-
-
         }
         return $data;
     }
@@ -239,7 +209,7 @@ class poaController extends Controller
                     case "CURSOS":
                         $head = ['UNIDAD/ACCION_MOVIL/ZONA','CURSOS_PROGRAMADOS','CURSOS_AUTORIZADOD','DIFERENCIA','SUFICIENCIA_AUTORIZADA',
                         'HORAS_PROGRAMADAS','HORAS_AUTORIZADAS','DIFERENCIA','CURSOS_REPORTADOS_FT','INSCRITOS','EGRESADOS',
-                        'DESERCION'];
+                        'DESERCION','HORAS_REPORTADAS'];
                         $title = "POA&".$request->opciones;
                         $name = $title."_".date('Ymd').".xlsx";
                         $view = 'consultas.poa.excel_poa';

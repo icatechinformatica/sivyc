@@ -25,7 +25,7 @@
             <th colspan='3' class="text-center">
                 HORAS
             </th>
-            <th colspan='4' class="text-center">
+            <th colspan='5' class="text-center">
                 REPORTADO EN FORMATO T
             </th>
         </tr>
@@ -41,15 +41,16 @@
             <th>INSCRITOS</th>
             <th>EGRESADOS</th>
             <th>DESERCIÓN</th>
+            <th>HORAS</th>
         </tr>
     </thead>
         @isset($data)
         <tbody>
             @php
-                $totales = ['0'=>0,'1'=>0,'2'=>0,'3'=>0,'4'=>0,'5'=>0,'6'=>0,'7'=>0,'8'=>0,'9'=>0,'10'=>0];
+                $totales = ['0'=>0,'1'=>0,'2'=>0,'3'=>0,'4'=>0,'5'=>0,'6'=>0,'7'=>0,'8'=>0,'9'=>0,'10'=>0,'11'=>0];
             @endphp
             @foreach ($data as $i)
-                @if($i->ze=='A')
+                @if($i->orden==1)
                     <tr class="bg-dark text-light">
                     @php
                         $unidad = "UNIDAD ".$i->unidad;
@@ -65,28 +66,24 @@
                         $totales[8] += $i->inscritos;
                         $totales[9] += $i->egresados;
                         $totales[10] += $i->desercion;
+                        $totales[11] += $i->horas_reportadas;
                     @endphp
-                @elseif($i->ze=='B')
+                @elseif($i->orden==2)
                     <tr class="bg-light">
                         @php
-                            $unidad =  $i->unidad ;
+                            $unidad =  "ZONA ".$i->ze ;
                             $color = "text-danger";
                         @endphp
                 @else
                     <tr>
                         @php
-                            $unidad =  "ZONA ".$i->ze ;
+                            $unidad =  $i->unidad ;
                             $color = "text-danger";
                         @endphp
                 @endif
-                    <td>
-                        {{ $unidad }}</td>
-                    <td class="text-center">
-                        @if($i->ze == $i->poa_ze)
-                            {{ number_format($i->cursos_programados, 0, '', ',') }}
-                        @else
-                            {{ '0' }}
-                        @endif
+                    <td>{{ $unidad }}</td>
+                    <td class="text-center"> 
+                        {{ number_format($i->cursos_programados, 0, '', ',') }}
                     </td>
                     <td class="text-center">{{ number_format($i->cursos_autorizados, 0, '', ',') }}</td>
                     @if($i->cursos_autorizados>$i->cursos_programados)
@@ -112,11 +109,12 @@
                     <td class="text-center">{{ number_format($i->inscritos, 0, '', ',') }}</td>
                     <td class="text-center">{{ number_format($i->egresados, 0, '', ',') }}</td>
                     <td class="text-center">{{ number_format($i->desercion, 0, '', ',') }}</td>
+                    <td class="text-center">{{ number_format($i->horas_reportadas, 0, '', ',') }}</td>
                 </tr>
             @endforeach
             <tr>
                 <td><b>TOTALES</b></td>
-                @for($n=0;$n<=10;$n++)
+                @for($n=0;$n<=11;$n++)
                     <td align="center"><b>{{ number_format($totales[$n], 0, '', ',') }}</b></td>
                 @endfor
             </tr>
