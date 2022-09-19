@@ -81,12 +81,17 @@ class PaqueteriaDidacticaController extends Controller
         $cartaDescriptiva = [];
         $contenidoT = [];
         $evaluacionAlumno = [];
+        // dd(gettype($evaluacionAlumno));
         if (isset($paqueteriasDidacticas)) {
             $cartaDescriptiva = json_decode($paqueteriasDidacticas->carta_descriptiva);
             $contenidoT = json_decode($cartaDescriptiva->contenidoTematico);
-            $evaluacionAlumno = ($paqueteriasDidacticas->eval_alumno);
+            $evaluacionAlumno = json_decode($paqueteriasDidacticas->eval_alumno);
+            $instrucciones = $evaluacionAlumno->instrucciones;
+            unset($evaluacionAlumno->instrucciones);
+            
         }
-        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'area', 'paqueteriasDidacticas', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno'));
+        // dd($evaluacionAlumno,isset($evaluacionAlumno), $evaluacionAlumno === '""', $instrucciones);
+        return view('layouts.pages.paqueteriasDidacticas.paqueterias_didacticas', compact('idCurso', 'curso', 'area', 'paqueteriasDidacticas', 'cartaDescriptiva', 'contenidoT', 'evaluacionAlumno', 'instrucciones'));
     }
 
     public function store(Request $request, $idCurso)
@@ -177,7 +182,7 @@ class PaqueteriaDidacticaController extends Controller
             }
         }
 
-
+        // dd($preguntas);
         DB::beginTransaction();
         try {
             DB::table('paqueterias_didacticas')
@@ -267,6 +272,7 @@ class PaqueteriaDidacticaController extends Controller
         }
         
         $curso = curso::toBase()->where('id', $idCurso)->first();
+        
         $pdf = \PDF::loadView('layouts.pages.paqueteriasDidacticas.pdf.manualDidactico_pdf', compact('curso', 'paqueteriasDidacticas','contenidos', 'carta_descriptiva'));
         return $pdf->stream('manualDidactico');
     }

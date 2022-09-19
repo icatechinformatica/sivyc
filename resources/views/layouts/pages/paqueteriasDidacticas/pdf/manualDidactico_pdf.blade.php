@@ -224,7 +224,7 @@
                 <label style="color:black; font-size:18px">{{$curso->objetivo}}</label><br><br><br><br><br>
 
                 <div class="duracion">
-                    <label for="">Duración: {{$curso->duracion}} Horas</label>
+                    <label for="">Duración: {{$curso->horas}} Horas</label>
                 </div>
             </div>
 

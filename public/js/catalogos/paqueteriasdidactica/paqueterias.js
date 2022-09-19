@@ -35,7 +35,9 @@ $(document).ready(function () {
     }
 
     if ($('#storeContenidoTOld').val() != '') {
+        console.log(numPreguntasaux);
         valContenidoT = JSON.parse($('#storeContenidoTOld').val() )
+        
         idContenido = valContenidoT.length+1
         for(var i=0; i<valContenidoT.length; i++)
             valContenidoT[i].id = (i+1)//fix id's
@@ -43,50 +45,56 @@ $(document).ready(function () {
         storeContenidoT.value = JSON.stringify(valContenidoT)
         addContenidoToSelect(JSON.parse(storeContenidoT.value));
         $('.body-element').attr("id",valContenidoT.length+1); 
-        
+        $('#numPreguntas').val(numPreguntasaux);
     }
 
 
-    if (evaluacion != '' || !evaluacion) {//auto completa formulario de evaluacion de alumno con datos de la DB// 
+//     if (evaluacion != '' || !evaluacion) {//auto completa formulario de evaluacion de alumno con datos de la DB// 
         
-        $('#numPreguntas').val(evaluacion.length-1);
+//         $('#numPreguntas').val(evaluacion.length-1);
         
-        //evaluacion viene de paqueterias_didacticas.blade 
-        var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-        for (let i = 0; i < evaluacion.length-1; i++) {
-            const element = evaluacion[i];
+//         //evaluacion viene de paqueterias_didacticas.blade 
+//         var abecedario = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+//         for (let i = 0; i < evaluacion.length-1; i++) {
+//             const element = evaluacion[i];
             
 
-                $('select[name="pregunta' + (i + 1) + '-tipo"] option[value="' + element.tipo + '"]').attr("selected", "selected");
-                $('select[name="pregunta' + (i + 1) + '-contenidoT"]').children('option[value="'+element.contenidoTematico+'"]').attr("selected", "selected")
-                
-                $('input[name="pregunta' + (i + 1) + '"]').val(element.descripcion);
+//                 $('select[name="pregunta' + (i + 1) + '-tipo"] option[value="' + element.tipo + '"]').attr("selected", "selected");
+//                 $('select[name="pregunta' + (i + 1) + '-contenidoT"]').children('option[value="'+element.contenidoTematico+'"]').attr("selected", "selected")
 
-                var opciones = element.opciones
                 
-                $('#pregunta' + (i + 1) + '-opc .input-group').remove();
-                for (var j = 0; j < opciones.length; j++) {
-                    $('#pregunta' + (i + 1) + '-opc').append(opcionTemplate('pregunta' + (i + 1) + '-opc'));
-                }
-                var opcionesInp = $('#pregunta' + (i + 1) + '-opc').children('.input-group')
-                for (let j = 0; j < opcionesInp.length; j++) {
-                    $(opcionesInp[j]).children('.form-control').val(opciones[j])
-                    if (element.respuesta == abecedario[j]) {
-                        $(opcionesInp[j]).children('.input-group-text').children('input:radio').attr('checked', true);
-                        var checkbox = $(opcionesInp[j]).children('.input-group-text').children('input:radio')[0]
-                        setAceptedAnswer(checkbox)
-                    }
-                }
-                // break;
+// // get the OPTION we want selected
+//                 var option = $('select[name="pregunta' + (i + 1) + '-contenidoT"]').children('option[value="'+ element.contenidoTematico +'"]');
+//                 console.log(option)
+//                 // and now set the option we want selected
+//                 $(option).attr('selected', true);            
+//                 $('input[name="pregunta' + (i + 1) + '"]').val(element.descripcion);
+
+//                 var opciones = element.opciones
                 
-                agregarPregunta()
+//                 $('#pregunta' + (i + 1) + '-opc .input-group').remove();
+//                 for (var j = 0; j < opciones.length; j++) {
+//                     $('#pregunta' + (i + 1) + '-opc').append(opcionTemplate('pregunta' + (i + 1) + '-opc'));
+//                 }
+//                 var opcionesInp = $('#pregunta' + (i + 1) + '-opc').children('.input-group')
+//                 for (let j = 0; j < opcionesInp.length; j++) {
+//                     $(opcionesInp[j]).children('.form-control').val(opciones[j])
+//                     if (element.respuesta == abecedario[j]) {
+//                         $(opcionesInp[j]).children('.input-group-text').children('input:radio').attr('checked', true);
+//                         var checkbox = $(opcionesInp[j]).children('.input-group-text').children('input:radio')[0]
+//                         setAceptedAnswer(checkbox)
+//                     }
+//                 }
+//                 // break;
+                
+//                 agregarPregunta()
             
-        }
-        $ultimaPregunta = $('.card-paq:last').remove()
-        numPreguntas--;
-        $('#numPreguntas').val(numPreguntas);
+//         }
+//         $ultimaPregunta = $('.card-paq:last').remove()
+//         numPreguntas--;
+//         $('#numPreguntas').val(numPreguntas);
         
-    }
+//     }
 
 
 });
@@ -420,9 +428,9 @@ function changeSiblings(tr) {
  *
  */
 
-var idPregunta = 1;
+var idPregunta = numPreguntasaux ;
 var opcion = 0;
-var numPreguntas = 1;
+var numPreguntas = numPreguntasaux ;
 
 
 $('#preguntas-area-parent').on("click", 'div.card-paq', function (e) {
@@ -432,9 +440,9 @@ $('#preguntas-area-parent').on("click", 'div.card-paq', function (e) {
 });
 
 function addContenidoToSelect(contenido) {
-    $('.contenidoTematicoPregunta')
-        .find('option')
-        .remove()
+    // $('.contenidoTematicoPregunta')
+    // .find('option')
+    // .remove()
     for (var i = 0; i < contenido.length; i++) {
         var temaPrincpal = contenido[i].tema_principal;
         $('.contenidoTematicoPregunta').append($('<option>', {
@@ -442,7 +450,8 @@ function addContenidoToSelect(contenido) {
             text: temaPrincpal
         }));
     }
-
+    
+    // console.log($( ".contenidoTematicoPregunta" ).val());
 
 }
 

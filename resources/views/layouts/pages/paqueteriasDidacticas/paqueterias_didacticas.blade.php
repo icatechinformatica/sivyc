@@ -13,6 +13,7 @@
 <div class="card-header">
     Formulario de Paqueterias Didacticas
 </div>
+
 <div class="card card-body" style=" min-height:450px;">
     @if ($errors->any())
     <div class="alert alert-danger">
@@ -60,7 +61,11 @@
                 @include('layouts.pages.paqueteriasDidacticas.blades.curso')
             </div>
             <div class="tab-pane fade " id="pills-evalalum" role="tabpanel" aria-labelledby="pills-evalalum-tab">
+                @if($evaluacionAlumno === '[]' || $evaluacionAlumno === '""')
                 @include('layouts.pages.paqueteriasDidacticas.blades.evaluacionAlumno')
+                @else
+                @include('layouts.pages.paqueteriasDidacticas.blades.editarEvaluacionAlumno')
+                @endif
             </div>
             <div class="tab-pane fade" id="pills-paqdid" role="tabpanel" aria-labelledby="pills-paqdid-tab">
                 @include('layouts.pages.paqueteriasDidacticas.blades.descargarPaqueteria')
@@ -85,6 +90,7 @@
     var editorAuxE;
     var editorReferencias;
     var idCurso = <?php echo json_encode($idCurso); ?>;
+    var numPreguntasaux = <?php echo count((array)$evaluacionAlumno); ?> ;
     //Define an adapter to upload the files
     class MyUploadAdapter {
         constructor(loader) {
