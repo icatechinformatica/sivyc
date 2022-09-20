@@ -45,7 +45,7 @@
 </div>
 
  <div class="col-md-12 text-right">                
-    @if((($grupo->status=='NO REPORTADO' OR $grupo->status=='RETORNO_UNIDAD') AND $grupo->turnado=='UNIDAD' AND $grupo->status_curso=='AUTORIZADO') )
+    @if((($grupo->status=='NO REPORTADO' OR $grupo->status=='RETORNO_UNIDAD') AND $grupo->turnado=='UNIDAD' AND $grupo->status_curso=='AUTORIZADO' AND (!$grupo->status_solicitud_arc02 OR $grupo->status_solicitud_arc02=='RETORNO')) )
         <button class="btn" id="guardar" >GUARDAR SOLICITUD</button> &nbsp;&nbsp;       
     @endif
     @if($grupo->status=='NO REPORTADO' AND !$grupo->status_curso AND trim($grupo->arc)=='02')
