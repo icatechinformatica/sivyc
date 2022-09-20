@@ -682,7 +682,7 @@ class aperturaController extends Controller
             ->where('a.id_instructor',$id_instructor)
             ->where('tc.status','<>','CANCELADO')
             ->whereRaw("((date(a.start) >= '$fechaInicio' and date(a.start) <= '$fechaTermino') OR (date(a.end) >= '$fechaInicio' and date(a.end) <= '$fechaTermino'))")
-            ->whereRaw("((cast(a.start as time) >= '$horaInicio' and cast(a.start as time) <= '$horaTermino') OR (cast(a.end as time) >= '$horaInicio' and cast(a.end as time) <= '$horaTermino'))")
+            ->whereRaw("((cast(a.start as time) >= '$horaInicio' and cast(a.start as time) < '$horaTermino') OR (cast(a.end as time) > '$horaInicio' and cast(a.end as time) <= '$horaTermino'))")
             ->exists();
         if ($duplicado) {
             return "El instructor no se encuentra disponible en fecha y hora";
