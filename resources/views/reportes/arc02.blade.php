@@ -11,7 +11,7 @@
         img.derecha {float: right;width: 200px;height: 60px;}
         .tableg td{padding: 0px;}
         .tablas{border-collapse: collapse;width: 100%;}
-        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 1px 1px autom;}
+        .tablas tr, .tablas th, .tablas td{font-size: 8px; border: gray 1px solid; text-align: center;}
         .tablaf { border-collapse: collapse; width: 100%;}     
         .tablaf td { font-size: 8px; text-align: center; padding: 0px;}
         #watermark {
@@ -31,7 +31,6 @@
             /** Tu marca de agua debe estar detrás de cada contenido **/
             z-index:  -1000;
         }
-    }
     </style>
 </head>
 <body>
@@ -86,51 +85,50 @@
             </table>
         </div>
         <br>
-        <div >
-            <table class="tablas">
-                <tbody>                        
-                    <tr> 
-                        <th rowspan="2">SERVICIO</th>     	  
-                        <th rowspan="2">NOMBRE</th>     
-                        <th rowspan="2">MOD.</th>               
-                        <th colspan="2">TIPO</th>       
-                        <th rowspan="2">HORAS</th>
-                        <th rowspan="2">CLAVE</th>
-                        <th rowspan="2">NUM. DE <br> MEMORANDUM DE <br> AUT. DE CLAVE</th>
-                        <th rowspan="2">INSTRUCTOR</th>
-                        <th rowspan="2">INICIO </th>  
-                        <th rowspan="2">TERMINO</th>                    
-                        <th rowspan="2">ESPACIO FISICO</th>
-                        <th rowspan="2">MOTIVO</th>
-                        <th rowspan="2">SOLICITA</th>
-                        <th rowspan="2">OBSERVACIONES</th>
-                    </tr>  
-                    <tr> 
-                        <th >PRES<br>EN</th>                 
-                        <th >DISTA<br>NCIA</th> 
-                    </tr>
-                    @foreach($reg_cursos as $a)         
-                        <tr>
-                            <th>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION EXTRAORDINARIA';} @endphp</th>
-                            <th style="width: 8%;">{{ $a->curso }}</th>
-                            <th>{{ $a->mod }}</th>                           
-                            <th>@if($a->tcapacitacion=="PRESENCIAL"){{ "X" }}@endif</th>
-                            <th>@if($a->tcapacitacion=="A DISTANCIA"){{ "X" }}@endif</th>
-                            <th>{{ $a->dura }}</th>
-                            <th style="width:8%;">{{ $a->clave }}</th>
-                            <th style="width: 5%;">{{ $a->mvalida }}</th>
-                            <th style="width: 10%;">{{ $a->nombre }}</th>    
-                            <th style="width: 5%;">{{ $a->inicio }}</th>                           
-                            <th style="width: 5%;">{{ $a->termino }}</th>                           
-                            <th style="width:5%;">{{ $a->efisico }}</th>
-                            <th>@isset($a->motivo){{ $a->motivo }}@else {{$a->opcion}}@endisset</th>
-                            <th>{{ $a->realizo }}</th> 
-                            <th style="width: 15%;">{{$a->observaciones}}</th>                         
-                        </tr> 
-                    @endforeach
-                </tbody>                                               
-            </table>
-        </div><br><br><br><br><br>
+        <table class="tablas">
+            <tbody>
+                <tr> 
+                    <th rowspan="2">SERVICIO</th>     	  
+                    <th rowspan="2">NOMBRE</th>     
+                    <th rowspan="2">MOD.</th>               
+                    <th colspan="2">TIPO</th>       
+                    <th rowspan="2">HORAS</th>
+                    <th rowspan="2">CLAVE</th>
+                    <th rowspan="2">NUM. DE <br> MEMORANDUM DE <br> AUT. DE CLAVE</th>
+                    <th rowspan="2">INSTRUCTOR</th>
+                    <th rowspan="2">INICIO </th>  
+                    <th rowspan="2">TERMINO</th>                    
+                    <th rowspan="2">ESPACIO FISICO</th>
+                    <th rowspan="2">MOTIVO</th>
+                    <th rowspan="2">SOLICITA</th>
+                    <th rowspan="2">OBSERVACIONES</th>
+                </tr>  
+                <tr> 
+                    <th >PRES<br>EN</th>                 
+                    <th >DISTA<br>NCIA</th> 
+                </tr>
+                @foreach($reg_cursos as $a)         
+                    <tr>
+                        <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION EXTRAORDINARIA';} @endphp</td>
+                        <td style="width: 8%;">{{ $a->curso }}</td>
+                        <td>{{ $a->mod }}</td>                           
+                        <td>@if($a->tcapacitacion=="PRESENCIAL"){{ "X" }}@endif</td>
+                        <td>@if($a->tcapacitacion=="A DISTANCIA"){{ "X" }}@endif</td>
+                        <td>{{ $a->dura }}</td>
+                        <td style="width:8%;">{{ $a->clave }}</td>
+                        <td style="width: 5%;">{{ $a->mvalida }}</td>
+                        <td style="width: 10%;">{{ $a->nombre }}</td>    
+                        <td style="width: 5%;">{{ $a->inicio }}</td>                           
+                        <td style="width: 5%;">{{ $a->termino }}</td>                           
+                        <td style="width:5%;">{{ $a->efisico }}</td>
+                        <td>@isset($a->motivo){{ $a->motivo }}@else {{$a->opcion}}@endisset</td>
+                        <td>{{ $a->realizo }}</td> 
+                        <td style="width: 15%;">{{$a->observaciones}}</td>                         
+                    </tr> 
+                @endforeach
+            </tbody>
+        </table>
+        <br><br><br><br><br>
         <div>
             @if (!$marca)
             <table class="tablaf">
@@ -159,5 +157,16 @@
         </div>
     
     </div>
+    <script type="text/php">
+        if ( isset($pdf) ) {
+            $pdf->page_script('
+                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                if ($PAGE_NUM != 1) {
+                    $pdf->text(600, 20, "MEMORANDUM NO. <?php echo $memo_apertura;?>", $font, 7);
+                }
+            ');
+        }
+    </script>
 </body>
 </html>
