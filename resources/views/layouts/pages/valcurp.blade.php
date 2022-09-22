@@ -166,6 +166,19 @@
                                 <input id="twitter" name="twitter" class="form-control" type="text" />
                             </div>
                             <div class="form-group col-md-3">
+                                <label>Instagram:</label>
+                                <input id="instagram" name="instagram" class="form-control" type="text" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>TikTok:</label>
+                                <input id="tiktok" name="tiktok" class="form-control" type="text" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <br />
+                                <label><input id="ninguna_redsocial" name="ninguna_redsocial" type="checkbox"
+                                        value="true">&nbsp;&nbsp;No tiene redes sociales</label>
+                            </div>
+                            <div class="form-group col-md-3">
                                 <br />
                                 <label><input id="recibir_publicaciones" name="recibir_publicaciones" type="checkbox"
                                         value="true">&nbsp;&nbsp;¿Recibir publicaciones?</label>
@@ -474,7 +487,6 @@
                     </div>
                 </form>
             @elseif ($a == true) {{-- modificacion aspirante jefe de vinculacion --}}
-
                 @if ($rol == 'unidad_vinculacion' || $rol == 'admin' || $rol == 'vinculadores_administrativo')
                     <form method="POST" id="sid_registro_modificacion" action="{{ route('sid.modificar', ['idAspirante' => base64_encode($alumno->id)]) }}" enctype="multipart/form-data">
                         @csrf
@@ -624,6 +636,24 @@
                                         value="{{ $alumno->twitter }}" />
                                 </div>
                                 <div class="form-group col-md-3">
+                                    <label>Instagram:</label>
+                                    <input id="instagram_mod" name="instagram_mod" class="form-control" type="text" value="{{ $alumno->instagram }}" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label>TikTok:</label>
+                                    <input id="tiktok_mod" name="tiktok_mod" class="form-control" type="text" value="{{ $alumno->tiktok }}" />
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <br />
+                                    @if ($alumno->ninguna_redsocial == 'true')
+                                        <label><input id="ninguna_redsocial_mod" name="ninguna_redsocial_mod" type="checkbox"
+                                            value="true" checked>&nbsp;&nbsp;No tiene redes sociales</label>
+                                    @else
+                                        <label><input id="ninguna_redsocial_mod" name="ninguna_redsocial_mod" type="checkbox"
+                                            value="true">&nbsp;&nbsp;No tiene redes sociales</label>
+                                    @endif
+                                </div>
+                                <div class="form-group col-md-3">
                                     <br />
                                     @if ($alumno->recibir_publicaciones == 'true')
                                         <label><input id="recibir_publicaciones_mod" name="recibir_publicaciones_mod"
@@ -763,451 +793,450 @@
                                 <div class="form-group col-md-2">
                                     <select name="etnia_mod" id="etnia_mod" class="form-control mr-sm--2"
                                         placeholder="--ETNIA--">
-                                    @isset($alumno->etnia)@if ($alumno->etnia == '')<option value="">--ETNIA--</option>@else<option value="{{ $alumno->etnia }}">{{ $alumno->etnia }}</option>@endif @else<option value="">--ETNIA--
-                                    </option> @endisset
-                                    @foreach ($etnia as $item)
-                                        <option value="{{ $item }}">{{ $item }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div>
-                            <div class="form-row">
-                                <label>&nbsp;&nbsp;¿El aspirante pertenece a algún Grupo Vulnerable?</label>
+                                        @isset($alumno->etnia)@if ($alumno->etnia == '')<option value="">--ETNIA--</option>@else<option value="{{ $alumno->etnia }}">{{ $alumno->etnia }}</option>@endif @else<option value="">--ETNIA--
+                                        </option> @endisset
+                                        @foreach ($etnia as $item)
+                                            <option value="{{ $item }}">{{ $item }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                             <br>
-                            <div class="form-row">
-                                    @foreach ($gvulnerable as $item)
-                                    <div class="form-group col-md-4">
-                                        @if ($alumno->id_gvulnerable && in_array($item->id, json_decode($alumno->id_gvulnerable)))
-                                        <input checked type="checkbox" name="itemEdith[{{$item->grupo}}]" value="{{$item->id}}">&nbsp;&nbsp;{{$item->grupo}}</input>
-                                        @else
-                                        <input type="checkbox" name="itemEdith[{{$item->grupo}}]" value="{{$item->id}}">&nbsp;&nbsp;{{$item->grupo}}</input>
-                                        @endif
-                                    </div>
-                                    @endforeach
-                            </div>
-                        </div>
-                        <hr style="border-color:dimgray">
-                        <div style="text-align: center;">
-                            <h4><b>DATOS GENERALES DE CAPACITACIÓN</b></h4>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="ultimo_grado_estudios_mod" class="control-label">ÚLTIMO GRADO DE
-                                    ESTUDIOS:</label>
-                                <select class="form-control" id="ultimo_grado_estudios_mod"
-                                    name="ultimo_grado_estudios_mod">
-                                    @isset($alumno->ultimo_grado_estudios)<option
-                                            value="{{ $alumno->ultimo_grado_estudios }}">
-                                        {{ $alumno->ultimo_grado_estudios }}</option>@else<option value="">
-                                        --SELECCIONAR--</option>@endisset
-                                    @foreach ($grado_estudio as $itemGradoEstudio => $val)
-                                        <option value="{{ $val }}">{{ $val }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="medio_entero_mod" class="control-label">MEDIO POR EL QUE SE ENTERÓ DEL
-                                    SISTEMA</label>
-                                <select class="form-control" id="medio_entero_mod" name="medio_entero_mod"
-                                    value="{{ $alumno->medio_entero }}">
-                                @isset($alumno->medio_entero)@if ($alumno->medio_entero == '')<option value="">--SELECCIONAR--</option> @elseif ($alumno->medio_entero !='PRENSA'&& $alumno->medio_entero !='RADIO'&&$alumno->medio_entero !='TELEVISIÓN'&&$alumno->medio_entero !='INTERNET'&&$alumno->medio_entero !='FOLLETOS, CARTELES, VOLANTES')<option value="0">OTRO</option> @else<option value="{{ $alumno->medio_entero }}">{{ $alumno->medio_entero }} @endif @else<option value="">
-                                    --SELECCIONAR--</option>@endisset
-                                <option value="PRENSA">PRENSA</option>
-                                <option value="RADIO">RADIO</option>
-                                <option value="TELEVISIÓN">TELEVISIÓN</option>
-                                <option value="INTERNET">INTERNET</option>
-                                <option value="FOLLETOS, CARTELES, VOLANTES">FOLLETOS, CARTELES, VOLANTES</option>
-                                <option value="0">OTRO</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
                             <div>
-                                <label for="medio_especificar_mod" class="control-label">ESPECIFIQUE</label>
-                                @if ($alumno->medio_entero == '')<input type="text" class="form-control" name="medio_especificar_mod" id="medio_especificar_mod"> @elseif($alumno->medio_entero !='PRENSA'&& $alumno->medio_entero !='RADIO'&&$alumno->medio_entero !='TELEVISIÓN'&&$alumno->medio_entero !='INTERNET'&&$alumno->medio_entero !='FOLLETOS, CARTELES, VOLANTES')<input type="text" class="form-control" name="medio_especificar_mod" id="medio_especificar_mod" value="{{ $alumno->medio_entero }}"> @else<input type="text" class="form-control" name="medio_especificar_mod" id="medio_especificar_mod"> @endif
+                                <div class="form-row">
+                                    <label>&nbsp;&nbsp;¿El aspirante pertenece a algún Grupo Vulnerable?</label>
+                                </div>
+                                <br>
+                                <div class="form-row">
+                                        @foreach ($gvulnerable as $item)
+                                        <div class="form-group col-md-4">
+                                            @if ($alumno->id_gvulnerable && in_array($item->id, json_decode($alumno->id_gvulnerable)))
+                                            <input checked type="checkbox" name="itemEdith[{{$item->grupo}}]" value="{{$item->id}}">&nbsp;&nbsp;{{$item->grupo}}</input>
+                                            @else
+                                            <input type="checkbox" name="itemEdith[{{$item->grupo}}]" value="{{$item->id}}">&nbsp;&nbsp;{{$item->grupo}}</input>
+                                            @endif
+                                        </div>
+                                        @endforeach
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="motivos_eleccion_sistema_capacitacion_mod" class="control-label">MOTIVOS
-                                DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</label>
-                            <select class="form-control" name="motivos_eleccion_sistema_capacitacion_mod"
-                                id="motivos_eleccion_sistema_capacitacion_mod">
-                            @isset($alumno->sistema_capacitacion_especificar)@if ($alumno->sistema_capacitacion_especificar != 'PARA EMPLEARSE O AUTOEMPLEARSE' && $alumno->sistema_capacitacion_especificar != 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR' && $alumno->sistema_capacitacion_especificar != 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA' && $alumno->sistema_capacitacion_especificar != 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO' && $alumno->sistema_capacitacion_especificar != 'POR DISPOSICIÓN DE TIEMPO LIBRE' && $alumno->sistema_capacitacion_especificar != '')<option value="0">OTRO</option> @else<option value="{{ $alumno->sistema_capacitacion_especificar }}">{{ $alumno->sistema_capacitacion_especificar }} @endif @else
-                            <option value="">--SELECCIONAR--</option>@endisset
-                            <option value="PARA EMPLEARSE O AUTOEMPLEARSE">PARA EMPLEARSE O AUTOEMPLEARSE
-                            </option>
-                            <option value="PARA AHORRAR GASTOS AL INGRESO FAMILIAR">PARA AHORRAR GASTOS AL
-                                INGRESO FAMILIAR</option>
-                            <option value="POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA">POR
-                                ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA</option>
-                            <option value="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO">PARA MEJORAR SU SITUACIÓN EN
-                                EL TRABAJO</option>
-                            <option value="POR DISPOSICIÓN DE TIEMPO LIBRE">POR DISPOSICIÓN DE TIEMPO LIBRE
-                            </option>
-                            <option value="0">OTRO</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="motivo_capacitacion_especificar">
-                            <label for="motivo_sistema_capacitacion_especificar_mod"
-                                class="control-label">ESPECIFIQUE:</label>
-                            @if ($alumno->sistema_capacitacion_especificar != 'PARA EMPLEARSE O AUTOEMPLEARSE' && $alumno->sistema_capacitacion_especificar != 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR' && $alumno->sistema_capacitacion_especificar != 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA' && $alumno->sistema_capacitacion_especificar != 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO' && $alumno->sistema_capacitacion_especificar != 'POR DISPOSICIÓN DE TIEMPO LIBRE' && $alumno->sistema_capacitacion_especificar != '')<input type="text" class="form-control" name="motivo_sistema_capacitacion_especificar_mod" id="motivo_sistema_capacitacion_especificar_mod" value="{{ $alumno->sistema_capacitacion_especificar }}">@else <input type="text" class="form-control" name="motivo_sistema_capacitacion_especificar_mod" id="motivo_sistema_capacitacion_especificar_mod"> @endif
-                        </div>
-                    </div>
-                </div>
-                <!--DATOS DE EMPLEO-->
-                <hr style="border-color: dimgray">
-                <div>
-                    <div style="text-align: center;">
-                        <h4><b>DATOS DE EMPLEO</b></h4>
-                    </div>
-                    <div class="form-row">
-                        @if ($alumno->empleado == true)
-                            <div class="form-group col-md-4">
-                                <label><input type="checkbox" id="trabajo_mod" name="trabajo_mod" value="true"
-                                        checked>&nbsp;&nbsp;¿El aspirante está empleado?</label>
+                            <hr style="border-color:dimgray">
+                            <div style="text-align: center;">
+                                <h4><b>DATOS GENERALES DE CAPACITACIÓN</b></h4>
                             </div>
-                        @else
-                            <div class="form-group col-md-4">
-                                <label><input type="checkbox" id="trabajo_mod" name="trabajo_mod"
-                                        value="true">&nbsp;&nbsp;¿El aspirante está empleado?</label>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="ultimo_grado_estudios_mod" class="control-label">ÚLTIMO GRADO DE
+                                        ESTUDIOS:</label>
+                                    <select class="form-control" id="ultimo_grado_estudios_mod"
+                                        name="ultimo_grado_estudios_mod">
+                                        @isset($alumno->ultimo_grado_estudios)<option
+                                                value="{{ $alumno->ultimo_grado_estudios }}">
+                                            {{ $alumno->ultimo_grado_estudios }}</option>@else<option value="">
+                                            --SELECCIONAR--</option>@endisset
+                                        @foreach ($grado_estudio as $itemGradoEstudio => $val)
+                                            <option value="{{ $val }}">{{ $val }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        @endif
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="empresa_mod" class="control-label">EMPRESA DONDE TRABAJA:</label>
-                            <input type="text" name="empresa_mod" id="empresa_mod" class="form-control"
-                                autocomplete="off" value="{{ $alumno->empresa_trabaja }}">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="puesto_empresa_mod" class="control-label">PUESTO:</label>
-                            <input type="text" name="puesto_empresa_mod" id="puesto_empresa_mod"
-                                class="form-control" autocomplete="off"
-                                value="{{ $alumno->puesto_empresa }}">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="antiguedad_mod" class="control-label">ANTIGUEDAD:</label>
-                            <input type="text" name="antiguedad_mod" id="antiguedad_mod" class="form-control"
-                                autocomplete="off" value="{{ $alumno->antiguedad }}">
-                        </div>
-                        <div class="form-group col-md-8">
-                            <label for="direccion_empresa_mod" class="control-label">DIRECCIÓN:</label>
-                            <input type="text" name="direccion_empresa_mod" id="direccion_empresa_mod"
-                                class="form-control" autocomplete="off"
-                                value="{{ $alumno->direccion_empresa }}">
-                        </div>
-                    </div>
-                </div>
-                <hr style="border-color: dimgray">
-                <h5><b>REQUISITOS</b></h5>
-                <hr />
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <table class="table table-striped">
-                            <tr>
-                                <td>
-                                    <div class="form-inline">
-                                        @if (@isset($requisitos) || $alumno->chk_acta_nacimiento == 'true')
-                                            @if ($alumno->chk_acta_nacimiento == 'true' || $requisitos->chk_acta_nacimiento == 'true')
-                                                <label><input id="chk_acta_mod" name="chk_acta_mod"
-                                                        type="checkbox" value="true" checked />&nbsp;&nbsp;Acta
-                                                    de Nacimiento</label>
-                                            @else
-                                                <label><input id="chk_acta_mod" name="chk_acta_mod"
-                                                        type="checkbox" value="true" />&nbsp;&nbsp;Acta de
-                                                    Nacimiento</label>
-                                            @endif
-                                        @else
-                                            <label><input id="chk_acta_mod" name="chk_acta_mod" type="checkbox"
-                                                    value="true" />&nbsp;&nbsp;Acta de Nacimiento</label>
-                                        @endif
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="medio_entero_mod" class="control-label">MEDIO POR EL QUE SE ENTERÓ DEL
+                                        SISTEMA</label>
+                                    <select class="form-control" id="medio_entero_mod" name="medio_entero_mod"
+                                            value="{{ $alumno->medio_entero }}">
+                                        @isset($alumno->medio_entero)@if ($alumno->medio_entero == '')<option value="">--SELECCIONAR--</option> @elseif ($alumno->medio_entero !='PRENSA'&& $alumno->medio_entero !='RADIO'&&$alumno->medio_entero !='TELEVISIÓN'&&$alumno->medio_entero !='INTERNET'&&$alumno->medio_entero !='FOLLETOS, CARTELES, VOLANTES')<option value="0">OTRO</option> @else<option value="{{ $alumno->medio_entero }}">{{ $alumno->medio_entero }} @endif @else<option value="">
+                                            --SELECCIONAR--</option>@endisset
+                                        <option value="PRENSA">PRENSA</option>
+                                        <option value="RADIO">RADIO</option>
+                                        <option value="TELEVISIÓN">TELEVISIÓN</option>
+                                        <option value="INTERNET">INTERNET</option>
+                                        <option value="FOLLETOS, CARTELES, VOLANTES">FOLLETOS, CARTELES, VOLANTES</option>
+                                        <option value="0">OTRO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div>
+                                        <label for="medio_especificar_mod" class="control-label">ESPECIFIQUE</label>
+                                        @if ($alumno->medio_entero == '')<input type="text" class="form-control" name="medio_especificar_mod" id="medio_especificar_mod"> @elseif($alumno->medio_entero !='PRENSA'&& $alumno->medio_entero !='RADIO'&&$alumno->medio_entero !='TELEVISIÓN'&&$alumno->medio_entero !='INTERNET'&&$alumno->medio_entero !='FOLLETOS, CARTELES, VOLANTES')<input type="text" class="form-control" name="medio_especificar_mod" id="medio_especificar_mod" value="{{ $alumno->medio_entero }}"> @else<input type="text" class="form-control" name="medio_especificar_mod" id="medio_especificar_mod"> @endif
                                     </div>
-                                </td>
-                                <td>
-                                    @if (isset($requisitos->fecha_expedicion_acta_nacimiento))
-                                        <div class="form-inline">
-                                            <div>
-                                                <label for="">FECHA DE EXPEDICIÓN ACTA DE NACIMIENTO
-                                                    <br></label>
-                                                <input type="date" name="fecha_expedicion_acta_nacimiento_mod"
-                                                    id="fecha_expedicion_acta_nacimiento_mod"
-                                                    value="{{ $requisitos->fecha_expedicion_acta_nacimiento }}">
-                                            </div>
-                                            @if ($vigencia_acta >= 730)
-                                                <div class="form-group col-md-6">
-                                                    <a class="btn btn-danger" id="vigencia_mod"
-                                                        name="vigencia_mod" readonly>LA VIGENCIA DEL DOCUMENTO
-                                                        ACTA DE NACIMIENTO HA EXPIRADO, ACTUALIZAR REQUISITO A
-                                                        LA BREVEDAD</a>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @else
-                                        <div>
-                                            <label for="">FECHA DE EXPEDICIÓN ACTA DE NACIMIENTO <br></label>
-                                            <input type="date" name="fecha_expedicion_acta_nacimiento_mod"
-                                                id="fecha_expedicion_acta_nacimiento_mod">
-                                        </div>
-                                    @endif
-                                </td>
-                                @if (empty($requisitos))
-                                    <td>
-                                        @if ($alumno->chk_acta_nacimiento == 'true')
-                                            <div class="form-group col-md-4">
-                                                <a name="doc_url_acta_naci_mod" id="doc_url_acta_naci_mod"
-                                                    href="{{ $alumno->acta_nacimiento }}" target="blank"
-                                                    class="btn btn-danger">PDF</a>
-                                            </div>
-                                        @endif
-                                    </td>
-                                @endif
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="form-inline">
-                                        @if (isset($requisitos) || $alumno->chk_curp == 'true')
-                                            @if ($alumno->chk_curp == 'true' || $requisitos->chk_curp == 'true')
-                                                <label><input id="chk_curp_mod" name="chk_curp_mod"
-                                                        type="checkbox" value="true"
-                                                        checked />&nbsp;&nbsp;CURP</label>
-                                            @else
-                                                <label><input id="chk_curp_mod" name="chk_curp_mod"
-                                                        type="checkbox" value="true" />&nbsp;&nbsp;CURP</label>
-                                            @endif
-                                        @else
-                                            <label><input id="chk_curp_mod" name="chk_curp_mod" type="checkbox"
-                                                    value="true" />&nbsp;&nbsp;CURP</label>
-                                        @endif
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                        <label for="motivos_eleccion_sistema_capacitacion_mod" class="control-label">MOTIVOS
+                                            DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN:</label>
+                                        <select class="form-control" name="motivos_eleccion_sistema_capacitacion_mod"
+                                            id="motivos_eleccion_sistema_capacitacion_mod">
+                                        @isset($alumno->sistema_capacitacion_especificar)@if ($alumno->sistema_capacitacion_especificar != 'PARA EMPLEARSE O AUTOEMPLEARSE' && $alumno->sistema_capacitacion_especificar != 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR' && $alumno->sistema_capacitacion_especificar != 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA' && $alumno->sistema_capacitacion_especificar != 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO' && $alumno->sistema_capacitacion_especificar != 'POR DISPOSICIÓN DE TIEMPO LIBRE' && $alumno->sistema_capacitacion_especificar != '')<option value="0">OTRO</option> @else<option value="{{ $alumno->sistema_capacitacion_especificar }}">{{ $alumno->sistema_capacitacion_especificar }} @endif @else
+                                        <option value="">--SELECCIONAR--</option>@endisset
+                                        <option value="PARA EMPLEARSE O AUTOEMPLEARSE">PARA EMPLEARSE O AUTOEMPLEARSE
+                                        </option>
+                                        <option value="PARA AHORRAR GASTOS AL INGRESO FAMILIAR">PARA AHORRAR GASTOS AL
+                                            INGRESO FAMILIAR</option>
+                                        <option value="POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA">POR
+                                            ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA</option>
+                                        <option value="PARA MEJORAR SU SITUACIÓN EN EL TRABAJO">PARA MEJORAR SU SITUACIÓN EN
+                                            EL TRABAJO</option>
+                                        <option value="POR DISPOSICIÓN DE TIEMPO LIBRE">POR DISPOSICIÓN DE TIEMPO LIBRE
+                                        </option>
+                                        <option value="0">OTRO</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="motivo_capacitacion_especificar">
+                                        <label for="motivo_sistema_capacitacion_especificar_mod"
+                                            class="control-label">ESPECIFIQUE:</label>
+                                        @if ($alumno->sistema_capacitacion_especificar != 'PARA EMPLEARSE O AUTOEMPLEARSE' && $alumno->sistema_capacitacion_especificar != 'PARA AHORRAR GASTOS AL INGRESO FAMILIAR' && $alumno->sistema_capacitacion_especificar != 'POR ESTAR EN ESPERA DE INCORPORARSE A OTRA INSTITUCIÓN EDUCATIVA' && $alumno->sistema_capacitacion_especificar != 'PARA MEJORAR SU SITUACIÓN EN EL TRABAJO' && $alumno->sistema_capacitacion_especificar != 'POR DISPOSICIÓN DE TIEMPO LIBRE' && $alumno->sistema_capacitacion_especificar != '')<input type="text" class="form-control" name="motivo_sistema_capacitacion_especificar_mod" id="motivo_sistema_capacitacion_especificar_mod" value="{{ $alumno->sistema_capacitacion_especificar }}">@else <input type="text" class="form-control" name="motivo_sistema_capacitacion_especificar_mod" id="motivo_sistema_capacitacion_especificar_mod"> @endif
                                     </div>
-                                </td>
-                                <td>
-                                    @if (isset($requisitos->fecha_expedicion_curp))
-                                        <DIV class="form-inline">
-                                            <div>
-                                                <label for="">FECHA DE EXPEDICIÓN CURP <br></label>
-                                                <input type="date" name="fecha_expedicion_curp_mod"
-                                                    id="fecha_expedicion_curp_mod"
-                                                    value="{{ $requisitos->fecha_expedicion_curp }}">
-                                            </div>
-                                            @if ($vigencia_curp >= 365)
-                                                <div class="form-group col-md-6">
-                                                    <a class="btn btn-danger" id="vigencia_mod"
-                                                        name="vigencia_mod" readonly>LA VIGENCIA DEL DOCUMENTO
-                                                        CURP HA EXPIRADO, ACTUALIZAR REQUISITO A LA BREVEDAD</a>
-                                                </div>
-                                            @endif
-                                        </DIV>
-                                    @else
-                                        <div>
-                                            <label for="">FECHA DE EXPEDICIÓN CURP <br></label>
-                                            <input type="date" name="fecha_expedicion_curp_mod"
-                                                id="fecha_expedicion_curp_mod">
-                                        </div>
-                                    @endif
-                                </td>
-                                @if (empty($requisitos))
-                                    <td>
-                                        @if ($alumno->chk_curp == 'true')
-                                            <div class="form-group col-md-4">
-                                                <a name="doc_url_curp_mod" id="doc_url_curp_mod"
-                                                    href="{{ $alumno->documento_curp }}" target="blank"
-                                                    class="btn btn-danger">PDF</a>
-                                            </div>
-                                        @endif
-                                    </td>
-                                @endif
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="form-inline">
-                                        @if (isset($requisitos) || $alumno->chk_comprobante_ultimo_grado == 'true')
-                                            @if ($alumno->chk_comprobante_ultimo_grado == 'true' || $requisitos->chk_escolaridad)
-                                                <label><input id="chk_escolaridad_mod"
-                                                        name="chk_escolaridad_mod" type="checkbox" value="true"
-                                                        checked />&nbsp;&nbsp;&Uacute;ltimo Grado de
-                                                    Estudios</label>
-                                            @else
-                                                <label><input id="chk_escolaridad_mod"
-                                                        name="chk_escolaridad_mod" type="checkbox"
-                                                        value="true" />&nbsp;&nbsp;&Uacute;ltimo Grado de
-                                                    Estudios</label>
-                                            @endif
-                                        @else
-                                            <label><input id="chk_escolaridad_mod" name="chk_escolaridad_mod"
-                                                    type="checkbox" value="true" />&nbsp;&nbsp;&Uacute;ltimo
-                                                Grado de Estudios</label>
-                                        @endif
-
-                                    </div>
-                                </td>
-                                <td></td>
-                                @if (empty($requisitos))
-                                    <td>
-                                        @if ($alumno->chk_comprobante_ultimo_grado == 'true')
-                                            <div class="form-group col-md-4">
-                                                <a name="doc_url_ultimo_grado_mod" id="doc_url_ultimo_grado_mod"
-                                                    href="{{ $alumno->comprobante_ultimo_grado }}"
-                                                    target="blank" class="btn btn-danger">PDF</a>
-                                            </div>
-                                        @endif
-                                    </td>
-                                @endif
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="form-inline">
-                                        @if (isset($requisitos) || $alumno->chk_comprobante_calidad_migratoria == 'true')
-                                            @if ($alumno->chk_comprobante_calidad_migratoria == 'true' || $requisitos->chk_comprobante_migracion)
-                                                <label><input id="chk_comprobante_migracion_mod"
-                                                        name="chk_comprobante_migratorio_mod" type="checkbox"
-                                                        value="true" checked />&nbsp;&nbsp;Comprobante
-                                                    Migratorio</label>
-                                            @else
-                                                <label><input id="chk_comprobante_migracion_mod"
-                                                        name="chk_comprobante_migratorio_mod" type="checkbox"
-                                                        value="true" />&nbsp;&nbsp;Comprobante
-                                                    Migratorio</label>
-                                            @endif
-                                        @else
-                                            <label><input id="chk_comprobante_migracion_mod"
-                                                    name="chk_comprobante_migratorio_mod" type="checkbox"
-                                                    value="true" />&nbsp;&nbsp;Comprobante Migratorio</label>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td>
-                                    @if (isset($requisitos->fecha_vigencia_migratorio))
-                                        <div class="form-inline">
-                                            <div>
-                                                <label for="">FECHA DE VIGENCIA DE COMPROBANTE MIGRATORIO
-                                                    <br></label>
-                                                <input type="date" name="fecha_vigencia_migratorio_mod"
-                                                    id="fecha_vigencia_migratorio_mod"
-                                                    value="{{ $requisitos->fecha_vigencia_migratorio }}">
-                                            </div>
-                                            @if ($vigencia_migracion == true)
-                                                <div class="form-group col-md-6">
-                                                    <a class="btn btn-danger" id="vigencia_mod"
-                                                        name="vigencia_mod" readonly>LA VIGENCIA DEL DOCUMENTO
-                                                        COMPROBANTE MIGRATORIO HA EXPIRADO, ACTUALIZAR REQUISITO
-                                                        A LA BREVEDAD</a>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @else
-                                        <div>
-                                            <label for="">FECHA DE VIGENCIA DE COMPROBANTE MIGRATORIO
-                                                <br></label>
-                                            <input type="date" name="fecha_vigencia_migratorio_mod"
-                                                id="fecha_vigencia_migratorio_mod">
-                                        </div>
-                                    @endif
-                                </td>
-                                @if (empty($requisitos))
-                                    <td>
-                                        @if ($alumno->chk_comprobante_calidad_migratoria == 'true')
-                                            <div class="form-group col-md-4">
-                                                <a name="doc_url_compro_migra_mod" id="doc_url_compro_migra_mod"
-                                                    href="{{ $alumno->comprobante_calidad_migratoria }}"
-                                                    target="blank" class="btn btn-danger">PDF</a>
-                                            </div>
-                                        @endif
-                                    </td>
-                                @endif
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="form-inline col-md-12">
-                        <table class="table table-striped">
-                            <tr>
-                                <td>
-                                    @if (isset($requisitos->documento))
-                                        <div class="form-inline col-md-12">
-                                            <div class="form-group col-md-4">
-                                                <label for="">Carga requisitos</label>
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input"
-                                                        id="customFile_mod" name="customFile_mod"
-                                                        onchange="fileValidationpdfmod()">
-                                                    <label class="custom-file-label"
-                                                        for="customFile_mod">SELECCIONAR DOCUMENTO</label>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-5">
-                                                <a name="doc_url_mod" id="doc_url_mod"
-                                                    href="{{ $requisitos->documento }}" target="blank"
-                                                    class="btn btn-danger">PDF</a>
-                                            </div>
+                                </div>
+                            </div>
+                            <!--DATOS DE EMPLEO-->
+                            <hr style="border-color: dimgray">
+                            <div>
+                                <div style="text-align: center;">
+                                    <h4><b>DATOS DE EMPLEO</b></h4>
+                                </div>
+                                <div class="form-row">
+                                    @if ($alumno->empleado == true)
+                                        <div class="form-group col-md-4">
+                                            <label><input type="checkbox" id="trabajo_mod" name="trabajo_mod" value="true"
+                                                    checked>&nbsp;&nbsp;¿El aspirante está empleado?</label>
                                         </div>
                                     @else
                                         <div class="form-group col-md-4">
-                                            <label for="">Carga requisitos</label>
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input"
-                                                    id="customFile_mod" name="customFile_mod"
-                                                    onchange="fileValidationpdfmod()">
-                                                <label class="custom-file-label"
-                                                    for="customFile_mod">SELECCIONAR DOCUMENTO</label>
-                                            </div>
+                                            <label><input type="checkbox" id="trabajo_mod" name="trabajo_mod"
+                                                    value="true">&nbsp;&nbsp;¿El aspirante está empleado?</label>
                                         </div>
                                     @endif
-                                </td>
-                                <td>
-                                    <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf"
-                                        target="blank">UNIR PDF´s</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <hr style="border-color: dimgray">
-                <h5><b>DATOS CERSS</b></h5>
-                <br><br>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        @if ($alumno->es_cereso == 'true')
-                            <label><input type="checkbox" id="cerss_chk_mod" name="cerss_chk_mod" value="true"
-                                    checked>&nbsp;&nbsp;¿El aspirante pertenece a algún cereso?</label>
-                        @else
-                            <label><input type="checkbox" id="cerss_chk_mod" name="cerss_chk_mod"
-                                    value="true">&nbsp;&nbsp;¿El aspirante pertenece a algún cereso?</label>
-                        @endif
-                    </div>
-                </div>
-                <div id="datos_cerss">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            {{ Form::text('num_expediente_cerss_mod', $alumno->numero_expediente, ['id' => 'num_expediente_cerss_mod', 'class' => 'form-control', 'placeholder' => 'NÚMERO DE EXPEDIENTE']) }}
-                        </div>
-                    </div>
-                </div>
-                <br><br><br><br>
-                <!--botones de enviar y retroceder-->
-                <div class="row">
-                    <div class="col-lg-12 margin-tb">
-                        <div class="pull-right">
-                            <button type="submit" class="btn btn-warning" id="guardarMod">GUARDAR
-                                MODIFICACIÓN</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    @endif
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="empresa_mod" class="control-label">EMPRESA DONDE TRABAJA:</label>
+                                        <input type="text" name="empresa_mod" id="empresa_mod" class="form-control"
+                                            autocomplete="off" value="{{ $alumno->empresa_trabaja }}">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="puesto_empresa_mod" class="control-label">PUESTO:</label>
+                                        <input type="text" name="puesto_empresa_mod" id="puesto_empresa_mod"
+                                            class="form-control" autocomplete="off"
+                                            value="{{ $alumno->puesto_empresa }}">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="antiguedad_mod" class="control-label">ANTIGUEDAD:</label>
+                                        <input type="text" name="antiguedad_mod" id="antiguedad_mod" class="form-control"
+                                            autocomplete="off" value="{{ $alumno->antiguedad }}">
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <label for="direccion_empresa_mod" class="control-label">DIRECCIÓN:</label>
+                                        <input type="text" name="direccion_empresa_mod" id="direccion_empresa_mod"
+                                            class="form-control" autocomplete="off"
+                                            value="{{ $alumno->direccion_empresa }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr style="border-color: dimgray">
+                            <h5><b>REQUISITOS</b></h5>
+                            <hr />
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>
+                                                <div class="form-inline">
+                                                    @if (@isset($requisitos) || $alumno->chk_acta_nacimiento == 'true')
+                                                        @if ($alumno->chk_acta_nacimiento == 'true' || $requisitos->chk_acta_nacimiento == 'true')
+                                                            <label><input id="chk_acta_mod" name="chk_acta_mod"
+                                                                    type="checkbox" value="true" checked />&nbsp;&nbsp;Acta
+                                                                de Nacimiento</label>
+                                                        @else
+                                                            <label><input id="chk_acta_mod" name="chk_acta_mod"
+                                                                    type="checkbox" value="true" />&nbsp;&nbsp;Acta de
+                                                                Nacimiento</label>
+                                                        @endif
+                                                    @else
+                                                        <label><input id="chk_acta_mod" name="chk_acta_mod" type="checkbox"
+                                                                value="true" />&nbsp;&nbsp;Acta de Nacimiento</label>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (isset($requisitos->fecha_expedicion_acta_nacimiento))
+                                                    <div class="form-inline">
+                                                        <div>
+                                                            <label for="">FECHA DE EXPEDICIÓN ACTA DE NACIMIENTO
+                                                                <br></label>
+                                                            <input type="date" name="fecha_expedicion_acta_nacimiento_mod"
+                                                                id="fecha_expedicion_acta_nacimiento_mod"
+                                                                value="{{ $requisitos->fecha_expedicion_acta_nacimiento }}">
+                                                        </div>
+                                                        @if ($vigencia_acta >= 730)
+                                                            <div class="form-group col-md-6">
+                                                                <a class="btn btn-danger" id="vigencia_mod"
+                                                                    name="vigencia_mod" readonly>LA VIGENCIA DEL DOCUMENTO
+                                                                    ACTA DE NACIMIENTO HA EXPIRADO, ACTUALIZAR REQUISITO A
+                                                                    LA BREVEDAD</a>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <div>
+                                                        <label for="">FECHA DE EXPEDICIÓN ACTA DE NACIMIENTO <br></label>
+                                                        <input type="date" name="fecha_expedicion_acta_nacimiento_mod"
+                                                            id="fecha_expedicion_acta_nacimiento_mod">
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            @if (empty($requisitos))
+                                                <td>
+                                                    @if ($alumno->chk_acta_nacimiento == 'true')
+                                                        <div class="form-group col-md-4">
+                                                            <a name="doc_url_acta_naci_mod" id="doc_url_acta_naci_mod"
+                                                                href="{{ $alumno->acta_nacimiento }}" target="blank"
+                                                                class="btn btn-danger">PDF</a>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-inline">
+                                                    @if (isset($requisitos) || $alumno->chk_curp == 'true')
+                                                        @if ($alumno->chk_curp == 'true' || $requisitos->chk_curp == 'true')
+                                                            <label><input id="chk_curp_mod" name="chk_curp_mod"
+                                                                    type="checkbox" value="true"
+                                                                    checked />&nbsp;&nbsp;CURP</label>
+                                                        @else
+                                                            <label><input id="chk_curp_mod" name="chk_curp_mod"
+                                                                    type="checkbox" value="true" />&nbsp;&nbsp;CURP</label>
+                                                        @endif
+                                                    @else
+                                                        <label><input id="chk_curp_mod" name="chk_curp_mod" type="checkbox"
+                                                                value="true" />&nbsp;&nbsp;CURP</label>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (isset($requisitos->fecha_expedicion_curp))
+                                                    <DIV class="form-inline">
+                                                        <div>
+                                                            <label for="">FECHA DE EXPEDICIÓN CURP <br></label>
+                                                            <input type="date" name="fecha_expedicion_curp_mod"
+                                                                id="fecha_expedicion_curp_mod"
+                                                                value="{{ $requisitos->fecha_expedicion_curp }}">
+                                                        </div>
+                                                        @if ($vigencia_curp >= 365)
+                                                            <div class="form-group col-md-6">
+                                                                <a class="btn btn-danger" id="vigencia_mod"
+                                                                    name="vigencia_mod" readonly>LA VIGENCIA DEL DOCUMENTO
+                                                                    CURP HA EXPIRADO, ACTUALIZAR REQUISITO A LA BREVEDAD</a>
+                                                            </div>
+                                                        @endif
+                                                    </DIV>
+                                                @else
+                                                    <div>
+                                                        <label for="">FECHA DE EXPEDICIÓN CURP <br></label>
+                                                        <input type="date" name="fecha_expedicion_curp_mod"
+                                                            id="fecha_expedicion_curp_mod">
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            @if (empty($requisitos))
+                                                <td>
+                                                    @if ($alumno->chk_curp == 'true')
+                                                        <div class="form-group col-md-4">
+                                                            <a name="doc_url_curp_mod" id="doc_url_curp_mod"
+                                                                href="{{ $alumno->documento_curp }}" target="blank"
+                                                                class="btn btn-danger">PDF</a>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-inline">
+                                                    @if (isset($requisitos) || $alumno->chk_comprobante_ultimo_grado == 'true')
+                                                        @if ($alumno->chk_comprobante_ultimo_grado == 'true' || $requisitos->chk_escolaridad)
+                                                            <label><input id="chk_escolaridad_mod"
+                                                                    name="chk_escolaridad_mod" type="checkbox" value="true"
+                                                                    checked />&nbsp;&nbsp;&Uacute;ltimo Grado de
+                                                                Estudios</label>
+                                                        @else
+                                                            <label><input id="chk_escolaridad_mod"
+                                                                    name="chk_escolaridad_mod" type="checkbox"
+                                                                    value="true" />&nbsp;&nbsp;&Uacute;ltimo Grado de
+                                                                Estudios</label>
+                                                        @endif
+                                                    @else
+                                                        <label><input id="chk_escolaridad_mod" name="chk_escolaridad_mod"
+                                                                type="checkbox" value="true" />&nbsp;&nbsp;&Uacute;ltimo
+                                                            Grado de Estudios</label>
+                                                    @endif
 
-@endif
-@endif
-<br><br><br>
-</div>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            @if (empty($requisitos))
+                                                <td>
+                                                    @if ($alumno->chk_comprobante_ultimo_grado == 'true')
+                                                        <div class="form-group col-md-4">
+                                                            <a name="doc_url_ultimo_grado_mod" id="doc_url_ultimo_grado_mod"
+                                                                href="{{ $alumno->comprobante_ultimo_grado }}"
+                                                                target="blank" class="btn btn-danger">PDF</a>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-inline">
+                                                    @if (isset($requisitos) || $alumno->chk_comprobante_calidad_migratoria == 'true')
+                                                        @if ($alumno->chk_comprobante_calidad_migratoria == 'true' || $requisitos->chk_comprobante_migracion)
+                                                            <label><input id="chk_comprobante_migracion_mod"
+                                                                    name="chk_comprobante_migratorio_mod" type="checkbox"
+                                                                    value="true" checked />&nbsp;&nbsp;Comprobante
+                                                                Migratorio</label>
+                                                        @else
+                                                            <label><input id="chk_comprobante_migracion_mod"
+                                                                    name="chk_comprobante_migratorio_mod" type="checkbox"
+                                                                    value="true" />&nbsp;&nbsp;Comprobante
+                                                                Migratorio</label>
+                                                        @endif
+                                                    @else
+                                                        <label><input id="chk_comprobante_migracion_mod"
+                                                                name="chk_comprobante_migratorio_mod" type="checkbox"
+                                                                value="true" />&nbsp;&nbsp;Comprobante Migratorio</label>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (isset($requisitos->fecha_vigencia_migratorio))
+                                                    <div class="form-inline">
+                                                        <div>
+                                                            <label for="">FECHA DE VIGENCIA DE COMPROBANTE MIGRATORIO
+                                                                <br></label>
+                                                            <input type="date" name="fecha_vigencia_migratorio_mod"
+                                                                id="fecha_vigencia_migratorio_mod"
+                                                                value="{{ $requisitos->fecha_vigencia_migratorio }}">
+                                                        </div>
+                                                        @if ($vigencia_migracion == true)
+                                                            <div class="form-group col-md-6">
+                                                                <a class="btn btn-danger" id="vigencia_mod"
+                                                                    name="vigencia_mod" readonly>LA VIGENCIA DEL DOCUMENTO
+                                                                    COMPROBANTE MIGRATORIO HA EXPIRADO, ACTUALIZAR REQUISITO
+                                                                    A LA BREVEDAD</a>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <div>
+                                                        <label for="">FECHA DE VIGENCIA DE COMPROBANTE MIGRATORIO
+                                                            <br></label>
+                                                        <input type="date" name="fecha_vigencia_migratorio_mod"
+                                                            id="fecha_vigencia_migratorio_mod">
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            @if (empty($requisitos))
+                                                <td>
+                                                    @if ($alumno->chk_comprobante_calidad_migratoria == 'true')
+                                                        <div class="form-group col-md-4">
+                                                            <a name="doc_url_compro_migra_mod" id="doc_url_compro_migra_mod"
+                                                                href="{{ $alumno->comprobante_calidad_migratoria }}"
+                                                                target="blank" class="btn btn-danger">PDF</a>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                            @endif
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="form-inline col-md-12">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>
+                                                @if (isset($requisitos->documento))
+                                                    <div class="form-inline col-md-12">
+                                                        <div class="form-group col-md-4">
+                                                            <label for="">Carga requisitos</label>
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input"
+                                                                    id="customFile_mod" name="customFile_mod"
+                                                                    onchange="fileValidationpdfmod()">
+                                                                <label class="custom-file-label"
+                                                                    for="customFile_mod">SELECCIONAR DOCUMENTO</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-5">
+                                                            <a name="doc_url_mod" id="doc_url_mod"
+                                                                href="{{ $requisitos->documento }}" target="blank"
+                                                                class="btn btn-danger">PDF</a>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="form-group col-md-4">
+                                                        <label for="">Carga requisitos</label>
+                                                        <div class="custom-file">
+                                                            <input type="file" class="custom-file-input"
+                                                                id="customFile_mod" name="customFile_mod"
+                                                                onchange="fileValidationpdfmod()">
+                                                            <label class="custom-file-label"
+                                                                for="customFile_mod">SELECCIONAR DOCUMENTO</label>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf"
+                                                    target="blank">UNIR PDF´s</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr style="border-color: dimgray">
+                            <h5><b>DATOS CERSS</b></h5>
+                            <br><br>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    @if ($alumno->es_cereso == 'true')
+                                        <label><input type="checkbox" id="cerss_chk_mod" name="cerss_chk_mod" value="true"
+                                                checked>&nbsp;&nbsp;¿El aspirante pertenece a algún cereso?</label>
+                                    @else
+                                        <label><input type="checkbox" id="cerss_chk_mod" name="cerss_chk_mod"
+                                                value="true">&nbsp;&nbsp;¿El aspirante pertenece a algún cereso?</label>
+                                    @endif
+                                </div>
+                            </div>
+                            <div id="datos_cerss">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        {{ Form::text('num_expediente_cerss_mod', $alumno->numero_expediente, ['id' => 'num_expediente_cerss_mod', 'class' => 'form-control', 'placeholder' => 'NÚMERO DE EXPEDIENTE']) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br><br><br>
+                            <!--botones de enviar y retroceder-->
+                            <div class="row">
+                                <div class="col-lg-12 margin-tb">
+                                    <div class="pull-right">
+                                        <button type="submit" class="btn btn-warning" id="guardarMod">GUARDAR
+                                            MODIFICACIÓN</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                @endif
+            @endif
+        @endif
+        <br><br><br>
+    </div>
 @endsection
 @section('script_content_js')
 <script type="text/javascript">

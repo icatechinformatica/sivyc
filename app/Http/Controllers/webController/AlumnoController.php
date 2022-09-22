@@ -241,6 +241,9 @@ class AlumnoController extends Controller {
                 $AlumnoPreseleccion->correo = $request->correo;
                 $AlumnoPreseleccion->facebook = $request->facebook;
                 $AlumnoPreseleccion->twitter = $request->twitter;
+                $AlumnoPreseleccion->instagram = $request->instagram;
+                $AlumnoPreseleccion->tiktok = $request->tiktok;
+                $AlumnoPreseleccion->ninguna_redsocial = $request->ninguna_redsocial;
                 $AlumnoPreseleccion->recibir_publicaciones = $request->recibir_publicaciones;
                 $AlumnoPreseleccion->domicilio = $request->domicilio;
                 $AlumnoPreseleccion->colonia = $request->colonia;
@@ -464,6 +467,9 @@ class AlumnoController extends Controller {
                 'correo'=>$request->correo_mod,
                 'facebook'=>$request->facebook_mod,
                 'twitter'=>$request->twitter_mod,
+                'instagram'=>$request->instagram_mod,
+                'tiktok'=>$request->tiktok_mod,
+                'ninguna_redsocial'=>$request->ninguna_redsocial_mod,
                 'recibir_publicaciones'=>$request->recibir_publicaciones_mod,
                 'domicilio' => trim($request->domicilio_mod),
                 'colonia'=>trim($request->colonia_mod),
