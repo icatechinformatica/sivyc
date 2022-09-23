@@ -582,41 +582,9 @@
                     success: function(msg) {
                         console.log(msg);
                         if (tipo == 'insert' || tipo == 'update') {
-                            if (msg == 'iguales') { //hay registro con la fecha y hora
-                                $('#titleToast').html('Fecha incorrecta');
-                                $("#msgVolumen").html("El instructor no se encuentra disponible en fecha y hora");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales2') {
-                                $('#titleToast').html('Fecha incorrecta');
-                                $("#msgVolumen").html("La fecha y hora de termino ya se encuentra en uso");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales3') {
-                                $('#titleToast').html('Límite de 8hrs día excedido');
-                                $("#msgVolumen").html("El instructor no debe de exceder las 8hrs impartidas");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales4') {
-                                $('#titleToast').html('Horas por semana excedido');
-                                $("#msgVolumen").html("El instructor no debe impartir más de 40hrs semanales");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales5') {
-                                $('#titleToast').html('Fechas no validas');
-                                $("#msgVolumen").html("La actividad del intructor por mes supera el límite permitido (5 meses)");
-                                $(".toast").toast("show");
-                            }else if (msg == 'iguales6') {
-                                $('#titleToast').html('Curso no valido');
-                                $("#msgVolumen").html("El instructor no bebe pasar los 4 cursos impartidos por mes");
-                                $(".toast").toast("show");
-                            }else if (msg == 'iguales7') {
-                                $('#titleToast').html('Horario incorrecto');
-                                $("#msgVolumen").html("La diferencia de tiempo de viaje entre unidades no es valida");
-                                $(".toast").toast("show");
-                            }else if (msg == 'iguales8') {
-                                $('#titleToast').html('Duplicidad en alumnos');
-                                $("#msgVolumen").html("El alumno no se encuentra disponible en fecha y hora");
-                                $(".toast").toast("show");
-                            }else if (msg == 'duplicado') {
-                                $('#titleToast').html('Datos incorrectos');
-                                $("#msgVolumen").html("Los datos ingresados coinciden con registros existentes");
+                            if (msg) { //hay registro con la fecha y hora
+                                $('#titleToast').html('Registro no valido');
+                                $("#msgVolumen").html(msg);
                                 $(".toast").toast("show");
                             } else {
                                 calendar.refetchEvents();
