@@ -58,6 +58,8 @@ use App\Http\Controllers\ApiController\Api\PassportController;
 
 
     //api app movil "supervision icatech"eb
+    
+    Route::post('supervision/movil/cursos-supervisar','ApiController\ApiSupervisionMovil\SupervisionMovilController@getCursosPorSupervisar');
     Route::get('supervision/movil/curso/{clave}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getCurso');
     Route::get('supervision/movil/alumnos/{idGrupo}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getAlumnos');
 
