@@ -115,7 +115,7 @@
                 <td><b>SEXO: @php if($alumnos->sexo=="FEMENINO"){echo "M(X) H( )";} else {echo"M( ) H(X)";} @endphp</b></td>
                 <td><b>CURP: &nbsp;&nbsp;</b>{{ $alumnos->curp_alumno }}</td>
                 <td><b>EDAD: &nbsp;&nbsp;</b>{{ $edad }} AÑOS</td>
-                <td><b>TELEFONO: &nbsp;&nbsp;</b>{{ $alumnos->telefono }}</td>
+                <td><b>TELEFONO: &nbsp;&nbsp;</b>@php if($alumnos->telefono_casa){echo ($alumnos->telefono_casa); }else{if($alumnos->telefono_personal){echo($alumnos->telefono_personal);}else{echo($alumnos->telefono);} } @endphp</td>
             </tr>
             <tr>
                 <td colspan="2"><b>DOMICILIO: &nbsp;&nbsp;</b>{{ $alumnos->domicilio }}</td>
