@@ -399,6 +399,7 @@ class aperturaController extends Controller
                                         'cespecifico' => strtoupper($request->cespecifico),
                                         'fcespe' => $request->fcespe,
                                         'munidad' => $request->munidad,
+                                        'num_revision' => $request->munidad,
                                         'plantel' => $request->plantel,
                                         'comprobante_pago' => $documentUrl,
                                         'folio_pago' => $request->folio_pago,
