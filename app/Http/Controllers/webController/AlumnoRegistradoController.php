@@ -224,19 +224,36 @@ class AlumnoRegistradoController extends Controller
     protected function getDocumentoCerrsSid($nocontrol) {
         $noControl = base64_decode($nocontrol);
 
-        $alumnos = Alumno::WHERE('alumnos_registro.id', $noControl)
+        // $alumnos = Alumno::WHERE('alumnos_registro.id', $noControl)
+        //             ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
+        //             ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
+        //                     ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+        //                     ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.unidad')
+        //                     ->LEFTJOIN('cerss','alumnos_registro.id_cerss','=','cerss.id')
+        //                     ->FIRST(['alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono','alumnos_pre.telefono_casa','alumnos_pre.telefono_personal',
+        //                     'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo','alumnos_pre.chk_acta_nacimiento','alumnos_pre.chk_curp','alumnos_pre.chk_comprobante_domicilio','alumnos_pre.chk_fotografia',
+        //                     'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio','alumnos_pre.fotografia', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio','alumnos_pre.chk_ine','alumnos_pre.chk_pasaporte_licencia',
+        //                     'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
+        //                     'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
+        //                     'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id',
+        //                     'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct AS unidades', 'alumnos_registro.cerrs',
+        //                     'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo',
+        //                     'alumnos_pre.nacionalidad', 'alumnos_pre.es_cereso', 'cerss.nombre as nombre_cerss', 'cerss.direccion as direccion_cerss',
+        //                     'alumnos_pre.chk_ficha_cerss', 'alumnos_pre.numero_expediente',
+        //                     'cerss.titular as titular_cerss']);
+        $alumnos = Alumno::WHERE('alumnos_registro.id', '=', $noControl)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                     ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')
-                            ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
-                            ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.unidad')
-                            ->LEFTJOIN('cerss','alumnos_registro.id_cerss','=','cerss.id')
-                            ->FIRST(['alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono','alumnos_pre.telefono_casa','alumnos_pre.telefono_personal',
+                    ->LEFTJOIN('alumnos_pre', 'alumnos_pre.id', '=', 'alumnos_registro.id_pre')
+                    ->LEFTJOIN('tbl_unidades', 'alumnos_registro.unidad', '=', 'tbl_unidades.unidad')
+                    ->LEFTJOIN('cerss','alumnos_registro.id_cerss','=','cerss.id')
+                    ->FIRST(['alumnos_pre.nombre AS nombrealumno', 'alumnos_pre.apellido_paterno', 'alumnos_pre.apellido_materno', 'alumnos_pre.correo', 'alumnos_pre.telefono','alumnos_pre.telefono_casa','alumnos_pre.telefono_personal',
                             'alumnos_pre.curp AS curp_alumno', 'alumnos_pre.sexo','alumnos_pre.chk_acta_nacimiento','alumnos_pre.chk_curp','alumnos_pre.chk_comprobante_domicilio','alumnos_pre.chk_fotografia',
                             'alumnos_pre.fecha_nacimiento', 'alumnos_pre.domicilio','alumnos_pre.fotografia', 'alumnos_pre.colonia', 'alumnos_pre.cp', 'alumnos_pre.municipio','alumnos_pre.chk_ine','alumnos_pre.chk_pasaporte_licencia',
-                            'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
-                            'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad',
-                            'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id',
-                            'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct AS unidades', 'alumnos_registro.cerrs',
+                            'alumnos_pre.chk_comprobante_ultimo_grado','alumnos_pre.ultimo_grado_estudios','alumnos_pre.chk_comprobante_calidad_migratoria','alumnos_pre.estado', 'alumnos_pre.estado_civil', 'alumnos_pre.discapacidad', 'alumnos_registro.no_control', 'alumnos_registro.id',
+                            'alumnos_registro.horario', 'alumnos_registro.grupo', 'alumnos_registro.tipo_curso AS tipocurso', 'alumnos_pre.empresa_trabaja', 'alumnos_pre.puesto_empresa', 'alumnos_pre.antiguedad','alumnos_pre.empleado',
+                            'alumnos_pre.direccion_empresa', 'alumnos_registro.unidad','alumnos_registro.id','alumnos_pre.id_gvulnerable',
+                            'cursos.nombre_curso', 'especialidades.nombre AS especialidad', 'tbl_unidades.cct AS unidades', 'alumnos_registro.cerrs','cursos.tipo_curso',
                             'alumnos_registro.etnia', 'alumnos_registro.fecha', 'alumnos_pre.medio_entero', 'alumnos_pre.sistema_capacitacion_especificar', 'alumnos_registro.realizo', 'cursos.costo',
                             'alumnos_pre.nacionalidad', 'alumnos_pre.es_cereso', 'cerss.nombre as nombre_cerss', 'cerss.direccion as direccion_cerss',
                             'alumnos_pre.chk_ficha_cerss', 'alumnos_pre.numero_expediente',
