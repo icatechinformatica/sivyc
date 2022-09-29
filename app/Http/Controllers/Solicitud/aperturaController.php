@@ -670,7 +670,7 @@ class aperturaController extends Controller
             ->where('ar.eliminado',false)
             ->where('ar.folio_grupo','<>',$id_curso)
             ->whereRaw("((date(a.start) >= '$fechaInicio' and date(a.start) <= '$fechaTermino') OR (date(a.end) >= '$fechaInicio' and date(a.end) <= '$fechaTermino'))")
-            ->whereRaw("((cast(a.start as time) >= '$horaInicio' and cast(a.start as time) <= '$horaTermino') OR (cast(a.end as time) >= '$horaInicio' and cast(a.end as time) <= '$horaTermino'))")
+            ->whereRaw("((cast(a.start as time) >= '$horaInicio' and cast(a.start as time) < '$horaTermino') OR (cast(a.end as time) > '$horaInicio' and cast(a.end as time) <= '$horaTermino'))")
             ->whereIn('ar.id_pre', [DB::raw("select id_pre from alumnos_registro where folio_grupo = '$id_curso' and eliminado = false")])
             ->get();    
         if (count($alumnos_ocupados) > 0) {
