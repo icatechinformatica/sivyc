@@ -87,7 +87,7 @@ class turnarAperturaController extends Controller
                             ->value(DB::raw('count(id)'));
                         $sum = $add + $dias_fes;
                         $dia_ext = date('Y-m-d', strtotime($grupo->inicio. (' + '.$sum.' days')));
-                        if ($dia_ext < date('Y-m-d')) {
+                        if (($dia_ext < date('Y-m-d')) OR ($grupo->termino < date('Y-m-d'))) {
                             $extemporaneo = true;
                         }
                     } elseif ($opt == 'ARC02') {
@@ -175,7 +175,7 @@ class turnarAperturaController extends Controller
                                     ->value(DB::raw('count(id)'));
                                 $sum = $add + $dias_fes;
                                 $dia_ext = date('Y-m-d', strtotime($value->inicio. (' + '.$sum.' days')));
-                                if ($dia_ext < date('Y-m-d')) {
+                                if (($dia_ext < date('Y-m-d')) OR ($value->termino < date('Y-m-d'))) {
                                     foreach ($request->motivo as $m => $motivo) {
                                         foreach ($request->mrespuesta as $i => $x) {
                                             if (($i == $value->id) AND ($x == null)) {
