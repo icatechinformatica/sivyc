@@ -9,6 +9,7 @@ function dataFormatoT($unidad, $status, $fecha) {
     // dd($cad);
     $var_cursos = DB::table('tbl_cursos as c')
         ->select(
+            'c.termino',
             'c.id AS id_tbl_cursos',
             'c.status AS estadocurso',
             'c.unidad',
@@ -426,9 +427,11 @@ function dataFormatoT($unidad, $status, $fecha) {
             'c.mpaqueteria',
             'c.mexoneracion',
             'c.nota',
+            'c.termino',
             'm.region',
             'gv.grupo'
         )
+        ->orderBy('c.termino', 'asc')
         ->distinct()
         ->get();
 

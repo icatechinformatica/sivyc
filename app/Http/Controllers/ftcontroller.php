@@ -122,13 +122,14 @@ class ftcontroller extends Controller {
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('fecha_entrega', 'mes_informar')->where('mes_informar', $mesActual)->first();
         $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
         $mesInformar = $fechaEntregaActual->mes_informar;
+        $mesComparador = Carbon::now()->month;
 
         $convertfEAc = date_create_from_format('d-m-Y', $dateNow);
         $mesEntrega = $meses_[($convertfEAc->format('n')) - 1];
         $fechaEntregaFormatoT = $convertfEAc->format('d') . ' DE ' . $mesEntrega . ' DE ' . $convertfEAc->format('Y');
         $diasParaEntrega = $this->chkDateToDeliver();
 
-        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad'));
+        return view('reportes.vista_formatot',compact('var_cursos', 'meses', 'enFirma', 'retornoUnidad', 'fechaEntregaFormatoT', 'mesInformar', 'diasParaEntrega', 'unidad', 'mesComparador'));
     }
 
     /**

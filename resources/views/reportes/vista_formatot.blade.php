@@ -53,7 +53,7 @@
 @section('content')
     <div class="container-fluid px-5 g-pt-30">
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert {{ $diasParaEntrega <= 5 ? 'alert-warning' : 'alert-info' }}" role="alert">
+        <div class="alert alert-warning" role="alert">
             <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL
                 <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
         </div>
@@ -507,7 +507,8 @@
                                                     || ($datas->sumaHM - $datas->tinscritos) != 0
                                                     || ($datas->sumaED - $datas->tinscritos) != 0
                                                     || ($datas->sumaEmDe - $datas->tinscritos) != 0
-                                                    || ($datas->sumaEgresados - $datas->egresado) != 0)
+                                                    || ($datas->sumaEgresados - $datas->egresado) != 0
+                                                    || ($datas->mest < $mesComparador))
                                                     ? '#ff8282' : '' }}
                                                 @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') #ff8282 @endif">
 
@@ -878,7 +879,7 @@
                                                 </div>
                                             </td>
                                             <td class="text-white">
-                                                <div style="width:600px; word-wrap: break-word" align="justify">
+                                                <div style="width:600px; word-wrap: break-word" align="center">
                                                     {!! ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO ESTATAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->inscritosEdadFederal - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO FEDERAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->inscritosEsc - $datas->tinscritos) != 0 ? '* LA SUMATORIA DE INSCRITOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
@@ -889,6 +890,7 @@
                                                     {!! ($datas->sumaEmDe - $datas->tinscritos) != 0 ? '* LA SUMA  DE EMPLEADOS Y DESEMPLEADOS NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEgresados - $datas->egresado) != 0 ? '* LA SUMA  DE EGRESADOS FEMENINOS, MASCULINOS Y LGBTTTI+ NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
                                                     @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') SOLICITUD DE ARC02 EN PROCESO <br> @endif
+                                                    @if($datas->mest < $mesComparador) CURSO REZAGADO<br> @endif
                                                 </div>
                                             </td>
                                         </tr>
