@@ -20,7 +20,12 @@
             </div>
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div>  
+            </div>
+            @if ($nrevision AND $agregar)
+                <div class="form-group col-md-2">
+                    {{ Form::button('MEMORÁNDUM BORRADOR', ['id'=>'borrador','class' => 'btn mt-1']) }}
+                </div> 
+            @endif  
             @if($pdf)  
                 <div class="form-group col-md-3">
                     <div class="dropdown show">
@@ -290,6 +295,7 @@
                         $('#frm').attr('action', "{{route('solicitud.exoneracion.edicion')}}"); $('#frm').attr('target', '_self').submit();
                     }
                 });
+                $('#borrador').click(function(){$('#frm').attr('action', "{{route('solicitudes.exoneracion.borrador')}}"); $('#frm').attr('target', '_blank').submit();});
             }); 
             
             function  eliminar(id, route){
