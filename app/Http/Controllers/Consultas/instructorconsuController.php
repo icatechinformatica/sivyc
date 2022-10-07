@@ -53,8 +53,10 @@ class instructorconsuController extends Controller
             if(isset($request->unidad)){
                 $consulta = $consulta->where('tc.unidad','=',$request->unidad);
             }
-            $consulta = $consulta->orderBy('tc.termino','desc')->paginate(15,[DB::raw('CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores."nombre") as nombre'),'tc.efisico','tc.folio_grupo','tc.unidad','tc.curso','tc.status_curso','tc.inicio','tc.termino','tc.dia','tc.hini','tc.hfin','tc.horas','tipo_curso','tc.dura','tcapacitacion','espe'])->setPath('');
-        }
+            $consulta = $consulta->orderBy('tc.termino','desc')->paginate(15,[DB::raw('CONCAT(instructores."apellidoPaterno", '."' '".' ,instructores."apellidoMaterno",'."' '".',instructores."nombre") as nombre'),
+                'tc.efisico','tc.folio_grupo','tc.unidad','tc.curso','tc.status_curso','tc.inicio','tc.termino','tc.dia','tc.hini','tc.hfin','tc.horas','tipo_curso',
+                'tc.dura','tcapacitacion','espe','tc.clave','tc.nota','tc.munidad'])->setPath('');
+        }//dd($consulta);
         return view('consultas.consultainstructor',compact('consulta','unidades','request'));
     }
 

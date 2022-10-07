@@ -51,6 +51,8 @@
                         <td>INSTRUCTOR</td>
                         <td>UNIDAD</td>
                         <td>GRUPO</td>
+                        <td>CLAVE</td>
+                        <td>No. MEMORÁNDUM ARC01</td>
                         <td>CURSO</td>
                         <td>ESPECIALIDAD</td>
                         <td>SERVICIO</td>
@@ -63,14 +65,17 @@
                         <td>HTERMINO</td>
                         <td>DIAS</td>
                         <td>LUGAR O ESPACIO FISICO</td>
+                        <td>OBSERVACIONES</td>
                     </tr>
                     @isset($consulta)
                     @foreach ($consulta as $item)
                     <tr>
                         <td>{{$item->nombre}}</td>
                         <td>{{$item->unidad}}</td>
-                        <td>{{$item->folio_grupo}}</td>
-                        <td>{{$item->curso}}</td>
+                        <td><div style="width: 70px;">{{$item->folio_grupo}}</div></td>
+                        <td><div style="width: 150px;">{{$item->clave}}</div></td>
+                        <td>{{$item->munidad}}</td>
+                        <td><div style="width: 150px;">{{$item->curso}}</div></td>
                         <td>{{$item->espe}}</td>
                         <td>{{$item->tipo_curso}}</td>
                         <td>{{$item->dura}}</td>
@@ -81,11 +86,12 @@
                         <td>{{$item->hini}}</td>
                         <td>{{$item->hfin}}</td>
                         <td>{{$item->dia}}</td>
-                        <td>{{$item->efisico }}</td>
+                        <td><div style="width: 100px;">{{$item->efisico }}</div></td>
+                        <td><div style="width: 200px;">{{$item->nota}}</div></td>
                     </tr>
                     @endforeach
                     <tr>
-                        <td colspan="15">
+                        <td colspan="18">
                             {{$consulta->appends(request()->query())->links() }}
                         </td>
                     </tr>

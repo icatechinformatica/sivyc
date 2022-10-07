@@ -110,7 +110,9 @@
                         <td> {{ $g->curso }} </td>
                         <td><div style="width:120px;">{{ $g->nombre }}</div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
-                        <td class="text-center"> {{ $g->tipo }} </td>
+                        <td class="text-center">
+                            @if ($g->tipo=='EXO') {{"EXONERACION"}} @elseif($g->tipo=='EPAR') {{"REDUCCION DE CUOTA"}}  @else {{"PAGO ORDINARIO"}}   @endif
+                        </td>
                         <td class="text-center"> {{ $g->dura }} </td>
                         <td class="text-center"><div style="width:65px;"> {{ $g->inicio }}</div> </td>
                         <td class="text-center"><div style="width:65px;"> {{ $g->termino }}</div> </td>
