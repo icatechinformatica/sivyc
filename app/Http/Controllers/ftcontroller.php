@@ -565,6 +565,7 @@ class ftcontroller extends Controller {
             // unset($value->femeninocheck);
             unset($value->sumatoria_total_ins_edad);
             unset($value->observaciones_enlaces);
+            unset($value->termino);
         }
 
         // 'id curso', 'ESTADO DEL CURSO', discapacitados, ->, madres solteras
