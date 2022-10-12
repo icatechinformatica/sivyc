@@ -940,7 +940,7 @@ class aperturaController extends Controller
             $dias_a = [];
             foreach ($dias_agenda as $key => $value) {
                 if ($key > 0) {
-                    if ((($temp + 1) == $value->dia) && !$temp2) {
+                    if ((($temp + 1) == $value->dia) && ($temp2 == null)) {
                         $temp2 = $value->dia;
                         $save = false;
                     } elseif ($temp2 && (($temp2 + 1) == $value->dia)) {
