@@ -30,13 +30,19 @@ class SupervisionMovilController extends Controller
 
         return response()->json($response, 200);
     }
-    
+
     //obtiene info de curso por clave 
     public function getCursosPorSupervisar(Request $request)
     {
         $current_date = Carbon::now()->format('Y-m-d');
         $usuario = User::findOrfail($request->idUsuario);
-        
+        if ($request->idUsuario == 241) {
+            $response = DB::SELECT(DB::raw("(SELECT tc.id, tc.curso, tc.cct, tc.unidad, tc.clave, tc.mod, tc.inicio, tc.termino, tc.area, tc.espe, tc.tcapacitacion, tc.depen, tc.tipo_curso, tc.dia  FROM tbl_cursos as tc
+        JOIN tbl_unidades as tu on tu.unidad = tc.unidad  
+        WHERE  (tc.clave IS NOT NULl AND tc.clave <> '0') AND tc.tcapacitacion = 'PRESENCIAL' AND tc.termino >='$current_date'ORDER BY tc.inicio)"));
+            return response()->json($response, 200);
+        }
+
         $response = DB::SELECT(DB::raw("(SELECT tc.id, tc.curso, tc.cct, tc.unidad, tc.clave, tc.mod, tc.inicio, tc.termino, tc.area, tc.espe, tc.tcapacitacion, tc.depen, tc.tipo_curso, tc.dia  FROM tbl_cursos as tc
         JOIN tbl_unidades as tu on tu.unidad = tc.unidad  
         WHERE  (tc.clave IS NOT NULl AND tc.clave <> '0') AND tu.ubicacion = '$usuario->unidades' AND tc.tcapacitacion = 'PRESENCIAL' AND tc.termino >='$current_date'ORDER BY tc.inicio)"));
