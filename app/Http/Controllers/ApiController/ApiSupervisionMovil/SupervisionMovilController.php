@@ -37,8 +37,7 @@ class SupervisionMovilController extends Controller
         $current_date = Carbon::now()->format('Y-m-d');
         $usuario = User::findOrfail($request->idUsuario);
         
-
-        $response = DB::SELECT(DB::raw("(SELECT tc.id, tc.curso, tc.cct, tc.unidad, tc.clave, tc.mod, tc.inicio, tc.termino, tc.area, tc.espe, tc.tcapacitacion, tc.depen, tc.tipo_curso  FROM tbl_cursos as tc
+        $response = DB::SELECT(DB::raw("(SELECT tc.id, tc.curso, tc.cct, tc.unidad, tc.clave, tc.mod, tc.inicio, tc.termino, tc.area, tc.espe, tc.tcapacitacion, tc.depen, tc.tipo_curso, tc.dia  FROM tbl_cursos as tc
         JOIN tbl_unidades as tu on tu.unidad = tc.unidad  
         WHERE  (tc.clave IS NOT NULl AND tc.clave <> '0') AND tu.ubicacion = '$usuario->unidades' AND tc.tcapacitacion = 'PRESENCIAL' AND tc.termino >='$current_date'ORDER BY tc.inicio)"));
 
