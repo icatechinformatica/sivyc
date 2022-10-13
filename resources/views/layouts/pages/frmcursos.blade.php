@@ -339,6 +339,7 @@
 </div>
 @endsection
 @section('script_content_js')
+    <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
     <script type="text/javascript">
         var expanded = false;
         var expanded2 = false;
