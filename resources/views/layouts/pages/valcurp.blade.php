@@ -362,9 +362,9 @@
                                 <label><input type="checkbox" id="trabajo" name="trabajo" value="true"
                                         onchange="javascript:showContent()">&nbsp;&nbsp;¿El aspirante está empleado?</label>
                             </div>
-                            <div class="form-group col-md-4">
+                            {{-- <div class="form-group col-md-4">
                                 <label><input type="checkbox" id="funcionario" name="funcionario" value="true">&nbsp;&nbsp;¿El aspirante es un servidor público?</label>
-                            </div>
+                            </div> --}}
                         </div>
                         <div id="content" style="display: none;">
                             <div class="form-row">
@@ -912,13 +912,13 @@
                                                     value="true">&nbsp;&nbsp;¿El aspirante está empleado?</label>
                                         </div>
                                     @endif
-                                    <div class="form-group col-md-4">
+                                    {{-- <div class="form-group col-md-4">
                                         <label>
                                             <input type="checkbox" id="funcionario_mod" name="funcionario_mod" value="true" @if ($alumno->servidor_publico == true)
                                                 checked
                                             @endif>&nbsp;&nbsp;¿El aspirante es un servidor público?
                                         </label>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
