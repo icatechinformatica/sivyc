@@ -34,8 +34,7 @@ class SupervisionMovilController extends Controller
     //obtiene info de curso por clave 
     public function getCursosPorSupervisar(Request $request)
     {
-        // $current_date = Carbon::now()->format('Y-m-d');
-        $current_date = '10-10-2022';
+        $current_date = Carbon::now()->format('Y-m-d');
         $usuario = User::findOrfail($request->idUsuario);
 
         $unidades = $usuario->unidades;
