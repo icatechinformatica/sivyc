@@ -1472,6 +1472,7 @@ class supreController extends Controller
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
+                           ->WHERE('folios.status', '!=', 'Rechazado')
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
