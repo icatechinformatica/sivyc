@@ -38,7 +38,7 @@
             <img class="izquierda" src="{{ public_path('img/logohorizontalica1.jpg') }}">
             <img class="derecha" src='img/chiapas.png'>
             <br>
-            <h6>{{$leyenda}}</h6>
+            <h6><small><small>{{$leyenda}}</small></small></h6>
     </header>
     <footer>
         <script type="text/php">
@@ -76,10 +76,10 @@
         <div align=right style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></div>
         <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $nume_memo }}</b></div>
         <div align=right style="font-size:11px;"><b>TUXTLA GUTIERREZ, CHIAPAS; {{ $fecha_nueva }}</b></div>
-        <br><br>
+        <br>
         <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}</b></div>
         <div align=left style="font-size:11px;"><b>PRESENTE.</b></div>
-        <br><br>
+        <br>
             @php
                 $num=1;
             @endphp
@@ -130,18 +130,18 @@
                 </div>
                 <br>
                 <div style="font-size:11px;">Sin más por el momento, agradezco su atención y le envío un cordial saludo.</div>
-                <br><br>
+                <br>
                 <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
-                <br><br><br>
+                <br><br><br><br>
                 <div style="font-size:11px;"> <b>{{ $reg_unidad->dacademico }}</b> </div>
                 <div style="font-size:11px;"> <b>{{ $reg_unidad->pdacademico }}</b> </div>
-                <br><br><br>
+                <br>
                 <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div>
                 <div style="font-size:9px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
                 <div style="font-size:9px;"> <b>ARCHIVO / MINUTARIO.</b> </div>
                 <div style="font-size:7px;"> <b>VALIDÓ: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
                 <div style="font-size:7px;"> <b>ELABORÓ: {{ $elabora }}.</b> </div>
-            </div><br><br>
+            </div><br>
     </div>
 </body>
 </html>
