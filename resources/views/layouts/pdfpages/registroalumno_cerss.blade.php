@@ -35,7 +35,7 @@
     <br>
     <table style="width: 80%; text-align: center;">
         <tr>
-            <td style="text-decoration: underline;">{{$date}}</td>
+            <td style="text-decoration: underline;">{{$alumnos->creado}}</td>
             <td>{{str_pad($alumnos->id, 8, "0", STR_PAD_LEFT)}}</td>
         </tr>
         <tr>
@@ -247,7 +247,7 @@
         <tr>
             <td>
                 <br>
-                <strong>FECHA:</strong> {{$date}}
+                <strong>FECHA:</strong> {{$alumnos->creado}}
             </td>
             <td style="text-align: right;">
                 <strong>COMPROBANTE DEL ASPIRANTE</strong><br>
