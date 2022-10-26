@@ -673,7 +673,7 @@ class supreController extends Controller
             {
                 // $inicio = date("m-d-Y", strtotime($Cursos->inicio));
                 $inicio = carbon::parse($Cursos->inicio);
-                // $inicio = strtotime($inicio);
+                // $inicio = strtotime($inicio); 2022-11-28
                 $date1 = "2022-11-01";
                 // $date1 = date("m-d-Y", strtotime($date1));
                 $date1 = carbon::parse($date1);
@@ -688,8 +688,8 @@ class supreController extends Controller
                 }
                 else
                 {
-                    $ze2 = 'monto_hora_ze2 AS monto';
-                    $ze3 = 'monto_hora_ze3 AS monto';
+                    $ze2 = 'ze2_2021 AS monto';
+                    $ze3 = 'ze3_2021 AS monto';
                     // dd(gettype($date1) . ' entro2 ' . gettype($inicio));
                 }
 
