@@ -503,7 +503,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             'c.mexoneracion',
             DB::raw("sum(case when ins.empleado = true then 1 else 0 end) as empleado"),
             DB::raw("sum(case when ins.empleado = false then 1 else 0 end) as desempleado"),
-            DB::raw("sum(case when ins.discapacidad <> 'NINGUNA' then 1 else 0 end) as discapacidad"),
+            DB::raw("sum(case when ins.id_gvulnerable::text like '%18%' or ins.id_gvulnerable::text like '%19%' or ins.id_gvulnerable::text like '%20%' or ins.id_gvulnerable::text like '%21%' or ins.id_gvulnerable::text like '%22%' then 1 else 0 end) as discapacidad"),
             DB::raw("0 as madres_solteras"), // debe ir madres solteras
 
             DB::raw("sum(case when ins.inmigrante = true then 1 else 0 end) as migrante"),
