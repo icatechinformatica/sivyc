@@ -152,7 +152,11 @@ class CerssController extends Controller
     public function updateTitular_save(Request $request)
     {
         $mod = cerss::find($request->idcerss);
+        $mod->direccion = $request->direccion;
+        $mod->id_municipio = $request->municipio;
         $mod->titular = $request->titular;
+        $mod->telefono = $request->telefono;
+        $mod->telefono2 = $request->telefono2;
         $mod->iduser_update = auth()->user()->id;
         $mod->save();
 
