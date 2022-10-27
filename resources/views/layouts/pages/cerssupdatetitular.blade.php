@@ -104,7 +104,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="municipio" class="control-label">Municipio</label>
-                    <select name="municipio" id="municipio" class="form-control" required disabled>
+                    <select name="municipio" id="municipio" class="form-control" required>
                         <option value={{$munisel->id}}>{{$munisel->muni}}</option>
                         @foreach ($muni as $cadwell )
                             <option value="{{$cadwell->id}}">{{$cadwell->muni}}</option>
@@ -113,7 +113,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="unidad" class="control-label">Unidad de Capacitación Asignada</label>
-                    <select name="unidad" id="unidad" class="form-control" required disabled>
+                    <select name="unidad" id="unidad" class="form-control" required>
                         <option value={{$unidadsel->id}}>{{$unidadsel->unidad}}</option>
                         @foreach ($unidad as $cadwell )
                             <option value="{{$cadwell->id}}">{{$cadwell->unidad}}</option>
@@ -128,17 +128,17 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="direccion" class="control-label">Dirección</label>
-                    <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" value="{{$data->direccion}}" required readonly>
+                    <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" value="{{$data->direccion}}" required >
                 </div>
                 <div class="form-group col-md-4">
                     <label for="telefono" class="control-label">Telefono</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Telefono" value="{{$data->telefono}}" required readonly>
+                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Telefono" value="{{$data->telefono}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                    <label for="telefono2" class="control-label">Telefono Adicional (opcional)</label>
-                   <input type="text" class="form-control" id="telefono2" name="telefono2" placeholder="Telefono"  value="{{$data->telefono2}}" readonly>
+                   <input type="text" class="form-control" id="telefono2" name="telefono2" placeholder="Telefono"  value="{{$data->telefono2}}" >
                 </div>
             </div>
             <br>
