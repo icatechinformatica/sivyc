@@ -228,6 +228,7 @@ class AlumnoController extends Controller {
                     }
                 }
                 $AlumnoPreseleccion->numero_expediente = $request->num_expediente_cerss;
+                $AlumnoPreseleccion->chk_ficha_cerss = $request->chk_ficha_cerss == 'true' ? true : false;
                 $AlumnoPreseleccion->curp = strtoupper($curp_formateada);
                 $AlumnoPreseleccion->nombre = strtoupper($request->nombre);
                 $AlumnoPreseleccion->apellido_paterno = strtoupper($request->apellidoPaterno);
@@ -495,6 +496,7 @@ class AlumnoController extends Controller {
                 'chk_curp'=>$request->chk_curp_mod,
                 'chk_comprobante_ultimo_grado'=>$request->chk_escolaridad_mod,
                 'chk_comprobante_calidad_migratoria'=>$request->chk_comprobante_migratorio_mod,
+                'chk_ficha_cerss' => $request->chk_ficha_cerss_mod == 'true' ? true : false,
                 
                 'iduser_updated'=>Auth::user()->id,
                 'tiene_documentacion'=> true,

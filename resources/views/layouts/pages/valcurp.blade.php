@@ -437,6 +437,11 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td><label><input id="chk_ficha_cerss" name="chk_ficha_cerss" type="checkbox"
+                                                    value="true" />&nbsp;&nbsp;Ficha Cerss</label></td>
+                                        <td></td>
+                                    </tr>
                                 </table>
                             </div>
                             <div class="form-group col-md-4">
@@ -1163,6 +1168,11 @@
                                                     @endif
                                                 </td>
                                             @endif
+                                        </tr>
+                                        <tr>
+                                            <td><label><input id="chk_ficha_cerss_mod" name="chk_ficha_cerss_mod" type="checkbox"
+                                                        value="true" @if ($alumno->chk_ficha_cerss) checked @endif/>&nbsp;&nbsp;Ficha Cerss</label></td>
+                                            <td></td>
                                         </tr>
                                     </table>
                                 </div>
