@@ -308,7 +308,7 @@ class aperturaController extends Controller
 
                             $created_at = DB::table('tbl_cursos')->where('unidad',$grupo->unidad)->where('folio_grupo',$_SESSION['folio'])->value('created_at');
                             if ($created_at) {
-                                $updated_at = date('Y-m-d H:i:s'); 
+                                $updated_at = date('Y-m-d H:i:s');
                             } else {
                                 $created_at = date('Y-m-d H:i:s');
                                 $updated_at = date('Y-m-d H:i:s');
@@ -583,7 +583,7 @@ class aperturaController extends Controller
             ->orderBy('dias')
             ->pluck('dias');//dd($total_dias);
             $tdias = 0;
-            
+
             foreach ($total_dias as $key => $value) {
                 if ($key > 0) {
                     if ($value != $total_dias[$key-1]) {
@@ -1042,7 +1042,7 @@ class aperturaController extends Controller
             ->orderBy('dias')
             ->pluck('dias');//dd($total_dias);
             $tdias = 0;
-            
+
             foreach ($total_dias as $key => $value) {
                 if ($key > 0) {
                     if ($value != $total_dias[$key-1]) {

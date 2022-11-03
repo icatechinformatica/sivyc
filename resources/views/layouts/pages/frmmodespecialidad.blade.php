@@ -176,7 +176,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputunidad_validacion">UNIDAD DE CAPACITACIÓN QUE SOLICITA VALIDACIÓN</label>
+                    <label for="inputunidad_validacion"><small>UNIDAD DE CAPACITACIÓN QUE SOLICITA VALIDACIÓN</small></label>
                     <select name="unidad_validacion" id="unidad_validacion" class="form-control">
                         <option value="">--SELECCIONAR--</option>
                         @foreach ($data_unidad as $itemUnidad)
@@ -195,15 +195,26 @@
                 </div>
             </div>
             <div class="form-row">
-
-                <div class="form-group col-md-4">
-                    <label for="inputmemorandum">MEMORANDUM DE SOLICITUD</label>
-                    <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true" value={{$especvalid->memorandum_solicitud}}>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputfecha_validacion">FECHA DE SOLICITUD</label>
-                    <input type="date" name="fecha_solicitud" id="fecha_solicitud" class="form-control" aria-required="true" value="{{$especvalid->fecha_solicitud}}">
-                </div>
+                @if($especvalid->memorandum_solicitud != NULL)
+                    <div class="form-group col-md-3">
+                        <label for="inputmemorandum">MEMORANDUM DE SOLICITUD</label>
+                        <input name="memorandum" id="memorandum" class="form-control" type="text" aria-required="true" value="{{$especvalid->memorandum_solicitud}}" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfecha_validacion">FECHA DE SOLICITUD</label>
+                        <input type="date" name="fecha_solicitud" id="fecha_solicitud" class="form-control" aria-required="true" value="{{$especvalid->fecha_solicitud}}" disabled>
+                    </div>
+                @endif
+                @if (isset($especvalid->memorandum_validacion))
+                    <div class="form-group col-md-3">
+                        <label for="inputmemorandum">MEMORANDUM DE VALIDACIÓN</label>
+                        <input name="memorandum__validacion" id="memorandum_validacion" class="form-control" type="text" aria-required="true" value={{$especvalid->memorandum_validacion}} disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfecha_validacion">FECHA DE VALIDACIÓN</label>
+                        <input type="date" name="fecha_validacion" id="fecha_validacion" class="form-control" aria-required="true" value="{{$especvalid->fecha_validacion}}" disabled>
+                    </div>
+                @endif
             </div>
             <div class="form-row">
                 <div class="form-group col-md-8">
@@ -213,7 +224,7 @@
             </div>
 
             <hr style="border-color:dimgray">
-            <h2>Selección de Cursos a Validar para Impartir</h2>
+            <h2>Selección de Cursos a Revalidar para Impartir</h2>
 
             <div class="card card-grid mb-4" role="grid" aria-labelledby="gridLabel">
                 <div class="card-header" style="background-color: white;">
@@ -249,7 +260,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @foreach ($listacursos as $key=>$itemDataCatCurso)
+                    @foreach ($catcursos as $key=>$itemDataCatCurso)
                     <div class="row" role="row">
                         <div class="col-md-3" role="gridcell" style="height: 125px; width: 250px;">
                             <label><h5>NOMBRE</h5></label>
@@ -274,9 +285,11 @@
                             <div class="form-control-plaintext text-truncate">
 
                                 <input type="checkbox" class="checkBoxClass"
-                                    @if($itemDataCatCurso->activo == TRUE)
-                                        checked
-                                    @endif
+                                    @foreach($especvalid->cursos_impartir AS $rotacion)
+                                        @if($itemDataCatCurso->id == $rotacion)
+                                            checked
+                                        @endif
+                                    @endforeach
                                     data-toggle="toggle"
                                     data-style="ios"
                                     data-on="ON"
@@ -295,10 +308,10 @@
             <br>
             <div class="form-row">
                 <div class="form-group col-md-1" style="text-align: right;width:0%">
-                    <a class="btn btn-danger" href="{{route('instructor-ver', ['id' => $idins])}}">Regresar</a>
+                    <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">Regresar</a>
                 </div>
                 <div class="form-group col-md-11" style="text-align: right;width:100%">
-                    <button type="submit" class="btn btn-primary" >Modificar</button>
+                    <button type="submit" class="btn mr-sm-4 mt-3 btn-danger" >Modificar</button>
                 </div>
             </div>
             <br>

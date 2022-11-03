@@ -80,22 +80,6 @@
                         <option value="NO">NO</option>
                     </select>
                 </div>
-                <!-- <div class="form-group col-md-3">
-                    <label for="inputconocer">Estandar CONOCER</label>
-                    <select name="conocer" id="conocer" class="form-control">
-                        <option value="sin especificar">SIN ESPECIFICAR</option>
-                        <option value="SI">SI</option>
-                        <option value="NO">NO</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputinstitucion_ciudad">Registro de capacitador externo STPS</label>
-                    <select name="stps" id="stps" class="form-control">
-                        <option value="sin especificar">SIN ESPECIFICAR</option>
-                        <option value="SI">SI</option>
-                        <option value="NO">NO</option>
-                    </select>
-                </div> -->
                 <div class="form-group col-md-3">
                     <label for="inputicapacitador_icatech">Capacitador ICATECH</label>
                     <select name="capacitador_icatech" id="capacitador_icatech" class="form-control">
@@ -134,10 +118,10 @@
             <br>
             <div class="form-row">
                 <div class="form-group col-md-1" style="text-align: right;width:0%">
-                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                    <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">Regresar</a>
                 </div>
                 <div class="form-group col-md-11" style="text-align: right;width:100%">
-                    <button type="submit" class="btn btn-primary" >Agregar</button>
+                    <button type="submit" class="btn mr-sm-4 mt-3 btn-danger" >Agregar</button>
                 </div>
             </div>
             <br>

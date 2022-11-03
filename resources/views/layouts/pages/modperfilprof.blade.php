@@ -154,10 +154,10 @@
             <br>
             <div class="form-row">
                 <div class="form-group col-md-1" style="text-align: right;width:0%">
-                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                    <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">Regresar</a>
                 </div>
                 <div class="form-group col-md-11" style="text-align: right;width:100%">
-                    <button type="submit" class="btn btn-primary" >Guardar</button>
+                    <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">Guardar</button>
                 </div>
             </div>
             <br>

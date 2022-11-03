@@ -26,6 +26,11 @@
         <h3>REGISTRO DE INSTRUCTORES</h3>
     </div>
     <div class="card card-body">
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success">
+                <p>{{ $message }}</p>
+            </div>
+        @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -43,9 +48,11 @@
                         <Div id="divstat" name="divstat" class="d-none d-print-none">
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
-                                <option value="En Proceso">EN PROCESO</option>
-                                <option value="Validado">VALIDADO</option>
-                                <option value="Rechazado">RECHAZADO</option>
+                                <option value="EN CAPTURA">EN CAPTURA</option>
+                                <option value="PREVALIDACION">PREVALIDACION</option>
+                                <option value="EN FIRMA">EN FIRMA</option>
+                                <option value="VALIDADO">VALIDADO</option>
+                                <option value="RETORNO">RETORNO</option>
                             </select>
                         </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
@@ -55,10 +62,10 @@
                 <br>
                 <div class="pull-right">
                     @can('instructor.create')
-                        <a class="btn btn-success btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
+                        <a class="btn mr-sm-4 mt-3 btn-lg" href="{{route('instructor-crear')}}"> Nuevo</a>
                     @endcan
                     @can('academico.exportar.instructores')
-                        <a class="btn btn-info btn-lg" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
+                        <a class="btn mr-sm-4 mt-3 btn-info btn-lg" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
                     @endcan
                 </div>
             </div>
@@ -83,30 +90,43 @@
                         <td>{{$itemData->telefono}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
-                            @if ($itemData->status == 'En Proceso')
+                            @if ($itemData->status == 'EN CAPTURA')
                                 {{-- @can('instructor.validar')
                                     <a class="btn btn-info" href="{{route('instructor-validar', ['id' => itemData->id])}}">Validar</a>
                                 @endcan --}}
-                                @can('instructor.create')
-                                    <a class="btn btn-info btn-md" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><small>Continuar Solicitud</small></a>
-                                @endcan
+                                @if($itemData->numero_control == 'Pendiente')
+                                    @can('instructor.create')
+                                        <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    @endcan
+                                @else
+                                    <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                @endif
                             @endif
-                            @if ($itemData->status == 'Rechazado')
-                                @can('instructor.editar_fase1')
-                                    <a class="btn btn-info" href="{{route('instructor-editar', ['id' => $itemData->id])}}">Editar</a>
-                                @endcan
+                            @if($itemData->status == 'PREVALIDACION')
+                                <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             @endif
-                            @if ($itemData->status == 'Aprobado' || $itemData->status == 'Baja')
-                                    <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                            @if ($itemData->status == 'RETORNO')
+                                @if($itemData->numero_control == 'Pendiente')
+                                    @can('instructor.create')
+                                        <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    @endcan
+                                @else
+                                    <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                @endif
                             @endif
-                            @if ($itemData->status == 'Validado')
-                                    <a class="btn btn-info" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                            @if ($itemData->status == 'EN FIRMA')
+                                <a style="color: white;" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                            @endif
+                            @if ($itemData->status == 'Aprobado' || $itemData->status == 'BAJA')
+                                    <a style="color: white;" class="btn mr-sm-4 mt-3" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                            @endif
+                            @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
+                                    <a style="color: white;" class="btn mr-sm-4 mt-3" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                             @endif
                         </td>
                     </tr>
                 @endforeach
             </tbody>
-
             <tfoot>
                 <tr>
                     <td colspan="5">

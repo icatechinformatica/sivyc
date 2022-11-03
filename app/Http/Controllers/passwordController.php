@@ -38,6 +38,6 @@ class passwordController extends Controller
             return redirect()->route('password.view')
                 ->withErrors(sprintf('¡LA CONFIRMACION DE LA CONTRASEÑA NO ES LA MISMA!'));
         }
-        
+
     }
 }

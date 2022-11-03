@@ -64,21 +64,35 @@ Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_
 Route::get('/supre/reporte/solicitados/{un}/{ini}/{fin}', 'webController\supreController@reporte_solicitados_detail')->name('reporte-solicitados-detail');
 
 //Ruta Instructor
-Route::get('/instructor/validar/{id}', 'webController\InstructorController@validar')->name('instructor-validar');
+Route::post('/instructor/validar', 'webController\InstructorController@validar')->name('instructor-validar');
+Route::post('/instructor/baja/validar', 'webController\InstructorController@baja_instructor')->name('instructor-baja-validar');
+Route::post('/instructor/prevalidar', 'webController\InstructorController@prevalidar')->name('instructor-prevalidar');
 Route::get('/instructor/editar/{id}', 'webController\InstructorController@editar')->name('instructor-editar');
 Route::get('/instructor/editar/especialidad-validada/{id}/{idins}', 'webController\InstructorController@edit_especval')->name('instructor-editespectval');
 //Route::get('/instructor/editar/especialidad-validadap/{id}/{idins}', 'webController\InstructorController@edit_especvalp')->name('instructor-editespectvalp');
 Route::get('/instructor/editar/especialidad-valid/{id}/{idins}/{idesp}', 'webController\InstructorController@edit_especval2')->name('instructor-editespectval2');
 Route::get('/instructor/mod/perfil-profesional/{id}/{idins}', 'webController\InstructorController@mod_perfil')->name('instructor-perfilmod');
 Route::get('/instructor/alta-baja/{id}', 'webController\InstructorController@alta_baja')->name('instructor-alta_baja');
+Route::post('/instructor/solicitud/baja', 'webController\InstructorController@solicitud_baja')->name('instructor-solicitud-baja');
+Route::post('/instructor/solicitud/reactivacion', 'webController\InstructorController@solicitud_reactivacion')->name('instructor-solicitud-reactivacion');
+Route::post('/instructor/especialidad/solicitud/baja', 'webController\InstructorController@solicitud_baja_especialidad')->name('instructor-solicitud-especialidad-baja');
 Route::post('/instructor/rechazo','webController\InstructorController@rechazo_save')->name('instructor-rechazo');
 Route::post('/instructor/validado','webController\InstructorController@validado_save')->name('instructor-validado');
 Route::post('/instructor/guardar-mod','webController\InstructorController@guardar_mod')->name('instructor-guardarmod');
 Route::post('/instructor/saveins','webController\InstructorController@save_ins')->name('saveins');
+Route::post('/instructor/saveentrevista','webController\InstructorController@save_entrevista')->name('save-entrevista');
+Route::post('/instructor/savemodentrevista','webController\InstructorController@save_mod_entrevista')->name('save-mod-entrevista');
+Route::post('/instructor/saveupentrevista','webController\InstructorController@entrevista_upload')->name('save-upd-entrevista');
+Route::post('/instructor/saveupcurriculum','webController\InstructorController@curriculum_upload')->name('save-upd-curriculum');
 Route::post('/instructor/espec-ins/guardar','webController\InstructorController@espec_val_save')->name('especinstructor-guardar');
 Route::post('/instructor/espec-ins/modificacion/guardar','webController\InstructorController@especval_mod_save')->name('especinstructor-modguardar');
 Route::post('/instructor/mod/perfilinstructor/guardar', 'webController\InstructorController@modperfilinstructor_save')->name('modperfilinstructor-guardar');
+Route::post('/instructor/mod/perfilinstructor/eliminar', 'webController\InstructorController@perfilinstructor_delete')->name('delperfilinstructor-eliminar');
+Route::post('/instructor/detalles/perfilinstructor', 'webController\InstructorController@perfilinstructor_detalles')->name('perfilinstructor-detalles');
+Route::post('/instructor/detalles/especialidadvalidada', 'webController\InstructorController@especialidadvalidada_detalles')->name('especialidadvalidada-detalles');
+Route::post('/instructor/mod/especialidadimpartir/eliminar', 'webController\InstructorController@especialidadimpartir_delete')->name('especialidadimpartir-eliminar');
 Route::post('/instructor/alta-baja/save','webController\InstructorController@alta_baja_save')->name('instructor-alta-baja-save');
+Route::post('/instructor/generate/solicitudpdf', 'webController\InstructorController@solicitud_validacion_pdf')->name('generate-solicitud-instructor');
 Route::middleware(['auth'])->group(function(){
 Route::middleware(['admin'])->group(function () {
 Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegistradoModificarController@index')->name('alumno_registrado.modificar.index');
@@ -184,6 +198,13 @@ Route::post('/supre/validacion/Rechazado', 'webController\supreController@supre_
 Route::post('/supre/validacion/Validado', 'webController\supreController@supre_validado')->name('supre-validado');
 Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre_pdf')->name('valsupre-pdf');
 Route::get('/supre/pdf/{id}', 'webController\supreController@supre_pdf')->name('supre-pdf');
+Route::get('/instructores/entrevista/pdf/{idins}', 'webController\InstructorController@entrevista_pdf')->name('instructor-entrevista-pdf');
+Route::get('/instructores/curriculumicatech/pdf/{idins}', 'webController\InstructorController@curriculumicatech_pdf')->name('instructor-curriculumicatech-pdf');
+Route::post('/instructores/solicitud/pdf', 'webController\InstructorController@solicitud_instructor_pdf')->name('instructor-solicitud-pdf');
+Route::post('/instructores/solicitud/baja/pdf', 'webController\InstructorController@solicitud_baja_instructor_pdf')->name('instructor-baja-solicitud-pdf');
+Route::post('/instructores/validacion/baja/pdf', 'webController\InstructorController@validacion_baja_instructor_pdf')->name('instructor-baja-validacion-pdf');
+Route::post('/instructores/validacion/pdf', 'webController\InstructorController@validacion_instructor_pdf')->name('instructor-validacion-pdf');
+Route::post('/instructores/solicitud/envio', 'webController\InstructorController@solicitud_firmada_todta')->name('instructor-solicitud-firmada-todta');
 
 /**
  * Ruta que muestra los archivos protegidos con un middleware de auth
@@ -313,6 +334,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Crea instructor
     Route::get('/instructor/inicio', 'webController\InstructorController@index')->name('instructor-inicio');
+    Route::get('/prevalidacion/instructor', 'webController\InstructorController@prevalidar_index')->name('prevalidar-ins')->middleware('can:prevalidar_index-instructor');
     Route::get('/instructor/crear', 'webController\InstructorController@crear_instructor')->name('instructor-crear');
     Route::get('/instructor/crear/paso-2/{id}', 'webController\InstructorController@crear_instructor_p2')->name('instructor-crear-p2');
     Route::post('/instructor/guardar', 'webController\InstructorController@guardar_instructor')->name('instructor-guardar');
@@ -320,9 +342,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructor/add/perfil-profesional/{id}', 'webController\InstructorController@add_perfil')->name('instructor-perfil');
     Route::get('/instructor/add/curso-impartir/{id}','webController\InstructorController@add_cursoimpartir')->name('instructor-curso');
     Route::post('/perfilinstructor/guardar', 'webController\InstructorController@perfilinstructor_save')->name('perfilinstructor-guardar');
-    Route::get('/instructor/curso-impartir/form/{id}/{idins}', 'webController\InstructorController@cursoimpartir_form')->name('cursoimpartir-form');
+    Route::post('/expdoc/guardar', 'webController\InstructorController@expdoc_save')->name('expdoc-guardar');
+    Route::post('/instructor/expdoc/eliminar', 'webController\InstructorController@expdoc_delete')->name('expdoc-eliminar');
+    Route::post('/explab/guardar', 'webController\InstructorController@explab_save')->name('explab-guardar');
+    Route::post('/instructor/explab/eliminar', 'webController\InstructorController@explab_delete')->name('explab-eliminar');
+    Route::get('/instructor/curso-impartir/form/{idins}', 'webController\InstructorController@cursoimpartir_form')->name('cursoimpartir-form');
     Route::get('/instructor/crear-institucional/{id}', 'webController\InstructorController@institucional')->name('instructor-institucional-crear');
     Route::post('/instructor/institucional/guardar', 'webController\InstructorController@institucional_save')->name('instructor-institucional-save');
+    Route::post('/instructor/sendtodta', 'webController\InstructorController@send_to_dta')->name('ins-to-dta');
 
     // Solicitud de Suficiencia Presupuestal
     Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')
@@ -755,8 +782,15 @@ Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoControl
 //Consulta de Localidades en instructores
 Route::post('/instructores/busqueda/localidad', 'webController\Instructorcontroller@getlocalidades')->name('instructores.busqueda.localidades');
 Route::post('/instructores/busqueda/municipio', 'webController\Instructorcontroller@getmunicipios')->name('instructores.busqueda.municipios');
- Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
+Route::post('/instructores/detalles/getentrevista', 'webController\Instructorcontroller@getentrevista')->name('instructores.busqueda.entrevista');
+Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
 
 //  autocomplete localidad inscripcion alumnos
 Route::get('inscripciones/localidad', 'webController\AlumnoController@localidadAutocomplete')->name('autocomplete.localidad');
 
+//consulta de Cursos por especialidad en instructores
+Route::post('/instructores/busqueda/cursos', 'webController\Instructorcontroller@getcursos')->name('instructores.busqueda.cursos');
+Route::post('/instructores/busqueda/nomesp', 'webController\Instructorcontroller@nomesp')->name('instructores.busqueda.nomesp');
+
+//consulta de numero de revision en instructore
+Route::post('/instructores/busqueda/nrevision', 'webController\Instructorcontroller@getnrevision')->name('instructores.busqueda.nrevision');
