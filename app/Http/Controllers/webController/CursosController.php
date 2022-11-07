@@ -97,7 +97,7 @@ class CursosController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
-        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'depto_academico' || $roles[0]->role_name == 'auxiliar_cursos')
+        if($roles[0]->role_name == 'admin' || $roles[0]->role_name == 'auxiliar_paqueteias-todos' || $roles[0]->role_name == 'titular-innovacion')
         {
         $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0')
         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
@@ -152,6 +152,11 @@ class CursosController extends Controller
     public function store(Request $request)
     {
         // dd($request);
+        $chkcur = curso::WHERE('nombre_curso','=', $request->nombrecurso)->WHERE('tipo_curso','=', $request->tipo_curso)->FIRST();
+        if(isset($chkcur))
+        {
+            return back()->withErrors(['msg' => 'EL CURSO YA ESTA REGISTRADO EN EL CATALOGO']);
+        }
         try {
             //validación de archivos
             $gv = [];
@@ -320,7 +325,7 @@ class CursosController extends Controller
             $idCurso = base64_decode($id);
             $curso = new curso();
             $cursos = $curso::SELECT('cursos.id','cursos.estado','cursos.nombre_curso','cursos.modalidad','cursos.horas','cursos.clasificacion',
-                    'cursos.costo','cursos.duracion','cursos.tipo_curso',
+                    'cursos.costo','cursos.duracion','cursos.tipo_curso','cursos.documento_memo_validacion','cursos.documento_memo_actualizacion','cursos.documento_solicitud_autorizacion',
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
@@ -657,7 +662,8 @@ class CursosController extends Controller
                         'cursos.rango_criterio_pago_minimo',
                         DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
                         'cursos.rango_criterio_pago_maximo',
-                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"))
+                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),
+                        'cursos.unidades_disponible')
                         ->WHERE('cursos.estado', '=', 'TRUE')
                         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
                         ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
@@ -671,7 +677,7 @@ class CursosController extends Controller
             'PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
             'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CURSO','MODALIDAD','CLASIFICACION',
             'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
-            'NOMBRE DE CRITERIO MAXIMO'
+            'NOMBRE DE CRITERIO MAXIMO','UNIDADES DISPONIBLES'
         ];
         $nombreLayout = "Catalogo de cursos.xlsx";
         $titulo = "Catalogo de cursos";

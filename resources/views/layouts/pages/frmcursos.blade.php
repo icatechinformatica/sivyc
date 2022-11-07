@@ -256,6 +256,7 @@
                     <option value="">--SELECCIONAR--</option>
                     <option value="PRESENCIAL">PRESENCIAL</option>
                     <option value="A DISTANCIA">A DISTANCIA</option>
+                    <option value="PRESENCIAL Y A DISTANCIA">PRESENCIAL Y A DISTANCIA</option>
                 </select>
             </div>
             <div class="form-group col-md-4">
@@ -338,6 +339,7 @@
 </div>
 @endsection
 @section('script_content_js')
+    <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
     <script type="text/javascript">
         var expanded = false;
         var expanded2 = false;

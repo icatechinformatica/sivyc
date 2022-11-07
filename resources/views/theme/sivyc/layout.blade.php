@@ -36,6 +36,7 @@
         <link rel="stylesheet" href="{{asset("css/unify-globals.css") }}">
 
         <link rel="stylesheet" href="{{asset("css/custom.css") }}">
+        <link rel="stylesheet" href="{{asset("css/paqueterias.css") }}">
         <link rel="stylesheet" href="{{asset("css/mdb.min.css") }}">
         <link rel="stylesheet" href="{{asset("css/jquery-ui.css") }}">
 
@@ -76,8 +77,8 @@
         <script src="{{ asset("js/components/jquery.validate.js") }}"></script>
         <script src="{{ asset("js/components/jquery-ui.js") }}"></script>
         <script src="{{ asset("js/components/filter-table.js") }}"></script>
-        <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
-        <script src="{{ asset("js/validate/danielValidate.js") }}"></script>
+        {{-- <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script> --}}
+        {{-- <script src="{{ asset("js/validate/danielValidate.js") }}"></script> --}}
         <script src="{{ asset("js/components/additional-methods.js") }}"></script>
         <script src="{{ asset("js/validate/metodos.js") }}"></script>
         <script src="{{ asset("js/mdb.min.js") }}"></script>
@@ -89,7 +90,7 @@
         <script src="{{ asset("js/validate/conversor.js") }}"></script>
         <script src="{{ asset("js/validate/numberTostring.js") }}"></script>
         <script src="{{ asset("js/scripts/datepicker-es.js") }}"></script>
-        <script src="{{ asset("js/validate/sid-mod.js") }}"></script>
+        {{-- <script src="{{ asset("js/validate/sid-mod.js") }}"></script> --}}
         <!--charts-->
         @yield('script_content_js')
     </body>

@@ -155,8 +155,27 @@
 
         <div style="text-align: right;width:65%">
             <label for="tituloformulariocurso"><h1>Formulario de Cursos</h1></label>
-         </div>
-         <hr style="border-color:dimgray">
+        </div>
+        <hr style="border-color:dimgray">
+        <label><h2>Vista de Documentos</h2></label>
+        <div class="form-row">
+            @if ($cursos[0]->documento_memo_validacion)
+            <a class="btn btn-warning" href="{{$cursos[0]->documento_memo_validacion}}" target="_blank">
+                MEMORÁNDUM VALIDACIÓN
+            </a>
+            @endif
+            @if ($cursos[0]->documento_memo_actualizacion)
+            <a class="btn btn-warning" href="{{$cursos[0]->documento_memo_actualizacion}}" target="_blank">
+                MEMORÁNDUM ACTUALIZACIÓN
+            </a>
+            @endif
+            @if ($cursos[0]->documento_solicitud_autorizacion)
+            <a class="btn btn-warning" href="{{$cursos[0]->documento_solicitud_autorizacion}}" target="_blank">
+                MEMORÁNDUM ACTUALIZACIÓN
+            </a>
+            @endif
+        </div>
+        <hr style="border-color:dimgray">
         <div class="form-row">
           <!-- Unidad -->
           <div class="form-group col-md-6">
@@ -339,6 +358,7 @@
                 <select class="form-control" id="tipo_curso" name="tipo_curso">
                     <option {{$cursos[0]->tipo_curso == 'PRESENCIAL' ? "selected" : "" }} value="PRESENCIAL">PRESENCIAL</option>
                     <option {{$cursos[0]->tipo_curso == 'A DISTANCIA' ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>
+                    <option {{$cursos[0]->tipo_curso == 'PRESENCIAL Y A DISTANCIA' ? "selected" : "" }} value="PRESENCIAL Y A DISTANCIA">PRESENCIAL Y A DISTANCIA</option>
                 </select>
             </div>
             <div class="form-group col-md-4">
@@ -439,7 +459,7 @@
                 </div>
                 <div class="pull-right">
                     @can('cursos.update')
-                        <button type="submit" class="btn btn-primary" >Actualizar</button>
+                        <button type="submit" class="btn btn-primary" >Guardar Cambios</button>
                     @endcan
                 </div>
             </div>

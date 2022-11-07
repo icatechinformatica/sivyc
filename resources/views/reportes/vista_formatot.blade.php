@@ -53,7 +53,7 @@
 @section('content')
     <div class="container-fluid px-5 g-pt-30">
         {{-- información sobre la entrega del formato t para unidades --}}
-        <div class="alert {{ $diasParaEntrega <= 5 ? 'alert-warning' : 'alert-info' }}" role="alert">
+        <div class="alert alert-warning" role="alert">
             <b>LA FECHA LÍMITE DEL MES DE {{ $mesInformar }} PARA EL ENVÍO DEL FORMATO T CORRESPONDIENTE ES EL
                 <strong>{{ $fechaEntregaFormatoT }}</strong>; FALTAN <strong>{{ $diasParaEntrega }}</strong> DÍAS</b>
         </div>
@@ -157,7 +157,7 @@
                                 <thead class="thead-dark">
                                     <tr align="center">
                                         {{-- <th scope="col" colspan="59">GENERAL</th> --}}
-                                        <th scope="col" colspan="32" style="background-color: #621032;">FEDERAL</th>
+                                        <th scope="col" colspan="33" style="background-color: #621032;">FEDERAL</th>
                                         <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
                                         <th scope="col" colspan="32" style="background-color: #621032;">FEDERAL</th>
                                         <th scope="col" colspan="31" style="background-color: #621032;">FEDERAL</th>
@@ -202,6 +202,7 @@
                                         <th scope="col">DESERCIÓN</th>
                                         <th scope="col">C TOTAL CURSO PERSONA</th>
                                         <th scope="col">INGRESO TOTAL</th>
+                                        <th scope="col">CUOTA MIXTA</th>
                                         <th scope="col">EXONERACION MUJER</th>
                                         <th scope="col">EXONERACION HOMBRE</th>
                                         <th scope="col">REDUCCION CUOTA MUJER</th>
@@ -506,8 +507,11 @@
                                                     || ($datas->sumaHM - $datas->tinscritos) != 0
                                                     || ($datas->sumaED - $datas->tinscritos) != 0
                                                     || ($datas->sumaEmDe - $datas->tinscritos) != 0
-                                                    || ($datas->sumaEgresados - $datas->egresado) != 0)
-                                                    ? '#ff8282' : '' }}">
+                                                    || ($datas->sumaEgresados - $datas->egresado) != 0
+                                                    || ($datas->mest < $mesComparador))
+                                                    ? '#ff8282' : '' }}
+                                                @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') #ff8282 @endif">
+
                                             <td>{{ $key + 1 }}</td>
                                             <td>
                                                 {{-- @if ($datas->totalinscripciones = $datas->sumatoria_total_ins_edad) --}}
@@ -524,7 +528,8 @@
                                                         class="checkbx" name="chkcursos_list[]"
                                                         value="{{ $datas->id_tbl_cursos }}"
                                                         {{ $datas->estadocurso == 'RETORNO_UNIDAD' ? 'disabled' : '' }}
-                                                        {{ $datas->estadocurso == 'EN_FIRMA' ? 'checked' : '' }} />
+                                                        {{ $datas->estadocurso == 'EN_FIRMA' ? 'checked' : '' }}
+                                                        @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') disabled @endif/>
                                                 @endif
                                             </td>
                                             <td>{{ $datas->unidad }}</td>
@@ -561,6 +566,7 @@
                                             <td>{{ $datas->desertado }}</td>
                                             <td>{{ $datas->costo }}</td>
                                             <td>{{ $datas->ctotal }}</td>
+                                            <td>{{ $datas->cuotamixta}}</td>
                                             <td>{{ $datas->etmujer }}</td>
                                             <td>{{ $datas->ethombre }}</td>
                                             <td>{{ $datas->epmujer }}</td>
@@ -873,7 +879,7 @@
                                                 </div>
                                             </td>
                                             <td class="text-white">
-                                                <div style="width:600px; word-wrap: break-word" align="justify">
+                                                <div style="width:600px; word-wrap: break-word" align="center">
                                                     {!! ($datas->inscritosEdad - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO ESTATAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->inscritosEdadFederal - $datas->tinscritos) !=0 ? '* LA SUMATORIA DE INSCRITOS POR EDAD EN EL RUBRO FEDERAL NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->inscritosEsc - $datas->tinscritos) != 0 ? '* LA SUMATORIA DE INSCRITOS POR ESCOLARIDAD NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
@@ -883,6 +889,8 @@
                                                     {!! ($datas->sumaED - $datas->tinscritos) != 0 ? '* LA SUMA  DE EGRESADOS Y DESERTORES NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEmDe - $datas->tinscritos) != 0 ? '* LA SUMA  DE EMPLEADOS Y DESEMPLEADOS NO COINCIDE CON EL TOTAL DE INSCRITOS <br>' : '' !!}
                                                     {!! ($datas->sumaEgresados - $datas->egresado) != 0 ? '* LA SUMA  DE EGRESADOS FEMENINOS, MASCULINOS Y LGBTTTI+ NO COINCIDE CON EL TOTAL DE EGRESADOS <br>' : '' !!}
+                                                    @if($datas->arc == '02' && $datas->status_solicitud_arc02 != 'VALIDADO') SOLICITUD DE ARC02 EN PROCESO <br> @endif
+                                                    @if($datas->mest < $mesComparador) CURSO REZAGADO<br> @endif
                                                 </div>
                                             </td>
                                         </tr>

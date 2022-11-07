@@ -77,27 +77,34 @@
             <h2>Documentación para Soporte de Pago</h2>
             <br>
             <div class="form-row">
-                @if($datac->arch_factura == NULL)
+                @if($regimen->modinstructor == 'HONORARIOS')
+                    @if($datac->arch_factura == NULL)
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
+                            <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
+                        </div>
+                    @else
                     <div class="form-group col-md-3">
-                        <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
-                        <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
+                        <label for="input arch_factura" class="control-label"><h4>La Factura de Instructor ya fue Cargada.</h4></label>
+                    </div>
+                    @endif
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control" required>
                     </div>
                 @else
-                <div class="form-group col-md-3">
-                    <label for="input arch_factura" class="control-label"><h4>La Factura de Instructor ya fue Cargada.</h4></label>
-                </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputliquido" class="control-label">Importe</label>
+                        <input type="text" name="liquido" id="liquido" class="form-control" required>
+                    </div>
                 @endif
-                <div class="form-group col-md-3">
-                    <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
-                    <input type="text" name="liquido" id="liquido" class="form-control" required>
-                </div>
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
                     <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="inputarch_evidencia" class="control-label">Evidencia Fotográfica</label>
-                    <input type="file" accept="application/pdf" name="arch_evidencia" id="arch_evidencia" class="form-control">
+                    <label for="inputarch_evidencia" class="control-label">Evidencia Fotográfica @if($regimen->tipo_curso == 'CERTIFICACION') (Opcional) @endif</label>
+                    <input type="file" accept="application/pdf" name="arch_evidencia" id="arch_evidencia" class="form-control" @if($regimen->tipo_curso == 'CURSO') required @endif>
                 </div>
             </div>
             <br>

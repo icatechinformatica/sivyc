@@ -28,6 +28,10 @@ class AddCamposToAlumnosPreTable extends Migration
             $table->bigInteger('id_cerss')->nullable();
             $table->boolean('id_user_created')->nullable();
             $table->boolean('id_user_update_activo')->nullable();
+            $table->boolean('empleado')->nullable();
+            $table->date('fecha_expedicion_curp')->nullable();
+            $table->date('fecha_expedicion_acta_nacimiento')->nullable();
+            $table->date('fecha_vigencia_comprobante_migratorio')->nullable();
             //php artisan migrate --path=database/migrations/2021_07_06_102412_add_campos_to_alumnos_pre_table.php
             $table->foreign('id_cerss')
                   ->references('id')->on('cerss')

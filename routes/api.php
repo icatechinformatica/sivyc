@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\ApiController\Api\PassportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,19 +56,26 @@ use Illuminate\Http\Request;
      Route::get('instructores/perfil/{id}', 'ApiController\InstructorPerfilController@show');
      Route::post('cursos/actualizar/{id}', 'ApiController\CursosController@updateCursosCalificaciones');
 
+
+    //api app movil "supervision icatech"eb
+    
+    Route::post('supervision/movil/cursos-supervisar','ApiController\ApiSupervisionMovil\SupervisionMovilController@getCursosPorSupervisar');
+    Route::get('supervision/movil/curso/{clave}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getCurso');
+    Route::get('supervision/movil/alumnos/{idGrupo}','ApiController\ApiSupervisionMovil\SupervisionMovilController@getAlumnos');
+
  });
 
 
 Route::group([
     'prefix' => 'auth'
 ], function () {
-    Route::post('login', 'ApiController\Api\PassportController@login');
-    Route::post('register', 'ApiController\Api\PassportController@signUp');
+    Route::post('login', [PassportController::class, 'login']);
+    Route::post('register', [PassportController::class, 'register']);
 
     Route::group([
       'middleware' => 'auth:api_sice'
     ], function() {
-        Route::post('details', 'ApiController\Api\PassportController@details');
+        Route::get('details', 'ApiController\Api\PassportController@details');
         Route::apiResource('afolios-check', 'ApiController\AfoliosController');
         Route::post('logout', 'ApiController\Api\PassportController@logout');
     });

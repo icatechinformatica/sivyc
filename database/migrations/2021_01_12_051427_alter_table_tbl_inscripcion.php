@@ -32,6 +32,9 @@ class AlterTableTblInscripcion extends Migration
             $table->bigInteger('iduser_created')->nullable();
             $table->bigInteger('iduser_updated')->nullable(); 
             $table->boolean('activo')->default(true);
+            $table->bigInteger('id_afolios')->default(0)->nullable();
+            $table->string('folio', 25)->default(0)->nullable();
+            $table->date('fecha_folio')->nullable();
         });
     }
 

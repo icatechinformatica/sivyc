@@ -10,7 +10,7 @@
 
         <form id="formFechas" action="{{route('reportes.planeacion.grupos_vulnerables')}}" method="get">
             @csrf
-            
+
             <div class="row mt-2 d-flex justify-content-center">
                 <!-- fecha inicial -->
                 <div class="col-3">
@@ -112,7 +112,7 @@
 @endsection
 
 @section('script_content_js')
-    
+
     <script>
         // formato fechas
         var dateFormat = "yy-mm-dd",

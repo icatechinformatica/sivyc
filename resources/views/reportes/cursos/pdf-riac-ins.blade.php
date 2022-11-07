@@ -154,7 +154,7 @@
                               @break
                           @default
                           <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td>
-                      @endswitch 
+                      @endswitch
                     @else
                         <td>{{"6"}}</td>
                     @endif

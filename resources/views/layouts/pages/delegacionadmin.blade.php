@@ -161,6 +161,7 @@
 @section('script_content_js')
 <script src="{{ asset("js/validate/autocomplete.js") }}"></script>
 <script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 <script type="text/javascript">
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {

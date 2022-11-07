@@ -158,7 +158,7 @@
                               @break
                           @default
                           <td style="color: red;"><b>{{ "DATO REQUERIDO"}}</b></td>
-                      @endswitch 
+                      @endswitch
                     @else
                         <td>{{"6"}}</td>
                     @endif
@@ -175,7 +175,7 @@
                     <td>@if($a->acreditado!="X"){{ "X" }}@endif</td>
                     <td>@if($a->folio>"0"){{ $a->folio }}@endif</td>
                     <td>@if($a->fecha_expedicion>"01/01/0001"){{ $a->fecha_expedicion}}@endif</td>
-                    <td></td>
+                    <td height="12"></td>
                 </tr>
                 @endforeach
             </tbody>

@@ -10,7 +10,7 @@
 
         <form id="formFechas" action="{{route('reportes.planeacion.estadisticas')}}" method="get">
             @csrf
-            
+
             <div class="row mt-2 d-flex justify-content-center">
                 <!-- fecha inicial -->
                 <div class="col-3">
@@ -47,19 +47,19 @@
                 <tr>
                     <td>Cursos Realizados</td>
                     <td>{{$totalCursos}}</td>
-                </tr> 
+                </tr>
                 <tr>
                     <td>Total de Beneficiarios</td>
                     <td>{{$beneficiarios}}</td>
-                </tr> 
+                </tr>
                 <tr>
                     <td>Total de Horas</td>
                     <td>{{$horas}}</td>
-                </tr> 
+                </tr>
                 <tr>
                     <td>Total de Mujeres</td>
                     <td>{{$mujeres}}</td>
-                </tr> 
+                </tr>
                 <tr>
                     <td>Total de Hombres</td>
                     <td>{{$hombres}}</td>
@@ -87,8 +87,8 @@
                 <tr>
                     <td>Municipios Atendidos</td>
                     <td>{{$totalMunicipios}}</td>
-                </tr>   
-                
+                </tr>
+
             </tbody>
         </table>
 
@@ -125,7 +125,7 @@
 @endsection
 
 @section('script_content_js')
-    
+
     <script>
         // formato fechas
         var dateFormat = "yy-mm-dd",

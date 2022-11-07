@@ -21,10 +21,10 @@ class PermissionController extends Controller
     public function index()
     {
         //
-        
+
         $permisos = Permission::PAGINATE(15);
         return  view('layouts.pages_admin.permissions_roles', compact('permisos'));
-        
+
     }
 
     /**

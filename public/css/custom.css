@@ -1,38 +1,41 @@
 /* Add here all your css styles (customizations) */
 
-input[type=text], select, textarea {
-    text-transform: uppercase;
+input[type=text],
+select,
+textarea {
+  text-transform: uppercase;
 }
 
 .hide {
-    display: none;
+  display: none;
 }
 
 .card-deck {
-    display: flex;
+  display: flex;
 }
+
 .card-deck .card img {
-    vertical-align: middle;
+  vertical-align: middle;
 }
-.gallery_product
-{
-    margin-bottom: 30px;
+
+.gallery_product {
+  margin-bottom: 30px;
 }
 
 #medio_entero_especificar {
-    display: none;
+  display: none;
 }
 
 #sistema_capacitacion_especificar {
-    display: none;
+  display: none;
 }
 
 .medio_especificar {
-    display: none;
+  display: none;
 }
 
 .capacitacion_especificar {
-    display: none;
+  display: none;
 }
 
 /*
@@ -44,94 +47,102 @@ input[type=text], select, textarea {
 */
 
 .btn-circle.m-1 {
-    width: 35px;
-    height: 35px;
-    line-height: 35px;
-    text-align: center;
-    padding: 0;
-    border-radius: 50%;
-  }
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  padding: 0;
+  border-radius: 50%;
+}
 
-  .btn-circles {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    padding: 0;
-    border-radius: 50%;
-    line-height: 35px;
-  }
-  .btn-circles.btn-xl {
-    width: 50px;
-    height: 50px;
-    padding: 10px 14px;
-    font-size: 24px;
-    line-height: 1.33;
-    border-radius: 35px;
-  }
+.btn-circles {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 0;
+  border-radius: 50%;
+  line-height: 35px;
+}
 
-  .btn-circle i {
-    position: relative;
-    top: -1px;
-  }
+.btn-circles.btn-xl {
+  width: 50px;
+  height: 50px;
+  padding: 10px 14px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+}
 
-  .btn-circle-sm {
-    width: 35px;
-    height: 35px;
-    line-height: 35px;
-    font-size: 0.9rem;
-  }
+.btn-circle i {
+  position: relative;
+  top: -1px;
+}
 
-  .btn-circle-lg {
-    width: 55px;
-    height: 55px;
-    line-height: 55px;
-    font-size: 1.1rem;
-  }
+.btn-circle-sm {
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 0.9rem;
+}
 
-  .btn-circle-xl {
-    width: 70px;
-    height: 70px;
-    padding: 10px 16px;
-    line-height: 1.33;
-    font-size: 1.3rem;
-  }
-  a.isDisabled {
-    color: currentColor;
-    cursor: not-allowed;
-    opacity: 0.5;
-    text-decoration: none;
-    pointer-events: none;
-  }
+.btn-circle-lg {
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
+  font-size: 1.1rem;
+}
 
+.btn-circle-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  line-height: 1.33;
+  font-size: 1.3rem;
+}
+
+a.isDisabled {
+  color: currentColor;
+  cursor: not-allowed;
+  opacity: 0.5;
+  text-decoration: none;
+  pointer-events: none;
+}
+
+.gallery {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+  -webkit-column-width: 33%;
+  -moz-column-width: 33%;
+  column-width: 33%;
+}
+
+.gallery .pics {
+  -webkit-transition: all 350ms ease;
+  transition: all 350ms ease;
+}
+
+.gallery .animation {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+
+@media (max-width: 450px) {
   .gallery {
-    -webkit-column-count: 3;
-    -moz-column-count: 3;
-    column-count: 3;
-    -webkit-column-width: 33%;
-    -moz-column-width: 33%;
-    column-width: 33%; }
-    .gallery .pics {
-    -webkit-transition: all 350ms ease;
-    transition: all 350ms ease; }
-    .gallery .animation {
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1); }
-
-    @media (max-width: 450px) {
-    .gallery {
     -webkit-column-count: 1;
     -moz-column-count: 1;
     column-count: 1;
     -webkit-column-width: 100%;
     -moz-column-width: 100%;
     column-width: 100%;
-    }
-    }
+  }
+}
 
-    @media (max-width: 400px) {
-    .btn.filter {
+@media (max-width: 400px) {
+  .btn.filter {
     padding-left: 1.1rem;
     padding-right: 1.1rem;
-    }
-    }
+  }
+}
+

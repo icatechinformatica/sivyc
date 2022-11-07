@@ -9,6 +9,11 @@
                     <th scope="col" class="text-center" >VER</th>
                 @endif
                 <th scope="col" class="text-center">ID</th> 
+                @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
+                    <th scope="col" class="text-center">OBSERVACIONES PRELIMINAR</th>
+                @elseif ($extemporaneo)
+                    <th scope="col" class="text-center" colspan="2">MOTIVO EXTEMPORANEO</th>
+                @endif
                 <th scope="col" class="text-center">FECHA ARC01</th>
                 <th scope="col" class="text-center" >CLAVE</th>
                 <th scope="col" class="text-center">GRUPO</th>
@@ -52,7 +57,7 @@
                     $munidad = $grupos[0]->munidad; 
                     $nmunidad = $grupos[0]->nmunidad; 
                     $status_curso = $grupos[0]->status_curso; 
-                    $pdf_curso = $grupos[0]->pdf_curso;             
+                    $pdf_curso = $grupos[0]->pdf_curso;           
                 ?>
                 @foreach($grupos as $g)
                     <?php 
@@ -65,9 +70,13 @@
                     switch($opt){
                         case "ARC01":
                             if($g->status<>'NO REPORTADO' OR $g->turnado<>'UNIDAD') $activar=false;
+                            $mextemporaneo = $g->mextemporaneo;
+                            $rextemporaneo = $g->rextemporaneo;
                         break;
                         case "ARC02":
-                            if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD') $activar=false;
+                            if(($g->status<>'NO REPORTADO' AND $g->status<>'RETORNO_UNIDAD') OR $g->turnado<>'UNIDAD' OR $status_solicitud<>'VALIDADO') $activar=false;
+                            $mextemporaneo = $g->mextemporaneo_arc02;
+                            $rextemporaneo = $g->rextemporaneo_arc02;
                         break;
                     }
                     ?>
@@ -82,9 +91,23 @@
                                 <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
                                     <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
                                 </a>
+                                @if ($g->soporte_exo)
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF EXONERACION"
+                                        @if ($g->rev_exo) href="{{$path.$g->soporte_exo}}" @else href="{{$g->soporte_exo}}" @endif>
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                @endif
                             </td>
                         @endif
                         <td class="text-center"> {{ $g->id }}</td>
+                        @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
+                            <td> 
+                                <div style="width: 400px;">{{ Form::textarea('prespuesta['.$g->id.']', $g->obspreliminar, ['id' => 'prespuesta['.$g->id.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'3']) }}</div>
+                            </td>
+                        @elseif($extemporaneo)
+                            <td class="text-center">{{$mextemporaneo }}</td>
+                            <td class="text-center">{{$rextemporaneo}}</td>
+                        @endif
                         <td class="text-center"> {{$g->fecha_arc01}}</td>
                         <td class="text-center">
                             @if($g->clave=='0')
@@ -102,10 +125,10 @@
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
                         <td> <div style="width:100px;">{{ $g->unidad }} </div></td>
                         <td> <div style="width:148px;">{{ $g->espe }} </div></td>
-                        <td><div style="width:220px;"> {{ $g->curso }}</di></td>
+                        <td><div style="width:220px;"> {{ $g->curso }}</div></td>
                         <td><div style="width:120px;">{{ $g->nombre }}</div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
-                        <td class="text-center"> {{ $g->tipo }} </td>
+                        <td class="text-center"> @if ($g->tipo=='EXO') {{"EXONERACION"}} @elseif($g->tipo=='EPAR') {{"REDUCCION DE CUOTA"}}  @else {{"PAGO ORDINARIO"}}   @endif </td>
                         <td class="text-center"> {{ $g->dura }} </td>
                         <td class="text-center"><div style="width:65px;"> {{ $g->inicio }}</div> </td>
                         <td class="text-center"><div style="width:65px;"> {{ $g->termino }}</div> </td>
@@ -174,12 +197,21 @@
         <div class="form-group col-md-1 "> 
             {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-3']) }} 
         </div>
-    @endif
+    @elseif ($status_solicitud == 'TURNADO')
+        <div class="form-group col-md-3">
+            <label>MOVIMIENTO:</label>
+            {!! Form::select('pmovimiento',['' => '- SELECCIONAR -', 'RETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'], '', ['id'=>'pmovimiento','class' => 'form-control' ]) !!}
+        </div>
+        <div class="form-group col-md-1">
+            <br>
+            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar_preliminar','class' => 'btn  bg-danger mx-3']) }} 
+        </div>
+    @endif 
 
     @if($pdf_curso AND $activar == false)
         <div class="form-group col-md-8"></div> 
         <div class="form-group col-md-4"> 
-            <a href="{{$pdf_curso}}" target="_blank" class="btn bg-danger">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a> 
+            <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a> 
         </div>  
     @endif
 </div>

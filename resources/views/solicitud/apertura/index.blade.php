@@ -27,6 +27,10 @@
                     $disabled = 'disabled';
                     $grupo->medio_virtual='';
                     $grupo->link_virtual='';
+                }  else {
+                    if ($exonerado) {
+                        $disabled = 'readonly';
+                    }
                 }
             }
             if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;
@@ -67,7 +71,11 @@
                 <div class="form-group col-md-3">&Aacute;REA: <b>{{ $grupo->area }}</b></div>
                 <div class="form-group col-md-2">MODALIDAD: <b>{{ $grupo->mod}}</b></div>
                 <div class="form-group col-md-3">TIPO CAPACITACI&Oacute;N: <b>{{ $grupo->tcapacitacion}}</b></div>
-                <div class="form-group col-md-4">DURACI&Oacute;N: <b>{{ $grupo->dura }} hrs.</b></div>    <input type="hidden" name="hini" id="hini" value="{{$hini}}">
+                <div class="form-group col-md-4">DURACI&Oacute;N: <b>@if ($grupo->dura)
+                    {{ $grupo->dura }}
+                @else
+                    {{ $grupo->horas }}
+                @endif hrs.</b></div>    <input type="hidden" name="hini" id="hini" value="{{$hini}}">
                 <div class="form-group col-md-3" id="hora">HORARIO: <b>{{ $grupo->horario }}</b></div> <input type="hidden" name="hfin" id="hfin" value="{{$hfin}}">
                 <div class="form-group col-md-2">COSTO ALUMNO: <b>{{ $grupo->costo_individual }}</b></div>
                 <div class="form-group col-md-3">HOMBRES: <b>{{ $grupo->hombre }}</b></div>
@@ -95,7 +103,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>INSTRUCTOR DISPONIBLE:</label>
-                    <select name="instructor" id="instructor" class="form-control mr-sm--2">
+                    <select name="instructor" id="instructor" class="form-control mr-sm--2" @if ($exonerado) style="background-color: lightGray;" @endif>
                         @if ($instructor)
                             <option value="{{$instructor->id}}">{{$instructor->instructor}}</option>
                         @else
@@ -117,7 +125,6 @@
                 </div>
             </div>
             <div class="form-row" >
-
                 <div class="form-group col-md-4">
                     <label>Programa Estrat&eacute;gico:</label>
                     {{ Form::select('programa', $programa, $grupo->programa, ['id'=>'programa','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
@@ -146,11 +153,11 @@
                 </div>
                 <div class="form-group col-md-3">
                      <label>No. Memor&aacute;dum de Exoneraci&oacute;n:</label>
-                     {{ Form::select('mexoneracion', $exoneracion, $grupo->mexoneracion, ['id'=>'mexoneracion','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
+                     <input name='mexoneracion' id='mexoneracion' type="text" class="form-control" aria-required="true" value="{{$grupo->mexoneracion}}" readonly/>
                 </div>
                 <div class="form-group col-md-3">
                     <label>Domicilio, Lugar o Espacio F&iacute;sico:</label>
-                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}">
+                    <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" @if ($exonerado) readonly @endif>
                 </div>
             </div>
             <div class="form-row" >
@@ -171,6 +178,20 @@
                 <div class="form-group col-md-12">
                     <label>Observaciones:</label>
                     <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="">Folio del comprobante de pago</label>
+                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="">Fecha del pago</label>
+                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}">
+                </div>
+                <div class="custom-file form-group col-md-3 mt-4">
+                    <input type="file" id="file_pago" name="file_pago" accept="application/pdf" class="custom-file-input"/>
+                    <label for="file_pago" class="custom-file-label">PDF COMPROBANTE DE PAGO</label>
                 </div>
             </div><br />
 
@@ -281,7 +302,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        @if ($grupo->turnado != 'DTA')
+                        @if ($grupo->turnado != 'DTA' AND (!$grupo->status_solicitud OR $grupo->status_solicitud=='RETORNO') AND !$exonerado)
                         <button id="btnAgregar" type="button" class="btn btn-success">Agregar</button>
                         {{--<button id="btnModificar" class="btn btn-warning">Modificar</button>--}}
                         <button id="btnBorrar" class="btn btn-danger">Borrar</button>
@@ -316,7 +337,11 @@
                 $("#regresar" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.regresar')}}"); $('#frm').submit();}});
                 $("#guardar" ).click(function(){
                     validaCERT();
-                    if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.guardar')}}"); $('#frm').submit();}
+                    if(confirm("Esta seguro de ejecutar la acción?")==true){
+                        $('#frm').attr('action', "{{route('solicitud.apertura.guardar')}}");
+                        $('#frm').attr('enctype', "multipart/form-data");
+                        $('#frm').submit();
+                    }
                 });
                 $("#inscribir" ).click(function(){if(confirm("Esta seguro de ejecutar la acción?")==true){$('#frm').attr('action', "{{route('solicitud.apertura.aceptar')}}"); $('#frm').submit();}});
 
@@ -517,7 +542,14 @@
                         $("#msgVolumen").html("Todos los campos son requeridos");
                         $(".toast").toast("show");
                 } else {
+                    if ($('#txtHora').val() < $('#txtHoraTermino').val()){
                         EnviarInformacion("", objEvento, 'insert');
+                    }else{
+                        $('#titleToast').html('Hora incorrecta');
+                        $("#msgVolumen").html("La hora de inicio debe ser menor a la hora de termino");
+                        $(".toast").toast("show");
+                    }
+
                 }
             });
             function recolectarDatos(method) {
@@ -550,37 +582,9 @@
                     success: function(msg) {
                         console.log(msg);
                         if (tipo == 'insert' || tipo == 'update') {
-                            if (msg == 'iguales') { //hay registro con la fecha y hora
-                                $('#titleToast').html('Fecha incorrecta');
-                                $("#msgVolumen").html("La fecha y hora de inicio ya se encuentra en uso");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales2') {
-                                $('#titleToast').html('Fecha incorrecta');
-                                $("#msgVolumen").html("La fecha y hora de termino ya se encuentra en uso");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales3') {
-                                $('#titleToast').html('Límite de 8hrs día excedido');
-                                $("#msgVolumen").html("El instructor no debe de exceder las 8hrs impartidas");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales4') {
-                                $('#titleToast').html('Horas por semana excedido');
-                                $("#msgVolumen").html("El instructor no debe impartir más de 40hrs semanales");
-                                $(".toast").toast("show");
-                            } else if (msg == 'iguales5') {
-                                $('#titleToast').html('Fechas no validas');
-                                $("#msgVolumen").html("La actividad del intructor por mes supera el límite permitido (5 meses)");
-                                $(".toast").toast("show");
-                            }else if (msg == 'iguales6') {
-                                $('#titleToast').html('Curso no valido');
-                                $("#msgVolumen").html("El instructor no bebe pasar los 4 cursos impartidos por mes");
-                                $(".toast").toast("show");
-                            }else if (msg == 'iguales7') {
-                                $('#titleToast').html('Horario incorrecto');
-                                $("#msgVolumen").html("La diferencia de tiempo de viaje entre unidades no es valida");
-                                $(".toast").toast("show");
-                            }else if (msg == 'duplicado') {
-                                $('#titleToast').html('Datos incorrectos');
-                                $("#msgVolumen").html("Los datos ingresados coinciden con registros existentes");
+                            if (msg) { //hay registro con la fecha y hora
+                                $('#titleToast').html('Registro no valido');
+                                $("#msgVolumen").html(msg);
                                 $(".toast").toast("show");
                             } else {
                                 calendar.refetchEvents();

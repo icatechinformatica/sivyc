@@ -13,6 +13,18 @@
     background-color: white;
 }
 
+#resultado1 {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+}
+#resultado1.ok {
+    background-color: green;
+}
+#resultado1.white{
+    background-color: white;
+}
+
 /*DE LA CAJA PARA CARGAR LA FOTOGRAF�A*/
 #add-photo-container input{
     display: none;

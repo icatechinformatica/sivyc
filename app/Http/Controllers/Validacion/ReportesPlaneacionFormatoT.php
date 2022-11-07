@@ -413,15 +413,16 @@ class ReportesPlaneacionFormatoT extends Controller {
             'c.mod as modalidad',
             'c.muni as municipio'
         )->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
-        ->JOIN($temptblinner, function ($join) {
+        ->LEFTJOIN($temptblinner, function ($join) {
             $join->on('ins.matricula', '=', 'ar.no_control');
             $join->on('c.id_curso', '=', 'ar.id_curso');
         })
-        ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
-        ->where('c.status', '=', 'REPORTADO')
-        ->whereBetween('c.fecha_turnado', [$fechaInicio, $fechaTermino])
+        ->LEFTJOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
+        // ->where('c.status', '=', 'REPORTADO')
+        ->whereBetween('c.fecha_apertura', [$fechaInicio, $fechaTermino])
         ->where('c.clave', '!=', 'null')
         ->where('ins.status', '=', 'INSCRITO')
+        ->where('c.proceso_terminado',true)
         ->groupBy('c.id')
         ->get();
 

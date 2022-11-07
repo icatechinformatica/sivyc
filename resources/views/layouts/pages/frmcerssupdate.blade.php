@@ -100,11 +100,11 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="nombre" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" required value="{{$data->nombre}}" readonly>
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" required value="{{$data->nombre}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="municipio" class="control-label">Municipio</label>
-                    <select name="municipio" id="municipio" class="form-control" required disabled>
+                    <select name="municipio" id="municipio" class="form-control" required>
                         <option value={{$munisel->id}}>{{$munisel->muni}}</option>
                         @foreach ($muni as $cadwell )
                             <option value="{{$cadwell->id}}">{{$cadwell->muni}}</option>

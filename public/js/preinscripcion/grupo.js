@@ -10,25 +10,26 @@
     });
     $("#id_municipio" ).change(function(){
         cmb_loc();
-    }); 
-      
+    });     
+    
     function cmb_curso(){ 
         var tipo =$('#tipo').val();
         var unidad =$('#unidad').val();
-        var modalidad =$('#modalidad').val(); 
+        var modalidad =$('#modalidad').val();
         $("#id_curso").empty();                            
         if(tipo && unidad && modalidad){
             $.ajax({
                 type: "GET",
-                url: "grupo/cmbcursos",
+                url: "/preinscripcion/grupo/cmbcursos",
                 data:{tipo:tipo,unidad:unidad,modalidad:modalidad, _token:"{{csrf_token()}}"},
                 contentType: "application/json",              
                 dataType: "json",
                 success: function (data) {// console.log(data); 
+                    $("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');
                     $.each(data, function () {                                    
-                        //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');                                    
                         $("#id_curso").append('<option value="'+this['id']+'">'+this['nombre_curso']+'</option>');
                     });
+                    
                 }
             });                        
         }
@@ -101,6 +102,22 @@
         if( !$('#cerss_ok').prop('checked') ){                        
             var curp = input.value.toUpperCase(),
             resultado = document.getElementById("resultado"),valido = "No válido";
+                        
+            if (curpValida(curp)) {
+                valido = "Válido";
+                resultado.classList.add("ok");
+            } else {
+                resultado.classList.remove("ok");
+            }
+            resultado.innerText = "  Formato: " + valido;
+                    
+        }
+    }
+
+    function validarRemplazo(input) {
+        if( !$('#cerss_ok').prop('checked') ){                        
+            var curp = input.value.toUpperCase(),
+            resultado = document.getElementById("resultado1"),valido = "No válido";
                         
             if (curpValida(curp)) {
                 valido = "Válido";

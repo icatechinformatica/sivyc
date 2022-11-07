@@ -9,6 +9,7 @@ function dataFormatoT($unidad, $status, $fecha) {
     // dd($cad);
     $var_cursos = DB::table('tbl_cursos as c')
         ->select(
+            'c.termino',
             'c.id AS id_tbl_cursos',
             'c.status AS estadocurso',
             'c.unidad',
@@ -38,8 +39,9 @@ function dataFormatoT($unidad, $status, $fecha) {
             DB::raw("SUM(CASE WHEN ins.calificacion <> 'NP' and ins.sexo='H' THEN 1 ELSE 0 END) as ehombre"),
 
             DB::raw("SUM(CASE WHEN ins.calificacion = 'NP' THEN 1 ELSE 0 END) as desertado"),
-            DB::raw("SUM(DISTINCT(ins.costo)) as costo"),
+            DB::raw("ROUND(SUM(ins.costo) / COUNT(distinct(ins.id)), 2) as costo"),
             DB::raw("SUM(ins.costo) as ctotal"),
+            DB::raw("CASE WHEN COUNT(distinct(ins.costo)) = 1 THEN 'NO' ELSE 'SI' END AS cuotamixta"),
 
             // SUMA DE HOMBRES Y MUJERES CON EXONERACION TOTAL SIN RESTAR EL GENERO LGBTTTI+ ---
             DB::raw("sum(case when ins.abrinscri='ET' and ins.sexo='M' then 1 else 0 end) as etmujer"),
@@ -371,12 +373,14 @@ function dataFormatoT($unidad, $status, $fecha) {
             ),
 
             DB::raw("c.observaciones_formato_t->'OBSERVACION_RETORNO_UNIDAD' AS observaciones_enlaces"),
+            'c.status_solicitud_arc02',
+            'c.arc',
 
 
         )
         ->JOIN('tbl_inscripcion as ins', 'c.id', '=', 'ins.id_curso')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
-        ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
+        ->JOIN('tbl_municipios as m', 'm.id', '=', 'c.id_municipio')
         ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')
         ->WHERE('u.ubicacion', '=', $unidad)
         ->WHEREIN('c.status', $status)
@@ -385,6 +389,16 @@ function dataFormatoT($unidad, $status, $fecha) {
         ->WHERE('c.clave', '!=', 'null')
         ->where('ins.calificacion', '>', '0')
         ->where('m.id_estado', '=', '7')
+        // ->orwhere('c.arc', '=', '2')
+        // ->where('c.status_solicitud_arc02', '=', 'VALIDADO')
+        // ->WHERE('c.file_arc02', '!=', null)
+        // ->WHERE('u.ubicacion', '=',  $unidad)
+        // ->WHEREIN('c.status', $status)
+        // ->WHERE('c.status_curso', '=', 'AUTORIZADO')
+        // ->where('ins.status', '=', 'INSCRITO')
+        // ->WHERE('c.clave', '!=', 'null')
+        // ->where('ins.calificacion', '>', '0')
+        // ->where('m.id_estado', '=', '7')
         ->groupby(
             'c.id',
             'c.status',
@@ -413,9 +427,11 @@ function dataFormatoT($unidad, $status, $fecha) {
             'c.mpaqueteria',
             'c.mexoneracion',
             'c.nota',
+            'c.termino',
             'm.region',
             'gv.grupo'
         )
+        ->orderBy('c.termino', 'asc')
         ->distinct()
         ->get();
 
@@ -460,8 +476,9 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             DB::raw("SUM(CASE WHEN ins.calificacion <> 'NP' and ins.sexo='H' THEN 1 ELSE 0 END) as ehombre"),
 
             DB::raw("SUM(CASE WHEN ins.calificacion = 'NP' THEN 1 ELSE 0 END) as desertado"),
-            DB::raw("SUM(DISTINCT(ins.costo)) as costo"),
+            DB::raw("ROUND(SUM(ins.costo) / COUNT(distinct(ins.id)), 2) as costo"),
             DB::raw("SUM(ins.costo) as ctotal"),
+            DB::raw("CASE WHEN COUNT(distinct(ins.costo)) = 1 THEN 'NO' ELSE 'SI' END AS cuotamixta"),
 
             // --- SUMA DE EXONERACION TOTAL SIN RESTAR LGBT ---
             DB::raw("sum(case when ins.abrinscri='ET' and ins.sexo='M' then 1 else 0 end) as etmujer"),
@@ -486,7 +503,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
             'c.mexoneracion',
             DB::raw("sum(case when ins.empleado = true then 1 else 0 end) as empleado"),
             DB::raw("sum(case when ins.empleado = false then 1 else 0 end) as desempleado"),
-            DB::raw("sum(case when ins.discapacidad <> 'NINGUNA' then 1 else 0 end) as discapacidad"),
+            DB::raw("sum(case when ins.id_gvulnerable::text like '%18%' or ins.id_gvulnerable::text like '%19%' or ins.id_gvulnerable::text like '%20%' or ins.id_gvulnerable::text like '%21%' or ins.id_gvulnerable::text like '%22%' then 1 else 0 end) as discapacidad"),
             DB::raw("0 as madres_solteras"), // debe ir madres solteras
 
             DB::raw("sum(case when ins.inmigrante = true then 1 else 0 end) as migrante"),
@@ -817,7 +834,7 @@ function dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
         })*/
         // ->JOIN('alumnos_pre as ap', 'ar.id_pre', '=', 'ap.id')
         ->JOIN('tbl_unidades as u', 'u.unidad', '=', 'c.unidad')
-        ->JOIN('tbl_municipios as m', 'm.muni', '=', 'c.muni')
+        ->JOIN('tbl_municipios as m', 'm.id', '=', 'c.id_municipio')
         ->LEFTJOIN('grupos_vulnerables as gv', 'gv.id', '=', 'c.id_gvulnerable')
         ->whereMonth('c.fecha_turnado', $mesSearch) // new
         ->WHERE('c.status', '=', $status) // new

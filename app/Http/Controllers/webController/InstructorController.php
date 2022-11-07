@@ -35,28 +35,26 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
-        $hola = $this->new_revision('1300');
-        dd('a');
-        $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
+        // $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
 
-        foreach ($idesin as $key => $cadwell)
-        {
-            $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
-                          ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
-                          ->WHERE('activo', '=', TRUE)
-                          ->OrderBy('curso_id', 'ASC')
-                          ->GET();
+        // foreach ($idesin as $key => $cadwell)
+        // {
+        //     $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
+        //                   ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
+        //                   ->WHERE('activo', '=', TRUE)
+        //                   ->OrderBy('curso_id', 'ASC')
+        //                   ->GET();
 
-            $array = [];
-            foreach ($cursos as $data)
-            {
-                array_push($array, $data->curso_id);
-            }
+        //     $array = [];
+        //     foreach ($cursos as $data)
+        //     {
+        //         array_push($array, $data->curso_id);
+        //     }
 
-            especialidad_instructor::WHERE('id', '=', $cadwell->id)
-                                ->update(['cursos_impartir' => $array]);
-        }
-        dd('Lock&Load');
+        //     especialidad_instructor::WHERE('id', '=', $cadwell->id)
+        //                         ->update(['cursos_impartir' => $array]);
+        // }
+        // dd('Lock&Load');
     }
 
     public function index(Request $request)
@@ -3191,164 +3189,7 @@ class InstructorController extends Controller
             $urlfoto = $this->jpg_upload($foto, $id, 'foto'); # invocamos el método
             $saveInstructor->archivo_fotografia = $urlfoto; # guardamos el path
         }
-
-        if ($request->file('arch_estudio') != null)
-        {
-            $estudio = $request->file('arch_estudio'); # obtenemos el archivo
-            $urlestudio = $this->pdf_upload($estudio, $id, 'estudios'); # invocamos el método
-            $saveInstructor->archivo_estudios = $urlestudio; # guardamos el path
-        }
-
-        if ($request->file('arch_id') != null)
-        {
-            $otraid = $request->file('arch_id'); # obtenemos el archivo
-            $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
-            $saveInstructor->archivo_otraid = $urlotraid; # guardamos el path
-        }
-        if ($request->file('arch_curriculum_personal') != null)
-        {
-            $otraid = $request->file('arch_curriculum_personal'); # obtenemos el archivo
-            $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
-            $saveInstructor->archivo_curriculum_personal = $urlotraid; # guardamos el path
-        }
-
-        return $saveInstructor;
-    }
-
-    private function new_history($newa, $instructor, $movimiento)
-    {
-        $historico = new instructor_history;
-        $historico->id_instructor = $instructor->id;
-        $historico->id_user = $instructor->lastUserId;
-        $historico->movimiento = 'creacion de instructor por parte de la unidad';
-        $historico->status = $instructor->status;
-        $historico->turnado = $instructor->turnado;
-        $historico->data_instructor = $newa["\x00*\x00attributes"];
-        $historico->nrevision = $instructor->nrevision;
-        $historico->save();
-
-        return NULL;
-    }
-
-    private function make_collection($data)
-    {
-        if(isset($data))
-        {
-            $newarr = array();
-            foreach($data as $cadwell)
-            {
-                array_push($newarr, (object) $cadwell);
-            }
-            $perfil = collect($newarr);
-            return $perfil;
-        }
-        else
-        {
-            return FALSE;
-        }
-    }
-
-    protected function getlocalidades(Request $request)
-    {
-        if (isset($request->valor)){
-            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            // $nombreMuni = $request->valor;
-            $idMuni = DB::TABLE('tbl_municipios')->SELECT('clave','id_estado')->WHERE('id', '=', $request->valor)->FIRST();
-            $locals = DB::TABLE('tbl_localidades')->SELECT('clave', 'localidad')
-                        ->WHERE('tbl_localidades.clave_municipio', '=', $idMuni->clave)
-                        ->WHERE('tbl_localidades.id_estado', '=', $idMuni->id_estado)
-                        ->ORDERBY('localidad','ASC')
-                        ->GET();
-            $json=json_encode($locals);
-        }else{
-            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
-        }
-
-
-        return $json;
-    }
-
-    protected function getmunicipios(Request $request)
-    {
-        if (isset($request->valor)){
-            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $locals = DB::TABLE('tbl_municipios')->SELECT('id','muni')
-                        ->WHERE('tbl_municipios.id_estado', '=', $request->valor)
-                        ->ORDERBY('muni','ASC')
-                        ->GET();
-            $json=json_encode($locals);
-        }else{
-            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
-        }
-
-        return $json;
-    }
-
-    protected function getcursos(Request $request)
-    {
-        if (isset($request->valor)){
-            $cursos = curso::WHERE('id_especialidad', '=', $request->valor)->WHERE('estado', '=', TRUE)->ORDERBY('nombre_curso', 'ASC')->GET(['id', 'nombre_curso', 'modalidad', 'objetivo', 'costo', 'duracion', 'objetivo', 'tipo_curso', 'id_especialidad', 'rango_criterio_pago_minimo', 'rango_criterio_pago_maximo']);
-            // $nomesp = especialidad::SELECT('nombre')->WHERE('id', '=', $id)->FIRST();
-            // $cursos->nomesp = $nomesp->nombre;
-            foreach($cursos as $item)
-            {
-                $item->btn = '<input type="checkbox" class="checkBoxClass" id="tgl' . $item->id . '"
-                data-toggle="toggle"
-                data-style="ios"
-                data-on=" "
-                data-off=" "
-                data-onstyle="success"
-                data-offstyle="danger"
-                name="itemAdd[' . $item->id . '][check_cursos]"
-                value="' . $item->id . '">';
-            }
-            $json=json_encode($cursos);
-        }else{
-            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
-        }
-
-
-        return $json;
-    }
-
-    protected function getnrevision(Request $request)
-    {
-        if (isset($request->valor)){
-            $rol = DB::TABLE('role_user')->WHERE('role_id', '=', '1')->WHERE('user_id', '=', Auth::user()->id)->FIRST();
-            if(isset($rol))
-            {
-                $status = ['EN CAPTURA','RETORNO','PREVALIDACION','EN FIRMA','BAJA EN FIRMA','REACTIVACION EN PREVALIDACION','REACTIVACION EN FIRMA'];
-            }
-            else
-            {
-               $status = ['PREVALIDACION','EN FIRMA', 'BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN PREVALIDACION','REACTIVACION EN FIRMA'];
-            }
-            $revisiones = pre_instructor::SELECT('nrevision')
-                        ->WhereJsonContains('data_especialidad', [['unidad_solicita' => $request->valor]])
-                        ->WHERE('registro_activo', TRUE)
-                        ->WHERE('nrevision', '!=', NULL)
-                        ->WHERE('turnado', 'DTA')
-                        ->WHEREIN('status', $status)
-                        ->ORDERBY('nrevision', 'ASC')
-                        ->GET();
-            $json=json_encode($revisiones);
-        }
-        else
-        {
-            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
-        }
-
-        return $json;
-    }
-
-    protected function getentrevista(Request $request)
-    {
-        $entrevista = DB::TABLE('instructores')->SELECT('entrevista')->WHERE('id','=',$request->id)->FIRST();
-        $json = $entrevista->entrevista;
-        return $json;
-    }
-
-    protected function nomesp(Request $request)
+st)
     {
         //Analiza si ya tiene la especialidad asignada
         $chckespecialidad = DB::TABLE('especialidad_instructores')

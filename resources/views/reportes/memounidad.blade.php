@@ -38,7 +38,7 @@
             <img class="izquierda" src="{{ public_path('img/logohorizontalica1.jpg') }}">
             <img class="derecha" src='img/chiapas.png'>
             <br>
-            <h6>{{$leyenda}}</h6>
+            <h6><small><small>{{$leyenda}}</small></small></h6>
     </header>
     <footer>
         <script type="text/php">
@@ -76,55 +76,17 @@
         <div align=right style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></div>
         <div align=right style="font-size:11px;"><b>MEMORANDUM NO. {{ $nume_memo }}</b></div>
         <div align=right style="font-size:11px;"><b>TUXTLA GUTIERREZ, CHIAPAS; {{ $fecha_nueva }}</b></div>
-        <br><br>
+        <br>
         <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}</b></div>
         <div align=left style="font-size:11px;"><b>PRESENTE.</b></div>
-        <br><br>
+        <br>
             @php
                 $num=1;
             @endphp
             <div class="table-responsive-sm">
                 <div align="justify" style="font-size:11px;">
                     En seguimiento a la integración del Formato T del mes de {{$mesReportado2}} del presente
-                    año de su Unidad de Capacitación, recibido el pasado {{$diaArray[0]}} de {{$mesReportado2}} al correo electronico
-                    @switch($reg_unidad->ubicacion)
-                        @case('REFORMA')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('VILLAFLORES')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('TUXTLA')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('TONALA')
-                            informacion.formatot@gmail.com
-                            @break
-                        @case('SAN CRISTOBAL')
-                            formatot.icatech.dta@gmail.com
-                            @break
-                        @case('YAJALON')
-                            formatot.icatech.dta@gmail.com
-                            @break
-                        @case('OCOSINGO')
-                            formatot.icatech.dta@gmail.com
-                            @break
-                        @case('CATAZAJA')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @case('TAPACHULA')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @case('JIQUIPILAS')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @case('COMITAN')
-                            informesestadisticos.cert2@gmail.com
-                            @break
-                        @default
-
-                    @endswitch
-                    , le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
+                    año de su Unidad de Capacitación, recibido el pasado {{$diaArray[0]}} de {{$mesReportado2}} al correo electronico {{$correo_institucional}}, le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                     RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
                     digitalizados con firmas y sellos de un total de {{ $sum_total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
                     hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
@@ -168,18 +130,18 @@
                 </div>
                 <br>
                 <div style="font-size:11px;">Sin más por el momento, agradezco su atención y le envío un cordial saludo.</div>
-                <br><br>
+                <br>
                 <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
-                <br><br><br>
-                <div style="font-size:11px;"> <b>DR. ERICH ARMANDO CRUZ CASTELLANOS</b> </div>
-                <div style="font-size:11px;"> <b>DIRECTOR DE TÉCNICA ACADÉMICA</b> </div>
-                <br><br><br>
+                <br><br><br><br>
+                <div style="font-size:11px;"> <b>{{ $reg_unidad->dacademico }}</b> </div>
+                <div style="font-size:11px;"> <b>{{ $reg_unidad->pdacademico }}</b> </div>
+                <br>
                 <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div>
                 <div style="font-size:9px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
                 <div style="font-size:9px;"> <b>ARCHIVO / MINUTARIO.</b> </div>
                 <div style="font-size:7px;"> <b>VALIDÓ: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
                 <div style="font-size:7px;"> <b>ELABORÓ: {{ $elabora }}.</b> </div>
-            </div><br><br>
+            </div><br>
     </div>
 </body>
 </html>

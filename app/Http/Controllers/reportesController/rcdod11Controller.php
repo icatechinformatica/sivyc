@@ -63,7 +63,7 @@ class rcdod11Controller extends Controller
             ->select('tf.matricula','tf.nombre as alumno',
                 DB::raw("(select f.folio from tbl_folios as f where f.movimiento='CANCELADO' and f.motivo in ('ROBO O EXTRAVIO','NO SOLICITADO') and tf.matricula=f.matricula and f.id_curso=tc.id)as folio"),
                 'tf.folio as duplicado')
-            ->where('tc.status','=','REPORTADO')
+            ->whereIn('tc.status',['REPORTADO','TURNADO_PLANEACION'])
             ->where('tf.movimiento','=','DUPLICADO');
             if($finicio){$consulta=$consulta->where('tc.termino','>=',$finicio);}
             if($ftermino){$consulta=$consulta->where('tc.termino','<=',$ftermino);}
@@ -100,7 +100,7 @@ class rcdod11Controller extends Controller
             ->select('tf.matricula','tf.nombre as alumno',
                 DB::raw("(select f.folio from tbl_folios as f where f.movimiento='CANCELADO' and f.motivo in ('ROBO O EXTRAVIO','NO SOLICITADO') and tf.matricula=f.matricula and f.id_curso=tc.id)as folio"),
                 'tf.folio as duplicado')
-            ->where('tc.status','=','REPORTADO')
+            ->whereIn('tc.status',['REPORTADO','TURNADO_PLANEACION'])
             ->where('tf.movimiento','=','DUPLICADO')
             ->where('tc.unidad',$unidad)
             ->where('tc.termino','>=',$finicio)

@@ -206,8 +206,19 @@ class ContratoController extends Controller
         $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
 
         //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
-        $consecutivo = intval(substr($data->folio_validacion, 10, 3));
-        // dd($data->folio_validacion);
+        // $consecutivo = intval(substr($data->folio_validacion, 10, 3));
+        $xpld = explode('-', $data->folio_validacion);
+        $counter = strlen($xpld[3]);
+        if($counter == 4)
+        {
+            $consecutivo = $xpld[3];
+        }
+        if($counter == 3)
+        {
+            $consecutivo = '0' . $xpld[3];
+        }
+        // dd($consecutivo);
+
 
         // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
         /*$consecutivo = DB::TABLE('contratos')
@@ -526,37 +537,61 @@ class ContratoController extends Controller
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
         $datac = $X::where('id_folios', '=', $id)->first();
+        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor','tipo_curso')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
                                       'instructores.no_cuenta','instructores.interbancaria')
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
-        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario'));
+        return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario','regimen'));
     }
 
     public function save_doc(Request $request){
         $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
+        $urldocs = null;
         if(isset($check_pago))
         {
             return back()->withErrors(sprintf('LO SENTIMOS, EL MEMORANDUM DE PAGO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->no_memo));
         }
 
-        $pago = new pago();
-        $pago->no_memo = $request->no_memo;
-        $pago->id_contrato = $request->id_contrato;
-        $pago->liquido = $request->liquido;
-        $pago->solicitud_fecha = $request->solicitud_fecha;
+        // $pago = new pago();
+        // $pago->no_memo = $request->no_memo;
+        // $pago->id_contrato = $request->id_contrato;
+        // $pago->liquido = $request->liquido;
+        // $pago->solicitud_fecha = $request->solicitud_fecha;
 
         $file = $request->file('arch_asistencia'); # obtenemos el archivo
         $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
-        // guardamos en la base de datos
-        $pago->arch_asistencia = trim($urldocs);
+        // // guardamos en la base de datos
+        // $pago->arch_asistencia = trim($urldocs);
 
-        $file = $request->file('arch_evidencia'); # obtenemos el archivo
-        $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
-        // guardamos en la base de datos
-        $pago->arch_evidencia = trim($urldocs);
-        $pago->fecha_status = carbon::now();
-        $pago->save();
+        if ($request->arch_evidencia != NULL)
+        {
+            $file = $request->file('arch_evidencia'); # obtenemos el archivo
+            $urldocs2 = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
+            // guardamos en la base de datos
+            // $pago->arch_evidencia = trim($urldocs);
+        }
+        else
+        {
+            $urldocs2 = NULL;
+        }
+        // $pago->fecha_status = carbon::now();
+        // $pago->save();
+
+
+        pago::updateOrInsert(
+            ['id_contrato' => $request->id_contrato],
+            [
+                'no_memo' => $request->no_memo,
+                'liquido' => $request->liquido,
+                'solicitud_fecha' => $request->solicitud_fecha,
+                'arch_asistencia' => trim($urldocs),
+                'arch_evidencia' => trim($urldocs2),
+                'fecha_status' => carbon::now(),
+                'created_at' => carbon::now(),
+                'updated_at' => carbon::now()
+            ]
+        );
 
         contrato_directorio::where('id_contrato', '=', $request->id_contrato)
         ->update(['solpa_iddirector' => $request->id_remitente,
@@ -593,10 +628,10 @@ class ContratoController extends Controller
         //Notificacion!!
         $letter = [
             'titulo' => 'Solicitud de Pago',
-            'cuerpo' => 'La solicitud de pago ' . $pago->no_memo . ' ha sido agregada para su validación',
-            'memo' => $pago->no_memo,
+            'cuerpo' => 'La solicitud de pago ' . $request->no_memo . ' ha sido agregada para su validación',
+            'memo' => $request->no_memo,
             'unidad' => Auth::user()->unidad,
-            'url' => '/pago/verificar_pago/' . $pago->id_contrato,
+            'url' => '/pago/verificar_pago/' . $request->id_contrato,
         ];
         //$users = User::where('id', 1)->get();
         // dd($users);
@@ -611,6 +646,7 @@ class ContratoController extends Controller
         $X = new contratos();
         $folio = new folio();
         $dataf = $folio::where('id_folios', '=', $id)->first();
+        $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor','tipo_curso')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $datac = $X::where('id_folios', '=', $id)->first();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
                                       'instructores.no_cuenta','instructores.interbancaria')
@@ -633,7 +669,7 @@ class ContratoController extends Controller
         $ccp2 = directorio::WHERE('id', '=', $directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $directorio->solpa_ccp3)->FIRST();
 
-        return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3','director'));
+        return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','regimen','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3','director'));
     }
 
     public function save_mod_solpa(Request $request){
@@ -825,6 +861,8 @@ class ContratoController extends Controller
                                                 ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
                                                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
                                                 ->FIRST();
+        $fecha_act = new Carbon('23-06-2022');
+        $fecha_fir = new Carbon($data_contrato->fecha_firma);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $date = strtotime($data_contrato->fecha_firma);
         $D = date('d', $date);
@@ -838,14 +876,14 @@ class ContratoController extends Controller
         if($data->tipo_curso == 'CURSO')
         {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.precontratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.precontratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.precontratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }
         }
         else
         {
-            $pdf = PDF::loadView('layouts.pdfpages.precontratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+            $pdf = PDF::loadView('layouts.pdfpages.precontratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
         }
 
         return $pdf->stream("Precontrato-Instructor-$data_contrato->numero_contrato.pdf");
@@ -853,7 +891,6 @@ class ContratoController extends Controller
 
     public function contrato_pdf($id)
     {
-
         $contrato = new contratos();
 
         $data_contrato = contratos::WHERE('id_contrato', '=', $id)->FIRST();
@@ -878,6 +915,9 @@ class ContratoController extends Controller
                                                 ->WHERE('especialidad_instructores.id', '=', $data_contrato->instructor_perfilid)
                                                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
                                                 ->FIRST();
+
+        $fecha_act = new Carbon('23-06-2022');
+        $fecha_fir = new Carbon($data_contrato->fecha_firma);
         $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $date = strtotime($data_contrato->fecha_firma);
         $D = date('d', $date);
@@ -890,14 +930,14 @@ class ContratoController extends Controller
         if($data->tipo_curso == 'CURSO')
         {
             if ($data->modinstructor == 'HONORARIOS') {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohonorarios', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }else {
-                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+                $pdf = PDF::loadView('layouts.pdfpages.contratohasimilados', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
             }
         }
         else
         {
-            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad'));
+            $pdf = PDF::loadView('layouts.pdfpages.contratocertificacion', compact('director','testigo1','testigo2','testigo3','data_contrato','data','nomins','D','M','Y','monto','especialidad','cantidad','fecha_act','fecha_fir'));
         }
 
         $pdf->setPaper('LETTER', 'Portrait');
