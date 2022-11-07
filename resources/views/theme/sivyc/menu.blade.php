@@ -71,16 +71,19 @@
                             @endcan
                             @can('solicitud.exoneracion')
                                 <a class="dropdown-item" href="{{ route('solicitud.exoneracion')}}">Exoneración y/o Reducción de Cuotas</a>
-                                <a class="dropdown-item" href="{{ route('solicitud.exoneracion.search')}}">Buscar Exoneración</a> 
+                                <a class="dropdown-item" href="{{ route('solicitud.exoneracion.search')}}">Buscar Exoneración</a>
                             @endcan
-                            @can('supre.index')                    
-                                <a class="dropdown-item" href="{{route('supre-inicio')}}">Suficiencia Presupuestal</a>                    
+                            @can('supre.index')
+                                <a class="dropdown-item" href="{{route('supre-inicio')}}">Suficiencia Presupuestal</a>
                             @endcan
                             @can('contratos.index')
                                 <a class="dropdown-item" href="{{route('contrato-inicio')}}">Contratos</a>
                             @endcan
                             @can('pagos.inicio')
                                 <a class="dropdown-item" href="{{route('pago-inicio')}}">Pagos</a>
+                            @endcan
+                            @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Turnar Instructor</a>
                             @endcan
                         </div>
                     </li>
@@ -175,6 +178,9 @@
                             @endcan
                             @can('solicitudes.cancelacionfolios')
                                 <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n Folios</a>
+                            @endcan
+                            @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Turnar Instructor</a>
                             @endcan
                         </div>
                     </li>

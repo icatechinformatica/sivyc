@@ -3189,8 +3189,6 @@ class InstructorController extends Controller
             $urlfoto = $this->jpg_upload($foto, $id, 'foto'); # invocamos el método
             $saveInstructor->archivo_fotografia = $urlfoto; # guardamos el path
         }
-st)
-    {
         //Analiza si ya tiene la especialidad asignada
         $chckespecialidad = DB::TABLE('especialidad_instructores')
                             ->WHERE('id_instructor', '=', $request->idins)
