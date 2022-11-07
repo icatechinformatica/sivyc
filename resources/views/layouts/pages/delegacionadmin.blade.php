@@ -30,12 +30,13 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="unidad" class="control-label">Unidad de Capacitación </label>
-                <select name="unidad" id="unidad" class="form-control">
+                {{-- <select name="unidad" id="unidad" class="form-control">
                     <option value="sin especificar">SIN ESPECIFICAR</option>
                     @foreach ($unidades as $data )
                         <option value="{{$data->unidad}}">{{$data->unidad}}</option>
                     @endforeach
-                </select>
+                </select> --}}
+                <input type="text" class="form-control" id="unidad" name="unidad" value="{{$unidad->ubicacion}}" readonly>
             </div>
             <div class="form-group col-md-5">
                 <label for="mamorandum" class="control-label">Memoramdum No. </label>
@@ -46,18 +47,6 @@
                 <input class="form-control" name="fecha" type="date" value="2020-01-01" id="fecha">
             </div>
         </div>
-        <!--
-        <div class="form-row">
-            <div class="form-group col-md-6"> <!- Destinatario ->
-                <label for="inputdestino" class="control-label">Destinatario</label>
-                <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
-            </div>
-            <div class="form-group col-md-6"> <!- Puesto->
-                <label for="inputpuesto_destino" class="control-label">Puesto</label>
-                <input type="text" class="form-control" readonly onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
-                <input id="id_destino" name="id_destino" type="text" hidden>
-            </div>
-        </div>-->
         <div class="field_wrapper">
             <table class="table table-bordered" id="dynamicTable">
                 <tr>
@@ -113,36 +102,6 @@
                 <input id="id_elabora" name="id_elabora" type="text" hidden>
             </div>
         </div>
-        <!--<hr style="border-color:dimgray">
-        <!- START CCP ->
-            <label for="inputccp"><h3>Con Copia Para</h3></label>
-            <br>
-            <label><h4>Copia 1</h4></label>
-            <div class="form-row">
-                <div class="form-group col-md-4"> <!- copia 1 ->
-                    <label for="inputccp1" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputccp1" class="control-label">Puesto</label>
-                    <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
-                    <input id="id_ccp1" name="id_ccp1" type="text" hidden>
-                </div>
-            </div>
-            <br>
-            <label><h4>Copia 2</h4></label>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="inputccp2" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputccp2" class="control-label">Puesto</label>
-                    <input type="text" readonly class="form-control" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
-                    <input id="id_ccp2" name="id_ccp2" type="text" hidden>
-                </div>
-            </div>
-        <!-END CCP-->
         <br>
         <div class="row">
             <div class="col-lg-12 margin-tb">

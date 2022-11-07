@@ -35,6 +35,12 @@ class supreController extends Controller
     public function solicitud_supre_inicio(Request $request) {
         $array_ejercicio =[];
         $año_pointer = CARBON::now()->format('Y');
+        $unidaduser = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $roles = DB::table('role_user')
+            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
+            ->SELECT('roles.slug AS role_name')
+            ->WHERE('role_user.user_id', '=', Auth::user()->id)
+            ->FIRST();
         /**
          * parametros de busqueda
          */
@@ -66,10 +72,13 @@ class supreController extends Controller
                         ->where('tabla_supre.id', '!=', '0')
                         ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
                         ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
-                        ->WHERE('tabla_supre.status', '!=', 'Cancelado')
-                        ->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
+                        ->WHERE('tabla_supre.status', '!=', 'Cancelado');
+        if($roles->role_name != 'admin' && $roles->role_name != 'planeacion')
+        {
+            $data = $data->WHERE('unidad_capacitacion', $unidaduser->ubicacion);
+        }
+        $data = $data->RIGHTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                         ->RIGHTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
-                        // ->latest()
                         ->OrderBy('tabla_supre.status','ASC')
                         ->OrderBy('tabla_supre.updated_at','DESC')
                         ->paginate(25, ['tabla_supre.*']);
@@ -80,8 +89,9 @@ class supreController extends Controller
 
     public function frm_formulario() {
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        $unidad = tbl_unidades::SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
 
-        return view('layouts.pages.delegacionadmin', compact('unidades'));
+        return view('layouts.pages.delegacionadmin', compact('unidades','unidad'));
     }
 
     public function store(Request $request) {
