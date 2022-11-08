@@ -42,12 +42,8 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="clavecurso" class="control-label">Especialidad de Conocimiento del Instructor</label>
-                    <select class="form-control" name="perfil_instructor" id="perfil_instructor">
-                        <option value="sin especificar">Sin Especificar</option>
-                        @foreach ( $perfil_prof as $value )
-                            <option value={{$value->id_espins}}>{{$value->nombre_especialidad}}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" readonly class="form-control" value="{{$especialidad_seleccionada->nombre}}" id="nombre_persel" name="nombre_persel">
+                    <input type="text" hidden class="form-control" value="{{$especialidad_seleccionada->id}}" id="perfil_instructor" name="perfil_instructor">
                 </div>
             </div>
             <div class="form-row">

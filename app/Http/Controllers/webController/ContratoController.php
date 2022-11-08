@@ -82,7 +82,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            ->WHERE('folios.status', '!=', 'Validado')
+            // ->WHERE('folios.status', '!=', 'Validado')
             ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
@@ -185,12 +185,21 @@ class ContratoController extends Controller
     {
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total','folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino','tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                               'instructores.apellidoMaterno','instructores.id')
+        $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
+                            'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad',
+                            'tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                            'instructores.apellidoMaterno','instructores.id')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                         ->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+                                    ->SELECT('especialidad_instructores.id','especialidades.nombre')
+                                    ->WHERE('especialidad_instructores.memorandum_validacion',$data->instructor_mespecialidad)
+                                    ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+                                    ->FIRST();
+                                    // dd($especialidad_seleccionada);
 
         $perfil_prof = $perfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
                                 ->WHERE('instructor_perfil.numero_control', '=', $data->id)
@@ -285,7 +294,7 @@ class ContratoController extends Controller
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         // dd($uni_contrato);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada'));
     }
 
     public function contrato_save(Request $request)
