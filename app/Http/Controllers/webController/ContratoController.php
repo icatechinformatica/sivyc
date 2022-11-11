@@ -187,7 +187,7 @@ class ContratoController extends Controller
         $perfil = new InstructorPerfil();
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
                             'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad',
-                            'tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                            'tbl_cursos.curso','tbl_cursos.clave_especialidad','instructores.nombre AS insnom','instructores.apellidoPaterno',
                             'instructores.apellidoMaterno','instructores.id','instructores.archivo_alta')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -197,6 +197,7 @@ class ContratoController extends Controller
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
                                     ->SELECT('especialidad_instructores.id','especialidades.nombre')
                                     ->WHERE('especialidad_instructores.memorandum_validacion',$data->instructor_mespecialidad)
+                                    ->WHERE('especialidades.clave', '=', $data->clave_especialidad)
                                     ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                                     ->FIRST();
                                     // dd($especialidad_seleccionada);
