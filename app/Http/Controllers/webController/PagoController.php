@@ -17,6 +17,7 @@ use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PagoController extends Controller
 {
@@ -90,7 +91,7 @@ class PagoController extends Controller
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
             'contratos.docs', 'contratos.observacion', 'folios.status','folios.recepcion', 'folios.id_folios',
-            'folios.id_supre','pagos.created_at'
+            'folios.id_supre','pagos.created_at','pagos.arch_pago'
         ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
@@ -228,11 +229,15 @@ class PagoController extends Controller
 
     public function guardar_pago(Request $request)
     {
+        $doc = $request->file('arch_pago'); # obtenemos el archivo
+        $urldoc = $this->pdf_upload($doc, $request->id_pago, 'pago_autorizado'); # invocamos el método
+
         pago::where('id', '=', $request->id_pago)
         ->update(['no_pago' => $request->numero_pago,
                   'fecha' => $request->fecha_pago,
                   'descripcion' => $request->concepto,
-                  'fecha_status' => carbon::now()]);
+                  'fecha_status' => carbon::now(),
+                  'arch_pago' => $urldoc]);
 
         folio::WHERE('id_folios', '=', $request->id_folio)
         ->update(['status' => 'Finalizado']);
@@ -520,6 +525,16 @@ class PagoController extends Controller
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
 
     }
+
+    protected function pdf_upload($pdf, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
+        $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/supre/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $pdfUrl;
+    }
+
 
     protected function monthToString($month)
     {

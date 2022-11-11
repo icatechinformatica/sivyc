@@ -40,12 +40,22 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="clavecurso" class="control-label">Area de Conocimiento del Instructor</label>
-                    <select class="form-control" name="perfilinstructor"  id="perfilinstructor">
+                    <input type="text" readonly  class="form-control" value="{{$perfil_sel->nombre_especialidad}}" id="perfnom" name="perfnom">
+                    <input type="text" hidden  class="form-control" value="{{$perfil_sel->id}}" id="perfilinstructor" name="perfilinstructor">
+                    {{-- <select class="form-control" name="perfilinstructor"  id="perfilinstructor">
                         <option value={{$perfil_sel->id}}>{{$perfil_sel->nombre_especialidad}}</option>
                         @foreach ( $perfil_prof as $value )
                             <option value={{$value->id_espins}}>{{$value->nombre_especialidad}}</option>
                         @endforeach
-                    </select>
+                    </select> --}}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="clavecurso" class="control-label">Validación de instructor</label>
+                    @if ($data->archivo_alta != NULL)
+                        <a class="btn btn-info control-label" href={{$data->archivo_alta}} target="_blank">Validación de Instructor</a><br>
+                    @else
+                        <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
+                    @endif
                 </div>
             </div>
             <div class="form-row">

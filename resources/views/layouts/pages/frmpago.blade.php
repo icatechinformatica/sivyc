@@ -69,9 +69,13 @@
                     <label for="inputnumero_pago">Numero de Pago</label>
                     <input type="text" name="numero_pago" id="numero_pago" class="form-control" aria-required="true">
                 </div>
-                <div class="form-gorup col-md-4">
+                <div class="form-gorup col-md-3">
                     <label for="inputfecha_pago">Fecha de Pago</label>
                     <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" aria-required="true">
+                </div>
+                <div class="form-gorup col-md-4">
+                    <label for="inputfecha_pago">Documento de Solucitud de Pago Autorizada</label>
+                    <input type="file" accept="application/pdf" name="arch_pago" id="arch_pago" aria-required="true" class="form-control">
                 </div>
             </div>
             <br>

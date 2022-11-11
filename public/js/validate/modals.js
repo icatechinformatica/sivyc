@@ -60,6 +60,15 @@ $(function(){
             {
                 $('#valsupre_pdf').attr("class", "btn btn-danger disabled");
             }
+            if(id['6'] != "")
+            {
+                $('#pagoautorizado_pdf').attr("class", "btn btn-danger");
+                $('#pagoautorizado_pdf').attr("href", id['6']);
+            }
+            else
+            {
+                $('#pagoautorizado_pdf').attr("class", "btn btn-danger disabled");
+            }
         }
         else if(id['4'] == 'Pago_Rechazado')
         {

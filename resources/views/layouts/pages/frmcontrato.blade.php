@@ -45,6 +45,14 @@
                     <input type="text" readonly class="form-control" value="{{$especialidad_seleccionada->nombre}}" id="nombre_persel" name="nombre_persel">
                     <input type="text" hidden class="form-control" value="{{$especialidad_seleccionada->id}}" id="perfil_instructor" name="perfil_instructor">
                 </div>
+                <div class="form-group col-md-3">
+                    <label for="clavecurso" class="control-label">Validación de instructor</label>
+                    @if ($data->archivo_alta != NULL)
+                        <a class="btn btn-info control-label" href={{$data->archivo_alta}} target="_blank">Validación de Instructor</a><br>
+                    @else
+                        <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
+                    @endif
+                </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">

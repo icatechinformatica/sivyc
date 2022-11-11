@@ -28,6 +28,20 @@
                     <label for="inputfolio">Confirmacion de Numero de Suficiencia</label>
                     <input id="no_suficiencia" name="no_suficiencia" value="{{$dataf->folio_validacion}}" disabled class="form-control">
                 </div>
+            </div><br>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputno_contrato">Nombre de Instructor</label>
+                    <input id="no_contrato" name="instructor" value="{{$bancario->nombre}}" disabled class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputfolio">Nombre del Curso</label>
+                    <input id="no_suficiencia" name="curso" value="{{$bancario->curso}}" disabled class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputfolio">Fechas de curso</label>
+                    <input id="no_suficiencia" name="curso" value="{{$bancario->inicio}} - {{$bancario->termino}}" disabled class="form-control">
+                </div>
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">

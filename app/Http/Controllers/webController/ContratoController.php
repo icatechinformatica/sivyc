@@ -188,7 +188,7 @@ class ContratoController extends Controller
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
                             'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad',
                             'tbl_cursos.curso','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                            'instructores.apellidoMaterno','instructores.id')
+                            'instructores.apellidoMaterno','instructores.id','instructores.archivo_alta')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -214,8 +214,6 @@ class ContratoController extends Controller
         $año_referencia = '01-01-' . CARBON::now()->format('Y');
         $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
 
-        //CONSECUTIVO DE NUMERO DE CONTRATO DEPENDIENTE DE FOLIO DE VALIDACION DE SUPRE
-        // $consecutivo = intval(substr($data->folio_validacion, 10, 3));
         $xpld = explode('-', $data->folio_validacion);
         $counter = strlen($xpld[3]);
         if($counter == 4)
@@ -227,35 +225,12 @@ class ContratoController extends Controller
             $consecutivo = '0' . $xpld[3];
         }
         // dd($consecutivo);
-
-
-        // CONSECUTIVO DE NUMERO DE CONTRATO INDEPENDIENTE
-        /*$consecutivo = DB::TABLE('contratos')
-                        ->WHERE('tbl_unidades.ubicacion', '=', $uni_contrato->ubicacion)
-                        ->WHERE('contratos.fecha_firma','>=', $año_referencia)
-                        ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
-                        ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
-                        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', 'tbl_cursos.unidad')
-                        ->LATEST('contratos.created_at')
-                        ->VALUE('numero_contrato');*/
-                        // dd($consecutivo);
         if ($consecutivo == NULL)
         {
             $consecutivo = '0001';
         }
         else
         {
-            // FUNCION DE NUMERO DE CONTRATO INDEPENDIENTE
-            /*if ($uni_contrato->ubicacion == 'TUXTLA' || $uni_contrato->ubicacion == 'COMITAN')
-            {
-                $consecutivo = substr($consecutivo, 10, 4) + 1;
-                dd('a');
-            }
-            else
-            {
-                $consecutivo = substr($consecutivo, 11, 4) + 1;
-                // dd('a');
-            }*/
             switch (strlen($consecutivo))
             {
                 case 1:
@@ -363,7 +338,7 @@ class ContratoController extends Controller
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
         $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                               'instructores.apellidoMaterno','instructores.id', 'tbl_cursos.curso')
+                               'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id', 'tbl_cursos.curso')
                         ->WHERE('id_folios', '=', $datacon->id_folios)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -548,7 +523,8 @@ class ContratoController extends Controller
         $datac = $X::where('id_folios', '=', $id)->first();
         $regimen = DB::TABLE('tbl_cursos')->SELECT('modinstructor','tipo_curso')->WHERE('id', '=', $dataf->id_cursos)->FIRST();
         $bancario = tbl_curso::SELECT('instructores.archivo_bancario','instructores.id AS idins','instructores.banco',
-                                      'instructores.no_cuenta','instructores.interbancaria')
+                                      'instructores.no_cuenta','instructores.interbancaria',
+                                      'tbl_cursos.nombre','tbl_cursos.curso','tbl_cursos.inicio','tbl_cursos.termino')
                                 ->WHERE('tbl_cursos.id', '=', $dataf->id_cursos)
                                 ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')->FIRST();
         return view('layouts.pages.vstasolicitudpago', compact('datac','dataf','bancario','regimen'));
