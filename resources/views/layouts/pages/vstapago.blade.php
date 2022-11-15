@@ -235,6 +235,9 @@
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
+                                    <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Subir Solicitud de Pago Autorizada" id="pago_upload" name="pago_upload" data-toggle="modal" data-target="#Modaluploadpago" data-id='{{$itemData->id_folios}}'>
+                                        <i class="fa fa-upload" aria-hidden="true"></i>
+                                    </a>
                                 @break
                             @endswitch
                         </td>
@@ -310,7 +313,7 @@
     </div>
 <!-- END -->
     <br>
-    <!-- Modal -->
+<!-- Modal -->
     <div class="modal fade" id="restartModalContrato" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -369,6 +372,33 @@
     </div>
 </div>
 <!-- END -->
+<!-- Modal Subir Pago-->
+<div class="modal fade" id="Modaluploadpago" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('doc-pago-guardar') }}" id="doc_pago">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cargar Solicitud de Pago Autorizada</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <div style="text-align:center" class="form-group">
+                        <input type="file" accept="application/pdf" class="form-control" id="doc_validado" name="doc_validado" placeholder="Archivo PDF">
+                        <input id="idfolpa" name="idfolpa" hidden>
+                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END -->
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/modals.js") }}"></script>
@@ -424,6 +454,13 @@
             $('#divcampo').prop("class", "")
         }
       }
+
+    $('#Modaluploadpago').on('show.bs.modal', function(event){
+        // console.log('hola');
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        document.getElementById('idfolpa').value = id;
+    });
 
 });
 </script>

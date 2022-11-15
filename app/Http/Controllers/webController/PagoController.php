@@ -337,6 +337,18 @@ class PagoController extends Controller
         return view('layouts.pages.vstareportedocumentospago', compact('unidades'));
     }
 
+    public function upload_pago_autorizado(Request $request)
+    {
+        $idcontrato = DB::Table('contratos')->SELECT('id_contrato')->WHERE('id_folios', $request->idfolpa)->FIRST();
+        $pago = pago::WHERE('id_contrato', $idcontrato->id_contrato)->FIRST();
+        $doc = $request->file('doc_validado'); # obtenemos el archivo
+        $urldoc = $this->pdf_upload($doc, $pago->id, 'pago_autorizado'); # invocamos el método
+        $pago->arch_pago = $urldoc;
+        $pago->save();
+
+        return redirect()->route('pago-inicio');
+    }
+
     public function tramitesrecepcionados_pdf(Request $request)
     {
         // dd($request);

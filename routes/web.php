@@ -730,6 +730,7 @@ Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesControl
 /*Reporte Financieros 03032021*/
 Route::get('/financieros/reporte', 'webController\PagoController@financieros_reporte')->name('financieros.reporte')->middleware('can:financieros.reporte');
 Route::post('/financieros/reporte/pdf','webController\PagoController@financieros_reportepdf')->name('financieros.reportepdf');
+Route::post('/financieros/upload/pago-autorizado','webController\PagoController@upload_pago_autorizado')->name('doc-pago-guardar');
 Route::post('/financieros/reporte/tramites_valrec','webController\PagoController@reporte_validados_recepcionados')->name('reporte_valrecep');
 //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');

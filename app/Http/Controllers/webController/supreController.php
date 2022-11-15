@@ -217,6 +217,7 @@ class supreController extends Controller
 
     public function solicitud_modificar($id)
     {
+        $id = base64_decode($id);
         $supre = new supre();
         $folio = new folio();
         $getdestino = null;
@@ -329,6 +330,7 @@ class supreController extends Controller
     }
 
     public function validacion($id){
+        $id = base64_decode($id);
         $supre = new supre();
         $data =  $supre::WHERE('id', '=', $id)->FIRST();
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
@@ -417,6 +419,7 @@ class supreController extends Controller
     }
 
     public function valsupre_mod($id){
+        $id = base64_decode($id);
         $data = supre::find($id);
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getfirmante = directorio::WHERE('id', '=', $directorio->val_firmante)->FIRST();
@@ -434,6 +437,7 @@ class supreController extends Controller
         // supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
         // folio::where('id_supre', '=', $id)->delete();
         // supre::where('id', '=', $id)->delete();
+        $id = base64_decode($id);
         $folio = folio::WHERE('id_supre','=',$id)->FIRST();
         $folio->status = 'Cancelado';
         $folio->save();
@@ -447,6 +451,7 @@ class supreController extends Controller
 
     public function restartSupre($id)
     {
+        $id = base64_decode($id);
         $list = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id)->GET();
         foreach($list as $item)
         {
@@ -829,6 +834,7 @@ class supreController extends Controller
     }
     public function dar_permiso_valsupre($id)
     {
+        $id = base64_decode($id);
         $supre = supre::find($id);
         $supre->permiso_editar = TRUE;
         $supre->save();
@@ -909,6 +915,7 @@ class supreController extends Controller
 
     public function folio_edicion_especial($id)
     {
+        $id = base64_decode($id);
         $getdestino = null;
         $getremitente = null;
         $getvalida = null;
@@ -1025,6 +1032,7 @@ class supreController extends Controller
     }
 
     public function supre_pdf($id){
+        $id = base64_decode($id);
         $supre = new supre();
         $folio = new folio();
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
@@ -1112,6 +1120,7 @@ class supreController extends Controller
     }
 
     public function tablasupre_pdf($id){
+        $id = base64_decode($id);
         $supre = new supre;
         $curso = new tbl_curso;
         $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
@@ -1155,6 +1164,7 @@ class supreController extends Controller
     }
 
     public function valsupre_pdf($id){
+        $id = base64_decode($id);
         $notification = DB::table('notifications')
                         ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
                         ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);

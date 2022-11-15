@@ -84,6 +84,7 @@
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
+                    @php $idh = base64_encode($itemData->id); @endphp
                     @if($itemData->doc_supre == NULL && $itemData->status != 'Validado')
                         @can('supre.create')
                         <tr>
@@ -102,17 +103,17 @@
                             </td>
                             <td>
                                 @if ( $itemData->status == 'En_Proceso')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     @can('supre.delete')
-                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     @if ($itemData->doc_supre == NULL)
                                         @can('supre.edit')
-                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endcan
@@ -127,7 +128,7 @@
                                         @endcan
                                     @else
                                         @can('supre.validar')
-                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $itemData->id])}}">
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $idh])}}">
                                                 <i class="fa fa-file-text" aria-hidden="true"></i>
                                             </a>
                                         @endcan
@@ -146,7 +147,7 @@
                                     <input hidden value={{$itemData->id}} id='pdfp'>
                                 @endif
                                 @if ($itemData->status == 'Validado')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     @if ($itemData->doc_validado == NULL)
@@ -201,18 +202,18 @@
                                     @endcan
                                     @can('supre.validar')
                                         @if($itemData->permiso_editar == TRUE)
-                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $itemData->id])}}">
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $idh])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endif
                                     @endcan
                                 @endif
                                 @if ($itemData->status == 'Rechazado')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     @can('supre.edit')
-                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan
@@ -226,7 +227,7 @@
                                         </button>
                                     @endcan
                                     @can('supre.delete')
-                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan
@@ -252,17 +253,17 @@
                             </td>
                             <td>
                                 @if ( $itemData->status == 'En_Proceso')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     @can('supre.delete')
-                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $itemData->id])}}">
+                                        <a class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Cancelar" href="{{route('eliminar-supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     @if ($itemData->doc_supre == NULL)
                                         @can('supre.edit')
-                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endcan
@@ -277,7 +278,7 @@
                                         @endcan
                                     @else
                                         @can('supre.validar')
-                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $itemData->id])}}">
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Validar" href="{{route('supre-validacion', ['id' => $idh])}}">
                                                 <i class="fa fa-file-text" aria-hidden="true"></i>
                                             </a>
                                         @endcan
@@ -296,7 +297,7 @@
                                     <input hidden value={{$itemData->id}} id='pdfp'>
                                 @endif
                                 @if ($itemData->status == 'Validado')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     @if($itemData->permiso_editar == TRUE)
@@ -362,18 +363,18 @@
                                     @endcan
                                     @can('supre.validar')
                                         @if($itemData->permiso_editar == TRUE)
-                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $itemData->id])}}">
+                                            <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $idh])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
                                         @endif
                                     @endcan
                                 @endif
                                 @if ($itemData->status == 'Rechazado')
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
+                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#supreModal" data-id='["{{$idh}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->doc_supre}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
                                     @can('supre.edit')
-                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $itemData->id])}}">
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan
