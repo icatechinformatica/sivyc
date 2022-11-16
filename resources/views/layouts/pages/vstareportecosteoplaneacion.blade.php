@@ -63,7 +63,7 @@
 </head>
 @section('content')
     <section class="container g-pt-50">
-        <form action="{{ route('planeacion.reporte.costeo') }}" method="post" id="registercontrato">
+        <form action="{{ route('planeacion.reporte.costeo.xl') }}" method="post" id="registercontrato">
             @csrf
             <div class="text-center">
                 <h1>Reporte de Costeo de Suficiencias Presupuestales</h1>
