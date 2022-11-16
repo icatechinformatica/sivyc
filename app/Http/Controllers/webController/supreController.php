@@ -389,6 +389,7 @@ class supreController extends Controller
         ->update(['status' => 'Validado']);
 
         $id = $request->id;
+        $idb64 = base64_encode($id);
         $directorio_id = $request->directorio_id;
 
         // Notificacion!
@@ -402,7 +403,7 @@ class supreController extends Controller
         //$users = User::where('id', 1)->get();
         // dd($users);
         //event((new NotificationEvent($users, $letter)));
-        return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id'));
+        return view('layouts.pages.valsuprecheck', compact('id', 'directorio_id','idb64'));
     }
 
     public function valsupre_checkmod(Request $request){

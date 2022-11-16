@@ -14,7 +14,7 @@
                 <br>
                 <div class="text-center">
                     <h3><strong>Vista Previa del Documento</strong></h3>
-                    <a class="btn btn-info" id="valsupre_pdf" name="valsupre_pdf" href="/supre/validacion/pdf/{{$id}}" target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                    <a class="btn btn-info" id="valsupre_pdf" name="valsupre_pdf" href="/supre/validacion/pdf/{{$idb64}}" target="_blank">Validación de Suficiencia Presupuestal</a><br>
                 </div>
                 <div class="form-row">
                     <div class="col-lg-12 margin-tb">
