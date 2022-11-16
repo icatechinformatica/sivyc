@@ -913,6 +913,11 @@ class supreController extends Controller
         return view('layouts.pages.vstareporteplaneacion', compact('unidades'));
     }
 
+    public function reporte_costeo_supre()
+    {
+        return view('layouts.pages.vstareportecosteoplaneacion');
+    }
+
     public function folio_edicion_especial($id)
     {
         $id = base64_decode($id);
@@ -1458,6 +1463,86 @@ class supreController extends Controller
     /**
      *
      */
+
+    public function planeacion_costeo_excel(Request $request)
+    {
+        // dd($request);
+        $data = DB::TABLE('folios')
+        ->SELECT(
+        'tbl_cursos.unidad',
+        'tbl_cursos.curso',
+        'tbl_cursos.clave',
+        'tbl_cursos.nombre',
+        'tbl_cursos.fecha_apertura',
+        'tbl_cursos.ze',
+        'tbl_cursos.dura',
+        'tbl_cursos.muni',
+        'tbl_localidades.localidad',
+        'tbl_cursos.cp',
+        'tbl_cursos.inicio')
+        ->whereDate('tbl_cursos.fecha_apertura', '>=', $request->fecha1)
+        ->whereDate('tbl_cursos.fecha_apertura', '<=', $request->fecha2)
+        ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '!=', 'folios.id_cursos')
+        ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
+        ->LEFTJOIN('tbl_localidades', 'tbl_localidades.clave', '=', 'tbl_cursos.clave_localidad')
+        ->GROUPBY('tbl_cursos.unidad',
+        'tbl_cursos.curso',
+        'tbl_cursos.clave',
+        'tbl_cursos.nombre',
+        'tbl_cursos.fecha_apertura',
+        'tbl_cursos.ze',
+        'tbl_cursos.dura',
+        'tbl_cursos.muni',
+        'tbl_localidades.localidad',
+        'tbl_cursos.cp',
+        'tbl_cursos.inicio')
+        ->ORDERBY('fecha_apertura', 'ASC')
+        ->GET();
+
+        foreach($data as $key => $cadwell)
+        {
+            // dd($cadwell);
+            $cp = DB::TABLE('criterio_pago')->WHERE('id',$cadwell->cp)->FIRST();
+            if($cadwell->ze == 'II')
+            {
+                $point = 'ze2_';
+            }
+            else
+            {
+                $point = 'ze3_';
+            }
+
+            if($cadwell->inicio < '01-11-2022')
+            {
+
+                $point = $point.(carbon::now()->year - 1);
+                $data[$key]->importe_hora = $cp->$point;
+            }
+            else
+            {
+                $point = $point.carbon::now()->year;
+                $data[$key]->importe_hora = $cp->$point;
+            }
+            $data[$key]->importe_total = ROUND($cadwell->dura * $cp->$point, 2);
+            $data[$key]->iva = ROUND($data[$key]->importe_total * 0.16, 2);
+            $data[$key]->isr = ROUND($data[$key]->importe_total * 0.10, 2);
+            unset($data[$key]->inicio);
+            unset($data[$key]->cp);
+        }
+
+        $cabecera = [
+            'UNIDAD/A.M DE CAP.', 'CURSO', 'CLAVE DEL GRUPO', 'INSTRUCTOR', 'FECHA DE APERTURA', 'Z.E.',
+            'HSM', 'MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IMPORTE TOTAL', 'IVA 16%',
+            'RETENCIÓN IVA', 'RETENCIÓN ISR'
+        ];
+
+        $nombreLayout = "formato de costeo".$request->fecha1 . ' - '. $request->fecha2 . " creado el " . carbon::now() . ".xlsx";
+        $titulo = "formato de costeo ".$request->fecha1 . ' - '. $request->fecha2 . " creado el " . carbon::now();
+        if(count($data)>0)
+        {
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
+    }
     protected function generate_report_supre_xls($filtrotipo, $idcurso, $unidad, $idInstructor, $fecha1, $fecha2){
         $i = 0;
         set_time_limit(0);
