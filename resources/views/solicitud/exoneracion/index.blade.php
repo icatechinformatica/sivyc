@@ -1,7 +1,6 @@
 {{--  AGC  --}}
 @extends('theme.sivyc.layout')
 @section('title', 'Exoneración y/o Reducción de Cuota | SIVyC Icatech')
-@section('content_script_css')
 @section('content')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />    
