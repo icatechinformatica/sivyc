@@ -37,7 +37,7 @@ input[type=text], select, textarea {
 th{ font-size: 13px; }
 td{ font-size: 13px; }
 
-.btn { color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
+.btn, .btn:focus{ color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
 .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
 
 .pagination { justify-content: center;   font-size: 12px; }
