@@ -1468,7 +1468,7 @@ class supreController extends Controller
     public function planeacion_costeo_excel(Request $request)
     {
         // dd($request);
-        $data = DB::TABLE('folios')
+        $data = DB::TABLE('tbl_cursos')
         ->SELECT(
         'tbl_cursos.unidad',
         'tbl_cursos.curso',
@@ -1481,9 +1481,9 @@ class supreController extends Controller
         'tbl_localidades.localidad',
         'tbl_cursos.cp',
         'tbl_cursos.inicio')
+        ->WhereNotIn('tbl_cursos.id', DB::Table('folios')->JOIN('tbl_cursos','tbl_cursos.id','=','folios.id_cursos')->whereDate('tbl_cursos.fecha_apertura', '>=', $request->fecha1)->whereDate('tbl_cursos.fecha_apertura', '<=', $request->fecha2)->pluck('folios.id_cursos'))
         ->whereDate('tbl_cursos.fecha_apertura', '>=', $request->fecha1)
         ->whereDate('tbl_cursos.fecha_apertura', '<=', $request->fecha2)
-        ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '!=', 'folios.id_cursos')
         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
         ->LEFTJOIN('tbl_localidades', 'tbl_localidades.clave', '=', 'tbl_cursos.clave_localidad')
         ->GROUPBY('tbl_cursos.unidad',
