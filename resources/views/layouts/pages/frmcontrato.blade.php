@@ -42,8 +42,8 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="clavecurso" class="control-label">Especialidad de Conocimiento del Instructor</label>
-                    <input type="text" readonly class="form-control" value="{{$especialidad_seleccionada->nombre}}" id="nombre_persel" name="nombre_persel">
-                    <input type="text" hidden class="form-control" value="{{$especialidad_seleccionada->id}}" id="perfil_instructor" name="perfil_instructor">
+                    <input type="text" readonly class="form-control" value="{{$data->espe}}" id="nombre_persel" name="nombre_persel">
+                    {{-- <input type="text" hidden class="form-control" value="{{$especialidad_seleccionada->id}}" id="perfil_instructor" name="perfil_instructor"> --}}
                 </div>
                 <div class="form-group col-md-3">
                     <label for="clavecurso" class="control-label">Validación de instructor</label>

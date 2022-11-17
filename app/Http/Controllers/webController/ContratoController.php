@@ -82,7 +82,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            ->WHERE('folios.status', '!=', 'Validado')
+            // ->WHERE('folios.status', '!=', 'Validado')
             ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
@@ -187,7 +187,7 @@ class ContratoController extends Controller
         $perfil = new InstructorPerfil();
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
                             'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad',
-                            'tbl_cursos.curso','tbl_cursos.clave_especialidad','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                            'tbl_cursos.curso','tbl_cursos.clave_especialidad','tbl_cursos.espe','instructores.nombre AS insnom','instructores.apellidoPaterno',
                             'instructores.apellidoMaterno','instructores.id','instructores.archivo_alta')
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -200,7 +200,7 @@ class ContratoController extends Controller
                                     ->WHERE('especialidades.clave', '=', $data->clave_especialidad)
                                     ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                                     ->FIRST();
-                                    // dd($especialidad_seleccionada);
+                                    // dd($data->instructor_mespecialidad);
 
         $perfil_prof = $perfil::SELECT('especialidades.nombre AS nombre_especialidad', 'especialidad_instructores.id AS id_espins')
                                 ->WHERE('instructor_perfil.numero_control', '=', $data->id)
@@ -285,7 +285,7 @@ class ContratoController extends Controller
         // dd($request->numero_contrato);
         $contrato = new contratos();
         $contrato->numero_contrato = $request->numero_contrato;
-        $contrato->instructor_perfilid = $request->perfil_instructor;
+        // $contrato->instructor_perfilid = $request->perfil_instructor;
         $contrato->cantidad_letras1 = $request->cantidad_letras;
         $contrato->cantidad_numero = $request->cantidad_numero;
         $contrato->municipio = $request->lugar_expedicion;
@@ -888,7 +888,7 @@ class ContratoController extends Controller
         $testigo3 = directorio::WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
         $data = $contrato::SELECT('folios.id_folios','folios.importe_total','tbl_cursos.id','tbl_cursos.horas',
-                                  'tbl_cursos.tipo_curso', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
+                                  'tbl_cursos.tipo_curso','tbl_cursos.espe', 'tbl_cursos.clave','instructores.nombre','instructores.apellidoPaterno',
                                   'instructores.apellidoMaterno','tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion','instructores.rfc','tbl_cursos.modinstructor',
                                   'instructores.curp','instructores.domicilio')
                           ->WHERE('folios.id_folios', '=', $data_contrato->id_folios)
@@ -981,7 +981,7 @@ class ContratoController extends Controller
     public function solicitudpago_pdf($id){
 
         $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
-        $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso',
+        $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
                               'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','instructores.nombre',
                               'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
                               'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',

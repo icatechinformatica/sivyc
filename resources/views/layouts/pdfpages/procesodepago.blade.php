@@ -142,7 +142,7 @@ if($data->tipo_curso=='CERTIFICACION'){
                         </tr>
                         <tr>
                             <td><small>Registro STPS: NO APLICA</small></td>
-                            <td><small>Memorándum de Validación: {{$data->memorandum_validacion}}</small></td>
+                            <td><small>Memorándum de Validación: {{$data->instructor_mespecialidad}}</small></td>
                         </tr>
                         <tr>
                             <td><small>RFC: {{$data->rfc}}</small></td>
