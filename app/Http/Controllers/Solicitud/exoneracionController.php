@@ -14,7 +14,7 @@ class ExoneracionController extends Controller
     function __construct()
     {
         session_start();       
-        $this->path_files = env("APP_URL").'/storage/uploadFiles';
+        $this->path_files = env("APP_URL").'/storage/uploadFiles';       
     }
 
     public function index(Request $request){
@@ -24,11 +24,11 @@ class ExoneracionController extends Controller
         if ($request->valor) {
             $_SESSION['valor'] = $request->valor;
         }
-        if (isset($_SESSION['valor'])) {
+        if (isset($_SESSION['valor'])) {            
             $cursos = DB::table('exoneraciones as e')
                         ->select('e.id','e.folio_grupo','e.nrevision','tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','e.foficio',
                         'tc.hombre','tc.mujer','e.fini','e.ffin','tc.nombre as instructor','e.tipo_exoneracion','e.noficio','e.razon_exoneracion','e.observaciones',
-                        'e.no_memorandum','e.status','e.turnado','e.memo_soporte_dependencia','e.pobservacion','e.no_convenio','tc.depen')
+                        'e.no_memorandum','e.status','e.turnado','e.memo_soporte_dependencia','e.pobservacion','e.no_convenio','tc.depen','e.fecha_memorandum')
                         ->leftJoin('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
                         ->leftJoin('alumnos_registro as ar','e.folio_grupo','=','ar.folio_grupo')
                         ->leftJoin('cursos as c','ar.id_curso','=','c.id')
@@ -38,22 +38,29 @@ class ExoneracionController extends Controller
                         'tc.mujer','e.fini','e.ffin','tc.nombre','e.tipo_exoneracion','e.noficio','e.foficio','e.razon_exoneracion','e.observaciones','e.no_memorandum',
                         'tc.depen')
                         ->get();
+                        
             if (count($cursos)>0) {
-                if (!($cursos[0]->status) OR ($cursos[0]->status == 'RETORNADO') OR ($cursos[0]->status == 'VALIDADO') OR ($cursos[0]->status == 'EDICION')) {
+                if(in_array($cursos[0]->status, ['CAPTURA','VALIDADO','EDICION'])){                
                     $activar = true;
                 }
-                if ($cursos[0]->status AND ($cursos[0]->status != 'RETORNADO')) {
-                    $agregar = false;
-                }
-                $valor = $_SESSION['valor'];
-                $nrevision = $cursos[0]->nrevision;
-                $memo = $cursos[0]->no_memorandum;
-                $_SESSION['revision'] = $nrevision;
-                $_SESSION['memo'] = $memo;
+                if ($cursos[0]->status!='CAPTURA') $agregar = false;
+                
+                $valor = $_SESSION['valor'];                
+                $_SESSION['revision'] = $cursos[0]->nrevision;;
+                $_SESSION['memo'] = $cursos[0]->no_memorandum;
                 if ($cursos[0]->memo_soporte_dependencia) {
                     $pdf = $this->path_files.$cursos[0]->memo_soporte_dependencia;
                 }
-                $movimientos = ['SOPORTES ACTUALIZACION'=>'ACTUALIZACION DE SOPORTES','SOLICITUD EDITAR'=>'EDITAR LISTA DE ALUMNOS','SOLICITUD CANCELAR'=>'CANCELACIÓN'];
+                if($cursos[0]->status=='VALIDADO' AND  !$cursos[0]->fini){
+                    $movimientos = ['REINICIAR'=>'SOLICITAR REINICIAR','CANCELAR'=>'SOLICITAR CANCELAR','GENERAR'=>'GENERAR FOLIOS Y MEMORANDUM'];
+                }elseif($cursos[0]->status=='VALIDADO' AND  $cursos[0]->fini){
+                    $movimientos = ['CANCELAR'=>'SOLICITAR CANCELAR','GENERAR'=>'CAMBIAR MEMORANDUM','TURNAR'=>'TURNAR A DTA'];
+                }elseif($cursos[0]->status=='AUTORIZADO'){
+                    $movimientos = ['SOPORTES'=>'SOLICITAR CAMBIO DE SOPORTES','EDITAR'=>'SOLICITAR EDICIÓN DE ALUMNOS','CANCELAR'=>'SOLICITAR CANCELACION'];
+                }elseif($cursos[0]->status=='EDICION'){
+                    $movimientos = ['GENERAR'=>'GENERAR MEMORANDUM','TURNAR'=>'TURNAR A DTA'];
+
+                }
             }else{
                 $message = "No se encuentran registros que mostrar.";
                 $valor = null;
@@ -65,7 +72,9 @@ class ExoneracionController extends Controller
             $_SESSION['memo'] = null;
         }
         if(session('message')) $message = session('message');
-        return view('solicitud.exoneracion.index',compact('message','valor','memo','cursos','nrevision','activar','pdf','agregar','movimientos'));
+        $razon = ['MS'=>'MADRES SOLTERAS','AM'=>'ADULTOS MAYORES', 'BR'=>'BAJOS RECURSOS', 'D'=>'DISCAPACITADOS', 'PPL'=>'PERSONAS PRIVADAS DE LA LIBERTAD',
+        'GRS'=>'GRUPOS DE REINSERCION SOCIAL', 'O'=>'OTRO'];
+        return view('solicitud.exoneracion.index',compact('message','valor','cursos','activar','pdf','agregar','movimientos','razon'));
     }
 
     public function store(Request $request){
@@ -91,26 +100,26 @@ class ExoneracionController extends Controller
                         ->where('ar.id_organismo','!=',242)
                         ->whereIn('tc.tipo',['EXO','EPAR'])
                         ->where('tc.folio_grupo',$request->grupo)
-                        ->first();
+                        ->first();                    
             if ($curso) {
                 if (($curso->tipo != 'EXO') AND (count(DB::table('alumnos_registro')->where('folio_grupo',$curso->folio_grupo)->where('tinscripcion','=','EXONERACION')->get())>0)) {
                     return redirect()->route('solicitud.exoneracion')->with(['message' => 'EL GRUPO NO DEBE TENER EXONERADOS PARA SOLICITUD DE REDUCIÓN DE CUOTA..']);
                 }
-                if (DB::table('exoneraciones')->where('folio_grupo',$curso->folio_grupo)->where(function($query) { $query->where('status','!=','CANCELADO')->orWhere('status', null); })->exists()) {
+                if (DB::table('exoneraciones')->where('folio_grupo',$curso->folio_grupo)->where(function($query) { $query->where('status','!=','CANCELADO')->orWhere('status', 'CAPTURA'); })->exists()) {
                     return redirect()->route('solicitud.exoneracion')->with(['message' => 'EL GRUPO SE ENCUENTRA EN USO..']);
                 }
                 if (($curso->dura == $curso->horas_agenda)) {
                     $organismo = null;
                     if ($_SESSION['revision']) {
-                        if ((DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->where('status','<>',null)->exists()==true)) {
+                        if ((DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->where('status','<>','CAPTURA')->exists()==true)) {
                             $_SESSION['revision'] = null;
-                        } elseif ((DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->where('status','=',null)->exists()==true)) {
+                        } elseif ((DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->where('status','=','CAPTURA')->exists()==true)) {
                             $organismo = DB::table('exoneraciones as e')
                                 ->select('ar.id_organismo','e.tipo_exoneracion','e.status')
                                 ->leftJoin('alumnos_registro as ar','e.folio_grupo','=','ar.folio_grupo')
                                 ->whereNotNull('nrevision')
                                 ->where('e.nrevision',$_SESSION['revision'])
-                                ->where('e.status','=',null)
+                                ->where('e.status','=','CAPTURA')
                                 ->first();
                             if (($organismo) AND (($organismo->id_organismo != $curso->id_organismo) OR ($organismo->tipo_exoneracion != $curso->tipo))) {
                                 return redirect()->route('solicitud.exoneracion')->with(['message' => 'EL GRUPO NO CORRESPONDE A LA DEPENDENCIA DE LA SOLICITUD O EL TIPO DE EXONERACION ES DIFERENTE..']);
@@ -124,13 +133,13 @@ class ExoneracionController extends Controller
                         $_SESSION['revision'] = $revision;
                     }
                     $result = DB::table('exoneraciones')
-                                ->UpdateOrInsert([
-                                    'id_unidad_capacitacion'=> $curso->id_unidad, 'tipo_exoneracion'=>$curso->tipo, 'razon_exoneracion'=>$request->opt, 
+                                ->UpdateOrInsert(
+                                    ['folio_grupo'=>$request->grupo,'nrevision'=>$_SESSION['revision']],
+                                    ['status'=>'CAPTURA','id_unidad_capacitacion'=> $curso->id_unidad, 'tipo_exoneracion'=>$curso->tipo, 'razon_exoneracion'=>$request->opt,
                                     'observaciones'=>$request->observaciones, 'no_convenio'=>$curso->cgeneral, 'iduser_created'=>Auth::user()->id, 
-                                    'created_at'=>date('Y-m-d H:i:s'), 'status'=>null, 'folio_grupo'=>$request->grupo, 'nrevision'=>$_SESSION['revision'],
-                                    'noficio'=>$request->oficio, 'foficio'=>$request->foficio, 'realizo'=>strtoupper(Auth::user()->name), 'turnado'=>'UNIDAD',
-                                    'cct'=>$curso->cct, 'ejercicio'=>$curso->ejercicio
-                                ]);
+                                    'created_at'=>date('Y-m-d H:i:s'),'noficio'=>$request->oficio, 'foficio'=>$request->foficio, 'realizo'=>strtoupper(Auth::user()->name), 'turnado'=>'UNIDAD',
+                                    'cct'=>$curso->cct, 'ejercicio'=>$curso->ejercicio]
+                                );
                     if ($result) {
                         $_SESSION['valor'] = $_SESSION['revision'];
                         $message = 'Operación Exitosa!!';
@@ -176,26 +185,15 @@ class ExoneracionController extends Controller
                 $path = "/UNIDAD/revision_exoneracion/"; 
                 $file_result = $this->upload_file($file,$name_file, $path);                
                 $url_file = $file_result["url_file"];
-                if ($file_result) {
+                if ($file_result) {//dd($file_result);exit;
+                    $this->history( $_SESSION['revision']);
                     $result = DB::table('exoneraciones')
                                 ->where('nrevision',$_SESSION['revision'])
-                                ->where('status', null)
+                                ->where('status', 'CAPTURA')
                                 ->update(['status'=>'PREVALIDACION', 'fenvio'=>date('Y-m-d H:i:s'), 'frespuesta'=>null, 'memo_soporte_dependencia'=>$url_file,
-                                        'turnado'=>'DTA_REVISION']);
+                                        'turnado'=>'DTA']);
                     if ($result) {
-                        $message = "La PREVALIDACION fué turnada correctamente a la DTA";
-                        $cursos = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->get();
-                        foreach ($cursos as $c) {
-                            $result2 = DB::table('history_exoneraciones')->insert([ 'id_exoneracion'=>$c->id,
-                                'folio_grupo'=>$c->folio_grupo, 'id_unidad_capacitacion'=>$c->id_unidad_capacitacion, 'no_memorandum'=>$c->no_memorandum,
-                                'fecha_memorandum'=>$c->fecha_memorandum, 'tipo_exoneracion'=>$c->tipo_exoneracion, 'razon_exoneracion'=>$c->razon_exoneracion,
-                                'observaciones'=>$c->observaciones, 'no_convenio'=>$c->no_convenio, 'memo_soporte_dependencia'=>$c->memo_soporte_dependencia,
-                                'iduser_created'=>$c->iduser_created, 'iduser_updated'=>$c->iduser_updated, 'created_at'=>$c->created_at, 'updated_at'=>$c->updated_at,
-                                'status'=>$c->status, 'nrevision'=>$c->nrevision, 'noficio'=>$c->noficio, 'foficio'=>$c->foficio, 'fini'=>$c->fini, 'ffin'=>$c->ffin,
-                                'realizo'=>$c->realizo, 'valido'=>$c->valido, 'fenvio'=>$c->fenvio, 'frespuesta'=>$c->frespuesta, 'pobservacion'=>$c->pobservacion,
-                                'cct'=>$c->cct, 'ejercicio'=>$c->ejercicio, 'activo'=>$c->activo,'turnado'=>$c->turnado, 'motivo'=>$c->motivo
-                            ]); 
-                        }
+                        $message = "La PREVALIDACION fué turnada correctamente a la DTA";                       
                     } else {
                         $message = "Error al turnar la solictud, volver a intentar.";
                     }
@@ -220,23 +218,12 @@ class ExoneracionController extends Controller
                 $file_result = $this->upload_file($file,$name_file, $path);                
                 $url_file = $file_result["url_file"];
                 if ($file_result) {
+                    $this->history( $_SESSION['revision']);
                     $result = DB::table('exoneraciones')->where('no_memorandum',$_SESSION['memo'])
                         ->update(['status'=>'SOLICITADO', 'turnado'=>'DTA', 'fenvio'=>date('Y-m-d H:i:s'), 'frespuesta'=>null, 'memo_soporte_dependencia'=>$url_file,
                             'pobservacion'=>null]);
                     if ($result) {
-                        $message = "La SOLICITUD fué turnada correctamente a la DTA";
-                        $cursos = DB::table('exoneraciones')->where('no_memorandum',$_SESSION['memo'])->get();
-                        foreach ($cursos as $c) {
-                            $result2 = DB::table('history_exoneraciones')->insert([ 'id_exoneracion'=>$c->id,
-                                'folio_grupo'=>$c->folio_grupo, 'id_unidad_capacitacion'=>$c->id_unidad_capacitacion, 'no_memorandum'=>$c->no_memorandum,
-                                'fecha_memorandum'=>$c->fecha_memorandum, 'tipo_exoneracion'=>$c->tipo_exoneracion, 'razon_exoneracion'=>$c->razon_exoneracion,
-                                'observaciones'=>$c->observaciones, 'no_convenio'=>$c->no_convenio, 'memo_soporte_dependencia'=>$c->memo_soporte_dependencia,
-                                'iduser_created'=>$c->iduser_created, 'iduser_updated'=>$c->iduser_updated, 'created_at'=>$c->created_at, 'updated_at'=>$c->updated_at,
-                                'status'=>$c->status, 'nrevision'=>$c->nrevision, 'noficio'=>$c->noficio, 'foficio'=>$c->foficio, 'fini'=>$c->fini, 'ffin'=>$c->ffin,
-                                'realizo'=>$c->realizo, 'valido'=>$c->valido, 'fenvio'=>$c->fenvio, 'frespuesta'=>$c->frespuesta, 'pobservacion'=>$c->pobservacion,
-                                'cct'=>$c->cct, 'ejercicio'=>$c->ejercicio, 'activo'=>$c->activo,'turnado'=>$c->turnado, 'motivo'=>$c->motivo
-                                ]); 
-                        }
+                        $message = "La SOLICITUD fué turnada correctamente a la DTA";                        
                         } else {
                             $message = "Error al turnar la solictud, volver a intentar.";
                         }
@@ -252,15 +239,15 @@ class ExoneracionController extends Controller
 
     public function generar(Request $request){
         if ($request->memo AND $_SESSION['revision']) {
-            $_SESSION['memo'] = $request->memo;
-            if (DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->value('fecha_memorandum')) {
-                $fecha = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->value('fecha_memorandum');
-            } else {
-                $fecha = $request->fecha;
+            if($_SESSION['memo']!=$request->memo){
+                $fecha =date("Y-m-d");
+                $result = DB::table('exoneraciones')->where('nrevision', $_SESSION['revision'])->where('status','VALIDADO')
+                ->update(['no_memorandum' => $request->memo, 'fecha_memorandum' => $fecha]);
+
+                $_SESSION['memo'] = $request->memo;
             }
-            $result = DB::table('exoneraciones')->where('nrevision', $_SESSION['revision'])
-                ->update(['no_memorandum' => $_SESSION['memo'], 'fecha_memorandum' => $fecha]);
-            $cursos = DB::table('exoneraciones')->where('no_memorandum',$_SESSION['memo'])->get();
+            
+            $cursos = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])->get();
             foreach ($cursos as $key => $value) {
                 $year = date('y');
                 if (!($value->fini) OR !($value->ffin)) {
@@ -274,7 +261,7 @@ class ExoneracionController extends Controller
                     $result2 = DB::table('exoneraciones')->where('id',$value->id)->update(['fini'=>$ini, 'ffin'=>$fin]);
                 }
             }
-            if ($result) {
+            if($cursos) {
                 $mexoneracion = $date = $alumnos = null;
                 $marca = null;  $data = [];
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
@@ -290,7 +277,7 @@ class ExoneracionController extends Controller
                                 ->leftJoin('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
                                 ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                                 ->leftJoin('cursos as c','ar.id_curso','=','c.id')
-                                ->where('e.no_memorandum',$_SESSION['memo'])
+                                ->where('e.nrevision',$_SESSION['revision'])
                                 ->groupBy('tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','tc.mujer','tc.hombre','e.fini','e.ffin',
                                 'tc.nombre','e.tipo_exoneracion','e.no_convenio','e.noficio','e.foficio','e.razon_exoneracion','e.observaciones',
                                 'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia','tc.folio_grupo',
@@ -332,7 +319,7 @@ class ExoneracionController extends Controller
                 $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','date','reg_unidad','depen','marca','data'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('EXONERACION.pdf');
-            } else {
+           // } else {
                 return "Error al cargar el memorándum, volver a intentar.";exit;
             }
         } else {
@@ -374,25 +361,14 @@ class ExoneracionController extends Controller
 
     public function edicion(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
-        if ($_SESSION['memo']) {
-            if ($request->movimiento AND $request->motivo) {
-                $result = DB::table('exoneraciones')->where('no_memorandum',$_SESSION['memo'])
+        if ($_SESSION['revision']) {
+            if ($request->movimiento AND $request->motivo) { 
+                $history  = $this->history( $_SESSION['revision']);
+                if($history){
+                    $result = DB::table('exoneraciones')->where('nrevision',$_SESSION['revision'])
                     ->update(['status'=>$request->movimiento, 'motivo'=>$request->motivo, 'updated_at'=>date('Y-m-d H:i:s'), 'iduser_updated'=>Auth::user()->id,
-                    'activo'=>null, 'fenvio'=>date('Y-m-d H:i:s'), 'frespuesta'=>null]);
-                if ($result) {
-                    $message = "La SOLICITUD fué turnada correctamente a la DTA";
-                    $cursos = DB::table('exoneraciones')->where('no_memorandum',$_SESSION['memo'])->get();
-                    foreach ($cursos as $c) {
-                        $result2 = DB::table('history_exoneraciones')->insert([ 'id_exoneracion'=>$c->id,
-                                'folio_grupo'=>$c->folio_grupo, 'id_unidad_capacitacion'=>$c->id_unidad_capacitacion, 'no_memorandum'=>$c->no_memorandum,
-                                'fecha_memorandum'=>$c->fecha_memorandum, 'tipo_exoneracion'=>$c->tipo_exoneracion, 'razon_exoneracion'=>$c->razon_exoneracion,
-                                'observaciones'=>$c->observaciones, 'no_convenio'=>$c->no_convenio, 'memo_soporte_dependencia'=>$c->memo_soporte_dependencia,
-                                'iduser_created'=>$c->iduser_created, 'iduser_updated'=>$c->iduser_updated, 'created_at'=>$c->created_at, 'updated_at'=>$c->updated_at,
-                                'status'=>$c->status, 'nrevision'=>$c->nrevision, 'noficio'=>$c->noficio, 'foficio'=>$c->foficio, 'fini'=>$c->fini, 'ffin'=>$c->ffin,
-                                'realizo'=>$c->realizo, 'valido'=>$c->valido, 'fenvio'=>$c->fenvio, 'frespuesta'=>$c->frespuesta, 'pobservacion'=>$c->pobservacion,
-                                'cct'=>$c->cct, 'ejercicio'=>$c->ejercicio, 'activo'=>$c->activo, 'turnado'=>$c->turnado, 'motivo'=>$c->motivo
-                        ]); 
-                    }
+                    'activo'=>null, 'fenvio'=>date('Y-m-d H:i:s'), 'frespuesta'=>null, 'turnado'=>'DTA']);
+                    if($result)$message = "La SOLICITUD fué turnada correctamente a la DTA";
                 }
             } else {
                 $message = 'Seleccione el movimiento y escriba el motivo de la solicitud de edición';
@@ -400,4 +376,21 @@ class ExoneracionController extends Controller
         }
         return redirect()->route('solicitud.exoneracion')->with(['message' => $message]);
     }
+
+    private function history($revision){
+        $history = DB::insert("insert into history_exoneraciones(
+            id_exoneracion,folio_grupo,id_unidad_capacitacion,no_memorandum,
+            fecha_memorandum,tipo_exoneracion,razon_exoneracion,observaciones,no_convenio,memo_soporte_dependencia,
+            iduser_created,iduser_updated,created_at,updated_at,status,nrevision,noficio,foficio,fini,ffin,
+            realizo,valido,fenvio,frespuesta,pobservacion,cct,ejercicio,activo,turnado,motivo
+        ) 
+        select e.id,e.folio_grupo,e.id_unidad_capacitacion,e.no_memorandum,
+        e.fecha_memorandum,e.tipo_exoneracion,e.razon_exoneracion,e.observaciones,e.no_convenio,e.memo_soporte_dependencia,
+        e.iduser_created,e.iduser_updated,e.created_at,e.updated_at,e.status,e.nrevision,e.noficio,e.foficio,e.fini,e.ffin,
+        e.realizo,e.valido,e.fenvio,e.frespuesta,e.pobservacion,e.cct,e.ejercicio,e.activo,e.turnado,e.motivo
+        from exoneraciones as e
+        where e.nrevision=?",[$revision]);
+        return $history;
+    }
+    
 }

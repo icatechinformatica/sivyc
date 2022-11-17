@@ -156,7 +156,7 @@ class aperturaController extends Controller
                 $exoneracion = $this->exoneracion($this->id_unidad);
                 $exoneracion["NINGUNO"] = "NINGUNO";
                 $efisico = $this->efisico();
-                $exonerado = DB::table('exoneraciones')->where('folio_grupo',$grupo->folio_grupo)->where('status','<>',null)->where('status','<>','CANCELADO')->exists();
+                $exonerado = DB::table('exoneraciones')->where('folio_grupo',$grupo->folio_grupo)->where('status','<>','CAPTURA')->where('status','<>','CANCELADO')->exists();
 
                 $medio_virtual = $this->medio_virtual();
 
@@ -207,7 +207,7 @@ class aperturaController extends Controller
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
-            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio'])->where('status','!=', null)->where('status','!=','CANCELADO')->exists()) {
+            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
             } else {
                 $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
