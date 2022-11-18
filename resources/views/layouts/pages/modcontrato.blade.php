@@ -40,8 +40,8 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="clavecurso" class="control-label">Area de Conocimiento del Instructor</label>
-                    <input type="text" readonly  class="form-control" value="{{$perfil_sel->nombre_especialidad}}" id="perfnom" name="perfnom">
-                    <input type="text" hidden  class="form-control" value="{{$perfil_sel->id}}" id="perfilinstructor" name="perfilinstructor">
+                    <input type="text" readonly  class="form-control" value="{{$data->espe}}" id="perfnom" name="perfnom">
+                    {{-- <input type="text" hidden  class="form-control" value="{{$perfil_sel->id}}" id="perfilinstructor" name="perfilinstructor"> --}}
                     {{-- <select class="form-control" name="perfilinstructor"  id="perfilinstructor">
                         <option value={{$perfil_sel->id}}>{{$perfil_sel->nombre_especialidad}}</option>
                         @foreach ( $perfil_prof as $value )
