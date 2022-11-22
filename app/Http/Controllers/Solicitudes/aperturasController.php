@@ -97,7 +97,7 @@ class aperturasController extends Controller
                                 $movimientos = ['' => '- SELECCIONAR -', 'RETORNADO'=>'RETORNAR A UNIDAD','EN FIRMA'=>'ASIGNAR CLAVES'];
                             break;
                             case 'EN FIRMA':
-                                if (DB::table('role_user')->where('user_id',$this->id_user)->where('role_id',1)->exists()) {
+                                if ($this->son_mayores($memo)) {
                                     $movimientos = ['' => '- SELECCIONAR -', 'AUTORIZADO'=>'ENVIAR AUTORIZACION','CAMBIAR' => 'CAMBIAR MEMORÁNDUM','DESHACER'=>'DESHACER CLAVES'];
                                 } else {
                                     $movimientos = ['' => '- SELECCIONAR -', 'AUTORIZADO'=>'ENVIAR AUTORIZACION','CAMBIAR' => 'CAMBIAR MEMORÁNDUM'];
@@ -248,14 +248,17 @@ class aperturasController extends Controller
         $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['memo'] AND $_SESSION['opt']){
             switch($_SESSION['opt']){
-                case "ARC01":
+                case "ARC01":                    
+                   $memo = $_SESSION['memo'];                    
+                    if($this->son_mayores ($memo)){
                         $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
                         ->where('clave','<>','0')
                         ->where('turnado','UNIDAD')
                         ->where('status_curso','EN FIRMA')
-                        ->where('status','NO REPORTADO')
+                        ->where('status','NO REPORTADO')                        
                         ->update(['clave' => '0', 'status_curso' => 'SOLICITADO', 'mvalida' => '0','valido' => 'SIN VALIDAR']);
                         if($result)$message = "OPERACIÓN EXITOSA!!";
+                    }else $message = "NO SE PERMITEN DESHACER LAS CLAVES, NO SON LAS ULTIMAS!!";
                 break;
                 case "ARC02":
                 break;
@@ -285,7 +288,7 @@ class aperturasController extends Controller
                         ->where('tc.status','NO REPORTADO')
                         ->where('tc.munidad',$_SESSION['memo'])->orderby('termino','ASC')->orderby('hfin','ASC')
                         ->get();
-                        // var_dump($result);exit;
+                         //var_dump($result);exit;
                         foreach($result as $r){
                             $clave = DB::table('tbl_cursos')->where('clave','like',$r->cve.'%')->max('clave');
                             if($clave) $clave =  $r->cve.'-'.str_pad(intval(substr($clave,strlen($clave)-4,4))+1, 4, "0", STR_PAD_LEFT);
@@ -569,4 +572,24 @@ class aperturasController extends Controller
         }
         return redirect('solicitudes/aperturas')->with('message',$message);
     }
+
+    private function son_mayores($memo){
+        
+            $maxs = DB::table('tbl_cursos as tc')->select(DB::raw('MAX(tc.clave) as clave'))  
+            ->whereIn(DB::raw('left(clave,LENGTH(clave)-4)'),function ($query)use($memo){
+                $query->select(DB::raw('left(clave,LENGTH(clave)-4)'))
+                    ->from('tbl_cursos')
+                    ->where('munidad',$memo)
+                    ->groupby(DB::raw('left(clave,LENGTH(clave)-4)'));
+            })                    
+        ->groupby(DB::raw('left(clave,LENGTH(clave)-4)'))
+        ->pluck('clave','clave');         
+
+        if($maxs) $no_mayor = DB::table('tbl_cursos')->where('munidad',$memo)->whereNotin('clave',$maxs)->Exists();
+        
+        if(!$no_mayor) return true;
+        else return false;
+
+    }
+
 }
