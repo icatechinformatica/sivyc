@@ -130,7 +130,7 @@
             </div>
             <div class="form-group col-md-5">
                 <label for="clavecurso" class="control-label">Especialidad</label>
-                <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->especialidad}}">
+                <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->espe}}">
             </div>
         </div>
         <div class="form-row">
