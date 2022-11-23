@@ -129,7 +129,7 @@
             <td colspan="4"><strong>ESPECIALIDAD A LA QUE DESEAN INSCRIBIRSE:</strong>  {{ strtoupper($alumnos->especialidad) }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>CURSO:</strong>  {{ strtoupper($alumnos->nombre_curso) }}</td>
+            <td colspan="2"><strong>CURSO:</strong>  {{$alumnos->nombre_curso}}</td>
             <td colspan="2"><strong>TIPO:</strong>  {{strtoupper($alumnos->tipocurso)}}</td>
         </tr>
         <tr>
