@@ -25,6 +25,9 @@
             <th colspan='3' class="text-center">
                 HORAS
             </th>
+            <th colspan='3' class="text-center">
+                COSTOS
+            </th>
             <th colspan='5' class="text-center">
                 REPORTADO EN FORMATO T
             </th>
@@ -36,7 +39,11 @@
             <th>SUFIC.AUT.</th>
             <th>PROG.ANUAL</th>
             <th>AUTORIZADAS</th>
+            <th>DIFER.</th>            
+            <th>APERTURADOS</th>
+            <th>SUFIC.AUT.</th>
             <th>DIFER.</th>
+            <th>PAGADO</th>
             <th>CURSOS</th>
             <th>INSCRITOS</th>
             <th>EGRESADOS</th>
@@ -47,7 +54,7 @@
         @isset($data)
         <tbody>
             @php
-                $totales = ['0'=>0,'1'=>0,'2'=>0,'3'=>0,'4'=>0,'5'=>0,'6'=>0,'7'=>0,'8'=>0,'9'=>0,'10'=>0,'11'=>0];
+                $totales = ['0'=>0,'1'=>0,'2'=>0,'3'=>0,'4'=>0,'5'=>0,'6'=>0,'7'=>0,'8'=>0,'9'=>0,'10'=>0,'11'=>0,'12'=>0,'13'=>0,'14'=>0,'15'=>0];
             @endphp
             @foreach ($data as $i)
                 @if($i->orden==1)
@@ -62,11 +69,17 @@
                         $totales[4] += $i->horas_programadas;
                         $totales[5] += $i->horas_impartidas;
                         $totales[6] += $i->horas_programadas-$i->horas_impartidas;
-                        $totales[7] += $i->cursos_reportados;
-                        $totales[8] += $i->inscritos;
-                        $totales[9] += $i->egresados;
-                        $totales[10] += $i->desercion;
-                        $totales[11] += $i->horas_reportadas;
+                        
+                        $totales[7] += $i->costo_aperturado;
+                        $totales[8] += $i->costo_supre;
+                        $totales[9] += $i->costo_aperturado-$i->costo_supre;
+                        $totales[10] += $i->pagado;
+
+                        $totales[11] += $i->cursos_reportados;
+                        $totales[12] += $i->inscritos;
+                        $totales[13] += $i->egresados;
+                        $totales[14] += $i->desercion;
+                        $totales[15] += $i->horas_reportadas;
                     @endphp
                 @elseif($i->orden==2)
                     <tr class="bg-light">
@@ -105,6 +118,12 @@
                     @else
                         <td class="text-center">{{ number_format($i->horas_programadas-$i->horas_impartidas, 0, '', ',') }}</td>
                     @endif
+
+                    <td class="text-center">{{ number_format($i->costo_aperturado, 0, '', ',') }}</td>
+                    <td class="text-center">{{ number_format($i->costo_supre, 0, '', ',') }}</td>
+                    <td class="text-center">{{ number_format($i->costo_aperturado-$i->costo_supre, 0, '', ',') }}</td>
+                    <td class="text-center">{{ number_format($i->pagado, 0, '', ',') }}</td>
+                    
                     <td class="text-center">{{ number_format($i->cursos_reportados, 0, '', ',') }}</td>
                     <td class="text-center">{{ number_format($i->inscritos, 0, '', ',') }}</td>
                     <td class="text-center">{{ number_format($i->egresados, 0, '', ',') }}</td>
@@ -114,7 +133,7 @@
             @endforeach
             <tr>
                 <td><b>TOTALES</b></td>
-                @for($n=0;$n<=11;$n++)
+                @for($n=0;$n<=15;$n++)
                     <td align="center"><b>{{ number_format($totales[$n], 0, '', ',') }}</b></td>
                 @endfor
             </tr>
