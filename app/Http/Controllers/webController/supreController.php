@@ -1481,7 +1481,7 @@ class supreController extends Controller
         'tbl_localidades.localidad',
         'tbl_cursos.cp',
         'tbl_cursos.inicio')
-        ->WhereNotIn('tbl_cursos.id', DB::Table('folios')->JOIN('tbl_cursos','tbl_cursos.id','=','folios.id_cursos')->pluck('folios.id_cursos'))
+        ->WhereNotIn('tbl_cursos.id', DB::Table('folios')->JOIN('tbl_cursos','tbl_cursos.id','=','folios.id_cursos')->WHERE('folios.status','!=','Rechazado')->pluck('folios.id_cursos'))
         ->whereDate('tbl_cursos.inicio', '>=', $request->fecha1)
         ->whereDate('tbl_cursos.inicio', '<=', $request->fecha2)
         ->WHERE('status_curso','AUTORIZADO')
@@ -1581,6 +1581,7 @@ class supreController extends Controller
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
                            ->WHERE('folios.status', '!=', 'Rechazado')
+                           ->WHERE('tbl_cursos.status_curso','=','AUTORIZADO')
                            ->LEFTJOIN('folios', 'folios.id_supre', '=', 'tabla_supre.id')
                            ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                            ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
