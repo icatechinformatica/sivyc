@@ -140,7 +140,7 @@
             <td colspan="4"><strong>ESPECIALIDAD A LA QUE DESEAN INSCRIBIRSE:</strong>  {{ strtoupper($alumnos->especialidad) }}</td>
         </tr>
         <tr>
-            <td colspan="2"><strong>CURSO:</strong>  {{ strtoupper($alumnos->nombre_curso) }}</td>
+            <td colspan="2"><strong>CURSO:</strong>  {{ $alumnos->nombre_curso }}</td>
             <td colspan="2"><strong>TIPO:</strong>  {{strtoupper($alumnos->tipocurso)}}</td>
         </tr>
         <tr>
@@ -263,7 +263,7 @@
         </tr>
         <tr>
             <td><strong>CURSO:</strong></td>
-            <td colspan="3" style="text-transform: uppercase;">{{ strtoupper($alumnos->nombre_curso) }}</td>
+            <td colspan="3" style="text-transform: uppercase;">{{ $alumnos->nombre_curso }}</td>
             <td><strong>HORARIO:</strong> {{$alumnos->horario }}</td>
             <td style="text-transform: uppercase;"><strong>GRUPO:</strong> {{ $alumnos->grupo }}</td>
         </tr>

@@ -251,7 +251,7 @@
         </tr>
         <tr>
             <td><strong>CURSO:</strong></td>
-            <td colspan="3" style="text-transform: uppercase;">{{ strtoupper($alumnos->nombre_curso) }}</td>
+            <td colspan="3" style="text-transform: uppercase;">{{ $alumnos->nombre_curso }}</td>
             <td><strong>HORARIO:</strong> {{$alumnos->horario }}</td>
             <td style="text-transform: uppercase;"><strong>GRUPO:</strong> {{ $alumnos->grupo }}</td>
         </tr>
