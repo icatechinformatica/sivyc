@@ -52,17 +52,17 @@
                         <td>UNIDAD</td>
                         <td>GRUPO</td>
                         <td>CLAVE</td>
-                        <td>No. MEMORÁNDUM ARC01</td>
+                        <td>MEMORÁNDUM</td>
                         <td>CURSO</td>
                         <td>ESPECIALIDAD</td>
                         <td>SERVICIO</td>
-                        <td>DURACION</td>
+                        <td>DURA</td>
                         <td>CAPACITACIÓN</td>
-                        <td>STATUS</td>
+                        <td>ESTATUS</td>
                         <td>INICIO</td>
                         <td>TERMINO</td>
-                        <td>HINICIO</td>
-                        <td>HTERMINO</td>
+                        <td>HINI</td>
+                        <td>HFIN</td>
                         <td>DIAS</td>
                         <td>LUGAR O ESPACIO FISICO</td>
                         <td>OBSERVACIONES</td>
@@ -73,8 +73,8 @@
                         <td>{{$item->nombre}}</td>
                         <td>{{$item->unidad}}</td>
                         <td><div style="width: 70px;">{{$item->folio_grupo}}</div></td>
-                        <td><div style="width: 150px;">{{$item->clave}}</div></td>
-                        <td>{{$item->munidad}}</td>
+                        <td><div style="width: 75px;">{{$item->clave}}</div></td>
+                        <td><div style="width: 80px;">{{$item->munidad}}</div></td>
                         <td><div style="width: 150px;">{{$item->curso}}</div></td>
                         <td>{{$item->espe}}</td>
                         <td>{{$item->tipo_curso}}</td>
@@ -86,8 +86,8 @@
                         <td>{{$item->hini}}</td>
                         <td>{{$item->hfin}}</td>
                         <td>{{$item->dia}}</td>
-                        <td><div style="width: 100px;">{{$item->efisico }}</div></td>
-                        <td><div style="width: 200px;">{{$item->nota}}</div></td>
+                        <td><div style="width: 250px;">{{$item->efisico }}</div></td>
+                        <td><div style="width: 350px;">{{$item->nota}}</div></td>
                     </tr>
                     @endforeach
                     <tr>
