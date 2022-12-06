@@ -620,9 +620,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/calendario/guardar','Solicitud\aperturaController@storeCalendar')->name('calendario.store');
     Route::get('/calendario/{id}','Solicitud\aperturaController@destroy')->name('calendario.destroy');
     Route::get('/organismos/inicio', 'organismosController@index')->name('organismos.index')->middleware('can:organismo.inicio');
-    Route::get('/organismos/agregar', 'organismosController@agregar')->name('organismos.agregar')->middleware('organismo.agregar');
-    Route::post('/organismos/store', 'organismosController@store')->name('organismos.insert')->middleware('organismo.agregar');
-    Route::post('/organismos/update', 'organismosController@update')->name('organismos.update')->middleware('organismo.agregar');
+    Route::get('/organismos/agregar', 'organismosController@agregar')->name('organismos.agregar')->middleware('can:organismo.agregar');
+    Route::post('/organismos/store', 'organismosController@store')->name('organismos.insert')->middleware('can:organismo.agregar');
+    Route::post('/organismos/update', 'organismosController@update')->name('organismos.update')->middleware('can:organismo.agregar');
     Route::get('/organismo/municipio','organismosController@muni');
 
     /* Solicitudes exoneración y reducción de cuota AGC*/
