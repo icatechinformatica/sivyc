@@ -27,13 +27,13 @@
                 <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                 {!! Form::close() !!}
             </div>
-            @if ($rol == 'admin')
-            <div class="col">
-                <div class="pull-right">
-                    <a class="btn btn-success btn-lg" href="{{ route('organismos.agregar') }}">Agregar</a>
+            @can('organismo.agregar')
+                <div class="col">
+                    <div class="pull-right">
+                        <a class="btn btn-success btn-lg" href="{{ route('organismos.agregar') }}">Agregar</a>
+                    </div>
                 </div>
-            </div>
-            @endif
+            @endcan
         </div>
         <table class="table table-bordered table-striped mt-4">
             <thead>
@@ -45,7 +45,9 @@
                     <th scope="col">Correo</th>
                     <th scope="col">Dirección</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Modificar</th>
+                    @can('organismo.agregar')
+                        <th scope="col">Modificar</th>
+                    @endcan 
                 </tr>
             </thead>
             <tbody>
@@ -62,13 +64,15 @@
                         @else
                           <td>INACTIVO</td>  
                         @endif
-                        <td>
-                            <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
-                                    data-placement="top" title="EDITAR ORGANISMOS"
-                                    href="{{ route('organismos.agregar', ['id' => base64_encode($og->id)]) }}">
-                                    <i class="fa fa-pencil-square-o fa-2x mt-2" aria-hidden="true"></i>
-                                </a>
-                        </td>
+                        @can('organismo.agregar')
+                            <td>
+                                <a class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
+                                        data-placement="top" title="EDITAR ORGANISMOS"
+                                        href="{{ route('organismos.agregar', ['id' => base64_encode($og->id)]) }}">
+                                        <i class="fa fa-pencil-square-o fa-2x mt-2" aria-hidden="true"></i>
+                                    </a>
+                            </td>
+                        @endcan
                     </tr>
                 @endforeach
             </tbody>
