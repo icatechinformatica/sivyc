@@ -52,13 +52,7 @@
                     <div class="form-group col-md-4">
                         <label for="clave" class="control-label">Organismo</label>
                         <input type="hidden" name="id" id="id" value="{{$id}}">
-                        @if ($rol == 'admin')
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del organismo"
-                        value="{{$nombre}}"    required>
-                        @else
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del organismo"
-                        value="{{$nombre}}" readonly   required>
-                        @endif
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del organismo" value="{{$nombre}}" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="nombre" class="control-label">Nombre del titular</label>
