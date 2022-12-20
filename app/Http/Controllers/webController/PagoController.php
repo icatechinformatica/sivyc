@@ -137,12 +137,13 @@ class PagoController extends Controller
                 ->LEFTJOIN('tbl_cursos', 'folios.id_cursos', '=', 'tbl_cursos.id')
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                 ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
+                ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                 ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(25, [
                     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
                     'folios.permiso_editar','contratos.docs',
-                    'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','folios.recepcion'
+                    'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago'
                 ]);
                 break;
         }
