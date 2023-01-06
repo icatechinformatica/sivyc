@@ -566,6 +566,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/preinscripcion/grupo/comrobante','Preinscripcion\grupoController@subir_comprobante')->name('preinscripcion.grupo.comprobante');
     Route::get('/preinscripcion/municipio', 'Preinscripcion\grupoController@showlm');
     Route::post('/preinscripcion/grupo/remplazar', 'Preinscripcion\grupoController@remplazar')->name('preinscripcion.grupo.remplazar');
+    Route::get('/preinscripcion/grupo/cmbinstructor', 'Preinscripcion\grupoController@cmbinstructor')->name('preinscripcion.grupo.cmbinstructor');
+    /*VINCULACION->PREINSCRIPCION=>AGENDAR INSTRUCTOR*/
+    Route::get('/preinscripcion/calendarioShow/{id}','Preinscripcion\grupoController@showCalendar')->middleware('can:preinscripcion.grupo');
+    Route::post('/preinscripcion/calendario/guardar','Preinscripcion\grupoController@storeCalendar')->middleware('can:agenda.vinculacion');
+    Route::post('/preinscripcion/calendario/eliminar','Preinscripcion\grupoController@deleteCalendar')->middleware('can:agenda.vinculacion');
+    Route::post('/preinscripcion/grupo/apertura', 'Preinscripcion\grupoController@generarApertura')->name('preinscripcion.grupo.gape')->middleware('can:preinscripcion.grupo');
 
     /*VINCULACION->PREINSCRIPCION=> BUSCAR GRUPO RPN*/
     Route::get('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');

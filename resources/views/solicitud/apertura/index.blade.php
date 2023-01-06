@@ -15,9 +15,10 @@
     </div>
     <div class="card card-body" style=" min-height:450px;">
         <?php
-            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = NULL;
+            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = $inco = NULL;
             $activar = true;
             if(isset($grupo)){
+                $inco = $grupo->inicio;
                 $valor = $grupo->folio_grupo;
                 $modalidad = $grupo->mod;
                 $hfin = substr($grupo->horario, 8, 5);
@@ -438,7 +439,7 @@
                         center: 'title',
                         right: 'dayGridMonth, timeGridWeek, timeGridDay',
                     },
-
+                    defaultDate: '<?php echo $inco; ?>',
                     eventClick: function(info) {
                         $('#btnAgregar').prop('disabled', true);
                         $('#btnModificar').prop('disabled', false);

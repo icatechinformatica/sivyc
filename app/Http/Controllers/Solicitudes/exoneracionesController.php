@@ -186,8 +186,8 @@ class exoneracionesController extends Controller
             else $mexoneracion = $cursos[0]->nrevision;
             foreach ($cursos as $key => $value) {
                 $alumnos = DB::table('alumnos_registro as ar')
-                                ->select('ap.apellido_paterno','ap.apellido_materno','ap.nombre','ap.sexo','ar.costo',
-                                    DB::raw("extract(year from (age('$value->inicio',ap.fecha_nacimiento))) as edad"))
+                                ->select('ar.nombre','ar.costo','ar.apellido_paterno','ar.apellido_materno',
+                                    DB::raw("extract(year from (age('$value->inicio',ap.fecha_nacimiento))) as edad"),DB::raw("substring(ar.curp,11,1) as sexo"))
                                 ->leftJoin('alumnos_pre as ap','ar.id_pre','=','ap.id')
                                 ->where('ar.folio_grupo',$value->folio_grupo)
                                 ->get();
@@ -198,6 +198,7 @@ class exoneracionesController extends Controller
                 $data[$key]['horario'] = $horario;
                 $data[$key]['inicio'] = $value->inicio;
                 $data[$key]['termino'] = $value->termino;
+                $data[$key]['tcapacitacion'] = $value->tcapacitacion;
                 if ($value->tcapacitacion=='PRESENCIAL') {
                     $data[$key]['lugar'] = $value->efisico;
                 }else {

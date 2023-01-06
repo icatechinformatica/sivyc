@@ -71,34 +71,34 @@
             <table class="tb">
                 <thead>
                     <tr>
-                        <th colspan="7">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN EXTRAORDINARIA</th>
+                        <th colspan="8">DATOS GENERALES DEL CURSO DE CAPACITACIÓN O CERTIFICACIÓN EXTRAORDINARIA</th>
                     </tr>
                     <tr>
                         <th>NOMBRE DEL CURSO</th>
                         <th colspan="3">{{$nombre_curso}}</th>
-                        <th colspan="2">MODALIDAD</th>
+                        <th colspan="3">MODALIDAD</th>
                         <th>{{$mod}}</th>
                     </tr>
                     <tr>
                         <th>DURACIÓN EN HORAS</th>
                         <th>{{$dura}}</th>
-                        <th colspan="2">HORARIO</th>
+                        <th colspan="3">HORARIO</th>
                         <th colspan="3">{{$horario}} hrs.</th>
                     </tr>
                     <tr>
                         <th>FECHA DE INICIO</th>
                         <th>{{$inicio}}</th>
-                        <th colspan="2">FECHA DE TERMINO</th>
+                        <th colspan="3">FECHA DE TERMINO</th>
                         <th colspan="3">{{$termino}}</th>
                     </tr>
                     <tr>
                         <th>TIPO DE CURSO</th>
                         <th>{{$tipo}}</th>
-                        <th colspan="2">INSTITUCIÓN O DEPENDENCIA</th>
+                        <th colspan="3">INSTITUCIÓN O DEPENDENCIA</th>
                         <th colspan="3">{{$depen}}</th>
                     </tr>
                     <tr>
-                        <th colspan="7">LISTA DE ALUMNOS</th>
+                        <th colspan="8">LISTA DE ALUMNOS</th>
                     </tr>
                     <tr>
                         <th>N°</th>
@@ -107,6 +107,7 @@
                         <th>NOMBRE(S)</th>
                         <th>SEXO</th>
                         <th>EDAD</th>
+                        <th>CORREO</th>
                         <th>CUOTA DE RECUPERACIÓN</th>
                     </tr>
                 </thead>
@@ -119,6 +120,7 @@
                             <td>{{$item->nombre}}</td>
                             <td>@if ($item->sexo=='MASCULINO') {{"M"}} @else {{"F"}} @endif</td>
                             <td>{{$item->edad}}</td>
+                            <td>{{$item->correo}}</td>
                             <td>{{$item->costo}}</td>
                         </tr>
                     @endforeach

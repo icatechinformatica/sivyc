@@ -262,8 +262,15 @@
                         <th colspan="3">{{$item['termino']}}</th>
                     </tr>
                     <tr>
-                        <th>LUGAR DE CAPACITACIÓN</th>
-                        <th colspan="6">{{$item['lugar']}}</th>
+                        @if ($item['tcapacitacion']=='PRESENCIAL')
+                            <th>TIPO DE CAPACITACIÓN</th>
+                            <th>PRESENCIAL</th>
+                            <th colspan="2">LUGAR DE CAPACITACIÓN</th>
+                            <th colspan="3">{{$item['lugar']}}</th>
+                        @else
+                        <th>TIPO DE CAPACITACIÓN</th>
+                        <th colspan="6">A DISTANCIA</th>
+                        @endif
                     </tr>
                     <tr>
                         <th>DIAS</th>
@@ -293,7 +300,7 @@
                         <td>{{$value->apellido_paterno}}</td>
                         <td>{{$value->apellido_materno}}</td>
                         <td>{{$value->nombre}}</td>
-                        <td>@if ($value->sexo=='MASCULINO') {{"M"}} @else {{"F"}} @endif</td>
+                        <td>{{$value->sexo}}</td>
                         <td>{{$value->edad}}</td>
                         <td>{{$value->costo}}</td>
                     </tr>

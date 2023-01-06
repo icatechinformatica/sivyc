@@ -73,9 +73,9 @@ class aperturaController extends Controller
         if($valor){
             $grupo =  DB::table('alumnos_registro as ar')->select('ar.id_curso','ar.unidad','ar.horario','ar.inicio','ar.termino','e.nombre as espe','a.formacion_profesional as area',
                 'ar.folio_grupo','ar.tipo_curso as tcapacitacion','c.nombre_curso as curso','ar.mod','ar.horario','c.horas','c.costo as costo_individual','c.id_especialidad','ar.comprobante_pago',
-                DB::raw("SUM(CASE WHEN substring(ap.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ap.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
+                DB::raw("SUM(CASE WHEN substring(ar.curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),DB::raw("SUM(CASE WHEN substring(ar.curp,11,1)='M' THEN 1 ELSE 0 END) as mujer"),'c.memo_validacion as mpaqueteria',
                 'tc.nota',DB::raw(" COALESCE(tc.clave, '0') as clave"),'ar.id_muni','ar.clave_localidad','ar.organismo_publico','ar.id_organismo','tc.status_solicitud',
-                'tc.id_municipio','tc.status_curso','tc.plantel', 'tc.dia', 'tdias', 'id_vulnerable', 'ar.turnado','tc.instructor_mespecialidad','tc.dura',
+                'tc.id_municipio','tc.status_curso','tc.plantel', 'tc.dia', 'tc.tdias', 'id_vulnerable', 'ar.turnado','tc.instructor_mespecialidad','tc.dura',
                 DB::raw("cast(replace(replace(hini,'a.m.','am'),'p.m.','pm') as time) as hini"),
                 DB::raw("cast(replace(replace(hfin,'a.m.','am'),'p.m.','pm') as time) as hfin"),
                 'tc.sector','tc.programa','tc.efisico','tc.depen','tc.cgeneral','tc.fcgen','tc.cespecifico','tc.fcespe','tc.mexoneracion','tc.medio_virtual',
@@ -106,14 +106,14 @@ class aperturaController extends Controller
                // var_dump($alumnos);exit;
 
                 if(count($alumnos)==0){
-                    $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ap.curp','ap.nombre','ap.apellido_paterno','ap.apellido_materno','ap.fecha_nacimiento AS FN','ap.sexo AS SEX',
-                    DB::raw("CONCAT(ap.apellido_paterno,' ', ap.apellido_materno,' ',ap.nombre) as alumno"),'ar.id_cerss', 'ap.lgbt',
+                    $alumnos = DB::table('alumnos_registro as ar')->select('ar.id as id_reg','ar.curp','ar.nombre','ar.apellido_paterno','ar.apellido_materno',
+                    'ap.fecha_nacimiento AS FN','ap.sexo AS SEX','ar.id_cerss', 'ap.lgbt',DB::raw("CONCAT(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre) as alumno"),
                     'ap.estado_civil','ap.discapacidad','ap.nacionalidad','ap.etnia','ap.indigena','ap.inmigrante','ap.madre_soltera','ap.familia_migrante',
-                    'ar.costo','ar.tinscripcion',DB::raw("'0' as calificacion"),'ap.ultimo_grado_estudios as escolaridad','ap.empleado','ar.abrinscri',
-                    'ap.matricula', 'ar.id_pre','ar.id', DB::raw("substring(curp,11,1) as sexo"),'ap.id_gvulnerable',
-                    DB::raw("substring(curp,5,2) as anio_nac"),
-                    DB::raw("CASE WHEN substring(curp,5,2) <='".$anio_hoy."' THEN CONCAT('20',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2))
-                        ELSE CONCAT('19',substring(curp,5,2),'-',substring(curp,7,2),'-',substring(curp,9,2)) END AS fecha_nacimiento
+                    'ar.costo','ar.tinscripcion',DB::raw("'0' as calificacion"),'ar.escolaridad','ap.empleado','ar.abrinscri',
+                    'ap.matricula', 'ar.id_pre','ar.id', DB::raw("substring(ar.curp,11,1) as sexo"),'ap.id_gvulnerable',
+                    DB::raw("substring(ar.curp,5,2) as anio_nac"),
+                    DB::raw("CASE WHEN substring(ar.curp,5,2) <='".$anio_hoy."' THEN CONCAT('20',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2))
+                        ELSE CONCAT('19',substring(ar.curp,5,2),'-',substring(ar.curp,7,2),'-',substring(ar.curp,9,2)) END AS fecha_nacimiento
                     "),
                     DB::raw("'INSERT' as mov"))
                     ->join('alumnos_pre as ap','ap.id','ar.id_pre')->where('ar.folio_grupo',$valor )
@@ -207,19 +207,15 @@ class aperturaController extends Controller
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
         if($_SESSION['folio']){
-            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
-                $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
-            } else {
-                $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
-                $agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
-                $curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dia'=>null,'fecha_arc01'=>null,
-                                                                                                    'id_instructor'=>0]);
-                //$_SESSION['folio'] = null;
-                // unset($_SESSION['folio']);
-                if($result){
-                    $message = "El grupo fué turnado correctamente a VINCULACIÓN";
-                    unset($_SESSION['folio']);
-                }
+            $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio'])->update(['turnado' => "VINCULACION",'fecha_turnado' => date('Y-m-d')]);
+            DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['fecha_arc01'=>null]);
+            //$agenda = DB::table('agenda')->where('id_curso', $_SESSION['folio'])->delete();
+            //$curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio'])->update(['tdias'=>null,'dia'=>null,'fecha_arc01'=>null,'id_instructor'=>0]);
+            //$_SESSION['folio'] = null;
+            // unset($_SESSION['folio']);
+            if($result){
+                $message = "El grupo fué turnado correctamente a VINCULACIÓN";
+                unset($_SESSION['folio']);
             }
         }
         return redirect('solicitud/apertura')->with('message',$message);
@@ -515,8 +511,8 @@ class aperturaController extends Controller
                                 ]
                             );
                             $fpago = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio'])->update([
-                                'folio_pago' => $request->folio_pago,
-                                'fecha_pago' => $request->fecha_pago
+                                'folio_pago' => $request->folio_pago,'servicio' => $request->tcurso,'medio_virtual' => $request->medio_virtual,
+                                'link_virtual' => $request->link_virtual,'fecha_pago' => $request->fecha_pago,'efisico' => $efisico,'id_instructor' => $instructor->id
                             ]);
                         }
                         if ($result) $message = 'Operación Exitosa!!';
@@ -669,8 +665,8 @@ class aperturaController extends Controller
             ->where('tc.status','<>','CANCELADO')
             ->where('ar.eliminado',false)
             ->where('ar.folio_grupo','<>',$id_curso)
-            ->whereRaw("((date(a.start) >= '$fechaInicio' and date(a.start) <= '$fechaTermino') OR (date(a.end) >= '$fechaInicio' and date(a.end) <= '$fechaTermino'))")
-            ->whereRaw("((cast(a.start as time) >= '$horaInicio' and cast(a.start as time) < '$horaTermino') OR (cast(a.end as time) > '$horaInicio' and cast(a.end as time) <= '$horaTermino'))")
+            ->whereRaw("((date(a.start) <= '$fechaInicio' and date(a.end) >= '$fechaInicio') OR (date(a.start) <= '$fechaTermino' and date(a.end) >= '$fechaTermino'))")
+            ->whereRaw("((cast(a.start as time) <= '$horaInicio' and cast(a.end as time) > '$horaInicio') OR (cast(a.start as time) < '$horaTermino' and cast(a.end as time) >= '$horaTermino'))")
             ->whereIn('ar.id_pre', [DB::raw("select id_pre from alumnos_registro where folio_grupo = '$id_curso' and eliminado = false")])
             ->get();    
         if (count($alumnos_ocupados) > 0) {
@@ -682,8 +678,8 @@ class aperturaController extends Controller
             ->leftJoin('tbl_cursos as tc','a.id_curso','tc.folio_grupo')
             ->where('a.id_instructor',$id_instructor)
             ->where('tc.status','<>','CANCELADO')
-            ->whereRaw("((date(a.start) >= '$fechaInicio' and date(a.start) <= '$fechaTermino') OR (date(a.end) >= '$fechaInicio' and date(a.end) <= '$fechaTermino'))")
-            ->whereRaw("((cast(a.start as time) >= '$horaInicio' and cast(a.start as time) < '$horaTermino') OR (cast(a.end as time) > '$horaInicio' and cast(a.end as time) <= '$horaTermino'))")
+            ->whereRaw("((date(a.start) <= '$fechaInicio' and date(a.end) >= '$fechaInicio') OR (date(a.start) <= '$fechaTermino' and date(a.end) >= '$fechaTermino'))")
+            ->whereRaw("((cast(a.start as time) <= '$horaInicio' and cast(a.end as time) > '$horaInicio') OR (cast(a.start as time) < '$horaTermino' and cast(a.end as time) >= '$horaTermino'))")
             ->exists();
         if ($duplicado) {
             return "El instructor no se encuentra disponible en fecha y hora";
