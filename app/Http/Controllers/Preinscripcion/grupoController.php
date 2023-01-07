@@ -188,7 +188,7 @@ class grupoController extends Controller
                                     DB::table('registro_alumnos_sice')->where('curp', $curp)->update(['eliminado' => true]);
                                 } elseif (isset($alumno->matricula)) $matricula  =  $alumno->matricula;
                                 //FIN MATRICULA
-                                if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', null)->where('status','!=','CANCELADO')->exists()) {
+                                if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                                     $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                                     return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
                                 }
@@ -413,7 +413,9 @@ class grupoController extends Controller
                                 $tinscripcion = "PAGO ORDINARIO";
                                 $abrins = 'PI';
                             }
-                            Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
+                            if (!(DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())) {
+                                Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
+                            }
                             $total_pago += $pago * 1;
                         }
                         $costo_total = $curso->costo * $sx->total;
@@ -447,7 +449,7 @@ class grupoController extends Controller
                         } else {
                             $tipo_honorario = 'HONORARIOS';
                         }
-                        if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', null)->where('status','!=','CANCELADO')->exists()) {
+                        if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                             $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['observaciones'=>$request->observaciones, 
                                 'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante, 
                                 'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago]);
@@ -527,7 +529,7 @@ class grupoController extends Controller
     public function turnar()
     {
         if ($_SESSION['folio_grupo']) {
-            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', null)->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
+            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                 return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
             } else {
