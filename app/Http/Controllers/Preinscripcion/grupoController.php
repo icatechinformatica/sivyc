@@ -49,7 +49,7 @@ class grupoController extends Controller
         $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = [];
         $es_vulnerable = $edicion = false;
         $unidades = $this->data['unidades'];
-        $unidad = $this->data['unidad'];
+        $unidad = $uni = $this->data['unidad'];
         $message = $comprobante = $folio_pago = $fecha_pago = $grupo = NULL;
         if (isset($_SESSION['folio_grupo'])) {  //echo $_SESSION['folio_grupo'];exit;
             $anio_hoy = date('y');  //dd($_SESSION);
@@ -75,6 +75,7 @@ class grupoController extends Controller
                 $mod = $alumnos[0]->mod;
                 $folio_pago = $alumnos[0]->folio_pago;
                 $fecha_pago = $alumnos[0]->fecha_pago;
+                $uni = $alumnos[0]->unidad;
                 if($alumnos[0]->comprobante_pago)$comprobante = $this->path_files.$alumnos[0]->comprobante_pago;
                 if ($alumnos[0]->turnado == 'VINCULACION' and isset($this->data['cct_unidad'])) $this->activar = true;
                 else $this->activar = false;
@@ -122,7 +123,7 @@ class grupoController extends Controller
         $cerss = $cerss->orderby('nombre', 'ASC')->pluck('nombre', 'id');
         $folio_grupo =  $_SESSION['folio_grupo'];
         $activar = $this->activar;
-        $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->orderby('muni')->pluck('muni', 'id');
+        $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$uni)->orderby('muni')->pluck('muni', 'id');
         $dependencia = DB::table('organismos_publicos')
             ->where('activo', true)
             ->orderby('organismo')
@@ -152,6 +153,16 @@ class grupoController extends Controller
             $json = json_encode(["No hay registros que mostrar."]);
         }
 
+        return $json;
+    }
+
+    public function cmbmuni(Request $request){
+        if (isset($request->uni)) {
+            $municipio = DB::table('tbl_municipios')->select('muni','id')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$request->uni)->orderby('muni')->get();
+            $json = json_encode($municipio);
+        } else {
+            $json = json_encode(["No hay registros que mostrar!"]);
+        }
         return $json;
     }
 

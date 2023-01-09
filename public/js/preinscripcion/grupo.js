@@ -19,6 +19,7 @@
     });
     $("#unidad" ).change(function(){
         cmb_curso();
+        cmb_muni();
     }); 
     $("#modalidad" ).change(function(){
         cmb_curso();
@@ -62,14 +63,34 @@
                 contentType: "application/json",              
                 dataType: "json",
                 success: function (data) {// console.log(data); 
-                    $.each(data, function () {                                    
-                        //$("#id_curso").append('<option value="" selected="selected">SELECCIONAR</option>');                                    
+                    $("#localidad").append('<option value="" selected="selected">SELECCIONAR</option>');  
+                    $.each(data, function () {                                                                
                         $("#localidad").append('<option value="'+this['clave']+'">'+this['localidad']+'</option>');
                     });
                 }
             });                        
         }
                         
+    };
+
+    function cmb_muni(){
+        var uni = $('#unidad').val();
+        $("#id_municipio").empty();
+        if(uni){
+            $.ajax({
+                type: "GET",
+                url: "/preinscripcion/grupo/cmbmuni",
+                data:{uni:uni, _token:"{{csrf_token()}}"},
+                contentType: "application/json",              
+                dataType: "json",
+                success: function (data) {// console.log(data); 
+                    $("#id_municipio").append('<option value="" selected="selected">SELECCIONAR</option>');     
+                    $.each(data, function () {                                                                   
+                        $("#id_municipio").append('<option value="'+this['id']+'">'+this['muni']+'</option>');
+                    });
+                }
+            });                        
+        }
     };
 
     $("#id_curso" ).change(function(){
