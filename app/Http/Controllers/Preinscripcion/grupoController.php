@@ -730,6 +730,7 @@ class grupoController extends Controller
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
             $memo = $request->mapertura;
             $anio = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->value(DB::raw("to_char(DATE (fecha)::date, 'YYYY')"));
+            $organismo = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->value('id_organismo');
             if (DB::table('alumnos_registro')->where('mpreapertura',$memo)->where('folio_grupo','<>',$_SESSION['folio_grupo'])->exists()) {
                 return "NÚMERO DE MEMORÁNDUM OCUPADO";exit;
             } else {
@@ -739,8 +740,14 @@ class grupoController extends Controller
                 }
                 $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','VINCULACION')
                     ->update(['mpreapertura'=>$memo, 'fmpreapertura'=>$date, 'updated_at' => date('Y-m-d H:i:s'), 'observaciones'=>$request->observaciones]);
+                if ($organismo == 358) {
+                    DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','UNIDAD')->update(['depen_representante'=>$request->repre_depen, 'depen_telrepre'=>$request->repre_tel]);
+                } else {
+                    $info = DB::table('organismos_publicos')->where('id',$organismo)->first();
+                    DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','UNIDAD')->update(['depen_representante'=>$info->nombre_titular, 'depen_telrepre'=>$info->telefono]);
+                }
                 $curso = DB::table('tbl_cursos as tc')
-                    ->select('tc.*','ar.horario','ar.realizo as vincu',DB::raw("(tc.hombre + tc.mujer) as tpar"),'o.nombre_titular as depen_repre','o.telefono as tel_repre',
+                    ->select('tc.*','ar.horario','ar.realizo as vincu',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.depen_representante as depen_repre','tc.depen_telrepre as tel_repre',
                         'ar.observaciones as nota_vincu','ar.mpreapertura',DB::raw("to_char(DATE (ar.fmpreapertura)::date, 'DD-MM-YYYY') as fecha_memo"),
                         'ar.folio_grupo','ar.efisico')
                     ->leftJoin('alumnos_registro as ar','tc.folio_grupo','ar.folio_grupo')

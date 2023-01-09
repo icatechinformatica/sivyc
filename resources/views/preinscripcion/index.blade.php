@@ -15,11 +15,15 @@
 @section('content')   
     <?php 
         $id_grupo = $folio = $tipo = $id_curso = $id_cerss = $horario = $turnado = $hini = $id_vulnerable = $servicio = $nombre_curso = $cespe = $fcespe = $nota = 
-        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = $efisico = $mvirtual = $lvirtual = $memo = "";    $costo = null;   
+        $hfin = $termino = $inicio = $id_localidad = $id_muni = $organismo = $modalidad = $efisico = $mvirtual = $lvirtual = $memo = $repre = $tel = "";    $costo = null;   
         if($curso){
             $id_curso = $curso->id;
             $costo = $curso->costo;
             $nombre_curso =  $curso->nombre_curso;
+        }
+        if ($grupo) {
+            $repre = $grupo->depen_representante;
+            $tel = $grupo->depen_telrepre;
         }
         if(count($alumnos)>0){ 
             $hfin = substr($alumnos[0]->horario, 8, 5);
@@ -222,6 +226,14 @@
                             <div class="form-group col-md-3">
                                 <label for="">MEMORÁNDUM DE SOLICITUD DE APERTURA:</label>
                                 {!! Form::text('mapertura', $memo, ['id'=>'mapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM APERTURA', 'aria-label' => 'No. Memorándum']) !!}
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="">NOMBRE DEL REPRESENTANTE:</label>
+                                {!! Form::text('repre_depen', $repre, ['id'=>'repre_depen', 'class'=>'form-control']) !!}
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="">TELEFONO DEL REPRESENTANTE:</label>
+                                {!! Form::text('repre_tel', $tel, ['id'=>'repre_tel', 'class'=>'form-control']) !!}
                             </div>
                         </div>
                         <div class="form-row">
