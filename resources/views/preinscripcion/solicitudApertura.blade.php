@@ -49,13 +49,17 @@
         </div>
         <table style="text-align: right; border-collapse: collapse;" align="right">
             <tr>
-                <td><strong>Unidad de Capacitación {{$reg_unidad->ubicacion}}</strong></td> 
+                @if($reg_unidad->unidad=="COMITAN" || $reg_unidad->unidad=="OCOSINGO" || $reg_unidad->unidad=="SAN CRISTOBAL" || $reg_unidad->unidad=="TUXTLA" || $reg_unidad->unidad=="CATAZAJA" || $reg_unidad->unidad=="YAJALON" || $reg_unidad->unidad=="JIQUIPILAS" || $reg_unidad->unidad=="REFORMA" || $reg_unidad->unidad=="TAPACHULA" || $reg_unidad->unidad=="TONALA" || $reg_unidad->unidad=="VILLAFLORES")
+                    <td><strong>Unidad de Capacitación {{$reg_unidad->unidad}}</strong></td> 
+                @else
+                    <td><strong>Acción Móvil {{$reg_unidad->unidad}}</strong></td> 
+                @endif
             </tr>
             <tr>
                 <td><strong>Memorándum No. {{$curso->mpreapertura}}</strong></td>
             </tr>
             <tr>
-                <td><strong>{{$reg_unidad->municipio}}, Chis., {{$curso->fecha_memo}}</strong></td>
+                <td><strong>{{$reg_unidad->municipio_acm}}, Chis., {{$curso->fecha_memo}}</strong></td>
             </tr>
         </table>
     </header>
