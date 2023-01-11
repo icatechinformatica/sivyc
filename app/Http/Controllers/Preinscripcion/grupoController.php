@@ -738,53 +738,96 @@ class grupoController extends Controller
 
     public function generarApertura(Request $request){
         if ($_SESSION['folio_grupo']) {
+            $data = $cursos = []; $unidad = '';
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
             $memo = $request->mapertura;
-            $anio = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->value(DB::raw("to_char(DATE (fecha)::date, 'YYYY')"));
             $organismo = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->value('id_organismo');
-            if (DB::table('alumnos_registro')->where('mpreapertura',$memo)->where('folio_grupo','<>',$_SESSION['folio_grupo'])->exists()) {
-                return "NÚMERO DE MEMORÁNDUM OCUPADO";exit;
-            } else {
-                $date = date('Y-m-d');
-                if ($memo == DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->value('mpreapertura')) {
-                    $date = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->value('fmpreapertura');
-                }
-                $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','VINCULACION')
-                    ->update(['mpreapertura'=>$memo, 'fmpreapertura'=>$date, 'updated_at' => date('Y-m-d H:i:s'), 'observaciones'=>$request->observaciones]);
-                if ($organismo == 358) {
-                    DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','UNIDAD')->update(['depen_representante'=>$request->repre_depen, 'depen_telrepre'=>$request->repre_tel]);
+            $date = date('Y-m-d');
+            if (DB::table('alumnos_registro')->where('mpreapertura',$memo)->value('fmpreapertura')) {
+                $date = DB::table('alumnos_registro')->where('mpreapertura',$memo)->value('fmpreapertura');
+            }
+            //INSERCION DE LOS DATOS EN EL GRUPO//
+            if (!(DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->where('turnado','<>','VINCULACION')->exists())) {
+                if (DB::table('alumnos_registro')->where('mpreapertura',$memo)->where('folio_grupo','<>',$_SESSION['folio_grupo'])->where('eliminado',false)->where('turnado','<>','VINCULACION')->exists()) {
+                    return "NÚMERO DE MEMORÁNDUM OCUPADO";exit;
                 } else {
-                    $info = DB::table('organismos_publicos')->where('id',$organismo)->first();
-                    DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','UNIDAD')->update(['depen_representante'=>$info->nombre_titular, 'depen_telrepre'=>$info->telefono]);
-                }
-                $curso = DB::table('tbl_cursos as tc')
-                    ->select('tc.*','ar.horario','ar.realizo as vincu',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.depen_representante as depen_repre','tc.depen_telrepre as tel_repre',
-                        'ar.observaciones as nota_vincu','ar.mpreapertura',DB::raw("to_char(DATE (ar.fmpreapertura)::date, 'DD-MM-YYYY') as fecha_memo"),
-                        'ar.folio_grupo','ar.efisico')
-                    ->leftJoin('alumnos_registro as ar','tc.folio_grupo','ar.folio_grupo')
-                    ->leftJoin('organismos_publicos as o','ar.id_organismo','o.id')
-                    ->where('tc.folio_grupo',$_SESSION['folio_grupo'])
-                    ->where('ar.eliminado',false)
-                    ->first();//dd($curso);
-                $costos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->pluck('costo');
-                $costo = array_count_values(json_decode($costos));
-                if (count($costo) > 1) {
-                    foreach ($costo as $key => $value) {
-                        $c[] = $value." DE ".$key;
+                    $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','VINCULACION')
+                        ->update(['mpreapertura'=>$memo, 'fmpreapertura'=>$date, 'updated_at' => date('Y-m-d H:i:s'), 'observaciones'=>$request->observaciones]);
+                    if ($organismo == 358) {
+                        DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','UNIDAD')->update(['depen_representante'=>$request->repre_depen, 'depen_telrepre'=>$request->repre_tel]);
+                    } else {
+                        $info = DB::table('organismos_publicos')->where('id',$organismo)->first();
+                        DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','UNIDAD')->update(['depen_representante'=>$info->nombre_titular, 'depen_telrepre'=>$info->telefono]);
                     }
-                    $costo = implode(',',$c);
-                } else {
-                    $costo = $costos[0];
                 }
-                if ($curso) {
-                    $date = date('d-m-Y');
-                    $reg_unidad = DB::table('tbl_unidades')->where('unidad',$curso->unidad)->first(); //dd($reg_unidad);
-                    $pdf = PDF::loadView('preinscripcion.solicitudApertura',compact('distintivo','curso','reg_unidad','date','costo'));
-                    $pdf->setpaper('letter','landscape');
-                    return $pdf->stream('SOLICITUD.pdf');
-                } else {
-                    return "ACCIÓN INVÁlIDA, GUARDAR CAMBIOS";exit;
-                } 
+            }
+            //GENERACION DEL DOCUMENTO//
+            $cursos = DB::table('tbl_cursos as tc')
+                ->select(
+                    'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
+                    'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante as depen_repre',
+                    'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','ar.observaciones as nota_vincu','ar.efisico','tc.unidad'
+                )
+                ->leftJoin('alumnos_registro as ar', 'tc.folio_grupo', 'ar.folio_grupo')
+                ->where('ar.mpreapertura', $memo)
+                ->where('ar.eliminado', false)
+                ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
+                'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
+                'ar.observaciones','ar.efisico','tc.unidad')
+                ->orderBy('folio_grupo')
+                ->get(); //dd($cursos);
+            if (count($cursos) > 0) {
+                $unidad = $cursos[0]->unidad;
+                foreach ($cursos as $key => $value) {
+                    $costos = DB::table('alumnos_registro')->where('folio_grupo', $value->folio_grupo)->where('eliminado', false)->pluck('costo');
+                    $costo = array_count_values(json_decode($costos));
+                    if (count($costo) > 1) {
+                        foreach ($costo as $key => $value) {
+                            $c[] = $value . " DE " . $key;
+                        }
+                        $costo = implode(',', $c);
+                    } else {
+                        $costo = $costos[0];
+                    }
+                    $data[$key]['folio_grupo'] = $value->folio_grupo;
+                    $data[$key]['tipo_curso'] = $value->tipo_curso;
+                    $data[$key]['espe'] = $value->espe;
+                    $data[$key]['curso'] = $value->curso;
+                    $data[$key]['mod'] = $value->mod;
+                    $data[$key]['tcapacitacion'] = $value->tcapacitacion;
+                    $data[$key]['dura'] = $value->dura;
+                    $data[$key]['inicio'] = $value->inicio;
+                    $data[$key]['termino'] = $value->termino;
+                    $data[$key]['horario'] = $value->horario;
+                    $data[$key]['dia'] = $value->dia;
+                    $data[$key]['horas'] = $value->horas;
+                    $data[$key]['costos'] = $costo;
+                    $data[$key]['costo'] = $value->costo;
+                    $data[$key]['tpar'] = $value->tpar;
+                    $data[$key]['hombre'] = $value->hombre;
+                    $data[$key]['mujer'] = $value->mujer;
+                    $data[$key]['mexoneracion'] = $value->mexoneracion;
+                    $data[$key]['cgeneral'] = $value->cgeneral;
+                    $data[$key]['cespecifico'] = $value->cespecifico;
+                    $data[$key]['depen'] = $value->depen;
+                    $data[$key]['depen_repre'] = $value->depen_repre;
+                    $data[$key]['tel_repre'] = $value->tel_repre;
+                    $data[$key]['instructor'] = $value->nombre;
+                    $data[$key]['vincu'] = $value->vincu;
+                    $data[$key]['observaciones'] = $value->nota_vincu;
+                    $data[$key]['efisico'] = $value->efisico;
+                    $data[$key]['unidad'] = $value->unidad;
+                }
+            }
+            if (count($data) > 0) {
+                $date = date('d-m-Y',strtotime($date));
+                $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);
+                $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'unidad','memo'));
+                $pdf->setpaper('letter', 'landscape');
+                return $pdf->stream('SOLICITUD.pdf');
+            } else {
+                return "NO SE ENCONTRO REGISTROS, VUELVA A INTENTAR..";
+                exit;
             }
         }else{
             return "ACCIÓN INVÁlIDA";exit;

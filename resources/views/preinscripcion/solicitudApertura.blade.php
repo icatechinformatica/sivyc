@@ -56,10 +56,10 @@
                 @endif
             </tr>
             <tr>
-                <td><strong>Memorándum No. {{$curso->mpreapertura}}</strong></td>
+                <td><strong>Memorándum No. {{$memo}}</strong></td>
             </tr>
             <tr>
-                <td><strong>{{$reg_unidad->municipio_acm}}, Chis., {{$curso->fecha_memo}}</strong></td>
+                <td><strong>{{$reg_unidad->municipio_acm}}, Chis., {{$date}}</strong></td>
             </tr>
         </table>
     </header>
@@ -110,42 +110,40 @@
                     <td>NO. TELEFONO DEL REPRESENTANTE</td>
                     <td>NOMBRE DEL INSTRUCTOR</td>
                     <td>CURSO VINCULADO POR</td>
-                    @if ($curso->tcapacitacion == 'PRESENCIAL')
-                        <td>ESPACIO FISICO</td>
-                    @endif
+                    <td>ESPACIO FISICO</td>
                     <td>OBSERVACIONES</td>
                 </tr>
-                <tr>
-                    <td>{{$curso->folio_grupo}}</td>
-                    <td>{{$curso->tipo_curso}}</td>
-                    <td>{{$curso->espe}}</td>
-                    <td>{{$curso->curso}}</td>
-                    <td>{{$curso->mod}}</td>
-                    <td>{{$curso->tcapacitacion}}</td>
-                    <td>{{$curso->dura}}</td>
-                    <td>{{$curso->inicio}}</td>
-                    <td>{{$curso->termino}}</td>
-                    <td>{{$curso->horario}} HRS.</td>
-                    <td>{{$curso->dia}}</td>
-                    <td>{{$curso->horas}}</td>
-                    <td>{{$costo}}</td>
-                    <td>{{$curso->costo}}</td>
-                    <td>{{$curso->tpar}}</td>
-                    <td>{{$curso->hombre}}</td>
-                    <td>{{$curso->mujer}}</td>
-                    <td>@if ($curso->mexoneracion)  {{$curso->mexoneracion}} @else {{"N/A"}}  @endif</td>
-                    <td>@if ($curso->cgeneral!='0') {{$curso->cgeneral}} @else {{"N/A"}} @endif</td>
-                    <td>@if ($curso->cespecifico) {{$curso->cespecifico}} @else {{"N/A"}} @endif </td>
-                    <td>{{$curso->depen}}</td>
-                    <td>{{$curso->depen_repre}}</td>
-                    <td>{{$curso->tel_repre}}</td>
-                    <td>{{$curso->nombre}}</td>
-                    <td>{{$curso->vincu}}</td>
-                    @if ($curso->tcapacitacion == 'PRESENCIAL')
-                        <td>{{$curso->efisico}}</td>
-                    @endif
-                    <td>{{$curso->nota_vincu}}</td>
-                </tr>
+                @foreach ($data as $item)
+                    <tr>
+                        <td>{{$item['folio_grupo']}}</td>
+                        <td>{{$item['tipo_curso']}}</td>
+                        <td>{{$item['espe']}}</td>
+                        <td>{{$item['curso']}}</td>
+                        <td>{{$item['mod']}}</td>
+                        <td>{{$item['tcapacitacion']}}</td>
+                        <td>{{$item['dura']}}</td>
+                        <td>{{$item['inicio']}}</td>
+                        <td>{{$item['termino']}}</td>
+                        <td>{{$item['horario']}} HRS.</td>
+                        <td>{{$item['dia']}}</td>
+                        <td>{{$item['horas']}}</td>
+                        <td>{{$item['costos']}}</td>
+                        <td>{{$item['costo']}}</td>
+                        <td>{{$item['tpar']}}</td>
+                        <td>{{$item['hombre']}}</td>
+                        <td>{{$item['mujer']}}</td>
+                        <td>@if ($item['mexoneracion'])  {{$item['mexoneracion']}} @else {{"N/A"}}  @endif</td>
+                        <td>@if ($item['cgeneral']!='0') {{$item['cgeneral']}} @else {{"N/A"}} @endif</td>
+                        <td>@if ($item['cespecifico']) {{$item['cespecifico']}} @else {{"N/A"}} @endif </td>
+                        <td>{{$item['depen']}}</td>
+                        <td>{{$item['depen_repre']}}</td>
+                        <td>{{$item['tel_repre']}}</td>
+                        <td>{{$item['instructor']}}</td>
+                        <td>{{$item['vincu']}}</td>
+                        <td>{{$item['efisico']}}</td>
+                        <td>{{$item['observaciones']}}</td>
+                    </tr>
+                @endforeach
             </table>
             <div>
                 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sin más por el momento, le envío un cordial saludo.</p>
