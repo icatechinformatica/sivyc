@@ -454,7 +454,7 @@ class aperturaController extends Controller
                                     'programa' => $request->programa,
                                     'nota' => $request->observaciones,
                                     'munidad' => $request->munidad,
-                                    'efisico' => $efisico,
+                                    'efisico' => str_replace('ñ','Ñ',strtoupper($efisico)),
                                     'cespecifico' => strtoupper($request->cespecifico),
                                     'mpaqueteria' => $grupo->mpaqueteria,
                                     'mexoneracion' => $request->mexoneracion,
@@ -512,7 +512,7 @@ class aperturaController extends Controller
                             );
                             $fpago = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio'])->update([
                                 'folio_pago' => $request->folio_pago,'servicio' => $request->tcurso,'medio_virtual' => $request->medio_virtual,
-                                'link_virtual' => $request->link_virtual,'fecha_pago' => $request->fecha_pago,'efisico' => $efisico,'id_instructor' => $instructor->id
+                                'link_virtual' => $request->link_virtual,'fecha_pago' => $request->fecha_pago,'efisico' => str_replace('ñ','Ñ',strtoupper($efisico)),'id_instructor' => $instructor->id
                             ]);
                         }
                         if ($result) $message = 'Operación Exitosa!!';

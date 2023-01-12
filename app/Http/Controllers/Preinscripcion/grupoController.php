@@ -253,13 +253,13 @@ class grupoController extends Controller
                                     $folio_pago = $request->folio_pago;
                                     $fecha_pago =  $request->fecha_pago;
                                     $instructor = $request->instructor;
-                                    $efisico = $request->efisico;
+                                    $efisico = str_replace('ñ','Ñ',strtoupper($request->efisico));
                                     $medio_virtual = $request->medio_virtual;
                                     $link_virtual = $request->link_virtual;
                                     $servicio = $request->tcurso;
                                     $cespecifico = $request->cespecifico;
                                     $fcespe = $request->fcespe;
-                                    $observaciones = $request->observaciones;
+                                    $observaciones = str_replace('ñ','Ñ',strtoupper($request->observaciones));
                                 }
                                 if ($id_cerss) $cerrs = true;
                                 else $cerrs = NULL;
@@ -478,7 +478,7 @@ class grupoController extends Controller
                                     'inicio' => $request->inicio, 'termino' => $termino, 'id_organismo' => $id_organismo, 'id_vulnerable' => $request->grupo_vulnerable,
                                     'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $municipio->id, 'grupo_vulnerable' => $grupo_vulnerable, 'comprobante_pago' => $url_comprobante,
                                     'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago, 'servicio'=>$request->tcurso, 'medio_virtual' => $request->medio_virtual,
-                                    'link_virtual' => $request->link_virtual, 'efisico'=>$request->efisico,'id_instructor'=>$instructor->id,'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,
+                                    'link_virtual' => $request->link_virtual, 'efisico'=>str_replace('ñ','Ñ',strtoupper($request->efisico)),'id_instructor'=>$instructor->id,'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,
                                     'observaciones'=>$request->observaciones
                                 ]
                             );
@@ -491,7 +491,7 @@ class grupoController extends Controller
                                     'rfc' => $instructor->rfc,'clave' => '0','mvalida' => '0','mod' => $request->modalidad,'area' => $curso->area,'espe' => $curso->espe,'curso' => $curso->nombre_curso,
                                     'inicio' => $request->inicio,'termino' => $termino,'dura' => $dura,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,'ciclo' => $ciclo,
                                     'plantel' => null,'depen' => $request->dependencia,'muni' => $municipio->muni,'sector' => $sector,'programa' => null,'nota' => null,'munidad' => null,
-                                    'efisico' => $request->efisico,'cespecifico' => $request->cespecifico,'mpaqueteria' => $curso->mpaqueteria,'mexoneracion' => null,'hombre' => $sx->hombre,
+                                    'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),'cespecifico' => $request->cespecifico,'mpaqueteria' => $curso->mpaqueteria,'mexoneracion' => null,'hombre' => $sx->hombre,
                                     'mujer' => $sx->mujer,'tipo' => $tipo_pago,'fcespe' => $request->fcespe,'cgeneral' => $convenio['no_convenio'],'fcgen' => $convenio['fecha_firma'],'opcion' => 'NINGUNO','motivo' => 'NINGUNO',
                                     'cp' => $cp,'ze' => $municipio->ze,'id_curso' => $curso->id,'id_instructor' => $instructor->id,'modinstructor' => $tipo_honorario,
                                     'nmunidad' => '0','nmacademico' => '0','observaciones' => 'NINGUNO','status' => "NO REPORTADO",'realizo' => strtoupper($this->realizo),
@@ -525,7 +525,7 @@ class grupoController extends Controller
     public function genera_folio()
     {
         //$consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW('max(cast(substring(folio_grupo,7,4) as int))')) + 1;
-        $consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW("max(cast(substring(folio_grupo from '.{4}$') as int))")) + 1;
+        $consec = DB::table('alumnos_registro')->where('ejercicio', $this->ejercicio)->where('cct', $this->data['cct_unidad'])->where('eliminado', false)->value(DB::RAW("cast(substring(max(folio_grupo) from '.{4}$') as int)")) + 1;
         $consec = str_pad($consec, 4, "0", STR_PAD_LEFT);
         $folio = $this->data['cct_unidad'] . "-" . $this->ejercicio . $consec;
 
