@@ -26,6 +26,9 @@
     });
     $("#id_municipio" ).change(function(){
         cmb_loc();
+    });
+    $("#dependencia" ).change(function(){
+        cmb_repre();
     });     
     
     function cmb_curso(){ 
@@ -88,6 +91,25 @@
                     $.each(data, function () {                                                                   
                         $("#id_municipio").append('<option value="'+this['id']+'">'+this['muni']+'</option>');
                     });
+                }
+            });                        
+        }
+    };
+
+    function cmb_repre(){
+        var depen = $('#dependencia').val();
+        $("#repre_depen").empty();
+        $("#repre_tel").empty();
+        if(depen){
+            $.ajax({
+                type: "GET",
+                url: "/preinscripcion/grupo/cmbrepre",
+                data:{depen:depen, _token:"{{csrf_token()}}"},
+                contentType: "application/json",              
+                dataType: "json",
+                success: function (data) {// console.log(data); 
+                    $("#repre_depen").val(data['nombre_titular']);
+                    $("#repre_tel").val(data['telefono']);
                 }
             });                        
         }

@@ -21,10 +21,6 @@
             $costo = $curso->costo;
             $nombre_curso =  $curso->nombre_curso;
         }
-        if ($grupo) {
-            $repre = $grupo->depen_representante;
-            $tel = $grupo->depen_telrepre;
-        }
         if(count($alumnos)>0){ 
             $hfin = substr($alumnos[0]->horario, 8, 5);
             $hini = substr($alumnos[0]->horario, 0, 5);
@@ -47,7 +43,9 @@
             $cespe = $alumnos[0]->cespecifico;
             $fcespe = $alumnos[0]->fcespe;  
             $nota = $alumnos[0]->observaciones;
-            $memo = $alumnos[0]->mpreapertura;       
+            $memo = $alumnos[0]->mpreapertura; 
+            $repre = $alumnos[0]->depen_repre;
+            $tel = $alumnos[0]->depen_telrepre;      
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
@@ -85,7 +83,10 @@
                     <div class="row bg-light" style="padding:15px;">
                         <div class="form-group col-md-5">MEMORANDUM DE VALIDACION DEL INSTRUCTOR:&nbsp;&nbsp;<strong>{{ $grupo->instructor_mespecialidad }}</strong></div>
                         <div class="form-group col-md-2">TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></div>
-                        <div class="form-group col-md-4">DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></div>
+                        <div class="form-group col-md-5">DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></div>
+                        @if ($grupo->mexoneracion AND ($grupo->mexoneracion <> '0'))
+                        <div class="form-group col-md-5">MEMORÁNDUM DE EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong>{{$grupo->mexoneracion}}</strong></div>
+                        @endif
                         @if ($grupo->cgeneral!='0')
                         <div class="form-group col-md-3">CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->cgeneral}}</strong></div>
                         <div class="from-group col-md-3">FECHA CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->fcgen}}</strong></div>
@@ -142,17 +143,25 @@
                         <label>ORGANISMO PUBLICO:</label>
                         {{ Form::select('dependencia', $dependencia,$organismo, ['id'=>'dependencia','class' => 'form-control mr-sm-2', 'placeholder' => '- SELECCIONAR -'] ) }}
                     </div> 
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
+                        <label for="">NOMBRE DEL REPRESENTANTE:</label>
+                        {!! Form::text('repre_depen', $repre, ['id'=>'repre_depen', 'class'=>'form-control']) !!}
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="">TELEFONO DEL REPRESENTANTE:</label>
+                        {!! Form::text('repre_tel', $tel, ['id'=>'repre_tel', 'class'=>'form-control']) !!}
+                    </div>              
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-5">
                         @if ($es_vulnerable == 'true')
                         <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($id_vulnerable){{'checked'}}@endif>&nbsp;&nbsp;GRUPO VULNERABLE</label> 
                         @else
                         <label><input type="checkbox" value="vulnerable" id="vulnerable_ok" @if($id_vulnerable){{'checked'}}@endif disabled>&nbsp;&nbsp;GRUPO VULNERABLE</label> 
                         @endif     
                         {{ Form::select('grupo_vulnerable', $grupo_vulnerable, $id_vulnerable, ['id'=>'grupo_vulnerable','class' => 'form-control mr-sm-2', 'placeholder' => 'SELECIONAR','disabled'=>'disabled'] ) }}                  
-                    </div>                
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
+                    </div>  
+                    <div class="form-group col-md-5">
                         <label>DOMICILIO, LUGAR O ESPACIO FÍSICO:</label>
                         <input type="text" id="efisico" name="efisico" class="form-control" value="{{$efisico}}">
                     </div>
@@ -160,6 +169,8 @@
                         <label>MEDIO VIRTUAL:</label>
                         {{ Form::select('medio_virtual', $medio_virtual, $mvirtual, ['id'=>'medio_virtual','class' => 'form-control mr-sm-2'] ) }}
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-4">
                         <label>LINK VIRTUAL:</label>
                         <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$lvirtual}}">
@@ -168,8 +179,6 @@
                         <label for="">CONVENIO ESPECIFICO:</label>
                         <input type="text" name="cespecifico" id="cespecifico" class="form-control" value="{{$cespe}}">
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group col-md-2">
                         <label for="">FECHA CONVENIO ESPECIFICO:</label>
                         <input type="date" name="fcespe" id="fcespe" class="form-control" value="{{$fcespe}}">
@@ -209,15 +218,22 @@
                                 <label class="custom-file-label" for="customFile">PDF COMPROBANTE DE PAGO</label>
                             </div>
                         </div>
+                        @if ($comprobante)
+                            <div class="form-group col-md-1 mt-3">
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="COMPROBANTE DE PAGO"
+                                    href="{{$comprobante}}">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        @endif
                         <div class="form-group col-md-2 mt-3">
                             <a class="btn btn-dark-green" href="https://www.ilovepdf.com/es/unir_pdf" target="blank">UNIR PDF´s</a>
                         </div>
                     </div>
                 @endif
-                <br />
                 <br />  
                 @can('agenda.vinculacion')
-                    @if ($grupo)
+                    @if ($folio_grupo)
                         <div>
                             <label><h4>DE LA APERTURA </h4></label>
                             <hr /> 
@@ -227,24 +243,11 @@
                                 <label for="">MEMORÁNDUM DE SOLICITUD DE APERTURA:</label>
                                 {!! Form::text('mapertura', $memo, ['id'=>'mapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM APERTURA', 'aria-label' => 'No. Memorándum']) !!}
                             </div>
-                            <div class="form-group col-md-3">
-                                <label for="">NOMBRE DEL REPRESENTANTE:</label>
-                                {!! Form::text('repre_depen', $repre, ['id'=>'repre_depen', 'class'=>'form-control']) !!}
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="">TELEFONO DEL REPRESENTANTE:</label>
-                                {!! Form::text('repre_tel', $tel, ['id'=>'repre_tel', 'class'=>'form-control']) !!}
-                            </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="">OBSERVACIONES:</label>
                                 <textarea name="observaciones" id="observaciones" rows="5" class="form-control">{{$nota}}</textarea>
-                            </div>
-                        </div>
-                        <div class="form-row text-right">
-                            <div class="form-group col-md-12">
-                                <button type="button" class="btn" id="gape">GENERAR SOLICITUD DE APERTURA</button>
                             </div>
                         </div>
                         <br>
@@ -390,7 +393,7 @@
                 $("#generar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.generar')}}", 'target':'_target'}); $('#frm').submit(); });
                 $("#gape").click(function(){ 
                     if ($('#mapertura').val() == ''||$('#mapertura').val() == ' ') {
-                        alert("Ingrese el número de memorándum de la solicitud de apertura.."); 
+                        alert("Guarde el número de memorándum de la solicitud de apertura.."); 
                     } else if ($('#observaciones').val() == ''||$('#observaciones').val() == ' ') {
                         alert("Llenar el campo de observaciones..");
                     } else {
