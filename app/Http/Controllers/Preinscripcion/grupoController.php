@@ -168,7 +168,7 @@ class grupoController extends Controller
 
     public function cmbrepre(Request $request){
         if (isset($request->depen)) {
-            $depen = DB::table('organismos_publicos')->select(DB::raw("REPLACE(UPPER(nombre_titular),'ñ','Ñ') as nombre_titular"),'telefono')->where('organismo', $request->depen)->first();
+            $depen = DB::table('organismos_publicos')->select(DB::raw("REPLACE(UPPER(nombre_titular),'ñ','Ñ') as nombre_titular"),'telefono')->where('organismo', $request->depen)->where('activo', true)->first();
             $json = json_encode($depen);
         } else {
             $json = json_encode(["No hay registros que mostrar!"]);
@@ -257,7 +257,7 @@ class grupoController extends Controller
                                     $id_muni = $request->id_municipio;
                                     $clave_localidad = $request->localidad;
                                     $organismo = $request->dependencia;
-                                    $id_organismo = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('id');
+                                    $id_organismo = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->where('activo', true)->value('id');
                                     $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id',$request->grupo_vulnerable)->value('grupo');
                                     $id_vulnerable = $request->grupo_vulnerable;
                                     $comprobante_pago = null;
@@ -276,8 +276,8 @@ class grupoController extends Controller
                                         $depen_repre = $request->repre_depen;
                                         $depen_telrepre = $request->repre_tel;
                                     } else {
-                                        $depen_repre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('nombre_titular');
-                                        $depen_telrepre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('telefono');
+                                        $depen_repre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->where('activo', true)->value('nombre_titular');
+                                        $depen_telrepre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->where('activo', true)->value('telefono');
                                     }
                                 }
                                 if ($id_cerss) $cerrs = true;
@@ -354,13 +354,13 @@ class grupoController extends Controller
                             $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
                             $costo_individual = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('costo');
                             $horario = $request->hini . ' A ' . $request->hfin;
-                            $id_organismo = DB::table('organismos_publicos')->where('organismo', $request->dependencia)->value('id');
+                            $id_organismo = DB::table('organismos_publicos')->where('organismo', $request->dependencia)->where('activo', true)->value('id');
                             if (($id_organismo == 358) OR ($request->modalidad=='EXT')) {
                                 $depen_repre = $request->repre_depen;
                                 $depen_telrepre = $request->repre_tel;
                             } else {
-                                $depen_repre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('nombre_titular');
-                                $depen_telrepre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->value('telefono');
+                                $depen_repre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->where('activo', true)->value('nombre_titular');
+                                $depen_telrepre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->where('activo', true)->value('telefono');
                             }
                             $convenio = null;
                             if($request->dependencia AND $request->modalidad=='CAE'){
