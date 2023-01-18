@@ -197,18 +197,16 @@ Route::middleware(['auth'])->group(function () {
     /**
      * Desarrollado por Adrian y Daniel , act AGC
      */
-    //Route::get('/alumnos/indice', 'webController\AlumnoController@index')
-        //   ->name('alumnos.index')->middleware('can:alumnos.index');
+    //Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::post('/alumnos/exoneracion/permiso','webController\AlumnoController@activarPermiso')->name('activar.permiso.exo');
     Route::get('/alumnos/exoneracion/permiso/desactivar','webController\AlumnoController@quitarPermiso')->name('quitar.permiso.exo');
-    Route::get('/alumnos/indice', 'webController\AlumnoController@index')
-        ->name('alumnos.index')->middleware('can:alumnos.index');
-
-        Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
-        Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.csid');
-        Route::get('alumnos/sid', 'webController\AlumnoController@create')
-        ->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
+    Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
+    Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
+    Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
+    // Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.csid');
+    Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
     Route::get('alumnos/municipio_nov', 'webController\AlumnoController@showlm');
+    Route::get('alumnos/localidad_nov', 'webController\AlumnoController@show_localidad');
     Route::get('alumnos/fecha_s', 'webController\AlumnoController@showlf');
     Route::get('alumnos/municipios', 'webController\AlumnoController@municipios');
     Route::get('alumnos/sid/cerss', 'webController\AlumnoController@createcerss')->name('preinscripcion.cerss');
@@ -230,7 +228,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('alumnos/modificar/sid-paso2/{id}', 'webController\AlumnoRegistradoController@edit')->name('alumnos.update.registro')
     ->middleware('can:alumno.inscrito.edit');
     // modificar la preinscripcion
-    Route::get('alumnos/modificar/sid/{id}', 'webController\AlumnoController@showUpdate')->name('alumnos.presincripcion-modificar');
+    // Route::get('alumnos/modificar/sid/{id}', 'webController\AlumnoController@showUpdate')->name('alumnos.presincripcion-modificar');
     Route::get('alumnos/modificar/jefe-unidad/sid/{id}', 'webController\AlumnoController@modifyUpdateChief')->name('alumnos.modificar-jefe-unidad');
     Route::post('alumnos/sid/modificar/{idAspirante}', 'webController\AlumnoController@updateSid')->name('sid.modificar');
     Route::post('alumnos/sid/modificar/vinculador/{idAspirante}', 'webController\AlumnoController@updateSidJefeUnidad')->name('sid.modificar-vinculador')->middleware('can:alumnos.inscripcion-jefe-unidad-update');

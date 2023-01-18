@@ -57,7 +57,7 @@
                             <td>{{$itemData->curp}}</td>
                             @can('alumnos.inscripcion-paso2')
                                 <td>
-                                    <a href="{{route('alumnos.presincripcion-modificar', ['id' => base64_encode($itemData->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
+                                    <a href="{{route('alumnos.valid', ['busqueda' => $itemData->curp])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </a>
                                 </td>
