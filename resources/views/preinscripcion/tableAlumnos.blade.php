@@ -84,10 +84,10 @@
 </table>
 <div class="col-md-12 text-right">
   @if ($grupo)
+    <button id="btnShowCalendar" type="button" class="btn btn-info">AGENDAR</button>
     @can('agenda.vinculacion')
-      <button id="btnShowCalendar" type="button" class="btn btn-info">AGENDAR</button>   
+         <button type="button" class="btn" id="gape">GENERAR SOLICITUD DE APERTURA</button>
     @endcan
-    <button type="button" class="btn" id="gape">GENERAR SOLICITUD DE APERTURA</button>
     <button type="button" class="btn" id="generar">GENERAR LISTA DE ALUMNOS</button>
   @endif
   <button type="button" class="btn" id="nuevo" >NUEVO GRUPO</button> &nbsp;&nbsp;
