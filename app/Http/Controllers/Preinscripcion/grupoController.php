@@ -491,7 +491,7 @@ class grupoController extends Controller
                                 $tipo_honorario = 'HONORARIOS';
                             }
                             if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
-                                $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['observaciones'=>$request->observaciones, 
+                                $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(['observaciones'=>$request->observaciones, 
                                     'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante, 
                                     'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago, 'observaciones'=>$request->observaciones, 'mpreapertura'=>$mapertura]);
                                 if ($result) {
@@ -501,7 +501,7 @@ class grupoController extends Controller
                                 }
                             } else {
                                 $alus = DB::table('alumnos_registro')->where('folio_grupo',$folio)->first();
-                                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
+                                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('turnado','VINCULACION')->Update(
                                     [
                                         'id_unidad' =>  $unidad->id, 'id_curso' => $request->id_curso, 'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
                                         'id_especialidad' =>  $id_especialidad, 'horario' => $horario, 'unidad' => $request->unidad, 'tipo_curso' => $request->tipo, 'mod' => $request->modalidad,
