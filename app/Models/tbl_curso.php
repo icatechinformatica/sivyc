@@ -20,7 +20,8 @@ class tbl_curso extends Model
     'tcapacitacion','status_curso','fecha_apertura','fecha_modificacion','costo','motivo_correccion',
     'pdf_curso','json_supervision','turnado','fecha_turnado','tipo_curso','id_especialidad','instructor_escolaridad',
     'instructor_titulo','instructor_sexo','instructor_mespecialidad','medio_virtual','link_virtual','folio_grupo',
-    'id_municipio','clave_especialidad','id_cerss','tdias'
+    'id_municipio','clave_especialidad','id_cerss','tdias','movimiento_bancario','fecha_movimeinto_bancario',
+    'factura','fecha_factura'
 ];
 
     protected $hidden = ['created_at', 'updated_at'];

@@ -102,6 +102,32 @@
                 <input id="id_elabora" name="id_elabora" type="text" hidden>
             </div>
         </div>
+        <hr style="border-color:dimgray">
+        <h2>Datos de Pago de Curso</h2>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
+                <input type="text" name="norecibo" id="norecibo" placeholder="No.Recibo" class="form-control" readonly />
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputmovimiento_bancario" class="control-label">Movimiento Bancario</label>
+                <input type="text" class="form-control" id="movimiento_bancario" name="movimiento_bancario" placeholder="MOVIMIENTO BANCARIO">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputfecha_movimiento_bancario" class="control-label">Fecha de Movimiento</label>
+                <input type="date" class="form-control" id="fecha_movimiento_bancario" name="fecha_movimiento_bancario">
+            </div>
+        </div>
+        {{-- <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="inputfactura" class="control-label">Factura</label>
+                <input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputfecha_factura" class="control-label">Fecha de Factura</label>
+                <input type="date" class="form-control" id="fecha_factura" name="fecha_factura">
+            </div>
+        </div> --}}
         <br>
         <div class="row">
             <div class="col-lg-12 margin-tb">
@@ -205,6 +231,11 @@
                             total = parseFloat(total).toFixed(2);
 
                             document.getElementById('addmore['+x+'][importe]').value = total;
+                            document.getElementById('norecibo').value = respuesta['recibo'];
+                            document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
+                            document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
+                            // document.getElementById('factura').value = respuesta['factura'];
+                            // document.getElementById('fecha_factura').value = respuesta['fecha_factura'];
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
 
                         }else{

@@ -255,6 +255,9 @@
                         @can('reportes.rcdod11')
                             <a class="dropdown-item" href="{{route('reportes.rcdod11.index')}}">RCDOD-11</a>
                         @endcan
+                        @can('reportes.rf001')
+                            <a class="dropdown-item" href="{{route('reportes.concentradoingresos')}}">RF-001</a>
+                        @endcan
                         @can('financieros.reportevalrec')
                         {{-- <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>--}}

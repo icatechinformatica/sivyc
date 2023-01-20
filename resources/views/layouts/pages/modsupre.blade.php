@@ -124,6 +124,32 @@
                 <input id="id_elabora" name="id_elabora" type="text" value="{{$getelabora->id}}" hidden>
             </div>
         </div>
+        <hr style="border-color:dimgray">
+        <h2>Datos de Pago de Curso</h2>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="inputmovimiento_bancario" class="control-label">Movimiento Bancario</label>
+                <input type="text" id="norecibo" name="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputmovimiento_bancario" class="control-label">Movimiento Bancario</label>
+                <input type="text" class="form-control" id="movimiento_bancario" name="movimiento_bancario" value="{{$getfolios[0]->movimiento_bancario}}" placeholder="MOVIMIENTO BANCARIO">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputfecha_movimiento_bancario" class="control-label">Fecha de Movimiento</label>
+                <input type="date" class="form-control" id="fecha_movimiento_bancario" value="{{$getfolios[0]->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario">
+            </div>
+        </div>
+        {{-- <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="inputfactura" class="control-label">Factura</label>
+                <input type="text" class="form-control" id="factura" value="{{$getfolios[0]->factura}}" name="factura" placeholder="Factura">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputfecha_factura" class="control-label">Fecha de Factura</label>
+                <input type="date" class="form-control" id="fecha_factura" value="{{$getfolios[0]->fecha_factura}}" name="fecha_factura">
+            </div>
+        </div> --}}
         <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}">
         <br>
         <div class="row">
