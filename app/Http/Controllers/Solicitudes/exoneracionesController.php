@@ -27,7 +27,7 @@ class exoneracionesController extends Controller
             $cursos = DB::table('exoneraciones as e')
                         ->select('e.id','e.folio_grupo','e.nrevision','tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','e.foficio',
                             'tc.hombre','tc.mujer','e.fini','e.ffin','tc.nombre as instructor','e.tipo_exoneracion','e.noficio','e.razon_exoneracion','e.observaciones',
-                            'e.no_memorandum','e.status','e.turnado','e.memo_soporte_dependencia','e.pobservacion','e.no_convenio','tc.depen','e.motivo')
+                            'e.no_memorandum','e.status','e.turnado','e.memo_soporte_dependencia','e.pobservacion','e.no_convenio','tc.depen','e.motivo','tc.hini','tc.hfin')
                         ->leftJoin('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
                         ->leftJoin('alumnos_registro as ar','e.folio_grupo','=','ar.folio_grupo')
                         ->leftJoin('cursos as c','ar.id_curso','=','c.id')
@@ -35,7 +35,7 @@ class exoneracionesController extends Controller
                         ->orWhere('e.no_memorandum',$_SESSION['valor'])
                         ->groupBy('e.id','tc.tipo_curso','tc.unidad','c.nombre_curso','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','e.foficio',
                         'tc.hombre','tc.mujer','e.fini','e.ffin','tc.nombre','e.tipo_exoneracion','e.noficio','e.razon_exoneracion','e.observaciones',
-                        'e.no_memorandum','e.status','e.turnado','memo_soporte_dependencia','tc.depen','e.motivo')
+                        'e.no_memorandum','e.status','e.turnado','memo_soporte_dependencia','tc.depen','e.motivo','tc.hini','tc.hfin')
                         ->get();    //dd($cursos);
             if ( count($cursos) > 0 ) {
                 $nrevision = $cursos[0]->nrevision;
