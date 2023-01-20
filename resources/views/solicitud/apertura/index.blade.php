@@ -177,6 +177,10 @@
             </div>
             <div class="form-row" >
                 <div class="form-group col-md-12">
+                    <label>Observaciones de vinculación:</label>
+                    <textarea name='obs_vincu' id='obs_vincu'  class="form-control" rows="5" readonly>{{$grupo->nota_vincu}}</textarea>
+                </div>
+                <div class="form-group col-md-12">
                     <label>Observaciones:</label>
                     <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
                 </div>

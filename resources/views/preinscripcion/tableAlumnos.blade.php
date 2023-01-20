@@ -83,11 +83,11 @@
   </tbody>
 </table>
 <div class="col-md-12 text-right">
-  @if ($comprobante)
-    <a href="{{$comprobante}}" target="_blank" class="btn  bg-warning">IMPRIMIR COMPROBANTE DE PAGO</a>
-  @endif
   @if ($grupo)
-    <button id="btnShowCalendar" type="button" class="btn btn-info">Agendar</button>
+    <button id="btnShowCalendar" type="button" class="btn btn-info">AGENDAR</button>
+    @can('agenda.vinculacion')
+         <button type="button" class="btn" id="gape">GENERAR SOLICITUD DE APERTURA</button>
+    @endcan
     <button type="button" class="btn" id="generar">GENERAR LISTA DE ALUMNOS</button>
   @endif
   <button type="button" class="btn" id="nuevo" >NUEVO GRUPO</button> &nbsp;&nbsp;
