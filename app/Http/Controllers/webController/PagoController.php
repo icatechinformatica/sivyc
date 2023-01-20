@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Redirect,Response;
 use App\Http\Controllers\Controller;
 use PDF;
+use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Auth;
 use App\Models\tbl_unidades;
 use Illuminate\Pagination\Paginator;
@@ -537,6 +538,44 @@ class PagoController extends Controller
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
 
+    }
+
+    public function concentrado_ingresos()
+    {
+        $roluser = DB::TABLE('roles')->SELECT('name')->JOIN('role_user AS ru','ru.role_id','roles.id')
+            ->WHERE('user_id',Auth::user()->id)
+            ->FIRST();
+        $unidaduser = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id',Auth::user()->unidad)->FIRST();
+        $unidades = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->GROUPBY('ubicacion')->ORDERBY('ubicacion','ASC')->GET();
+        // dd($roluser);
+        return view('layouts.pages.vstarf-001', compact('unidades','unidaduser','roluser'));
+    }
+
+    public function concentrado_ingresos_pdf(Request $request)
+    {
+        // dd($request);
+        set_time_limit(0);
+        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
+        $realiza = DB::TABLE('users')->SELECT('name','puesto')->WHERE('id',Auth::user()->id)->FIRST();
+        $fecha['inicio'] = $request->fecha_inicio;
+        $fecha['termino'] = $request->fecha_termino;
+        $fecha['hoy'] = carbon::now()->format('d-m-Y');
+        $data = DB::TABLE('folios AS f')
+            ->SELECT('curso','tc.folio_pago','tc.movimiento_bancario','costo','u.cuenta','u.delegado_administrativo',
+                    'u.pdelegado_administrativo','u.dunidad','u.pdunidad', 'u.ubicacion')
+            ->RIGHTJOIN('tbl_cursos AS tc', 'tc.id', 'f.id_cursos')
+            ->JOIN('tbl_unidades AS u', 'u.cct', 'tc.cct')
+            ->WHEREBETWEEN('tc.fecha_movimiento_bancario',[$fecha['inicio'],$fecha['termino']])
+            ->WHERE('tc.costo','!=','0.00')
+            ->WHERE('tc.movimiento_bancario','!=',NULL)
+            ->WHERE('ubicacion', $request->unidades)
+            ->ORDERBY('fecha_apertura', 'ASC')
+            ->GET();
+        // dd($data);
+
+        $pdf = PDF::loadView('layouts.pdfpages.concentradodeingresos', compact('distintivo','fecha','data','realiza'));
+        $pdf->setPaper('Letter','portrait');
+        return $pdf->stream('RF-001.pdf');
     }
 
     protected function pdf_upload($pdf, $id, $nom)

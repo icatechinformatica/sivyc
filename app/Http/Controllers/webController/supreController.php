@@ -183,6 +183,13 @@ class supreController extends Controller
                     $folio->id_cursos = $hora->id;
                     $folio->status = 'En_Proceso';
                     $folio->save();
+
+                    $mvtobanc = tbl_curso::find($hora->id);
+                    $mvtobanc->movimiento_bancario = $request->movimiento_bancario;
+                    $mvtobanc->fecha_movimiento_bancario = $request->fecha_movimiento_bancario;
+                    // $mvtobanc->factura = $request->factura;
+                    // $mvtobanc->fecha_factura = $request->fecha_factura;
+                    $mvtobanc->save();
                 }
                 else
                 {
@@ -234,7 +241,9 @@ class supreController extends Controller
         $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $getsupre->unidad_capacitacion)->GET();
 
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
-                                    'folios.importe_total','folios.iva','tbl_cursos.clave')
+                                'folios.importe_total','folios.iva','tbl_cursos.clave',
+                                'tbl_cursos.movimiento_bancario','tbl_cursos.fecha_movimiento_bancario',
+                                'tbl_cursos.factura','tbl_cursos.fecha_factura','tbl_cursos.folio_pago')
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
@@ -319,7 +328,14 @@ class supreController extends Controller
             $folio->id_cursos = $hora->id;
             $folio->status = 'En_Proceso';
             $folio->save();
-        }
+
+            $mvtobanc = tbl_curso::find($hora->id);
+            $mvtobanc->movimiento_bancario = $request->movimiento_bancario;
+            $mvtobanc->fecha_movimiento_bancario = $request->fecha_movimiento_bancario;
+            // $mvtobanc->factura = $request->factura;
+            // $mvtobanc->fecha_factura = $request->fecha_factura;
+            $mvtobanc->save();
+}
         // return redirect()->route('supre-inicio')
         // ->with('success','Solicitud de Suficiencia Presupuestal agregado');
         return view('layouts.pages.suprecheck',compact('id','id_directorio'));
@@ -682,7 +698,10 @@ class supreController extends Controller
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;//$request->valor;
             $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura', 'tbl_cursos.modinstructor', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso')
+            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
+                    'tbl_cursos.modinstructor', 'tbl_cursos.inicio', 'tbl_cursos.tipo_curso',
+                    'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
+                    'factura','fecha_factura')
                                     ->WHERE('clave', '=', $claveCurso)->FIRST();
 
             if($Cursos != NULL)
@@ -742,6 +761,11 @@ class supreController extends Controller
             {
                 $total = 'N/A';
             }
+            $total['recibo'] = $Cursos->folio_pago;
+            $total['movimiento_bancario'] = $Cursos->movimiento_bancario;
+            $total['fecha_movimiento_bancario'] = $Cursos->fecha_movimiento_bancario;
+            $total['factura'] = $Cursos->factura;
+            $total['fecha_factura'] = $Cursos->fecha_factura;
             $json=json_encode($total); //dura 10 cp 6
         }else{
             $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
