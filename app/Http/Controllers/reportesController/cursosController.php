@@ -251,7 +251,7 @@ class cursosController extends Controller
             DB::raw('EXTRACT(DAY FROM termino)  as dia_termino'),
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),
             DB::raw('EXTRACT(YEAR FROM termino)  as anio_termino'),
-            'c.duracion as horas_certificacion','tc.tipo_curso as servicio')
+            'c.duracion as horas_certificacion','tc.tipo_curso as servicio','tc.nplantel')
             ->where('tc.clave',$clave);
             if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tc.unidad')
@@ -271,8 +271,7 @@ class cursosController extends Controller
                     $duracion = $curso->dura;
                 }
                 $data = DB::table('tbl_inscripcion as i')
-                    ->select('i.alumno','i.curp',
-                        // DB::raw("REPLACE('".$curso->curso."','.','') as nombre_curso"),
+                    ->select('f.folio','i.alumno','i.curp',
                         DB::raw("E'".addslashes($curso->curso)."' as nombre_curso"),
                         DB::raw("to_char(f.fecha_expedicion, 'DD/MM/YYYY') as fecha"),
                         DB::raw("LPAD('".$curso->dia_termino."',2,'0') as dia"),
@@ -280,6 +279,7 @@ class cursosController extends Controller
                         DB::raw("'".$curso->anio_termino."' as anio"),
                         DB::raw("'".$duracion."' as horas"),
                         DB::raw("'".$curso->cct."' as cct"),
+                        DB::raw("'".$curso->nplantel.$curso->unidad."' as planel"),
                         DB::raw("'".$curso->unidad."' as unidad"),
                         DB::raw("'CHIAPAS' as estado"),
                         DB::raw("'C. ".$curso->dunidad."' as dunidad"),
@@ -295,7 +295,7 @@ class cursosController extends Controller
                 //var_dump($data); exit;
                 if(count($data)==0){ return "NO TIENEN FOLIOS ASIGNADOS";exit;}
 
-                $head = ['ALUMNO','CURP','CURSO','FECHA','DIA','MES','AÑO','HORAS','CLAVE UNIDAD','CIUDAD','ESTADO','DIRECTOR','DEPENDENCIA'];
+                $head = ['FOLIO','ALUMNO','CURP','CURSO','FECHA','DIA','MES','AÑO','HORAS','CLAVE UNIDAD','UNIDAD DE CAPACITACION','CIUDAD','ESTADO','DIRECTOR','DEPENDENCIA'];
                 $nombreLayout = $clave.".xlsx";
 
                 if(count($data)>0){
