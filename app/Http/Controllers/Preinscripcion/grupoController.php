@@ -648,7 +648,11 @@ class grupoController extends Controller
         $id = $request->id;
         if ($id) {
             //$result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id',$id)->update(['eliminado'=>true,'iduser_updated'=>$this->id_user]);
-            $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id', $id)->delete();
+            if (count(DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->get())>1) {
+                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id', $id)->delete();
+            } else {
+                $result = false;
+            }  
         } else $result = false;
         //echo $result; exit;
         return $result;
