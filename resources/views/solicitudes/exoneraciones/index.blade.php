@@ -59,12 +59,13 @@
                               <th rowspan="2" class="text-center">OBSERVACIONES</th>  
                             @endif                            
                             <th rowspan="2" class="text-center">SERVICIO</th>
-                            <th rowspan="2" class="text-center">UNIDAD/ACCIÓN MÓVIL</th> 
+                            <th rowspan="2" class="text-center">UNIDAD /ACCIÓN MÓVIL</th> 
                             <th rowspan="2" class="text-center">CURSO</th>
                             <th rowspan="2" class="text-center">COSTO</th>
                             <th rowspan="2" class="text-center">HORAS</th>
                             <th rowspan="2" class="text-center">INICIO</th>       
                             <th rowspan="2" class="text-center">TERMINO</th>
+                            <th rowspan="2" class="text-center">HORARIO</th>
                             <th rowspan="2" class="text-center">CUPO</th>
                             <th colspan="2" class="text-center">SEXO</th>
                             <th colspan="2" class="text-center">FOLIAJE</th>
@@ -93,7 +94,7 @@
                                 <td class="text-center">{{$item->folio_grupo}}</td>
                                 @if (($status=='PREVALIDACION') OR ($status=='SOLICITADO') OR ($status=='VALIDADO'))
                                 <td class="text-center">
-                                    <div style="width: 300px;">
+                                    <div style="width: 250px;">
                                         {{ Form::textarea('respuesta['.$item->folio_grupo.']', $item->pobservacion, ['id' => 'respuesta['.$item->folio_grupo.']' ,'class' => 'form-control', 'placeholder' => 'OBSERVACIONES','rows' =>'2']) }}
                                     </div>
                                 </td>
@@ -103,27 +104,28 @@
                                 @endphp                                
                                 <td class="text-center">{{$item->tipo_curso}}</td>
                                 <td class="text-center">{{$item->unidad}}</td>
-                                <td class="text-center">{{$item->curso}}</td>
+                                <td><div style="width: 280px;">{{$item->curso}}</div></td>
                                 <td class="text-center">{{$item->costo}}</td>
                                 <td class="text-center">{{$item->dura}}</td>
                                 <td class="text-center">{{$item->inicio}}</td>
                                 <td class="text-center">{{$item->termino}}</td>
+                                <td class="text-center"><div style="width: 80px;">{{$item->hini}} A {{$item->hfin}} </div></td>
                                 <td class="text-center">{{$total}}</td>
                                 <td class="text-center">{{$item->hombre}}</td>
                                 <td class="text-center">{{$item->mujer}}</td>
                                 <td class="text-center">{{$item->fini}}</td>
                                 <td class="text-center">{{$item->ffin}}</td>
-                                <td class="text-center">{{$item->instructor}}</td>
+                                <td class="text-center"><div style="width: 120px;">{{$item->instructor}}</div></td>
                                 <td class="text-center">@if ($item->tipo_exoneracion == 'EXO') {{"X"}}  @endif</td>
                                 <td class="text-center">@if ($item->tipo_exoneracion == 'EPAR') {{"X"}} @endif</td>                                
                                 <td class="text-center">{{$item->status}}</td>
                                 <td class="text-center">{{$item->turnado}}</td>
-                                <td class="text-center">{{$item->no_convenio}}</td>
-                                <td class="text-center">{{$item->depen}}</td>
+                                <td class="text-center">{{$item->no_convenio}}</div></td>
+                                <td class="text-center"><div style="width: 200px;">{{$item->depen}}</td>
                                 <td class="text-center">{{$item->noficio}} <br> {{$item->foficio}}</td>
                                 <td class="text-center">{{$razon[$item->razon_exoneracion]}}</td>
                                 
-                                <td class="text-center"><div style="width: 400px;">{{$item->observaciones}}</div></td>
+                                <td><div style="width: 300px;">{{$item->observaciones}}</div></td>
                             </tr>
                         @endforeach 
                     </tbody>                   
