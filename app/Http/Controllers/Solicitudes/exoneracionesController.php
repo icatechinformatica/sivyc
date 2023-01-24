@@ -116,7 +116,7 @@ class exoneracionesController extends Controller
                     break;
                     case $mov=='CANCELAR' || $mov=='CANCELACION': 
                         $result = DB::table('exoneraciones')
-                        ->where('nrevision', $_SESSION['revision'])->where('status','CANCELAR')
+                        ->where('nrevision', $_SESSION['revision'])->whereIn('status',['CANCELAR','SOLICITADO'])
                         ->update(['status' => 'CANCELADO', 'activo' => 'false','frespuesta' => date('Y-m-d H:i:s'),'motivo' => $request->motivo]);
                         if($result){
                             $c = DB::table('tbl_cursos as c')->join('exoneraciones as e','c.folio_grupo','=','e.folio_grupo')
