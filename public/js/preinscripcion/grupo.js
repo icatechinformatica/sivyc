@@ -10,11 +10,13 @@
         if ($("#tipo").val()=='A DISTANCIA') {
             $("#medio_virtual").removeAttr("disabled"); 
             $("#link_virtual").removeAttr("disabled");
+            $('#efisico').val('CURSO CON ACTIVIDAD NO PRESENCIAL, CAPACITACION A DISTANCIA.');
         }else{
             $("#medio_virtual").attr("disabled", "disabled");
             $("#link_virtual").attr("disabled", "disabled"); 
             $('#medio_virtual').val('');
             $('#link_virtual').val('');
+            $('#efisico').val('');
         }
     });
     $("#unidad" ).change(function(){
