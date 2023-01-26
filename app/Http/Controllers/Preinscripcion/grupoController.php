@@ -494,12 +494,13 @@ class grupoController extends Controller
                                 $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(
                                     ['observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante, 
                                     'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,'mpreapertura'=>$mapertura,'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre,
-                                    'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe]);
+                                    'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual]);
                                 if ($result) {
                                     $message = "Operación Exitosa!!";
                                     DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('id',$ID)->update(['comprobante_pago' => $url_comprobante,
                                         'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago, 'updated_at' => date('Y-m-d H:i:s'),
-                                        'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe]);
+                                        'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe,
+                                        'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual]);
                                 }
                             } else {
                                 $alus = DB::table('alumnos_registro')->where('folio_grupo',$folio)->first();
