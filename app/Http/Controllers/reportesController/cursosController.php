@@ -279,7 +279,7 @@ class cursosController extends Controller
                         DB::raw("'".$curso->anio_termino."' as anio"),
                         DB::raw("'".$duracion."' as horas"),
                         DB::raw("'".$curso->cct."' as cct"),
-                        DB::raw("'".$curso->nplantel.$curso->unidad."' as planel"),
+                        DB::raw("'".$curso->nplantel." ".$curso->unidad."' as planel"),
                         DB::raw("'".$curso->unidad."' as unidad"),
                         DB::raw("'CHIAPAS' as estado"),
                         DB::raw("'C. ".$curso->dunidad."' as dunidad"),
