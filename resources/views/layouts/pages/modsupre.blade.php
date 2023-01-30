@@ -125,33 +125,33 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
-        <h2>Datos de Pago de Curso</h2>
-        <div class="form-row">
-            <div class="form-group col-md-3">
-                <label for="inputmovimiento_bancario" class="control-label">Movimiento Bancario</label>
-                <input type="text" id="norecibo" name="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
-            </div>
-            <div class="form-group col-md-3">
-                <label for="inputmovimiento_bancario" class="control-label">Movimiento Bancario</label>
-                <input type="text" class="form-control" id="movimiento_bancario" name="movimiento_bancario" value="{{$getfolios[0]->movimiento_bancario}}" placeholder="MOVIMIENTO BANCARIO">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="inputfecha_movimiento_bancario" class="control-label">Fecha de Movimiento</label>
-                <input type="date" class="form-control" id="fecha_movimiento_bancario" value="{{$getfolios[0]->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario">
-            </div>
+        <h2>Datos de Pago de Curso
+            <button type="button" class="btn btn-primary float-right" onclick="addField()">Añadir Movimiento</button>
+        </h2>
+        <div id="fieldsContainer">
+            @foreach ($data->mov_bancario as $keygen => $movitem)
+                <div class="form-row">
+                    @if ($keygen == 0)
+                        <div class="form-group col-md-3">
+                            <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
+                            <input type="text" name="norecibo" id="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
+                        </div>
+                    @endif
+                    <div class="form-group col-md-3">
+                        <label for="movimiento_bancario_{{$keygen}}">Movimiento Bancario</label>
+                        <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[{{$keygen}}]">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="fecha_movimiento_bancario_{{$keygen}}">Fecha de Movimiento</label>
+                        <input type="date" class="form-control" id="fecha_movimiento_bancario_0" value="{{$movitem->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario_[{{$keygen}}]">
+                    </div>
+                </div>
+            @endforeach
         </div>
-        {{-- <div class="form-row">
-            <div class="form-group col-md-3">
-                <label for="inputfactura" class="control-label">Factura</label>
-                <input type="text" class="form-control" id="factura" value="{{$getfolios[0]->factura}}" name="factura" placeholder="Factura">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="inputfecha_factura" class="control-label">Fecha de Factura</label>
-                <input type="date" class="form-control" id="fecha_factura" value="{{$getfolios[0]->fecha_factura}}" name="fecha_factura">
-            </div>
-        </div> --}}
+        <input id="keyfield" name="keyfield" hidden value="{{$keygen}}">
         <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}">
-        <br>
+        <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button>
+        <br><br><br>
         <div class="row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
             <div class="col-lg-12 margin-tb">
@@ -169,6 +169,72 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script type="text/javascript">
+    let fieldCounter = document.getElementById("keyfield").value;
+
+    function addField() {
+        const fieldsContainer = document.getElementById("fieldsContainer");
+        const formRow = document.createElement("div");
+        formRow.className = "form-row";
+        formRow.id = `formRow${fieldCounter}`;
+        fieldsContainer.appendChild(formRow);
+
+        const textFormGroup = createFormGroup(textLabel("Movimiento Bancario"), textInput(`movimiento_bancario_[${fieldCounter}]`));
+        formRow.appendChild(textFormGroup);
+
+        const dateFormGroup = createFormGroup(textLabel("Fecha de Movimiento"), dateInput(`fecha_movimiento_bancario_[${fieldCounter}]`));
+        formRow.appendChild(dateFormGroup);
+
+        fieldCounter++;
+        updateDeleteButton();
+    }
+
+    function deleteField() {
+        if (fieldCounter === 0) return;
+        const formRow = document.getElementById(`formRow${--fieldCounter}`);
+        formRow.remove();
+        updateDeleteButton();
+    }
+
+    function updateDeleteButton() {
+        const deleteButton = document.getElementById("deleteButton");
+        if (fieldCounter === 0) {
+            deleteButton.style.display = "none";
+        } else {
+            deleteButton.style.display = "inline-block";
+        }
+    }
+
+    function createFormGroup(label, input) {
+        const formGroup = document.createElement("div");
+        formGroup.className = "form-group col-md-3";
+        formGroup.appendChild(label);
+        formGroup.appendChild(input);
+        return formGroup;
+    }
+
+    function textInput(id) {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = 'form-control';
+        input.id = id;
+        input.name = id;
+        return input;
+    }
+
+    function dateInput(id) {
+        const input = document.createElement("input");
+        input.type = "date";
+        input.className = 'form-control';
+        input.id = id;
+        input.name = id;
+        return input;
+    }
+
+    function textLabel(text) {
+        const label = document.createElement("label");
+        label.innerHTML = text;
+        return label;
+    }
 
      // Add the following code if you want the name of the file appear on select
      $(".custom-file-input").on("change", function() {

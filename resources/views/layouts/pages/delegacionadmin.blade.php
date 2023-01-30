@@ -56,7 +56,7 @@
                     <th>Importe total</th>
                     <th>Iva</th>
                     <th>Observación</th>
-                    <th>Acción</th>
+                    {{-- <th>Acción</th> --}}
                 </tr>
                 <tr>
                     <td><input type="text" name="addmore[0][folio]" id="addmore[0][folio]" placeholder="folio" class="form-control" /><footer name="addmore[0][avisofolio]" id="addmore[0][avisofolio]" style="color: red"></footer></td>
@@ -65,7 +65,7 @@
                     <td><input type="text" name="addmore[0][importe]" id="addmore[0][importe]" placeholder="importe total" class="form-control" readonly/><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
                     <td><input type="text" name="addmore[0][iva]" id="addmore[0][iva]" placeholder="IVA" class="form-control" readonly /></td>
                     <td><input type="text" name="addmore[0][comentario]" id="addmore[0][comentario]" placeholder="Comentario" class="form-control" /></td>
-                    <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
+                    {{-- <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td> --}}
                 </tr>
             </table>
         </div>
@@ -103,32 +103,27 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
-        <h2>Datos de Pago de Curso</h2>
-        <div class="form-row">
-            <div class="form-group col-md-3">
-                <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
-                <input type="text" name="norecibo" id="norecibo" placeholder="No.Recibo" class="form-control" readonly />
-            </div>
-            <div class="form-group col-md-3">
-                <label for="inputmovimiento_bancario" class="control-label">Movimiento Bancario</label>
-                <input type="text" class="form-control" id="movimiento_bancario" name="movimiento_bancario" placeholder="MOVIMIENTO BANCARIO">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="inputfecha_movimiento_bancario" class="control-label">Fecha de Movimiento</label>
-                <input type="date" class="form-control" id="fecha_movimiento_bancario" name="fecha_movimiento_bancario">
+        <h2>Datos de Pago de Curso
+            <button type="button" class="btn btn-primary float-right" onclick="addField()">Añadir Movimiento</button>
+        </h2>
+        <div id="fieldsContainer">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
+                    <input type="text" name="norecibo" id="norecibo" placeholder="No.Recibo" class="form-control" readonly />
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="movimiento_bancario_0">Movimiento Bancario</label>
+                    <input type="text" class="form-control" id="movimiento_bancario_0" name="movimiento_bancario_[0]">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="fecha_movimiento_bancario_0">Fecha de Movimiento</label>
+                    <input type="date" class="form-control" id="fecha_movimiento_bancario_0" name="fecha_movimiento_bancario_[0]">
+                </div>
             </div>
         </div>
-        {{-- <div class="form-row">
-            <div class="form-group col-md-3">
-                <label for="inputfactura" class="control-label">Factura</label>
-                <input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
-            </div>
-            <div class="form-group col-md-3">
-                <label for="inputfecha_factura" class="control-label">Fecha de Factura</label>
-                <input type="date" class="form-control" id="fecha_factura" name="fecha_factura">
-            </div>
-        </div> --}}
-        <br>
+        <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button>
+        <br><br><br>
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
@@ -148,6 +143,75 @@
 <script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
 <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 <script type="text/javascript">
+    let fieldCounter = 1;
+
+function addField() {
+    const fieldsContainer = document.getElementById("fieldsContainer");
+    const formRow = document.createElement("div");
+    formRow.className = "form-row";
+    formRow.id = `formRow${fieldCounter}`;
+    fieldsContainer.appendChild(formRow);
+
+    const textFormGroup = createFormGroup(textLabel("Movimiento Bancario"), textInput(`movimiento_bancario_[${fieldCounter}]`));
+    formRow.appendChild(textFormGroup);
+
+    const dateFormGroup = createFormGroup(textLabel("Fecha de Movimiento"), dateInput(`fecha_movimiento_bancario_[${fieldCounter}]`));
+    formRow.appendChild(dateFormGroup);
+
+    fieldCounter++;
+    updateDeleteButton();
+}
+
+function deleteField() {
+    if (fieldCounter === 0) return;
+    const formRow = document.getElementById(`formRow${--fieldCounter}`);
+    formRow.remove();
+    updateDeleteButton();
+}
+
+function updateDeleteButton() {
+    const deleteButton = document.getElementById("deleteButton");
+    if (fieldCounter === 0) {
+        deleteButton.style.display = "none";
+    } else {
+        deleteButton.style.display = "inline-block";
+    }
+}
+
+function createFormGroup(label, input) {
+    const formGroup = document.createElement("div");
+    formGroup.className = "form-group col-md-3";
+    formGroup.appendChild(label);
+    formGroup.appendChild(input);
+    return formGroup;
+}
+
+function textInput(id) {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = 'form-control';
+    input.id = id;
+    input.name = id;
+    return input;
+}
+
+function dateInput(id) {
+    const input = document.createElement("input");
+    input.type = "date";
+    input.className = 'form-control';
+    input.id = id;
+    input.name = id;
+    return input;
+}
+
+function textLabel(text) {
+    const label = document.createElement("label");
+    label.innerHTML = text;
+    return label;
+}
+
+
+
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
@@ -234,8 +298,6 @@
                             document.getElementById('norecibo').value = respuesta['recibo'];
                             document.getElementById('movimiento_bancario').value = respuesta['movimiento_bancario'];
                             document.getElementById('fecha_movimiento_bancario').value = respuesta['fecha_movimiento_bancario'];
-                            // document.getElementById('factura').value = respuesta['factura'];
-                            // document.getElementById('fecha_factura').value = respuesta['fecha_factura'];
                             document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
 
                         }else{

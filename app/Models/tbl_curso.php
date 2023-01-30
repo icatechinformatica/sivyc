@@ -25,7 +25,8 @@ class tbl_curso extends Model
 ];
 
     protected $hidden = ['created_at', 'updated_at'];
-    protected $casts = ['json_supervision' => 'array'];
+    protected $casts = ['json_supervision' => 'array',
+                        'mov_bancario' => 'array'];
 
     public function curso() {
         return $this->belongsTo(curso::class, 'id_curso');

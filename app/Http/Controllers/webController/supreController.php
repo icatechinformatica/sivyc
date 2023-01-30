@@ -95,7 +95,7 @@ class supreController extends Controller
     }
 
     public function store(Request $request) {
-        // dd($request);
+        $generalarr = $arrmov = array();
         $memo = supre::SELECT('no_memo')->WHERE('no_memo', '=', $request->memorandum)->FIRST();
         if (is_null($memo))
         {
@@ -184,11 +184,14 @@ class supreController extends Controller
                     $folio->status = 'En_Proceso';
                     $folio->save();
 
-                    $mvtobanc = tbl_curso::find($hora->id);
-                    $mvtobanc->movimiento_bancario = $request->movimiento_bancario;
-                    $mvtobanc->fecha_movimiento_bancario = $request->fecha_movimiento_bancario;
-                    // $mvtobanc->factura = $request->factura;
-                    // $mvtobanc->fecha_factura = $request->fecha_factura;
+                    $mvtobanc = tbl_curso::find($hora->id); //
+                    foreach($request->movimiento_bancario_ as $movkey => $ari)
+                    {
+                        $arrmov['movimiento_bancario'] = $ari;
+                        $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
+                        array_push($generalarr, $arrmov);
+                    }
+                    $mvtobanc->mov_bancario = $generalarr;
                     $mvtobanc->save();
                 }
                 else
@@ -242,15 +245,10 @@ class supreController extends Controller
 
         $getfolios = $folio::SELECT('folios.id_folios','folios.folio_validacion','folios.comentario',
                                 'folios.importe_total','folios.iva','tbl_cursos.clave',
-                                'tbl_cursos.movimiento_bancario','tbl_cursos.fecha_movimiento_bancario',
-                                'tbl_cursos.factura','tbl_cursos.fecha_factura','tbl_cursos.folio_pago')
+                                'tbl_cursos.mov_bancario', 'tbl_cursos.folio_pago')
                             ->WHERE('id_supre','=', $getsupre->id)
                             ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
                             ->GET();
-        /*if($directorio->supre_dest != NULL)
-        {
-            $getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
-        }*/
         if($directorio->supre_rem != NULL)
         {
             $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
@@ -263,22 +261,15 @@ class supreController extends Controller
         {
             $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         }
-       /* if($directorio->supre_ccp1 != NULL)
-        {
-            $getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
-        }
-        if($directorio->supre_ccp2 != NULL)
-        {
-            $getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
-        }*/
-
-        //dd($getfolios);
+        $getfolios[0]->mov_bancario = json_decode($getfolios[0]->mov_bancario);
+        // dd($getfolios[0]->mov_bancario['0']->movimiento_bancario);
         return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist'));
     }
 
     public function solicitud_mod_guardar(Request $request)
     {
         // dd($request);
+        $generalarr = $arrmov = array();
         $supre = new supre();
         $curso_validado = new tbl_curso();
         $id_directorio = $request->id_directorio;
@@ -330,10 +321,13 @@ class supreController extends Controller
             $folio->save();
 
             $mvtobanc = tbl_curso::find($hora->id);
-            $mvtobanc->movimiento_bancario = $request->movimiento_bancario;
-            $mvtobanc->fecha_movimiento_bancario = $request->fecha_movimiento_bancario;
-            // $mvtobanc->factura = $request->factura;
-            // $mvtobanc->fecha_factura = $request->fecha_factura;
+            foreach($request->movimiento_bancario_ as $movkey => $ari)
+            {
+                $arrmov['movimiento_bancario'] = $ari;
+                $arrmov['fecha_movimiento_bancario'] = $request->fecha_movimiento_bancario_[$movkey];
+                array_push($generalarr, $arrmov);
+            }
+            $mvtobanc->mov_bancario = $generalarr;
             $mvtobanc->save();
 }
         // return redirect()->route('supre-inicio')
