@@ -651,10 +651,16 @@ class aperturaController extends Controller
         $id_unidad = DB::table('tbl_unidades')->where('unidad','=',$grupo->unidad)->value('id');
         $id_municipio = $grupo->id_muni;
         $clave_localidad = $grupo->clave_localidad;
+        if (DB::table('exoneraciones')->where('folio_grupo',$id_curso)->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
+            return "Solicitud de Exoneración o Reducción de couta en Proceso..";
+        }
         //VALIDACIÓN DEL HORARIO
         if (($horaInicio < date('H:i',strtotime($grupo->hini))) OR ($horaInicio > date('H:i',strtotime($grupo->hfin))) OR 
         ($horaTermino < date('H:i',strtotime($grupo->hini))) OR ($horaTermino > date('H:i',strtotime($grupo->hfin)))) {
             return "El horario ingresado no corresponde al registro del curso.";
+        }
+        if ($minutos_curso > 480) {
+            return "El instructor no debe de exceder las 8hrs impartidas.";
         }
         // CRITERIO DISPONIBILIDAD FECHA Y HORA ALUMNOS
         $alumnos_ocupados = DB::table('alumnos_registro as ar')
@@ -841,59 +847,91 @@ class aperturaController extends Controller
             }
         }
         //5 MESES CONSECUTIVOS
-        for ($i=1; $i < 6; $i++) {
-            $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
-            $finicio = Carbon::parse($f)->firstOfMonth();
-            $mesActivo= Carbon::parse($finicio)->addMonth($i);
-            $mes = Carbon::parse($mesActivo)->format('d-m-Y');
-            $mesInicio = Carbon::parse($mes)->firstOfMonth();
-            $mesFin = Carbon::parse($mes)->endOfMonth();
-            $consulta = DB::table('tbl_cursos')->select('id')
-                                           ->where('status','!=','CANCELADO')
-                                           ->where('id_instructor','=', $id_instructor)
-                                           ->where('folio_grupo','!=',$id_curso)
-                                           ->where('inicio','>=', $mesInicio)
-                                           ->where('inicio','<=', $mesFin)
-                                           ->get();
-            $conteo = $consulta->count();
-            if ($conteo >= 1) {
-                $sumaMesInicio += 1;
-            } else {
-                $sumaMesInicio = 0;
-                break;
+        $inicio_curso = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
+        $termino_curso = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('termino');
+        $imes = Carbon::parse($inicio_curso)->subMonth(4);
+        $imes = Carbon::parse($imes)->firstOfMonth();
+        $tmes = Carbon::parse($inicio_curso)->addMonth(4);
+        $tmes = Carbon::parse($tmes)->firstOfMonth();
+        $conteo1 = 1;
+        $conteo2 = null;
+        $temp =  $temp2 = $mesact = '';
+        if (DB::table('tbl_cursos')->where('status','<>','CANCELADO')->where('id_instructor',$id_instructor)->where('folio_grupo','<>',$id_curso)->whereRaw("((inicio >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (inicio <= '$termino_curso')) OR ((termino >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (termino <= '$termino_curso'))")->exists()) {
+            $actinstru = DB::table('tbl_cursos')->select('inicio','termino','folio_grupo')
+                ->where('status','<>','CANCELADO')
+                ->where('id_instructor',$id_instructor)
+                ->where('folio_grupo','<>',$id_curso)
+                ->whereRaw("(((inicio >= '$imes') AND (inicio <= '$termino_curso')) OR ((termino >= '$imes') AND (termino <= '$termino_curso')))")
+                ->orderBy('termino','desc')->get();//dd($actinstru);
+            foreach ($actinstru as $key => $value) {
+                if ($conteo1 > 5) {
+                   return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
+                } elseif ($key == 0) {
+                    $temp = $value->inicio;
+                    $temp2 = $value->termino;
+                    if (date('Y-m',strtotime($value->termino)) < date('Y-m',strtotime($inicio_curso))) {
+                        $conteo1 += 1;
+                    }
+                    if (date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) {
+                        $conteo1 += 1;
+                    }
+                    $mesact = date('m',strtotime($value->inicio));
+                } elseif ($key > 0) {
+                    if (($value->termino >= date('Y-m-d',strtotime(Carbon::parse($temp)->subDay(30)->format('Y-m-d')))) AND ($value->termino <= $temp2)) {
+                        if (date('m',strtotime($value->termino)) < $mesact) {
+                            $conteo1 += 1;
+                        }
+                        if (date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) {
+                            $conteo1 += 1;
+                        }
+                        $mesact = date('m',strtotime($value->inicio));
+                        $temp = $value->inicio;
+                        $temp2 = $value->termino;
+                    } elseif ($mesact <> date('m',strtotime($value->termino))) {
+                        break;
+                    }
+                }
             }
         }
-        for ($i=1; $i < 6; $i++) {
-            $f = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
-            $finicio = Carbon::parse($f)->firstOfMonth();
-            $mesActivoSub= Carbon::parse($finicio)->subMonth($i);
-            $mes = Carbon::parse($mesActivoSub)->format('d-m-Y');
-            $mesInicio = Carbon::parse($mes)->firstOfMonth();
-            $mesFin = Carbon::parse($mes)->endOfMonth();
-            $consulta = DB::table('tbl_cursos')->select('id')
-                                           ->where('status','!=','CANCELADO')
-                                           ->where('id_instructor','=', $id_instructor)
-                                           ->where('folio_grupo','!=',$id_curso)
-                                           ->where('inicio','>=', $mesInicio)
-                                           ->where('inicio','<=', $mesFin)
-                                           ->get();
-            $conteo = $consulta->count();
-            if ($conteo >= 1) {
-                $sumaMesFin += 1;
-            } else {
-                $sumaMesFin = 0;
-                break;
-            }
+        if (DB::table('tbl_cursos')->where('status','<>','CANCELADO')->where('id_instructor',$id_instructor)->where('folio_grupo','<>',$id_curso)->whereRaw("((inicio <= cast((cast('$termino_curso' as date) + cast('30 days' as interval)) as date)) AND (inicio >= '$inicio_curso')) OR ((termino <= cast((cast('$termino_curso' as date) + cast('30 days' as interval)) as date)) AND (termino >= '$inicio_curso'))")->exists()) {
+            $actinstru = DB::table('tbl_cursos')->select('inicio','termino','folio_grupo')
+                ->where('status','<>','CANCELADO')
+                ->where('id_instructor',$id_instructor)
+                ->where('folio_grupo','<>',$id_curso)
+                ->whereRaw("(((inicio <= '$tmes') AND (inicio >= '$inicio_curso')) OR ((termino <= '$tmes') AND (termino >= '$inicio_curso')))")
+                ->orderBy('inicio','asc')->get();//dd($actinstru);
+                foreach ($actinstru as $key => $value) {
+                    if ($conteo2 > 5) {
+                       return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
+                    } elseif ($key == 0) {
+                        $temp = $value->inicio;
+                        $temp2 = $value->termino;
+                        if (date('Y-m',strtotime($value->inicio)) > date('Y-m',strtotime($termino_curso))) {
+                            $conteo2 += 1;
+                        }
+                        if (date('m',strtotime($value->inicio)) <> date('m',strtotime($value->termino))) {
+                            $conteo2 += 1;
+                        }
+                        $mesact = date('m',strtotime($value->termino));
+                    } elseif ($key > 0) {
+                        if (($value->inicio >= $temp) AND ($value->inicio <= date('Y-m-d',strtotime(Carbon::parse($temp2)->addDay(30)->format('Y-m-d'))))) {
+                            if (date('m',strtotime($value->termino)) > $mesact) {
+                                $conteo2 += 1;
+                            }
+                            if (date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) {
+                                $conteo2 += 1;
+                            }
+                            $mesact = date('m',strtotime($value->termino));
+                            $temp = $value->inicio;
+                            $temp2 = $value->termino;
+                        } elseif ($mesact <> date('m',strtotime($value->inicio))) {
+                            break;
+                        }
+                    }
+                }
         }
-        if ($sumaMesInicio==5||$sumaMesFin==5) {
-            return "La actividad del intructor por mes supera el límite permitido (5 meses)";
-        } else {
-            $total = ($sumaMesInicio + $sumaMesFin) + 1;
-            $total1 = $sumaMesInicio + 1;
-            $total2 = $sumaMesFin + 1;
-            if ($total > 5 || $total1 > 5 || $total2 > 5) {
-                return "La actividad del intructor por mes supera el límite permitido (5 meses)";
-            }
+        if (($conteo1 + $conteo2) > 5) {
+            return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
         }
         //
         try {
