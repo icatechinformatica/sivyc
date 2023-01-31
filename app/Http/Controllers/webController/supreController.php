@@ -891,7 +891,8 @@ class supreController extends Controller
     public function doc_supre_upload(Request $request)
     {
         // dd($request);
-        if ($request->hasFile('doc_supre')) {
+        if ($request->hasFile('doc_supre'))
+        {
 
             if($request->idsupmod != NULL)
             {
@@ -913,6 +914,7 @@ class supreController extends Controller
             }
 
             $supre->save();
+
             return redirect()->route('supre-inicio')
                     ->with('success','Suficiencia Presupuestal Firmada ha sido cargada con Extio');
         }
@@ -1012,7 +1014,7 @@ class supreController extends Controller
                   ->update(['cantidad_numero' => round($request->addmore[0]['importe']-$request->addmore[0]['iva'], 2)]);
         }
 
-        return redirect()->route('supre-inicio')
+        return redirect()->route('contrato-inicio')
                         ->with('success','Solicitud de Suficiencia Presupuestal agregado');
     }
 

@@ -13,10 +13,11 @@ class especialidad_instructor extends Model
     protected $fillable = [
         'id','especialidad_id','perfilprof_id','unidad_solicita','memorandum_valdidacion',
         'fecha_validacion','memorandum_modificacion','observacion', 'criterio_pago_id','lastUserId','activo',
-        'id_instructor','cursos_impartir'];
+        'id_instructor','cursos_impartir','memorandum_solicitud','fecha_solicitud','especialidad','status','nrevision',
+        'observacion_validacion','memorandum_baja','fecha_baja'];
 
     protected $hidden = ['created_at', 'updated_at'];
-    protected $casts = ['cursos_impartir' => 'array'];
+    protected $casts = ['cursos_impartir' => 'array', 'hvalidacion' => 'array'];
 
     public function cursos()
     {

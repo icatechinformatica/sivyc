@@ -655,7 +655,7 @@ class aperturaController extends Controller
             return "Solicitud de Exoneración o Reducción de couta en Proceso..";
         }
         //VALIDACIÓN DEL HORARIO
-        if (($horaInicio < date('H:i',strtotime($grupo->hini))) OR ($horaInicio > date('H:i',strtotime($grupo->hfin))) OR 
+        if (($horaInicio < date('H:i',strtotime($grupo->hini))) OR ($horaInicio > date('H:i',strtotime($grupo->hfin))) OR
         ($horaTermino < date('H:i',strtotime($grupo->hini))) OR ($horaTermino > date('H:i',strtotime($grupo->hfin)))) {
             return "El horario ingresado no corresponde al registro del curso.";
         }
@@ -674,7 +674,7 @@ class aperturaController extends Controller
             ->whereRaw("((date(a.start) <= '$fechaInicio' and date(a.end) >= '$fechaInicio') OR (date(a.start) <= '$fechaTermino' and date(a.end) >= '$fechaTermino'))")
             ->whereRaw("((cast(a.start as time) <= '$horaInicio' and cast(a.end as time) > '$horaInicio') OR (cast(a.start as time) < '$horaTermino' and cast(a.end as time) >= '$horaTermino'))")
             ->whereIn('ar.id_pre', [DB::raw("select id_pre from alumnos_registro where folio_grupo = '$id_curso' and eliminado = false")])
-            ->get();    
+            ->get();
         if (count($alumnos_ocupados) > 0) {
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }

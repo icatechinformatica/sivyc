@@ -82,6 +82,9 @@
                             @can('pagos.inicio')
                                 <a class="dropdown-item" href="{{route('pago-inicio')}}">Pagos</a>
                             @endcan
+                            @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Turnar Instructor</a>
+                            @endcan
                         </div>
                     </li>
                 {{--  <!--@endcan-->  --}}
@@ -175,6 +178,9 @@
                             @endcan
                             @can('solicitudes.cancelacionfolios')
                                 <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n Folios</a>
+                            @endcan
+                            @can('prevalidar_index-instructor')
+                                <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Turnar Instructor</a>
                             @endcan
                         </div>
                     </li>

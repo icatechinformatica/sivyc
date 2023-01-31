@@ -29,7 +29,7 @@
                     <td>{{$itemData->nombre}}</td>
                     <td>{{$itemData->campo_formacion}}</td>
                     <td>
-                        <a class="btn btn-success" href="{{route('cursoimpartir-form',['id' => $itemData->id, 'idins' => $idins])}}">Agregar</a>
+                        <a class="btn mr-sm-4 mt-3" style="color: white;" href="{{route('cursoimpartir-form',['id' => $itemData->id, 'idins' => $idins])}}">AÑADIR</a>
                     </td>
                 </tr>
             @endforeach

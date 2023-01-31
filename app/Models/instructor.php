@@ -15,10 +15,15 @@ class instructor extends Model
     'correo','banco','no_cuenta','interbancaria','folio_ine','status','rechazo','clave_unidad','archivo_ine',
     'archivo_domicilio','archivo_curp', 'archivo_alta','archivo_bancario','archivo_fotografia','archivo_estudios',
     'archivo_otraid','id_especialidad','archivo_rfc','estado','lastUserId','stps','conocer','clave_loc','localidad',
-    'tipo_identificacion','expiracion_identificacion'];
+    'tipo_identificacion','expiracion_identificacion','solicito','turnado','nacionalidad','entidad_nacimiento',
+    'municipio_nacimiento','localidad_nacimiento','clave_loc_nacimiento','codigo_postal','telefono_casa','curriculum',
+    'archivo_curriculum_personal'];
 
     protected $casts = [
         'unidades_disponible' => 'array',
+        'entrevista' => 'array',
+        'exp_laboral' => 'array',
+        'exp_docente' => 'array'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -47,11 +52,13 @@ class instructor extends Model
         return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
      }
 
-    public function scopeSearchInstructor($query, $tipo, $buscar)
+    public function scopeSearchInstructor($query, $tipo, $buscar, $tipo_status)
     {
-        if (!empty($tipo)) {
+        if (!empty($tipo))
+        {
             # entramos y validamos
-            if (!empty(trim($buscar))) {
+            if (!empty(trim($buscar)))
+            {
                 # empezamos
                 switch ($tipo) {
                     case 'clave_instructor':
@@ -65,15 +72,21 @@ class instructor extends Model
                     case 'telefono_instructor':
                         return $query->where( 'telefono', 'LIKE', "%$buscar%");
                         break;
-                    case 'estatus_instructor':
-                        return $query->where( 'status', '=', ucwords(strtolower($buscar)));
-                        break;
                     default:
                         # code...
                         break;
                 }
             }
+            if(!empty($tipo_status))
+            {
+                return $query->where( 'status', '=', $tipo_status);
+            }
         }
+    }
+
+    public function scopeSearchNrevision()
+    {
+
     }
 
 

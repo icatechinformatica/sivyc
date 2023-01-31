@@ -73,7 +73,7 @@ class ContratoController extends Controller
         $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
         ->SELECT('tabla_supre.id','tabla_supre.no_memo',
         'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-        'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+        'folios.recepcion','folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
         'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
         'contratos.observacion','tbl_cursos.termino AS fecha_termino',
         'tbl_cursos.inicio AS fecha_inicio',
@@ -82,7 +82,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            ->WHERE('folios.status', '!=', 'Validado')
+            // ->WHERE('folios.status', '!=', 'Validado')
             ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
@@ -96,7 +96,7 @@ class ContratoController extends Controller
         $querySupre2 = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
             ->SELECT('tabla_supre.id','tabla_supre.no_memo',
             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-            'folios.recepcion','folios.id_folios', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+            'folios.recepcion','folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
             'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
             'contratos.observacion','tbl_cursos.termino AS fecha_termino',
             'tbl_cursos.inicio AS fecha_inicio',

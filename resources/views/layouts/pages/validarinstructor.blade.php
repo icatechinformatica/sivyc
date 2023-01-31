@@ -2,189 +2,259 @@
 @extends('theme.sivyc.layout')
 @section('title', 'Validación de Instructor | Sivyc Icatech')
 @section('content')
-    <section class="container g-py-40 g-pt-40 g-pb-0">
-        <form method="POST" action="{{ route('instructor-rechazo') }}" id="rechazoinstructor">
-            @csrf
-            <div class="text-center">
-                <h1>Validación de Instructor<h1>
+<link rel="stylesheet" href="{{asset('css/supervisiones/global.css') }}" />
+<div class="card-header">
+    <h1>Validación de Instructor<h1>
+</div>
+<div class="card card-body">
+    <h2>Vista de Documentos</h2>
+    <div class="form-row">
+        @if ($getinstructor->archivo_ine != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_ine}} target="_blank">Comprobante INE</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>Comprobante INE</a><br>
+        @endif
+        @if ($getinstructor->archivo_domicilio != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
+        @else
+        <a class="btn" style="background-color: grey;" disabled>Comprobante de Domicilio</a><br>
+        @endif
+        @if ($getinstructor->archivo_curp != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_curp}} target="_blank">CURP</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>CURP</a><br>
+        @endif
+        @if ($getinstructor->archivo_alta != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_alta}} target="_blank">Alta de Instructor</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>Alta de Instructor</a><br>
+        @endif
+    </div>
+    <br>
+    <div class="form-row">
+        @if ($getinstructor->archivo_bancario != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_bancario}} target="_blank">Datos Bancarios</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>Datos Bancarios</a><br>
+        @endif
+        @if ($getinstructor->archivo_rfc != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_rfc}} target="_blank">RFC/Constancia Fiscal</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>RFC/Constancia Fiscal</a><br>
+        @endif
+        @if ($getinstructor->archivo_fotografia != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_fotografia}} target="_blank">Fotografía</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>Fotografía</a><br>
+        @endif
+        @if ($getinstructor->archivo_estudios != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_estudios}} target="_blank">Estudios</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>Estudios</a><br>
+        @endif
+        @if ($getinstructor->archivo_otraid != NULL)
+            <a class="btn btn-success" href={{$getinstructor->archivo_otraid}} target="_blank">Otra Identificación</a><br>
+        @else
+            <a class="btn" style="background-color: grey;" disabled>Otra Identificación</a><br>
+        @endif
+    </div>
+    <hr style="border-color:dimgray">
+    <div class="row">
+        <div class="col-lg-12 margin-tb">
+            <div class="pull-left">
+                <button type="button" class="btn btn-danger btn-lg"
+                    data-toggle="modal" data-placement="top"
+                    data-target="#RechazarModal"
+                    data-id='{{$getinstructor->id}}'>
+                    <i class="fa fa-remove"></i> &nbsp Rechazar
+                </button>
             </div>
-            <div>
-                <label><h2>Datos Personales</h2></label>
+            <div class="pull-right">
+                <button type="button" class="btn btn-success btn-lg"
+                    data-toggle="modal" data-placement="top"
+                    data-target="#ValidarModal"
+                    data-id='{{$getinstructor->id}}'>
+                    <i class="fa fa-check"></i> &nbsp Validar
+                </button>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="inputnombre">Nombre</label>
-                    <input name='nombre' id='nombre' value="{{ $getinstructor->nombre }}" type="text" disabled class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputapellido_paterno">Apellido Paterno</label>
-                    <input name='apellido_paterno' id='apellido_paterno' value="{{ $getinstructor->apellidoPaterno }}" type="text" class="form-control" aria-required="true" disabled>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputapellido_materno">Apellido Materno</label>
-                    <input name='apellido_materno' id='apellido_materno' value="{{ $getinstructor->apellidoMaterno}}" type="text" class="form-control" aria-required="true" disabled>
-                </div>
+        </div>
+    </div>
+    <div>
+        <label><h2>Datos Personales</h2></label>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="inputnombre">Nombre</label>
+            <input name='nombre' id='nombre' value="{{ $getinstructor->nombre }}" type="text" disabled class="form-control" aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputapellido_paterno">Apellido Paterno</label>
+            <input name='apellido_paterno' id='apellido_paterno' value="{{ $getinstructor->apellidoPaterno }}" type="text" class="form-control" aria-required="true" disabled>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputapellido_materno">Apellido Materno</label>
+            <input name='apellido_materno' id='apellido_materno' value="{{ $getinstructor->apellidoMaterno}}" type="text" class="form-control" aria-required="true" disabled>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="inputcurp">CURP</label>
+            <input name='curp' id='curp' value="{{$getinstructor->curp}}" type="text" disabled class="form-control" disabled aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputrfc">RFC/Constancia Fiscal</label>
+            <input name='rfc' id='rfc' value="{{$getinstructor->rfc}}" type="text" disabled class="form-control" disabled aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputfolio_ine">Folio INE</label>
+            <input name='folio_ine' id='folio_ine' value="{{$getinstructor->folio_ine }}" type="text" disabled class="form-control" disabled aria-required="true">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="inputsexo">Sexo</label>
+            <input name='sexo' id='sexo' value="{{$getinstructor->sexo}}" type="text" disabled class="form-control" disabled aria-required="true">
+        </div>
+        <div class="form-gorup col-md-4">
+            <label for="inputestado_civil">Estado Civil</label>
+            <input name='estado_civil' id='estado_civil' value="{{$getinstructor->estado_civil }}" type="text" disabled class="form-control" disabled aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
+            <input name='fecha_nacimientoins' id='fecha_nacimientoins' value="{{$getinstructor->fecha_nacimiento}}" type="date" disabled class="form-control" aria-required="true">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="inputentidad">Entidad</label>
+            <input name='entidad' id='entidad' value="{{$getinstructor->entidad}}" type="text" disabled class="form-control" aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputmunicipio">Municipio</label>
+            <input name='municipio' id='municipio' value="{{$getinstructor->municipio}}" type="text" disabled class="form-control" aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputmunicipio">Localidad</label>
+            <input name='localidad' id='localidad' value="{{$getinstructor->localidad}}" type="text" disabled class="form-control" aria-required="true">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-7">
+            <label for="inputdomicilio">Direccion de Domicilio</label>
+            <input name="domicilio" id="domicilio" value="{{$getinstructor->domicilio }}" type="text" disabled class="form-control" aria-required="true">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="inputtelefono">Numero de Telefono Personal</label>
+            <input name="telefono" id="telefono" value="{{$getinstructor->telefono }}" type="tel" disabled class="form-control" aria-required="true" required>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputcorreo">Correo Electronico</label>
+            <input name="correo" id="correo" value="{{$getinstructor->correo }}" type="email" disabled class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" required>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="inputbanco">Nombre del Banco</label>
+            <input name="banco" id="banco" value="{{$getinstructor->banco }}" type="text" disabled class="form-control" aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputclabe">Clabe Interbancaria</label>
+            <input name="clabe" id="clabe" value="{{$getinstructor->interbancaria }}" type="text" disabled class="form-control" aria-required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="inputnumero_cuenta">Numero de Cuenta</label>
+            <input name="numero_cuenta" value="{{$getinstructor->no_cuenta }}" id="numero_cuenta" type="text" disabled class="form-control" aria-required="true">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="extracurricular"><h3>Registro de Capacitador Externo STPS</h3></label>
+            <textarea name="stps" id="stps" cols="6" rows="4" class="form-control">{{$getinstructor->stps}}</textarea>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="extracurricular"><h3>Estandar CONOCER</h3></label>
+            <textarea name="conocer" id="conocer" cols="6" rows="4" class="form-control">{{$getinstructor->conocer}}</textarea>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="extracurricular"><h3>Datos Extracurriculares</h3></label>
+            <textarea name="extracurricular" id="extracurricular" cols="6" rows="10" class="form-control">{{$getinstructor->extracurricular}}</textarea>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12 margin-tb">
+            <div class="pull-left">
+                <a class="btn btn-warning" href="{{URL::previous()}}">Regresar</a>
             </div>
-            <h2>Vista de Documentos</h2>
-            <div class="form-row">
-                <a class="btn btn-info" href={{$getinstructor->archivo_ine}} target="_blank" download>Solicitud de Pago</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_domicilio}} target="_blank" download>Comprobante de Domicilio</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_curp}} target="_blank" download>CURP</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_alta}} target="_blank" download>Alta de Instructor</a><br>
+        </div>
+    </div>
+</div>
+<!-- Modal RECHAZAR-->
+<div class="modal fade" id="RechazarModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Rechazo</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="form-row">
-                <a class="btn btn-info" href={{$getinstructor->archivo_bancario}} target="_blank" download>Datos Bancarios</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_rfc}} target="_blank" download>RFC/Constancia Fiscal</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_fotografia}} target="_blank" download>Fotografía</a><br>
-                <a class="btn btn-info" href={{$getinstructor->archivo_estudios}} target="_blank" download>Estudios</a><br>
-            </div>
-            <div class="form-row">
-                <a class="btn btn-info" href={{$getinstructor->archivo_otraid}} target="_blank" download>Otra Identificación</a><br>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <button type="button" id="instructor_rechazar" name="instructor_rechazar" class="btn btn-danger">Rechazar</a>
+            <div class="modal-body" style="text-align:center">
+                <div style="text-align:center" class="form-group">
+                    <div class="modal-body">
+                        ¿ Estás seguro de rechazar al instructor ?
                     </div>
-                    <div class="pull-right">
-                        <button type="button" id="instructor_validar" name="instructor_validar" class="btn btn-success">Validar</a>
+                    <form method="POST" action="{{ route('instructor-rechazo') }}">
+                    @csrf
+                        <textarea name="observacion" id="observacion" cols="45" rows="5"></textarea>
+                        <br>
+                        <input type="text" name="idinsrec" id="idinsrec" hidden>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-success">Rechazar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END -->
+<!-- Modal VALIDAR-->
+<div class="modal fade" id="ValidarModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Validación</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <div style="text-align:center" class="form-group">
+                    <div class="modal-body">
+                        ¿ Estás seguro de validar el instructor ?
                     </div>
+                    <form method="POST" action="{{ route('instructor-validado') }}">
+                        @csrf
+                        <input type="text" name="idins" id="idins" hidden>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-success">Validar</button>
+                    </form>
                 </div>
             </div>
-            <div id="divrechazarins" class="form-row d-none d-print-none">
-                <div class="form-group col-md-6">
-                    <label for="inputcomentario_rechazo">Describa el motivo de rechazo</label>
-                    <textarea name="comentario_rechazo" id="comentario_rechazo" cols="6" rows="6" class="form-control"></textarea>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
-            <div id="divconf_rechazarins" class="form-row d-none d-print-none">
-                <div class="form-group col-md-3">
-                    <button type="submit" class="btn btn-danger" >Confirmar Rechazo</button>
-                    <input hidden id="id" name="id" value="{{$getinstructor->id}}">
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-left">
-                        <a class="btn btn-warning" href="{{URL::previous()}}">Regresar</a>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <hr style="border-color:dimgray">
-        <br>
-        <form method="POST" action="{{ route('instructor-validado') }}" id="validadoinstructor">
-            @csrf
-            <div id="div1" class="form-row d-none d-print-none">
-                <div class="form-group col-md-4">
-                    <label for="inputrfc">RFC</label>
-                    <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="inputfolio_ine">Folio de Elector</label>
-                    <input name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true">
-                </div>
-            </div>
-            <div id="div2" class="form-row d-none d-print-none">
-                <div class="form-group col-md-4">
-                    <label for="inputsexo">Sexo</label>
-                        <select class="form-control" name="sexo" id="sexo">
-                            <option value="sin especificar">Sin Especificar</option>
-                            <option value="MASCULINO">Masculino</option>
-                            <option value="FEMENINO">Femenino</option>
-                        </select>
-                </div>
-                <div class="form-gorup col-md-4">
-                    <label for="inputestado_civil">Estado Civil</label>
-                        <select class="form-control" name="estado_civil" id="estado_civil">
-                            <option value="sin especificar">Sin Especificar</option>
-                            <option value="SOLTERO">Soltero/a</option>
-                            <option value="CASADO">Casado/a</option>
-                            <option value="DDIVORCIADO">Divorciado/a</option>
-                            <option value="VIUDO">Viudo/a</option>
-                            <option value="CONCUBINATO">Concubinato</option>
-                            <option value="UNION LIBRE">Union Libre</option>
-                        </select>
-                </div>
-            </div>
-            <div id="div3" class="form-row d-none d-print-none">
-                <div class="form-group col-md-3">
-                    <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                    <input name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true">
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputentidad">Entidad</label>
-                    {{-- <input name='entidad' id='entidad' type="text" class="form-control" aria-required="true"> --}}
-                    <select class="form-control" name="entidad" id="entidad" onchange="local2()">
-                        <option value="sin especificar">Sin Especificar</option>
-                        @foreach ($estados as $data)
-                            <option value="{{$data->id}}">{{$data->nombre}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputmunicipio">Municipio</label>
-                    <select class="form-control" name="municipio" id="municipio" onchange="local()">
-                        <option value="sin especificar">Sin Especificar</option>
-                        {{-- @foreach (municipios as data)
-                            <option value="{data->muni}}">{data->muni}}</option>
-                        @endforeach --}}
-                    </select>
-                </div>
-                <!--<div class="form-group col-md-3">
-                    <label for="inputasentamiento">Asentamiento</label>
-                    <input name='asentamiento' id='asentamiento' type="text" class="form-control" aria-required="true">
-                </div>-->
-                <div class="form-gorup col-md-3">
-                    <label for="inputlocalidad">Localidad</label>
-                    <select class="form-control" name="localidad" id="localidad">
-                        <option value="sin especificar">Sin Especificar</option>
-                    </select>
-                </div>
-            </div>
-            <div id="div4" class="form-row d-none d-print-none">
-                <div class="form-group col-md-4">
-                    <label for="inputtelefono">Numero de Telefono Personal</label>
-                    <input name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" required>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="inputcorreo">Correo Electronico</label>
-                    <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" required>
-                </div>
-            </div>
-            <div id="div5" class="form-row d-none d-print-none">
-                <div class="form-group col-md-3">
-                    <label for="inputunidad_registra">Unidad que Registra</label>
-                    <select class="form-control" name="unidad_registra" id="unidad_registra">
-                        <option value="sin especificar">Sin Especificar</option>
-                        @foreach ($data2 as $value)
-                        <option value="{{$value->cct}}">{{$value->unidad}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputhonorarios">Regimen</label>
-                    <select class="form-control" name="honorario" id="honorario">
-                        <option value="sin especificar">Sin Especificar</option>
-                        <option value="HONORARIOS">Honorarios</option>
-                        <option value="ASIMILADOS">Asimilados a Salarios</option>
-                        <option value="AMBOS">Honorarios y Asimilado a Salario</option>
-                    </select>
-                </div>
-            </div>
-            <div id="confvali" class="row d-none d-print-none">
-                <div class="col-lg-12 margin-tb">
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-success" >Confirmar Validación</button>
-                        <input hidden id="id" name="id" value="{{$getinstructor->id}}">
-                    </div>
-                </div>
-            </div>
-            <br>
-        </form>
-    </section>
+        </div>
+    </div>
+</div>
+<!-- END -->
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
@@ -195,7 +265,6 @@
 
         var valor = document.getElementById("municipio").value;
         var datos = {valor: valor};
-        console.log('hola');
         var url = '/instructores/busqueda/localidad';
         var request = $.ajax
         ({
@@ -260,5 +329,20 @@
             }
         });
     }
+
+    $(function()
+    {
+        $('#ValidarModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#idins').val(id);
+        });
+
+        $('#RechazarModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        $('#idinsrec').val(id);
+        });
+    });
 </script>
 @endsection

@@ -15,13 +15,18 @@
             padding:0px;
         }
     </style>
-    <form action="{{ route('saveins') }}" method="post" id="registerperf_prof">
+    <form action="{{ route('saveins') }}" method="post" id="registerperf_prof" enctype="multipart/form-data">
         @csrf
         <div class="card-header">
             <h1>Registro de Instructor</h1>
         </div>
         <div class="card card-body">
-            @if($datainstructor->rechazo != NULL && $datainstructor->status == 'RETORNO')
+            @if($errors->any())
+                <div class="col-md-12 alert alert-danger">
+                    <p>{{$errors->first()}}</p>
+                </div>
+            @endif
+            @if($datainstructor->rechazo != NULL)
                 <div class="row ">
                     <div class="col-md-12 alert alert-danger">
                         <p>OBSERVACION DE RECHAZO POR PARTE DE LA DTA: </p>
@@ -30,67 +35,61 @@
                 </div>
                 <hr style="border-color:dimgray">
             @endif
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success">
-                    <p>{{ $message }}</p>
-                </div>
-            @endif
             <div>
                 <label><h2>Datos Personales</h2></label>
             </div>
-            @php $stats = array('PREVALIDACION','EN FIRMA'); $perfilprof_nom = NULL; @endphp
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre">Nombre</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='nombre' id='nombre' type="text" class="form-control" aria-required="true" value="{{$datainstructor->nombre}}">
+                    <input name='nombre' id='nombre' type="text" class="form-control" aria-required="true" value="{{$datainstructor->nombre}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_paterno">Apellido Paterno</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='apellido_paterno' id='apellido_paterno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoPaterno}}">
+                    <input name='apellido_paterno' id='apellido_paterno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoPaterno}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_materno">Apellido Materno</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='apellido_materno' id='apellido_materno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoMaterno}}">
+                    <input name='apellido_materno' id='apellido_materno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoMaterno}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputcurp">CURP</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datainstructor->curp}}">
+                    <input name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datainstructor->curp}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputrfc">RFC/Constancia Fiscal</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datainstructor->rfc}}">
+                    <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datainstructor->rfc}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputhonorarios">Regimen</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="honorario" id="honorario">
+                    <select class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option>
                         <option value="ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIO') selected @endif>Asimilados a Salarios</option>
                         <option value="HONORARIOS Y ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilado a Salarios</option>
-                    </select @if($datainstructor->turnado != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputtipo_identificacion">Tipo de Identificación</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="tipo_identificacion" id="tipo_identificacion">
+                    <select class="form-control" name="tipo_identificacion" id="tipo_identificacion">
                         <option value="">SIN ESPECIFICAR</option>
                         <option value="INE" @if($datainstructor->tipo_identificacion == 'INE') selected @endif>INE</option>
                         <option value="PASAPORTE" @if($datainstructor->tipo_identificacion == 'PASAPORTE') selected @endif>PASAPORTE</option>
                         <option value="LICENCIA DE CONDUCIR" @if($datainstructor->tipo_identificacion == 'LICENCIA DE CONDUCIR') selected @endif>LICENCIA DE CONDUCIR</option>
                         <option value="CARTILLA MILITAR" @if($datainstructor->tipo_identificacion == 'CARTILLA MILITAR') selected @endif>CARTILLA MILITAR</option>
                         <option value="CEDULA PROFESIONAL" @if($datainstructor->tipo_identificacion == 'CEDULA PROFESIONAL') selected @endif>CEDULA PROFESIONAL</option>
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputfolio_ine">Folio de Identificación</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true" value="{{$datainstructor->folio_ine}}">
+                    <input name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true" value="{{$datainstructor->folio_ine}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputexpiracion_identificacion">Expiración de Identificación</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='expiracion_identificacion' id='expiracion_identificacion' type="date" class="form-control" aria-required="true" required value="{{$datainstructor->expiracion_identificacion}}">
+                    <input name='expiracion_identificacion' id='expiracion_identificacion' type="date" class="form-control" aria-required="true" required value="{{$datainstructor->expiracion_identificacion}}">
                 </div>
                 <div class="form-group col-md-1">
                     {{-- <label for="inputarch_ine">Archivo Identificación</label> --}}
@@ -111,23 +110,13 @@
                                 </td>
                                 <td></td>
                                 <td id="center">
-                                    @if($datainstructor->status != "PREVALIDACION")
-                                        @if($datainstructor->status != "EN FIRMA")
-                                            @if($roluser->role_id != 3)
-                                                <input hidden name="chkpre" id="chkpre" value="FALSE">
-                                                <label class='onpoint' for="arch_domicilio">
-                                                    <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                        Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                                    </a>
-                                                    <input style='display:none;' type="file" accept="application/pdf" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
-                                                <br><span id="imageName0"></span>
-                                                </label>
-                                            @endif
-                                        @endif
-                                    @endif
-                                    @if($datainstructor->status == "PREVALIDACION" || $datainstructor->status == "EN FIRMA" || $datainstructor->status == "VALIDADO")
-                                        <input hidden name="chkpre" id="chkpre" value="TRUE">
-                                    @endif
+                                    <label class='onpoint' for="arch_domicilio">
+                                        <a class="btn mr-sm-4 mt-3 btn-sm">
+                                            Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                        </a>
+                                        <input style='display:none;' type="file" accept="application/pdf" id="arch_ine" name="arch_ine" placeholder="Archivo PDF">
+                                       <br><span id="imageName0"></span>
+                                    </label>
                                 </td>
                             </tr>
                         </tbody>
@@ -137,145 +126,146 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputsexo">Sexo</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="sexo" id="sexo">
+                    <select class="form-control" name="sexo" id="sexo">
                         <option value="">SELECCIONE</option>
                         <option value='MASCULINO' @if($datainstructor->sexo == 'MASCULINO')selected @endif>Masculino</option>
                         <option value='FEMENINO' @if($datainstructor->sexo == 'FEMENINO')selected @endif>Femenino</option>
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputestado_civil">Estado Civil</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="estado_civil" id="estado_civil">
+                    <select class="form-control" name="estado_civil" id="estado_civil">
                         <option value="">SELECCIONE</option>
                         @foreach ($lista_civil as $item)
                             <option value="{{$item->nombre}}" @if($datainstructor->estado_civil == $item->nombre)selected @endif>{{$item->nombre}}</option>
                         @endforeach
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
+                    <input name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Nacimiento</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
+                    <select class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
                         <option value="">SELECCIONE</option>
                         @foreach ($estados as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->entidad_nacimiento == $cadwell->nombre) selected @endif>{{$cadwell->nombre}}</option>
                         @endforeach
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio de Nacimiento</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="municipio_nacimiento" id="municipio_nacimiento" onchange="local_nacimiento()">
+                    <select class="form-control" name="municipio_nacimiento" id="municipio_nacimiento" onchange="local_nacimiento()">
                         <option value="sin especificar">Sin Especificar</option>
                         @if(isset($municipios_nacimiento))
                             @foreach ($municipios_nacimiento as $cadwell)
                                 <option value="{{$cadwell->id}}" @if($datainstructor->municipio_nacimiento == $cadwell->muni) selected @endif>{{$cadwell->muni}}</option>
                             @endforeach
                         @endif
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
                 <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Nacimiento</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
+                    <select class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
                         <option value="sin especificar">Sin Especificar</option>
                         @if(isset($localidades_nacimiento))
                             @foreach ($localidades_nacimiento as $cadwell)
                                 <option value="{{$cadwell->clave}}" @if($datainstructor->localidad_nacimiento == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
                             @endforeach
                         @endif
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
+                    <select class="form-control" name="entidad" id="entidad" onchange="local2()">
                         <option value="">SELECCIONE</option>
                         @foreach ($estados as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->entidad == $cadwell->nombre) selected @endif>{{$cadwell->nombre}}</option>
                         @endforeach
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio de Residencia</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="municipio" id="municipio" onchange="local()">
+                    <select class="form-control" name="municipio" id="municipio" onchange="local()">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ($municipios as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->municipio == $cadwell->muni) selected @endif>{{$cadwell->muni}}</option>
                         @endforeach
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
                 <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Residencia</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="localidad" id="localidad">
+                    <select class="form-control" name="localidad" id="localidad">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ($localidades as $cadwell)
                             <option value="{{$cadwell->clave}}" @if($datainstructor->localidad == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
                         @endforeach
-                    </select @if($datainstructor->status != "VALIDADO") disabled @endif>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputbanco">Dirección de Domicilio</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->domicilio}}">
+                    <input name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->domicilio}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputbanco">Codigo Postal</label>
-                    <input  @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required value="{{$datainstructor->codigo_postal}}">
+                    <input name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required value="{{$datainstructor->codigo_postal}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono Personal</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" value="{{$datainstructor->telefono}}" required>
+                    <input name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" value="{{$datainstructor->telefono}}" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono de Casa</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="telefono_casa" id="telefono_casa" type="tel" class="form-control" aria-required="true" required value="{{$datainstructor->telefono_casa}}" required>
+                    <input name="telefono_casa" id="telefono_casa" type="tel" class="form-control" aria-required="true" required value="{{$datainstructor->telefono_casa}}" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputcorreo">Correo Electronico</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" value="{{$datainstructor->correo}}" required>
+                    <input name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" value="{{$datainstructor->correo}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputbanco">Nombre del Banco</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
+                    <input name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe">Clabe Interbancaria</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="clabe" id="clabe" type="text" class="form-control" aria-required="true" value="{{$datainstructor->interbancaria}}">
+                    <input name="clabe" id="clabe" type="text" class="form-control" aria-required="true" value="{{$datainstructor->interbancaria}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputnumero_cuenta">Numero de Cuenta</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true" value="{{$datainstructor->no_cuenta}}">
+                    <input name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true" value="{{$datainstructor->no_cuenta}}">
                 </div>
             </div>
             <hr style="border-color:dimgray">
+            <div class="alert alert-success d-none d-print-none" id="newnrevisionexpdocwarning">
+                <span id="newnrevisionexpdocspan"></span>
+            </div>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
                         <h4>Experiencia Docente</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                        <div class="pull-right">
-                            @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3"
-                                    id = 'buttonaddexpdoc'
-                                    data-toggle="modal"
-                                    data-placement="top"
-                                    data-target="#addexpdocModal"
-                                    data-id='{{$datainstructor->id}}'>Agregar Experiencia Docente
-                                </button>
-                            @endcan
-                        </div>
-                    @endif
+                    <div class="pull-right">
+                        @can('instructor.editar_fase2')
+                            <button type="button" class="btn mr-sm-4 mt-3"
+                                id = 'buttonaddexpdoc'
+                                data-toggle="modal"
+                                data-placement="top"
+                                data-target="#addexpdocModal"
+                                data-id='{{$datainstructor->id}}'>Agregar Experiencia Docente
+                            </button>
+                        @endcan
+                    </div>
                 </div>
             </div>
             <table class="table table-bordered table-responsive-md" id='tableexpdoc'>
@@ -298,17 +288,15 @@
                                 <td>{{ $exdoc['funcion'] }}</td>
                                 <td>{{ $exdoc['periodo'] }}</td>
                                 <td width="13%">
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                                        @can('instructor.editar_fase2')
-                                            <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
-                                                data-toggle="modal"
-                                                data-placement="top"
-                                                data-target="#delexpdocModal"
-                                                data-id='["{{$lock}}", "{{$datainstructor->id}}"]'>
-                                                    <i class="fa fa-eraser" aria-hidden="true"></i>
-                                            </button>
-                                        @endcan
-                                    @endif
+                                    @can('instructor.editar_fase2')
+                                        <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
+                                            data-toggle="modal"
+                                            data-placement="top"
+                                            data-target="#delexpdocModal"
+                                            data-id='["{{$lock}}", "{{$datainstructor->id}}"]'>
+                                                <i class="fa fa-eraser" aria-hidden="true"></i>
+                                        </button>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
@@ -316,24 +304,25 @@
                 </tbody>
             </table>
             <br>
+            <div class="alert alert-success d-none d-print-none" id="newnrevisionexplabwarning">
+                <span id="newnrevisionexplabspan"></span>
+            </div>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
                     <div class="pull-left">
                         <h4>Experiencia Laboral</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                        <div class="pull-right">
-                            @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3"
-                                    id = 'buttonaddexplab'
-                                    data-toggle="modal"
-                                    data-placement="top"
-                                    data-target="#addexplabModal"
-                                    data-id='{{$datainstructor->id}}'>Agregar Experiencia Laboral
-                                </button>
-                            @endcan
-                        </div>
-                    @endif
+                    <div class="pull-right">
+                        @can('instructor.editar_fase2')
+                            <button type="button" class="btn mr-sm-4 mt-3"
+                                id = 'buttonaddexplab'
+                                data-toggle="modal"
+                                data-placement="top"
+                                data-target="#addexplabModal"
+                                data-id='{{$datainstructor->id}}'>Agregar Experiencia Laboral
+                            </button>
+                        @endcan
+                    </div>
                 </div>
             </div>
             <table class="table table-bordered table-responsive-md" id='tableexplab'>
@@ -354,17 +343,15 @@
                                 <td>{{ $exlab['periodo'] }}</td>
                                 <td>{{ $exlab['institucion'] }}</td>
                                 <td width="13%">
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                                        @can('instructor.editar_fase2')
-                                            <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
-                                                data-toggle="modal"
-                                                data-placement="top"
-                                                data-target="#delexplabModal"
-                                                data-id='["{{$lock}}", "{{$datainstructor->id}}"]'>
-                                                    <i class="fa fa-eraser" aria-hidden="true"></i>
-                                            </button>
-                                        @endcan
-                                    @endif
+                                    @can('instructor.editar_fase2')
+                                        <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
+                                            data-toggle="modal"
+                                            data-placement="top"
+                                            data-target="#delexplabModal"
+                                            data-id='["{{$lock}}", "{{$datainstructor->id}}"]'>
+                                                <i class="fa fa-eraser" aria-hidden="true"></i>
+                                        </button>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
@@ -373,7 +360,7 @@
             </table>
             <hr style="border-color:dimgray">
             <div>
-                <label><h2>Requisitos</h2></label>
+                <label><h3>Requisitos</h3></label>
             </div>
             <table class="table table-borderless table-responsive-md" id="table-perfprof2">
                 <tbody>
@@ -389,19 +376,13 @@
                             @endif
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_domicilio">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
-                                            <br><span id="imageName"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
+                            <label class='onpoint' for="arch_domicilio">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
+                               <br><span id="imageName"></span>
+                            </label>
                         </td>
                         <td id="center" width="60px">
                             <H5><small><small>CURP</small></small></H5>
@@ -414,19 +395,13 @@
                             @endif
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_curp">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
-                                            <br><span id="imageName2"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
+                            <label class='onpoint' for="arch_curp">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
+                               <br><span id="imageName2"></span>
+                            </label>
                         </td>
                         <td id="center" width="180px">
                             <H5><small><small>Comprobante Bancario</small></small></H5>
@@ -439,19 +414,13 @@
                             @endif
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_banco">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
-                                            <br><span id="imageName3"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
+                            <label class='onpoint' for="arch_banco">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
+                               <br><span id="imageName3"></span>
+                            </label>
                         </td>
                         <td id="center" width="100px">
                             <H5><small><small>Fotografía</small></small></H5>
@@ -464,19 +433,13 @@
                             @endif
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_foto">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
-                                            <br><span id="imageName4"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
+                            <label class='onpoint' for="arch_foto">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
+                               <br><span id="imageName4"></span>
+                            </label>
                         </td>
                     </tr>
                     <tr >
@@ -491,19 +454,13 @@
                             @endif
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_id">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
-                                            <br><span id="imageName5"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
+                            <label class='onpoint' for="arch_id">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
+                               <br><span id="imageName5"></span>
+                            </label>
                         </td>
                         <td id="center" width="50px">
                             <H5><small><small>RFC</small></small></H5>
@@ -516,19 +473,13 @@
                             @endif
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_rfc">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
-                                            <br><span id="imageName6"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
+                            <label class='onpoint' for="arch_rfc">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
+                               <br><span id="imageName6"></span>
+                            </label>
                         </td>
                         <td id="center" width="180px">
                             <H5><small><small>Comprobante Estudios</small></small></H5>
@@ -541,138 +492,110 @@
                             @endif
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_estudio">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
-                                            <br><span id="imageName7"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
+                            <label class='onpoint' for="arch_estudio">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
+                               <br><span id="imageName7"></span>
+                            </label>
                         </td>
-                        <td id="center" width="100px">
-                            <H5><small><small>Curriculum</small></small></H5>
+                        {{-- <td id="center" width="100px">
+                            <H5><small><small>Alta Instructor</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            @if($datainstructor->archivo_curriculum_personal == NULL)
-                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
-                            @else
-                                <a href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
-                            @endif
+                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
                         </td>
                         <td id="center" width="160px">
-                            @if($datainstructor->status != "PREVALIDACION")
-                                @if($datainstructor->status != "EN FIRMA")
-                                    @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="archivo_curriculum_personal">
-                                            <a class="btn mr-sm-4 mt-3 btn-sm">
-                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                            </a>
-                                            <input @if($datainstructor->status != "VALIDADO") disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="archivo_curriculum_personal" name="archivo_curriculum_personal" placeholder="Archivo PDF">
-                                            <br><span id="imageName8"></span>
-                                        </label>
-                                    @endcan
-                                @endif
-                            @endif
-                        </td>
+                            <label class='onpoint' for="arch_alta">
+                                <a class="btn mr-sm-4 mt-3 btn-sm">
+                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                </a>
+                                <input style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF">
+                               <br><span id="imageName8"></span>
+                            </label>
+                        </td> --}}
                     </tr>
                 </tbody>
             </table>
             <br>
+            @if(isset($datainstructor->entrevista))
                 <div>
                     <label><h3>Entrevista para Candidatos a Instructores</h3></label>
                 </div>
                 <div class="form-row">
-                    @if(isset($datainstructor->entrevista))
-                        <div class="form-group col-md-2"><br>
-                            @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
-                                    data-toggle="modal"
-                                    data-placement="top"
-                                    data-target="#modentrevistaModal"
-                                    data-id='{{$datainstructor->id}}'><small><small>Modificar Entrevista</small></small>
-                                </button>
-                            @endcan
-                        </div>
-                        <div class="form-group col-md-3"><br>
-                            <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-entrevista-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de entrevista</small></small></a>
-                        </div>
-                        <div class="form-group col-md-3"><br>
-                            <table class="table table-borderless table-responsive-md" id="table-perfprof2">
-                                <tbody>
-                                    <tr >
-                                        <td></td>
-                                        <td id="center">
-                                            Entrevista
-                                        </td>
-                                        <td></td>
-                                        <td id="center">
-                                            @if($datainstructor->entrevista['link'] == NULL)
-                                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
-                                            @else
-                                                <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
-                                            @endif
-                                        </td>
-                                        <td></td>
-                                        <td id="center" width="160px">
-                                            <label class='onpoint' for="arch_entrevista">
-                                                <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
-                                                    data-toggle="modal"
-                                                    data-placement="top"
-                                                    data-target="#updentrevistaModal"
-                                                    data-id='{{$datainstructor->id}}'>Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                                </button>
-                                            </label>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="pull-right">
-                            @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
-                                    data-toggle="modal"
-                                    data-placement="top"
-                                    data-target="#entrevistaModal"
-                                    data-id='{{$datainstructor->id}}'><small>Llenar Entrevista</small>
-                                </button>
-                            @endcan
-                        </div>
-                    @endif
+                    <div class="form-group col-md-2">
+                        <br>
+                        @can('instructor.editar_fase2')
+                            <button type="button" class="btn mr-sm-4 mt-3"
+                                data-toggle="modal"
+                                data-placement="top"
+                                data-target="#modentrevistaModal"
+                                data-id='{{$datainstructor->id}}'><small><small>Modificar Entrevista</small></small>
+                            </button>
+                        @endcan
+                    </div>
+                    <div class="form-group col-md-3"><br>
+                        <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-entrevista-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de entrevista</small></small></a>
+                    </div>
+                    <div class="form-group col-md-3"><br>
+                        {{-- <label for="inputarch_ine">Archivo Identificación</label> --}}
+                        <table class="table table-borderless table-responsive-md" id="table-perfprof2">
+                            <tbody>
+                                <tr >
+                                    <td></td>
+                                    <td id="center">
+                                        Entrevista
+                                    </td>
+                                    <td></td>
+                                    <td id="center">
+                                        @if($datainstructor->entrevista['link'] == NULL)
+                                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                        @else
+                                            <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                        @endif
+                                    </td>
+                                    <td></td>
+                                    <td id="center" width="160px">
+                                        <label class='onpoint' for="arch_entrevista">
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-sm"
+                                                data-toggle="modal"
+                                                data-placement="top"
+                                                data-target="#updentrevistaModal"
+                                                data-id='{{$datainstructor->id}}'>Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                            </button>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <br>
-                <hr style="border-color:dimgray">
-                <div class="row">
-                    <div class="col-lg-12 margin-tb">
-                        <div class="pull-left">
-                            <h4>Perfiles Profesionales</h4>
-                        </div>
-                    @php $b = FALSE; foreach($perfil as $chkst){ switch($chkst->status){case 'VALIDADO': $b = TRUE; break; case 'EN CAPTURA': $b = TRUE; break;}} @endphp
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                        <div class="pull-right">
-                            @can('instructor.editar_fase2')
-                                <button type="button" @if (count($perfil) == 0) class="d-none d-print-none" @else class="btn mr-sm-4 mt-3" @endif
-                                    id = 'buttonaddperfprof'
-                                    data-toggle="modal"
-                                    data-placement="top"
-                                    data-target="#addperprofModal"
-                                    data-id='{{$datainstructor->id}}'>Agregar Perfil Profesional
-                                </button>
-                            @endcan
-                        </div>
-                    @endif
+            @endif
+            <hr style="border-color:dimgray">
+            <br>
+            <div class="row">
+                <div class="col-lg-12 margin-tb">
+                    <div class="pull-left">
+                        <h4>Perfiles Profesionales</h4>
+                    </div>
+                    <div class="pull-right">
+                        @can('instructor.editar_fase2')
+                            <button type="button" @if ($perfil == FALSE) class="d-none d-print-none" @else class="btn mr-sm-4 mt-3" @endif
+                                id = 'buttonaddperfprof'
+                                data-toggle="modal"
+                                data-placement="top"
+                                data-target="#addperprofModal"
+                                data-id='{{$datainstructor->id}}'>Agregar Perfil Profesional
+                            </button>
+                        @endcan
+                    </div>
                 </div>
             </div>
             <div class="alert alert-success d-none d-print-none" id="newnrevisionwarning">
                 <span id="newnrevisionspan"></span>
             </div>
-            @if (count($perfil) > 0)
+            @if ($perfil != FALSE)
                 <table class="table table-bordered table-responsive-md" id='tableperfiles'>
                     <thead>
                         <tr>
@@ -681,7 +604,7 @@
                             <th scope="col">Nivel de Estudio</th>
                             <th scope="col">Nombre de Institucion</th>
                             <th scope="col">Status</th>
-                            <th width="150px">Acción</th>
+                            <th width="85px">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -694,20 +617,18 @@
                                 <td>{{ $item->nombre_institucion }}</td>
                                 <td>{{ $item->status }}</td>
                                 <td width="13%">
-                                    @if(($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA') || ($item->status == 'RETORNO' || $item->status == 'REVALIDACION RETORNADA'))
-                                        @can('instructor.editar_fase2')
-                                            <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO"
-                                                data-toggle="modal"
-                                                data-placement="top"
-                                                data-target="#modperprofModal"
-                                                data-id='["{{$item->grado_profesional}}","{{$item->area_carrera}}","{{$item->carrera}}","{{$item->estatus}}",
+                                    @can('instructor.editar_fase2')
+                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO"
+                                            data-toggle="modal"
+                                            data-placement="top"
+                                            data-target="#modperprofModal"
+                                            data-id='["{{$item->grado_profesional}}","{{$item->area_carrera}}","{{$item->carrera}}","{{$item->estatus}}",
                                                     "{{$item->pais_institucion}}","{{$item->entidad_institucion}}","{{$item->ciudad_institucion}}",
                                                     "{{$item->nombre_institucion}}","{{$item->fecha_expedicion_documento}}","{{$item->periodo}}","{{$item->folio_documento}}",
                                                     "{{$item->cursos_recibidos}}","{{$item->capacitador_icatech}}","{{$item->recibidos_icatech}}",
                                                     "{{$item->cursos_impartidos}}","{{$item->id}}","{{$datainstructor->id}}","{{$loc}}"]'>
-                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                            </button>
-                                        @endcan
+                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </button>
                                         <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
                                             data-toggle="modal"
                                             data-placement="top"
@@ -723,69 +644,47 @@
                                             @endif
                                             ><i class="fa fa-eye" aria-hidden="true"></i>
                                         </button>
-                                    @else
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
+                                        <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                             data-toggle="modal"
                                             data-placement="top"
-                                            data-target="#verperfprofModal"
-                                            @if($item->status != 'VALIDADO')
-                                                data-id='["{{$item->grado_profesional}}","{{$item->area_carrera}}","{{$item->carrera}}","{{$item->estatus}}",
-                                                    "{{$item->pais_institucion}}","{{$item->entidad_institucion}}","{{$item->ciudad_institucion}}",
-                                                    "{{$item->nombre_institucion}}","{{$item->fecha_expedicion_documento}}","{{$item->periodo}}","{{$item->folio_documento}}",
-                                                    "{{$item->cursos_recibidos}}","{{$item->capacitador_icatech}}","{{$item->recibidos_icatech}}",
-                                                    "{{$item->cursos_impartidos}}","{{$item->id}}","{{$item->status}}"]'
-                                            @else
-                                                data-id='["{{$item->id}}","{{$item->status}}"]'
-                                            @endif
-                                            ><i class="fa fa-eye" aria-hidden="true"></i>
+                                            data-target="#delperprofModal"
+                                            data-id='["{{$item->id}}","{{$loc}}","{{$item->new}}","{{$datainstructor->id}}"]'>
+                                                <i class="fa fa-eraser" aria-hidden="true"></i>
                                         </button>
-                                    @endif
-                                    @if($item->status == "EN CAPTURA")
-                                        @can('instructor.editar_fase2')
-                                            <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
-                                                data-toggle="modal"
-                                                data-placement="top"
-                                                data-target="#delperprofModal"
-                                                data-id='["{{$item->id}}","{{$loc}}"]'>
-                                                    <i class="fa fa-eraser" aria-hidden="true"></i>
-                                            </button>
-                                        @endcan
-                                    @endif
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             @else
-                @if(isset($datainstructor->entrevista))
-                    <div class="pull-left alert alert-warning" id='warning1'>
+                <div class="pull-left alert alert-warning" id='warning1'>
+                    @if(isset($datainstructor->entrevista))
                         <strong>Info!</strong> No hay Registros
-                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                            <div class="pull-right">
-                                @can('instructor.editar_fase2')
-                                    <button type="button" class="btn mr-sm-4 mt-3"
-                                        data-toggle="modal"
-                                        data-placement="top"
-                                        data-target="#addperprofModal"
-                                        data-id='{{$datainstructor->id}}'>Agregar Perfil Profesional
-                                    </button>
-                                @endcan
-                            </div>
-                        @endif
-                    </div>
-                @else
-                    <strong>Info!</strong> Llene la entrevista para candidatos a instructores antes de proseguir
-                    <div class="pull-right">
-                        @can('instructor.editar_fase2')
-                            <button type="button" class="btn mr-sm-4 mt-3"
-                                data-toggle="modal"
-                                data-placement="top"
-                                data-target="#entrevistaModal"
-                                data-id='{{$datainstructor->id}}'>Entrevista para Candidatos a Instructores
-                            </button>
-                        @endcan
-                    </div>
-                @endif
+                        <div class="pull-right">
+                            @can('instructor.editar_fase2')
+                                <button type="button" class="btn mr-sm-4 mt-3"
+                                    data-toggle="modal"
+                                    data-placement="top"
+                                    data-target="#addperprofModal"
+                                    data-id='{{$datainstructor->id}}'>Agregar Perfil Profesional
+                                </button>
+                            @endcan
+                        </div>
+                    @else
+                        <strong>Info!</strong> Llene la entrevista para candidatos a instructores antes de proseguir
+                        <div class="pull-right">
+                            @can('instructor.editar_fase2')
+                                <button type="button" class="btn mr-sm-4 mt-3"
+                                    data-toggle="modal"
+                                    data-placement="top"
+                                    data-target="#entrevistaModal"
+                                    data-id='{{$datainstructor->id}}'>Entrevista para Candidatos a Instructores
+                                </button>
+                            @endcan
+                        </div>
+                    @endif
+                </div>
                 <table class="table table-bordered table-responsive-md" id='tableperfiles'>
                 </table>
             @endif
@@ -795,134 +694,74 @@
                     <div class="pull-left">
                         <h4>Especialidades a Impartir</h4>
                     </div>
-                    @if (count($validado) > 0)
-                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                            <div class="pull-right">
-                                @can('instructor.editar_fase2')
-                                    <a class="btn mr-sm-4 mt-3" href="{{ route('cursoimpartir-form', ['idins' => $id]) }}">Agregar Especialidad Validado para Impartir</a>
-                                @endcan
-                            </div>
-                        @endif
+                    @if ($validado != FALSE)
+                        <div class="pull-right">
+                            @can('instructor.editar_fase2')
+                                <a class="btn mr-sm-4 mt-3" href="{{ route('cursoimpartir-form', ['idins' => $id]) }}">Agregar Especialidad Validado para Impartir</a>
+                            @endcan
+                        </div>
                     @endif
                 </div>
             </div>
-            @if (count($validado) > 0)
+            @if ($validado != FALSE)
                 <table class="table table-bordered table-responsive-md" id="table-perfprof2">
                     <thead>
                         <tr>
                             <th scope="col">Especialidad</th>
-                            <th scope="col">Memo. Validación</th>
-                            <th scope="col" width="90px">Fecha de Validación</th>
+                            <th scope="col">Memo. solicitud</th>
+                            <th scope="col" width="90px">Fecha de solicitud</th>
                             <th scope="col" width="20px">Criterio Pago</th>
                             <th scope="col">Obsevaciones</th>
                             <th scope="col">Status</th>
-                            <th width="150px">Acción</th>
+                            <th width="140px">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($validado as $place2 => $item)
-                            @php
-                                $loc2 = $place2 + 1; foreach ($perfil as $finder)
-                                {
-                                    if($finder->id == $item->perfilprof_id)
-                                    {
-                                        $perfilprof_nom = $finder->area_carrera;
-                                    }
-                                }
-                            @endphp
+                            @php $loc2 = $place2 + 1 @endphp
                             <tr>
                                 <th scope="row">{{$item->nombre}}</th>
-                                <td>{{ $item->memorandum_validacion}}</td>
-                                <td>{{ $item->fecha_validacion}}</td>
+                                <td>{{ $item->memorandum_solicitud}}</td>
+                                <td>{{ $item->fecha_solicitud}}</td>
                                 <td style="text-align: center;">{{ $item->criterio_pago_id }}</td>
                                 <td>{{ $item->observacion }}</td>
                                 <td>{{ $item->status}}</td>
-                                <td><small>
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
-                                        @can('instructor.editar_fase2')
-                                            <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
-                                            <button type="button" class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
-                                                data-toggle="modal"
-                                                data-placement="top"
-                                                data-target="#verespevaliModal"
-                                                @if($item->status != 'VALIDADO')
-                                                data-id='["{{$item->nombre}}", "{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
-                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
-                                                @else
-                                                    data-id='["{{$item->espinid}}","{{$item->status}}"]'
-                                                @endif
-                                                ><i class="fa fa-eye" aria-hidden="true"></i>
-                                            </button>
-                                            @if($item->status != 'BAJA EN PREVALIDACION')
-                                                <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                                                <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="BAJA DE ESPECIALIDAD"
-                                                    data-toggle="modal"
-                                                    data-placement="top"
-                                                    data-target="#bajaespeModal"
-                                                    data-id='{{$item->espinid}}'>
-                                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                                </button>
-                                            @endif
-                                        @endcan
-                                    @else
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#verespevaliModal"
-                                            @if($item->status != 'VALIDADO')
-                                                data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
-                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
-                                            @else
-                                                data-id='["{{$item->espinid}}","{{$item->status}}"]'
-                                            @endif
-                                            ><i class="fa fa-eye" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                    @if($item->status == 'EN CAPTURA')
+                                <td>
+                                    @can('instructor.editar_fase2')
+                                        <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
+                                        <a class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                                         <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#delespecvalidModal"
-                                            data-id='["{{$item->espinid}}","{{$loc2}}"]'>
+                                            data-id='["{{$item->espinid}}","{{$loc2}}","{{$datainstructor->id}}"]'>
                                                 <i class="fa fa-eraser" aria-hidden="true"></i>
                                         </button>
-                                    @endif
-                                    @if(isset($item->hvalidacion))
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#validacionesModal"
-                                            data-id='{{$item->hvalidacion}}'>
-                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                </small></td>
+                                    @endcan
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             @else
                 <div class="alert alert-warning">
-                    @if (count($perfil) == 0)
+                    @if ($perfil == FALSE)
                         <div id='divnonperfil'>
                             <strong>Info!</strong> No hay Registros en Perfil Profesional, Añada Uno para Poder Agregar una Especialidad a Validar
                         </div>
                     @endif
-                    <div id=divperfil @if(count($perfil) == 0) class='d-none d-print-none' @endif>
+                    <div id=divperfil @if($perfil == FALSE) class='d-none d-print-none' @endif>
                         <strong>Info!</strong> No hay Registros
-                        @if($datainstructor->status != "PREVALIDACION")
-                            <div class="pull-right">
-                                @can('instructor.editar_fase2')
-                                    <a class="btn mr-sm-4 mt-3" href="{{ route('cursoimpartir-form', ['idins' => $id]) }}">Agregar Especialidad Validado para Impartir</a>
-                                @endcan
-                            </div>
-                        @endif
+                        <div class="pull-right">
+                            @can('instructor.editar_fase2')
+                                <a class="btn mr-sm-4 mt-3" href="{{ route('cursoimpartir-form', ['idins' => $id]) }}">Agregar Especialidad Validado para Impartir</a>
+                            @endcan
+                        </div>
                     </div>
                 </div>
             @endif
-            <hr style="border-color:dimgray">
+            <br>
+            {{-- Curriculum --}}
             <div>
                 <label><h3>Curriculum Vitae: ICATECH</h3></label>
             </div>
@@ -952,7 +791,7 @@
                                 <td></td>
                                 <td id="center" width="160px">
                                     <label class='onpoint' for="arch_curriculum">
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
+                                        <button type="button" class="btn mr-sm-4 mt-3 btn-sm"
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#updcurriculumModal"
@@ -965,52 +804,25 @@
                     </table>
                 </div>
             </div>
-            @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
-                <hr style="border-color:dimgray">
-                <label><h2>Solicitar Baja del Instructor</h2></label>
-                <div class="form-group col-md-8">
-                    <button type="button" class="btn btn-danger"
-                        data-toggle="modal"
-                        data-placement="top"
-                        data-target="#bajainstructorModal"
-                        data-id='{{$datainstructor->id}}'>Solicitar Baja
-                    </button>
+            {{-- END Curriculum --}}
+            <hr style="border-color:dimgray">
+            <div>
+                <label><h2>Numero de Revisión</h2></label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <br>
+                    <input class="form-control" type="text" name="nrevision" id="nrevision" value='{{$datainstructor->nrevision}}' readonly>
                 </div>
-            @endif
-            @if($datainstructor->status == 'BAJA')
-                <hr style="border-color:dimgray">
-                <label><h2>Solicitar Reactivación del Instructor</h2></label>
-                <div class="form-group col-md-8">
-                    <button type="button" class="btn btn-danger"
-                        data-toggle="modal"
-                        data-placement="top"
-                        data-target="#reacinstructorModal"
-                        data-id='{{$datainstructor->id}}'>Solicitar Reactivación
-                    </button>
-                    {{-- <a class="btn btn-danger" href="{{ route('instructor-alta_baja', ['id' => $datainstructor->id]) }}" >Solicitar Baja</a> --}}
-                    {{-- <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer> --}}
+                <div class="form-group col-md-1">
+                    @if(!isset($nrevisionlast->nrevision))
+                        <input hidden value={{$nrevisionlast}} id="revlast" name="revlast">
+                    @else
+                        <input hidden value={{$nrevisionlast->nrevision}} id="revlast" name="revlast">
+                    @endif
+                    <input hidden value="{{$userunidad->ubicacion}}" id="userunidad" name="userunidad">
                 </div>
-            @endif
-            @if($datainstructor->status != 'VALIDADO')
-                <hr style="border-color:dimgray">
-                <div>
-                    <label><h2>Numero de Revisión</h2></label>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <br>
-                        <input class="form-control" type="text" name="nrevision" id="nrevision" value='{{$datainstructor->nrevision}}' readonly>
-                    </div>
-                    <div class="form-group col-md-1">
-                        @if(!isset($nrevisionlast->nrevision))
-                            <input hidden value={{$nrevisionlast}} id="revlast" name="revlast">
-                        @else
-                            <input hidden value={{$nrevisionlast->nrevision}} id="revlast" name="revlast">
-                        @endif
-                        <input hidden value="{{$userunidad->ubicacion}}" id="userunidad" name="userunidad">
-                    </div>
-                </div>
-            @endif
+            </div>
             <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
@@ -1018,22 +830,20 @@
                         <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">REGRESAR</a>
                     </div>
                     <input type="hidden" name="id" id="id" value="{{$id}}">
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
-                        <div class="pull-right">
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    @can('instructor.editar_fase2')
-                                        {{-- <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">ENVIAR A DTA</button> --}}
-                                        <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">GUARDAR CAMBIOS</button>
-                                    @endcan
-                                </div>
+                    <div class="pull-right">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                @can('instructor.editar_fase2')
+                                    <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">GUARDAR CAMBIOS</button>
+                                @endcan
                             </div>
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>
     </form>
+
     <!-- Modal Agregar Perfil Profesional -->
     <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" id="addperprofModal" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -1325,6 +1135,8 @@
                     <br>
                     <input type="hidden" name="iddelperfprof" id="iddelperfprof">
                     <input type="hidden" name="locdel" id="locdel">
+                    <input type="hidden" name="new" id="new">
+                    <input type="hidden" name="idinsdelpp" id="idinsdelpp">
                 </div>
             </div>
         </div>
@@ -1351,46 +1163,9 @@
                         </div>
                     </div>
                     <br>
-                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif type="hidden" name="idespecvalid" id="idespecvalid">
-                    <input @if($datainstructor->turnado != "VALIDADO") disabled @endif type="hidden" name="loc2del" id="loc2del">
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
-    <!-- Modal Enviar a DTA -->
-    <div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="sendtodtaModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Enviar a DTA</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="card card-body" >
-                    <form action="{{ route('ins-to-dta') }}" id="regsupre" method="POST">
-                        @csrf
-                        <div class="alert alert-danger d-none d-print-none" id="sendtodtawarning">
-                            <span id="sendtodtaspan"></span>
-                        </div>
-                        <label style="text-align:center"><h5><small>¿Desea confirmar el envio a prevalidacion de este instructor?</small></h5></label>
-                        <div class="form-row">
-                            <div class="form-group col-md-1">
-                            </div>
-                            <div class="form-group col-md-10">
-                                <label for="inputmemosol">Numero de Memorandum para la Solicitud</label>
-                                <input name="memosol" id="memosol" type="text" class="form-control" aria-required="true" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-12" style="text-align:center;width:100%">
-                                <button onclick="sendtodta()" class="btn mr-sm-4 mt-3 btn-danger" >Enviar a DTA</button>
-                            </div>
-                        </div>
-                        <br>
-                        <input type="hidden" name="idtodta" id="idtodta">
-                    </form>
+                    <input type="hidden" name="idespecvalid" id="idespecvalid">
+                    <input type="hidden" name="loc2del" id="loc2del">
+                    <input type="hidden" name="idinsespecelim" id="idinsespecelim">
                 </div>
             </div>
         </div>
@@ -1408,148 +1183,6 @@
                 </div>
                     <div id="listaperfprof">
                     </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
-    <!-- Modal Ver Especialidad Validada -->
-    <div class="modal fade right" id="verespevaliModal" role="dialog">
-        <div class="modal-dialog modal-full-height modal-right">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Informacion De La Especialidad a Validar</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                    <div id="listaespevali">
-                    </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
-    <!-- Prevalidar -->
-    <div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="prevalidarModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Prevalidar Instructor</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="card card-body" >
-                    <form action="{{ route('instructor-prevalidar') }}" id="regsupre" method="POST">
-                        @csrf
-                        <div class="alert alert-danger d-none d-print-none" id="prevalidarwarning">
-                            <span id="prevalidarspan"></span>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1"></div>
-                            <div class="form-group col-md-11" style="text-aling:center;">
-                                <label style="text-align:center"><h5><small>¿Desea confirmar la prevalidación de este instructor?</small></h5></label>
-                            </div>
-                        </div>
-                        {{-- <div class="form-row">
-                            <div class="form-group col-md-1">
-                            </div>
-                            <div class="form-group col-md-10">
-                                <label for="inputmemosol">Numero de Memorandum de la Prevalidación</label>
-                                <input name="memosol" id="memosol" type="text" class="form-control" aria-required="true" required>
-                            </div>
-                        </div> --}}
-                        <div class="form-row">
-                            <div class="form-group col-md-12" style="text-align:center;width:100%">
-                                <button type="submit" class="btn mr-sm-4 mt-3 btn-danger" >Prevalidar</button>
-                            </div>
-                        </div>
-                        <br>
-                        <input type="hidden" name="idinspreval" id="idinspreval">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
-    <!-- Retornar a Unidad -->
-    <div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="returntounitModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Retornar Instructor a Unidad</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="card card-body" >
-                    <form action="{{ route('instructor-rechazo') }}" id="regsupre" method="POST">
-                        @csrf
-                        <div class="alert alert-danger d-none d-print-none" id="returntounitwarning">
-                            <span id="returntounitspan"></span>
-                        </div>
-                        <div class="form-row">
-                            {{-- <div class="form-group col-md-1"></div> --}}
-                            <div class="form-group col-md-12" style="text-aling:center;">
-                                <label style="text-align:center"><h5><small>¿Desea confirmar el retorno a unidad de este instructor?</small></h5></label>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1">
-                            </div>
-                            <div class="form-group col-md-10">
-                                <label for="inputmemosol">Observaciones</label>
-                                <textarea name="observacionreturn" id="observacionreturn" cols="6" rows="4" class="form-control" required></textarea>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-12" style="text-align:center;width:100%">
-                                <button type="submit" class="btn mr-sm-4 mt-3 btn-danger" >Retornar a Unidad</button>
-                            </div>
-                        </div>
-                        <br>
-                        <input type="hidden" name="idinsreturn" id="idinsreturn">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
-    <!-- Historial de Validaciones de Instructor-->
-    <div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="validacionesModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Historial de Validaciones</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="card card-body" >
-                    <div class="alert alert-danger d-none d-print-none" id="validacioneswarning">
-                        <span id="validacionesspan"></span>
-                    </div>
-                    <div class="form-row">
-                        {{-- <div class="form-group col-md-1"></div> --}}
-                        <div class="form-group col-md-12" style="text-aling:center;">
-                            <label style="text-align:center"><h5><small>Seleccione el memorandum de validación a visualizar</small></h5></label>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-1">
-                        </div>
-                        <div class="form-group col-md-10">
-                            <label for="inputmemosol">Lista de Validaciones</label>
-                            <select class="form-control" name="validacionpdf" id="validacionpdf">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-12" style="text-align:center;width:100%">
-                            <button onclick="validacionpdfview()" class="btn mr-sm-4 mt-3 btn-danger" >VER VALIDACIÓN</button>
-                        </div>
-                    </div>
-                    <br>
-                </div>
             </div>
         </div>
     </div>
@@ -1885,8 +1518,8 @@
                                 <input class="form-control" type="text" id="funcion" name="funcion">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="periodoadddoc" class="form-label">Periodo</label>
-                                <input class="form-control" type="text" id="periodoadddoc" name="periodoadddoc">
+                                <label for="periodo" class="form-label">Periodo</label>
+                                <input class="form-control" type="text" id="periododoc" name="periododoc">
                             </div>
                         </div>
                         <div class="form-row">
@@ -2009,129 +1642,6 @@
         </div>
     </div>
     <!-- END -->
-    <!-- Modal Baja Instructor -->
-    <div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="bajainstructorModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Solicitud de Baja de Instructor</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="card card-body" >
-                    <form action="{{ route('instructor-solicitud-baja') }}" method="post" id="registerperf_prof">
-                        @csrf
-                        <div class="alert alert-danger d-none d-print-none" id="bajainstructorwarning">
-                            <span id="bajainstructorspan"></span>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1"></div>
-                                <div class="form-group col-md-10" style="text-align:center;width:100%">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="text-align:center"><h5><b>¿Desea confirmar la solicitud de baja?</b></h5></label>
-                                </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1"></div>
-                            <div class="form-group col-md-10" style="text-align:center;width:100%">
-                                <textarea name="motivo_baja" id="motivo_baja" cols="30" rows="10"></textarea>
-                                {{-- <a class="btn btn-danger" href="{{ route('instructor-solicitud-baja', ['id' => $datainstructor->id]) }}" >Solicitar Baja</a> --}}
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-11" style="text-align:center;width:100%">
-                                <button type="submit" class="btn btn-danger mt-3" >Confirmar</button>
-                                {{-- <a class="btn btn-danger" href="{{ route('instructor-solicitud-baja', ['id' => $datainstructor->id]) }}" >Solicitar Baja</a> --}}
-                            </div>
-                        </div>
-                        <br>
-                        <input type="hidden" name="idbajains" id="idbajains">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
-    <!-- Modal Reactivación Instructor -->
-    <div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="reacinstructorModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Solicitud de Reactivación de Instructor</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="card card-body" >
-                    <form action="{{ route('instructor-solicitud-reactivacion') }}" method="post" id="registerperf_prof">
-                        @csrf
-                        <div class="alert alert-danger d-none d-print-none" id="reacinstructorwarning">
-                            <span id="reacinstructorspan"></span>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1"></div>
-                                <div class="form-group col-md-10" style="text-align:center;width:100%">
-                                &nbsp;&nbsp;&nbsp;<label style="text-align:center; border:0px solid" class="form-control"><h5><b>¿Desea confirmar la solicitud de reactivación?</b></h5></label>
-                                </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-4"></div>
-                            <div class="form-group col-md-4" style="text-align:center;width:100%">
-                                <button type="submit" class="btn btn-danger mt-3 form-control" >Confirmar</button>
-                                {{-- <a class="btn btn-danger" href="{{ route('instructor-solicitud-baja', ['id' => $datainstructor->id]) }}" >Solicitar Baja</a> --}}
-                            </div>
-                        </div>
-                        <br>
-                        <input type="hidden" name="idreacins" id="idreacins">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
-    <!-- Modal Baja Especialidad -->
-    <div class="modal fade bd-example-modal" tabindex="-1" role="dialog" id="bajaespeModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>Solicitud de Baja de Especialidad</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="card card-body" >
-                    <form action="{{ route('instructor-solicitud-especialidad-baja') }}" method="post" id="registerperf_prof">
-                        @csrf
-                        <div class="alert alert-danger d-none d-print-none" id="bajaespewarning">
-                            <span id="bajaespespan"></span>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1"></div>
-                                <div class="form-group col-md-10" style="text-align:center;width:100%">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="text-align:center"><h5><b>¿Desea confirmar la solicitud de baja?</b></h5></label>
-                                </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1"></div>
-                            <div class="form-group col-md-10" style="text-align:center;width:100%">
-                                <textarea name="motivo_baja_especialidad" id="motivo_baja_especialidad" cols="30" rows="10"></textarea>
-                                {{-- <a class="btn btn-danger" href="{{ route('instructor-solicitud-baja', ['id' => $datainstructor->id]) }}" >Solicitar Baja</a> --}}
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-11" style="text-align:center;width:100%">
-                                <button type="submit" class="btn btn-danger mt-3" >Confirmar</button>
-                                {{-- <a class="btn btn-danger" href="{{ route('instructor-solicitud-baja', ['id' => $datainstructor->id]) }}" >Solicitar Baja</a> --}}
-                            </div>
-                        </div>
-                        <br>
-                        <input type="hidden" name="idbajaespe" id="idbajaespe">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END -->
 @stop
 @section('script_content_js')
     <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
@@ -2142,13 +1652,59 @@
             }
         });
 
+        function generate() {
+            var revlast = document.getElementById('revlast').value;
+            var userunidad = document.getElementById('userunidad').value;
+            var button = document.getElementById('generatenr');
+            var selectL = document.getElementById('nrevision'),
+            option
+
+            if(revlast == 0)
+            {
+                userunidad = userunidad.substr(0,2);
+                year = new Date().getFullYear();
+                numrev = userunidad + '-' + year + '-0001'
+            }
+            else
+            {
+                var split = revlast.split("-");
+                var consec = parseInt(split[2]) + 1;
+                consec = consec.toString();
+
+                switch (consec.length)
+                {
+                    case 1:
+                        consec = '000' + consec;
+                    break;
+                    case 2:
+                        consec = '00' + consec;
+                    break;
+                    case 3:
+                        consec = '0' + consec;
+                    break;
+                }
+
+                split[2] = consec;
+                numrev = split.join('-');
+                // console.log(numrev);
+            }
+
+            newOption = document.createElement('option');
+            newOption.value = numrev;
+            newOption.text= numrev;
+            // selectL.appendChild(option);
+            selectL.add(newOption);
+            selectL.value=numrev;
+            button.style.display="none";
+        }
+
         function local() {
             // var x = document.getElementById("municipio").value;
             // console.log(x);
 
             var valor = document.getElementById("municipio").value;
             var datos = {valor: valor};
-            console.log('hola');
+            // console.log('hola');
 
             var url ='/instructores/busqueda/nomesp';
 
@@ -2221,7 +1777,7 @@
 
             var valor = document.getElementById("municipio_nacimiento").value;
             var datos = {valor: valor};
-            console.log('hola');
+            // console.log('hola');
 
             var url ='/instructores/busqueda/nomesp';
 
@@ -2299,8 +1855,8 @@
                             institucion_ciudad: document.getElementById("institucion_ciudad").value,
                             institucion_nombre: document.getElementById("institucion_nombre").value,
                             fecha_documento: document.getElementById("fecha_documento").value,
-                            periodo: document.getElementById("periodo").value,
                             folio_documento: document.getElementById("folio_documento").value,
+                            periodo: document.getElementById("periodo").value,
                             cursos_recibidos: document.getElementById("cursos_recibidos").value,
                             capacitador_icatech: document.getElementById("capacitador_icatech").value,
                             recibidos_icatech: document.getElementById("recibidos_icatech").value,
@@ -2491,7 +2047,9 @@
 
         function delperprof() {
             var datos = {
-                            id: document.getElementById("iddelperfprof").value
+                            id: document.getElementById("iddelperfprof").value,
+                            idins: document.getElementById("idinsdelpp").value,
+                            new: document.getElementById("new").value
                         };
 
             var url = '/instructor/mod/perfilinstructor/eliminar';
@@ -2527,7 +2085,8 @@
 
         function delespecvalid() {
             var datos = {
-                            id: document.getElementById("idespecvalid").value
+                            id: document.getElementById("idespecvalid").value,
+                            idins: document.getElementById("idinsespecelim").value
                         };
 
             var url = '/instructor/mod/especialidadimpartir/eliminar';
@@ -2556,9 +2115,9 @@
                             asignatura: document.getElementById("asignatura").value,
                             institucion: document.getElementById("institucion").value,
                             funcion: document.getElementById("funcion").value,
-                            periodo: document.getElementById("periodoadddoc").value,
+                            periodo: document.getElementById("periododoc").value,
                             idins: document.getElementById("idInstructorexpdoc").value
-                        };
+                        };console.log(datos)
             if(datos.asignatura != '' && datos.institucion != '' && datos.funcion != '' &&
              datos.periodo != '' && datos.idins != '')
             {
@@ -2572,6 +2131,7 @@
                 });
                 request.done(( respuesta) =>
                 {
+                    console.log(respuesta);
                     $('#addexpdocModal').modal('hide');
                     var row = document.getElementById("tableexpdoc").rows.length
                     var table = document.getElementById('tableexpdoc')
@@ -2593,7 +2153,9 @@
                     document.getElementById("periodo").value = '';
                     document.getElementById("idInstructorexpdoc").value = '';
                     $('#addexpdocwarning').prop("class", "d-none d-print-none")
-                    const span = document.getElementById('newnrevisionspan');
+                    const span = document.getElementById('newnrevisionexpdocspan');
+                    $('#newnrevisionexpdocwarning').prop("class", "alert alert-success")
+                    span.textContent = respuesta['nrevisiontext'];
                 });
 
             }
@@ -2689,7 +2251,9 @@
                     document.getElementById("institucionlab").value = '';
                     document.getElementById("idInstructorexpdoc").value = '';
                     $('#addexplabwarning').prop("class", "d-none d-print-none")
-                    const span = document.getElementById('newnrevisionspan');
+                    const span = document.getElementById('newnrevisionexplabspan');
+                    $('#newnrevisionexplabwarning').prop("class", "alert alert-success")
+                    span.textContent = respuesta['nrevisiontext'];
                 });
 
             }
@@ -2744,71 +2308,66 @@
             });
         }
 
-        chkpre = document.getElementById("chkpre").value;
-        if(chkpre == 'FALSE')
-        {
-            let arine = document.getElementById("arch_ine");
-            let ardom = document.getElementById("arch_domicilio");
-            let arcur = document.getElementById("arch_curp");
-            let arban = document.getElementById("arch_banco");
-            let arfot = document.getElementById("arch_foto");
-            let arid = document.getElementById("arch_id");
-            let arrfc = document.getElementById("arch_rfc");
-            let arest = document.getElementById("arch_estudio");
-            let aralt = document.getElementById("archivo_curriculum_personal");
-            let imageName0 = document.getElementById("imageName0");
-            let imageName = document.getElementById("imageName");
-            let imageName2 = document.getElementById("imageName2");
-            let imageName3 = document.getElementById("imageName3");
-            let imageName4 = document.getElementById("imageName4");
-            let imageName5 = document.getElementById("imageName5");
-            let imageName6 = document.getElementById("imageName6");
-            let imageName7 = document.getElementById("imageName7");
-            let imageName8 = document.getElementById("imageName8");
+        let arine = document.getElementById("arch_ine");
+        let ardom = document.getElementById("arch_domicilio");
+        let arcur = document.getElementById("arch_curp");
+        let arban = document.getElementById("arch_banco");
+        let arfot = document.getElementById("arch_foto");
+        let arid = document.getElementById("arch_id");
+        let arrfc = document.getElementById("arch_rfc");
+        let arest = document.getElementById("arch_estudio");
+        let aralt = document.getElementById("arch_alta");
+        let arent = document.getElementById("arch_entrevista");
+        let imageName0 = document.getElementById("imageName0");
+        let imageName = document.getElementById("imageName");
+        let imageName2 = document.getElementById("imageName2");
+        let imageName3 = document.getElementById("imageName3");
+        let imageName4 = document.getElementById("imageName4");
+        let imageName5 = document.getElementById("imageName5");
+        let imageName6 = document.getElementById("imageName6");
+        let imageName7 = document.getElementById("imageName7");
+        let imageName8 = document.getElementById("imageName8");
 
-            arine.addEventListener("change", ()=>{
-                let inputImage0 = document.querySelector("#arch_ine").files[0];
-                imageName0.innerText = inputImage0.name;
-            })
-            ardom.addEventListener("change", ()=>{
-                let inputImage = document.querySelector("#arch_domicilio").files[0];
-                imageName.innerText = inputImage.name;
-            })
-            arcur.addEventListener("change", ()=>{
-                let inputImage2 = document.querySelector("#arch_curp").files[0];
-                imageName2.innerText = inputImage2.name;
-            })
-            arban.addEventListener("change", ()=>{
-                let inputImage3 = document.querySelector("#arch_banco").files[0];
-                imageName3.innerText = inputImage3.name;
-            })
-            arfot.addEventListener("change", ()=>{
-                let inputImage4 = document.querySelector("#arch_foto").files[0];
-                imageName4.innerText = inputImage4.name;
-            })
-            arid.addEventListener("change", ()=>{
-                let inputImage5 = document.querySelector("#arch_id").files[0];
-                imageName5.innerText = inputImage5.name;
-            })
-            arrfc.addEventListener("change", ()=>{
-                let inputImage6 = document.querySelector("#arch_rfc").files[0];
-                imageName6.innerText = inputImage6.name;
-            })
-            arest.addEventListener("change", ()=>{
-                let inputImage7 = document.querySelector("#arch_estudio").files[0];
-                imageName7.innerText = inputImage7.name;
-            })
-            aralt.addEventListener("change", ()=>{
-                let inputImage8 = document.querySelector("#archivo_curriculum_personal").files[0];
-                imageName8.innerText = inputImage8.name;
-            })
-        }
-
-        function validacionpdfview()
-        {
-            window.open(document.getElementById('validacionpdf').value, "_blank");
-            // console.log(document.getElementById('validacionpdf').value)
-        }
+        arine.addEventListener("change", ()=>{
+            let inputImage0 = document.querySelector("#arch_ine").files[0];
+            imageName0.innerText = inputImage0.name;
+        })
+        ardom.addEventListener("change", ()=>{
+            let inputImage = document.querySelector("#arch_domicilio").files[0];
+            imageName.innerText = inputImage.name;
+        })
+        arcur.addEventListener("change", ()=>{
+            let inputImage2 = document.querySelector("#arch_curp").files[0];
+            imageName2.innerText = inputImage2.name;
+        })
+        arban.addEventListener("change", ()=>{
+            let inputImage3 = document.querySelector("#arch_banco").files[0];
+            imageName3.innerText = inputImage3.name;
+        })
+        arfot.addEventListener("change", ()=>{
+            let inputImage4 = document.querySelector("#arch_foto").files[0];
+            imageName4.innerText = inputImage4.name;
+        })
+        arid.addEventListener("change", ()=>{
+            let inputImage5 = document.querySelector("#arch_id").files[0];
+            imageName5.innerText = inputImage5.name;
+        })
+        arrfc.addEventListener("change", ()=>{
+            let inputImage6 = document.querySelector("#arch_rfc").files[0];
+            imageName6.innerText = inputImage6.name;
+        })
+        arest.addEventListener("change", ()=>{
+            let inputImage7 = document.querySelector("#arch_rfc").files[0];
+            imageName7.innerText = inputImage7.name;
+        })
+        arest.addEventListener("change", ()=>{
+            let inputImage7 = document.querySelector("#arch_rfc").files[0];
+            imageName7.innerText = inputImage7.name;
+        })
+        // aralt.addEventListener("change", ()=>{
+        //     let inputImage8 = document.querySelector("#arch_rfc").files[0];
+        //     imageName8.innerText = inputImage8.name;
+        // })
 
         $('#addperprofModal').on('show.bs.modal', function(event){
             // console.log(document.getElementById("tableperfiles").rows.length);
@@ -2851,6 +2410,8 @@
             var id = button.data('id');
             document.getElementById('iddelperfprof').value = id['0'];
             document.getElementById('locdel').value = id['1'];
+            document.getElementById('new').value = id['2'];
+            document.getElementById('idinsdelpp').value = id['3'];
         });
 
         $('#delespecvalidModal').on('show.bs.modal', function(event){
@@ -2860,6 +2421,7 @@
             var id = button.data('id');
             document.getElementById('idespecvalid').value = id['0'];
             document.getElementById('loc2del').value = id['1'];
+            document.getElementById('idinsespecelim').value = id['2'];
         });
 
         $('#sendtodtaModal').on('show.bs.modal', function(event){
@@ -2893,9 +2455,8 @@
             else
             {
                 var datos = {
-                                id: idb
+                                id: idb['15']
                             };
-
                 var url = '/instructor/detalles/perfilinstructor';
                 var request2 = $.ajax
                 ({
@@ -2920,94 +2481,8 @@
                         '<li>Cursos Recibidos: <b>' + respuesta['cursos_recibidos'] + '</b></li><br>' +
                         '<li>Capacitador ICATECH: <b>' + respuesta['capacitador_icatech'] + '</b></li><br>' +
                         '<li>Cursos Recibidos ICATECH: <b>' + respuesta['recibidos_icatech'] + '</b></li><br>' +
-                        '<li>Cursos Impartidos: <b>' + respuesta['cursos_impartidos'] + '</b></li><br>' +
-                        '<li>Experiencia Laboral: <b>' + respuesta['experiencia_laboral'] + '</b></li><br>' +
-                        '<li>Experiencia Docente: <b>' + respuesta['experiencia_docente'] + '</b></li><br>';
+                        '<li>Cursos Impartidos: <b>' + respuesta['cursos_impartidos'] + '</b></li><br>';
                 });
-            }
-        });
-
-        $('#verespevaliModal').on('show.bs.modal', function(event){
-            var button = $(event.relatedTarget);
-            var idb = button.data('id');
-            if(idb['7'] != 'VALIDADO')
-            {
-                // console.log(idb)
-                var div = document.getElementById('listaespevali')
-                div.innerHTML = '<li>Especialidad: <b>' + idb['0'] + '</b></li><br>' +
-                    '<li>Peril Profesional: <b>' + idb['1'] + '</b></li><br>' +
-                    '<li>Unidad Solicita: <b>' + idb['2'] + '</b></li><br>' +
-                    '<li>Criterio Pago: <b>' + idb['3'] + '</b></li><br>' +
-                    '<li>Memorandum de Solicitud: <b>' + idb['4'] + '</b></li><br>' +
-                    '<li>Fecha de Solicitud: <b>' + idb['5'] + '</b></li><br>' +
-                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>';
-            }
-            else
-            {
-                var datos = {
-                                id: idb
-                            };
-
-                var url = '/instructor/detalles/especialidadvalidada';
-                var request2 = $.ajax
-                ({
-                    url: url,
-                    method: 'POST',
-                    data: datos,
-                    dataType: 'json'
-                });
-
-                request2.done(( respuesta) =>
-                {
-                    console.log(respuesta);
-                    var div = document.getElementById('listaespevali')
-                    div.innerHTML = '<li>Especialidad: <b>' + respuesta['especialidad'] + '</b></li><br>' +
-                        '<li>Peril Profesional: <b>' + respuesta['perfilprof'] + '</b></li><br>' +
-                        '<li>Unidad Solicita: <b>' + respuesta['unidad_solicita'] + '</b></li><br>' +
-                        '<li>Criterio Pago: <b>' + respuesta['cp'] + '</b></li><br>' +
-                        '<li>Memorandum de Solicitud: <b>' + respuesta['memorandum_solicitud'] + '</b></li><br>' +
-                        '<li>Fecha de Solicitud: <b>' + respuesta['fecha_solicitud'] + '</b></li><br>' +
-                        '<li>Observaciones: <b>' + respuesta['observacion'] + '</b></li><br>' +
-                        '<li>Cursos:</li><ul>' + respuesta['cursos'] + '</ul>';
-                });
-            }
-        });
-
-        $('#prevalidarModal').on('show.bs.modal', function(event){
-            $('#prevalidarwarning').prop("class", "d-none d-print-none")
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            // console.log(id)
-            document.getElementById('idinspreval').value = id;
-        });
-
-        $('#returntounitModal').on('show.bs.modal', function(event){
-            $('#returntounitwarning').prop("class", "d-none d-print-none")
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            // console.log(id)
-            document.getElementById('idinsreturn').value = id;
-        });
-
-        $('#validacionesModal').on('show.bs.modal', function(event){
-            $('#validacionwarning').prop("class", "d-none d-print-none")
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            console.log(id)
-
-            var selectL = document.getElementById('validacionpdf'),
-            option,
-            i = 0,
-            il = id.length;
-            // console.log(il);
-            // console.log( id[0])
-            for (; i < il; i += 1)
-            {
-                newOption = document.createElement('option');
-                newOption.value = id[i].arch_val;
-                newOption.text=id[i].memo_val;
-                // selectL.appendChild(option);
-                selectL.add(newOption);
             }
         });
 
@@ -3127,30 +2602,6 @@
             document.getElementById('pulabdel').value = puesto;
             document.getElementById('pelabdel').value = periodo;
             document.getElementById('inlabdel').value = institucion;
-        });
-
-        $('#bajainstructorModal').on('show.bs.modal', function(event){
-            // console.log(document.getElementById("tableperfiles").rows.length);
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            // console.log(id);
-            document.getElementById('idbajains').value = id;
-        });
-
-        $('#reacinstructorModal').on('show.bs.modal', function(event){
-            // console.log(document.getElementById("tableperfiles").rows.length);
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            // console.log(id);
-            document.getElementById('idreacins').value = id;
-        });
-
-        $('#bajaespeModal').on('show.bs.modal', function(event){
-            // console.log(document.getElementById("tableperfiles").rows.length);
-            var button = $(event.relatedTarget);
-            var id = button.data('id');
-            // console.log(id);
-            document.getElementById('idbajaespe').value = id;
         });
     </script>
 @endsection
