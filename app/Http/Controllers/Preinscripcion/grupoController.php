@@ -1150,7 +1150,7 @@ class grupoController extends Controller
         $conteo1 = 1;
         $conteo2 = null;
         $temp =  $temp2 = $mesact = '';
-        if (DB::table('tbl_cursos')->where('status','<>','CANCELADO')->where('id_instructor',$id_instructor)->where('folio_grupo','<>',$id_curso)->whereRaw("((inicio >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (inicio <= '$termino_curso')) OR ((termino >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (termino <= '$termino_curso'))")->exists()) {
+        if (DB::table('tbl_cursos')->where('status','<>','CANCELADO')->where('id_instructor',$id_instructor)->where('folio_grupo','<>',$id_curso)->whereRaw("(((inicio >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (inicio <= '$termino_curso')) OR ((termino >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (termino <= '$termino_curso')))")->exists()) {
             $actinstru = DB::table('tbl_cursos')->select('inicio','termino','folio_grupo')
                 ->where('status','<>','CANCELADO')
                 ->where('id_instructor',$id_instructor)
@@ -1166,7 +1166,7 @@ class grupoController extends Controller
                     if (date('Y-m',strtotime($value->termino)) < date('Y-m',strtotime($inicio_curso))) {
                         $conteo1 += 1;
                     }
-                    if (date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) {
+                    if ((date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($inicio_curso)))) {
                         $conteo1 += 1;
                     }
                     $mesact = date('m',strtotime($value->inicio));
@@ -1175,7 +1175,7 @@ class grupoController extends Controller
                         if (date('m',strtotime($value->termino)) < $mesact) {
                             $conteo1 += 1;
                         }
-                        if (date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) {
+                        if ((date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($temp)))) {
                             $conteo1 += 1;
                         }
                         $mesact = date('m',strtotime($value->inicio));
@@ -1203,7 +1203,7 @@ class grupoController extends Controller
                         if (date('Y-m',strtotime($value->inicio)) > date('Y-m',strtotime($termino_curso))) {
                             $conteo2 += 1;
                         }
-                        if (date('m',strtotime($value->inicio)) <> date('m',strtotime($value->termino))) {
+                        if ((date('m',strtotime($value->inicio)) <> date('m',strtotime($value->termino))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($inicio_curso)))) {
                             $conteo2 += 1;
                         }
                         $mesact = date('m',strtotime($value->termino));
@@ -1212,7 +1212,7 @@ class grupoController extends Controller
                             if (date('m',strtotime($value->termino)) > $mesact) {
                                 $conteo2 += 1;
                             }
-                            if (date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) {
+                            if ((date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($temp)))) {
                                 $conteo2 += 1;
                             }
                             $mesact = date('m',strtotime($value->termino));
