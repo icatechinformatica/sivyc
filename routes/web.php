@@ -854,16 +854,13 @@ Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@
 //  autocomplete localidad inscripcion alumnos
 Route::get('inscripciones/localidad', 'webController\AlumnoController@localidadAutocomplete')->name('autocomplete.localidad');
 
-<<<<<<< HEAD
 //
 Route::get('/reportes/contentradoPago', 'webController\PagoController@concentrado_ingresos')->name('reportes.concentradoingresos');
 Route::post('/reportes/contentradoPago/pdf', 'webController\PagoController@concentrado_ingresos_pdf')->name('reportes.concentradoingresospdf');
 
-=======
 //consulta de Cursos por especialidad en instructores
 Route::post('/instructores/busqueda/cursos', 'webController\Instructorcontroller@getcursos')->name('instructores.busqueda.cursos');
 Route::post('/instructores/busqueda/nomesp', 'webController\Instructorcontroller@nomesp')->name('instructores.busqueda.nomesp');
->>>>>>> c3a1637e4c86107f10a254a3daeddfe182cb64d1
 
 //consulta de numero de revision en instructore
 Route::post('/instructores/busqueda/nrevision', 'webController\Instructorcontroller@getnrevision')->name('instructores.busqueda.nrevision');
