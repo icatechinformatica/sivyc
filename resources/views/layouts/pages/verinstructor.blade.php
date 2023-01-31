@@ -38,7 +38,7 @@
             <div>
                 <label><h2>Datos Personales</h2></label>
             </div>
-            @php $stats = array('PREVALIDACION','EN FIRMA');@endphp
+            @php $stats = array('PREVALIDACION','EN FIRMA'); $perfilprof_nom = NULL; @endphp
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre">Nombre</label>
@@ -481,7 +481,7 @@
                     </tr>
                     <tr >
                         <td id="center" width="200px">
-                            <H5><small><small>Otra Identificación</small></small></H5>
+                            <H5><small><small>Acta de Nacimiento</small></small></H5>
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_otraid == NULL)
@@ -569,7 +569,7 @@
                             @if($datainstructor->status != "PREVALIDACION")
                                 @if($datainstructor->status != "EN FIRMA")
                                     @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="arch_alta">
+                                        <label class='onpoint' for="archivo_curriculum_personal">
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
@@ -712,16 +712,32 @@
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#verperfprofModal"
-                                            data-id='{{$item->id}}'>
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            @if($item->status != 'VALIDADO')
+                                                data-id='["{{$item->grado_profesional}}","{{$item->area_carrera}}","{{$item->carrera}}","{{$item->estatus}}",
+                                                    "{{$item->pais_institucion}}","{{$item->entidad_institucion}}","{{$item->ciudad_institucion}}",
+                                                    "{{$item->nombre_institucion}}","{{$item->fecha_expedicion_documento}}","{{$item->periodo}}","{{$item->folio_documento}}",
+                                                    "{{$item->cursos_recibidos}}","{{$item->capacitador_icatech}}","{{$item->recibidos_icatech}}",
+                                                    "{{$item->cursos_impartidos}}","{{$item->id}}","{{$item->status}}"]'
+                                            @else
+                                                data-id='["{{$item->id}}","{{$item->status}}"]'
+                                            @endif
+                                            ><i class="fa fa-eye" aria-hidden="true"></i>
                                         </button>
                                     @else
                                         <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#verperfprofModal"
-                                            data-id='{{$item->id}}'>
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            @if($item->status != 'VALIDADO')
+                                                data-id='["{{$item->grado_profesional}}","{{$item->area_carrera}}","{{$item->carrera}}","{{$item->estatus}}",
+                                                    "{{$item->pais_institucion}}","{{$item->entidad_institucion}}","{{$item->ciudad_institucion}}",
+                                                    "{{$item->nombre_institucion}}","{{$item->fecha_expedicion_documento}}","{{$item->periodo}}","{{$item->folio_documento}}",
+                                                    "{{$item->cursos_recibidos}}","{{$item->capacitador_icatech}}","{{$item->recibidos_icatech}}",
+                                                    "{{$item->cursos_impartidos}}","{{$item->id}}","{{$item->status}}"]'
+                                            @else
+                                                data-id='["{{$item->id}}","{{$item->status}}"]'
+                                            @endif
+                                            ><i class="fa fa-eye" aria-hidden="true"></i>
                                         </button>
                                     @endif
                                     @if($item->status == "EN CAPTURA")
@@ -805,7 +821,15 @@
                     </thead>
                     <tbody>
                         @foreach ($validado as $place2 => $item)
-                            @php $loc2 = $place2 + 1 @endphp
+                            @php
+                                $loc2 = $place2 + 1; foreach ($perfil as $finder)
+                                {
+                                    if($finder->id == $item->perfilprof_id)
+                                    {
+                                        $perfilprof_nom = $finder->area_carrera;
+                                    }
+                                }
+                            @endphp
                             <tr>
                                 <th scope="row">{{$item->nombre}}</th>
                                 <td>{{ $item->memorandum_validacion}}</td>
@@ -821,8 +845,14 @@
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#verespevaliModal"
-                                                data-id='{{$item->espinid}}'>
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                @if($item->status != 'VALIDADO')
+                                                data-id='["{{$item->nombre}}", "{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
+                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
+                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                @else
+                                                    data-id='["{{$item->espinid}}","{{$item->status}}"]'
+                                                @endif
+                                                ><i class="fa fa-eye" aria-hidden="true"></i>
                                             </button>
                                             @if($item->status != 'BAJA EN PREVALIDACION')
                                                 <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
@@ -840,8 +870,14 @@
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#verespevaliModal"
-                                            data-id='{{$item->espinid}}'>
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            @if($item->status != 'VALIDADO')
+                                                data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
+                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
+                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                            @else
+                                                data-id='["{{$item->espinid}}","{{$item->status}}"]'
+                                            @endif
+                                            ><i class="fa fa-eye" aria-hidden="true"></i>
                                         </button>
                                     @endif
                                     @if($item->status == 'EN CAPTURA')
@@ -2719,7 +2755,7 @@
             let arid = document.getElementById("arch_id");
             let arrfc = document.getElementById("arch_rfc");
             let arest = document.getElementById("arch_estudio");
-            let aralt = document.getElementById("arch_alta");
+            let aralt = document.getElementById("archivo_curriculum_personal");
             let imageName0 = document.getElementById("imageName0");
             let imageName = document.getElementById("imageName");
             let imageName2 = document.getElementById("imageName2");
@@ -2759,11 +2795,7 @@
                 imageName6.innerText = inputImage6.name;
             })
             arest.addEventListener("change", ()=>{
-                let inputImage7 = document.querySelector("#arch_rfc").files[0];
-                imageName7.innerText = inputImage7.name;
-            })
-            arest.addEventListener("change", ()=>{
-                let inputImage7 = document.querySelector("#arch_rfc").files[0];
+                let inputImage7 = document.querySelector("#arch_estudio").files[0];
                 imageName7.innerText = inputImage7.name;
             })
             aralt.addEventListener("change", ()=>{
@@ -2841,73 +2873,104 @@
         $('#verperfprofModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var idb = button.data('id');
-            // console.log(idb)
-
-            var datos = {
-                            id: idb
-                        };
-
-            var url = '/instructor/detalles/perfilinstructor';
-            var request2 = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            request2.done(( respuesta) =>
+            if (idb['16'] != 'VALIDADO')
             {
-                // console.log(respuesta);
+                // console.log(idb)
                 var div = document.getElementById('listaperfprof')
-                div.innerHTML = '<li>Grado Profesional: <b>' + respuesta['grado_profesional'] + '</b></li><br>' +
-                    '<li>Estatus: <b>' + respuesta['estatus'] + '</b></li><br>' +
-                    '<li>Pais: <b>' + respuesta['pais_institucion'] + '</b></li><br>' +
-                    '<li>Entidad: <b>' + respuesta['entidad_institucion'] + '</b></li><br>' +
-                    '<li>Ciudad: <b>' + respuesta['ciudad_institucion'] + '</b></li><br>' +
-                    '<li>Institución: <b>' + respuesta['nombre_institucion'] + '</b></li><br>' +
-                    '<li>Fecha de Expedicion: <b>' + respuesta['fecha_expedicion_documento'] + '</b></li><br>' +
-                    '<li>Folio de Documento: <b>' + respuesta['folio_documento'] + '</b></li><br>' +
-                    '<li>Cursos Recibidos: <b>' + respuesta['cursos_recibidos'] + '</b></li><br>' +
-                    '<li>Capacitador ICATECH: <b>' + respuesta['capacitador_icatech'] + '</b></li><br>' +
-                    '<li>Cursos Recibidos ICATECH: <b>' + respuesta['recibidos_icatech'] + '</b></li><br>' +
-                    '<li>Cursos Impartidos: <b>' + respuesta['cursos_impartidos'] + '</b></li><br>' +
-                    '<li>Experiencia Laboral: <b>' + respuesta['experiencia_laboral'] + '</b></li><br>' +
-                    '<li>Experiencia Docente: <b>' + respuesta['experiencia_docente'] + '</b></li><br>';
-            });
+                div.innerHTML = '<li>Grado Profesional: <b>' + idb['1'] + '</b></li><br>' +
+                    '<li>Estatus: <b>' + idb['16'] + '</b></li><br>' +
+                    '<li>Pais: <b>' + idb['4'] + '</b></li><br>' +
+                    '<li>Entidad: <b>' + idb['5'] + '</b></li><br>' +
+                    '<li>Ciudad: <b>' + idb['6'] + '</b></li><br>' +
+                    '<li>Institución: <b>' + idb['7'] + '</b></li><br>' +
+                    '<li>Fecha de Expedicion: <b>' + idb['8'] + '</b></li><br>' +
+                    '<li>Folio de Documento: <b>' + idb['10'] + '</b></li><br>' +
+                    '<li>Cursos Recibidos: <b>' + idb['11'] + '</b></li><br>' +
+                    '<li>Capacitador ICATECH: <b>' + idb['12'] + '</b></li><br>' +
+                    '<li>Cursos Recibidos ICATECH: <b>' + idb['13'] + '</b></li><br>' +
+                    '<li>Cursos Impartidos: <b>' + idb['14'] + '</b></li><br>';
+            }
+            else
+            {
+                var datos = {
+                                id: idb
+                            };
+
+                var url = '/instructor/detalles/perfilinstructor';
+                var request2 = $.ajax
+                ({
+                    url: url,
+                    method: 'POST',
+                    data: datos,
+                    dataType: 'json'
+                });
+
+                request2.done(( respuesta) =>
+                {
+                    // console.log(respuesta);
+                    var div = document.getElementById('listaperfprof')
+                    div.innerHTML = '<li>Grado Profesional: <b>' + respuesta['grado_profesional'] + '</b></li><br>' +
+                        '<li>Estatus: <b>' + respuesta['estatus'] + '</b></li><br>' +
+                        '<li>Pais: <b>' + respuesta['pais_institucion'] + '</b></li><br>' +
+                        '<li>Entidad: <b>' + respuesta['entidad_institucion'] + '</b></li><br>' +
+                        '<li>Ciudad: <b>' + respuesta['ciudad_institucion'] + '</b></li><br>' +
+                        '<li>Institución: <b>' + respuesta['nombre_institucion'] + '</b></li><br>' +
+                        '<li>Fecha de Expedicion: <b>' + respuesta['fecha_expedicion_documento'] + '</b></li><br>' +
+                        '<li>Folio de Documento: <b>' + respuesta['folio_documento'] + '</b></li><br>' +
+                        '<li>Cursos Recibidos: <b>' + respuesta['cursos_recibidos'] + '</b></li><br>' +
+                        '<li>Capacitador ICATECH: <b>' + respuesta['capacitador_icatech'] + '</b></li><br>' +
+                        '<li>Cursos Recibidos ICATECH: <b>' + respuesta['recibidos_icatech'] + '</b></li><br>' +
+                        '<li>Cursos Impartidos: <b>' + respuesta['cursos_impartidos'] + '</b></li><br>' +
+                        '<li>Experiencia Laboral: <b>' + respuesta['experiencia_laboral'] + '</b></li><br>' +
+                        '<li>Experiencia Docente: <b>' + respuesta['experiencia_docente'] + '</b></li><br>';
+                });
+            }
         });
 
         $('#verespevaliModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var idb = button.data('id');
-            // console.log(idb)
-
-            var datos = {
-                            id: idb
-                        };
-
-            var url = '/instructor/detalles/especialidadvalidada';
-            var request2 = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            request2.done(( respuesta) =>
+            if(idb['7'] != 'VALIDADO')
             {
-                console.log(respuesta);
+                // console.log(idb)
                 var div = document.getElementById('listaespevali')
-                div.innerHTML = '<li>Especialidad: <b>' + respuesta['especialidad'] + '</b></li><br>' +
-                    '<li>Peril Profesional: <b>' + respuesta['perfilprof'] + '</b></li><br>' +
-                    '<li>Unidad Solicita: <b>' + respuesta['unidad_solicita'] + '</b></li><br>' +
-                    '<li>Criterio Pago: <b>' + respuesta['cp'] + '</b></li><br>' +
-                    '<li>Memorandum de Solicitud: <b>' + respuesta['memorandum_solicitud'] + '</b></li><br>' +
-                    '<li>Fecha de Solicitud: <b>' + respuesta['fecha_solicitud'] + '</b></li><br>' +
-                    '<li>Observaciones: <b>' + respuesta['observacion'] + '</b></li><br>' +
-                    '<li>Cursos:</li><ul>' + respuesta['cursos'] + '</ul>';
-            });
+                div.innerHTML = '<li>Especialidad: <b>' + idb['0'] + '</b></li><br>' +
+                    '<li>Peril Profesional: <b>' + idb['1'] + '</b></li><br>' +
+                    '<li>Unidad Solicita: <b>' + idb['2'] + '</b></li><br>' +
+                    '<li>Criterio Pago: <b>' + idb['3'] + '</b></li><br>' +
+                    '<li>Memorandum de Solicitud: <b>' + idb['4'] + '</b></li><br>' +
+                    '<li>Fecha de Solicitud: <b>' + idb['5'] + '</b></li><br>' +
+                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>';
+            }
+            else
+            {
+                var datos = {
+                                id: idb
+                            };
+
+                var url = '/instructor/detalles/especialidadvalidada';
+                var request2 = $.ajax
+                ({
+                    url: url,
+                    method: 'POST',
+                    data: datos,
+                    dataType: 'json'
+                });
+
+                request2.done(( respuesta) =>
+                {
+                    console.log(respuesta);
+                    var div = document.getElementById('listaespevali')
+                    div.innerHTML = '<li>Especialidad: <b>' + respuesta['especialidad'] + '</b></li><br>' +
+                        '<li>Peril Profesional: <b>' + respuesta['perfilprof'] + '</b></li><br>' +
+                        '<li>Unidad Solicita: <b>' + respuesta['unidad_solicita'] + '</b></li><br>' +
+                        '<li>Criterio Pago: <b>' + respuesta['cp'] + '</b></li><br>' +
+                        '<li>Memorandum de Solicitud: <b>' + respuesta['memorandum_solicitud'] + '</b></li><br>' +
+                        '<li>Fecha de Solicitud: <b>' + respuesta['fecha_solicitud'] + '</b></li><br>' +
+                        '<li>Observaciones: <b>' + respuesta['observacion'] + '</b></li><br>' +
+                        '<li>Cursos:</li><ul>' + respuesta['cursos'] + '</ul>';
+                });
+            }
         });
 
         $('#prevalidarModal').on('show.bs.modal', function(event){

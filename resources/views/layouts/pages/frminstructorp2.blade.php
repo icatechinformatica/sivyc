@@ -444,7 +444,7 @@
                     </tr>
                     <tr >
                         <td id="center" width="200px">
-                            <H5><small><small>Otra Identificación</small></small></H5>
+                            <H5><small><small>Acta de Nacimiento</small></small></H5>
                         </td>
                         <td id="center" width="50px">
                             @if($datainstructor->archivo_otraid == NULL)
@@ -572,66 +572,7 @@
                     </div>
                 </div>
             @endif
-            <br>
-            <div>
-                <label><h3>Curriculum Vitae: ICATECH</h3></label>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-2">
-                </div>
-                <div class="form-group col-md-3"><br>
-                    <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-curriculumicatech-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de curriculum</small></small></a>
-                </div>
-                <div class="form-group col-md-3"><br>
-                    {{-- <label for="inputarch_ine">Archivo Identificación</label> --}}
-                    <table class="table table-borderless table-responsive-md" id="table-perfprof2">
-                        <tbody>
-                            <tr >
-                                <td></td>
-                                <td id="center">
-                                    Curriculum
-                                </td>
-                                <td></td>
-                                <td id="center">
-                                    @if($datainstructor->curriculum == NULL)
-                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
-                                    @else
-                                        <a href={{$datainstructor->curriculum}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
-                                    @endif
-                                </td>
-                                <td></td>
-                                <td id="center" width="160px">
-                                    <label class='onpoint' for="arch_curriculum">
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-sm"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#updcurriculumModal"
-                                            data-id='{{$datainstructor->id}}'>Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                        </button>
-                                    </label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
             <hr style="border-color:dimgray">
-            {{-- <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="extracurricular"><h3>Registro de Capacitador Externo STPS</h3></label>
-                    <textarea name="stps" id="stps" cols="6" rows="4" class="form-control"></textarea>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="extracurricular"><h3>Estandar CONOCER</h3></label>
-                    <textarea name="conocer" id="conocer" cols="6" rows="4" class="form-control"></textarea>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="extracurricular"><h3>Datos Extracurriculares</h3></label>
-                    <textarea name="extracurricular" id="extracurricular" cols="6" rows="10" class="form-control"></textarea>
-                </div>
-            </div> --}}
             <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
@@ -692,8 +633,16 @@
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#verperfprofModal"
-                                            data-id='{{$item->id}}'>
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            @if($item->status != 'VALIDADO')
+                                                data-id='["{{$item->grado_profesional}}","{{$item->area_carrera}}","{{$item->carrera}}","{{$item->estatus}}",
+                                                    "{{$item->pais_institucion}}","{{$item->entidad_institucion}}","{{$item->ciudad_institucion}}",
+                                                    "{{$item->nombre_institucion}}","{{$item->fecha_expedicion_documento}}","{{$item->periodo}}","{{$item->folio_documento}}",
+                                                    "{{$item->cursos_recibidos}}","{{$item->capacitador_icatech}}","{{$item->recibidos_icatech}}",
+                                                    "{{$item->cursos_impartidos}}","{{$item->id}}","{{$item->status}}"]'
+                                            @else
+                                                data-id='["{{$item->id}}","{{$item->status}}"]'
+                                            @endif
+                                            ><i class="fa fa-eye" aria-hidden="true"></i>
                                         </button>
                                         <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                             data-toggle="modal"
@@ -811,6 +760,51 @@
                     </div>
                 </div>
             @endif
+            <br>
+            {{-- Curriculum --}}
+            <div>
+                <label><h3>Curriculum Vitae: ICATECH</h3></label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                </div>
+                <div class="form-group col-md-3"><br>
+                    <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-curriculumicatech-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de curriculum</small></small></a>
+                </div>
+                <div class="form-group col-md-3"><br>
+                    {{-- <label for="inputarch_ine">Archivo Identificación</label> --}}
+                    <table class="table table-borderless table-responsive-md" id="table-perfprof2">
+                        <tbody>
+                            <tr >
+                                <td></td>
+                                <td id="center">
+                                    Curriculum
+                                </td>
+                                <td></td>
+                                <td id="center">
+                                    @if($datainstructor->curriculum == NULL)
+                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                    @else
+                                        <a href={{$datainstructor->curriculum}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                    @endif
+                                </td>
+                                <td></td>
+                                <td id="center" width="160px">
+                                    <label class='onpoint' for="arch_curriculum">
+                                        <button type="button" class="btn mr-sm-4 mt-3 btn-sm"
+                                            data-toggle="modal"
+                                            data-placement="top"
+                                            data-target="#updcurriculumModal"
+                                            data-id='{{$datainstructor->id}}'>Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                        </button>
+                                    </label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {{-- END Curriculum --}}
             <hr style="border-color:dimgray">
             <div>
                 <label><h2>Numero de Revisión</h2></label>
@@ -2441,38 +2435,55 @@
         $('#verperfprofModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var idb = button.data('id');
-            // console.log(idb)
-
-            var datos = {
-                            id: idb
-                        };
-
-            var url = '/instructor/detalles/perfilinstructor';
-            var request2 = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            request2.done(( respuesta) =>
+            if (idb['16'] != 'VALIDADO')
             {
-                // console.log(respuesta);
+                // console.log(idb)
                 var div = document.getElementById('listaperfprof')
-                div.innerHTML = '<li>Grado Profesional: <b>' + respuesta['grado_profesional'] + '</b></li><br>' +
-                    '<li>Estatus: <b>' + respuesta['estatus'] + '</b></li><br>' +
-                    '<li>Pais: <b>' + respuesta['pais_institucion'] + '</b></li><br>' +
-                    '<li>Entidad: <b>' + respuesta['entidad_institucion'] + '</b></li><br>' +
-                    '<li>Ciudad: <b>' + respuesta['ciudad_institucion'] + '</b></li><br>' +
-                    '<li>Institución: <b>' + respuesta['nombre_institucion'] + '</b></li><br>' +
-                    '<li>Fecha de Expedicion: <b>' + respuesta['fecha_expedicion_documento'] + '</b></li><br>' +
-                    '<li>Folio de Documento: <b>' + respuesta['folio_documento'] + '</b></li><br>' +
-                    '<li>Cursos Recibidos: <b>' + respuesta['cursos_recibidos'] + '</b></li><br>' +
-                    '<li>Capacitador ICATECH: <b>' + respuesta['capacitador_icatech'] + '</b></li><br>' +
-                    '<li>Cursos Recibidos ICATECH: <b>' + respuesta['recibidos_icatech'] + '</b></li><br>' +
-                    '<li>Cursos Impartidos: <b>' + respuesta['cursos_impartidos'] + '</b></li><br>';
-            });
+                div.innerHTML = '<li>Grado Profesional: <b>' + idb['1'] + '</b></li><br>' +
+                    '<li>Estatus: <b>' + idb['16'] + '</b></li><br>' +
+                    '<li>Pais: <b>' + idb['4'] + '</b></li><br>' +
+                    '<li>Entidad: <b>' + idb['5'] + '</b></li><br>' +
+                    '<li>Ciudad: <b>' + idb['6'] + '</b></li><br>' +
+                    '<li>Institución: <b>' + idb['7'] + '</b></li><br>' +
+                    '<li>Fecha de Expedicion: <b>' + idb['8'] + '</b></li><br>' +
+                    '<li>Folio de Documento: <b>' + idb['10'] + '</b></li><br>' +
+                    '<li>Cursos Recibidos: <b>' + idb['11'] + '</b></li><br>' +
+                    '<li>Capacitador ICATECH: <b>' + idb['12'] + '</b></li><br>' +
+                    '<li>Cursos Recibidos ICATECH: <b>' + idb['13'] + '</b></li><br>' +
+                    '<li>Cursos Impartidos: <b>' + idb['14'] + '</b></li><br>';
+            }
+            else
+            {
+                var datos = {
+                                id: idb['15']
+                            };
+                var url = '/instructor/detalles/perfilinstructor';
+                var request2 = $.ajax
+                ({
+                    url: url,
+                    method: 'POST',
+                    data: datos,
+                    dataType: 'json'
+                });
+
+                request2.done(( respuesta) =>
+                {
+                    // console.log(respuesta);
+                    var div = document.getElementById('listaperfprof')
+                    div.innerHTML = '<li>Grado Profesional: <b>' + respuesta['grado_profesional'] + '</b></li><br>' +
+                        '<li>Estatus: <b>' + respuesta['estatus'] + '</b></li><br>' +
+                        '<li>Pais: <b>' + respuesta['pais_institucion'] + '</b></li><br>' +
+                        '<li>Entidad: <b>' + respuesta['entidad_institucion'] + '</b></li><br>' +
+                        '<li>Ciudad: <b>' + respuesta['ciudad_institucion'] + '</b></li><br>' +
+                        '<li>Institución: <b>' + respuesta['nombre_institucion'] + '</b></li><br>' +
+                        '<li>Fecha de Expedicion: <b>' + respuesta['fecha_expedicion_documento'] + '</b></li><br>' +
+                        '<li>Folio de Documento: <b>' + respuesta['folio_documento'] + '</b></li><br>' +
+                        '<li>Cursos Recibidos: <b>' + respuesta['cursos_recibidos'] + '</b></li><br>' +
+                        '<li>Capacitador ICATECH: <b>' + respuesta['capacitador_icatech'] + '</b></li><br>' +
+                        '<li>Cursos Recibidos ICATECH: <b>' + respuesta['recibidos_icatech'] + '</b></li><br>' +
+                        '<li>Cursos Impartidos: <b>' + respuesta['cursos_impartidos'] + '</b></li><br>';
+                });
+            }
         });
 
         $('#entrevistaModal').on('show.bs.modal', function(event){

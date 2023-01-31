@@ -131,7 +131,7 @@
                 </thead>
             </table>
             <b>I. DATOS PERSONALES</b>
-            <br><br>
+            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -150,7 +150,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -167,7 +166,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -186,7 +184,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -203,7 +200,6 @@
                     </tbody>
                 </table>
             </div>
-            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -242,7 +238,7 @@
                 </table>
             </div>
             <b>II. FORMACIÓN ACADÉMICA Y EN CURSO</b>
-            <br><br>
+            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -276,7 +272,7 @@
                 </table>
             </div>
             <b>III. EXPERIENCIA DOCENTE (ANTERIOR Y ACTUAL)</b>
-            <br><br>
+            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -300,7 +296,7 @@
                 </table>
             </div>
             <b>IV. EXPERIENCIA LABORAL (ANTERIOR Y ACTUAL)</b>
-            <br><br>
+            <br>
             <div class="table table-responsive">
                 <table class="tablad">
                     <thead>
@@ -322,8 +318,15 @@
                 </table>
             </div>
             <div align=center><b>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</b></div>
-            <br><br><br><br><br><br><br><br>
+            <br><br>
             <div align=center><b>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b></div>
+            <div align=center><b><small><small>
+                Se informa que no se realizarán tranferencias de datos personales,
+                 salvo aquéllas que sean necesarias para atender requerimientos de información de una autoridad
+                 competente, que estén debidamente fundados y motivados. En ese caso se atenderá a lo dispuesto
+                 en el Art. 18 de la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados
+                 del Estado de Chiapas.
+            </small></small></b></div>
         </div>
     </body>
 </html>

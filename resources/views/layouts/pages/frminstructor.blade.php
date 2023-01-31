@@ -265,7 +265,7 @@
                     </tr>
                     <tr >
                         <td id="center" width="200px">
-                            <H5><small><small>Otra Identificación</small></small></H5>
+                            <H5><small><small>Acta de nacimiento</small></small></H5>
                         </td>
                         <td id="center" width="50px">
                             <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
@@ -512,7 +512,7 @@
         let arid = document.getElementById("arch_id");
         let arrfc = document.getElementById("arch_rfc");
         let arest = document.getElementById("arch_estudio");
-        // let aralt = document.getElementById("arch_alta");
+        let aralt = document.getElementById("arch_curriculum_personal");
         let imageName = document.getElementById("imageName");
         let imageName2 = document.getElementById("imageName2");
         let imageName3 = document.getElementById("imageName3");
