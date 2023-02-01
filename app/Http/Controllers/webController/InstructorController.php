@@ -2254,7 +2254,17 @@ class InstructorController extends Controller
             $especvalid = especialidad_instructor::WHERE('id', '=', $id)->FIRST();
             if(!isset($especvalid->cursos_impartir))
             {
-                $especvalid->cursos_impartir = array();
+                $arrt = array();
+                $listacursos = DB::TABLE('especialidad_instructor_curso')->WHERE('id_especialidad_instructor',$id)->GET();
+                foreach($listacursos as $cursos_id)
+                {
+
+                    if($cursos_id->activo == TRUE)
+                    {
+                        array_push($arrt, $cursos_id->curso_id);
+                    }
+                }
+                $especvalid->cursos_impartir = $arrt;
             }
             $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
         }
