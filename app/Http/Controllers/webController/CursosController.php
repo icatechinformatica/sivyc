@@ -610,10 +610,10 @@ class CursosController extends Controller
 
     public function exportar_cursos()
     {
-        $data = curso::SELECT('cursos.id','area.formacion_profesional','cursos.categoria','dependencia',
+        $data = curso::SELECT('area.formacion_profesional','cursos.categoria','dependencia',
                         'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
-                        'cursos.horas','cursos.objetivo','cursos.perfil','cursos.nivel_estudio',
-                        DB::raw("(case when cursos.solicitud_autorizacion <> 'FALSE' then 'SI' else 'NO' end) as etnia"),
+                        'cursos.horas','cursos.objetivo','cursos.perfil',
+                        DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),
                         'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
                         'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
                         'cursos.modalidad','cursos.clasificacion','observacion','cursos.costo',
@@ -621,8 +621,10 @@ class CursosController extends Controller
                         DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
                         'cursos.rango_criterio_pago_maximo',
                         DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),
-                        'cursos.unidades_disponible')
-                        ->WHERE('cursos.estado', '=', 'TRUE')
+                        'cursos.unidades_disponible','cursos.servicio',
+                        DB::raw("(case when cursos.proyecto = 'true' then 'SI' else 'NO' end) as proyecto"),
+                        )
+                        ->WHERE('cursos.estado', '=', true)
                         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
                         ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
                         ->ORDERBY('especialidades.nombre', 'ASC')
@@ -631,11 +633,11 @@ class CursosController extends Controller
                         //dd($data[0]);
 
         $cabecera = [
-            'ID','CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
-            'PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
-            'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CURSO','MODALIDAD','CLASIFICACION',
+            'CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
+            'PERFIL INGRESO DEL ALUMNO','SOLICITUD AUTORIZACION DE RIESGO','FECHA DE VALIDACION','MEMO DE VALIDACION',
+            'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CAPACITACION','MODALIDAD','CLASIFICACION',
             'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
-            'NOMBRE DE CRITERIO MAXIMO','UNIDADES DISPONIBLES'
+            'NOMBRE DE CRITERIO MAXIMO','UNIDADES DISPONIBLES','SERVICIO','PROYECTO'
         ];
         $nombreLayout = "Catalogo de cursos.xlsx";
         $titulo = "Catalogo de cursos";
@@ -844,8 +846,8 @@ class CursosController extends Controller
     {
         $data = curso::SELECT('cursos.id','area.formacion_profesional','cursos.categoria','dependencia',
                         'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
-                        'cursos.horas','cursos.objetivo','cursos.perfil','cursos.nivel_estudio',
-                        DB::raw("(case when cursos.solicitud_autorizacion <> 'FALSE' then 'SI' else 'NO' end) as etnia"),
+                        'cursos.horas','cursos.objetivo','cursos.perfil',
+                        DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),
                         'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
                         'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
                         'cursos.modalidad','cursos.clasificacion','observacion','cursos.costo',
@@ -853,7 +855,9 @@ class CursosController extends Controller
                         DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
                         'cursos.rango_criterio_pago_maximo',
                         DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),
-                        DB::raw("(case when cursos.estado = true then 'SI' else 'NO' end) as status"))
+                        'cursos.servicio',
+                        DB::raw("(case when cursos.proyecto = 'true' then 'SI' else 'NO' end) as proyecto"),
+                        DB::raw("(case when cursos.estado = true then 'ACTIVO' else case when cursos.estado = 'false' then 'INACTIVO' else 'BAJA' end end) as status"))
                         ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
                         ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
                         ->ORDERBY('especialidades.nombre', 'ASC')
@@ -863,10 +867,10 @@ class CursosController extends Controller
 
         $cabecera = [
             'ID','CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
-            'PERFIL','NIVEL DE ESTUDIO','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
+            'PERFIL','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
             'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CURSO','MODALIDAD','CLASIFICACION',
             'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
-            'NOMBRE DE CRITERIO MAXIMO','ACTIVO'
+            'NOMBRE DE CRITERIO MAXIMO','SERVICIO', 'PROYECTO','ESTATUS'
         ];
         $nombreLayout = "Catalogo de cursos completo.xlsx";
         $titulo = "Catalogo de cursos completo";
