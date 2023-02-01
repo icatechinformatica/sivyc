@@ -268,7 +268,7 @@ class aperturaController extends Controller
                     'folio_ine'
                 )
                     ->WHERE('estado', true)
-                    ->WHERE('instructores.status', '=', 'Validado')->where('instructores.nombre', '!=', '')->where('instructores.id', $request->instructor)
+                    ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')->where('instructores.id', $request->instructor)
                     //->whereJsonContains('unidades_disponible', [$grupo->unidad])
                     ->WHERE('especialidad_instructores.especialidad_id', $grupo->id_especialidad)
                     ->WHERE('especialidad_instructores.activo', 'true')
