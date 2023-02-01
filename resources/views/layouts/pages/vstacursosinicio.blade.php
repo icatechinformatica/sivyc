@@ -95,10 +95,14 @@
                             </a>
                         </td>
                         <td>
-                            <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
-                                <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
-                            </a>
-                        </td>                        
+                            @if($itemData->file_carta_descriptiva)
+                            
+                                <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
+                                    <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                                </a>
+                                 
+                            @endif
+                        </td>                   
                         @can('paqueteriasdidacticas')
                         <td>
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
