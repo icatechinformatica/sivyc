@@ -2252,6 +2252,10 @@ class InstructorController extends Controller
         else
         {
             $especvalid = especialidad_instructor::WHERE('id', '=', $id)->FIRST();
+            if(!isset($especvalid->cursos_impartir))
+            {
+                $especvalid->cursos_impartir = array();
+            }
             $data_espec = InstructorPerfil::WHERE('numero_control', '=', $idins)->GET();
         }
         // dd($especvalid->solicito);
@@ -2290,7 +2294,14 @@ class InstructorController extends Controller
         $arrtemp = array();
         $userId = Auth::user()->id;
         $instructor = pre_instructor::WHERE('id', '=', $request->idins)->FIRST();
-        // dd($instructor->status);
+        if(!isset($instructor))
+        {
+            $newinstructor = instructor::find($request->idins);
+            // dd($instructor);
+            $pre_instructor = new pre_instructor();
+            $instructor  = $this->guardado_ins_model($pre_instructor, $newinstructor, $request->idins);
+            $instructor->id_oficial = $newinstructor->id;
+        }
 
         $arrtemp = $instructor->data_especialidad;
         foreach($arrtemp as $key => $cadwell)
@@ -2334,6 +2345,8 @@ class InstructorController extends Controller
         $instructor->lastUserId = Auth::user()->id;
         $instructor->data_especialidad = $arrtemp;
 
+        $instructor->save();
+
         $nrev = $this->new_revision($request->idins);
         if($nrev != $instructor->nrevision)
         {
@@ -2344,8 +2357,6 @@ class InstructorController extends Controller
         {
             $nrevisiontext = 'Modificaciones agregadas al numero de revisión: ' . $instructor->nrevision;
         }
-
-        $instructor->save();
 
         if($instructor->numero_control == 'Pendiente')
         {
