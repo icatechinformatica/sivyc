@@ -122,6 +122,12 @@
                             @endif
                             @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
                                     <a style="color: white;" class="btn mr-sm-4 mt-3" href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
+                                    @if($itemData->archivo_alta == NULL)
+                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                    @else
+                                        <a href={{$itemData->archivo_alta}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                    @endif
+
                             @endif
                         </td>
                     </tr>

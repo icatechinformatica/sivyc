@@ -76,13 +76,13 @@ class InstructorController extends Controller
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
         }
         else
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id']);
+            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
         }
         return view('layouts.pages.initinstructor', compact('data'));
     }
@@ -1526,9 +1526,18 @@ class InstructorController extends Controller
                 ->with('success', $nrevisiontext);
     }
 
-    public function expdoc_save(Request $request)
+    public function expdoc_save(Request $request) //expdoc_save(Request $request)
     {
+        $ww = 'wok';
         $instructorupd = pre_instructor::find($request->idins);
+        if(!isset($instructorupd))
+        {
+            $instructor = instructor::find($request->idins);
+            // dd($instructor);
+            $pre_instructor = new pre_instructor();
+            $instructorupd  = $this->guardado_ins_model($pre_instructor, $instructor, $request->idins);
+            $instructorupd->id_oficial = $instructor->id;
+        }
 
         if(isset($instructorupd->exp_docente))
         {
@@ -1549,6 +1558,11 @@ class InstructorController extends Controller
             $new = 1;
         }
 
+        $instructorupd->exp_docente = $expdoc;
+        $instructorupd->status = 'EN CAPTURA';
+        $instructorupd->registro_activo = TRUE;
+        $instructorupd->save();
+
         $nrev = $this->new_revision($instructorupd->id);
         if($nrev != $instructorupd->nrevision)
         {
@@ -1559,11 +1573,6 @@ class InstructorController extends Controller
         {
             $nrevisiontext = 'Modificaciones agregadas al numero de revisión: ' . $instructorupd->nrevision;
         }
-
-        $instructorupd->exp_docente = $expdoc;
-        $instructorupd->status = 'EN CAPTURA';
-        $instructorupd->registro_activo = TRUE;
-        $instructorupd->save();
 
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"
@@ -1636,7 +1645,14 @@ class InstructorController extends Controller
     public function explab_save(Request $request)
     {
         $instructorupd = pre_instructor::find($request->idins);
-        $this->new_revision($request->idins);
+        if(!isset($instructorupd))
+        {
+            $instructor = instructor::find($request->idins);
+            // dd($instructor);
+            $pre_instructor = new pre_instructor();
+            $instructorupd  = $this->guardado_ins_model($pre_instructor, $instructor, $request->idins);
+            $instructorupd->id_oficial = $instructor->id;
+        }
 
         if(isset($instructorupd->exp_laboral))
         {
@@ -1655,6 +1671,13 @@ class InstructorController extends Controller
             $new = 1;
         }
 
+
+
+        $instructorupd->exp_laboral = $explab;
+        $instructorupd->status = 'EN CAPTURA';
+        $instructorupd->registro_activo = TRUE;
+        $instructorupd->save();
+
         $nrev = $this->new_revision($request->idins);
         if($nrev != $instructorupd->nrevision)
         {
@@ -1665,11 +1688,6 @@ class InstructorController extends Controller
         {
             $nrevisiontext = 'Modificaciones agregadas al numero de revisión: ' . $instructorupd->nrevision;
         }
-
-        $instructorupd->exp_laboral = $explab;
-        $instructorupd->status = 'EN CAPTURA';
-        $instructorupd->registro_activo = TRUE;
-        $instructorupd->save();
 
         $paw = '<button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
             data-toggle="modal"
@@ -1739,6 +1757,16 @@ class InstructorController extends Controller
     {
         // dd($request);
         $instructorupd = pre_instructor::find($request->idInstructorentrevista);
+        if(!isset($instructorupd))
+        {
+            $instructor = instructor::find($request->idInstructorentrevista);
+            // dd($instructor);
+            $pre_instructor = new pre_instructor();
+            $instructorupd  = $this->guardado_ins_model($pre_instructor, $instructor, $request->idInstructorentrevista);
+            $instructorupd->id_oficial = $instructor->id;
+        }
+
+        $instructorupd->registro_activo = TRUE;
         $entrevista = ['1' => $request->Q1, '2' => $request->Q2, '3' => $request->Q3,
                        '4' => $request->Q4, '5' => $request->Q5, '6' => $request->Q6,
                        '7' => $request->Q7, '8' => $request->Q8, '9' => $request->Q9,
@@ -3232,6 +3260,158 @@ class InstructorController extends Controller
             $saveInstructor->archivo_curriculum_personal = $urlotraid; # guardamos el path
         }
 
+        return $saveInstructor;
+    }
+
+    private function guardado_ins_model($saveInstructor,$request,$id)
+    {
+        // dd($request);
+        $arresp = $arrper = $arrtemp = array();
+        $userId = Auth::user()->id;
+        $useruni = Auth::user()->unidad;
+        $perfiles = InstructorPerfil::WHERE('numero_control',$id)->GET();
+        $especialidades = especialidad_instructor::WHERE('id_instructor', '=', $id)->GET();
+        # Proceso de Guardado
+        #----- Personal -----
+        $saveInstructor->id = $id;
+        $saveInstructor->nombre = $request->nombre;
+        $saveInstructor->apellidoPaterno = $request->apellidoPaterno;
+        $saveInstructor->apellidoMaterno = $request->apellidoMaterno;
+        $saveInstructor->curp = $request->curp;
+        $saveInstructor->rfc = $request->rfc;
+        $saveInstructor->tipo_identificacion = $request->tipo_identificacion;
+        $saveInstructor->expiracion_identificacion = $request->expiracion_identificacion;
+        $saveInstructor->folio_ine = $request->folio_ine;
+        $saveInstructor->sexo = $request->sexo;
+        $saveInstructor->estado_civil = $request->estado_civil;
+        $saveInstructor->fecha_nacimiento = $request->fecha_nacimiento;
+        $saveInstructor->entidad = $request->entidad;
+        $saveInstructor->municipio = $request->municipio;
+        $saveInstructor->clave_loc = $request->clave_loc;
+        $saveInstructor->localidad = $request->localidad;
+        $saveInstructor->entidad_nacimiento = $request->entidad_nacimiento;
+        $saveInstructor->municipio_nacimiento = $request->municipio_nacimiento;
+        $saveInstructor->clave_loc_nacimiento = $request->clave_loc_nacimiento;
+        $saveInstructor->localidad_nacimiento = $request->localidad_nacimiento;
+        $saveInstructor->domicilio = $request->domicilio;
+        $saveInstructor->telefono = $request->telefono;
+        $saveInstructor->correo = $request->correo;
+        $saveInstructor->banco = $request->banco;
+        $saveInstructor->interbancaria = $request->interbancaria;
+        $saveInstructor->no_cuenta = $request->no_cuenta;
+        $saveInstructor->numero_control = $request->numero_control;
+        if(!isset($saveInstructor->numero_control))
+        {
+            $saveInstructor->numero_control = "Pendiente";
+        }
+        if($saveInstructor->status == 'RETORNO')
+        {
+            $perfil = $saveInstructor->data_perfil;
+            $especialidad = $saveInstructor->data_especialidad;
+            foreach($perfil as $llave => $luthier)
+            {
+                if($luthier['status'] == 'RETORNO')
+                {
+                    $perfil[$llave]['status'] = 'EN CAPTURA';
+                }
+            }
+            foreach($especialidad as $rl => $tem)
+            {
+                if($tem['status'] == 'RETORNO')
+                {
+                    $especialidad[$rl]['status'] = 'EN CAPTURA';
+                }
+            }
+
+            $saveInstructor->data_perfil = $perfil;
+            $saveInstructor->data_especialidad = $especialidad;
+        }
+        $saveInstructor->status = "EN CAPTURA";
+        $saveInstructor->unidades_disponible = $request->unidades_disponible;
+        $saveInstructor->tipo_honorario = $request->tipo_honorario;
+        $saveInstructor->clave_unidad = $request->clave_unidad;
+        $saveInstructor->lastUserId = $userId;
+        $saveInstructor->extracurricular = $request->extracurricular;
+        $saveInstructor->stps = $request->stps;
+        $saveInstructor->conocer = $request->conocer;
+        $saveInstructor->turnado = 'UNIDAD';
+        $saveInstructor->estado = TRUE;
+        $saveInstructor->codigo_postal = $request->codigo_postal;
+        $saveInstructor->telefono_casa = $request->telefono_casa;
+        $saveInstructor->archivo_ine = $request->archivo_ine;
+        $saveInstructor->archivo_domicilio = $request->archivo_domicilio;
+        $saveInstructor->archivo_curp = $request->archivo_curp;
+        $saveInstructor->archivo_alta = $request->archivo_alta;
+        $saveInstructor->archivo_bancario = $request->archivo_bancario;
+        $saveInstructor->archivo_rfc = $request->archivo_rfc;
+        $saveInstructor->archivo_fotografia = $request->archivo_fotografia;
+        $saveInstructor->archivo_estudios = $request->archivo_estudios;
+        $saveInstructor->archivo_otraid = $request->archivo_otraid;
+        $saveInstructor->archivo_curriculum_personal = $request->archivo_curriculum_personal;
+
+        foreach($perfiles as $cadwell)
+        {
+            $arrtemp = [
+                'id' => $cadwell->id,
+                'area_carrera' => $cadwell->area_carrera,
+                'estatus' => $cadwell->estatus,
+                'pais_institucion' => $cadwell->pais_institucion,
+                'entidad_institucion' => $cadwell->entidad_institucion,
+                'fecha_expedicion_documento' => $cadwell->fecha_expedicion_documento,
+                'folio_documento' => $cadwell->folio_documento,
+                'numero_control' => $cadwell->numero_control,
+                'ciudad_institucion' => $cadwell->ciudad_institucion,
+                'nombre_institucion' => $cadwell->nombre_institucion,
+                'grado_profesional' => $cadwell->grado_profesional,
+                'experiencia_laboral' => $cadwell->experiencia_laboral,
+                'experiencia_docente' => $cadwell->experiencia_docente,
+                'cursos_recibidos' => $cadwell->cursos_recibidos,
+                'capacitador_icatech' => $cadwell->capacitador_icatech,
+                'recibidos_icatech' => $cadwell->recibidos_icatech,
+                'cursos_impartidos' => $cadwell->cursos_impartidos,
+                'lastUserId' => $cadwell->lastUserId,
+                'carrera' => $cadwell->carrera,
+                'status' => 'VALIDADO',
+                'periodo' => $cadwell->periodo
+            ];
+            array_push($arrper,$arrtemp);
+            $arrtemp = array();
+        }
+        $saveInstructor->data_perfil = $arrper;
+
+        foreach($especialidades as $moist)
+        {
+            // dd($moist);
+            $arrtemp = [
+                'id' => $moist->id,
+                'especialidad_id' => $moist->especialidad_id,
+                'perfilprof_id' => $moist->perfilprof_id,
+                'unidad_solicita' => $moist->unidad_solicita,
+                'memorandum_validacion' => $moist->memorandum_validacion,
+                'fecha_validacion' => $moist->fecha_validacion,
+                'memorandum_modificacion' => $moist->memorandum_modificacion,
+                'observacion' => $moist->observacion,
+                'criterio_pago_id' => $moist->criterio_pago_id,
+                'lastUserId' => $userId,
+                'activo' => TRUE,
+                'id_instructor' => $moist->idInstructor,
+                'cursos_impartir' => $moist->cursos_impartir,
+                'fecha_solicitud' => $moist->fecha_solicitud,
+                'status' => 'VALIDADO',
+                'memorandum_solicitud' => $moist->memorandum_solicitud,
+                'solicito' => $moist->solicito,
+                'observacion_validacion' => $moist->observacion_validacion,
+                'fecha_baja' => $moist->fecha_baja,
+                'memorandum_baja' => $moist->memorandum_baja,
+                'hvalidacion' => $moist->hvalidacion,
+                'new' => FALSE
+            ];
+            array_push($arresp, $arrtemp);
+            $arrtemp = array();
+        }
+        $saveInstructor->data_especialidad = $arresp;
+
+        // dd($saveInstructor);
         return $saveInstructor;
     }
 

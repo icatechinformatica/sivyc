@@ -581,6 +581,18 @@
                             @endif
                         </td>
                     </tr>
+                    <tr>
+                        <td id="center" width="100px">
+                            <H5><small><small>Alta de Instructor</small></small></H5>
+                        </td>
+                        <td id="center" width="50px">
+                            @if($datainstructor->archivo_alta == NULL)
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                            @else
+                                <a href={{$datainstructor->archivo_alta}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                            @endif
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <br>
@@ -2572,6 +2584,7 @@
                 });
                 request.done(( respuesta) =>
                 {
+                    console.log(respuesta);
                     $('#addexpdocModal').modal('hide');
                     var row = document.getElementById("tableexpdoc").rows.length
                     var table = document.getElementById('tableexpdoc')
