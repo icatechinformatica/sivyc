@@ -3,25 +3,14 @@
 <!--llamar a la plantilla -->
 @section('Cursos', 'SUPRE | SIVyC Icatech')
 <!--seccion-->
+@section('title', 'Catálogo de Cursos | SIVyC ICATECH')
 @section('content')
-    <style>
-        * {
-        box-sizing: border-box;
-        }
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <div class="card-header">
+        Catálogos / Cursos
+    </div>
 
-        #myInput {
-        background-image: url('img/search.png');
-        background-position: 5px 10px;
-        background-repeat: no-repeat;
-        background-size: 32px;
-        width: 100%;
-        font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
-        }
-    </style>
-    <div class="container g-pt-50">
+    <div class="card card-body" style=" min-height:450px;"> 
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
@@ -29,12 +18,9 @@
         @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>Catalogo de Cursos</h2>
-
                     {!! Form::open(['route' => 'curso-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_curso" class="form-control mr-sm-2" id="tipo_curso">
-                            <option value="">BUSCAR POR TIPO</option>
+                            <option value="">BUSCAR POR</option>
                             <option value="especialidad">ESPECIALIDAD</option>
                             <option value="curso">CURSO</option>
                             <option value="duracion">DURACIÓN</option>
@@ -42,78 +28,81 @@
                             <option value="clasificacion">CLASIFICACIÓN</option>
                             <option value="anio">AÑO</option>
                         </select>
-
-                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
-                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
+                        {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}                       
+                        {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
                     {!! Form::close() !!}
-
-                </div>
-                <br>
                 <div class="pull-right">
-                    @can('cursos.create')
-                        <a class="btn btn-success btn-lg" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
-                    @endcan
-                    @can('academico.catalogo.cursos')
-                        <a class="btn btn-info btn-md" href="{{route('academico.exportar.cursos')}}">EXPORTAR CURSOS ACTIVOS</a>
+                    @can('academico.catalogo.cursos')                     
+                        <a class="btn btn-warning text-dark" href="{{route('academico.exportar.cursos')}}">EXPORTAR CURSOS ACTIVOS &nbsp;&nbsp;<i  class="fa fa-file-excel-o fa-2x fa-lg text-dark"></i></a>
                     @endcan
                     @can('academico.catalogo.cursosall')
-                        <a class="btn btn-info btn-md" href="{{route('academico.exportar.cursosall')}}">EXPORTAR TODOS LOS CURSOS</a>
+                        <a class="btn btn-warning text-dark" href="{{route('academico.exportar.cursosall')}}">EXPORTAR TODOS LOS CURSOS &nbsp;&nbsp;<i  class="fa fa-file-excel-o fa-2x fa-lg text-dark"></i></a>
                     @endcan
+                    @can('cursos.create')
+                        <a class="btn" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
+                    @endcan                   
                 </div>
             </div>
         </div>
-        <hr style="border-color:dimgray">
-        <table  id="table-instructor" class="table table-bordered Datatables">
-            <caption>Catalogo de Cursos</caption>
+        <table  id="table-instructor" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Especialidad</th>
-                    <th scope="col">Curso</th>
-                    <th scope="col">Tipo de Curso</th>
-                    <th scope="col">Duración</th>
-                    <th scope="col">Modalidad</th>
-                    <th scope="col">Clasificación</th>
-                    <th scope="col">Costo</th>
+                    <th scope="col">ESPECIALIDAD</th>
+                    <th scope="col">SERVICIO</th>
+                    <th scope="col">CURSO</th>
+                    <th scope="col">CAPACITACIÓN</th>
+                    <th scope="col">DURACIÓN</th>
+                    <th scope="col">MODALIDAD</th>
+                    <th scope="col">CLASIFICACIÓN</th>
+                    <th scope="col">COSTO</th>
+                    <th scope="col">ESTATUS</th>
                     @can('cursos.show')
-                        <th scope="col">Acciones</th>
+                        <th scope="col">EDITAR</th>
                     @endcan
-                    <th scope="col">Registros</th>
+                    <th scope="col">VER</th>
+                    <th scope="col">CARTA DESCRIP</th>
                     @can('paqueteriasdidacticas')
-                    <th scope="col">Paqueterias</th>
+                    <th scope="col">PAQUETERIAS</th>
                     @endcan
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
+                @php 
+                    $servicio = $itemData->servicio;
+                @endphp
                     <tr>
                         <th scope="row">{{$itemData->nombre}}</th>
+                        <td>{{$servicio}}</td>
                         <td>{{$itemData->nombre_curso}}</td>
                         <td>{{$itemData->tipo_curso}}</td>
                         <td>{{$itemData->horas}}</td>
                         <td>{{$itemData->modalidad}}</td>
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
-
+                        <td>{{$itemData->estado}}</td>
                         @can('cursos.show')
                         <td>
-                            <a href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="Editar Registro">
-                                <i class="fa fa-wrench" aria-hidden="true"></i>
+                            <a class="nav-link" alt="Editar Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}">
+                                <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
                         </td>
                         @endcan
                         <td>
-                            <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"
-                                data-toggle="modal" data-placement="top"
-                                title="Información del Registro"
-                                data-target="#fullHeightModalRight"
+                            <a class="nav-link" alt="Ver Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" data-toggle="modal" data-placement="top" data-target="#fullHeightModalRight"
                                 data-id="{{$itemData->id}}">
-                                <i class="fa fa-info"></i>
-                            </button>
+                                <i  class="fa fa-search  fa-2x fa-lg text-primary"></i>
+                            </a>
                         </td>
+                        <td>
+                            <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
+                                <i  class="fa fa-file-pdf  fa-2x fa-lg text-danger"></i>
+                            </a>
+                        </td>                        
                         @can('paqueteriasdidacticas')
                         <td>
-                            <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" title="Paquetes">
-                            <i class="fa fa-folder"></i>
+                            <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
+                            <i class="fa fa-2x fa-folder text-muted"></i>
                             </a>
                         </td>
                         @endcan
@@ -130,12 +119,8 @@
         </table>
         <br>
         <!-- Full Height Modal Right -->
-        <div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
-            <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+        <div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">            
             <div class="modal-dialog modal-full-height modal-right" role="document">
-
-
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title w-100" id="myModalLabel"></h4>
@@ -157,6 +142,5 @@
     <br>
 @endsection
 @section('script_content_js')
-<script src="{{ asset("js/validate/danielValidate.js") }}"></script>
+    <script src="{{ asset('js/catalogos/cursos.js') }}"></script>
 @endsection
-
