@@ -17,10 +17,13 @@
             img.izquierdabot {position: absolute;left: 50px;width: 350px;height: 60px;}
             img.derechabot {position: absolute;right: 50px;width: 350px;height: 60px;}
             img.derecha {float: right;width: 200px;height: 60px;}
-        .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
+        .tablas{border-collapse: collapse;width: 990px;}
+        .tablas tr{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
+        .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
+        .tablaf tr td { font-size: 7px; text-align: center; padding: 0px; }
         .tablad { border-collapse: collapse;font-size: 7px;border: gray 1px solid; text-align: left; padding:0px;}
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
-        .tablag tr td{ font-size: 8px; padding: 1px;}
+        .tablag tr td{ font-size: 8px; padding: 1px; }
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
     </style>
 </head>
