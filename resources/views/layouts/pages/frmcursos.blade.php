@@ -227,14 +227,10 @@
             </div>            
         </div>
         <div class="form-row">            
-            <div class="form-group col-md-6">
-              <label for="perfil" class="control-label">PERFIL</label>
+            <div class="form-group col-md-12">
+              <label for="perfil" class="control-label">PERFIL DEL ALUMNO</label>
               <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil" >
-            </div>
-            <div class="form-group col-md-6">
-                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
-                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" >
-            </div>
+            </div>            
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -242,14 +238,14 @@
               <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="4" placeholder="OBJETIVO DEL CURSO"></textarea>
             </div>          
             <div class="form-group col-md-6">
-                <label for="descripcionCurso" class="control-label">DESCRIPCIÓN</label>
+                <label for="descripcionCurso" class="control-label">OBSERVACIONES</label>
                 <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="4" placeholder="DESCRIPCIÓN"></textarea>
             </div>
         </div><br/>
         <hr>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE AUTORIZACIÓN</label>
+                <label for="solicitud_autorizacion" class="control-label">SOLICITUD DE AUTORIZACIÓN DE RIESGO</label>
                 <select class="form-control" id="solicitud_autorizacion" name="solicitud_autorizacion">
                     <option value="">--SELECCIONAR--</option>
                     <option value="true">SI</option>
@@ -290,15 +286,15 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label for="cambios_especialidad" class="control-label">CAMBIOS DE ESPECIALIDAD</label>
                 <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control" >
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO</label>
                 <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" >
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label for="categoria" class="control-label">CATEGORIA</label>
                 <input type="text" name="categoria" id="categoria" class="form-control" >
             </div>
@@ -306,7 +302,7 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="categoria" class="control-label">TIPO DE CURSO</label>
+                <label for="categoria" class="control-label">TIPO DE CAPACITACIÓN</label>
                 <select class="form-control" id="tipo_curso" name="tipo_curso">
                     <option  value="PRESENCIAL">PRESENCIAL</option>
                     <option  value="A DISTANCIA">A DISTANCIA</option>

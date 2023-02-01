@@ -328,7 +328,7 @@ class CursosController extends Controller
             $Especialidad = new especialidad();
             $especialidades = $Especialidad->all();
             $unidades = new tbl_unidades();
-            $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->GET();
+            $unidadesMoviles = $unidades->SELECT('ubicacion')->GROUPBY('ubicacion')->ORDERBY('ubicacion','ASC')->GET();
             $criterioPago = new criterio_pago;
             $criterio_pago = $criterioPago->all();
             $servicios = ['CURSO'=>'CURSO','CERTIFACION'=>'CERTIFACION'];
@@ -604,7 +604,6 @@ class CursosController extends Controller
         }
 
         $available = $av->unidades_disponible;
-
         return view('layouts.pages.vstaltabajacur', compact('id','available'));
     }
 
