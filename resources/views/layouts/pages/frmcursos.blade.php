@@ -291,7 +291,7 @@
                 <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control" >
             </div>
             <div class="form-group col-md-6">
-                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO</label>
+                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
                 <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" >
             </div>
             <div class="form-group col-md-3">

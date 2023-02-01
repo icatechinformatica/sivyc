@@ -317,7 +317,7 @@
                 <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control" value="{{$cursos[0]->cambios_especialidad}}">
             </div>
             <div class="form-group col-md-6">
-                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO</label>
+                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
                 <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" value="{{$cursos[0]->nivel_estudio}}">
             </div>
             <div class="form-group col-md-3">
@@ -328,7 +328,7 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label for="categoria" class="control-label">TIPO DE CURSO</label>
+                <label for="categoria" class="control-label">TIPO DE CAPACITACIÓN</label>
                 <select class="form-control" id="tipo_curso" name="tipo_curso">
                     <option {{$cursos[0]->tipo_curso == 'PRESENCIAL' ? "selected" : "" }} value="PRESENCIAL">PRESENCIAL</option>
                     <option {{$cursos[0]->tipo_curso == 'A DISTANCIA' ? "selected" : "" }} value="A DISTANCIA">A DISTANCIA</option>

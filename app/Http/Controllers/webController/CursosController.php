@@ -611,7 +611,7 @@ class CursosController extends Controller
     {
         $data = curso::SELECT('area.formacion_profesional','cursos.categoria','dependencia',
                         'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
-                        'cursos.horas','cursos.objetivo','cursos.perfil',
+                        'cursos.horas','cursos.objetivo','cursos.perfil','nivel_estudio',
                         DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),
                         'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
                         'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
@@ -633,7 +633,7 @@ class CursosController extends Controller
 
         $cabecera = [
             'CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
-            'PERFIL INGRESO DEL ALUMNO','SOLICITUD AUTORIZACION DE RIESGO','FECHA DE VALIDACION','MEMO DE VALIDACION',
+            'PERFIL INGRESO DEL ALUMNO','NIVEL DE ESTUDIO DEL INSTRUCTOR','SOLICITUD AUTORIZACION DE RIESGO','FECHA DE VALIDACION','MEMO DE VALIDACION',
             'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CAPACITACION','MODALIDAD','CLASIFICACION',
             'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
             'NOMBRE DE CRITERIO MAXIMO','UNIDADES DISPONIBLES','SERVICIO','PROYECTO'
@@ -845,7 +845,7 @@ class CursosController extends Controller
     {
         $data = curso::SELECT('cursos.id','area.formacion_profesional','cursos.categoria','dependencia',
                         'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
-                        'cursos.horas','cursos.objetivo','cursos.perfil',
+                        'cursos.horas','cursos.objetivo','cursos.perfil','nivel_estudio',
                         DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),
                         'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
                         'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
@@ -866,8 +866,8 @@ class CursosController extends Controller
 
         $cabecera = [
             'ID','CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
-            'PERFIL','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
-            'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CURSO','MODALIDAD','CLASIFICACION',
+            'PERFIL DE INGRESO DEL ALUMNO','NIVEL ESTUDIO INSTRUCTOR','SOLICITUD DE AUTORIZACION','FECHA DE VALIDACION','MEMO DE VALIDACION',
+            'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CAPACITACION','MODALIDAD','CLASIFICACION',
             'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
             'NOMBRE DE CRITERIO MAXIMO','SERVICIO', 'PROYECTO','ESTATUS'
         ];
