@@ -5,18 +5,6 @@
 <!--seccion-->
 <head>
     <style>
-        .switch {
-          position: relative;
-          display: inline-block;
-          width: 90px;
-          height: 34px;
-        }
-
-        .switch input {
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
 
         .slider {
           position: absolute;
@@ -89,7 +77,8 @@
         }
         .selectBox2 {
             position: relative;
-            width: 730px;
+            width: 600px;
+            
         }
 
         .selectBox2 select {
@@ -109,7 +98,7 @@
             display: none;
             border: 1px #dadada solid;
             width: 363px;
-            height: 110px;
+            height: 180px;
             overflow: auto;
         }
 
@@ -124,8 +113,8 @@
         #checkboxes2 {
             display: none;
             border: 1px #dadada solid;
-            width: 730px;
-            height: 110px;
+            width: 600px;
+            height: 180px;
             overflow: auto;
         }
 
@@ -136,72 +125,64 @@
         #checkboxes2 label:hover {
             background-color: #1e90ff;
         }
+        .form-check-input{
+            width:22px;
+            height:22px;
+        }
+        .form-check-label{
+            padding: 8px 0 8px 15px;
+        }
     </style>
 </head>
 @section('content')
-<div class="container g-pt-50">
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div><br />
-    @endif
-    <form method="POST" action="{{ route('cursos-catalogo.update', ['id' => $cursos[0]->id ])}}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <div class="card-header">
+        Catálogos / Cursos / Editar
+    </div>
+    <div class="card card-body" style=" min-height:450px;"> 
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div><br />
+            @endif        
+       <div class="col-lg-12 margin-tb">
+        <form method="POST" action="{{ route('cursos-catalogo.update', ['id' => $cursos[0]->id ])}}" method="post" id="frmcursoscatalogo" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
-        <div style="text-align: right;width:65%">
-            <label for="tituloformulariocurso"><h1>Formulario de Cursos</h1></label>
+        <div>
+            <label><h1>Datos del Curso</h1></label>
         </div>
-        <hr style="border-color:dimgray">
-        <label><h2>Vista de Documentos</h2></label>
         <div class="form-row">
+            @if ($cursos[0]->documento_solicitud_autorizacion)
+            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_solicitud_autorizacion}}" target="_blank">
+                MEMORÁNDUM SOLICITUD
+            </a>
+            @endif
             @if ($cursos[0]->documento_memo_validacion)
-            <a class="btn btn-warning" href="{{$cursos[0]->documento_memo_validacion}}" target="_blank">
+            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_memo_validacion}}" target="_blank">
                 MEMORÁNDUM VALIDACIÓN
             </a>
             @endif
             @if ($cursos[0]->documento_memo_actualizacion)
-            <a class="btn btn-warning" href="{{$cursos[0]->documento_memo_actualizacion}}" target="_blank">
+            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->documento_memo_actualizacion}}" target="_blank">
                 MEMORÁNDUM ACTUALIZACIÓN
             </a>
             @endif
-            @if ($cursos[0]->documento_solicitud_autorizacion)
-            <a class="btn btn-warning" href="{{$cursos[0]->documento_solicitud_autorizacion}}" target="_blank">
-                MEMORÁNDUM ACTUALIZACIÓN
+            
+            @if ($cursos[0]->file_carta_descriptiva)
+            <a class="btn btn-warning text-dark" href="{{env('APP_URL').'/'.'storage'.$cursos[0]->file_carta_descriptiva}}" target="_blank">
+                CARTA DESCRIPTIVA
             </a>
             @endif
         </div>
-        <hr style="border-color:dimgray">
+        <hr />        
         <div class="form-row">
-          <!-- Unidad -->
-          <div class="form-group col-md-6">
-            <label for="areaCursos" class="control-label">CAMPO</label>
-            <select class="form-control" id="areaCursos" name="areaCursos">
-                <option value="">--SELECCIONAR--</option>
-                @foreach ($areas as $itemareas)
-                    <option {{( $cursos[0]->area == $itemareas->id) ? "selected" : ""}} value="{{$itemareas->id}}">{{$itemareas->formacion_profesional}}</option>
-                @endforeach
-            </select>
-          </div>
-          <!--Unidad Fin-->
-          <!-- nombre curso -->
-          <div class="form-group col-md-6">
-            <label for="especialidadCurso" class="control-label">ESPECIALIDAD</label>
-            <select class="form-control" id="especialidadCurso" name="especialidadCurso">
-                <option value="">--SELECCIONAR--</option>
-                @foreach ($especialidades as $itemespecialidades)
-                    <option {{( $cursos[0]->id_especialidad == $itemespecialidades->id) ? "selected" : ""}} value="{{$itemespecialidades->id}}">{{$itemespecialidades->nombre}}</option>
-                @endforeach
-            </select>
-          </div>
-          <!-- nombre curso FIN-->
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-7">
                 <label for="nombrecurso" class="control-label">NOMBRE DEL CURSO</label>
                 <input type="text" class="form-control" id="nombrecurso" name="nombrecurso" value="{{$cursos[0]->nombre_curso}}">
             </div>
@@ -214,13 +195,32 @@
                     @endforeach
                     <option value="0" @if($otrauni == TRUE) selected @endif>OTRO</option>
                 </select>
-            </div>
-            <div class="form-group col-md-5">
-                <div class="unidad_especificar" @if($otrauni == FALSE) style="display: none" @endif>
+            </div>            
+            <div class="form-group col-md-2">
+                <div class="unidad_especificar" @if($otrauni == false) style="display: none" @endif>
                     <label for="unidad_ubicacion_especificar" class="control-label">ESPECIFIQUE</label>
-                    <input type="text" class="form-control" name="unidad_ubicacion_especificar"
-                        id="unidad_ubicacion_especificar" @if($otrauni == TRUE) value="{{$cursos[0]->unidad_amovil}}" @endif>
+                    <input type="text" class="form-control" name="unidad_ubicacion_especificar" id="unidad_ubicacion_especificar" @if($otrauni == TRUE) value="{{$cursos[0]->unidad_amovil}}" @endif>
                 </div>
+            </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="areaCursos" class="control-label">CAMPO</label>
+            <select class="form-control" id="areaCursos" name="areaCursos">
+                <option value="">--SELECCIONAR--</option>
+                @foreach ($areas as $itemareas)
+                    <option {{( $cursos[0]->area == $itemareas->id) ? "selected" : ""}} value="{{$itemareas->id}}">{{$itemareas->formacion_profesional}}</option>
+                @endforeach
+            </select>
+          </div>
+          <div class="form-group col-md-8">
+            <label for="especialidadCurso" class="control-label">ESPECIALIDAD</label>
+            <select class="form-control" id="especialidadCurso" name="especialidadCurso">
+                <option value="">--SELECCIONAR--</option>
+                @foreach ($especialidades as $itemespecialidades)
+                    <option {{( $cursos[0]->id_especialidad == $itemespecialidades->id) ? "selected" : ""}} value="{{$itemespecialidades->id}}">{{$itemespecialidades->nombre}}</option>
+                @endforeach
+            </select>
             </div>
         </div>
         <div class="form-row">
@@ -242,51 +242,36 @@
                     <option {{ trim($cursos[0]->clasificacion) == "B-INTERMEDIO" ? "selected" : "" }} value="B-INTERMEDIO">B-INTERMEDIO</option>
                     <option {{ trim($cursos[0]->clasificacion) == "C-AVANZADO" ? "selected" : "" }} value="C-AVANZADO">C-AVANZADO</option>
                 </select>
-            </div>
-            <!--clasificacion END-->
-            <!-- Puesto-->
+            </div>            
             <div class="form-group col-md-3">
                 <label for="costo" class="control-label">COSTO</label>
                 <input type="text" class="form-control" id="costo_curso" name="costo" placeholder="COSTO" value="{{$cursos[0]->costo}}">
-            </div>
-            <!-- Puesto END-->
-            <!-- Duracion -->
+            </div>          
             <div class="form-group col-md-3">
               <label for="duracion" class="control-label">DURACIÓN EN HORAS</label>
               <input type="text" class="form-control" id="duracion" name="duracion" placeholder="DURACIÓN EN HORAS" value="{{$cursos[0]->horas}}">
-            </div>
-            <!-- Duracion END -->
+            </div>            
         </div>
-        <div class="form-row">
-            <!-- Perfil-->
+        <div class="form-row">            
             <div class="form-group col-md-6">
               <label for="perfil" class="control-label">PERFIL</label>
               <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil" value="{{$cursos[0]->perfil}}">
             </div>
-            <!-- Perfil END-->
             <div class="form-group col-md-6">
                 <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
                 <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" value="{{$cursos[0]->nivel_estudio}}">
             </div>
         </div>
         <div class="form-row">
-            <!-- Objetivo -->
             <div class="form-group col-md-6">
               <label for="objetivo" class="control-label">OBJETIVO DEL CURSO</label>
-              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="5" placeholder="OBJETIVO DEL CURSO">
-                  {{ $cursos[0]->objetivo }}
-              </textarea>
-            </div>
-            <!-- Objetivo END -->
-            <!-- Accion Movil-->
+              <textarea name="objetivo" id="objetivo" class="form-control" cols="15" rows="4" placeholder="OBJETIVO DEL CURSO">{{ $cursos[0]->objetivo }}</textarea>
+            </div>          
             <div class="form-group col-md-6">
-                <label for="descripcionCurso" class="control-label">OBSERVACIONES</label>
-                <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="5" placeholder="DESCRIPCIÓN">
-                    {{ $cursos[0]->descripcion }}
-                </textarea>
+                <label for="descripcionCurso" class="control-label">DESCRIPCIÓN</label>
+                <textarea name="descripcionCurso" id="descripcionCurso" class="form-control" cols="15" rows="4" placeholder="DESCRIPCIÓN">{{ $cursos[0]->descripcion }}</textarea>
             </div>
-            <!-- Accion Movil END-->
-        </div>
+        </div><br/>
         <hr>
         <div class="form-row">
             <div class="form-group col-md-4">
@@ -301,37 +286,30 @@
                 <label for="memo_actualizacion" class="control-label">MEMO DE ACTUALIZACIÓN</label>
                 <input type="text" class="form-control" id="memo_actualizacion" name="memo_actualizacion" value="{{$cursos[0]->memo_actualizacion}}">
             </div>
-            <!-- fecha_validacion END -->
             <div class="form-group col-md-4">
                 <label for="memo_validacion" class="control-label">MEMO DE VALIDACIÓN</label>
                 <input type="text" class="form-control" id="memo_validacion" name="memo_validacion" value="{{$cursos[0]->memo_validacion}}">
             </div>
         </div>
         <div class="form-row">
-            <!-- Solicitud -->
             <div class="form-group col-md-4">
                 <label for="documento_solicitud_autorizacion" class="control-label">DOCUMENTO SOLICITUD DE AUTORIZACIÓN</label>
                 <input type="file" class="form-control" id="documento_solicitud_autorizacion" name="documento_solicitud_autorizacion">
             </div>
-            <!-- Solicitud END -->
-            <!-- memo_actualizacion -->
             <div class="form-group col-md-4">
                 <label for="documento_memo_actualizacion" class="control-label">Documento Memo Actualización</label>
                 <input type="file" class="form-control" id="documento_memo_actualizacion" name="documento_memo_actualizacion">
-            </div>
-            <!-- fecha_validacion END -->
+            </div>           
             <div class="form-group col-md-4">
                 <label for="documento_memo_validacion" class="control-label">Documento Memo Validación</label>
                 <input type="file" class="form-control" id="documento_memo_validacion" name="documento_memo_validacion">
             </div>
         </div>
-        <div class="form-row">
-            <!-- fecha_validacion -->
+        <div class="form-row">         
             <div class="form-group col-md-6">
               <label for="fecha_validacion" class="control-label">Fecha Validación</label>
               <input type="text" class="form-control" id="fecha_validacion" name="fecha_validacion" value="{{$fechaVal}}">
             </div>
-            <!-- memo_actualizacion END -->
             <div class="form-group col-md-6">
                 <label for="fecha_actualizacion" class="control-label">Fecha Actualización</label>
                 <input type="text" class="form-control" id="fecha_actualizacion" name="fecha_actualizacion" value="{{$fechaAct}}">
@@ -387,7 +365,7 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-5">
                 <div class="multiselect">
                     <div class="selectBox" onclick="showCheckboxes()">
                         <label for="a" class="control-label">GRUPOS VULNERABLES</label>
@@ -405,7 +383,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group col-md-8">
+            <div class="form-group col-md-6">
                 <div class="multiselect">
                     <div class="selectBox2" onclick="showCheckboxes2()">
                         <label for="b" class="control-label">DEPENDENCIAS</label>
@@ -423,93 +401,84 @@
                     </div>
                 </div>
             </div>
-        </div>
-        {{-- <div class="form-row">
+        </div>        
+        <div class="form-row">                        
             <div class="form-group col-md-6">
-                <label for="observaciones">OBSERVACIONES</label>
-                <textarea name="observaciones" id="observaciones" cols="30" rows="5" class="form-control"></textarea>
+                <label for="file_carta_descriptiva" class="control-label">SUBIR CARTA DESCRIPTIVA</label>
+                <input type="file" class="form-control" id="file_carta_descriptiva" name="file_carta_descriptiva">
             </div>
-        </div> --}}
+            <div class="form-group col-md-1"></div>
+            <div class="form-group col-md-4  col-md-offset-2">
+                <label for="documento_solicitud_autorizacion" class="control-label">&nbsp;</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="true" name="proyecto" id="proyecto" @if($cursos[0]->proyecto==true){{"checked"}} @endif />                    
+                    <label class="form-check-label H6" for="flexCheckChecked">
+                        PROYECTO
+                    </label>
+                </div>
+            </div>
+        </div>
         <hr style="border-color:dimgray">
-        <label><h2>Estado General del Curso</h2></label>
-        <div class="form-group col-md-4">
-            @if ($cursos[0]->estado == true)
-                <label class="switch">
-                    <input id="estado" name="estado" type="checkbox" checked onclick="leyenda()">
-                    <span class="slider round"></span>
-                </label>
-                <h5><p id="text1">Curso Activo</p><p id="text2" style="display:none">Curso Inactivo</p></h5>
-            @else
-                <label class="switch">
-                    <input id="estado" name="estado" type="checkbox" onclick="leyenda()">
-                    <span class="slider round"></span>
-                </label>
-                <h5><p id="text1" style="display:none">Curso Activo</p><p id="text2">Curso Inactivo</p></h5>
-            @endif
-        </div>
-        <label><h2>Alta/Baja al Curso</h2></label>
-        <div class="form-group col-md-8">
-            <a class="btn btn-danger" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Alta/Baja</a>
-            <footer>El curso dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer>
-        </div>
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label for="categoria" class="control-label h6">TIPO DE SERVICIO</label>    
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="CURSO" name="servicio[]" @if(in_array("CURSO",json_decode($cursos[0]->servicio))){{"checked"}} @endif >
+                    <label class="form-check-label H6" for="flexCheckChecked">
+                        CURSO
+                    </label>
+                </div>  
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="CERTIFICACION" name="servicio[]"  @if(in_array("CERTIFICACION",json_decode($cursos[0]->servicio))){{"checked"}} @endif>                    
+                    <label class="form-check-label H6" for="flexCheckChecked">
+                        CERTIFICACIÓN
+                    </label>
+                </div>      
+            </div>
+            <div class="form-group col-md-2">
+                <label for="categoria" class="control-label h6">ESTATUS DEL CURSO</label>                
+                <select class="form-control" aria-label="estado" name="estado" id="estado">
+                    <option value='1' @if($cursos[0]->estado==true){{"selected"}} @endif >ACTIVO</option>
+                    <option value='2' @if($cursos[0]->estado==false){{"selected"}} @endif >INACTIVO</option>
+                    <option value='3' @if(is_null($cursos[0]->estado)){{"selected"}} @endif >BAJA</option>
+                </select>
+            </div>            
+            <div class="form-group col-md-8">
+                <label for="motivo" class="control-label h6">MOTIVO</label>
+                <textarea name="motivo" id="motivo" class="form-control"  rows="1" placeholder="MOTIVO">{{ trim($cursos[0]->motivo) }}</textarea>
+            </div>
+        </div> <br/><br/>
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <a class="btn btn-danger" href="{{URL::previous()}}">Regresar</a>
+                    <a class="btn" href="{{URL::previous()}}"><< Regresar</a>
                 </div>
-                <div class="pull-right">
+                <div class="pull-center">
+                    <a class="btn" href="{{ route('curso-alta_baja', ['id' => $cursos[0]->id]) }}" >Activar por Unidad</a>                </div>
+                <div class="pull-right">                    
                     @can('cursos.update')
-                        <button type="submit" class="btn btn-primary" >Guardar Cambios</button>
+                        <button type="submit" class="btn btn-danger" >Guardar Cambios</button>
                     @endcan
                 </div>
             </div>
         </div>
     </form>
     <br>
+    </div>
 </div>
-<script>
-    function leyenda() {
-      var checkBox = document.getElementById("estado");
-      var text1 = document.getElementById("text1");
-      var text2 = document.getElementById("text2");
-      if (checkBox.checked == true){
-        text1.style.display = "block";
-        text2.style.display = "none";
-      } else {
-         text1.style.display = "none";
-         text2.style.display = "block";
-      }
-    }
-</script>
 @endsection
 @section('script_content_js')
+    <script src="{{ asset('js/catalogos/cursos.js') }}"></script>
     <script type="text/javascript">
         var expanded = false;
         var expanded2 = false;
         $('#unidad_accion_movil').on("change", () => {
-            $("#unidad_accion_movil option:selected").each( () => {
-                var medioEntero = $('#unidad_accion_movil').val();
-                if (!medioEntero) {
-                    $("#unidad_ubicacion_especificar").css("display", "none");
-                    $('#unidad_ubicacion_especificar').rules('remove', 'required');
-                    $('.unidad_especificar').css("display", "none");
-                } else {
-                    if (medioEntero == 0) {
-                        $("#unidad_ubicacion_especificar").css("display", "block");
-                        $('#unidad_ubicacion_especificar').rules('add', {required: true,
-                            messages: {
-                                required: "Campo Requerido"
-                            }
-                        });
-                        $('.unidad_especificar').css("display", "block");
-                    } else {
-                        $("#unidad_ubicacion_especificar").css("display", "none");
-                        $('#unidad_ubicacion_especificar').rules('remove', 'required');
-                        $('.unidad_especificar').css("display", "none");
-                    }
-                }
-            });
-        });
+            if($('#unidad_accion_movil').val()==0){
+                $('.unidad_especificar').css("display", "block");
+            }else{
+                $('.unidad_especificar').css("display", "none");
+            }
+        });        
         function showCheckboxes() {
             var checkboxes = document.getElementById("checkboxes");
             if (!expanded) {
@@ -532,5 +501,3 @@
         }
     </script>
 @endsection
-
-<!--a-->
