@@ -2861,6 +2861,7 @@ class InstructorController extends Controller
             $perfiles = $this->make_collection($data->data_perfil);
         }
         $date = strtotime(carbon::now()->toDateString());
+        // dd($data->archivo_fotografia);
 
         // dd($data);
 

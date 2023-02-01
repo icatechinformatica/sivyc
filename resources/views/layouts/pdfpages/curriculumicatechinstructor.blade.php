@@ -118,6 +118,8 @@
             <div class="page-break-non"></div>
         </footer>
         <div class= "container">
+            <img style="border: 2px solid black; margin-top: -5px;" class="pull-right"  src="{{$data->archivo_fotografia}}" alt="foto" width="75" height="75">
+            <br><br><br><br>
             <table class="tablaz" style="border-color: black">
                 <thead>
                     <tr>
