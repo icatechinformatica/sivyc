@@ -1492,6 +1492,12 @@ class InstructorController extends Controller
         $modInstructor = NULL;
         $userId = Auth::user()->id;
         $modInstructor = pre_instructor::find($request->id);
+        if(!isset($modInstructor))
+        {
+            $modInstructor = new pre_instructor();
+            $modInstructor->id_oficial = $request->id;
+            $modInstructor->registro_activo = TRUE;
+        }
         $pre_instructor = $this->guardado_ins($modInstructor, $request, $request->id);
         $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
         $old = $pre_instructor->apellidoPaterno . ' ' . $pre_instructor->apellidoMaterno . ' ' . $pre_instructor->nombre;
@@ -1502,6 +1508,7 @@ class InstructorController extends Controller
         }
 
         //PROCESO DE PREVENCION EN CAMBIO DE NUMERO DE REVISIONES VACIOS
+        $pre_instructor->save();
         if($pre_instructor->turnado == 'UNIDAD')
         {
             $nrev = $this->new_revision($pre_instructor->id);
@@ -3108,6 +3115,9 @@ class InstructorController extends Controller
     private function guardado_ins($saveInstructor,$request,$id)
     {
         // dd($request);
+        $arresp = $arrper = $arrtemp = array();
+        $perfiles = InstructorPerfil::WHERE('numero_control',$id)->GET();
+        $especialidades = especialidad_instructor::WHERE('id_instructor', '=', $id)->GET();
         $userId = Auth::user()->id;
         $useruni = Auth::user()->unidad;
         $unidades = ['TUXTLA', 'TAPACHULA', 'COMITAN', 'REFORMA', 'TONALA', 'VILLAFLORES', 'JIQUIPILAS', 'CATAZAJA',
@@ -3152,6 +3162,7 @@ class InstructorController extends Controller
         $saveInstructor->banco = $request->banco;
         $saveInstructor->interbancaria = $request->clabe;
         $saveInstructor->no_cuenta = $request->numero_cuenta;
+        $saveInstructor->numero_control = $request->numero_control;
         if(!isset($saveInstructor->numero_control))
         {
             $saveInstructor->numero_control = "Pendiente";
@@ -3258,6 +3269,71 @@ class InstructorController extends Controller
             $otraid = $request->file('arch_curriculum_personal'); # obtenemos el archivo
             $urlotraid = $this->pdf_upload($otraid, $id, 'oid'); # invocamos el método
             $saveInstructor->archivo_curriculum_personal = $urlotraid; # guardamos el path
+        }
+        if($saveInstructor->data_perfil == NULL)
+        {
+            foreach($perfiles as $cadwell)
+            {
+                $arrtemp = [
+                    'id' => $cadwell->id,
+                    'area_carrera' => $cadwell->area_carrera,
+                    'estatus' => $cadwell->estatus,
+                    'pais_institucion' => $cadwell->pais_institucion,
+                    'entidad_institucion' => $cadwell->entidad_institucion,
+                    'fecha_expedicion_documento' => $cadwell->fecha_expedicion_documento,
+                    'folio_documento' => $cadwell->folio_documento,
+                    'numero_control' => $cadwell->numero_control,
+                    'ciudad_institucion' => $cadwell->ciudad_institucion,
+                    'nombre_institucion' => $cadwell->nombre_institucion,
+                    'grado_profesional' => $cadwell->grado_profesional,
+                    'experiencia_laboral' => $cadwell->experiencia_laboral,
+                    'experiencia_docente' => $cadwell->experiencia_docente,
+                    'cursos_recibidos' => $cadwell->cursos_recibidos,
+                    'capacitador_icatech' => $cadwell->capacitador_icatech,
+                    'recibidos_icatech' => $cadwell->recibidos_icatech,
+                    'cursos_impartidos' => $cadwell->cursos_impartidos,
+                    'lastUserId' => $cadwell->lastUserId,
+                    'carrera' => $cadwell->carrera,
+                    'status' => 'VALIDADO',
+                    'periodo' => $cadwell->periodo,
+                    'new' => FALSE
+                ];
+                array_push($arrper,$arrtemp);
+                $arrtemp = array();
+            }
+            $saveInstructor->data_perfil = $arrper;
+
+            foreach($especialidades as $moist)
+            {
+                // dd($moist);
+                $arrtemp = [
+                    'id' => $moist->id,
+                    'especialidad_id' => $moist->especialidad_id,
+                    'perfilprof_id' => $moist->perfilprof_id,
+                    'unidad_solicita' => $moist->unidad_solicita,
+                    'memorandum_validacion' => $moist->memorandum_validacion,
+                    'fecha_validacion' => $moist->fecha_validacion,
+                    'memorandum_modificacion' => $moist->memorandum_modificacion,
+                    'observacion' => $moist->observacion,
+                    'criterio_pago_id' => $moist->criterio_pago_id,
+                    'lastUserId' => $userId,
+                    'activo' => TRUE,
+                    'id_instructor' => $moist->idInstructor,
+                    'cursos_impartir' => $moist->cursos_impartir,
+                    'fecha_solicitud' => $moist->fecha_solicitud,
+                    'status' => 'VALIDADO',
+                    'memorandum_solicitud' => $moist->memorandum_solicitud,
+                    'solicito' => $moist->solicito,
+                    'observacion_validacion' => $moist->observacion_validacion,
+                    'fecha_baja' => $moist->fecha_baja,
+                    'memorandum_baja' => $moist->memorandum_baja,
+                    'hvalidacion' => $moist->hvalidacion,
+                    'new' => FALSE
+                ];
+                array_push($arresp, $arrtemp);
+                $arrtemp = array();
+            }
+            $saveInstructor->data_especialidad = $arresp;
         }
 
         return $saveInstructor;
@@ -3372,7 +3448,8 @@ class InstructorController extends Controller
                 'lastUserId' => $cadwell->lastUserId,
                 'carrera' => $cadwell->carrera,
                 'status' => 'VALIDADO',
-                'periodo' => $cadwell->periodo
+                'periodo' => $cadwell->periodo,
+                'new' => FALSE
             ];
             array_push($arrper,$arrtemp);
             $arrtemp = array();
