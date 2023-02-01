@@ -1390,7 +1390,7 @@ class InstructorController extends Controller
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
         $instructor_perfil = new InstructorPerfil();
-        if($datainstructor->registro_activo == FALSE)
+        if(!isset($datainstructor) || $datainstructor->registro_activo == FALSE)
         {
             $datainstructor = NULL;
             $datainstructor = instructor::WHERE('id', '=', $id)->FIRST();
@@ -1405,7 +1405,7 @@ class InstructorController extends Controller
                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                 ->GET();
         }
-        else
+        else if ($datainstructor->registro_activo == TRUE)
         {
 
             $perfil = $this->make_collection($datainstructor->data_perfil);
