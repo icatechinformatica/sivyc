@@ -15,7 +15,7 @@
             padding:0px;
         }
     </style>
-    <form action="{{ route('saveins') }}" method="post" id="registerperf_prof">
+    <form action="{{ route('saveins') }}" enctype="multipart/form-data" method="post" id="registerperf_prof">
         @csrf
         <div class="card-header">
             <h1>Registro de Instructor</h1>
