@@ -2089,7 +2089,7 @@ class InstructorController extends Controller
                                 ->WHERE('id_instructor', '=', $idins)
                                 ->WHERE('status', array('EN CAPTURA','RETORNO'))
                                 ->FIRST();
-        if($pre_instructor->registro_activo == TRUE)
+        if( isset($pre_instructor->registro_activo) && $pre_instructor->registro_activo == TRUE)
         {
             foreach($pre_instructor->data_perfil as $cadwell)
             {
@@ -2201,7 +2201,7 @@ class InstructorController extends Controller
     public function edit_especval($id,$idins)
     {
         $pre_instructor = pre_instructor::WHERE('id',$idins)->FIRST();
-        if($pre_instructor->registro_activo == TRUE)
+        if(isset($pre_instructor->registro_activo) && $pre_instructor->registro_activo == TRUE)
         {
             foreach($pre_instructor->data_especialidad as $cadwell)
             {
