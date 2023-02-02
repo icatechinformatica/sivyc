@@ -386,10 +386,10 @@ class InstructorController extends Controller
             $especialidades = $this->make_collection($modInstructor->data_especialidad);
             // se llaman las funciones de string a arrays
             $newa = (array) $modInstructor;
-            if(isset($newa["\x00*\x00attributes"]["entrevista"]))
-            {
-                $newa["\x00*\x00attributes"]["entrevista"] = $this->basic_array($newa["\x00*\x00attributes"]["entrevista"]);
-            }
+            // if(isset($newa["\x00*\x00attributes"]["entrevista"]))
+            // {
+            //     $newa["\x00*\x00attributes"]["entrevista"] = $this->basic_array($newa["\x00*\x00attributes"]["entrevista"]);
+            // }
             if(isset($modInstructor->exp_laboral))
             {
                 $newa["\x00*\x00attributes"]["exp_laboral"] = $this->complex_array($newa["\x00*\x00attributes"]["exp_laboral"]);
@@ -3843,10 +3843,11 @@ class InstructorController extends Controller
     protected function basic_array($data)
     {
         $entrevista = array();
-        $arrtemp = explode(',',str_replace(['"','{','}',' ','[',']'], '', $data));
+        $arrtemp = explode(',',str_replace(['"','{','}',' ','[',']'], '', $data));dd($data);
         foreach( $arrtemp as $val )
         {
             $tmp = explode( ':', $val );
+
             $entrevista[ $tmp[0] ] = $tmp[1];
             if(isset($tmp[2]))
             {
