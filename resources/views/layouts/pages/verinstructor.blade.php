@@ -569,7 +569,7 @@
                             @if($datainstructor->status != "PREVALIDACION")
                                 @if($datainstructor->status != "EN FIRMA")
                                     @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="archivo_curriculum_personal">
+                                        <label class='onpoint' for="arch_curriculum_personal">
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
@@ -2768,7 +2768,7 @@
             let arid = document.getElementById("arch_id");
             let arrfc = document.getElementById("arch_rfc");
             let arest = document.getElementById("arch_estudio");
-            let aralt = document.getElementById("archivo_curriculum_personal");
+            let aralt = document.getElementById("arch_curriculum_personal");
             let imageName0 = document.getElementById("imageName0");
             let imageName = document.getElementById("imageName");
             let imageName2 = document.getElementById("imageName2");
@@ -2812,7 +2812,7 @@
                 imageName7.innerText = inputImage7.name;
             })
             aralt.addEventListener("change", ()=>{
-                let inputImage8 = document.querySelector("#archivo_curriculum_personal").files[0];
+                let inputImage8 = document.querySelector("#arch_curriculum_personal").files[0];
                 imageName8.innerText = inputImage8.name;
             })
         }
@@ -3092,7 +3092,7 @@
             // console.log(document.getElementById("tableperfiles").rows.length);
             var button = $(event.relatedTarget);
             var id = button.data('id');
-            // console.log(id);
+            console.log(id);
             document.getElementById('idInstructorexpdoc').value = id;
         });
 
