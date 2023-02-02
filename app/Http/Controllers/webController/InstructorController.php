@@ -1410,11 +1410,11 @@ class InstructorController extends Controller
         }
         else if ($datainstructor->registro_activo == TRUE)
         {
-
             $perfil = $this->make_collection($datainstructor->data_perfil);
             $validado = $this->make_collection($datainstructor->data_especialidad);
             foreach($validado as $key => $ges)
             {
+                $lista = null;
                 if(isset($ges->hvalidacion))
                 {
                     $ges->hvalidacion = json_encode($ges->hvalidacion);
@@ -1428,6 +1428,19 @@ class InstructorController extends Controller
                     $validado[$key]->memorandum_validacion = NULL;
                     $validado[$key]->fecha_validacion = NULL;
                 }
+                $cursos = curso::SELECT('nombre_curso')->WHEREIN('id', $ges->cursos_impartir)->GET();
+                foreach($cursos as $llave => $ari)
+                {
+                    if($llave == 0)
+                    {
+                        $lista = '<li>' . $ari->nombre_curso . '</li>';
+                    }
+                    else
+                    {
+                        $lista = $lista . '<li>' . $ari->nombre_curso . '</li>';
+                    }
+                }
+                $validado[$key]->cursos_impartir = $lista;
             }
             // dd($validado);
         }
@@ -3700,6 +3713,7 @@ class InstructorController extends Controller
     {
         $lista = NULL;
         $insesp = especialidad_instructor::FIND($request->id);
+        // return $insesp;
         $perfil = InstructorPerfil::SELECT('area_carrera', 'grado_profesional')->WHERE('id', '=', $insesp->perfilprof_id)->FIRST();
         $especialidad = especialidad::SELECT('nombre')->WHERE('id', '=', $insesp->especialidad_id)->FIRST();
         $cp = DB::TABLE('criterio_pago')->SELECT('perfil_profesional')->WHERE('id', '=', $insesp->criterio_pago_id)->FIRST();

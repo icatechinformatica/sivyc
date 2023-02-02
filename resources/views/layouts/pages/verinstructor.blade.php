@@ -614,7 +614,21 @@
                         <div class="form-group col-md-3"><br>
                             <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-entrevista-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de entrevista</small></small></a>
                         </div>
-                        <div class="form-group col-md-3"><br>
+                    @else
+                        <div class="pull-right">
+                            @can('instructor.editar_fase2')
+                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
+                                    data-toggle="modal"
+                                    data-placement="top"
+                                    data-target="#entrevistaModal"
+                                    data-id='{{$datainstructor->id}}'><small>Llenar Entrevista</small>
+                                </button>
+                            @endcan
+                        </div>
+                        @php
+                    @endphp
+                    @endif
+                    <div class="form-group col-md-3"><br>
                             <table class="table table-borderless table-responsive-md" id="table-perfprof2">
                                 <tbody>
                                     <tr >
@@ -624,7 +638,7 @@
                                         </td>
                                         <td></td>
                                         <td id="center">
-                                            @if($datainstructor->entrevista['link'] == NULL)
+                                            @if(!isset($datainstructor->entrevista['link']))
                                                 <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
                                             @else
                                                 <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
@@ -645,18 +659,6 @@
                                 </tbody>
                             </table>
                         </div>
-                    @else
-                        <div class="pull-right">
-                            @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
-                                    data-toggle="modal"
-                                    data-placement="top"
-                                    data-target="#entrevistaModal"
-                                    data-id='{{$datainstructor->id}}'><small>Llenar Entrevista</small>
-                                </button>
-                            @endcan
-                        </div>
-                    @endif
                 </div>
                 <br>
                 <hr style="border-color:dimgray">
@@ -885,7 +887,7 @@
                                             @if($item->status != 'VALIDADO')
                                                 data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
                                                         "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}","{{$item->cursos_impartir}}"]'
                                             @else
                                                 data-id='["{{$item->espinid}}","{{$item->status}}"]'
                                             @endif
@@ -2943,9 +2945,11 @@
         $('#verespevaliModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var idb = button.data('id');
+            console.log(idb)
             if(idb['7'] != 'VALIDADO')
             {
-                // console.log(idb)
+                console.log('a')
+
                 var div = document.getElementById('listaespevali')
                 div.innerHTML = '<li>Especialidad: <b>' + idb['0'] + '</b></li><br>' +
                     '<li>Peril Profesional: <b>' + idb['1'] + '</b></li><br>' +
@@ -2953,7 +2957,9 @@
                     '<li>Criterio Pago: <b>' + idb['3'] + '</b></li><br>' +
                     '<li>Memorandum de Solicitud: <b>' + idb['4'] + '</b></li><br>' +
                     '<li>Fecha de Solicitud: <b>' + idb['5'] + '</b></li><br>' +
-                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>';
+                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>' +
+                    '<li>Cursos:</li><ul>' + idb['9'] + '</ul>';
+
             }
             else
             {
