@@ -213,15 +213,15 @@ class InstructorController extends Controller
                                 ->WHERE('turnado', '=', 'UNIDAD')
                                 ->GET();
 
-                $unirev = $userunidad->ubicacion['0'] . $userunidad->ubicacion['1'];
+                // $unirev = $userunidad->ubicacion['0'] . $userunidad->ubicacion['1'];
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
-                                                ->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')
+                                                // ->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')
                                                 ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
-                                                ->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')
+                                                // ->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')
                                                 ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','BAJA'])
                                                 ->GET();
                 // dd($databuzon);
