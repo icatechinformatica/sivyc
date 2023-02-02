@@ -573,7 +573,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="archivo_curriculum_personal" name="archivo_curriculum_personal" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
                                             <br><span id="imageName8"></span>
                                         </label>
                                     @endcan
