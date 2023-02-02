@@ -1415,6 +1415,7 @@ class InstructorController extends Controller
             $validado = $this->make_collection($datainstructor->data_especialidad);
             foreach($validado as $key => $ges)
             {
+                $lista = null;
                 if(isset($ges->hvalidacion))
                 {
                     $ges->hvalidacion = json_encode($ges->hvalidacion);
@@ -1428,6 +1429,25 @@ class InstructorController extends Controller
                     $validado[$key]->memorandum_validacion = NULL;
                     $validado[$key]->fecha_validacion = NULL;
                 }
+
+                if(isset($ges->cursos_impartir))
+                {
+                    $cursos = curso::SELECT('nombre_curso')->WHEREIN('id', $ges->cursos_impartir)->GET();
+                    foreach($cursos as $llavesita => $ari)
+                    {
+                        if($llavesita == 0)
+                        {
+                            $lista = '<li>' . $ari->nombre_curso . '</li>';
+                        }
+                        else
+                        {
+                            $lista = $lista . '<li>' . $ari->nombre_curso . '</li>';
+                        }
+                    }
+                    $validado[$key]->cursos_impartir = $lista;
+                }
+
+                // dd($validado[$key]->cursos_impartir);
             }
             // dd($validado);
         }

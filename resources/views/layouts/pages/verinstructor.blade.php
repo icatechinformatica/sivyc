@@ -885,7 +885,7 @@
                                             @if($item->status != 'VALIDADO')
                                                 data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
                                                         "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}","{{$item->cursos_impartir}}"]'
                                             @else
                                                 data-id='["{{$item->espinid}}","{{$item->status}}"]'
                                             @endif
@@ -2955,7 +2955,8 @@
                     '<li>Criterio Pago: <b>' + idb['3'] + '</b></li><br>' +
                     '<li>Memorandum de Solicitud: <b>' + idb['4'] + '</b></li><br>' +
                     '<li>Fecha de Solicitud: <b>' + idb['5'] + '</b></li><br>' +
-                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>';
+                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>' +
+                    '<li>Cursos:</li><ul>' + idb['9'] + '</ul>';
             }
             else
             {
