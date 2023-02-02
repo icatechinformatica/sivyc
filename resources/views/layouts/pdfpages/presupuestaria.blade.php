@@ -72,6 +72,7 @@ else{$tipo='CURSO';}
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
+            {{-- <img src="" alt=""> --}}
             <br><h6>{{$distintivo}}</h6>
         </header>
         <div class= "container g-pt-30">
