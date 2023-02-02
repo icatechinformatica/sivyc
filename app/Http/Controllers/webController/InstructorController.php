@@ -2238,6 +2238,7 @@ class InstructorController extends Controller
         $pre_instructor = pre_instructor::WHERE('id',$idins)->FIRST();
         if(isset($pre_instructor->registro_activo) && $pre_instructor->registro_activo == TRUE)
         {
+            // dd($pre_instructor->data_especialidad);
             foreach($pre_instructor->data_especialidad as $cadwell)
             {
                 if($cadwell['id'] == $id)
@@ -2245,6 +2246,21 @@ class InstructorController extends Controller
                     $especvalid = (object) $cadwell;
                 }
 
+            }
+            if(!isset($especvalid->cursos_impartir))
+            {
+                $arrt = array();
+                $listacursos = DB::TABLE('especialidad_instructor_curso')->WHERE('id_especialidad_instructor',$id)->GET();
+
+                foreach($listacursos as $cursos_id)
+                {
+
+                    if($cursos_id->activo == TRUE)
+                    {
+                        array_push($arrt, $cursos_id->curso_id);
+                    }
+                }
+                $especvalid->cursos_impartir = $arrt;
             }
             $data_espec = $this->make_collection($pre_instructor->data_perfil);
             // dd($data_espec);
