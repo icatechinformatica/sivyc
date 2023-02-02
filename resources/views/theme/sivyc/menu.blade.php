@@ -180,7 +180,7 @@
                                 <a class="dropdown-item" href="{{route('solicitudes.cancelacionfolios')}}">Cancelaci&oacute;n Folios</a>
                             @endcan
                             @can('prevalidar_index-instructor')
-                                <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Turnar Instructor</a>
+                                <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Validación de Instructores</a>
                             @endcan
                         </div>
                     </li>

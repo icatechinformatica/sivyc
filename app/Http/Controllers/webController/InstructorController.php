@@ -386,7 +386,10 @@ class InstructorController extends Controller
             $especialidades = $this->make_collection($modInstructor->data_especialidad);
             // se llaman las funciones de string a arrays
             $newa = (array) $modInstructor;
-            $newa["\x00*\x00attributes"]["entrevista"] = $this->basic_array($newa["\x00*\x00attributes"]["entrevista"]);
+            if(isset($newa["\x00*\x00attributes"]["entrevista"]))
+            {
+                $newa["\x00*\x00attributes"]["entrevista"] = $this->basic_array($newa["\x00*\x00attributes"]["entrevista"]);
+            }
             if(isset($modInstructor->exp_laboral))
             {
                 $newa["\x00*\x00attributes"]["exp_laboral"] = $this->complex_array($newa["\x00*\x00attributes"]["exp_laboral"]);
