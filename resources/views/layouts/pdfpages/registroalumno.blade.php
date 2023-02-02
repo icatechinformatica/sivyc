@@ -8,7 +8,7 @@
     <style>
         *{box-sizing: border-box;}
         @page{
-            margin: 60px 30px 20px; 
+            margin: 60px 30px 20px;
             font-size: 9px;
             font-family: sans-serif;
         }
@@ -92,7 +92,7 @@
         </tr>
         <tr>
             <td colspan="2"><strong>ESTADO CIVIL:</strong></td>
-            @php 
+            @php
                 if($alumnos->estado_civil=="SOLTERO (A)"||$alumnos->estado_civil=="SOLTERO"){echo "<td>SOLTERO(X)</td> <td>CASADO( )</td> <td>VIUDO( )</td> <td>DIVORCIADO( )</td> <td>UNION LIBRE( )</td>";}
                 else if($alumnos->estado_civil=="CASADO (A)"||$alumnos->estado_civil=="CASADO"){echo "<td>SOLTERO( )</td> <td>CASADO(X)</td> <td>VIUDO( )</td> <td>DIVORCIADO( )</td> <td>UNION LIBRE( )</td>";}
                 else if($alumnos->estado_civil=="VIUDO (A)"||$alumnos->estado_civil=="VIUDO"){echo "<td>SOLTERO( )</td> <td>CASADO( )</td> <td>VIUDO(X)</td> <td>DIVORCIADO( )</td> <td>UNION LIBRE( )</td>";}
