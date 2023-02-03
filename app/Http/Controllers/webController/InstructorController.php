@@ -446,6 +446,17 @@ class InstructorController extends Controller
                                 $perfiles[$key]->status = 'BAJA EN PREVALIDACION';
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
                             break;
+                            case 'RETORNO':
+                                $perfiles[$key]->status = 'PREVALIDACION';
+                                $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ', ';
+                            break;
+                            case 'REVALIDACION RETORNADA':
+                                $perfiles[$key]->status = 'REVALIDACION EN PREVALIDACION';
+                            break;
+                            case 'BAJA RETORNADA':
+                                $perfiles[$key]->status = 'BAJA EN PREVALIDACION';
+                                $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
+                            break;
                         }
                     }
                 }
@@ -475,6 +486,19 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento . $especialidad->nombre . ' (REVALIDACION),  ';
                             break;
                             case 'BAJA EN CAPTURA':
+                                $especialidades[$llave]->status = 'BAJA EN PREVALIDACION';
+                                $movimiento = $movimiento . $especialidad->nombre . ' (BAJA),  ';
+                                $bajachk = TRUE;
+                            break;
+                            case 'RETORNO':
+                                $especialidades[$llave]->status = 'PREVALIDACION';
+                                $movimiento = $movimiento . $especialidad->nombre . ',  ';
+                            break;
+                            case 'REVALIDACION RETORNADA':
+                                $especialidades[$llave]->status = 'REVALIDACION EN PREVALIDACION';
+                                $movimiento = $movimiento . $especialidad->nombre . ' (REVALIDACION),  ';
+                            break;
+                            case 'BAJA RETORNADA':
                                 $especialidades[$llave]->status = 'BAJA EN PREVALIDACION';
                                 $movimiento = $movimiento . $especialidad->nombre . ' (BAJA),  ';
                                 $bajachk = TRUE;
