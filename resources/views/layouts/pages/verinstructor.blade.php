@@ -298,7 +298,7 @@
                                 <td>{{ $exdoc['funcion'] }}</td>
                                 <td>{{ $exdoc['periodo'] }}</td>
                                 <td width="13%">
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                                         @can('instructor.editar_fase2')
                                             <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                                 data-toggle="modal"
@@ -321,7 +321,7 @@
                     <div class="pull-left">
                         <h4>Experiencia Laboral</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" class="btn mr-sm-4 mt-3"
@@ -668,7 +668,7 @@
                             <h4>Perfiles Profesionales</h4>
                         </div>
                     @php $b = FALSE; foreach($perfil as $chkst){ switch($chkst->status){case 'VALIDADO': $b = TRUE; break; case 'EN CAPTURA': $b = TRUE; break;}} @endphp
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" @if (count($perfil) == 0) class="d-none d-print-none" @else class="btn mr-sm-4 mt-3" @endif
@@ -810,7 +810,7 @@
                         <h4>Especialidades a Impartir</h4>
                     </div>
                     @if (count($validado) > 0)
-                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                             <div class="pull-right">
                                 @can('instructor.editar_fase2')
                                     <a class="btn mr-sm-4 mt-3" href="{{ route('cursoimpartir-form', ['idins' => $id]) }}">Agregar Especialidad Validado para Impartir</a>
