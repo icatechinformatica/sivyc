@@ -163,7 +163,11 @@ class InstructorController extends Controller
                 {
                     array_push($status, 'BAJA EN PREVALIDACION', 'REACTIVACION EN PREVALIDACION');
                     $unidad_solicita = DB::TABLE('tbl_unidades')
-                            ->SELECT('ubicacion')->WHERE('id', '=', $data->lastUserId)->FIRST();
+                            ->SELECT('ubicacion')
+                            ->JOIN('users', 'users.unidad', '=', 'tbl_unidades.id')
+                            ->WHERE('users.id', '=', $data->lastUserId)
+                            ->FIRST();
+                            dd($unidad_solicita);
                     $data->unidad_solicita = $unidad_solicita->ubicacion;
                     $data->onlyins = TRUE;
                 }
@@ -208,12 +212,13 @@ class InstructorController extends Controller
         {
             if(!isset($rol)) // ANALIZA SI ROL NO ESTA ASIGNADO
             {
-                $nrevisiones = $nrevisiones->WhereJsonContains('data_especialidad', [['unidad_solicita' => $userunidad->ubicacion]])
+                $unirev = $userunidad->ubicacion['0'] . $userunidad->ubicacion['1'];
+                $nrevisiones = $nrevisiones->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')//'data_especialidad', [['unidad_solicita' => $userunidad->ubicacion]])
                                 ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
                                 ->WHERE('turnado', '=', 'UNIDAD')
                                 ->GET();
 
-                $unirev = $userunidad->ubicacion['0'] . $userunidad->ubicacion['1'];
+
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
                                                 ->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')
