@@ -140,7 +140,8 @@
             <tbody>
                 @php $ret = FALSE; @endphp
                 @foreach($data->data_especialidad as $cadwell)
-                    @if($cadwell['status'] != 'VALIDADO')
+                {{-- @php dd($cadwell);  @endphp --}}
+                    {{-- @if($cadwell['status'] != 'VALIDADO') --}}
                         @php if($data->status == 'RETORNO'){ $ret = TRUE;} $cadwell = (object) $cadwell; @endphp
                         <tr>
                             <td><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></td>
@@ -199,7 +200,7 @@
                                 @endif
                             </td>
                         </tr>
-                    @endif
+                    {{-- @endif --}}
                 @endforeach
             </tbody>
         </table>
