@@ -3037,9 +3037,22 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc'));
+        $fecha_letra = $this->obtenerFechaEnLetra($D);
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
+    }
+
+    function obtenerFechaEnLetra($fecha){
+        $mes_array = ['01'=> 'UN','02' => 'DOS','03' => 'TRÉS','04' => 'CUATRO','05' => 'CINCO',
+                    '06' => 'SEIS','07' => 'SIETE','08' => 'OCHO','09' => 'NUEVE','10' => 'DIEZ',
+                    '11' => 'ONCE','12' => 'DOCE','13' => 'TRECE','14' => 'CATORCE','15' => 'QUINCE',
+                    '16' => 'DIECISEIS','17' => 'DIECISIETE','18' => 'DIECIOCHO','19' => 'DIECINUEVE','20' => 'VEINTE',
+                    '21' => 'VEINTIUNO','22' => 'VEINTIDOS','23' => 'VEINTIRÉS','24' => 'VEINTICUATRO','25' => 'VEINTICINCO',
+                    '26' => 'VEINTISEIS','27' => 'VEINTISIETE','28' => 'VEINTIOCHO','29' => 'VEINTINUEVE','30' => 'TREINTA',
+                    '31' => 'TREINTA Y UN'];
+        $fecha_letra = $mes_array[$fecha];
+        return $fecha_letra;
     }
 
     public function validacion_instructor_pdf(Request $request)

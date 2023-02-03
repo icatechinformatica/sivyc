@@ -125,7 +125,7 @@
             <br>{{$data_unidad->pdacademico}}.
             <br>Presente.<br>
 
-            <br><p class="text-justify">Por este medio solicito la @if($tipo_doc == 'REVALIDACION') actualización @elseif($tipo_doc == 'REACTIVACION') reactivación @else validación @endif como Instructor Externo, en función a que cumple con todos y cada uno de los requisitos establecidos en el manual de procecdimientos del departamento de Gestión Académica.</p>
+            <br><p class="text-justify">Por este medio solicito la <b> @if($tipo_doc == 'REVALIDACION') actualización @elseif($tipo_doc == 'REACTIVACION') reactivación @else validación @endif  </b> como Instructor Externo, en función a que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica.</p>
             <div class="table table-responsive">
                 <table class="tablad" style="border-color: black">
                     <thead>
@@ -186,7 +186,7 @@
                 <br>Presente.<br>
                 <br><p class="text-justify">Por este medio hago constar que el (la) {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} fue entrevistado (a) y evaluado (a) por el Departamento Tecnico de esta Unidad de Capacitación a mi cargo, concluyendo que la persona es idónea para otorgar cursos de capacitación dentro de la Especialidad de {{$altmer->especialidad}}, así mismo cabe señalar que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica vigente de la Dirección Técnica Académica del Instituto.</p>
                 <br><p class="text-justify">Mucho agradeceré que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} sea integrado al "Padrón de Instructores de Capacitación para y en el Trabajo".</p>
-                <br><p class="text-justify">Sin otro particular, se emite la presente Constancia de Selección, a los veintitrés días del mes de febrero del 2022, en la Ciudad de {{$data[0]->unidad_solicita}}, Chiapas.</p>
+                <br><p class="text-justify">Sin otro particular, se emite la presente Constancia de Selección, a los {{$fecha_letra}} días del mes de {{$M}} del {{$Y}}, en la Ciudad de {{$data[0]->unidad_solicita}}, Chiapas.</p>
                 <br><p class="text-left"><p>Atentamente.</p></p>
                 <table class="table1">
                     <tr>
