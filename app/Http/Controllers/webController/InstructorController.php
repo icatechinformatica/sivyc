@@ -3007,7 +3007,7 @@ class InstructorController extends Controller
         $instructor->save();
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $data[0]->unidad_solicita)->FIRST();
-        $solicito = DB::TABLE('users')->WHERE('id', '=', $data[0]->solicito)->FIRST();
+        $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
