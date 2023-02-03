@@ -820,15 +820,15 @@ class grupoController extends Controller
                 if (count($cursos) > 0) {
                     $unidad = $cursos[0]->unidad;
                     foreach ($cursos as $key => $value) {
-                        $costos = DB::table('alumnos_registro')->where('folio_grupo', $value->folio_grupo)->where('eliminado', false)->pluck('costo');
-                        $costo = array_count_values(json_decode($costos));
-                        if (count($costo) > 1) {
-                            foreach ($costo as $key => $value) {
-                                $c[] = $value . " DE " . $key;
+                        $costos =  DB::table('alumnos_registro')->select(DB::raw("concat(count(id),' DE ',costo) as costos"))
+                            ->where('folio_grupo', $value->folio_grupo)->where('eliminado', false)->orderby('costo','ASC')->groupby('costo')->get();
+                        $costo_string = "";
+                        if(count($costos)>0){
+                            foreach($costos as $c){
+                                if(!$costo_string)
+                                    $costo_string = $costo_string." ".$c->costos.", ";
+                                else $costo_string = $costo_string." ".$c->costos;
                             }
-                            $costo = implode(',', $c);
-                        } else {
-                            $costo = $costos[0];
                         }
                         $data[$key]['folio_grupo'] = $value->folio_grupo;
                         $data[$key]['tipo_curso'] = $value->tipo_curso;
@@ -842,7 +842,7 @@ class grupoController extends Controller
                         $data[$key]['horario'] = $value->horario;
                         $data[$key]['dia'] = $value->dia;
                         $data[$key]['horas'] = $value->horas;
-                        $data[$key]['costos'] = $costo;
+                        $data[$key]['costos'] = $costo_string;
                         $data[$key]['costo'] = $value->costo;
                         $data[$key]['tpar'] = $value->tpar;
                         $data[$key]['hombre'] = $value->hombre;
