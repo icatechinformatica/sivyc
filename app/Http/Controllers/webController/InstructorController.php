@@ -500,8 +500,8 @@ class InstructorController extends Controller
             $historico->turnado = $modInstructor->turnado;
             // dd($newa["\x00*\x00attributes"]);
             $historico->data_instructor = 'temp'; //$newa["\x00*\x00attributes"];
-            $historico->data_perfil = $newb;
-            $historico->data_especialidad = $newc;
+            // $historico->data_perfil = $newb;
+            // $historico->data_especialidad = $newc;
             $historico->nrevision = $modInstructor->nrevision;
 
             $insstat = instructor::find($request->idinstructores);
