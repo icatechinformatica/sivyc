@@ -115,7 +115,7 @@
                                         @if($datainstructor->status != "EN FIRMA")
                                             @if($roluser->role_id != 3)
                                                 <input hidden name="chkpre" id="chkpre" value="FALSE">
-                                                <label class='onpoint' for="arch_domicilio">
+                                                <label class='onpoint' for="arch_ine">
                                                     <a class="btn mr-sm-4 mt-3 btn-sm">
                                                         Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                                     </a>
