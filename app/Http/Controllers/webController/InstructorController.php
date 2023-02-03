@@ -390,14 +390,14 @@ class InstructorController extends Controller
             // {
             //     $newa["\x00*\x00attributes"]["entrevista"] = $this->basic_array($newa["\x00*\x00attributes"]["entrevista"]);
             // }
-            if(isset($modInstructor->exp_laboral))
-            {
-                $newa["\x00*\x00attributes"]["exp_laboral"] = $this->complex_array($newa["\x00*\x00attributes"]["exp_laboral"]);
-            }
-            if(isset($modInstructor->exp_docente))
-            {
-                $newa["\x00*\x00attributes"]["exp_docente"] = $this->complex_array($newa["\x00*\x00attributes"]["exp_docente"]);
-            }
+            // if(isset($modInstructor->exp_laboral))
+            // {
+            //     $newa["\x00*\x00attributes"]["exp_laboral"] = $this->complex_array($newa["\x00*\x00attributes"]["exp_laboral"]);
+            // }
+            // if(isset($modInstructor->exp_docente))
+            // {
+            //     $newa["\x00*\x00attributes"]["exp_docente"] = $this->complex_array($newa["\x00*\x00attributes"]["exp_docente"]);
+            // }
 
             foreach($perfiles as $moist)
             {
@@ -498,7 +498,8 @@ class InstructorController extends Controller
             $historico->movimiento = $movimiento;
             $historico->status = $modInstructor->status;
             $historico->turnado = $modInstructor->turnado;
-            $historico->data_instructor = $newa["\x00*\x00attributes"];
+            // dd($newa["\x00*\x00attributes"]);
+            $historico->data_instructor = 'temp'; //$newa["\x00*\x00attributes"];
             $historico->data_perfil = $newb;
             $historico->data_especialidad = $newc;
             $historico->nrevision = $modInstructor->nrevision;
