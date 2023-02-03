@@ -398,7 +398,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
                                             <br><span id="imageName"></span>
                                         </label>
                                     @endcan
@@ -423,7 +423,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
                                             <br><span id="imageName2"></span>
                                         </label>
                                     @endcan
@@ -448,7 +448,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
                                             <br><span id="imageName3"></span>
                                         </label>
                                     @endcan
@@ -473,7 +473,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
                                             <br><span id="imageName4"></span>
                                         </label>
                                     @endcan
@@ -500,7 +500,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
                                             <br><span id="imageName5"></span>
                                         </label>
                                     @endcan
@@ -525,7 +525,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
                                             <br><span id="imageName6"></span>
                                         </label>
                                     @endcan
@@ -550,7 +550,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
                                             <br><span id="imageName7"></span>
                                         </label>
                                     @endcan
@@ -575,7 +575,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
                                             <br><span id="imageName8"></span>
                                         </label>
                                     @endcan
