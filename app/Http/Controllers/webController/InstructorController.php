@@ -673,7 +673,6 @@ class InstructorController extends Controller
             $historico->save();
 
         }
-        dd('a');
 
         return redirect('/prevalidacion/instructor')->with('success','REGISTROS PREVALIDADOS CORRECTAMENTE');
     }
