@@ -141,7 +141,7 @@
                 @php $ret = FALSE; @endphp
                 @foreach($data->data_especialidad as $cadwell)
                 {{-- @php dd($cadwell);  @endphp --}}
-                    {{-- @if($cadwell['status'] != 'VALIDADO') --}}
+                    @if($cadwell['status'] != 'VALIDADO')
                         @php if($data->status == 'RETORNO'){ $ret = TRUE;} $cadwell = (object) $cadwell; @endphp
                         <tr>
                             <td><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></td>
@@ -167,6 +167,14 @@
                                         @break
                                     @endif
                                 @endforeach
+                                @foreach($especialidadeslist as $especialidad)
+                                    @if($especialidad->id == $cadwell->especialidad_id)
+                                        <td><small>{{$data->turnado}} {{ $cadwell->status}}</small></td>
+                                        @if($data->status == 'BAJA EN PREVALIDACION' || $data->status == 'BAJA EN FIRMA')
+                                            <td><small>{{$data->motivo}}</small></td>
+                                        @endif
+                                    @endif
+                                @endforeach
                             @else
                                 @if ($data->status == 'BAJA EN PREVALIDACION' || $data->status == 'BAJA EN FIRMA')
                                     <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
@@ -175,6 +183,40 @@
                                 @else
                                     <td><small>CAMBIO DE INFORMACIÓN BASICA DEL INSTRUCTOR</small></td>
                                 @endif
+                                <td><small>{{$data->turnado}} {{ $data->status}}</small></td>
+                                @if($data->status == 'BAJA EN PREVALIDACION' || $data->status == 'BAJA EN FIRMA')
+                                    <td><small>{{$data->motivo}}</small></td>
+                                @endif
+                            @endif
+                            <td>
+                                @if($data->statusins == 'EN CAPTURA' || $data->statusins == 'RETORNO')
+                                    @if($data->status == 'RETORNO')
+                                        <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="EDITAR" href="{{route('instructor-crear-p2', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    @else
+                                        @if($data->numero_control == 'Pendiente')
+                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                        @else
+                                            <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                        @endif
+                                    @endif
+                                @else
+                                    @if($data->numero_control == 'Pendiente')
+                                        <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    @else
+                                        <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                    @endif
+                                @endif
+                            </td>
+                        </tr>
+                    @endif
+                    @if(isset($data->onlyins))
+                        <tr>
+                            @if ($data->status == 'BAJA EN PREVALIDACION' || $data->status == 'BAJA EN FIRMA')
+                                <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
+                            @elseif($data->status == 'REACTIVACION EN PREVALIDACION' || $data->status == 'REACTIVACION EN FIRMA')
+                                <td><small>REACTIVACIÓN DE INSTRUCTOR</small></td>
+                            @else
+                                <td><small>CAMBIO DE INFORMACIÓN BASICA DEL INSTRUCTOR</small></td>
                             @endif
                             <td><small>{{$data->turnado}} {{ $data->status}}</small></td>
                             @if($data->status == 'BAJA EN PREVALIDACION' || $data->status == 'BAJA EN FIRMA')
@@ -200,7 +242,7 @@
                                 @endif
                             </td>
                         </tr>
-                    {{-- @endif --}}
+                    @endif
                 @endforeach
             </tbody>
         </table>
