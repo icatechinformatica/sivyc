@@ -670,7 +670,9 @@ class InstructorController extends Controller
             $historico->turnado = $modInstructor->turnado;
             $historico->nrevision = $modInstructor->nrevision;
             $historico->save();
+
         }
+        dd('a');
 
         return redirect('/prevalidacion/instructor')->with('success','REGISTROS PREVALIDADOS CORRECTAMENTE');
     }
@@ -1849,6 +1851,14 @@ class InstructorController extends Controller
     {
         // dd($request);
         $instructorupd = pre_instructor::find($request->idInstructorentrevistaupd);
+        if(!isset($instructorupd))
+        {
+            $instructor = instructor::find($request->idInstructorentrevistaupd);
+            // dd($instructor);
+            $pre_instructor = new pre_instructor();
+            $instructorupd  = $this->guardado_ins_model($pre_instructor, $instructor, $request->idInstructorentrevistaupd);
+            $instructorupd->id_oficial = $instructor->id;
+        }
         $entrevista = $instructorupd->entrevista;
         $archivo = $request->file('doc_entrevista'); # obtenemos el archivo
         $urlentrevista = $this->pdf_upload($archivo, $request->idInstructorentrevistaupd, 'entrevista'); # invocamos el método

@@ -644,13 +644,15 @@
                                             @endif
                                             ><i class="fa fa-eye" aria-hidden="true"></i>
                                         </button>
-                                        <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#delperprofModal"
-                                            data-id='["{{$item->id}}","{{$loc}}","{{$item->new}}","{{$datainstructor->id}}"]'>
-                                                <i class="fa fa-eraser" aria-hidden="true"></i>
-                                        </button>
+                                        @if(isset($item->new))
+                                            <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
+                                                data-toggle="modal"
+                                                data-placement="top"
+                                                data-target="#delperprofModal"
+                                                data-id='["{{$item->id}}","{{$loc}}","{{$item->new}}","{{$datainstructor->id}}"]'>
+                                                    <i class="fa fa-eraser" aria-hidden="true"></i>
+                                            </button>
+                                        @endif
                                     @endcan
                                 </td>
                             </tr>
