@@ -263,7 +263,7 @@
                     <div class="pull-left">
                         <h4>Experiencia Docente</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" class="btn mr-sm-4 mt-3"
