@@ -3264,7 +3264,7 @@ class InstructorController extends Controller
         }
         $saveInstructor->status = "EN CAPTURA";
         $saveInstructor->unidades_disponible = $unidades;
-        $saveInstructor->tipo_honorario = trim($request->honorario);
+        $saveInstructor->tipo_honorario = $request->honorario;
         $saveInstructor->clave_unidad = $unidadregistra->cct;
         $saveInstructor->lastUserId = $userId;
         $saveInstructor->extracurricular = trim($request->extracurricular);
