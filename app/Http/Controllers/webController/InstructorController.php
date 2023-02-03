@@ -167,7 +167,6 @@ class InstructorController extends Controller
                             ->JOIN('users', 'users.unidad', '=', 'tbl_unidades.id')
                             ->WHERE('users.id', '=', $data->lastUserId)
                             ->FIRST();
-                            dd($unidad_solicita);
                     $data->unidad_solicita = $unidad_solicita->ubicacion;
                     $data->onlyins = TRUE;
                 }
