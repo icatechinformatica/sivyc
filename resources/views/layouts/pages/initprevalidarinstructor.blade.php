@@ -154,7 +154,7 @@
                         <tr>
                             <td><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></td>
                             <td><small>{{ $data->curp }}</small></td>
-                            <td><small>{{ $cadwell->unidad_solicita }}</small></td>
+                            <td><small>{{ $daesp }}</small></td>
                             @if(!isset($data->onlyins))
                                 @foreach($especialidadeslist as $especialidad)
                                     @if($especialidad->id == $cadwell->especialidad_id)
@@ -219,6 +219,9 @@
                     @endif
                     @if(isset($data->onlyins))
                         <tr>
+                            <td><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></td>
+                            <td><small>{{ $data->curp }}</small></td>
+                            <td><small>{{ $daesp }}</small></td>
                             @if ($data->status == 'BAJA EN PREVALIDACION' || $data->status == 'BAJA EN FIRMA')
                                 <td><small>BAJA DE INSTRUCTOR. {{$cadwell->motivo}}</small></td>
                             @elseif($data->status == 'REACTIVACION EN PREVALIDACION' || $data->status == 'REACTIVACION EN FIRMA')
@@ -359,7 +362,7 @@
                                 <tr>
                                     <td>{{ $rise->nombre }} {{$rise->apellidoPaterno}} {{$rise->apellidoMaterno}}</td>
                                     <td>{{ $rise->nrevision }}</td>
-                                    <td>{{ $userunidad->ubicacion }}</td>
+                                    <td>{{ $rise->unidad_solicita }}</td>
                                     <td>{{ $rise->status }} {{ $rise->turnado }}</td>
                                     <td>{{ $rise->updated_at}}</td>
                                     <td>

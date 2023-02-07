@@ -91,7 +91,7 @@ class InstructorController extends Controller
     {
         // dd($request);
         //CONFIGURACION INICIAL
-        $valor = $message = $data = $id_list = $seluni = $arch_sol = $especialidades = $perfiles = $databuzon = $buzonhistory = NULL;
+        $daesp = $valor = $message = $data = $id_list = $seluni = $arch_sol = $especialidades = $perfiles = $databuzon = $buzonhistory = NULL;
         $chk_mod_espec = FALSE;
         $userid = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
@@ -204,7 +204,10 @@ class InstructorController extends Controller
                     $hvalidacion = NULL;
                 }
             }
-
+            $daesp = DB::TABLE('tbl_unidades')
+                ->WHERE('ubicacion','LIKE',$request->valor[0]. $request->valor[1] .'%')
+                ->GROUPBY('ubicacion')
+                ->VALUE('ubicacion');
             $id_list = pre_instructor::WHERE('nrevision', '=', $request->valor)->PLUCK('id');
         }
         else //OPCION CUANDO NO HAY FILTRADO
@@ -220,12 +223,12 @@ class InstructorController extends Controller
 
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
-                                                ->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')
+                                                ->WHERE('nrevision', 'LIKE', $unirev . '%')
                                                 ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
-                                                ->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')
+                                                ->WHERE('nrevision', 'LIKE', $unirev . '%')
                                                 ->WHERENOTIN('status', ['EN CAPTURA','RETORNO','VALIDADO','BAJA'])
                                                 ->GET();
                 // dd($databuzon);
@@ -243,12 +246,19 @@ class InstructorController extends Controller
                                                 ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
                                                 ->GET();
             }
-        }
 
+            foreach($databuzon as $contador => $ari)
+        {
+            $databuzon[$contador]->unidad_solicita = DB::TABLE('tbl_unidades')//->SELECT('ubicacion')
+                        ->WHERE('ubicacion','LIKE',$ari->nrevision[0]. $ari->nrevision[1] .'%')
+                        ->GROUPBY('ubicacion')
+                        ->VALUE('ubicacion');
+        }
+        }
         $valor = $request->valor;
         $seluni = $request->seluni;
 
-        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory'));
+        return view('layouts.pages.initprevalidarinstructor', compact('data','valor','message','id_list','unidades','seluni','nrevisiones','rol','arch_sol','especialidadeslist','critpag','especialidades','perfiles','databuzon','userunidad','buzonhistory','daesp'));
     }
 
     public function crear_instructor()
@@ -2970,6 +2980,10 @@ class InstructorController extends Controller
         set_time_limit(0);
 
         $instructor = pre_instructor::WHERE('id', $request->idins)->FIRST();
+        $daesp = DB::TABLE('tbl_unidades')
+                ->WHERE('ubicacion','LIKE',$instructor->nrevision[0]. $instructor->nrevision[1] .'%')
+                ->GROUPBY('ubicacion')
+                ->VALUE('ubicacion');
         $especialidades = $this->make_collection($instructor->data_especialidad);
         foreach($especialidades as $moist)
         {
@@ -3040,7 +3054,7 @@ class InstructorController extends Controller
             $instructor->save();
         }
 
-        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $data[0]->unidad_solicita)->FIRST();
+        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -3048,7 +3062,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
