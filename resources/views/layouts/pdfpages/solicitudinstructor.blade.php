@@ -119,7 +119,7 @@
             <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
             <div class="page-break-non"></div>
         </footer>
-        <div class= "container" style="border: 1px solid">
+        <div class= "container">
             <div align=right> <b>Unidad de Capacitación {{$daesp}}</b> </div>
             <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
             <div align=right> <b>{{$daesp}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
