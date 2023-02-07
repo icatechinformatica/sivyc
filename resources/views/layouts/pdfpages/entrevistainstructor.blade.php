@@ -47,7 +47,7 @@
             footer {
             position: fixed;
             /* left: 0px; */
-            bottom: 70px;
+            bottom: 40px;
             /* right: 0px; */
             /* height: 60px; */
             /* text-align: center; */
@@ -119,9 +119,8 @@
         <div class= "container">
             <div align=center> <b>Formato de Entrevista para Candidatos a Instructores</b></div>
             <div align=right> <b>{{$D}} de {{$M}} del {{$Y}}</b></div>
-            <br><b>Nombre del entrevistado: {{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b>
+            <b>Nombre del entrevistado: {{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b>
             <br><b>Unidad de capacitación: {{$userunidad->ubicacion}}
-            <br>
             <div class="table table-responsive">
                 <table class="tablad" style="border-color: black">
                     <thead>
@@ -130,7 +129,7 @@
                             <td width="360px"><b>RESPUESTA</b></td>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="font-size:8;">
                         <tr>
                             <td>¿Conoce Usted a que se dedica el ICATECH o ha escuchado de él? Indique</td>
                             <td><small>{{$data->entrevista['1']}}</small></td>
