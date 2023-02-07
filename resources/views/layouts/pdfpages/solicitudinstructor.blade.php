@@ -118,7 +118,7 @@
         </footer>
         <div class= "container">
             <div align=right> <b>Unidad de Capacitación {{$data[0]->unidad_solicita}}</b> </div>
-            <div align=right> <b>Memorandum No. {{$nomemosol}}</b></div>
+            <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
             <div align=right> <b>{{$data[0]->unidad_solicita}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
             <br><b>{{$data_unidad->dacademico}}.</b>

@@ -129,24 +129,42 @@
             <button type="button" class="btn btn-primary float-right" onclick="addField()">Añadir Movimiento</button>
         </h2>
         <div id="fieldsContainer">
-            @foreach ($data->mov_bancario as $keygen => $movitem)
+            @if(isset($data->mov_bancario))
+            @php $data->mov_bancario = json_decode($data->mov_bancario) @endphp
+                @foreach ($data->mov_bancario as $keygen => $movitem)
+                    <div class="form-row">
+                        @if ($keygen == 0)
+                            <div class="form-group col-md-3">
+                                <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
+                                <input type="text" name="norecibo" id="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
+                            </div>
+                        @endif
+                        <div class="form-group col-md-3">
+                            <label for="movimiento_bancario_{{$keygen}}">Movimiento Bancario</label>
+                            <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[{{$keygen}}]">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="fecha_movimiento_bancario_{{$keygen}}">Fecha de Movimiento</label>
+                            <input type="date" class="form-control" id="fecha_movimiento_bancario_0" value="{{$movitem->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario_[{{$keygen}}]">
+                        </div>
+                    </div>
+                @endforeach
+            @else
                 <div class="form-row">
-                    @if ($keygen == 0)
                         <div class="form-group col-md-3">
                             <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
                             <input type="text" name="norecibo" id="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
                         </div>
-                    @endif
                     <div class="form-group col-md-3">
-                        <label for="movimiento_bancario_{{$keygen}}">Movimiento Bancario</label>
-                        <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[{{$keygen}}]">
+                        <label for="movimiento_bancario_0">Movimiento Bancario</label>
+                        <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[0]">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="fecha_movimiento_bancario_{{$keygen}}">Fecha de Movimiento</label>
-                        <input type="date" class="form-control" id="fecha_movimiento_bancario_0" value="{{$movitem->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario_[{{$keygen}}]">
+                        <input type="date" class="form-control" id="fecha_movimiento_bancario_0" value="{{$movitem->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario_[0]">
                     </div>
                 </div>
-            @endforeach
+            @endif
         </div>
         <input id="keyfield" name="keyfield" hidden value="{{$keygen}}">
         <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}">

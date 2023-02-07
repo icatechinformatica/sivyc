@@ -113,6 +113,14 @@
                             </div>
                         @endcan
                         @break
+                    @elseif(isset($data) && $data->turnado == 'DTA' && $data->status == 'PREVALIDACION')
+                    <div class="form-group col-md-6"></div>
+                    <div class="form-group col-md-3">
+                        <input value="{{$data->id_oficial}}" hidden id="idins" name="idins">
+                        <input value="{{TRUE}}" hidden id="borrador" name="borrador">
+                        <button type="submit" class="btn mr-sm-4 form-row" style="color: white;">GENERAR BORRADOR</button>
+                    </div>
+                        @break
                     @endif
                 @endforeach
             </div>

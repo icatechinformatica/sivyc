@@ -2959,7 +2959,14 @@ class InstructorController extends Controller
         $tipo_doc = 'VALIDACION';
         $rplc = array('[',']','"');
         $arrtemp = array();
-        $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA');
+        if(!isset($request->borrador))
+        {
+            $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA');
+        }
+        else
+        {
+            $arrstat = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION');
+        }
         set_time_limit(0);
 
         $instructor = pre_instructor::WHERE('id', $request->idins)->FIRST();
@@ -3008,6 +3015,13 @@ class InstructorController extends Controller
                 $item->memorandum_solicitud = $request->nomemo;
             }
 
+            foreach($especialidades as $pos => $cadwell)
+            {
+                if($cadwell->id == $item->id)
+                {
+                    $especialidades[$pos] = $item;
+                }
+            }
             switch($item->status)
             {
                 case 'REVALIDACION EN FIRMA';
@@ -3017,18 +3031,14 @@ class InstructorController extends Controller
                     $tipo_doc = 'REACTIVACION';
                 break;
             }
-
-            foreach($especialidades as $pos => $cadwell)
-            {
-                if($cadwell->id == $item->id)
-                {
-                    $especialidades[$pos] = $item;
-                }
-            }
         }
 
+
         $instructor->data_especialidad = $especialidades;
-        $instructor->save();
+        if(!isset($request->borrador))
+        {
+            $instructor->save();
+        }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $data[0]->unidad_solicita)->FIRST();
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
