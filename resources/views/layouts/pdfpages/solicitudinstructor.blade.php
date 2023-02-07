@@ -106,7 +106,7 @@
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
         </style>
     </head>
-    <body style="margin-top:90px; margin-bottom:70px; border:1px solid green;">
+    <body style="margin-top:90px; margin-bottom:70px;">
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
@@ -119,10 +119,10 @@
             <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
             <div class="page-break-non"></div>
         </footer>
-        <div class= "container" style="border: 1px solid black;">
+        <div class= "container" style="border: 1px solid">
             <div align=right> <b>Unidad de Capacitación {{$daesp}}</b> </div>
             <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
-            <div align=right> <b>{{$data[0]->unidad_solicita}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
+            <div align=right> <b>{{$daesp}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
             <br><b>{{$data_unidad->dacademico}}.</b>
             <br>{{$data_unidad->pdacademico}}.
@@ -181,18 +181,18 @@
                     </tbody>
                 </table>
             {{-- </div> --}}
-            <p class="text-left">Sin más por el momento le envío un cordial saludo.</p>
+            <small><b>"La documentación presentada por esta Unidad de Capacitación ha sido previamente cotejada con el ejemplar original".</b></small>
+            <br><p class="text-left">Sin más por el momento le envío un cordial saludo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <b>{{$data_unidad->dunidad}}.</b>
-            <br><b>{{$data_unidad->pdunidad}} DE {{$data[0]->unidad_solicita}}.
-            <br><small><b>"La documentación presentada por esta Unidad de Capacitación ha sido previamente cotejada con el ejemplar original".</b></small>
+            <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.
             <br><h6><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-Mismo Fin</b></small></h6>
             <h6><small><b>Archivo/Minutario<b></small></h6>
-            <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data[0]->unidad_solicita}}.</b></small></small>
+            <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
             <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
             @foreach ($data as $altmer)
                 <div class="page-break"></div>
-                <div align=right> <b>{{$data[0]->unidad_solicita}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
+                <div align=right> <b>{{$daesp}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
                 <br><br><b>{{$data_unidad->dacademico}}.</b>
                 <br>{{$data_unidad->pdacademico}}.
                 <br>Presente.<br>
