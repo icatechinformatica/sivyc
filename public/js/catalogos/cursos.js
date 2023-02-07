@@ -667,6 +667,9 @@ $(function(){
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b>PROYECTO: </b>' + response[0].proyecto
                   +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>UNIDADES DISPONIBLES: </b>' + response[0].unidades_disponible
+                  +   '</li>'                  
                   + '</ul>'
               );
             },
