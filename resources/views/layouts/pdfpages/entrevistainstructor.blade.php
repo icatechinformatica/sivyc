@@ -190,8 +190,7 @@
                 </table>
             </div>
             <div align=center><b>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</b></div>
-            <br>
-            <table class="table1">
+            <table class="table1" style="font-size:8; text-align:center;">
                 <tr>
                     <td colspan="2" width="360px"><p align="center"></p></td>
                     <td colspan="2" width="360px"><p align="center"></p></td>
