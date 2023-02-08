@@ -3121,7 +3121,12 @@ class InstructorController extends Controller
         $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
         $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $especialidades = $this->make_collection($especialidades);
-        $unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $especialidades[0]->unidad_solicita)->FIRST();
+        $ubicacion = DB::TABLE('tbl_unidades')
+                        ->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
+                        ->value('ubicacion');
+        $unidad = DB::TABLE('tbl_unidades')
+                        ->WHERE('unidad', '=', $ubicacion)
+                        ->FIRST();
         if($instructor->numero_control == 'Pendiente')
         {
             $uni = substr($unidad->cct, -3, 2) * 1 . substr($unidad->cct, -1);
