@@ -140,12 +140,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $i = 35; @endphp
+                        @php $i = 33; @endphp
                         @foreach($cursos AS $key => $cold)
                             <tr>
                                 <td><small>{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</small></td>
                                 <td><small>{{$data[$key]->especialidad}}</small></td>
                                 <td style="text-align:left; padding:5px;">
+                                @if($data[$key]->status == 'BAJA EN FIRMA')<small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
+                                @else
                                     @foreach($cold as $moist => $cadwell)
                                         <ul style="margin-left: -30px; line-height:80%;">
                                             <small><li style="text-align:left; margin: -1; padding: -0.2em;">{{$cadwell->nombre_curso}}.</small></li>
@@ -174,8 +176,12 @@
                                         @php $i = $i+39; @endphp
                                         @endif
                                     @endforeach
+                                @endif
                                 </td>
-                                <td><small>{{$data[$key]->observacion}}</small></td>
+                                {{-- @if($data[$key]->status == 'BAJA EN FIRMA')
+                                <td><small>BAJA EN TODOS LOS CURSOS DE LA ESPECIALIDAD</small></td>
+                                @endif --}}
+                                <td><small>@if($data[$key]->status != 'BAJA EN FIRMA'){{$data[$key]->observacion}} @else BAJA DE ESPECIALIDAD @endif</small></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -191,38 +197,40 @@
             <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
             <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
             @foreach ($data as $altmer)
-                <div class="page-break"></div>
-                <div align=right> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
-                <br><br><b>{{$data_unidad->dacademico}}.</b>
-                <br>{{$data_unidad->pdacademico}}.
-                <br>Presente.<br>
-                <br><p class="text-justify">Por este medio hago constar que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} fue entrevistado (a) y evaluado (a) por el Departamento Tecnico de esta Unidad de Capacitación a mi cargo, concluyendo que la persona es idónea para otorgar cursos de capacitación dentro de la Especialidad de {{$altmer->especialidad}}, así mismo cabe señalar que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica vigente de la Dirección Técnica Académica del Instituto.</p>
-                <br><p class="text-justify">Mucho agradeceré que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} sea integrado al "Padrón de Instructores de Capacitación para y en el Trabajo".</p>
-                <br><p class="text-justify">Sin otro particular, se emite la presente Constancia de Selección, a los {{$fecha_letra}} días del mes de {{$M}} del {{$Y}}, en la Ciudad de {{$data_unidad->municipio}}, Chiapas.</p>
-                <br><p class="text-left"><p>Atentamente.</p></p>
-                <table class="table1">
-                    <tr>
-                        <td colspan="2"><p align="center">Elaboró</p></td>
-                        <td colspan="2"><p align="center">Atentamente</p></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div align="center">{{$solicito->name}}.</td></div>
-                        <td colspan="2"><div align="center">{{$data_unidad->dunidad}}.</td></div>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div align="center">{{$solicito->puesto}} DE LA UNIDAD DE CAPACITACIÓN DE {{$daesp}}.</td></div>
-                        <td colspan="2"><div align="center">{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</div></td>
-                    </tr>
-                </table>
-                <h6><small><b>Archivo/Minutario<b></small></h6>
-                <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data[0]->unidad_solicita}}.</b></small></small>
-                <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
+                @if($altmer->status != 'BAJA EN FIRMA')
+                    <div class="page-break"></div>
+                    <div align=right> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
+                    <br><br><b>{{$data_unidad->dacademico}}.</b>
+                    <br>{{$data_unidad->pdacademico}}.
+                    <br>Presente.<br>
+                    <br><p class="text-justify">Por este medio hago constar que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} fue entrevistado (a) y evaluado (a) por el Departamento Tecnico de esta Unidad de Capacitación a mi cargo, concluyendo que la persona es idónea para otorgar cursos de capacitación dentro de la Especialidad de {{$altmer->especialidad}}, así mismo cabe señalar que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica vigente de la Dirección Técnica Académica del Instituto.</p>
+                    <br><p class="text-justify">Mucho agradeceré que el (la) C. {{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}} sea integrado al "Padrón de Instructores de Capacitación para y en el Trabajo".</p>
+                    <br><p class="text-justify">Sin otro particular, se emite la presente Constancia de Selección, a los {{$fecha_letra}} días del mes de {{$M}} del {{$Y}}, en la Ciudad de {{$data_unidad->municipio}}, Chiapas.</p>
+                    <br><p class="text-left"><p>Atentamente.</p></p>
+                    <table class="table1">
+                        <tr>
+                            <td colspan="2"><p align="center">Elaboró</p></td>
+                            <td colspan="2"><p align="center">Atentamente</p></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center">{{$solicito->name}}.</td></div>
+                            <td colspan="2"><div align="center">{{$data_unidad->dunidad}}.</td></div>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div align="center">{{$solicito->puesto}} DE LA UNIDAD DE CAPACITACIÓN DE {{$daesp}}.</td></div>
+                            <td colspan="2"><div align="center">{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</div></td>
+                        </tr>
+                    </table>
+                    <h6><small><b>Archivo/Minutario<b></small></h6>
+                    <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data[0]->unidad_solicita}}.</b></small></small>
+                    <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
+                @endif
             @endforeach
         </div>
     </body>

@@ -68,7 +68,7 @@
                 }
             }
         @endphp
-        <form @if($data->status == 'BAJA EN FIRMA' || $bajaesp == TRUE) action="{{ route('instructor-baja-solicitud-pdf') }}" @else action="{{ route('instructor-solicitud-pdf') }}" @endif method="post" target="_blank" >
+        <form @if($data->status == 'BAJA EN FIRMA') action="{{ route('instructor-baja-solicitud-pdf') }}" @else action="{{ route('instructor-solicitud-pdf') }}" @endif method="post" target="_blank" >
             @csrf
             <div class="form-row">
                 <div class="form-group col-md-3 text-center">

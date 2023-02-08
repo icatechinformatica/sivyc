@@ -2971,11 +2971,11 @@ class InstructorController extends Controller
         $arrtemp = array();
         if(!isset($request->borrador))
         {
-            $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA');
+            $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
         }
         else
         {
-            $arrstat = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION');
+            $arrstat = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
         }
         set_time_limit(0);
 
@@ -3001,6 +3001,8 @@ class InstructorController extends Controller
         foreach($data as $count => $item)
         {
             // $item->cursos_impartir = explode(',',str_replace($rplc,'',$item->cursos_impartir));
+            if($item->status != 'BAJA EN FIRMA')
+            {
             $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
                             ->WHEREIN('id',$item->cursos_impartir)
                             ->GET();
@@ -3012,6 +3014,11 @@ class InstructorController extends Controller
                             ->WHERENOTIN('id',$item->cursos_impartir)->GET();
 
             $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
+            }
+            else
+            {
+                $cursos[$count] = array();
+            }
 
             //GUARDADO DE FECHA Y MEMO DE SOLICITUD
             $thalmor = especialidad_instructor::WHERE('id','=',$item->id)->FIRST();
