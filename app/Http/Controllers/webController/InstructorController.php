@@ -1557,8 +1557,19 @@ class InstructorController extends Controller
         $modInstructor = pre_instructor::find($request->id);
         if(!isset($modInstructor))
         {
+            $extract_inf = instructor::find($request->id);
             $modInstructor = new pre_instructor();
             $modInstructor->id_oficial = $request->id;
+            $modInstructor->archivo_ine = $extract_inf->archivo_ine;
+            $modInstructor->archivo_domicilio = $extract_inf->archivo_domicilio;
+            $modInstructor->archivo_curp = $extract_inf->archivo_curp;
+            $modInstructor->archivo_alta = $extract_inf->archivo_alta;
+            $modInstructor->archivo_bancario = $extract_inf->archivo_bancario;
+            $modInstructor->archivo_fotografia = $extract_inf->archivo_fotografia;
+            $modInstructor->archivo_estudios = $extract_inf->archivo_estudios;
+            $modInstructor->archivo_otraid = $extract_inf->archivo_otraid;
+            $modInstructor->archivo_rfc = $extract_inf->archivo_rfc;
+            $modInstructor->numero_control = $extract_inf->numero_control;
             $modInstructor->registro_activo = TRUE;
         }
         $pre_instructor = $this->guardado_ins($modInstructor, $request, $request->id);
