@@ -5,6 +5,10 @@
 <!--seccion-->
 @section('title', 'Catálogo de Cursos | SIVyC ICATECH')
 @section('content')
+<style>
+ #table-instructor .nav-link {padding:0; margin:0px; width:auto;}
+</style>
+
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <div class="card-header">
         Catálogos / Cursos
@@ -51,18 +55,18 @@
                     <th scope="col">SERVICIO</th>
                     <th scope="col">CURSO</th>
                     <th scope="col">CAPACITACIÓN</th>
-                    <th scope="col">DURACIÓN</th>
-                    <th scope="col">MODALIDAD</th>
-                    <th scope="col">CLASIFICACIÓN</th>
+                    <th scope="col">DURA CiÓN</th>
+                    <th scope="col">MODA LIDAD</th>
+                    <th scope="col">CLASIFI CACIÓN</th>
                     <th scope="col">COSTO</th>
                     <th scope="col">ESTATUS</th>
                     @can('cursos.show')
-                        <th scope="col">EDITAR</th>
+                        <th scope="col">EDIT</th>
                     @endcan
                     <th scope="col">VER</th>
-                    <th scope="col">CARTA DESCRIP</th>
+                    <th scope="col">CARTA DESCRI</th>
                     @can('paqueteriasdidacticas')
-                    <th scope="col">PAQUETERIAS</th>
+                    <th scope="col">PAQUE TERÍA</th>
                     @endcan
                 </tr>
             </thead>
@@ -82,19 +86,19 @@
                         <td>{{$itemData->costo}}</td>
                         <td>{{$itemData->estado}}</td>
                         @can('cursos.show')
-                        <td>
+                        <td class="text-center">
                             <a class="nav-link" alt="Editar Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}">
                                 <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
                         </td>
                         @endcan
-                        <td>
+                        <td class="text-center">
                             <a class="nav-link" alt="Ver Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" data-toggle="modal" data-placement="top" data-target="#fullHeightModalRight"
                                 data-id="{{$itemData->id}}">
                                 <i  class="fa fa-search  fa-2x fa-lg text-primary"></i>
                             </a>
                         </td>
-                        <td>
+                        <td class="text-center">
                             @if($itemData->file_carta_descriptiva)
                             
                                 <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
@@ -104,10 +108,9 @@
                             @endif
                         </td>                   
                         @can('paqueteriasdidacticas')
-                        <td>
+                        <td class="text-center">
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
-                            <i class="fa fa-2x fa-folder text-muted"></i>
-                            </a>
+                            <i class="fa fa-2x fa-folder text-muted"></i></a>
                         </td>
                         @endcan
                     </tr>
