@@ -2503,8 +2503,9 @@ class InstructorController extends Controller
             $instructor = pre_instructor::find($id);
             $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion','cct')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
             $nrevisionlast = pre_instructor::SELECT('nrevision', 'registro_activo')
-                        ->WHERE('clave_unidad', '=', $userunidad->cct)
+                        // ->WHERE('clave_unidad', '=', $userunidad->cct) // quitar cct y poner las primeras letras de ubicacon y likear con nrevision
                         ->WHERE('nrevision', '!=', NULL)
+                        ->WHERE('nrevision', 'LIKE', $userunidad->ubicacion[0].$userunidad->ubicacion[1].'%')
                         ->GROUPBY('nrevision','registro_activo')
                         ->ORDERBY('nrevision','DESC')
                         ->FIRST();
