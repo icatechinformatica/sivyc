@@ -820,16 +820,17 @@ class grupoController extends Controller
                 if (count($cursos) > 0) {
                     $unidad = $cursos[0]->unidad;
                     foreach ($cursos as $key => $value) {
-                        $costos =  DB::table('alumnos_registro')->select(DB::raw("concat(count(id),' DE ',costo) as costos"))
+                        $costos =  DB::table('alumnos_registro')->select(DB::raw("concat(count(id),' DE ',costo) as costos"),'costo as cuota')
                             ->where('folio_grupo', $value->folio_grupo)->where('eliminado', false)->orderby('costo','ASC')->groupby('costo')->get();
                         $costo_string = "";
-                        if(count($costos)>0){
+                        if(count($costos)>1){
                             foreach($costos as $c){
                                 if(!$costo_string)
                                     $costo_string = $costo_string." ".$c->costos.", ";
                                 else $costo_string = $costo_string." ".$c->costos;
                             }
-                        }
+                        }elseif(count($costos)==1) $costo_string = $costos[0]->cuota;
+
                         $data[$key]['folio_grupo'] = $value->folio_grupo;
                         $data[$key]['tipo_curso'] = $value->tipo_curso;
                         $data[$key]['espe'] = $value->espe;
