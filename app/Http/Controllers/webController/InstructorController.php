@@ -3001,7 +3001,7 @@ class InstructorController extends Controller
         foreach($data as $count => $item)
         {
             // $item->cursos_impartir = explode(',',str_replace($rplc,'',$item->cursos_impartir));
-            if($item->status != 'BAJA EN FIRMA')
+            if($item->status != 'BAJA EN FIRMA' && $item->status != 'BAJA EN PREVALIDACION')
             {
             $cursos[$count] = DB::TABLE('cursos')->SELECT('cursos.nombre_curso')
                             ->WHEREIN('id',$item->cursos_impartir)
@@ -3049,6 +3049,12 @@ class InstructorController extends Controller
                     $tipo_doc = 'REVALIDACION';
                 break;
                 case 'REACTIVACION EN FIRMA';
+                    $tipo_doc = 'REACTIVACION';
+                break;
+                case 'REVALIDACION EN PREVALIDACION';
+                    $tipo_doc = 'REVALIDACION';
+                break;
+                case 'REACTIVACION EN PREVALIDACION';
                     $tipo_doc = 'REACTIVACION';
                 break;
             }
