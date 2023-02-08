@@ -3155,7 +3155,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
 
         $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','elaboro','instructor','especialidades','unidad','D','M','Y'));
-        $pdf->setPaper('letter');
+        $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
 
