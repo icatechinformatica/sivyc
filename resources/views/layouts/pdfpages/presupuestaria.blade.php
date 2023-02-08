@@ -16,17 +16,17 @@ else{$tipo='CURSO';}
       margin: 10px;
             }
             @page {
-                margin: 110px 40px 80px;
+                margin: 110px 20px 60px;
             }
             header {
             position: fixed;
             left: 0px;
-            top: -80px;
+            top: -110px;
             right: 0px;
             color: black;
             text-align: center;
-            line-height: 60px;
-            height: 60px;
+            line-height: 30px;
+            height: 100px;
             }
             header h1{
             margin: 10px 0;
@@ -37,22 +37,22 @@ else{$tipo='CURSO';}
             footer {
             position: fixed;
             left: 0px;
-            bottom: -10px;
+            bottom: -30px;
             right: 0px;
-            height: 60px;
+            height: 100px;
             text-align: center;
             line-height: 60px;
             }
             img.izquierda {
                 float: left;
-                width: 300px;
-                height: 60px;
+                width: 100%;
+                height: 100%;
             }
 
             img.izquierdabot {
                 float: inline-end;
-                width: 350px;
-                height: 60px;
+                width: 100%;
+                height: 100%;
             }
 
             img.derecha {
@@ -70,10 +70,8 @@ else{$tipo='CURSO';}
     </head>
     <body>
         <header>
-            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            {{-- <img src="" alt=""> --}}
-            <br><h6>{{$distintivo}}</h6>
+            <img class="izquierda" src="{{ public_path('img/bannervertical.jpeg') }}">
+            <h6><i>{{$distintivo}}<i></h6>
         </header>
         <div class= "container g-pt-30">
             <div align=right> <b>Unidad de Capacitación {{$unidad->ubicacion}}</b> </div>
@@ -131,8 +129,7 @@ else{$tipo='CURSO';}
             <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}</b></small></h6>
         </div>
         <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
+            <img class="izquierdabot" src="{{ public_path('img/footer.jpeg') }}">
         </footer>
     </body>
 </html>

@@ -143,7 +143,7 @@
                 <br>Presente.
                 <br><br>Con relación a la solicitud de @if($especialidades[0]->status == 'EN FIRMA') validación @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en @if($cont == 1) la especialidad @else las especialidades @endif que se indica.
                 <div class="table table-responsive">
-                    <table class="tablad" style="border-color: black; font-size: 9;">
+                    <table class="tablad" style="border-color: black; font-size: 7;">
                         <tbody>
                             <tr>
                                 <td style='width: 180px;'>Nombre del Instructor:</td>
