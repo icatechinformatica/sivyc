@@ -727,7 +727,9 @@ class grupoController extends Controller
                 if ($id) {
                     $date = date('d-m-Y');
                     $alumno = DB::table('alumnos_pre')
-                        ->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"))
+                        ->select('id as id_pre','curp', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"),
+                         DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"),'ultimo_grado_estudios as escolaridad','nombre','apellido_paterno','apellido_materno'
+                        )
                         ->where('curp', $request->busqueda1)
                         ->where('activo', true)
                         ->first();
@@ -738,7 +740,11 @@ class grupoController extends Controller
                                     ->where('folio_grupo', $_SESSION['folio_grupo'])
                                     ->where('id', $id)
                                     ->update([
-                                        'id_pre' => $alumno->id_pre, 'no_control' => $alumno->matricula, 'iduser_updated' => Auth::user()->id,
+                                        'id_pre' => $alumno->id_pre, 'no_control' => $alumno->matricula,                                         
+                                        'nombre'=>$alumno->nombre, 'apellido_paterno'=>$alumno->apellido_paterno,
+                                        'apellido_materno'=>$alumno->apellido_materno,'curp'=>$alumno->curp,
+                                        'escolaridad'=>$alumno->escolaridad,
+                                        'iduser_updated' => Auth::user()->id,
                                         'updated_at' => date('Y-m-d H:i')
                                     ]);
                                 if ($result) {
