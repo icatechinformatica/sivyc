@@ -659,7 +659,7 @@ class aperturaController extends Controller
         ($horaTermino < date('H:i',strtotime($grupo->hini))) OR ($horaTermino > date('H:i',strtotime($grupo->hfin)))) {
             return "El horario ingresado no corresponde al registro del curso.";
         }
-        if ($minutos_curso > 480) {
+         if (($minutos_curso > 480 AND $grupo->tipo_curso=='CURSO') OR ($minutos_curso > 600 AND $grupo->tipo_curso=='CERTIFICACION')) {
             return "El instructor no debe de exceder las 8hrs impartidas.";
         }
         // CRITERIO DISPONIBILIDAD FECHA Y HORA ALUMNOS

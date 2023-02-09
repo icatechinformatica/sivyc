@@ -954,8 +954,8 @@ class grupoController extends Controller
         ($horaTermino < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaTermino > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin))))) {
             return "El horario ingresado no corresponde al registro del curso.";
         }
-        if ($minutos_curso > 480) {
-            return "El instructor no debe de exceder las 8hrs impartidas.";
+        if (($minutos_curso > 480 AND $grupo->tipo_curso=='CURSO') OR ($minutos_curso > 600 AND $grupo->tipo_curso=='CERTIFICACION')) {
+            return "El instructor no debe de exceder las 8hrs impartidas rome.";
         }
         // CRITERIO DISPONIBILIDAD FECHA Y HORA ALUMNOS
         $alumnos_ocupados = DB::table('alumnos_registro as ar')
