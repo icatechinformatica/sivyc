@@ -117,15 +117,15 @@
             <div class="page-break-non"></div>
         </footer>
         <div class= "container">
-            <div align=right> <b>Unidad de Capacitación {{$especialidades[0]->unidad_solicita}}</b> </div>
+            <div align=right> <b>Unidad de Capacitación {{$data_unidad->unidad}}</b> </div>
             <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_solicitud}}</b></div>
-            <div align=right> <b>{{$especialidades[0]->unidad_solicita}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
+            <div align=right> <b>{{$data_unidad->municipio}}, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
 
             <br><br><b>{{$data_unidad->dacademico}}.</b>
             <br>{{$data_unidad->pdacademico}}.
             <br>Presente.<br>
 
-            <br><p class="text-justify">Por medio de la presente, me dirijo a usted para solicitar la baja operativa del instructor externo de la unidad {{$especialidades[0]->unidad_solicita}} que a continuación se menciona:</p>
+            <br><p class="text-justify">Por medio de la presente, me dirijo a usted para solicitar la baja operativa del instructor externo de la unidad {{$data_unidad->unidad}} que a continuación se menciona:</p>
             <div class="table table-responsive">
                 <table class="tablad" style="border-color: black">
                     <thead>
@@ -144,12 +144,16 @@
                             @if($key != 0)
                                 <tr>
                             @endif
-                                @php $lastkey = array_key_last($cold->hvalidacion);@endphp
+                                @php if(isset($cold->hvalidacion)){$lastkey = array_key_last($cold->hvalidacion);};@endphp
                                 <td><small>
-                                    @if(isset($cold->hvalidacion[$lastkey]['memo_val']))
-                                        {{$cold->hvalidacion[$lastkey]['memo_val']}}
+                                    @if(isset($cold->hvalidacion))
+                                        @if(isset($cold->hvalidacion[$lastkey]['memo_val']))
+                                            {{$cold->hvalidacion[$lastkey]['memo_val']}}
+                                        @else
+                                            {{$cold->hvalidacion[$lastkey]['memo_baja']}}
+                                        @endif
                                     @else
-                                        {{$cold->hvalidacion[$lastkey]['memo_baja']}}
+                                        {{$cold->memorandum_validacion}}
                                     @endif
                                 </small></td>
 
@@ -163,10 +167,10 @@
             <p class="text-left">Sin otro particular, aprovecho la ocasión para saludarlo.</p>
             <br><p class="text-left"><p>Atentamente.</p></p>
             <br><br><br><br><b>{{$data_unidad->dunidad}}.</b>
-            <br><b>{{$data_unidad->pdunidad}} DE {{$especialidades[0]->unidad_solicita}}.
+            <br><b>{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.
             <br><br><h6><small><b>C.c.p. {{$data_unidad->jcyc}}.- {{$data_unidad->pjcyc}}.-  Para su conocimiento</b></small></h6>
             <h6><small><b>Archivo/Minutario<b></small></h6>
-            <small><small><b>Elaboró y Validó: {{$data_unidad->academico}}.- {{$data_unidad->pacademico}} DE {{$especialidades[0]->unidad_solicita}}.</b></small></small>
+            <small><small><b>Elaboró y Validó: {{$data_unidad->academico}}.- {{$data_unidad->pacademico}} DE {{$data_unidad->unidad}}.</b></small></small>
         </div>
     </body>
 </html>

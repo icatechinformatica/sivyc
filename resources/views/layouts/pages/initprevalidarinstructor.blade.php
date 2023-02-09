@@ -68,7 +68,7 @@
                 }
             }
         @endphp
-        <form @if($data->status == 'BAJA EN FIRMA') action="{{ route('instructor-baja-solicitud-pdf') }}" @else action="{{ route('instructor-solicitud-pdf') }}" @endif method="post" target="_blank" >
+        <form @if($data->status == 'BAJA EN FIRMA' || $data->status == 'BAJA EN PREVALIDACION') action="{{ route('instructor-baja-solicitud-pdf') }}" @else action="{{ route('instructor-solicitud-pdf') }}" @endif method="post" target="_blank" >
             @csrf
             <div class="form-row">
                 <div class="form-group col-md-3 text-center">
@@ -113,7 +113,7 @@
                             </div>
                         @endcan
                         @break
-                    @elseif(isset($data) && $data->turnado == 'DTA' && $data->status == 'PREVALIDACION')
+                    @elseif(isset($data) && $data->turnado == 'DTA' && ($data->status == 'PREVALIDACION' || $data->status == 'BAJA EN PREVALIDACION'))
                     <div class="form-group col-md-6"></div>
                     <div class="form-group col-md-3">
                         <input value="{{$data->id_oficial}}" hidden id="idins" name="idins">

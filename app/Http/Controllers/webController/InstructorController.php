@@ -903,7 +903,7 @@ class InstructorController extends Controller
                     $perfiles[$llave]->status = 'VALIDADO';
                 }
 
-                if($item->new == FALSE)
+                if(!isset($item->new) || $item->new == FALSE)
                 {
                     $perfil = instructorPerfil::find($item->id);
                 }
@@ -3178,7 +3178,7 @@ class InstructorController extends Controller
         $instructor->numero_control = $numero_control;
         $instructor->save();
 
-        $date = strtotime($especialidades[0]->fecha_solicitud);
+        $date = strtotime($especialidades[0]->fecha_validacion);
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
@@ -3201,24 +3201,33 @@ class InstructorController extends Controller
         $special = $this->make_collection($instructor->data_especialidad);
         foreach($special as $key => $moist)
         {
-            if($moist->status == 'BAJA EN FIRMA')
+            if($moist->status == 'BAJA EN FIRMA' || $moist->status == 'BAJA EN PREVALIDACION')
             {
                 if($moist->fecha_solicitud == NULL)
                 {
                     $moist->fecha_solicitud = $special[$key]->fecha_solicitud = carbon::now()->toDateString();
                 }
-                if($moist->memorandum_solicitud != $request->nomemo)
+                if($moist->memorandum_solicitud != $request->nomemo && $moist->status == 'BAJA EN FIRMA')
                 {
                     $moist->memorandum_solicitud = $special[$key]->memorandum_solicitud = $request->nomemo;
                 }
+                else
+                {
+
+                    $moist->memorandum_solicitud = 'BORRADOR';
+                }
+                $moist->especialidad = DB::TABLE('especialidades')->WHERE('id',$moist->especialidad_id)->value('nombre');
                 array_push($especialidades, $moist);
             }
         }
         $instructor->data_especialidad = $special;
-        $instructor->save();
+        if($instructor->status == 'BAJA EN FIRMA')
+        {
+            $instructor->save();
+        }
         $especialidades = $this->make_collection($especialidades);
 
-        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $especialidades[0]->unidad_solicita)->FIRST();
+        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')->FIRST();
         $date = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
         $MO = date('m',$date);
