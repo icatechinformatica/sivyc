@@ -3211,7 +3211,14 @@ class InstructorController extends Controller
         $instructor->numero_control = $numero_control;
         $instructor->save();
 
-        $date = strtotime($especialidades[0]->fecha_validacion);
+        if($especialidades[0]->status != 'BAJA EN FIRMA')
+        {
+            $date = strtotime($especialidades[0]->fecha_validacion);
+        }
+        else
+        {
+            $date = strtotime($especialidades[0]->fecha_baja);
+        }
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
