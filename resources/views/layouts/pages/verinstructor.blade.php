@@ -68,8 +68,8 @@
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option>
                         <option value="ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIO') selected @endif>Asimilados a Salarios</option>
-                        <option value="HONORARIOS Y ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilado a Salarios</option>
-                    </select @if($datainstructor->turnado != "VALIDADO") disabled @endif>
+                        <option value="HONORARIOS Y ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIO') selected @endif>Honorarios y Asimilados a Salario</option>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
@@ -115,7 +115,7 @@
                                         @if($datainstructor->status != "EN FIRMA")
                                             @if($roluser->role_id != 3)
                                                 <input hidden name="chkpre" id="chkpre" value="FALSE">
-                                                <label class='onpoint' for="arch_domicilio">
+                                                <label class='onpoint' for="arch_ine">
                                                     <a class="btn mr-sm-4 mt-3 btn-sm">
                                                         Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                                     </a>
@@ -263,7 +263,7 @@
                     <div class="pull-left">
                         <h4>Experiencia Docente</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" class="btn mr-sm-4 mt-3"
@@ -298,7 +298,7 @@
                                 <td>{{ $exdoc['funcion'] }}</td>
                                 <td>{{ $exdoc['periodo'] }}</td>
                                 <td width="13%">
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                                         @can('instructor.editar_fase2')
                                             <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                                 data-toggle="modal"
@@ -321,7 +321,7 @@
                     <div class="pull-left">
                         <h4>Experiencia Laboral</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" class="btn mr-sm-4 mt-3"
@@ -356,6 +356,7 @@
                                 <td width="13%">
                                     @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
                                         @can('instructor.editar_fase2')
+                                        @if(isset($lock))
                                             <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                                 data-toggle="modal"
                                                 data-placement="top"
@@ -363,6 +364,7 @@
                                                 data-id='["{{$lock}}", "{{$datainstructor->id}}"]'>
                                                     <i class="fa fa-eraser" aria-hidden="true"></i>
                                             </button>
+                                            @endif
                                         @endcan
                                     @endif
                                 </td>
@@ -396,7 +398,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
                                             <br><span id="imageName"></span>
                                         </label>
                                     @endcan
@@ -421,7 +423,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
                                             <br><span id="imageName2"></span>
                                         </label>
                                     @endcan
@@ -446,7 +448,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
                                             <br><span id="imageName3"></span>
                                         </label>
                                     @endcan
@@ -471,7 +473,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
                                             <br><span id="imageName4"></span>
                                         </label>
                                     @endcan
@@ -498,7 +500,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
                                             <br><span id="imageName5"></span>
                                         </label>
                                     @endcan
@@ -523,7 +525,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
                                             <br><span id="imageName6"></span>
                                         </label>
                                     @endcan
@@ -548,7 +550,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
                                             <br><span id="imageName7"></span>
                                         </label>
                                     @endcan
@@ -569,11 +571,11 @@
                             @if($datainstructor->status != "PREVALIDACION")
                                 @if($datainstructor->status != "EN FIRMA")
                                     @can('instructor.editar_fase2')
-                                        <label class='onpoint' for="archivo_curriculum_personal">
+                                        <label class='onpoint' for="arch_curriculum_personal">
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
                                             <br><span id="imageName8"></span>
                                         </label>
                                     @endcan
@@ -614,41 +616,10 @@
                         <div class="form-group col-md-3"><br>
                             <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-entrevista-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de entrevista</small></small></a>
                         </div>
-                        <div class="form-group col-md-3"><br>
-                            <table class="table table-borderless table-responsive-md" id="table-perfprof2">
-                                <tbody>
-                                    <tr >
-                                        <td></td>
-                                        <td id="center">
-                                            Entrevista
-                                        </td>
-                                        <td></td>
-                                        <td id="center">
-                                            @if($datainstructor->entrevista['link'] == NULL)
-                                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
-                                            @else
-                                                <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
-                                            @endif
-                                        </td>
-                                        <td></td>
-                                        <td id="center" width="160px">
-                                            <label class='onpoint' for="arch_entrevista">
-                                                <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
-                                                    data-toggle="modal"
-                                                    data-placement="top"
-                                                    data-target="#updentrevistaModal"
-                                                    data-id='{{$datainstructor->id}}'>Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                                </button>
-                                            </label>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
                     @else
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
+                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif
                                     data-toggle="modal"
                                     data-placement="top"
                                     data-target="#entrevistaModal"
@@ -657,6 +628,37 @@
                             @endcan
                         </div>
                     @endif
+                    <div class="form-group col-md-3"><br>
+                        <table class="table table-borderless table-responsive-md" id="table-perfprof2">
+                            <tbody>
+                                <tr >
+                                    <td></td>
+                                    <td id="center">
+                                        Entrevista
+                                    </td>
+                                    <td></td>
+                                    <td id="center">
+                                        @if(!isset($datainstructor->entrevista['link']))
+                                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                                        @else
+                                            <a href={{$datainstructor->entrevista['link']}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                                        @endif
+                                    </td>
+                                    <td></td>
+                                    <td id="center" width="160px">
+                                        <label class='onpoint' for="arch_entrevista">
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif
+                                                data-toggle="modal"
+                                                data-placement="top"
+                                                data-target="#updentrevistaModal"
+                                                data-id='{{$datainstructor->id}}'>Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                            </button>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <br>
                 <hr style="border-color:dimgray">
@@ -666,7 +668,7 @@
                             <h4>Perfiles Profesionales</h4>
                         </div>
                     @php $b = FALSE; foreach($perfil as $chkst){ switch($chkst->status){case 'VALIDADO': $b = TRUE; break; case 'EN CAPTURA': $b = TRUE; break;}} @endphp
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" @if (count($perfil) == 0) class="d-none d-print-none" @else class="btn mr-sm-4 mt-3" @endif
@@ -808,7 +810,7 @@
                         <h4>Especialidades a Impartir</h4>
                     </div>
                     @if (count($validado) > 0)
-                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                             <div class="pull-right">
                                 @can('instructor.editar_fase2')
                                     <a class="btn mr-sm-4 mt-3" href="{{ route('cursoimpartir-form', ['idins' => $id]) }}">Agregar Especialidad Validado para Impartir</a>
@@ -885,7 +887,7 @@
                                             @if($item->status != 'VALIDADO')
                                                 data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
                                                         "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}","{{$item->cursos_impartir}}"]'
                                             @else
                                                 data-id='["{{$item->espinid}}","{{$item->status}}"]'
                                             @endif
@@ -964,7 +966,7 @@
                                 <td></td>
                                 <td id="center" width="160px">
                                     <label class='onpoint' for="arch_curriculum">
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
+                                        <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#updcurriculumModal"
@@ -2768,7 +2770,7 @@
             let arid = document.getElementById("arch_id");
             let arrfc = document.getElementById("arch_rfc");
             let arest = document.getElementById("arch_estudio");
-            let aralt = document.getElementById("archivo_curriculum_personal");
+            let aralt = document.getElementById("arch_curriculum_personal");
             let imageName0 = document.getElementById("imageName0");
             let imageName = document.getElementById("imageName");
             let imageName2 = document.getElementById("imageName2");
@@ -2812,7 +2814,7 @@
                 imageName7.innerText = inputImage7.name;
             })
             aralt.addEventListener("change", ()=>{
-                let inputImage8 = document.querySelector("#archivo_curriculum_personal").files[0];
+                let inputImage8 = document.querySelector("#arch_curriculum_personal").files[0];
                 imageName8.innerText = inputImage8.name;
             })
         }
@@ -2943,9 +2945,11 @@
         $('#verespevaliModal').on('show.bs.modal', function(event){
             var button = $(event.relatedTarget);
             var idb = button.data('id');
+            console.log(idb)
             if(idb['7'] != 'VALIDADO')
             {
-                // console.log(idb)
+                console.log('a')
+
                 var div = document.getElementById('listaespevali')
                 div.innerHTML = '<li>Especialidad: <b>' + idb['0'] + '</b></li><br>' +
                     '<li>Peril Profesional: <b>' + idb['1'] + '</b></li><br>' +
@@ -2953,7 +2957,8 @@
                     '<li>Criterio Pago: <b>' + idb['3'] + '</b></li><br>' +
                     '<li>Memorandum de Solicitud: <b>' + idb['4'] + '</b></li><br>' +
                     '<li>Fecha de Solicitud: <b>' + idb['5'] + '</b></li><br>' +
-                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>';
+                    '<li>Observaciones: <b>' + idb['6'] + '</b></li><br>' +
+                    '<li>Cursos:</li><ul>' + idb['9'] + '</ul>';
             }
             else
             {
@@ -3092,7 +3097,7 @@
             // console.log(document.getElementById("tableperfiles").rows.length);
             var button = $(event.relatedTarget);
             var id = button.data('id');
-            // console.log(id);
+            console.log(id);
             document.getElementById('idInstructorexpdoc').value = id;
         });
 

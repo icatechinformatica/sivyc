@@ -415,7 +415,11 @@ class CursosController extends Controller
                     'cursos.documento_memo_validacion',
                     'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
                     'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo',
-                    'cursos.grupo_vulnerable','cursos.dependencia',DB::raw("CASE WHEN cursos.proyecto ='1' THEN 'SI' ELSE 'NO' END as proyecto"))
+                    DB::raw("cursos.grupo_vulnerable::TEXT"),
+                    DB::raw("cursos.dependencia::TEXT"),
+                    DB::raw("CASE WHEN cursos.proyecto ='1' THEN 'SI' ELSE 'NO' END as proyecto"),
+                    DB::raw("cursos.unidades_disponible::TEXT")
+                    )
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
                     ->GET();
@@ -428,18 +432,6 @@ class CursosController extends Controller
                 ->WHERE('id', '=', $curso[0]->rango_criterio_pago_maximo)
                 ->FIRST();
             $curso[0]->rango_criterio_pago_maximo = $cadwell->perfil_profesional;
-
-            if($curso[0]->grupo_vulnerable != NULL)
-            {
-                $gv = $curso[0]->grupo_vulnerable;
-                $curso[0]->grupo_vulnerable = $gv;
-            }
-
-            if($curso[0]->dependencia != NULL)
-            {
-                $dp = $curso[0]->dependencia;
-                $curso[0]->dependencia = $dp;
-            }
 
             $json= response()->json($curso, 200);
         } else {

@@ -14,7 +14,7 @@
                 /* margin: 10px; */
             }
             @page {
-                margin: 20px 30px 40px;
+                margin: 20px 30px 20px;
 
             }
             .ftr{
@@ -47,7 +47,7 @@
             footer {
             position: fixed;
             /* left: 0px; */
-            bottom: 70px;
+            bottom: 50px;
             /* right: 0px; */
             /* height: 60px; */
             /* text-align: center; */
@@ -119,9 +119,8 @@
         <div class= "container">
             <div align=center> <b>Formato de Entrevista para Candidatos a Instructores</b></div>
             <div align=right> <b>{{$D}} de {{$M}} del {{$Y}}</b></div>
-            <br><b>Nombre del entrevistado: {{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b>
-            <br><b>Unidad de capacitación: {{$userunidad->ubicacion}}
-            <br>
+            <b>Nombre del entrevistado: {{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b>
+            <br><b>Unidad de capacitación: {{$userunidad->ubicacion}}</b>
             <div class="table table-responsive">
                 <table class="tablad" style="border-color: black">
                     <thead>
@@ -130,7 +129,7 @@
                             <td width="360px"><b>RESPUESTA</b></td>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="font-size:8;">
                         <tr>
                             <td>¿Conoce Usted a que se dedica el ICATECH o ha escuchado de él? Indique</td>
                             <td><small>{{$data->entrevista['1']}}</small></td>
@@ -190,9 +189,8 @@
                     </tbody>
                 </table>
             </div>
-            <div align=center><b>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</b></div>
-            <br>
-            <table class="table1">
+            <div align=center style="-10px;"><b>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</b></div>
+            <table class="table1" style="font-size:8; text-align:center; margin-top: -10px;">
                 <tr>
                     <td colspan="2" width="360px"><p align="center"></p></td>
                     <td colspan="2" width="360px"><p align="center"></p></td>
@@ -204,8 +202,8 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td colspan="2">_________________________________________________</td>
-                    <td colspan="2">_________________________________________________</td>
+                    <td colspan="2"><b>_________________________________________________</b></td>
+                    <td colspan="2"><b>_________________________________________________</b></td>
                 </tr>
                 <tr>
                     <td colspan="2"><div align="center">{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</td></div>
