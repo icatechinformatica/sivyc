@@ -955,7 +955,7 @@ class grupoController extends Controller
             return "El horario ingresado no corresponde al registro del curso.";
         }
         if (($minutos_curso > 480 AND $grupo->tipo_curso=='CURSO') OR ($minutos_curso > 600 AND $grupo->tipo_curso=='CERTIFICACION')) {
-            return "El instructor no debe de exceder las 8hrs impartidas rome.";
+            return "El instructor no debe de exceder las 8 o 10 hrs impartidas, según sea el caso.";
         }
         // CRITERIO DISPONIBILIDAD FECHA Y HORA ALUMNOS
         $alumnos_ocupados = DB::table('alumnos_registro as ar')
