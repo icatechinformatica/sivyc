@@ -136,7 +136,7 @@
         <div class= "container">
             @php $cont=0; foreach($especialidades AS $ari){if($ari->status != 'BAJA EN FIRMA'){$cont++;}} @endphp
                 <div align=right> <b>Dirección Técnica Académica</b></div>
-                <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_validacion}}</b></div>
+                <div align=right> <b>Memorandum No. @if($especialidades[0]->status != 'BAJA EN FIRMA') {{$especialidades[0]->memorandum_validacion}} @else {{$especialidades[0]->memorandum_baja}} @endif</b></div>
                 <div align=right> <b>Tuxtla Gutiérrez, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
                 <b>{{$unidad->dunidad}}.</b>
                 <br>{{$unidad->pdunidad}} {{$unidad->unidad}}.
