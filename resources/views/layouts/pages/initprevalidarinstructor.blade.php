@@ -93,7 +93,7 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <input value="{{$data->id}}" hidden id="idins" name="idins">
-                                @if($aztral->status == 'BAJA EN FIRMA')
+                                @if($data->status == 'BAJA EN FIRMA')
                                     <button type="button" class="btn mr-sm-4"
                                         data-toggle="modal"
                                         data-placement="top"
@@ -300,7 +300,7 @@
                             @endif
                             @if($data->status == 'EN FIRMA' || $data->status == 'REVALIDACION EN FIRMA' || $data->status == 'BAJA EN FIRMA' || $data->status == 'REACTIVACION EN FIRMA')
                                 @can('instructor.prevalidar')
-                                    @if($data->status == 'BAJA EN FIRMA' || $bajaesp == TRUE)
+                                    @if($data->status == 'BAJA EN FIRMA')
                                         <button type="button" class="btn mr-sm-4 mt-3 btn-danger"
                                             data-toggle="modal"
                                             data-placement="top"

@@ -134,7 +134,7 @@
             <div class="page-break-non"></div>
         </footer>
         <div class= "container">
-            @php $cont=0; foreach($especialidades AS $ari){$cont++;} @endphp
+            @php $cont=0; foreach($especialidades AS $ari){if($ari->status != 'BAJA EN FIRMA'){$cont++;}} @endphp
                 <div align=right> <b>Dirección Técnica Académica</b></div>
                 <div align=right> <b>Memorandum No. {{$especialidades[0]->memorandum_validacion}}</b></div>
                 <div align=right> <b>Tuxtla Gutiérrez, Chiapas {{$D}} de {{$M}} del {{$Y}}.</b></div>
@@ -156,10 +156,12 @@
                             <tr>
                                 <td style='width: 180px;' rowspan="{{$cont}}">Especialidad y Clave de la Especialidad:</td>
                                 @foreach ($especialidades AS $wort => $cadwell)
-                                    <td style='width: 360px;'>{{$cadwell->nombre}}</td>
-                                    <td style='width: 180px;'>{{$cadwell->clave}}</td>
-                                </tr>
-                                <tr>
+                                    @if ($cadwell->status != 'BAJA EN FIRMA')
+                                        <td style='width: 360px;'>{{$cadwell->nombre}}</td>
+                                        <td style='width: 180px;'>{{$cadwell->clave}}</td>
+                                    </tr>
+                                    <tr>
+                                    @endif
                                 @endforeach
                                 <td style='width: 180px;'>Instructor:</td>
                                 <td style='width: 360px;' colspan="2">{{$instructor->tipo_honorario}}</td>
