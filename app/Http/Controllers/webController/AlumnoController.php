@@ -253,7 +253,7 @@ class AlumnoController extends Controller {
         //si se pretende cargar nuevos archivos
         $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->where('activo',true)->value('id');
         if (isset($request->customFile)) {
-            $arc = $request->file('customFile'); 
+            $arc = $request->file('customFile'); //dd($request);
             $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos'); #invocamos el método
             $arregloDocs = [
                 'documento'=>$url_documento,
@@ -264,8 +264,8 @@ class AlumnoController extends Controller {
                 'fecha_expedicion_acta_nacimiento'=>$request->fecha_expedicion_acta_nacimiento,
                 'fecha_expedicion_curp'=>$request->fecha_expedicion_curp,
                 'fecha_vigencia_migratorio'=>$request->fecha_vigencia_migratorio
-            ];
-            $affected = DB::table('alumnos_pre')->where('curp', $curp)->update(['requisitos' => $arregloDocs]);
+            ];//dd($arregloDocs);
+            $affected = DB::table('alumnos_pre')->where('curp', $curp)->update(['requisitos' => json_encode($arregloDocs)]);
         }
         if(isset($request->fotografia)) {
             $url = $request->fotografia;
@@ -478,7 +478,7 @@ class AlumnoController extends Controller {
                     'fecha_expedicion_curp'=>$request->fecha_expedicion_curp_mod,
                     'fecha_vigencia_migratorio'=>$request->fecha_vigencia_migratorio_mod
                 ];
-                $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => $arregloDocs]);
+                $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => json_encode($arregloDocs)]);
             }
             if(isset($request->fotografia_mod)) {
                 $url=$request->fotografia_mod;
@@ -569,7 +569,7 @@ class AlumnoController extends Controller {
                     'fecha_expedicion_curp'=>$request->fecha_expedicion_curp_vin_mod,
                     'fecha_vigencia_comprobante_migratorio'=>$request->fecha_vigencia_migratorio_vin_mod
                 ];
-                $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => $arregloDocs]);
+                $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' => json_encode($arregloDocs)]);
             }
             if(isset($request->fotografia_vin_mod)){
                 $url=$request->fotografia_vin_mod;  //dd($url);
