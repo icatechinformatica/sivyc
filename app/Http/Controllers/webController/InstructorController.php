@@ -287,10 +287,13 @@ class InstructorController extends Controller
                 $id = $uid->id + 1;
             }
             $instructor = $this->guardado_ins($saveInstructor, $request, $id);
+            unset($instructor->data_especialidad);
+            unset($instructor->data_perfil);
+
             $pre_instructor  = $this->guardado_ins($save_preinstructor, $request, $id);
             $pre_instructor->id_oficial = $instructor->id;
             $pre_instructor->registro_activo = TRUE;
-
+            // dd($instructor);
             $pre_instructor->save();
             $instructor->save();
 
