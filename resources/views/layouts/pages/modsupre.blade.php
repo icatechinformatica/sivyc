@@ -130,7 +130,7 @@
         </h2>
         <div id="fieldsContainer">
             @if(isset($data->mov_bancario))
-            @php $data->mov_bancario = json_decode($data->mov_bancario) @endphp
+            {{-- @php $data->mov_bancario = json_decode($data->mov_bancario) @endphp --}}
                 @foreach ($data->mov_bancario as $keygen => $movitem)
                     <div class="form-row">
                         @if ($keygen == 0)
