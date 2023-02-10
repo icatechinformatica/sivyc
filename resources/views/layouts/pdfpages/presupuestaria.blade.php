@@ -1,4 +1,4 @@
-git <?php
+<?php
 if ($uj[0]->tipo_curso=='CERTIFICACION'){$tipo='CERTIFICACIÓN EXTRAORDINARIA';}
 else{$tipo='CURSO';}
 ?>
