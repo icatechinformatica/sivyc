@@ -1012,8 +1012,11 @@ class InstructorController extends Controller
                     $espins->especialidad_id = $especialidades[$key]->especialidad_id;
                     $espins->perfilprof_id = $especialidades[$key]->perfilprof_id;
                     $espins->unidad_solicita = $especialidades[$key]->unidad_solicita;
-                    $espins->memorandum_validacion = $especialidades[$key]->memorandum_validacion;
-                    $espins->fecha_validacion = $especialidades[$key]->fecha_validacion;
+                    if(isset($especialidades[$key]->memorandum_validacion))
+                    {
+                        $espins->memorandum_validacion = $especialidades[$key]->memorandum_validacion;
+                        $espins->fecha_validacion = $especialidades[$key]->fecha_validacion;
+                    }
                     $espins->memorandum_modificacion = $especialidades[$key]->memorandum_modificacion;
                     $espins->observacion = $especialidades[$key]->observacion;
                     $espins->criterio_pago_id = $especialidades[$key]->criterio_pago_id;
