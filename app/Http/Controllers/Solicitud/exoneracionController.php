@@ -90,18 +90,29 @@ class ExoneracionController extends Controller
                          where id_curso = tc.folio_grupo) as t) as horas_agenda"),'ar.id_unidad','ar.cct','tc.tipo','tc.cgeneral','ar.ejercicio','tc.status_solicitud',
                          'tc.dura','tc.status_curso','ar.id_organismo','ar.folio_grupo')
                         ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
-                        ->where('tc.status_curso','=',null)
-                        ->where(function($query) {
-                            $query->where('tc.status_solicitud','=',null)
-                                  ->orWhere('tc.status_solicitud', '=', 'RETORNO');
-                        })
-                        // ->where('ar.turnado','=','UNIDAD')
-                        ->where('ar.turnado','=','VINCULACION')
-                        // ->where('tc.mod','=','CAE')
                         ->where('ar.id_organismo','!=',242)
                         ->whereIn('tc.tipo',['EXO','EPAR'])
                         ->where('tc.folio_grupo',$request->grupo)
-                        ->first();                    
+                        ->where('tc.status','NO REPORTADO')
+                        ->where(function($query) {
+                            $query->where(function($query) {
+                                    $query->where('tc.status_curso','=',null)
+                                    ->where(function($query) {
+                                        $query->where('tc.status_solicitud','=',null)
+                                            ->orWhere('tc.status_solicitud', '=', 'RETORNO');
+                                    })
+                                    
+                                    ->where('ar.turnado','=','VINCULACION');
+                                    
+                            })
+                            ->orwhere(function($query) {
+                                $query->where('tc.status_curso','=','AUTORIZADO')                            
+                                ->where('tc.arc','02')
+                                ->where('tc.status_solicitud_arc02','!=','AUTORIZADO');                           
+                            });
+                        })                       
+                        ->first(); //dd($curso);
+                                   
             if ($curso) {
                 if (($curso->tipo != 'EXO') AND (count(DB::table('alumnos_registro')->where('folio_grupo',$curso->folio_grupo)->where('tinscripcion','=','EXONERACION')->get())>0)) {
                     return redirect()->route('solicitud.exoneracion')->with(['message' => 'EL GRUPO NO DEBE TENER EXONERADOS PARA SOLICITUD DE REDUCIÓN DE CUOTA..']);
