@@ -111,8 +111,8 @@
                                 <td class="text-center">{{$item->termino}}</td>
                                 <td class="text-center"><div style="width: 80px;">{{$item->hini}} A {{$item->hfin}} </div></td>
                                 <td class="text-center">{{$total}}</td>
-                                <td class="text-center">{{$item->hombre}}</td>
                                 <td class="text-center">{{$item->mujer}}</td>
+                                <td class="text-center">{{$item->hombre}}</td>
                                 <td class="text-center">{{$item->fini}}</td>
                                 <td class="text-center">{{$item->ffin}}</td>
                                 <td class="text-center"><div style="width: 120px;">{{$item->instructor}}</div></td>
