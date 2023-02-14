@@ -868,9 +868,12 @@ class grupoController extends Controller
                     }
                 }
                 if (count($data) > 0) {
-                    $date = date('d-m-Y',strtotime($date));
+                    $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+                    $mes = $meses[date('m',strtotime($date))];
+                    $date = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
                     $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);
-                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'unidad','memo'));
+                    $direccion = $reg_unidad->direccion; 
+                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'unidad','memo','direccion'));
                     $pdf->setpaper('letter', 'landscape');
                     return $pdf->stream('SOLICITUD.pdf');
                 } else {

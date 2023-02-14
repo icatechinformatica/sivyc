@@ -1,71 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SOLICITUD APERTURA</title>
-    <style>      
-        @page {
-            margin: 40px 30px 10px 30px;
-        }
-        body {
-            /*margin: 3cm 2cm 2cm;*/
-            margin-top: 120px;
-            font-family: sans-serif; font-size: 8px;
-        }
-        header {
-            position: fixed;
-            top: 0cm;
-            left: 0cm;
-            right: 0cm;
-            height: 4cm;
-            text-align: center;
-            /*line-height: 5px;*/
-        }
-        footer {
-            position: fixed;
-            bottom: 0cm;
-            left: 0cm;
-            right: 0cm;
-            height: 2cm;
-            text-align: center;
-            line-height: 35px;
-        }
-        img.izquierda {float: left;width: 200px;height: 60px;}
-        img.derecha {float: right;width: 200px;height: 60px;}
-        .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 5px;}
-        .tb td{border: 1px solid black; padding: 1px;}
-        .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center;}     
-        .tablaf tr, .tablaf td {padding: 0px 0px;}
-    </style>
-</head>
-<body>
-    <header>
-        <img class="izquierda" src='img/logohorizontalica1.png'>
-        <img class="derecha" src='img/chiapas.png'>
-        <div style="clear: both;">
-            <p style="align-content: center;">{{$distintivo}}</p>
-        </div>
-        <table style="text-align: right; border-collapse: collapse;" align="right">
-            <tr>
-                @if($reg_unidad->unidad=="COMITAN" || $reg_unidad->unidad=="OCOSINGO" || $reg_unidad->unidad=="SAN CRISTOBAL" || $reg_unidad->unidad=="TUXTLA" || $reg_unidad->unidad=="CATAZAJA" || $reg_unidad->unidad=="YAJALON" || $reg_unidad->unidad=="JIQUIPILAS" || $reg_unidad->unidad=="REFORMA" || $reg_unidad->unidad=="TAPACHULA" || $reg_unidad->unidad=="TONALA" || $reg_unidad->unidad=="VILLAFLORES")
-                    <td><strong>Unidad de Capacitación {{$reg_unidad->unidad}}</strong></td> 
-                @else
-                    <td><strong>Acción Móvil {{$reg_unidad->unidad}}</strong></td> 
-                @endif
-            </tr>
-            <tr>
-                <td><strong>Memorándum No. {{$memo}}</strong></td>
-            </tr>
-            <tr>
-                <td><strong>{{$reg_unidad->municipio_acm}}, Chis., {{$date}}</strong></td>
-            </tr>
-        </table>
-    </header>
-    <main>
+@extends('theme.formatos.hlayout')
+@section('title', 'Solicitud de Apertura | SIVyC Icatech')
+@section('content_script_css')
+    <style>         
+        .tb {width: 100%; border-collapse: collapse; text-align: center; }
+        .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 5px;}
+        .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}
+        .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:15px;}     
+        .tablaf tr, .tablaf td {padding: 0px}    
+        .tablaf p {margin:5px; padding:0px}
+    </style>      
+@endsection
+@section('content')         
+        <main>
         <div class="container">
-            <table>
+            <table style="border-collapse: collapse; text-align: right; width:100%; margin-top:-10px;" >
+                <tr>
+                    @if($reg_unidad->unidad=="COMITAN" || $reg_unidad->unidad=="OCOSINGO" || $reg_unidad->unidad=="SAN CRISTOBAL" || $reg_unidad->unidad=="TUXTLA" || $reg_unidad->unidad=="CATAZAJA" || $reg_unidad->unidad=="YAJALON" || $reg_unidad->unidad=="JIQUIPILAS" || $reg_unidad->unidad=="REFORMA" || $reg_unidad->unidad=="TAPACHULA" || $reg_unidad->unidad=="TONALA" || $reg_unidad->unidad=="VILLAFLORES")
+                        <td><strong>Unidad de Capacitación {{$reg_unidad->unidad}}</strong></td> 
+                    @else
+                        <td><strong>Acción Móvil {{$reg_unidad->unidad}}</strong></td> 
+                    @endif
+                </tr>
+                <tr>
+                    <td><strong>Memorándum No. {{$memo}}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>{{$reg_unidad->municipio_acm}}, Chiapas; {{$date}}.</strong></td>
+                </tr>
+            </table>
+            <table style="margin-top:-25px;">
                 <tr>
                     <td>PARA:</td>
                     <td>{{$reg_unidad->academico}}, {{ $reg_unidad->pacademico }}.</td>
@@ -85,33 +48,32 @@
             </div>
             <table class="tb">
                 <tr style="background: #EAECEE;">
-                    <td>NÚMERO DE SOLICITUD</td>
-                    <td>SERVICIO</td>
-                    <td>ESPECIALIDAD</td>
-                    <td>NOMBRE</td>
-                    <td>MODALIDAD</td>
-                    <td>TIPO</td>
-                    <td>DURACIÓN</td>
-                    <td>FECHA DE INICIO</td>
-                    <td>FECHA DE TERMINO</td>
-                    <td>HORARIO</td>
-                    <td>DIAS</td>
-                    <td>HRS. POR DIA</td>
-                    <td>COSTO POR PARTICIPANTE</td>
-                    <td>TOTAL INGRESO</td>
-                    <td>NO. PARTICIPANTES</td>
-                    <td>HOMBRES</td>
-                    <td>MUJERES</td>
-                    <td>MEMORÁNDUM DE AUTORIZACIÓN DE EXONERACIÓN/REDUCCIÓN</td>
-                    <td>CONVENIO GENERAL</td>
-                    <td>CONVENIO ESPECIFICO/ACTA DE ACUERDO</td>
-                    <td>DEPENDENCIA</td>
-                    <td>REPRESENTANTE</td>
-                    <td>NO. TELEFONO DEL REPRESENTANTE</td>
-                    <td>NOMBRE DEL INSTRUCTOR</td>
-                    <td>CURSO VINCULADO POR</td>
-                    <td>ESPACIO FISICO</td>
-                    <td>OBSERVACIONES</td>
+                    <th>NÚMERO DE SOLICITUD</th>
+                    <th>SERVICIO</th>
+                    <th>ESPECIALIDAD</th>
+                    <th>NOMBRE</th>
+                    <th>MOD</th>
+                    <th>TIPO</th>
+                    <th>DURA</th>
+                    <th>FECHA DE INICIO</th>
+                    <th>FECHA DE TERMINO</th>
+                    <th>HORARIO</th>
+                    <th>DIAS</th>
+                    <th>HRS. POR DIA</th>
+                    <th>COSTO POR PART</th>
+                    <th>TOTAL INGRESO</th>
+                    <th>NO. PART</th>
+                    <th>H</th>
+                    <th>M</th>
+                    <th>MEMORÁNDUM DE AUTORIZACIÓN DE EXO/REDUC</th>
+                    <th>CONV. GRAL</th>
+                    <th>CONVENIO ESPECIFICO /ACTA DE ACUERDO</th>
+                    <th>DEPENDENCIA</th>
+                    <th>REPRESENTANTE /TELÉFONO</th>                    
+                    <th>NOMBRE DEL INSTRUCTOR</th>
+                    <th>CURSO VINCULADO POR</th>
+                    <th>ESPACIO FISICO</th>
+                    <th>OBSERVACIONES</th>
                 </tr>
                 @foreach ($data as $item)
                     <tr>
@@ -130,18 +92,17 @@
                         <td>{{$item['costos']}}</td>
                         <td>{{$item['costo']}}</td>
                         <td>{{$item['tpar']}}</td>
-                        <td>{{$item['hombre']}}</td>
+                        <td  >{{$item['hombre']}}</td>
                         <td>{{$item['mujer']}}</td>
-                        <td>@if ($item['mexoneracion'])  {{$item['mexoneracion']}} @else {{"N/A"}}  @endif</td>
-                        <td>@if ($item['cgeneral']!='0') {{$item['cgeneral']}} @else {{"N/A"}} @endif</td>
+                        <td >@if ($item['mexoneracion'])  {{ substr($item['mexoneracion'],1,12)}}  {{ substr($item['mexoneracion'],13,strlen($item['mexoneracion']))}}   @else {{"N/A"}}  @endif</td>
+                        <td>@if ($item['cgeneral']!='0') {{ substr($item['cgeneral'],1,5)}} {{ substr($item['cgeneral'],6,strlen($item['cgeneral']))}}@else {{"N/A"}} @endif</td>
                         <td>@if ($item['cespecifico']) {{$item['cespecifico']}} @else {{"N/A"}} @endif </td>
                         <td>{{$item['depen']}}</td>
-                        <td>{{$item['depen_repre']}}</td>
-                        <td>{{$item['tel_repre']}}</td>
+                        <td>{{$item['depen_repre']}} / {{$item['tel_repre']}}</td>                       
                         <td>{{$item['instructor']}}</td>
                         <td>{{$item['vincu']}}</td>
                         <td>{{$item['efisico']}}</td>
-                        <td>{{$item['observaciones']}}</td>
+                        <td width='150px'>{{$item['observaciones']}}</td>
                     </tr>
                 @endforeach
             </table>
@@ -151,39 +112,36 @@
             <table class="tablaf">
                 <tr>
                     <td>
-                        <p>ELABORÓ</p><br><br><br><br><br><br>
-                        <p>{{ $reg_unidad->vinculacion }}</p><br>_____________________________________________________
-                        <br>
+                        <p>SOLICITA</p><br><br><br><br><br>
+                        <p>{{ $reg_unidad->vinculacion }}</p> 
+                        <p>_____________________________________________________</p>
                         <p>{{ $reg_unidad->pvinculacion }}</p>
                     </td>
                     <td>
-                        <p>RECIBE</p><br><br><br><br><br><br>
-                        <p>{{ $reg_unidad->academico }}</p><br>_____________________________________________________
-                        <br>
+                        <p>VALIDA</p><br><br><br><br><br>
+                        <p>{{ $reg_unidad->academico }}</p>
+                        <p>_____________________________________________________</p>
+                        
                         <p>{{ $reg_unidad->pacademico }}</p>
                     </td>
                     <td>
-                        <p>Vo. Bo.</p><br><br><br><br><br><br>
-                        <p>{{ $reg_unidad->dunidad }}</p><br>_____________________________________________________
-                        <br>
+                        <p>Vo. Bo.</p><br><br><br><br><br>
+                        <p>{{ $reg_unidad->dunidad }}</p>
+                        <p>_____________________________________________________</p>
                         <p>{{ $reg_unidad->pdunidad }}</p>
                     </td>
                 </tr>
-            </table>
-            <br>
-            <div>
-                <img style="width:150px; height:50px; float: right;" src='img/icatech-imagen.png'>
-            </div>
+            </table>            
         </div>
     </main>
-    <footer></footer>
+@endsection
+@section('script_content_js') 
     <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('
                 $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                $pdf->text(40, 530, "Pág. $PAGE_NUM de $PAGE_COUNT", $font, 8);
             ');
         }
     </script>
-</body>
-</html>
+@endsection
