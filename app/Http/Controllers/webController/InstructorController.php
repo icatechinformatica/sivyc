@@ -3008,6 +3008,7 @@ class InstructorController extends Controller
     public function solicitud_instructor_pdf(Request $request)
     {
         // dd($request);
+        $porcentaje = $cursosnoav = NULL;
         $tipo_doc = 'VALIDACION';
         $rplc = array('[',']','"');
         $arrtemp = array();
