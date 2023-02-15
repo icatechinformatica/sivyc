@@ -7,17 +7,40 @@
     <title>@yield('title', '')</title>
     <style>
 
-    @page { margin: 5px 30px 80px 30px; }
-    body { margin-top: 120px; font-family: sans-serif; font-size: 8px; width:100%; }
-    header { position: fixed; top: 0cm; text-align: center; }
-    footer { position: fixed; top: 17.7cm; width:100%;}
+    body{
+        font-family: sans-serif;
+        font-size: 1.3em;
+        margin: 10px;
+    }
+    @page {
+        margin: 110px 20px 60px;
+    }
+    header {
+        position: fixed;
+        left: 0px;
+        top: -110px;
+        right: 0px;
+        color: black;
+        text-align: center;
+        line-height: 30px;
+        height: 100px;
+    }
+    footer {
+        position: fixed;
+        left: 0px;
+        bottom: -30px;
+        right: 0px;
+        height: 100px;
+        text-align: center;
+        line-height: 60px;
+    }
     .direccion {position: absolute;  top: 1.3cm; width:380px; margin-left:28px; height:auto; font-family: sans-serif; font-size: 9px; color:#FFF; }
     </style>
     @yield("content_script_css")
 </head>
-<body>
+@section('content')
     <header>
-        <img src='img/formatos/bannerhorizontal.jpeg' width="100%">
+        <img src='img/formatos/bannervertical.jpeg' width="100%">
         <p style="text-align: center; font-weight: bold; font-style: italic; margin-top:-10px; padding:0px;">{{$distintivo}}</p>
     </header>
     <footer>
@@ -31,3 +54,4 @@
     @yield("script_content_js")
 </body>
 </html>
+@endsection

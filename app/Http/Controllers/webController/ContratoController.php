@@ -82,7 +82,7 @@ class ContratoController extends Controller
             ->WHERE('folios.status', '!=', 'Finalizado')
             ->WHERE('folios.status', '!=', 'Rechazado')
             ->WHERE('folios.status', '!=', 'Cancelado')
-            // ->WHERE('folios.status', '!=', 'Validado')
+            ->WHERE('folios.status', '!=', 'Validado')
             ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             // ->WHERE('folios.status', '!=', 'Verificando_Pago')
@@ -197,7 +197,7 @@ class ContratoController extends Controller
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
                                     ->SELECT('especialidad_instructores.id','especialidades.nombre')
                                     ->WHERE('especialidad_instructores.memorandum_validacion',$data->instructor_mespecialidad)
-                                    ->WHERE('especialidades.clave', '=', $data->clave_especialidad)
+                                    ->WHERE('especialidades.nombre', '=', $data->espe)
                                     ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                                     ->FIRST();
                                     // dd($data->instructor_mespecialidad);
@@ -207,6 +207,24 @@ class ContratoController extends Controller
                                 ->WHERE('especialidad_instructores.activo', '=', TRUE)
                                 ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+        ->whereJsonContains('hvalidacion', [['memo_val' => $data->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $data->instructor_mespecialidad)
+                {
+                    $memoval = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $memoval = $data->archivo_alta;
+        }
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $pago = round($data->importe_total-$data->iva, 2);
@@ -270,7 +288,7 @@ class ContratoController extends Controller
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
         // dd($uni_contrato);
 
-        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada'));
+        return view('layouts.pages.frmcontrato', compact('data','nombrecompleto','perfil_prof','pago','term','unidades','uni_contrato', 'especialidad_seleccionada','memoval'));
     }
 
     public function contrato_save(Request $request)
@@ -338,8 +356,8 @@ class ContratoController extends Controller
         $perfil = new InstructorPerfil();
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
-        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
-                               'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id', 'tbl_cursos.curso')
+        $data = $folio::SELECT('folios.id_folios','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','instructores.nombre AS insnom','instructores.apellidoPaterno',
+                               'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id','tbl_cursos.instructor_mespecialidad', 'tbl_cursos.curso')
                         ->WHERE('id_folios', '=', $datacon->id_folios)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -362,6 +380,24 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
                                 // dd($perfil_prof);
 
+        $memoval = especialidad_instructor::WHERE('id_instructor',$data->id_instructor)
+        ->whereJsonContains('hvalidacion', [['memo_val' => $data->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $data->instructor_mespecialidad)
+                {
+                    $memoval = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $memoval = $data->archivo_alta;
+        }
+
         $data_directorio = contrato_directorio::WHERE('id_contrato', '=', $id)->FIRST();
         $director = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_iddirector)->FIRST();
         $testigo1 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo1)->FIRST();
@@ -372,7 +408,7 @@ class ContratoController extends Controller
         $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $datacon->unidad_capacitacion)->GET();
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
-        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist'));
+        return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','director','testigo1','testigo2','testigo3','data_directorio','unidadsel','unidadlist','memoval'));
     }
 
     public function save_mod(Request $request){
@@ -420,13 +456,13 @@ class ContratoController extends Controller
                                  'contratos.municipio','contratos.arch_factura','contratos.id_folios','contratos.instructor_perfilid','contratos.unidad_capacitacion',
                                  'contratos.cantidad_numero','contratos.arch_factura','folios.iva','folios.id_cursos','folios.id_supre','tabla_supre.doc_validado',
                                  'tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.curso','tbl_cursos.id_curso','tbl_cursos.mod','tbl_cursos.pdf_curso',
-                                 'tbl_cursos.instructor_tipo_identificacion','tbl_cursos.instructor_folio_identificacion',
+                                 'tbl_cursos.instructor_tipo_identificacion','tbl_cursos.id_instructor','tbl_cursos.instructor_folio_identificacion',
                                  'instructores.nombre AS insnom','instructores.apellidoPaterno','instructores.tipo_honorario','tbl_cursos.dura',
                                  'tbl_cursos.hombre','tbl_cursos.mujer','tbl_cursos.inicio','tbl_cursos.termino','tbl_cursos.efisico','tbl_cursos.dia',
                                  'tbl_cursos.hini','tbl_cursos.instructor_mespecialidad','tbl_cursos.hfin','tbl_cursos.folio_grupo','tbl_cursos.modinstructor','instructores.apellidoMaterno','instructores.id','especialidad_instructores.especialidad_id',
                                  'instructores.archivo_ine','instructores.archivo_domicilio','instructores.archivo_alta','instructores.archivo_bancario',
                                  'instructores.archivo_fotografia','instructores.archivo_estudios','instructores.archivo_otraid','instructores.archivo_rfc','especialidad_instructores.memorandum_validacion',
-                                 'especialidades.nombre AS especialidad','tbl_inscripcion.costo','cursos.perfil','alumnos_registro.comprobante_pago')
+                                 'especialidades.id AS idesp','especialidades.nombre AS especialidad','tbl_inscripcion.costo','cursos.perfil','alumnos_registro.comprobante_pago')
                             ->WHERE('id_contrato', '=', $id)
                             ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                             ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
@@ -438,6 +474,23 @@ class ContratoController extends Controller
                             ->LEFTJOIN('cursos','cursos.id', '=', 'tbl_cursos.id_curso')
                             ->LEFTJOIN('alumnos_registro', 'alumnos_registro.folio_grupo', '=', 'tbl_cursos.folio_grupo')
                             ->FIRST();
+        $memoval = especialidad_instructor::WHERE('id_instructor',$data->id_instructor)
+        ->whereJsonContains('hvalidacion', [['memo_val' => $data->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $data->instructor_mespecialidad)
+                {
+                    $memoval = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $memoval = $data->doc_validado;
+        }
 
         // $comprobante_pago = DB::TABLE('alumnos_registro')->WHERE('folio_grupo')->VALUE('comprobante_pago');
         $data->comprobante_pago = '/storage/uploadFiles' . $data->comprobante_pago;
@@ -449,7 +502,7 @@ class ContratoController extends Controller
         $testigo2 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo2)->FIRST();
         $testigo3 = directorio::SELECT('nombre','apellidoPaterno','apellidoMaterno','puesto','id')->WHERE('id', '=', $data_directorio->contrato_idtestigo3)->FIRST();
 
-        return view('layouts.pages.vstvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3','cupo'));
+        return view('layouts.pages.vstvalidarcontrato', compact('data','director','testigo1','testigo2','testigo3','cupo','memoval'));
     }
 
     public function rechazar_contrato(Request $request){

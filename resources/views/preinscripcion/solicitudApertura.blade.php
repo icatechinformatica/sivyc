@@ -1,24 +1,24 @@
 @extends('theme.formatos.hlayout')
 @section('title', 'Solicitud de Apertura | SIVyC Icatech')
 @section('content_script_css')
-    <style>         
+    <style>
         .tb {width: 100%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 5px;}
         .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}
-        .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:15px;}     
-        .tablaf tr, .tablaf td {padding: 0px}    
+        .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:15px;}
+        .tablaf tr, .tablaf td {padding: 0px}
         .tablaf p {margin:5px; padding:0px}
-    </style>      
+    </style>
 @endsection
-@section('content')         
+@section('content')
         <main>
         <div class="container">
             <table style="border-collapse: collapse; text-align: right; width:100%; margin-top:-10px;" >
                 <tr>
                     @if($reg_unidad->unidad=="COMITAN" || $reg_unidad->unidad=="OCOSINGO" || $reg_unidad->unidad=="SAN CRISTOBAL" || $reg_unidad->unidad=="TUXTLA" || $reg_unidad->unidad=="CATAZAJA" || $reg_unidad->unidad=="YAJALON" || $reg_unidad->unidad=="JIQUIPILAS" || $reg_unidad->unidad=="REFORMA" || $reg_unidad->unidad=="TAPACHULA" || $reg_unidad->unidad=="TONALA" || $reg_unidad->unidad=="VILLAFLORES")
-                        <td><strong>Unidad de Capacitación {{$reg_unidad->unidad}}</strong></td> 
+                        <td><strong>Unidad de Capacitación {{$reg_unidad->unidad}}</strong></td>
                     @else
-                        <td><strong>Acción Móvil {{$reg_unidad->unidad}}</strong></td> 
+                        <td><strong>Acción Móvil {{$reg_unidad->unidad}}</strong></td>
                     @endif
                 </tr>
                 <tr>
@@ -69,7 +69,7 @@
                     <th>CONV. GRAL</th>
                     <th>CONVENIO ESPECIFICO /ACTA DE ACUERDO</th>
                     <th>DEPENDENCIA</th>
-                    <th>REPRESENTANTE /TELÉFONO</th>                    
+                    <th>REPRESENTANTE /TELÉFONO</th>
                     <th>NOMBRE DEL INSTRUCTOR</th>
                     <th>CURSO VINCULADO POR</th>
                     <th>ESPACIO FISICO</th>
@@ -98,7 +98,7 @@
                         <td>@if ($item['cgeneral']!='0') {{ substr($item['cgeneral'],1,5)}} {{ substr($item['cgeneral'],6,strlen($item['cgeneral']))}}@else {{"N/A"}} @endif</td>
                         <td>@if ($item['cespecifico']) {{$item['cespecifico']}} @else {{"N/A"}} @endif </td>
                         <td>{{$item['depen']}}</td>
-                        <td>{{$item['depen_repre']}} / {{$item['tel_repre']}}</td>                       
+                        <td>{{$item['depen_repre']}} / {{$item['tel_repre']}}</td>
                         <td>{{$item['instructor']}}</td>
                         <td>{{$item['vincu']}}</td>
                         <td>{{$item['efisico']}}</td>
@@ -113,7 +113,7 @@
                 <tr>
                     <td>
                         <p>SOLICITA</p><br><br><br><br><br>
-                        <p>{{ $reg_unidad->vinculacion }}</p> 
+                        <p>{{ $reg_unidad->vinculacion }}</p>
                         <p>_____________________________________________________</p>
                         <p>{{ $reg_unidad->pvinculacion }}</p>
                     </td>
@@ -121,7 +121,7 @@
                         <p>VALIDA</p><br><br><br><br><br>
                         <p>{{ $reg_unidad->academico }}</p>
                         <p>_____________________________________________________</p>
-                        
+
                         <p>{{ $reg_unidad->pacademico }}</p>
                     </td>
                     <td>
@@ -131,11 +131,11 @@
                         <p>{{ $reg_unidad->pdunidad }}</p>
                     </td>
                 </tr>
-            </table>            
+            </table>
         </div>
     </main>
 @endsection
-@section('script_content_js') 
+@section('script_content_js')
     <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('

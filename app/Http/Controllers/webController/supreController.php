@@ -1079,10 +1079,11 @@ class supreController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion')
+        $unidad = tbl_unidades::SELECT('tbl_unidades.unidad', 'tbl_unidades.cct','tbl_unidades.ubicacion','direccion')
                                 ->WHERE('unidad', '=', $data_supre->unidad_capacitacion)
                                 ->FIRST();
         $unidad->cct = substr($unidad->cct, 0, 4);
+        $direccion = explode("*", $unidad->direccion);
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         //$getdestino = directorio::WHERE('id', '=', $directorio->supre_dest)->FIRST();
@@ -1096,7 +1097,7 @@ class supreController extends Controller
         //$getccp1 = directorio::WHERE('id', '=', $directorio->supre_ccp1)->FIRST();
         //$getccp2 = directorio::WHERE('id', '=', $directorio->supre_ccp2)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getremitente','getvalida','getelabora','directorio','unidad','distintivo','uj'));
+        $pdf = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','data_folio','D','M','Y','getremitente','getvalida','getelabora','directorio','unidad','distintivo','uj','direccion'));
         return  $pdf->stream('medium.pdf');
     }
 
@@ -1163,6 +1164,8 @@ class supreController extends Controller
         $tipop = $data[0]['modinstructor'];
         // dd($tipop);
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
+        $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
+        $direccion = explode("*", $direccion);
 
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::SELECT('directorio.nombre','directorio.apellidoPaterno','directorio.apellidoMaterno',
@@ -1181,7 +1184,7 @@ class supreController extends Controller
         $Mv = $this->monthToString(date('m',$datev));
         $Yv = date("Y",$datev);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','distintivo'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','distintivo','direccion'));
         $pdf->setPaper('A4', 'Landscape');
 
         return $pdf->stream('download.pdf');
@@ -1210,6 +1213,8 @@ class supreController extends Controller
                     ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
                     ->GET();
         $data2 = supre::WHERE('id', '=', $id)->FIRST(); //dd($data[0]->tipo_curso);
+        $direccion = tbl_unidades::WHERE('unidad',$data2->unidad_capacitacion)->VALUE('direccion');
+        $direccion = explode("*", $direccion);
 
         $cadwell = folio::SELECT('id_cursos')->WHERE('id_supre', '=', $id)
             ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1257,7 +1262,7 @@ class supreController extends Controller
         //$getccp3 = directorio::WHERE('id', '=', $directorio->val_ccp3)->FIRST();
         $getccp4 = directorio::WHERE('id', '=', $directorio->val_ccp4)->FIRST();
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo'));
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('data','data2','tipop','D','M','Y','Dv','Mv','Yv','getremitente','getfirmante','getccp4','recursos','distintivo','direccion'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
 

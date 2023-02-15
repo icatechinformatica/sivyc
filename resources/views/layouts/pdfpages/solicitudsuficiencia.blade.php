@@ -15,8 +15,9 @@
             header { position: fixed;
                 left: 0px;
                 top: -100px;
-                right: 0px;
-                height: 60px;
+                padding-left: 45px;
+                height: 70px;
+                width: 85%;
                 background-color: white;
                 color: black;
                 text-align: center;
@@ -33,7 +34,9 @@
                 left: 0px;
                 bottom: -90px;
                 right: 0px;
-                height: 60px;
+                height: 100px;
+                width: 85%;
+                padding-left: 45px;
                 background-color: white;
                 color: black;
                 text-align: center;
@@ -52,29 +55,16 @@
                 }
             img.izquierda {
                 float: left;
-                width: 300px;
-                height: 60px;
+                width: 100%;
+                height: 100%;
             }
 
             img.izquierdabot {
                 float: inline-end;
-                width: 450px;
-                height: 60px;
+                width: 100%;
+                height: 100%;
             }
 
-            img.derechabot {
-                position: absolute;
-                left: 700px;
-                width: 350px;
-                height: 60px;
-
-            }
-
-            img.derecha {
-                float: right;
-                width: 200px;
-                height: 60px;
-            }
             div.content
             {
                 margin-top: 60%;
@@ -82,12 +72,21 @@
                 margin-right: 25%;
                 margin-left: 0%;
             }
+            .direccion
+            {
+                text-align: left;
+                position: absolute;
+                bottom: 25px;
+                left: 65px;
+                font-size: 8.5px;
+                color: rgb(255, 255, 255);
+                line-height: 1;
+            }
         </style>
     </head>
     <body>
         <header>
-            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
+            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
             <br><h6>{{$distintivo}}</h6>
         </header>
         <div id="wrapper">
@@ -152,8 +151,8 @@
             </div>
         </div>
         <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
+            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
     </body>
 </html>

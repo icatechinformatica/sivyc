@@ -66,11 +66,21 @@ else{$tipo='CURSO';}
                 margin-right: -25%;
                 margin-left: 0%;
             }
+            .direccion
+            {
+                text-align: left;
+                position: absolute;
+                bottom: 35px;
+                left: 15px;
+                font-size: 8.5px;
+                color: rgb(255, 255, 255);
+                line-height: 1;
+            }
         </style>
     </head>
     <body>
         <header>
-            <img class="izquierda" src="{{ public_path('img/bannervertical.jpeg') }}">
+            <img class="izquierda" src="{{ public_path('img/formatos/bannervertical.jpeg') }}">
             <h6><i>{{$distintivo}}<i></h6>
         </header>
         <div class= "container g-pt-30">
@@ -129,7 +139,8 @@ else{$tipo='CURSO';}
             <br><small><b>Elaboró:  {{$getelabora->nombre}} {{$getelabora->apellidoPaterno}} {{$getelabora->apellidoMaterno}}.-{{$getelabora->puesto}}</b></small></h6>
         </div>
         <footer>
-            <img class="izquierdabot" src="{{ public_path('img/footer.jpeg') }}">
+            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
     </body>
 </html>

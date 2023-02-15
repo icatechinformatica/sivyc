@@ -20,13 +20,14 @@ else{
         }
 
         @page {
-            margin: 90px 40px 50px;
+                margin: 100px 40px 90px;
             }
             header { position: fixed;
                 left: 0px;
-                top: -80px;
-                right: 0px;
-                height: 60px;
+                top: -90px;
+                padding-left: 45px;
+                height: 70px;
+                width: 85%;
                 background-color: white;
                 color: black;
                 text-align: center;
@@ -46,13 +47,14 @@ else{
             footer {
                 position: fixed;
                 left: 0px;
-                bottom: -40px;
+                bottom: -50px;
                 right: 0px;
-                height: 60px;
+                height: 100px;
+                width: 85%;
+                padding-left: 45px;
                 background-color: white;
                 color: black;
                 text-align: center;
-                line-height: 60px;
             }
             footer table {
                 width: 100%;
@@ -62,31 +64,27 @@ else{
             }
             footer .izq {
                 text-align: left;
-                }
+            }
             img.izquierda {
                 float: left;
-                width: 300px;
-                height: 60px;
+                width: 100%;
+                height: 100%;
             }
 
             img.izquierdabot {
                 float: inline-end;
-                width: 350px;
-                height: 60px;
+                width: 100%;
+                height: 100%;
             }
-
-            img.derechabot {
+            .direccion
+            {
+                text-align: left;
                 position: absolute;
-                left: 700px;
-                width: 350px;
-                height: 60px;
-
-            }
-
-            img.derecha {
-                float: right;
-                width: 200px;
-                height: 60px;
+                bottom: 45px;
+                left: 65px;
+                font-size: 8.5px;
+                color: rgb(255, 255, 255);
+                line-height: 1;
             }
 
         #wrappertop {
@@ -148,8 +146,8 @@ else{
 </head>
     <body>
         <header>
-            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
+            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
+            <br><h6>{{$distintivo}}</h6>
         </header>
         <div>
             <div id="wrappertop">
@@ -252,8 +250,8 @@ else{
             </div>
         </div>
         <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derechabot" src="{{ public_path('img/icatech-imagen.png') }}">
+            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
     </body>
 </html>
