@@ -140,7 +140,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $i = 32; @endphp
+                        @php $i = 29; @endphp
                         @foreach($cursos AS $key => $cold)
                             <tr>
                                 <td><small>{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</small></td>
