@@ -23,6 +23,7 @@
     <footer>
         <div style="position: relative;";>
             <img style=" position: absolute;" src='img/formatos/footer_horizontal.jpeg' width="100%">
+            @php $direccion = explode("*", $direccion);  @endphp
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </div>
     </footer>
