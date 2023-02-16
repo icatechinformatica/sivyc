@@ -44,9 +44,7 @@ class aperturasController extends Controller
     }
 
     public function index(Request $request){
-        $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = NULL;
-        //$memo = $request->memo;
-        //$opt = $request->opt;
+        $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = NULL;        
 
         if($request->memo)  $memo = $request->memo;
         elseif(isset($_SESSION['memo'])) $memo = $_SESSION['memo'];

@@ -1,13 +1,10 @@
 <!--ELABORO ROMELIA PEREZ NANGUELU- rpnanguelu@gmail.com-->
-<div class="table-responsive ">
+<div class="row">
+    <div class="table-responsive ">
     <table class="table table-bordered table-striped">
         <thead>
-            <tr>
-                @if($opt=="ARC02")
-                    <th scope="col" class="text-center" >EDIT</th>                    
-                @else
-                    <th scope="col" class="text-center" >VER</th>
-                @endif
+            <tr>                
+                <th scope="col" class="text-center" >OPCIONES</th>                
                 <th scope="col" class="text-center">ID</th> 
                 @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
                     <th scope="col" class="text-center">OBSERVACIONES PRELIMINAR</th>
@@ -50,15 +47,7 @@
             </tr>
         </thead>
         @if(count($grupos)>0) 
-            <tbody>                    
-                <?php                    
-                    if($movimientos)$activar = true; 
-                    else $activar = false;
-                    $munidad = $grupos[0]->munidad; 
-                    $nmunidad = $grupos[0]->nmunidad; 
-                    $status_curso = $grupos[0]->status_curso; 
-                    $pdf_curso = $grupos[0]->pdf_curso;           
-                ?>
+            <tbody>
                 @foreach($grupos as $g)
                     <?php 
                     $rojo=null;
@@ -80,25 +69,18 @@
                         break;
                     }
                     ?>
-                    <tr @if($rojo)class='text-danger' @endif >
-                        @if($opt == "ARC02")
-                            <td class='text-center'>
-                                <a class="nav-link" ><i class="fa fa-edit  fa-2x fa-lg text-success" title="Editar" onclick="show('{{$g->id}}')"></i></a>
-                            </td>
-                        @else
-                            <td class='text-center'>
-                                <a class="nav-link" ><i class="fa fa-search  fa-2x fa-lg text-success" title="Ver detalle" onclick="show('{{$g->id}}')"></i></a>
-                                <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
-                                    <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
-                                </a>
-                                @if ($g->soporte_exo)
-                                    <a class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF EXONERACION"
-                                        @if ($g->rev_exo) href="{{$path.$g->soporte_exo}}" @else href="{{$g->soporte_exo}}" @endif>
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                    </a>
-                                @endif
-                            </td>
-                        @endif
+                    <tr @if($rojo)class='text-danger' @endif >                       
+                        <td class='text-center'>                            
+                            <a class="nav-link" href="{{ $path.$g->comprobante_pago }}" target="_blank">
+                                <i class="fa fa-dollar-sign  fa-2x fa-lg text-primary" title="Comprobante de pago"></i>
+                            </a>
+                            @if ($g->soporte_exo)
+                                <a  class="nav-link"   title="PDF EXONERACION"
+                                    @if ($g->rev_exo) href="{{$path.$g->soporte_exo}}" @else href="{{$g->soporte_exo}}" @endif >
+                                    <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                </a>                                
+                            @endif
+                        </td>
                         <td class="text-center"> {{ $g->id }}</td>
                         @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
                             <td> 
@@ -169,19 +151,19 @@
             {{ 'NO REGISTRO DE ALUMNOS'}}
         @endif
     </table>
+    </div>
 </div>
-<div class="form-row col-md-12 my-4">
+<div class="row justify-content-end">
     @if($activar==true)
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             @if($status_curso == "EN FIRMA")
-                {{ Form::button('GENERAR MEMORÁNDUM VALIDACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
+                {{ Form::button('GENERAR VALIDACIÓN PDF', ['id'=>'generar','class' => 'btn  mx-4']) }}
             @endif
         </div>
-        <div class="form-group col-md-3  my-3" id="espacio">     </div>
-        <div class="form-group col-md-1  my-3">           
+        <div class="form-group col-md2  my-3">           
             <label>MOVIMIENTO:</label>
         </div>
-        <div class="form-group col-md-2 my-2">
+        <div class="form-group col-md-3 my-2">
             {{ Form::select('movimiento', $movimientos, $opt, ['id'=>'movimiento','class' => 'form-control' ] ) }}
         </div>
         <div class="form-group col-md-2 my-2" id='mrespuesta'>
@@ -195,23 +177,17 @@
             <label for="file_autorizacion" class="custom-file-label">AUTORIZACIÓN FIRMADA PDF</label>
         </div>
         <div class="form-group col-md-1 "> 
-            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger mx-3']) }} 
+            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar','class' => 'btn  bg-danger']) }} 
         </div>
     @elseif ($status_solicitud == 'TURNADO')
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-1  my-2">
             <label>MOVIMIENTO:</label>
+        </div>
+        <div class="form-group col-md-2  my-1">            
             {!! Form::select('pmovimiento',['' => '- SELECCIONAR -', 'RETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'], '', ['id'=>'pmovimiento','class' => 'form-control' ]) !!}
         </div>
         <div class="form-group col-md-1">
-            <br>
-            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar_preliminar','class' => 'btn  bg-danger mx-3']) }} 
+            {{ Form::button(' ACEPTAR ', ['id'=>'aceptar_preliminar','class' => 'btn  bg-danger ']) }} 
         </div>
     @endif 
-
-    @if($pdf_curso AND $activar == false)
-        <div class="form-group col-md-8"></div> 
-        <div class="form-group col-md-4"> 
-            <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">MEMORÁNDUM DE AUTORIZACIÓN (PDF)</a> 
-        </div>  
-    @endif
 </div>
