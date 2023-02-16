@@ -228,7 +228,7 @@
                         </tr>
                     </table>
                     <h6><small><b>Archivo/Minutario<b></small></h6>
-                    <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data[0]->unidad_solicita}}.</b></small></small>
+                    <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
                     <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
                 @endif
             @endforeach
