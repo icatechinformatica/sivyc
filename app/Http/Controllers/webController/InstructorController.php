@@ -1585,9 +1585,9 @@ class InstructorController extends Controller
         $modInstructor = NULL;
         $userId = Auth::user()->id;
         $modInstructor = pre_instructor::find($request->id);
+        $extract_inf = instructor::find($request->id);
         if(!isset($modInstructor))
         {
-            $extract_inf = instructor::find($request->id);
             $modInstructor = new pre_instructor();
             $modInstructor->id_oficial = $request->id;
             $modInstructor->archivo_ine = $extract_inf->archivo_ine;
@@ -1603,14 +1603,17 @@ class InstructorController extends Controller
             $modInstructor->registro_activo = TRUE;
         }
         $pre_instructor = $this->guardado_ins($modInstructor, $request, $request->id);
+        $pre_instructor->registro_activo = TRUE;
         $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
         $old = $pre_instructor->apellidoPaterno . ' ' . $pre_instructor->apellidoMaterno . ' ' . $pre_instructor->nombre;
+
+        $extract_inf->status = 'EN CAPTURA';
+        $extract_inf->save();
 
         if($pre_instructor->status == 'RETORNO' || $pre_instructor->status == 'VALIDADO')
         {
             $pre_instructor->status = 'EN CAPTURA';
         }
-
         //PROCESO DE PREVENCION EN CAMBIO DE NUMERO DE REVISIONES VACIOS
         $pre_instructor->save();
         if($pre_instructor->turnado == 'UNIDAD')
@@ -3394,18 +3397,35 @@ class InstructorController extends Controller
         {
             $perfil = $saveInstructor->data_perfil;
             $especialidad = $saveInstructor->data_especialidad;
+            $status_array = ['RETORNO','REVALIDACION RETORNADA','BAJA RETORNADA'];
             foreach($perfil as $llave => $luthier)
             {
-                if($luthier['status'] == 'RETORNO')
+                switch($luthier['status'])
                 {
-                    $perfil[$llave]['status'] = 'EN CAPTURA';
+                    case 'RETORNO':
+                        $perfil[$llave]['status'] = 'EN CAPTURA';
+                    break;
+                    case 'REVALIDACION RETORNADA':
+                        $perfil[$llave]['status'] = 'REVALIDACION EN CAPTURA';
+                    break;
+                    case 'BAJA RETORNADA':
+                        $perfil[$llave]['status'] = 'BAJA EN PREVALIDACION';
+                    break;
                 }
             }
             foreach($especialidad as $rl => $tem)
             {
-                if($tem['status'] == 'RETORNO')
+                switch($luthier['status'])
                 {
-                    $especialidad[$rl]['status'] = 'EN CAPTURA';
+                    case 'RETORNO':
+                        $especialidad[$rl]['status'] = 'EN CAPTURA';
+                    break;
+                    case 'REVALIDACION RETORNADA':
+                        $especialidad[$rl]['status'] = 'REVALIDACION EN CAPTURA';
+                    break;
+                    case 'BAJA RETORNADA':
+                        $especialidad[$rl]['status'] = 'BAJA EN PREVALIDACION';
+                    break;
                 }
             }
 
@@ -3558,7 +3578,6 @@ class InstructorController extends Controller
             }
             $saveInstructor->data_especialidad = $arresp;
         }
-
         return $saveInstructor;
     }
 
