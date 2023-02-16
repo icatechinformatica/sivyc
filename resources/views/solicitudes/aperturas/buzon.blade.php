@@ -23,13 +23,13 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th style="padding: 1px;" class="text-center">UNIDAD DE CAPACITACIÓN</th> 
-                        <th style="padding: 1px;" class="text-center">No. REVISIÓN</th>
-                        <th style="padding: 1px;" class="text-center">No. MEMORÁNDUM</th>
-                        <th style="padding: 1px;" class="text-center">STATUS</th>
-                        <th style="padding: 1px;" class="text-center">SOLICITUD</th>
-                        <th style="padding: 1px;" class="text-center">SOPORTE</th>
-                        <th style="padding: 1px;" class="text-center">VER</th>
+                        <th class="text-center">UNIDAD DE CAPACITACIÓN</th> 
+                        <th class="text-center">No. REVISIÓN</th>
+                        <th class="text-center">No. MEMORÁNDUM</th>
+                        <th class="text-center">STATUS</th>
+                        <th class="text-center">SOLICITUD</th>
+                        <th class="text-center">SOPORTE</th>
+                        <th class="text-center">VER</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,10 +52,10 @@
                             <td class="text-center">{{$item->status}}</td>
                             <td class="text-center"> @if($item->status_curso) {{$item->status_curso}} @else {{"PREVALIDACION" }} @endif </td>
                             <td class="text-center">
-                                @if ($item->pdf_curso OR $item->file_arc01)
-                                <a href="{{$pdf}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip"  target="_blank" data-placement="top" title="PDF">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                </a>
+                                @if ($item->pdf_curso OR $item->file_arc01)                                
+                                    <a  class="nav-link"   title="PDF"  href="{{$pdf}}">
+                                        <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                                    </a>  
                                 @endif
                             </td>
                             <td class="text-center">

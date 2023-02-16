@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
    
     <div class="card-header">
-        Consulta de Cursos Aperturados       
+        Grupos / Búsqueda
     </div>
     <div class="card card-body" style=" min-height:450px;">
         @if ($message)
