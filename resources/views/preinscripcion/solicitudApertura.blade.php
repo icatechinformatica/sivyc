@@ -94,8 +94,8 @@
                         <td>{{$item['tpar']}}</td>
                         <td  >{{$item['hombre']}}</td>
                         <td>{{$item['mujer']}}</td>
-                        <td >@if ($item['mexoneracion'])  {{ substr($item['mexoneracion'],1,12)}}  {{ substr($item['mexoneracion'],13,strlen($item['mexoneracion']))}}   @else {{"N/A"}}  @endif</td>
-                        <td>@if ($item['cgeneral']!='0') {{ substr($item['cgeneral'],1,5)}} {{ substr($item['cgeneral'],6,strlen($item['cgeneral']))}}@else {{"N/A"}} @endif</td>
+                        <td >@if ($item['mexoneracion'])  {{ substr($item['mexoneracion'],0,12)}}  {{ substr($item['mexoneracion'],13,strlen($item['mexoneracion']))}}   @else {{"N/A"}}  @endif</td>
+                        <td>@if ($item['cgeneral']!='0') {{ substr($item['cgeneral'],0,5)}} {{ substr($item['cgeneral'],6,strlen($item['cgeneral']))}}@else {{"N/A"}} @endif</td>
                         <td>@if ($item['cespecifico']) {{$item['cespecifico']}} @else {{"N/A"}} @endif </td>
                         <td>{{$item['depen']}}</td>
                         <td>{{$item['depen_repre']}} / {{$item['tel_repre']}}</td>
