@@ -219,11 +219,11 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center">{{$dataunidad->academico}}.</td></div>
+                            <td colspan="2"><div align="center">{{$data_unidad->academico}}.</td></div>
                             <td colspan="2"><div align="center">{{$data_unidad->dunidad}}.</td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center">{{$dataunidad->pacademico}} DE LA UNIDAD DE CAPACITACIÓN DE {{$daesp}}.</td></div>
+                            <td colspan="2"><div align="center">{{$data_unidad->pacademico}} DE LA UNIDAD DE CAPACITACIÓN DE {{$daesp}}.</td></div>
                             <td colspan="2"><div align="center">{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</div></td>
                         </tr>
                     </table>

@@ -36,6 +36,25 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
+
+        // $moist = especialidad_instructor::select('especialidad_instructores.id')->get();
+        // foreach ($moist as $cadwell)
+        // {
+        //     $arrtemp = array();
+        //     $data = especialidad_instructor::find($cadwell->id);
+        //     $instructor_check = pre_instructor::find($cadwell->id_instructor);
+        //     $arch_alta = instructor::find($cadwell->id_instructor)->value('arch_alta');
+        //     if(!isset($instructor_check))
+        //     {
+        //         $arrtemp['arch_sol'] = $arch_alta;
+        //         $arrtemp['arch_val'] = $arch_alta;
+        //         $arrtemp['memo_sol'] = $data->memorandum_solicitud;
+        //         $arrtemp['memo_val'] = $data->memorandum_validacion;
+        //         $arrtemp['fecha_sol'] = $data->updated_at;
+        //         $arrtemp['fecha_val'] = $data->updated_at;
+        //     }
+        // }
+        // dd($moist);
         // $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
 
         // foreach ($idesin as $key => $cadwell)
