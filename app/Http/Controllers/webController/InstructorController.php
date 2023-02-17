@@ -36,54 +36,7 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
-
-        $moist = especialidad_instructor::select('especialidad_instructores.id','id_instructor')->get();
-        foreach ($moist as $cadwell)
-        {
-            $arrtemp = $hvalidacion = array();
-            $data = especialidad_instructor::find($cadwell->id);
-            $instructor_check = pre_instructor::find($cadwell->id_instructor);
-            $arch_alta = instructor::find($cadwell->id_instructor);
-            if(!isset($instructor_check))
-            {
-                // if(!isset($arch_alta->archivo_alta))
-                // {
-                //     dd($arch_alta);
-                // }
-                $arrtemp['arch_sol'] = $arch_alta->archivo_alta;
-                $arrtemp['arch_val'] = $arch_alta->archivo_alta;
-                $arrtemp['memo_sol'] = $data->memorandum_solicitud;
-                $arrtemp['memo_val'] = $data->memorandum_validacion;
-                $arrtemp['fecha_sol'] = $data->updated_at;
-                $arrtemp['fecha_val'] = $data->updated_at;
-
-                array_push($hvalidacion, $arrtemp);
-                $data->hvalidacion = $hvalidacion;
-                $data->save();
-            }
-
-        }
-        dd('yeaaah boy');
-        // $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
-
-        // foreach ($idesin as $key => $cadwell)
-        // {
-        //     $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
-        //                   ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
-        //                   ->WHERE('activo', '=', TRUE)
-        //                   ->OrderBy('curso_id', 'ASC')
-        //                   ->GET();
-
-        //     $array = [];
-        //     foreach ($cursos as $data)
-        //     {
-        //         array_push($array, $data->curso_id);
-        //     }
-
-        //     especialidad_instructor::WHERE('id', '=', $cadwell->id)
-        //                         ->update(['cursos_impartir' => $array]);
-        // }
-        // dd('Lock&Load');
+        dd('IDDQD');
     }
 
     public function index(Request $request)
@@ -3326,7 +3279,7 @@ class InstructorController extends Controller
         $instructor = pre_instructor::find($request->idinsbajadocval);
         $distintivo = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $special = $this->make_collection($instructor->data_especialidad);
-        $idesps = especialidad_instructor::SELECT('id')->WHERE('id_instructor', '=', $request->idinsbajadocval)
+        $idesps = especialidad_instructor::SELECT('id','memorandum_validacion')->WHERE('id_instructor', '=', $request->idinsbajadocval)
                                             ->WHERE('status','=','BAJA EN FIRMA')
                                             ->GET();
         foreach($special as $key => $cadwell)
@@ -4107,6 +4060,60 @@ class InstructorController extends Controller
         }
         // dd($respond);
         return $respond;
+    }
+
+    protected function egg()
+    {
+        // ACTUALIZA HVALIDACION DE NULO A LLENO
+        // $moist = especialidad_instructor::select('especialidad_instructores.id','id_instructor')->get();
+        // foreach ($moist as $cadwell)
+        // {
+        //     $arrtemp = $hvalidacion = array();
+        //     $data = especialidad_instructor::find($cadwell->id);
+        //     $instructor_check = pre_instructor::find($cadwell->id_instructor);
+        //     $arch_alta = instructor::find($cadwell->id_instructor);
+        //     if(!isset($instructor_check))
+        //     {
+        //         // if(!isset($arch_alta->archivo_alta))
+        //         // {
+        //         //     dd($arch_alta);
+        //         // }
+        //         $arrtemp['arch_sol'] = $arch_alta->archivo_alta;
+        //         $arrtemp['arch_val'] = $arch_alta->archivo_alta;
+        //         $arrtemp['memo_sol'] = $data->memorandum_solicitud;
+        //         $arrtemp['memo_val'] = $data->memorandum_validacion;
+        //         $arrtemp['fecha_sol'] = $data->updated_at;
+        //         $arrtemp['fecha_val'] = $data->updated_at;
+
+        //         array_push($hvalidacion, $arrtemp);
+        //         $data->hvalidacion = $hvalidacion;
+        //         $data->save();
+        //     }
+
+        // }
+        // dd('yeaaah boy');
+
+        // UPDATE DE CURSOS_IMPARTIR
+        // $idesin = DB::table('especialidad_instructores')->SELECT('id')->OrderBy('id', 'ASC')->GET();
+
+        // foreach ($idesin as $key => $cadwell)
+        // {
+        //     $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
+        //                   ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
+        //                   ->WHERE('activo', '=', TRUE)
+        //                   ->OrderBy('curso_id', 'ASC')
+        //                   ->GET();
+
+        //     $array = [];
+        //     foreach ($cursos as $data)
+        //     {
+        //         array_push($array, $data->curso_id);
+        //     }
+
+        //     especialidad_instructor::WHERE('id', '=', $cadwell->id)
+        //                         ->update(['cursos_impartir' => $array]);
+        // }
+        // dd('Lock&Load');
     }
 }
 
