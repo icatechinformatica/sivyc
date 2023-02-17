@@ -36,6 +36,28 @@ class InstructorController extends Controller
 {
     public function prueba()
     {
+        // UPDATE DE CURSOS_IMPARTIR
+        set_time_limit(0);
+        $idesin = DB::table('especialidad_instructores')->SELECT('id')->WHERENULL('cursos_impartir')->OrderBy('id', 'ASC')->GET();
+
+        foreach ($idesin as $key => $cadwell)
+        {
+            $cursos = DB::table('especialidad_instructor_curso')->SELECT('curso_id')
+                          ->WHERE('id_especialidad_instructor', '=', $cadwell->id)
+                          ->WHERE('activo', '=', TRUE)
+                          ->OrderBy('curso_id', 'ASC')
+                          ->GET();
+
+            $array = [];
+            foreach ($cursos as $data)
+            {
+                array_push($array, $data->curso_id);
+            }
+
+            especialidad_instructor::WHERE('id', '=', $cadwell->id)
+                                ->update(['cursos_impartir' => $array]);
+        }
+        dd('Lock&Load');
         dd('IDDQD');
     }
 
