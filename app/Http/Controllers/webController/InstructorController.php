@@ -57,13 +57,13 @@ class InstructorController extends Controller
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
         }
         else
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->PAGINATE(25, ['nombre', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
         }
         return view('layouts.pages.initinstructor', compact('data'));
     }

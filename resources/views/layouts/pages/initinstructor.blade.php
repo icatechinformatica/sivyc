@@ -77,6 +77,7 @@
                 <tr>
                     <th scope="col">Clave Instructor</th>
                     <th scope="col">Nombre</th>
+                    <th scope="col">CURP</th>
                     <th scope="col">telefono</th>
                     <th scope="col">Status</th>
                     <th width="160px">Acciones</th>
@@ -87,6 +88,7 @@
                     <tr>
                     <th scope="row">{{$itemData->numero_control}}</th>
                         <td>{{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}} {{$itemData->nombre}}</td>
+                        <td>{{$itemData->curp}}</td>
                         <td>{{$itemData->telefono}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
