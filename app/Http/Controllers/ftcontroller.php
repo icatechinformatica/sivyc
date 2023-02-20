@@ -396,7 +396,9 @@ class ftcontroller extends Controller {
                     'pvinculacion','jcyc','pjcyc', 'direccion', 'ubicacion', 'codigo_postal')->where('unidad',$_SESSION['unidad'])->whereNotIn('direccion', ['N/A', 'null'])->first();
                     $leyenda = Instituto::first();
                     $leyenda = $leyenda->distintivo;
-                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'elaboro', 'leyenda'));
+                    $direccion = DB::Table('tbl_unidades')->WHERE('unidad',$unidad)->VALUE('direccion');
+                    $direccion = explode("*", $direccion);
+                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'elaboro', 'leyenda','direccion'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
