@@ -3258,7 +3258,8 @@ class InstructorController extends Controller
         }
         $especialidades = $this->make_collection($especialidades);
 
-        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')->FIRST();
+        $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
+        ->WHERE('unidad', '!=', 'VILLA CORZO')->FIRST();
         $date = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
         $MO = date('m',$date);
