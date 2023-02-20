@@ -489,7 +489,7 @@ class ContratoController extends Controller
         }
         else
         {
-            $memoval = $data->doc_validado;
+            $memoval = $data->archivo_alta;
         }
 
         // $comprobante_pago = DB::TABLE('alumnos_registro')->WHERE('folio_grupo')->VALUE('comprobante_pago');
