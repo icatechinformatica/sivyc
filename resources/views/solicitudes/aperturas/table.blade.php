@@ -108,7 +108,7 @@
                         <td> <div style="width:100px;">{{ $g->unidad }} </div></td>
                         <td> <div style="width:148px;">{{ $g->espe }} </div></td>
                         <td><div style="width:220px;"> {{ $g->curso }}</div></td>
-                        <td><div style="width:120px;">{{ $g->nombre }}</div></td>
+                        <td><div style="width:120px;">{{ $g->nombre }}. {{ $g->instructor_mespecialidad}}</div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center"> @if ($g->tipo=='EXO') {{"EXONERACION"}} @elseif($g->tipo=='EPAR') {{"REDUCCION DE CUOTA"}}  @else {{"PAGO ORDINARIO"}}   @endif </td>
                         <td class="text-center"> {{ $g->dura }} </td>
