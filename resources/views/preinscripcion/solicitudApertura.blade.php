@@ -101,8 +101,8 @@
                         <td>{{$item['depen_repre']}} / {{$item['tel_repre']}}</td>
                         <td>{{$item['instructor']}}</td>
                         <td>{{$item['vincu']}}</td>
-                        <td>{{$item['efisico']}}</td>
-                        <td width='150px'>{{$item['observaciones']}}</td>
+                        <td width='auto'>{{$item['efisico']}}</td>
+                        <td width='auto'>{{$item['observaciones']}}</td>
                     </tr>
                 @endforeach
             </table>
