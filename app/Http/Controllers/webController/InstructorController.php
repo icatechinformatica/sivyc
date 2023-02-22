@@ -2104,7 +2104,7 @@ class InstructorController extends Controller
                 $arrmod['numero_control'] = trim($request->idInstructor);
                 $arrmod['lastUserId'] = $userId;
 
-                if($instructor->numero_control == 'Pendiente')
+                if($cadwell['status'] == 'EN CAPTURA')
                 {
                     $arrmod['status'] = 'EN CAPTURA';
                 }
@@ -2436,7 +2436,7 @@ class InstructorController extends Controller
                 $arrtemp[$key]['lastUserId'] = $userId;
                 $arrtemp[$key]['id_instructor'] = $request->idins;
 
-                if($instructor->numero_control == 'Pendiente')
+                if($cadwell == 'EN CAPTURA')
                 {
                     $arrtemp[$key]['status'] = 'EN CAPTURA';
                 }
