@@ -40,9 +40,10 @@
                 <label><h4>DATOS DEL INSTRUCTOR</h4></label>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="inputarch_ine">Foto...</label>
+                <div class="form-group col-md-4">
+                    <label for="inputarch_ine">Fotograf&iacute;a</label>
                     <input id="file_photo" name="file_photo" type="file" class="file-loading"/>
+                    <label for="inputarch_ine" class="text-primary">(Permite archivos jpg, jpeg y png; m&aacute;ximo: 2MB)</label>
                 </div>                
             </div>
             <div class="form-row">
@@ -77,31 +78,22 @@
                 <label><h4>DATOS DEL CURSO</h4></label>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-6">
                     <label for="inputnombre">Nombre de Curso</label>
                     <input name='nombre_curso' id='nombre_curso' type="text" class="form-control" aria-required="true" value="{{old('nombre_curso')}}" />
-                </div>
-            </div>
-            <div class="form-row"> 
-                <div class="form-group col-md-4">
-                    <label for="inputnombre">Clave de Apertura</label>
-                    <input name='numero_apertura' id='numero_apertura' type="text" class="form-control" aria-required="true" value="{{old('numero_apertura')}}" />
-                </div>  
-                 <div class="form-group col-md-4">
+                </div>            
+                 <div class="form-group col-md-3">
                     <label for="inputcurp">Fecha Autorizaci&oacute;n</label>
                     <input type='text' id="fecha_autorizacion" autocomplete="off" readonly="readonly" name="fecha_autorizacion" class="form-control datepicker" value="{{old('fecha_autorizacion')}}" />
-                </div>         
-                <div class="form-group col-md-4">
-                    <label for="inputcurp">Modalidad</label>
-                    <select class="form-control" id="modalidad_curso" name="modalidad_curso" >
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputmodalidad">Prop&oacute;sito del Curso</label>
+                    <select class="form-control" id="modalidad" name="modalidad">
                       <option value="">--SELECCIONAR--</option>
-                      <option value="CAE" {{ old('modalidad_curso') == 'CAE' ? 'selected' : '' }} >CAE</option>
-                      <option value="EXT" {{ old('modalidad_curso') == 'EXT' ? 'selected' : '' }} >EXT</option>
-                      <option value="EMP" {{ old('modalidad_curso') == 'EMP' ? 'selected' : '' }} >EMP</option>
+                      <option value="CAE" {{ old('modalidad') == 'CAE' ? 'selected' : '' }}>PARA EL TRABAJO</option>
+                      <option value="EXT" {{ old('modalidad') == 'EXT' ? 'selected' : '' }}> EN EL TRABAJO</option>                      
                     </select>
-                </div> 
-                <div class="form-group col-md-2">
-                </div>              
+                </div>                
             </div>
             <label><h5>Peri&oacute;do de Desarrollo</h5></label>
             <div class="form-row">
@@ -160,7 +152,8 @@
             <br /> 
             <label><h5>Anexar Fotos o Capturas de Pantalla</h5></label>
             <div class="form-row">                                    
-                    <input id="file_data[]" name="file_data[]" type="file" multiple="true" class="file-loading"/>
+                <input id="file_data[]" name="file_data[]" type="file" multiple="true" class="file-loading"/>
+                <label for="inputarch_ine" class="text-primary">(Permite archivos jpg, jpeg y png; m&aacute;ximo: 2MB)</label>
             </div>
             <br/><br/>
             <div class="row">

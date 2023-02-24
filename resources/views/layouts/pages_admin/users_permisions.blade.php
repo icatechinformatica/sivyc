@@ -1,5 +1,5 @@
 <!--Creado por Daniel Méndez Cruz-->
-@extends('theme.principal.dashboard')
+@extends('theme.sivyc_admin.layout')
 <!--generado por Daniel Méndez-->
 @section('title', 'USUARIOS DEL SISTEMA | Sivyc Icatech')
 
@@ -78,16 +78,15 @@
     <div class="col-md-12">
         <div class="main-card mb-3 card">
             <div class="card-header">
-                {!! Form::open(['route' => 'personal.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                    <select name="tipo_busqueda_personal" class="form-control mr-sm-2" id="tipo_busqueda_personal">
-                        <option value="">BUSCAR POR TIPO</option>
-                        <option value="numero_enlace">NÚMERO DE ENLACE</option>
+                {!! Form::open(['route' => 'usuario_permisos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    {{--<select name="tipo_busqueda_personal" class="form-control mr-sm-2" id="tipo_busqueda_personal">
                         <option value="nombres">NOMBRE COMPLETO</option>
-                    </select>
+                    </select>--}}
 
-                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
+                    {!! Form::text('busquedaPersonal', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'NOMBRE', 'aria-label' => 'BUSCAR']) !!}
                     <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                 {!! Form::close() !!}
+                <br>
                 <div class="btn-actions-pane-right">
                     <div role="group" class="btn-group-sm btn-group">
                         <a href="{{route('usuarios.perfil.crear')}}" class="btn btn-sm btn-success">Nuevo Usuario</a>
@@ -118,11 +117,11 @@
                                 @foreach ($usuarios as $itemUsuarios)
                                     <div class="row" role="row">
                                         <div class="col-md-4" role="gridcell">
-                                            <label><h5>NOMBRE</h5></label>
+                                            
                                             <div class="form-control-plaintext text-truncate">{{$itemUsuarios->name}}</div>
                                         </div>
                                         <div class="col-md-4" role="gridcell">
-                                            <label><h5>INFORMACIÓN</h5></label>
+                                            
                                             <div class="form-control-plaintext text-truncate">
                                                 <a href="{{route('usuarios.perfil.modificar', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR USUARIO">
                                                     <i class="fa fa-user" aria-hidden="true"></i>
@@ -130,7 +129,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4" role="gridcell">
-                                            <label><h5>MODIFICAR</h5></label>
+                                            
                                             <div class="form-control-plaintext text-truncate">
                                                 <a href="{{route('usuarios_permisos.show', ['id' => base64_encode($itemUsuarios->id)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
                                                     <i class="fa fa-wrench" aria-hidden="true"></i>

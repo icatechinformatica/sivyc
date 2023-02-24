@@ -27,15 +27,16 @@
                 <div class="pull-left">
                     <h2>CURSOS VALIDADOS</h2>
 
-                    {!! Form::open(['route' => 'cursos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    {!! Form::open(['route' => 'cursos_validados.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipobusquedacursovalidado" class="form-control mr-sm-2" id="tipobusquedacursovalidado">
                             <option value="">BUSCAR POR TIPO</option>
+                            <option value="arc01">MEMO DE SOLICITUD ARC-01</option>
                             <option value="clave">CLAVE DEL CURSO</option>
                             <option value="nombre_curso">NOMBRE DEL CURSO</option>
                             <option value="instructor">INSTRUCTORES</option>
                             <option value="unidad">UNIDAD</option>
+                            <option value="anio">AÑO</option>
                         </select>
-
                         {!! Form::text('busqueda_curso_validado', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
                     {!! Form::close() !!}
@@ -50,7 +51,9 @@
                 <tr>
                     <th scope="col">UNIDAD</th>
                     <th scope="col">CLAVE DE CURSO</th>
+                    <th scope="col">MEMO DE SOLICITUD ARC-01</th>
                     <th scope="col">NOMBRE DEL CURSO</th>
+                    <th scope="col">TIPO DE CURSO</th>
                     <th scope="col">INSTRUCTOR</th>
                     <th scope="col">FECHA IMPARTIR</th>
                     <th scope="col">Documentos</th>
@@ -62,14 +65,16 @@
                         <tr>
                             <td>{{$itemData->unidad}}</td>
                             <td>{{$itemData->clave}}</td>
+                            <td>{{$itemData->munidad}}</td>
                             <td>{{$itemData->nombrecur}}</td>
+                            <td>{{$itemData->tcapacitacion}}</td>
                             <td>{{$itemData->nombre}} {{$itemData->apellidoPaterno}} {{$itemData->apellidoMaterno}}</td>
                             <td>{{ \Carbon\Carbon::parse($itemData->inicio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($itemData->termino)->format('d/m/Y') }}</td>
                             <td>
-                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Validación de clave de curso" download="{{$itemData->pdf_curso}}">
+                                <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Validación de clave de curso" href="{{$itemData->pdf_curso}}" target="_blank">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
-                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" download="{{$itemData->archivo_alta}}">
+                                <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Validación de instructor" href="{{$itemData->archivo_alta}}" target="_blank">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             </td>
@@ -100,4 +105,7 @@
         <br>
     </div>
     <br>
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
 @endsection

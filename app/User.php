@@ -49,4 +49,31 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'role_id')->withPivot('user_id ', 'role_id');
     }
+
+    public function scopeBusquedaPor($query, $tipo, $buscar)
+    {
+        if (!empty($tipo)) {
+            # entramos y validamos
+            if (!empty(trim($buscar))) {
+                # empezamos
+                switch ($tipo) {
+                    case 'matricula_aspirante':
+                        # code...
+                        return $query->where('matricula', '=', $buscar);
+                        break;
+                    case 'curp_aspirante':
+                        # code...
+                        return $query->where('curp', '=', $buscar);
+                        break;
+                    case 'nombres':
+                        # code...
+                        return $query->where(\DB::raw("upper(name)"), 'LIKE', "%$buscar%");
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+    }
 }

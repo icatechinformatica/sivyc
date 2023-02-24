@@ -50,7 +50,10 @@ class Alumnopre extends Model
         'puesto_empresa',
         'sistema_capacitacion_especificar',
         'realizo',
-        'tiene_documentacion'
+        'tiene_documentacion',
+        'es_cereso',
+        'titular_cerss',
+        'permiso_exoneracion'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -76,6 +79,10 @@ class Alumnopre extends Model
             if (!empty(trim($buscar))) {
                 # empezamos
                 switch ($tipo) {
+                    case 'matricula_aspirante':
+                        # code...
+                        return $query->where('matricula', '=', $buscar);
+                        break;
                     case 'curp_aspirante':
                         # code...
                         return $query->where('curp', '=', $buscar);

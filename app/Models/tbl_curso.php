@@ -15,10 +15,18 @@ class tbl_curso extends Model
     'id','cct','unidad','nombre','curp','rfc','clave','grupo','mvalida','mod','turno','area','espe','curso',
     'inicio','termino','dia','dia2','pini','pfin','dura','hini','hfin','horas','ciclo','plantel','depen','muni',
     'sector','programa','nota','hini2','hfin2','munidad','efisico','cespecifico','mpaqueteria','mexoneracion',
-    'hombre','mujer','tipo','fcespe','cgeneral','fcgen','opcion','motivo','cp','ze','id_curso','id_instructor','pdf_curso'
+    'hombre','mujer','tipo','fcespe','cgeneral','fcgen','opcion','motivo','cp','ze','id_curso','id_instructor',
+    'modinstructor','nmunidad','nmacademico','observaciones','status','realizo','valido','arc',
+    'tcapacitacion','status_curso','fecha_apertura','fecha_modificacion','costo','motivo_correccion',
+    'pdf_curso','json_supervision','turnado','fecha_turnado','tipo_curso','id_especialidad','instructor_escolaridad',
+    'instructor_titulo','instructor_sexo','instructor_mespecialidad','medio_virtual','link_virtual','folio_grupo',
+    'id_municipio','clave_especialidad','id_cerss','tdias','movimiento_bancario','fecha_movimeinto_bancario',
+    'factura','fecha_factura'
 ];
 
     protected $hidden = ['created_at', 'updated_at'];
+    protected $casts = ['json_supervision' => 'array',
+                        'mov_bancario' => 'array'];
 
     public function curso() {
         return $this->belongsTo(curso::class, 'id_curso');
@@ -36,7 +44,7 @@ class tbl_curso extends Model
                 switch ($tipo) {
                     case 'clave':
                         # code...
-                        return $query->WHERE('tbl_cursos.clave', '=', $buscar);
+                        return $query->WHERE('tbl_cursos.clave', 'LIKE', "%$buscar%");
                         break;
                     case 'nombre_curso':
                         # code...
@@ -44,12 +52,20 @@ class tbl_curso extends Model
                         break;
                     case 'instructor':
                         # code...
-                        return $query->WHERE( \DB::raw('CONCAT(instructores.nombre, '."' '".' , instructores."apellidoPaterno", '."' '".' , instructores."apellidoMaterno")'), 'LIKE', "%$buscar%");
+                        return $query->WHERE( \DB::raw('CONCAT(instructores."apellidoPaterno", '."' '".' , instructores."apellidoMaterno", '."' '".' , instructores.nombre)'), 'LIKE', "%$buscar%");
                         break;
                     case 'unidad':
                         # retornar una consulta
                         return $query->WHERE( 'tbl_cursos.unidad', 'LIKE', "%$buscar%");
                         break;
+                    case 'anio':
+                        # retornar consulta por anio
+                        return $query->WHERE(\DB::raw("date_part('year' , tbl_cursos.created_at )"), '=', "$buscar");
+                        break;
+                    case 'arc01':
+                        # code...
+                        return $query->WHERE('tbl_cursos.munidad', 'LIKE', "%$buscar%");
+                    break;
                     default:
                         # code...
                         break;
@@ -102,6 +118,33 @@ class tbl_curso extends Model
             }
 
             return $query->orderBy('inicio', 'DESC');
+        }
+    }
+
+    protected function scopeSearchByData($query, $unidades){
+        if ($unidades) {
+            # generamos la consulta del scope
+            $query->where('u.ubicacion', '=', $unidades);
+            return $query;
+        }
+    }
+
+    protected function scopeSearchByUnidadMes($query, $unidad, $mes){
+        /**
+         * SCOPE BUSCADOR PARA UNIDAD Y MES .- DISEÑADO POR MIS. DANIEL MÉNDEZ CRUZ
+         */
+        if (!empty($unidad) AND !empty($mes)) {
+            # checamos que no haya vacios
+            $query->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $mes)->WHERE('tblU.ubicacion', $unidad);
+           return $query;
+        }
+    }
+
+    protected function scopeSearchByMesUnidadAnio($query, $mesoptenido){
+        if (!empty($mesoptenido)) {
+            # se cumple culquiera de las condiciones
+            $query->WHERE(DB::raw("to_char(tbl_cursos.fecha_turnado, 'TMMONTH')"), $mesoptenido);
+            return $query;
         }
     }
 }

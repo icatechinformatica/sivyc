@@ -390,201 +390,7 @@ $(function(){
     /****
      *
      */
-    $('#conveniosFrm').validate({
-        rules: {
-            no_convenio: {
-                required: true
-            },
-            institucion: {
-                required: true
-            },
-            telefono: {
-                required: true
-            },
-            sector: {
-                required: true
-            },
-            fecha_firma: {
-                required: true
-            },
-            fecha_termino: {
-                required: true
-            },
-            poblacion: {
-                required: true
-            },
-            municipio: {
-                required: true
-            },
-            nombre_titular: {
-                required: true
-            },
-            nombre_enlace: {
-                required: true
-            },
-            status: {
-                required: true
-            },
-            direccion: {
-                required: true
-            },
-            archivo_convenio: {
-                required: true,
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            }
-        },
-        messages: {
-            no_convenio: {
-                required: "Campo requerido"
-            },
-            institucion: {
-                required: "Campo requerido"
-            },
-            telefono: {
-                required: "Campo requerido"
-            },
-            sector: {
-                required: "Campo requerido"
-            },
-            fecha_firma: {
-                required: "Campo requerido"
-            },
-            fecha_termino: {
-                required: "Campo requerido"
-            },
-            poblacion: {
-                required: "Campo requerido"
-            },
-            municipio: {
-                required: "Campo requerido"
-            },
-            nombre_titular: {
-                required: "Campo requerido"
-            },
-            nombre_enlace: {
-                required: "Campo requerido"
-            },
-            status: {
-                required: "Campo requerido"
-            },
-            direccion: {
-                required: "Campo requerido"
-            },
-            archivo_convenio: {
-                extension: "Sólo se permiten pdf",
-                filesize: "El archivo debe ser menor de 2 MB",
-                required: "Documento requerido"
-            }
-        }
 
-    });
-
-    /**
-     * validación nueva del SID
-     */
-    $('#form_sid').validate({
-        rules: {
-            nombre: {
-                required: true,
-                minlength: 3
-            },
-            apellidoPaterno: {
-                required: true,
-                minlength: 2
-            },
-            sexo: {
-                required: true
-            },
-            curp: {
-                required: true,
-                CURP: true
-            },
-            telefonosid: {
-                required: true,
-                //phoneMEXICO: /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/
-            },
-            estado: {
-                required: true
-            },
-            municipio: {
-                required: true
-            },
-            estado_civil: {
-                required: true
-            },
-            discapacidad: {
-                required: true
-            },
-            dia: {
-                required: true
-            },
-            mes: {
-                required: true
-            },
-            anio: {
-                required: true,
-                maxlength: 4,
-                number: true
-            },
-            medio_entero: {
-                required: true
-            },
-            motivos_eleccion_sistema_capacitacion: {
-                required: true
-            }
-        },
-        messages: {
-            nombre: {
-                required: 'Por favor ingrese su nombre',
-                minlength: jQuery.validator.format("Por favor, al menos {0} caracteres son necesarios")
-            },
-            apellidoPaterno: {
-                required: 'Por favor ingrese su apellido'
-            },
-            sexo: {
-                required: 'Por favor Elegir su genero'
-            },
-            curp: {
-                required: 'Por favor Ingresé la curp',
-            },
-            telefonosid: {
-                required: 'Por favor, ingrese telefóno',
-            },
-            estado: {
-                required: 'Por favor, seleccione un estado'
-            },
-            municipio: {
-                required: 'Por favor, seleccione el municipio'
-            },
-            estado_civil: {
-                required: 'Por favor, seleccione su estado civil'
-            },
-            discapacidad: {
-                required: 'Por favor seleccione una opción'
-            },
-            ultimo_grado_estudios: {
-                required: "Agregar último grado de estudios"
-            },
-            dia: {
-                required: "Por favor, seleccione el día"
-            },
-            mes: {
-                required: "Por favor, seleccione el mes"
-            },
-            anio: {
-                required: "Por favor, Ingrese el año",
-                maxlength: "Sólo acepta 4 digitos",
-                number: "Sólo se aceptan números"
-            },
-            medio_entero: {
-                required: "Por favor, seleccione una opción"
-            },
-            motivos_eleccion_sistema_capacitacion: {
-                required: "Por favor, seleccione una opción"
-            }
-        }
-    });
 
     /**
      * form paso 2
@@ -660,90 +466,8 @@ $(function(){
         }
     });
 
-    /**
-     * validar formulario paso2UploadFiles
-     */
-    $("#paso2UploadFiles").validate({
-        rules: {
-            customFile: {
-                extension: "pdf|png|jpg|jpeg",
-                filesize: 2000000,   //max size 2mb
-                required: true
-            },
-            tipoDocumento:{
-                required: true
-            }
-        },
-        messages: {
-            customFile: {
-                extension: "Sólo se permiten pdf, png, jpg, jpege",
-                filesize:"El archivo debe ser menor de 2 MB",
-                required: "Anexar el documento"
-            },
-            tipoDocumento: {
-                required: 'Por favor, seleccione el tipo de documento',
-            }
-        }
 
-    });
 
-    /***
-     * validacion SID registro
-     */
-    $('#form_sid_registro').validate({
-        rules: {
-            especialidad_sid: {
-                required: true,
-            },
-            cursos_sid: {
-                required: true,
-            },
-            grupo: {
-                required: true
-            },
-            tipo_curso: {
-                required: true
-            },
-            horario: {
-                required: true
-            },
-            cerrs: {
-                required: true
-            },
-            tblubicacion: {
-                required: true
-            },
-            tblunidades: {
-                required: true
-            }
-        },
-        messages: {
-            especialidad_sid: {
-                required: "Por favor, Seleccione la especialidad"
-            },
-            cursos_sid: {
-                required: "Por favor, Seleccione el curso"
-            },
-            grupo: {
-                required: "Agregar el grupo"
-            },
-            tipo_curso: {
-                required: "Por favor, Seleccione tipo de curso"
-            },
-            horario: {
-                required: "Agregar Horario"
-            },
-            cerrs: {
-                required: "Por favor, Seleccione una opción"
-            },
-            tblubicacion: {
-                required: "Por favor, Seleccione una opción"
-            },
-            tblunidades: {
-                required: "Por favor, Seleccione una opción"
-            }
-        }
-    });
 
     // hacemos que los input sean mayusculos
     $('input[type=text]').val (function () {
@@ -755,133 +479,6 @@ $(function(){
     })
 
 
-    // escuchará los cambios del select de especialidades y enviará una petición Ajax para buscar los cursos de esa especialidad
-    $('#especialidad_sid' && '#tipo_curso').on("change", () => {
-
-        $("#especialidad_sid option:selected").each( () => {
-            var IdEsp = $('#especialidad_sid').val();
-            var tipo = $('#tipo_curso').val();
-            var unidad = $('#tblunidades').val();
-            var datos = { idEsp: IdEsp, tipo: tipo};
-            var url = '/alumnos/sid/cursos';
-            var url2 = '/alumnos/sid/checkcursos';
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-            request.done(( respuesta ) =>
-            {
-                if (respuesta.length < 1) {
-                    $("#cursos_sid").empty();
-                    $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#cursos_sid").empty();
-                        $("#cursos_sid").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            idcur = v.id;
-                            var data = {unidad: unidad, idcur: idcur};
-
-                            var request = $.ajax
-                            ({
-                                url: url2,
-                                method: 'POST',
-                                data: data,
-                                dataType: 'json'
-                            });
-
-                            request.done(( resp ) =>
-                            {
-                                if(resp.chk == true)
-                                {
-                                    $('#cursos_sid').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
-                                }
-                            });
-
-                            request.fail(( jqXHR, textStatus ) =>
-                            {
-                                jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                                console.log(jqXHR.responseText);
-                                alert( "Hubo un error: " + jsonValue );
-                            });
-                        });
-                        $("#cursos_sid").focus();
-                    }else{
-                        console.log('errores');
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                jsonValue = jQuery.parseJSON( jqXHR.responseText );
-                console.log(jqXHR.status);
-                alert( "Hubo un error: " + jsonValue );
-            });
-        });
-    });
-
-    $('#estado').on("change", () => {
-        var IdEst =$('#estado').val();
-        $("#estado option:selected").each( () => {
-            var IdEst = $('#estado').val();
-            var datos = {idEst: IdEst};
-            var url = '/alumnos/sid/municipios';
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-
-            request.done(( respuesta ) =>
-            {
-                if (respuesta.length < 1) {
-                    $("#municipio").empty();
-                    $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#municipio").empty();
-                        $("#municipio").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            $('#municipio').append('<option value="' + v.muni + '">' + v.muni + '</option>');
-                        });
-                        $("#municipio").focus();
-                    }else{
-
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + textStatus );
-            });
-        });
-    });
 
     /**
      * cambios select dependientes
@@ -996,90 +593,6 @@ $(function(){
         });
     });
 
-    /**
-     * Modificacion de cursos, validación
-     */
-    $('#frmcursoscatalogo').validate({
-        rules: {
-            nombrecurso: {
-                required: true
-            },
-            modalidad: {
-                required: true
-            },
-            clasificacion: {
-                required: true
-            },
-            documento_solicitud_autorizacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            documento_memo_actualizacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            documento_memo_validacion: {
-                extension: "pdf",
-                filesize: 2000000   //max size 2mb
-            },
-            fecha_validacion: {
-                required: true
-            },
-            areaCursos: {
-                required: true
-            },
-            especialidadCurso: {
-                required: true
-            },
-            duracion: {
-                number: true
-            },
-            tipo_curso: {
-                    required: true,
-                    valueNotEquals: "default"
-            }
-        },
-        messages: {
-            nombrecurso: {
-                required: "Por favor, Escriba nombre del curso"
-            },
-            modalidad: {
-                required: "Por favor, Seleccione la modalidad"
-            },
-            clasificacion: {
-                required: "Por favor, Seleccione la clasificación"
-            },
-            documento_solicitud_autorizacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            documento_memo_actualizacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            documento_memo_validacion: {
-                extension: "Sólo se permiten pdf",
-                filesize:"El archivo debe ser menor de 2 MB",
-            },
-            fecha_validacion: {
-                required: "la fecha de validación es requerido"
-            },
-            especialidadCurso: {
-                required: "Por favor, Seleccione la especialidad"
-            },
-            areaCursos: {
-                required: "Por favor, Seleccione el campo"
-            },
-            duracion: {
-                number: 'Acepta sólo números'
-            },
-            tipo_curso: {
-                required: "Por favor ingrese el tipo de curso",
-                valueNotEquals: "Por favor ingrese el tipo de curso"
-        }
-        }
-    });
-
     /***
      * modificaciones de funciones de flecha
     */
@@ -1116,9 +629,6 @@ $(function(){
                   +     '<b> Unidad Móvil: </b> '+ response[0].unidad_amovil
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> Memo de Validación: </b> '+ response[0].memo_validacion
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
                   +     '<b> NIVEL DE ESTUDIOS: </b> ' + response[0].nivel_estudio
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
@@ -1140,13 +650,22 @@ $(function(){
                   +     '<b> Curso Tipo: </b> ' + response[0].tipo_curso
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + '<a href="'+response[0].documento_solicitud_autorizacion+'" target="_blank">DOCUMENTO</a>'
+                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response[0].solicitud_autorizacion ? 'SI' : 'NO')
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> MEMO VALIDACIÓN: </b> ' + '<a href="'+response[0].documento_memo_validacion+'" target="_blank">DOCUMENTO</a>'
+                  +     '<b>OBJETIVOS DEL CURSO: </b>' + response[0].objetivo
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> MEMO ACTUALIZACIÓN: </b> ' + '<a href="'+response[0].documento_memo_actualizacion+'" target="_blank">DOCUMENTO</a>'
+                  +     '<b>CRITERIO DE PAGO MINIMO: </b>' + response[0].rango_criterio_pago_minimo
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>CRITERIO DE PAGO MAXIMO: </b>' + response[0].rango_criterio_pago_maximo
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>GRUPOS VULNERABLES: </b>' + response[0].grupo_vulnerable
+                  +   '</li>'
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b>DEPENDENCIAS: </b>' + response[0].dependencia
                   +   '</li>'
                   + '</ul>'
               );
@@ -1186,63 +705,6 @@ $(function(){
         }
     });
 
-    /****
-     * sólo acepta números en el texbox
-     */
-    $('#anio').keypress(function (e) {
-        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-            //display error message
-            return false;
-        }
-    });
-
-    /**
-     * cambios select dependientes de tbl_unidades
-     */
-    $('#tblubicacion').on("change", () => {
-        $("#tblubicacion option:selected").each( () => {
-            var ubicacion = $('#tblubicacion').val();
-            var url = '/unidades/unidades_by_ubicacion/'+ ubicacion;
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'GET',
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-            request.done(( respuesta ) => {
-                if (respuesta.length < 1) {
-                    $("#tblunidades").empty();
-                    $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#tblunidades").empty();
-                        $("#tblunidades").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            $('#tblunidades').append('<option value="' + v.unidad + '">' + v.unidad + '</option>');
-                        });
-                        $("#tblunidades").focus();
-                    }else{
-
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                    alert( "Hubo un error: " + textStatus );
-            });
-        });
-    });
 
     /**
      * Modificacion estado municipios
@@ -1300,66 +762,6 @@ $(function(){
      * Documentos
      *
      */
-    $('#especialidad_sid_mod' && '#tipo_curso_mod').on("change", () => {
-
-        $("#especialidad_sid_mod option:selected").each( () => {
-            var IdEsp = $('#especialidad_sid_mod').val();
-            var tipo = $('#tipo_curso_mod').val();
-            var datos = { idEsp_mod: IdEsp, tipo_mod: tipo};
-            var url = '/alumnos/sid/cursos_update';
-            console.log(datos);
-
-            var request = $.ajax
-            ({
-                url: url,
-                method: 'POST',
-                data: datos,
-                dataType: 'json'
-            });
-
-            /*
-                *Esta es una parte muy importante, aquí se  tratan los datos de la respuesta
-                *se asume que se recibe un JSON correcto con dos claves: una llamada id_curso
-                *y la otra llamada cursos, las cuales se presentarán como value y datos de cada option
-                *del select PARA QUE ESTO FUNCIONE DEBE SER CAPAZ DE DEVOLVER UN JSON VÁLIDO
-            */
-
-            request.done(( respuesta ) =>
-            {
-                console.log(respuesta);
-                if (respuesta.length < 1) {
-                    $("#curso_sid_mod").empty();
-                    $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                } else {
-                    if(!respuesta.hasOwnProperty('error')){
-                        $("#curso_sid_mod").empty();
-                        $("#curso_sid_mod").append('<option value="" selected="selected">--SELECCIONAR--</option>');
-                        $.each(respuesta, (k, v) => {
-                            $('#curso_sid_mod').append('<option value="' + v.id + '">' + v.nombre_curso + '</option>');
-                        });
-                        $("#curso_sid_mod").focus();
-                    }else{
-
-                        //Puedes mostrar un mensaje de error en algún div del DOM
-                    }
-                }
-            });
-
-            request.fail(( jqXHR, textStatus ) =>
-            {
-                alert( "Hubo un error: " + textStatus );
-            });
-        });
-    });
-
-    // disabled button while submit
-    $("#paso2UploadFiles").submit(function (e) {
-
-        $("#submitDocs").attr("disabled", true);
-
-        return true;
-
-    });
 
 
     /**

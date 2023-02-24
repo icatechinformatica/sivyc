@@ -268,6 +268,10 @@ $(function(){
                 required: true,
                 valueNotEquals: "sin especificar"
             },
+            recibidos_icatech:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
             conocer:{
                 required: true,
                 valueNotEquals: "sin especificar"
@@ -282,7 +286,7 @@ $(function(){
             },
             cursos_icatech:{
                 required: true,
-                valueNotEquals: "default"
+                valueNotEquals: "sin especificar"
             },
             cursos_impartidos:{
                 required: true,
@@ -354,6 +358,10 @@ $(function(){
             },
             exp_doc:{
                 required: "Por favor Ingrese Experiencia Docente"
+            },
+            recibidos_icatech:{
+                required: "Por favor Ingrese una respuesta",
+                valueNotEquals: "Por favor Ingrese una respuesta"
             }
         }
     });
@@ -425,7 +433,8 @@ $(function(){
                 date: true
             },
             unidad:{
-                required: true
+                required: true,
+                valueNotEquals: "default"
             },
             destino_puesto:{
                 required: true
@@ -455,7 +464,8 @@ $(function(){
                 date: "Por favor ingrese la fecha correcta"
             },
             unidad:{
-                required: "Por favor ingrese la unidad"
+                required: "Por favor ingrese la unidad",
+                valueNotEquals: "Por favor seleccione una unidad"
             },
             destino_puesto:{
                 required: "Por favor ingrese el destinatario"
@@ -667,16 +677,15 @@ $(function(){
             },
             liquido:{
                 required: true,
-                digits: true
             },
             arch_asistencia:{
                 required: true,
                 extension: "pdf"
             },
-            arch_evidencia:{
-                required: true,
-                extension: "pdf"
-            },
+            // arch_evidencia:{
+            //     required: true,
+            //     extension: "pdf"
+            // },
             ccpa1:{
                 required: true
             },
@@ -703,12 +712,11 @@ $(function(){
             },
             liquido:{
                 required: 'Por favor ingrese el liquido final reflejado en la factura',
-                digits: 'Por favor ingrese solo numeros'
             },
-            arch_evidencia: {
-                required: 'Por favor ingrese la evidencia',
-                extension: "Por favor ingrese el documento con extension PDF"
-            },
+            // arch_evidencia: {
+            //     required: 'Por favor ingrese la evidencia',
+            //     extension: "Por favor ingrese el documento con extension PDF"
+            // },
             arch_asistencia: {
                 required: 'Por favor ingrese la asistencia',
                 extension: "Por favor ingrese el documento con extension PDF"
@@ -721,6 +729,58 @@ $(function(){
             },
             ccpa3: {
                 required: 'Por favor ingrese el nombre'
+            }
+        }
+    });
+
+    // Registro CERSS
+    $('#registercerss').validate({
+        rules: {
+            municipio:{
+                valueNotEquals: "sin especificar"
+            },
+            unidad:{
+                valueNotEquals: "sin especificar"
+            },
+        },
+        messages: {
+            municipio:{
+                valueNotEquals: "Seleccione una Opcion Valida"
+            },
+            unidad:{
+                valueNotEquals: "Seleccione una Opcion Valida"
+            },
+        }
+    });
+
+    //Registro Especialidad Validada para Impartir
+    $('#register_espec').validate({
+        rules: {
+            valido_perfil:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
+            unidad_validacion:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            },
+            criterio_pago_instructor:{
+                required: true,
+                valueNotEquals: "sin especificar"
+            }
+        },
+        messages: {
+            valido_perfil: {
+                required: 'Por favor seleccione un perfil profesional',
+                valueNotEquals: 'Por favor seleccione un perfil profesional'
+            },
+            unidad_validacion: {
+                required: 'Por favor seleccione un perfil profesional',
+                valueNotEquals: 'Por favor seleccione un perfil profesional'
+            },
+            criterio_pago_instructor: {
+                required: 'Por favor seleccione un perfil profesional',
+                valueNotEquals: 'Por favor seleccione un perfil profesional'
             }
         }
     });

@@ -23,7 +23,9 @@ class Alumno extends Model
         'realizo',
         'cerrs',
         'etnia',
-        'estatus_modificacion'
+        'estatus_modificacion',
+        'costo',
+        'tinscripcion'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -49,6 +51,9 @@ class Alumno extends Model
                     case 'no_control':
                         # code...
                         return $query->where('alumnos_registro.no_control', '=', $buscar);
+                        break;
+                    case 'folio_grupo':
+                        return $query->where('alumnos_registro.folio_grupo', '=', $buscar);
                         break;
                     case 'nombres':
                         # code...

@@ -9,6 +9,7 @@ use App\Models\api\Calificacion;
 use App\Models\api\Inscripcion;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class CursosController extends Controller
 {
@@ -44,11 +45,8 @@ class CursosController extends Controller
     public function store(Request $request)
     {
         //
-        try {
-            //code
-            /*$validador = Validator::make($request->all(), [
-
-            ]);*/
+       /* try {
+            
 
                 # enviar o generar codigo que si funciona
                 $Curso= new Curso();
@@ -130,7 +128,7 @@ class CursosController extends Controller
                 return response()->json(['success' => 'Curso se cargo exitosamente en la base de datos'], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 501);
-        }
+        }*/
     }
 
     /**
@@ -166,16 +164,21 @@ class CursosController extends Controller
     {
         // actualizando
         try {
-            $Cursos= new Curso();
-            $cursosArray = [
-                'cct' => trim($request->cct),
+            //return response()->json($request->all(), 200);
+            //exit;
+            //$Cursos= new Curso();
+            //$cursosArray =
+
+                DB::table('tbl_cursos')->where('id', $id)->update(
+                [
+                /*'cct' => trim($request->cct),
                 'unidad' => trim($request->unidad),
                 'nombre' => trim($request->nombre),
                 'curp' => trim($request->curp),
-                'rfc' => trim($request->rfc),
+                'rfc' => trim($request->rfc),*/
                 'clave' => trim($request->clave),
                 'mvalida' => trim($request->mvalida),
-                'mod' => trim($request->mod),
+                /*'mod' => trim($request->mod),
                 'area' => trim($request->area),
                 'espe' => trim($request->espe),
                 'curso' => trim($request->curso),
@@ -211,21 +214,21 @@ class CursosController extends Controller
                 'id_curso' => trim($request->id_curso),
                 'id_instructor' => trim($request->id_instructor),
                 'modinstructor' => trim($request->modinstructor),
-                'nmunidad' => trim($request->nmunidad),
+                'nmunidad' => trim($request->nmunidad),*/
                 'nmacademico' => trim($request->nmacademico),
-                'observaciones' => trim($request->observaciones),
-                'status' => trim($request->status),
-                'realizo' => trim($request->realizo),
+               // 'observaciones' => trim($request->observaciones),
+               // 'status' => trim($request->status),
+               // 'realizo' => trim($request->realizo),
                 'valido' => trim($request->valido),
-                'arc' => trim($request->arc),
-                'tcapacitacion' => trim($request->tcapacitacion),
-                'fecha_apertura' => $request->fecha_apertura,
+               // 'arc' => trim($request->arc),
+              // 'tcapacitacion' => trim($request->tcapacitacion),
+               'fecha_apertura' => $request->fecha_apertura,
                 'fecha_modificacion' => $request->fecha_modificacion,
-                'costo' => trim($request->costo),
-                'motivo_correccion' => trim($request->motivo_correccion),
+               // 'costo' => trim($request->costo),
+               // 'motivo_correccion' => trim($request->motivo_correccion),
                 'status_curso' => trim($request->status_curso)
-            ];
-            $Cursos->WHERE('id', $id)->update($cursosArray);
+            ]);
+            //$Cursos->WHERE('id', $id)->update($cursosArray);
 
             // validamos si hay archivos
             if ($request->hasFile('pdf_curso')) {
@@ -311,7 +314,7 @@ class CursosController extends Controller
      * funcion para subir un archivo al servidor
      */
     protected function uploaded_file($file, $id, $name){
-        $tamanio = $file->getClientSize(); #obtener el tamaño del archivo del cliente
+        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
         $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
         # nuevo nombre del archivo
         $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);

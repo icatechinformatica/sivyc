@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="form-row" style="">
+                <div class="form-row">
                     <div class="form-group col-md-2">
                         <button type="button" id="valsupre_rechazar" name="valsupre_rechazar" class="btn btn-danger">Rechazar</a>
                     </div>
@@ -75,8 +75,16 @@
                         <label for="inputfecha_validacion">Fecha de Validación</label>
                         <input name="fecha_val" id="fecha_val" type="date" class="form-control">
                     </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputfinanciamiento">Fuente de Financiamiento</label>
+                        <select class="form-control" name="financiamiento" id="financiamiento" required>
+                            <option value="">SELECCIONE</option>
+                            <option value="FEDERAL">FEDERAL</option>
+                            <option value="ESTATAL">ESTATAL</option>
+                        </select>
+                    </div>
                 </div>
-                <div id="div2" class="form-row d-none d-print-none">
+                <!--<div id="div2" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_firmante">Nombre del Firmante</label>
                         <input  type="text" name="nombre_firmante" id="nombre_firmante" class="form-control">
@@ -86,13 +94,13 @@
                         <input name="puesto_firmante" readonly id="puesto_firmante" type="text" class="form-control">
                         <input id="id_firmante" name="id_firmante" hidden>
                     </div>
-                </div>
+                </div>-->
                 <hr style="border-color:dimgray">
                 <div id="div3" class="d-none d-print-none">
-                    <h3>Con Copia Para:</h3>
+                    <h3>Con Copia Para El Delegado:</h3>
                 </div>
             <!-- START CCP -->
-                <div id="div4" class="form-row d-none d-print-none" >
+                <!--<div id="div4" class="form-row d-none d-print-none" >
                     <div class="form-group col-md-4">
                         <input  type="text" name="ccp1" id="ccp1" class="form-control" placeholder="Nombre Completo">
                     </div>
@@ -117,7 +125,7 @@
                     <div class="form-group col-md-4">
                         <input name="ccpa3" id="ccpa3" readonly class="form-control" placeholder="Puesto">
                         <input id="id_ccp3" name="id_ccp3" hidden>
-                    </div>
+                    </div>-->
                 </div>
                 <div id="div7" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
@@ -141,4 +149,8 @@
                 <br>
         </form>
     </section>
-@stop
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+@endsection

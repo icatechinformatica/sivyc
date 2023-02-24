@@ -24,7 +24,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputobservacion" class="control-label"><b>Observaciones de Rechazo</b></label>
-                <textarea cols="4" rows="4" type="text" class="form-control" disabled aria-required="true" onkeypress="return soloLetras(event)" id="observacion" name="observacion">{{ $getsupre->observacion}}</textarea>
+                <textarea cols="4" rows="4" type="text" class="form-control" readonly aria-required="true" onkeypress="return soloLetras(event)" id="observacion" name="observacion">{{ $getsupre->observacion}}</textarea>
             </div>
         </div>
         <br>
@@ -48,17 +48,6 @@
                 <input class="form-control" name="fecha" disabled type="date" aria-required="true" value="{{ $getsupre->fecha }}" id="fecha">
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group col-md-6"> <!-- Destinatario -->
-                <label for="iddestino" class="control-label">Destinatario</label>
-                <input type="text" class="form-control" aria-required="true" value="{{$getdestino->nombre}} {{$getdestino->apellidoPaterno}} {{$getdestino->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="destino" name="destino" placeholder="Nombre">
-            </div>
-            <div class="form-group col-md-6"> <!-- Puesto-->
-                <label for="idpuesto" class="control-label">Puesto</label>
-                <input type="text" class="form-control" disabled aria-required="true" value="{{$getdestino->puesto}}" onkeypress="return soloLetras(event)" id="destino_puesto" name="destino_puesto" placeholder="Puesto">
-                <input id="id_destino" name="id_destino" type="text" value="{{$getdestino->id}}" hidden>
-            </div>
-        </div>
         <div class="field_wrapper">
             <table class="table table-bordered" id="dynamicTablemodsupre">
                 <tr>
@@ -73,9 +62,9 @@
                 @foreach ( $getfolios as $key=>$data )
                 <tr>
                     <td><input type="text" id="addmore[{{$key}}][folio]" name="addmore[{{$key}}][folio]" value="{{ $data->folio_validacion }}" placeholder="folio" class="form-control" /></td>
-                    <td><input type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="{{ $data->numero_presupuesto }}" placeholder="numero presupuesto" class="form-control" /></td>
+                    <td><input type="text" id="addmore[{{$key}}][numeropresupuesto]" name="addmore[{{$key}}][numeropresupuesto]" value="12101" placeholder="numero presupuesto" class="form-control" /></td>
                     <td><input type="text" id="addmore[{{$key}}][clavecurso]" name="addmore[{{$key}}][clavecurso]" value="{{ $data->clave}}" placeholder="clave curso" class="form-control" /></td>
-                    <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" readonly /></td>
+                    <td><input type="text" id="addmore[{{$key}}][importe]" name="addmore[{{$key}}][importe]" value="{{ $data->importe_total }}" placeholder="importe total" class="form-control" readonly /><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
                     <td><input type="text" id="addmore[{{$key}}][iva]" name="addmore[{{$key}}][iva]" value="{{ $data->iva }}" placeholder="Iva" class="form-control" readonly /></td>
                     <td><input type="text" id="addmore[{{$key}}][comentario]" name="addmore[{{$key}}][comentario]" value="{{ $data->comentario }}" placeholder="comentario" class="form-control" /></td>
                     <input hidden id="addmore[{{$key}}][id_cursos]" name="addmore[{{$key}}][id_cursos]" value="{{$data->id_cursos}}">
@@ -85,8 +74,21 @@
                     <td><button type="button" class="btn btn-danger remove-trmodsupre">Eliminar</button></td>
                     @endif
                 </tr>
+
                 @endforeach
-                <input hidden id='wa' value={{$key}}>
+                @if(isset($key))
+                    <input hidden id='wa' value={{$key}}>
+                @else
+                    <tr>
+                        <td><input type="text" name="addmore[0][folio]" id="addmore[0][folio]" placeholder="folio" class="form-control" /><footer name="addmore[0][avisofolio]" id="addmore[0][avisofolio]" style="color: red"></footer></td>
+                        <td><input type="text" name="addmore[0][numeropresupuesto]" id="addmore[0][numeropresupuesto]" placeholder="número presupuesto" class="form-control" disabled value="12101" /></td>
+                        <td><input type="text" name="addmore[0][clavecurso]" id="addmore[0][clavecurso]" placeholder="clave curso" class="form-control claveCurso" /></td>
+                        <td><input type="text" name="addmore[0][importe]" id="addmore[0][importe]" placeholder="importe total" class="form-control" readonly/><footer name="addmore[0][aviso]" id="addmore[0][aviso]" style="color: red"></footer></td>
+                        <td><input type="text" name="addmore[0][iva]" id="addmore[0][iva]" placeholder="IVA" class="form-control" readonly /></td>
+                        <td><input type="text" name="addmore[0][comentario]" id="addmore[0][comentario]" placeholder="Comentario" class="form-control" /></td>
+                        <td><button type="button" name="add" id="add" class="btn btn-success">Agregar</button></td>
+                    </tr>
+                @endif
             </table>
         </div>
         <div class="form-row">
@@ -123,37 +125,51 @@
             </div>
         </div>
         <hr style="border-color:dimgray">
-        <!-- START CCP -->
-            <label for="inputccp"><h3>Con Copia Para</h3></label>
-            <br>
-            <label><h4>Copia 1</h4></label>
-            <div class="form-row">
-                <div class="form-group col-md-4"> <!-- copia 1 -->
-                    <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{$getccp1->nombre}} {{$getccp1->apellidoPaterno}} {{$getccp1->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp1" name="nombre_ccp1" placeholder="Nombre">
+        <h2>Datos de Pago de Curso
+            <button type="button" class="btn btn-primary float-right" onclick="addField()">Añadir Movimiento</button>
+        </h2>
+        <div id="fieldsContainer">
+            @if(isset($data->mov_bancario))
+            {{-- @php $data->mov_bancario = json_decode($data->mov_bancario) @endphp --}}
+                @foreach ($data->mov_bancario as $keygen => $movitem)
+                    <div class="form-row">
+                        @if ($keygen == 0)
+                            <div class="form-group col-md-3">
+                                <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
+                                <input type="text" name="norecibo" id="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
+                            </div>
+                        @endif
+                        <div class="form-group col-md-3">
+                            <label for="movimiento_bancario_{{$keygen}}">Movimiento Bancario</label>
+                            <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[{{$keygen}}]">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="fecha_movimiento_bancario_{{$keygen}}">Fecha de Movimiento</label>
+                            <input type="date" class="form-control" id="fecha_movimiento_bancario_0" value="{{$movitem->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario_[{{$keygen}}]">
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="inputnorecibo" class="control-label">Numero de Recibo de Pago</label>
+                            <input type="text" name="norecibo" id="norecibo" value="{{$data->folio_pago}}" class="form-control" readonly />
+                        </div>
+                    <div class="form-group col-md-3">
+                        <label for="movimiento_bancario_0">Movimiento Bancario</label>
+                        <input type="text" class="form-control" id="movimiento_bancario_0" value="{{$movitem->movimiento_bancario}}" name="movimiento_bancario_[0]">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="fecha_movimiento_bancario_{{$keygen}}">Fecha de Movimiento</label>
+                        <input type="date" class="form-control" id="fecha_movimiento_bancario_0" value="{{$movitem->fecha_movimiento_bancario}}" name="fecha_movimiento_bancario_[0]">
+                    </div>
                 </div>
-                <div class="form-group col-md-4"> <!--  -->
-                    <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getccp1->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp1" name="puesto_ccp1" placeholder="Puesto">
-                    <input id="id_ccp1" name="id_ccp1" type="text" value="{{$getccp1->id}}" hidden>
-                </div>
-            </div>
-            <br>
-            <label><h4>Copia 2</h4></label>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="remitente" class="control-label">Nombre</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{$getccp2->nombre}} {{$getccp2->apellidoPaterno}} {{$getccp2->apellidoMaterno}}" onkeypress="return soloLetras(event)" id="nombre_ccp2" name="nombre_ccp2" placeholder="Nombre">
-                </div>
-                <div class="form-group col-md-4"> <!--  -->
-                    <label for="remitente" class="control-label">Puesto</label>
-                    <input type="text" class="form-control" disabled aria-required="true" value="{{ $getccp2->puesto }}" onkeypress="return soloLetras(event)" id="puesto_ccp2" name="puesto_ccp2" placeholder="Puesto">
-                    <input id="id_ccp2" name="id_ccp2" type="text" value="{{$getccp2->id}}" hidden >
-                </div>
-            </div>
-        <!--END CCP-->
+            @endif
+        </div>
+        <input id="keyfield" name="keyfield" hidden value="{{$keygen}}">
         <input id="id_directorio" name="id_directorio" hidden value="{{$directorio->id}}">
-        <br>
+        <button type="button" id="deleteButton" class="btn btn-danger btn-sm" onclick="deleteField()">Eliminar Ultimo Movimiento</button>
+        <br><br><br>
         <div class="row">
             <input hidden id=id_supre name="id_supre" value={{$getsupre->id}}>
             <div class="col-lg-12 margin-tb">
@@ -171,6 +187,72 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
  <script type="text/javascript">
+    let fieldCounter = document.getElementById("keyfield").value;
+
+    function addField() {
+        const fieldsContainer = document.getElementById("fieldsContainer");
+        const formRow = document.createElement("div");
+        formRow.className = "form-row";
+        formRow.id = `formRow${fieldCounter}`;
+        fieldsContainer.appendChild(formRow);
+
+        const textFormGroup = createFormGroup(textLabel("Movimiento Bancario"), textInput(`movimiento_bancario_[${fieldCounter}]`));
+        formRow.appendChild(textFormGroup);
+
+        const dateFormGroup = createFormGroup(textLabel("Fecha de Movimiento"), dateInput(`fecha_movimiento_bancario_[${fieldCounter}]`));
+        formRow.appendChild(dateFormGroup);
+
+        fieldCounter++;
+        updateDeleteButton();
+    }
+
+    function deleteField() {
+        if (fieldCounter === 0) return;
+        const formRow = document.getElementById(`formRow${--fieldCounter}`);
+        formRow.remove();
+        updateDeleteButton();
+    }
+
+    function updateDeleteButton() {
+        const deleteButton = document.getElementById("deleteButton");
+        if (fieldCounter === 0) {
+            deleteButton.style.display = "none";
+        } else {
+            deleteButton.style.display = "inline-block";
+        }
+    }
+
+    function createFormGroup(label, input) {
+        const formGroup = document.createElement("div");
+        formGroup.className = "form-group col-md-3";
+        formGroup.appendChild(label);
+        formGroup.appendChild(input);
+        return formGroup;
+    }
+
+    function textInput(id) {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = 'form-control';
+        input.id = id;
+        input.name = id;
+        return input;
+    }
+
+    function dateInput(id) {
+        const input = document.createElement("input");
+        input.type = "date";
+        input.className = 'form-control';
+        input.id = id;
+        input.name = id;
+        return input;
+    }
+
+    function textLabel(text) {
+        const label = document.createElement("label");
+        label.innerHTML = text;
+        return label;
+    }
 
      // Add the following code if you want the name of the file appear on select
      $(".custom-file-input").on("change", function() {
@@ -205,5 +287,12 @@
    }
  </script>
 
-@stop
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/supre.js") }}"></script>
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/adrianValidate.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
+@endsection
 

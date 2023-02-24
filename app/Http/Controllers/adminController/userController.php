@@ -17,10 +17,12 @@ class userController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $usuarios = User::PAGINATE(25);
+        $tipo='nombres';
+        $busqueda=strtoupper($request->busquedaPersonal);   
+        $usuarios = User::busquedapor($tipo,$busqueda)->PAGINATE(20);
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
@@ -46,7 +48,8 @@ class userController extends Controller
     {
         //checar que no exista un usario con el correo electrónico que se piensa introducir
         $user = User::where('email', '=', $request->get('emailInput'))->first();
-        if ($user === null) {
+        //dd($user);
+        if (!$user) {
             # usuario no encontrado
             User::create([
                 'name' => trim($request->get('nameInput')),
@@ -59,7 +62,7 @@ class userController extends Controller
             return redirect()->route('usuario_permisos.index')->with('success', 'NUEVO USUARIO AGREGADO!');
         } else {
             # usuario encontrado
-            return redirect()->back()->withErrors(['EL CORREO ELECTRÓNICO ASOCIADO A ESTA CUENTA YA SE ENCUENTRA EN LA BASE DE DATOS']);
+            return redirect()->back()->withErrors([sprintf('EL CORREO ELECTRÓNICO %s A ESTA CUENTA YA SE ENCUENTRA EN LA BASE DE DATOS', $request->get('emailInput'))]);
         }
 
     }

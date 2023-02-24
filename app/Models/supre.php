@@ -14,7 +14,8 @@ class supre extends Model
         'id', 'unidad_capacitacion', 'no_memo', 'fecha','nombre_para','puesto_para','nombre_remitente','puesto_remitente',
         'nombre_valida','puesto_valida','nombre_elabora','puesto_elabora','nombre_ccp1','puesto_ccp1','nombre_ccp2','puesto_ccp2',
         'status','observacion','folio_validacion','fecha_validacion','nombre,firmante','puesto_firmante','val_ccp1','val_ccpp1',
-        'val_ccp2','val_ccpp2','val_ccp3','val_ccpp3','val_ccp4','val_ccpp4','fecha_status'
+        'val_ccp2','val_ccpp2','val_ccp3','val_ccpp3','val_ccp4','val_ccpp4','fecha_status','fecha_rechazado','doc_supre',
+        'permiso_editar','financiamiento'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -37,10 +38,22 @@ class supre extends Model
     /**
      * creación de un scope
      */
-    public function scopeBusquedaSupre($query, $tipo, $buscar)
+    public function scopeBusquedaSupre($query, $tipo, $buscar, $tipo_status, $unidad)
     {
         if (!empty($tipo)) {
             # si tipo no es vacio se hace la busqueda
+            if($tipo == 'unidad_capacitacion')
+            {
+                # busqueda por unidad capacitacion...
+                if (!empty($tipo_status))
+                {
+                    return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)->WHERE('tabla_supre.status', '=', $tipo_status);
+                }
+                else
+                {
+                    return $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
+                }
+            }
             if (!empty(trim($buscar))) {
                 # empezamos
                 switch ($tipo) {
@@ -48,16 +61,20 @@ class supre extends Model
                         # el tipo
                         return $query->WHERE('no_memo', '=', $buscar);
                         break;
-                    case 'unidad_capacitacion':
-                        # unidad de capacitacion
-                        return $query->WHERE('unidad_capacitacion', '=', $buscar);
-                        break;
                     case 'fecha':
                         # fecha
-                        return $query->WHERE('fecha', '=', $buscar);
+                        if (!empty($tipo_status)) {
+                            return $query->WHERE('fecha', '=', $buscar)->WHERE('tabla_supre.status', '=', $tipo_status);
+                        }
+                        else {
+                            return $query->WHERE('fecha', '=', $buscar);
+                        }
                         break;
                 }
             }
+        }
+        if (!empty($tipo_status)) {
+            return $query->WHERE('tabla_supre.status', '=', $tipo_status);
         }
     }
 }

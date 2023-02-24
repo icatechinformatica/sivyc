@@ -4,16 +4,21 @@
 @section('title', 'Alumnos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
-    <div class="container g-pt-50">
-        @if ($message = Session::get('success'))
+<link rel="stylesheet" href="{{asset('css/global.css') }}" />
+<link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
+<div class="card-header">
+    PREINSCRIPCIÓN
+</div>
+<div class="card card-body" style=" min-height:450px;">
+        @if (Session::has('success'))
             <div class="alert alert-success">
-                <p>{{ $message }}</p>
+                {{ Session::get('success') }}
             </div>
         @endif
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    <h2>Alumnos Matriculados</h2>
+                    <h2>ALUMNOS MATRICULADOS</h2>
                 </div>
 
                 <div class="pull-right">
@@ -21,8 +26,10 @@
                         <select name="tipo_busqueda" class="form-control mr-sm-2" id="tipo_busqueda">
                             <option value="">BUSCAR POR TIPO</option>
                             <option value="no_control">N° DE CONTROL</option>
+                            <option value="folio_grupo">N° DE GRUPO</option>
                             <option value="curso">CURSO</option>
                             <option value="nombres">NOMBRE</option>
+                            <option value="curp">CURP</option>
                         </select>
 
                         {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
@@ -33,14 +40,17 @@
         </div>
         <hr style="border-color:dimgray">
 
-            <table  id="table-instructor" class="table table-bordered Datatables">
+            <table class="table table-bordered">
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>
                         <th scope="col">N° CONTROL</th>
-                        <th scope="col">CURSOS</th>
                         <th scope="col">NOMBRE</th>
-                        <th width="160px">ACCIONES</th>
+                        <th width="85px">N° GRUPO</th>
+                        <th scope="col">CURSOS</th>
+                        <th scope="col">FECHAS</th>
+                        <th scope="col">HORARIO</th>
+                        <th width="100px">ACCIONES</th>
                         @can('alumno.inscrito.edit')
                             <th scope="col">MODIFICAR</th>
                         @endcan
@@ -51,8 +61,11 @@
                     @foreach ($alumnos as $itemData)
                         <tr>
                             <td>{{$itemData->no_control}}</td>
-                            <td scope="row">{{ $itemData->nombre_curso }}</td>
                             <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
+                            <td>{{$itemData->folio_grupo}}</td>
+                            <td scope="row">{{ $itemData->nombre_curso }}</td>
+                            <td scope="row">{{$itemData->inicio}} AL {{$itemData->termino}}</td>
+                            <td scope="row">{{$itemData->horario}}</td>
                             @can('alumno.inscrito.show')
                                 <td>
                                     <a href="{{route('alumnos.inscritos.detail', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="VER REGISTRO">
@@ -60,7 +73,6 @@
                                     </a>
                                 </td>
                             @endcan
-
                             @can('alumno.inscrito.edit')
                                 <td>
                                     <a href="{{route('alumnos.update.registro', ['id' => base64_encode($itemData->id_registro)])}}" class="btn btn-warning btn-circle m-1 btn-circle-sm" data-toggle="tooltip" data-placement="top" title="MODIFICAR REGISTRO">
@@ -68,11 +80,16 @@
                                     </a>
                                 </td>
                             @endcan
-
                             <td>
-                                <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" download="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                </a>
+                                @if ($itemData->es_cereso == true)
+                                    <a href="{{route('documento.sid_cerrs', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-info btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID DE CERSS" target="_blank">
+                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                    </a>
+                                @else
+                                    <a href="{{route('documento.sid', ['nocontrol' => base64_encode($itemData->id_registro)])}}" class="btn btn-danger btn-circle m-1 btn-circle-sm" data-toggle="tooltip" view="documento_sid_{{ $itemData->no_control }}.pdf" data-placement="top" title="DESCARGAR SID" target="_blank">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                @endif
                             </td>
 
                         </tr>

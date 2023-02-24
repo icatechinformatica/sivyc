@@ -4,6 +4,15 @@
 <!--seccion-->
 @section('content')
     <div class="container g-pt-50">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div> <br>
+        @endif
         <form action="{{ route('contrato-save') }}" method="post" id="registercontrato" enctype="multipart/form-data">
             @csrf
             <div style="text-align: right;width:65%">
@@ -13,7 +22,7 @@
              <div class="form-row">
                  <div class="form-group col-md-6">
                     <label for="numero_contrato" class="control-label">Número de Contrato</label>
-                    <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato">
+                    <input type="text" class="form-control" id="numero_contrato" name="numero_contrato" placeholder="Número de Contrato" value="{{$uni_contrato}}" readonly>
                  </div>
              </div>
             <div class="form-row">
@@ -27,18 +36,27 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-5">
+                <div class="form-group col-md-4">
                     <label for="inputnombre_instructor" class="control-label">Nombre del Instructor</label>
                     <input type="text" disabled class="form-control" value="{{$nombrecompleto}}" id="nombre_instructor" name="nombre_instructor">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="clavecurso" class="control-label">Especialidad de Conocimiento del Instructor</label>
-                    <select class="form-control" name="perfil_instructor" id="perfil_instructor">
-                        <option value="sin especificar">Sin Especificar</option>
-                        @foreach ( $perfil_prof as $value )
-                            <option value={{$value->id_espins}}>{{$value->nombre_especialidad}}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" readonly class="form-control" value="{{$data->espe}}" id="nombre_persel" name="nombre_persel">
+                    {{-- <input type="text" hidden class="form-control" value="{{$especialidad_seleccionada->id}}" id="perfil_instructor" name="perfil_instructor"> --}}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="clavecurso" class="control-label">Memorandum de Validación del Instructor</label>
+                    <input type="text" readonly class="form-control" value="{{$data->instructor_mespecialidad}}" id="nombre_persel" name="nombre_persel">
+                    {{-- <input type="text" hidden class="form-control" value="{{$especialidad_seleccionada->id}}" id="perfil_instructor" name="perfil_instructor"> --}}
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="clavecurso" class="control-label">Validación de instructor</label>
+                    @if ($data->archivo_alta != NULL)
+                        <a class="btn btn-info control-label" href={{$memoval}} target="_blank">Validación de Instructor</a><br>
+                    @else
+                        <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
+                    @endif
                 </div>
             </div>
             <div class="form-row">
@@ -68,8 +86,17 @@
                     <input type="text" class="form-control" id="id_director" name="id_director" hidden>
                 </div>
                 <div class="form-group col-md-4">
+                    <label for="inputpuesto_testigo1" class="control-label">Puesto del Director/Encargado de Unidad de Capacitación</label>
+                    <input readonly type="text" class="form-control" id="puesto_director" name="puesto_director">
+                </div>
+                <div class="form-group col-md-4">
                     <label for="testigo_icatech" class="control-label">Unidad de Capacitación</label>
-                    <input type="text" class="form-control" id="unidad_capacitacion" name="unidad_capacitacion">
+                    <select name="unidad_capacitacion" class="form-control mr-sm-2" id="unidad_capacitacion">
+                        <option value="">SELECCIONE UNIDAD</option>
+                        @foreach ($unidades as $cadwell)
+                            <option value="{{$cadwell->unidad}}">{{$cadwell->unidad}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="form-row">
@@ -82,6 +109,13 @@
                         <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
                     @endif
                 </div>
+                {{-- <div class="form-group col-md-3">
+                    <label for="testigo_icatech" class="control-label">Tipo de Factura</label>
+                    <select name="tipo_factura" class="form-control mr-sm-2" id="tipo_factura">
+                        <option value="NORMAL">NORMAL</option>
+                        <option value="NUEVA">NUEVA</option>
+                    </select>
+                </div> --}}
             </div>
             <hr style="border-color:dimgray">
             <h2>Testigos</h2>
@@ -134,4 +168,8 @@
         </form>
         <br>
     </div>
+@endsection
+@section('script_content_js')
+<script src="{{ asset("js/validate/autocomplete.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
 @endsection

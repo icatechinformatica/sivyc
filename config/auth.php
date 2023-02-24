@@ -42,8 +42,14 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'passport',
             'provider' => 'users',
+            'hash' => false,
+        ],
+
+        'api_sice' => [
+            'driver' => 'passport',
+            'provider' => 'user_sice',
             'hash' => false,
         ],
     ],
@@ -67,9 +73,14 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'customuserprovider',
             'model' => App\User::class,
+            'table' => 'users',
         ],
+        'user_sice' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\api\UsuarioSice::class,
+        ]
 
         // 'users' => [
         //     'driver' => 'database',
@@ -99,6 +110,12 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'user_sice' => [
+            'provider' => 'user_sice',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ]
     ],
 
     /*

@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="{{asset("vendor/nucleo/css/nucleo.css") }}">
         <link rel="stylesheet" href="{{asset("vendor/@fortawesome/fontawesome-free/css/all.min.css") }}" type="text/css">
         <link rel="stylesheet" href="{{asset("css/mdb.min.css") }}">
-        <link rel="stylesheet" href="{{asset("css/global.css") }}">
+        
         @yield("css_content")
     </head>
 

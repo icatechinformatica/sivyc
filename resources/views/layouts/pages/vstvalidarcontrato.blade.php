@@ -19,34 +19,39 @@
         <h2>Vista de Documentos</h2>
         <div class="form-row">
             @if ($data->archivo_ine != NULL)
-                <a class="btn btn-info" href={{$data->archivo_ine}} download>Comprobante INE</a><br>
+                <a class="btn btn-info" href={{$data->archivo_ine}} target="_blank">Comprobante INE</a><br>
             @else
                 <a class="btn btn-danger" disabled>Comprobante INE</a><br>
             @endif
             @if ($data->archivo_domicilio != NULL)
-                <a class="btn btn-info" href={{$data->archivo_domicilio}} download>Comprobante de Domicilio</a><br>
+                <a class="btn btn-info" href={{$data->archivo_domicilio}} target="_blank">Comprobante de Domicilio</a><br>
             @else
                 <a class="btn btn-danger" disabled>Comprobante de Domicilio</a><br>
             @endif
             @if ($data->archivo_alta != NULL)
-                <a class="btn btn-info" href={{$data->archivo_alta}} download>Validación de Instructor</a><br>
+                <a class="btn btn-info" href={{$memoval}} target="_blank">Validación de Instructor</a><br>
             @else
                 <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
             @endif
-            @if ($data->archivo_alta != NULL)
-                <a class="btn btn-info" href={{$data->arch_factura}} download>Factura</a><br>
+            @if ($data->archivo_factura != NULL)
+                <a class="btn btn-info" href={{$data->arch_factura}} target="_blank">Factura</a><br>
             @else
                 <a class="btn btn-danger" disabled>Factura</a><br>
             @endif
             @if ($data->archivo_rfc != NULL)
-                <a class="btn btn-info" href={{$data->archivo_rfc}} download>RFC/Constancia Fiscal</a><br>
+                <a class="btn btn-info" href={{$data->archivo_rfc}} target="_blank">RFC/Constancia Fiscal</a><br>
             @else
                 <a class="btn btn-danger" disabled>RFC/Constancia Fiscal</a><br>
             @endif
             @if ($data->doc_validado != NULL)
-                <a class="btn btn-info" href={{$data->doc_validado}} download>Validación de Suficiencia Presupuestal</a><br>
+                <a class="btn btn-info" href={{$data->doc_validado}} target="_blank">Validación de Suficiencia Presupuestal</a><br>
             @else
                 <a class="btn btn-danger" disabled>Validación Suficiencia Presupuestal</a><br>
+            @endif
+            @if ($data->comprobante_pago != NULL)
+                <a class="btn btn-info" href={{$data->comprobante_pago}} target="_blank">Comprobante Pago</a><br>
+            @else
+                <a class="btn btn-danger" disabled>Comprobante Pago</a><br>
             @endif
         </div>
         <div class="form-row">
@@ -56,17 +61,35 @@
             </div>
             <div class="form-group col-md-5">
                 <label for="clavecurso" class="control-label">Especialidad</label>
-                <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->especialidad}}">
+                <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->espe}}">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="clavecurso" class="control-label">Memorándum de Validación</label>
-                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->memorandum_validacion}}">
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->instructor_mespecialidad}}">
             </div>
             <div class="form-group col-md-3">
                 <label for="clavecurso" class="control-label">Tipo Honorario</label>
-                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->tipo_honorario}}">
+                <input class="form-control" name="memo_validacion" disabled id="memo_validacion" value="{{$data->modinstructor}}">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="tipo_identificacion" class="control-label">Tipo identificación</label>
+                <input class="form-control" name="tipo_identificacion" disabled id="tipo_identificacion" value="{{$data->instructor_tipo_identificacion}}">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="folio_identificacion" class="control-label">Folio de Identificación</label>
+                <input class="form-control" name="folio_identificacion" disabled id="folio_identificacion" value="{{$data->instructor_folio_identificacion}}">
+            </div>
+        </div>
+        <hr style="border-color:dimgray">
+        <h2>Previsualización de Contrato</h2>
+        <div class="form-row">
+            {{-- <div class="form-group col-md-3">
+                <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="/contrato-web/{data->id_contrato}}" target="_blank">Contrato de Instructor</a>
+            </div> --}}
+            <div class="form-group col-md-6">
+                <a class="btn btn-danger" id="contrato_pdf2" name="contrato_pdf2" href="/contrato/{{$data->id_contrato}}" target="_blank">Contrato PDF</a>
             </div>
         </div>
         <hr style="border-color:dimgray">
@@ -107,7 +130,7 @@
             </div>
             <div class="form-group col-md-5">
                 <label for="clavecurso" class="control-label">Especialidad</label>
-                <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->especialidad}}">
+                <input class="form-control" name="perfil_instructor" disabled id="perfil_instructor" value="{{$data->espe}}">
             </div>
         </div>
         <div class="form-row">
@@ -249,32 +272,41 @@
         <br>
     </div>
 
-        <!--Modal-->
-            <div class="modal fade" id="validarContratoModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Validar Contrato</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    </div>
+<!--Modal-->
+    <div class="modal fade" id="validarContratoModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Validar Contrato</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <form action="{{ route('valcontrato') }}" id="validarForm" method="POST">
+                    @csrf
                     <div class="modal-body">
-                        ¿ Estás seguro de validar el contrato?
+                        <h3><b>¿ Estás seguro de validar el contrato?</b></h3>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="observaciones">Observaciones (Opcional)</label>
+                                <textarea name="observaciones" id="observaciones" cols="6" rows="6" class="form-control"></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <form action="" id="validarForm" method="get">
-                            @csrf
-                            <input type="hidden" name="id">
+                            <input type="hidden" name="id" id="id">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                             <button type="submit" class="btn btn-success">Validar</button>
-                        </form>
                     </div>
-                </div>
-                </div>
+                </form>
             </div>
-        <!--Modal End-->
-        <br>
-
+        </div>
+    </div>
+<!--Modal End-->
+    <br>
     </section>
 @stop
+@section('script_content_js')
+<script src="{{ asset("js/validate/modals.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoBotones.js") }}"></script>
+@endsection

@@ -12,24 +12,24 @@
           <!-- Nav items -->
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" href="#">
+              <a class="nav-link" href="#">
                 <i class="ni ni-tv-2 text-primary"></i>
                 <span class="nav-link-text">TABLERO DE CONTROL</span>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{ Route::currentRouteNamed('tablero.metas.index') ? 'active' : '' }}">
               <a class="nav-link" href="{{ route('tablero.metas.index') }}">
                 <i class="fa fa-list-alt text-red"></i>
                 <span class="nav-link-text">METAS ANUALES</span>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{ Route::currentRouteNamed('tablero.unidades.index') ? 'active' : '' }}">
               <a class="nav-link" href="{{ route('tablero.unidades.index') }}">
                 <i class="fa fa-list-alt text-red"></i>
                 <span class="nav-link-text">SITUACI&Oacute;N ACTUAL</span>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{ Route::currentRouteNamed('tablero.cursos.index') ? 'active' : '' }}">
               <a class="nav-link" href="{{ route('tablero.cursos.index') }}">
                 <i class="fa fa-list-alt text-red"></i>
                 <span class="nav-link-text">CURSOS APERT.</span>
