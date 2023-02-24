@@ -47,19 +47,17 @@
 
         <div class="form-row">
             <div class="col">
-                {!! Form::open(['route' => 'convenios.index', 'method' => 'GET', 'class' => 'form-inline']) !!}
-                <select name="busqueda" class="form-control mr-sm-2" id="busqueda">
-                    <option value="">BUSCAR POR TIPO</option>
-                    <option value="no_convenio">N° DE CONVENIO</option>
-                    <option value="institucion">INSTITUCIÓN</option>
-                    <option value="tipo_convenio">TIPO DE CONVENIO</option>
-                    <option value="sector">SECTOR</option>
-                    {{-- <option value="dependencia">DEPENDENCIA</option> --}}
-                </select>
-
-                {!! Form::text('busqueda_conveniopor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
-                'aria-label' => 'BUSCAR']) !!}
-                <button type="submit" class="btn btn-outline-primary">BUSCAR</button>
+                {!! Form::open(['method' => 'GET', 'id' => 'frm_one', 'class' => 'form-inline']) !!}
+                {{ Form::select('busqueda', ['no_convenio'=>'N° DE CONVENIO','institucion'=>'INSTITUCIÓN','tipo_convenio'=>'TIPO DE CONVENIO','sector'=>'SECTOR', 'fechas'=>'FECHA'], $request->busqueda ,['id'=>'busqueda','class' => 'form-control mr-sm-2','title' => 'BUSCAR POR TIPO','placeholder' => 'BUSCAR POR TIPO', 'onchange' => 'selectOp()']) }}
+                {!! Form::text('busqueda_conveniopor', $request->busqueda_conveniopor, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR',
+                'aria-label' => 'BUSCAR', 'id' => 'busqueda_conveniopor']) !!}
+                {{-- cajas para fechas --}}
+                {{ Form::date('fecha1', $request->fecha1, ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-3 d-none', 'placeholder' => 'FECHA INICIO', 'title' => 'FECHA INICO']) }}
+                {{ Form::date('fecha2', $request->fecha2, ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-3 d-none', 'placeholder' => 'FECHA TERMINO', 'title' => 'FECHA TERMINO']) }}
+                {{ Form::button('BUSCAR', ['id' => 'botonBUSCAR', 'name'=> 'boton', 'value' => 'BUSCAR', 'class' => 'btn btn-outline-primary']) }}
+                @can('convenios.edit')
+                {{ Form::button('EXPORTAR REGISTROS <i class="fa fa-file-excel-o fa-2x fa-lg text-dark ml-1"></i>', ['id' => 'botonGENEXCEL', 'value' => 'EXPORTAR REGISTROS2', 'class' => 'btn btn-warning text-dark']) }}
+                @endcan
                 {!! Form::close() !!}
             </div>
         </div>
@@ -74,6 +72,7 @@
                     <th width="150px">TIPO DE CONVENIO</th>
                     <th width="150px">SECTOR</th>
                     <th width="150px">STATUS</th>
+                    <th width="150px">FECHA DE ACTUALIZACIÓN</th>
                     <th scope="col">ARCHIVO CONVENIO</th>
                     @can('convenios.edit')
                         <th scope="col">MODIFICAR</th>
@@ -90,6 +89,7 @@
                         <td>{{ $itemData->tipo_convenio }}</td>
                         <td>{{ $itemData->sector }}</td>
                         <td>{{ $itemData->activo == 'false' ? 'NO PUBLICADO' : 'PUBLICADO'}}</td>
+                        <td>{{ $itemData->updated_at->format('d-m-Y') }}</td>
                         <td>
                             <div class="custom-file">
                                 @if (isset($itemData->archivo_convenio))
@@ -120,7 +120,60 @@
 
     <div class="row py-4">
         <div class="col d-flex justify-content-center">
-            {{ $data->links() }}
+            {{$data->appends(request()->query())->links()}}
         </div>
     </div>
+
+        @section('script_content_js')
+        <script language="javascript">
+
+            $(document).ready(function(){
+                /*Agregamos funciones a los botones buscar y generar excel*/
+                $("#botonBUSCAR" ).click(function(){ $('#frm_one').attr('action', "{{route('convenios.index')}}"); $("#frm_one").attr("target", '_self'); $('#frm_one').submit(); });
+                $("#botonGENEXCEL" ).click(function(){ $('#frm_one').attr('action', "{{route('convenios.genexcel')}}"); $("#frm_one").attr("target", '_blanck');$('#frm_one').submit();});
+
+                /*Mostramos los campos fechas en caso de mantener el select en fechas*/
+                    if($('#busqueda').val() == 'fechas'){
+                        $("#busqueda_conveniopor").addClass('d-none');
+                        $("#fecha1").removeClass('d-none');
+                        $("#fecha2").removeClass('d-none');
+                        $('#busqueda_conveniopor').val("");
+                    }
+            });
+            /*Agragamos y quitamos clases 'd-none' de acuerdo al select de opciones*/
+            function selectOp() {
+                if($('#busqueda').val() == 'fechas'){
+                    $("#busqueda_conveniopor").addClass('d-none');
+                    $("#fecha1").removeClass('d-none');
+                    $("#fecha2").removeClass('d-none');
+                    $('#busqueda_conveniopor').val("");
+
+                }else{
+                    $("#fecha1").addClass('d-none');
+                    $("#fecha2").addClass('d-none');
+                    $("#busqueda_conveniopor").removeClass('d-none');
+                    $('#fecha1').val("");
+                    $('#fecha2').val("");
+                }
+            }
+            /*Funcion Ajax para realizar un autocompletado*/
+            $( "#busqueda_conveniopor" ).autocomplete({
+                source: function( request, response ) {
+                    $.ajax({
+                        url: "{{ route('convenios.autocomplete') }}",
+                        method: 'POST',
+                        dataType: "json",
+                        data: {
+                            "_token": $("meta[name='csrf-token']").attr("content"),
+                            search: request.term,
+                            tipoCurso: $('#busqueda').val()
+                        },
+                        success: function( data ) {
+                            response( data );
+                        }
+                    });
+                }
+            });
+        </script>
+        @endsection
 @endsection
