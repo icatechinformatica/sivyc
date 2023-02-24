@@ -7,7 +7,7 @@
     <title>@yield('title', '')</title>
     <style>
 
-    @page { margin: 5px 30px 80px 30px; }
+    @page { margin: 5px 30px 80px 30px;}
     body { margin-top: 120px; font-family: sans-serif; font-size: 8px; width:100%; }
     header { position: fixed; top: 0cm; text-align: center; }
     footer { position: fixed; top: 17.7cm; width:100%;}
@@ -18,7 +18,7 @@
 <body>
     <header>
         <img src='img/formatos/bannerhorizontal.jpeg' width="100%">
-        <p style="text-align: center; font-weight: bold; font-style: italic; margin-top:-10px; padding:0px;">{{$distintivo}}</p>
+        <p style="text-align: center; font-weight: bold; font-style: italic; margin-top:-10px; padding:0px; font-size: 10px; ">{{$distintivo}}</p>
     </header>
     <footer>
         <div style="position: relative;";>

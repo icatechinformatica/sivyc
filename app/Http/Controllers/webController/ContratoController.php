@@ -489,7 +489,7 @@ class ContratoController extends Controller
         }
         else
         {
-            $memoval = $data->doc_validado;
+            $memoval = $data->archivo_alta;
         }
 
         // $comprobante_pago = DB::TABLE('alumnos_registro')->WHERE('folio_grupo')->VALUE('comprobante_pago');
@@ -1077,7 +1077,11 @@ class ContratoController extends Controller
         $ccp2 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp2)->FIRST();
         $ccp3 = directorio::WHERE('id', '=', $data_directorio->solpa_ccp3)->FIRST();
         //dd($data);
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director','distintivo'));
+
+        $direccion = tbl_unidades::WHERE('unidad',$data->unidad_capacitacion)->VALUE('direccion');
+        $direccion = explode("*", $direccion);
+
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('data','D','M','Y','elaboro','para','ccp1','ccp2','ccp3','director','distintivo','direccion'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 

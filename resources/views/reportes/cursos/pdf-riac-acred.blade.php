@@ -12,14 +12,15 @@
         footer .page:after { content: counter(page, sans-serif);}
 
         .cuadro{ border: 1px solid black; width: 50px; padding: 10px;}
-        #curso { text-align :  justify; }
+        
+        #curso {text-align: justify; }
         #curso b{margin-left: 10px; margin-right: 50px;}
+        .tab{ margin-left: 10px; margin-right: 50px;}        
+        .block{ width:auto; white-space: nowrap; margin-right:18px;}
+
         .tabla { border-collapse: collapse; width: 100%;}
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
-        .tab{ margin-left: 10px; margin-right: 50px;}
-        .tab1{ margin-left: 10px; margin-right:28px; }
-        .tab2{ margin-left: 3px; margin-right: 0px;}
-
+        
      </style>
 </head>
 <body>
@@ -35,25 +36,23 @@
                 REG: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="REG"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>&nbsp;
                 EMP: <span class="cuadro">&nbsp;&nbsp;@if($curso->mod=="EMP"){{"X"}}@else{{" "}}@endif&nbsp;&nbsp;&nbsp;</span>
             </div>
-            <div id="curso" style="text-align: justify;">
+            <div id="curso">
                 INSTITUTO DESCENTRALIZADO: <b>INSTITUTO DE CAPACITACI&Oacute;N Y VINCULACI&Oacute;N TECNOL&Oacute;GICA DEL ESTADO DE CHIAPAS</b>
                 UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">{{$curso->plantel}} {{ $curso->unidad }}</span>
-                CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>
-                <br />
-                AREA: <span class="tab1">{{ $curso->area }}</span>
-                ESPECIALIDAD: <span class="tab1">{{ $curso->espe }}</span>
-                CURSO: <span class="tab1">{{ $curso->curso }}</span>
-                CLAVE: &nbsp;&nbsp;{{ $curso->clave }}
-                <br />
-                CICLO ESCOLAR: <span class="tab2">{{ $curso->ciclo }}</span>
-                PERIODO: <span class="tab2">@if(isset($periodo[$curso->mes_termino])){{ $periodo[$curso->mes_termino] }}@endif</span>
-                FECHA INICIO: <span class="tab2"> {{ $curso->fechaini }}</span>
-                FECHA TERMINO: <span class="tab2"> {{ $curso->fechafin }}</span>
-                DURACI&Oacute;N EN HORAS: <span class="tab2">{{ $curso->dura }}</span>
-                GRUPO: <span class="tab2">{{ $curso->grupo }}</span>
-                HORARIO: <span class="tab2">{{ $curso->hini }} A {{ $curso->hfin }}</span>
-                <br>CURP: <span class="tab2">{{ $curso->curp}}</span>
-                CONVENIO REALIZADO CON: <span class="tab1">{{ $curso->depen}}</span>
+                CLAVE CCT: <span class="tab">{{ $curso->cct }}</span><br />
+                <span class="block">AREA: {{ $curso->area }}</span>
+                <span class="block">ESPECIALIDAD:  {{ $curso->espe }}</span>
+                <span class="block">CURSO: {{ $curso->curso }}</span>
+                <span class="block">CLAVE: {{ $curso->clave }}</span>
+                <span class="block">CICLO ESCOLAR: {{ $curso->ciclo }}</span>
+                <span class="block">PERIODO: @if(isset($periodo[$curso->mes_termino])){{ $periodo[$curso->mes_termino] }}@endif</span>
+                <span class="block">FECHA INICIO: {{ $curso->fechaini }}</span>
+                <span class="block">FECHA TERMINO: {{ $curso->fechafin }}</span>
+                <span class="block">DURACI&Oacute;N EN HORAS: {{ $curso->dura }}</span>
+                <span class="block">GRUPO: {{ $curso->grupo }}</span>
+                <span class="block">HORARIO: {{ $curso->hini }} A {{ $curso->hfin }}</span>
+                <span class="block">CURP: {{ $curso->curp}}</span>
+                <span class="block">CONVENIO REALIZADO CON: {{ $curso->depen}}</span>   
             </div>
      </header>
      <footer>

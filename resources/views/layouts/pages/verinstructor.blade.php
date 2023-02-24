@@ -771,7 +771,7 @@
                                         </button>
                                     @endif
                                     @if($item->status == "EN CAPTURA")
-                                        @can('instructor.editar_fase2')
+                                        {{-- @can('instructor.editar_fase2')
                                             <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                                 data-toggle="modal"
                                                 data-placement="top"
@@ -779,7 +779,7 @@
                                                 data-id='["{{$item->id}}","{{$loc}}"]'>
                                                     <i class="fa fa-eraser" aria-hidden="true"></i>
                                             </button>
-                                        @endcan
+                                        @endcan --}}
                                     @endif
                                 </td>
                             </tr>
@@ -910,7 +910,7 @@
                                             ><i class="fa fa-eye" aria-hidden="true"></i>
                                         </button>
                                     @endif
-                                    @if($item->status == 'EN CAPTURA')
+                                    {{-- @if($item->status == 'EN CAPTURA')
                                         <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                             data-toggle="modal"
                                             data-placement="top"
@@ -918,7 +918,7 @@
                                             data-id='["{{$item->espinid}}","{{$loc2}}"]'>
                                                 <i class="fa fa-eraser" aria-hidden="true"></i>
                                         </button>
-                                    @endif
+                                    @endif --}}
                                     @if(isset($item->hvalidacion))
                                         <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
                                             data-toggle="modal"

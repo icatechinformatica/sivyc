@@ -29,7 +29,7 @@
                 <a class="btn btn-danger" disabled>Comprobante de Domicilio</a><br>
             @endif
             @if ($data->archivo_alta != NULL)
-                <a class="btn btn-info" href={{$data->archivo_alta}} target="_blank">Validación de Instructor</a><br>
+                <a class="btn btn-info" href={{$memoval}} target="_blank">Validación de Instructor</a><br>
             @else
                 <a class="btn btn-danger" disabled>Validación de Instructor</a><br>
             @endif
@@ -44,7 +44,7 @@
                 <a class="btn btn-danger" disabled>RFC/Constancia Fiscal</a><br>
             @endif
             @if ($data->doc_validado != NULL)
-                <a class="btn btn-info" href={{$memoval}} target="_blank">Validación de Suficiencia Presupuestal</a><br>
+                <a class="btn btn-info" href={{$data->doc_validado}} target="_blank">Validación de Suficiencia Presupuestal</a><br>
             @else
                 <a class="btn btn-danger" disabled>Validación Suficiencia Presupuestal</a><br>
             @endif

@@ -10,8 +10,12 @@
         /* margenes top 20px right 50px bottom 120px left 50px */
         @page {margin: 20px 50px 120px 50px;size: letter;}
         header { position: fixed; left: 0px; top: 30px; right: 0px;text-align: center;width:100%;line-height: 30px;}
-        img.izquierda {float: left;width: 200px;height: 60px;}
-        img.izquierdabot {position:fixed;left: 50px;width: 350px;height: 60px;}
+        img.izquierda {float: left;width: 100%;height: 60px;}
+        img.izquierdabot {
+                float: inline-end;
+                width: 100%;
+                height: 100%;
+            }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 200px;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
@@ -20,11 +24,11 @@
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
         .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
-        footer { position:fixed;left:0px;bottom:0px;height:0px;width:100%;}
+        footer { position:fixed;left:0px;bottom:-100px;height:0px;width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
         .contenedor {
         position:RELATIVE;
-        top:120px;
+        top:130px;
         width:100%;
         margin:auto;
 
@@ -34,13 +38,22 @@
         .margin_top_ccp {
             margin-top: 7em;
         }
+        .direccion
+            {
+                text-align: left;
+                position: absolute;
+                bottom: 65px;
+                left: 25px;
+                font-size: 8.5px;
+                color: rgb(255, 255, 255);
+                line-height: 1;
+            }
     </style>
 </head>
 <body>
     {{-- SECCIÓN DE LA CABECERA --}}
     <header>
-        <img class="izquierda" src='img/logohorizontalica1.jpg'>
-        <img class="derecha" src='img/chiapas.png'>
+        <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
         <br>
         <h6><b></b>{{$leyenda}}</h6>
     </header>
@@ -51,7 +64,7 @@
             if (isset($pdf))
             {
                 $x = 275;
-                $y = 725;
+                $y = 700;
                 $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
                 $font = "Arial";
                 $size = 11;
@@ -62,20 +75,8 @@
                 $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
             }
         </script>
-
-        <table class="tablad" bgcolor="#621132">
-                <tr>
-                    <td colspan="4" style="color:white;"><b>Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma</b></td>
-                    {{-- <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma</b></td> --}}
-                </tr>
-                <tr>
-                    <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, Chiapas; Telefono (961)6121621 Ext.601 C.P.29030</b></td>
-                    {{-- <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, C.P.29030 Telefono+52(961)61-2-16-21</b></td> --}}
-                </tr>
-                <tr>
-                    <td colspan="4" style="color:white;"><b>Email: dtecnicaacademica@gmail.com</b></td>
-                </tr>
-        </table>
+        <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}

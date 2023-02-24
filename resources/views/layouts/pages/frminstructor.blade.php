@@ -520,7 +520,7 @@
         let imageName5 = document.getElementById("imageName5");
         let imageName6 = document.getElementById("imageName6");
         let imageName7 = document.getElementById("imageName7");
-        // let imageName8 = document.getElementById("imageName8");
+        let imageName8 = document.getElementById("imageName8");
 
         ardom.addEventListener("change", ()=>{
             let inputImage = document.querySelector("#arch_domicilio").files[0];

@@ -197,7 +197,7 @@
             <small><small><b>Valido: {{$data_unidad->dunidad}}.- {{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</b></small></small>
             <br><small><small><b>Elaboró: {{$solicito->name}}.- {{$solicito->puesto}}.</b></small></small>
             @foreach ($data as $altmer)
-                @if($altmer->status != 'BAJA EN FIRMA')
+                @if($altmer->status != 'BAJA EN FIRMA' && $altmer->status!= 'BAJA EN PREVALIDACION')
                     <div class="page-break"></div>
                     <div align=right> <b>{{$data_unidad->municipio}}, Chiapas; {{$D}} de {{$M}} del {{$Y}}.</b></div>
                     <br><br><b>{{$data_unidad->dacademico}}.</b>
@@ -219,11 +219,11 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center">{{$solicito->name}}.</td></div>
+                            <td colspan="2"><div align="center">{{$data_unidad->academico}}.</td></div>
                             <td colspan="2"><div align="center">{{$data_unidad->dunidad}}.</td></div>
                         </tr>
                         <tr>
-                            <td colspan="2"><div align="center">{{$solicito->puesto}} DE LA UNIDAD DE CAPACITACIÓN DE {{$daesp}}.</td></div>
+                            <td colspan="2"><div align="center">{{$data_unidad->pacademico}} DE LA UNIDAD DE CAPACITACIÓN DE {{$daesp}}.</td></div>
                             <td colspan="2"><div align="center">{{$data_unidad->pdunidad}} DE {{$data_unidad->unidad}}.</div></td>
                         </tr>
                     </table>

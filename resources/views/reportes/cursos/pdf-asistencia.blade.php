@@ -6,24 +6,19 @@
         @page { margin: 100px 25px 170px 25px; }
         header { position: fixed; left: 0px; top: -80px; right: 0px; text-align: center;}
         header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
-        table #curso{ font-size: 8px; padding: 10px; line-height: 18px; text-align: justify;}
+        table #curso{ font-size: 8px; padding: 10px; line-height: 18px; text-align: justify; height:53px; }
         main {padding: 0; margin: 0; margin-top: 0px; }
 
         .tabla{  border-collapse: collapse; width: 100%; }
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
-        .tab{ margin-left: 10px; margin-right: 50px;}
-        .tab1{ margin-left: 15px; margin-right: 50px; }
-        .tab2{ margin-left: 5px; margin-right: 20px;}
-
+        
         footer { position:fixed;   left:0px;   bottom:-170px;   height:150px;   width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
 
         .tablaf { border-collapse: collapse; width: 100%;}
-        .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
-
-        .tab{ margin-left: 20px; margin-right: 50px;}
-        .tab1{ margin-left: 10px; margin-right: 20px; }
-        .tab2{ margin-left: 10px; margin-right: 0px;}
+        .tablaf tr td { font-size: 9px; text-align: center; padding: 3px; }
+                
+        .block{ margin-right:25px;  }
      </style>
 </head>
 <body>
@@ -74,22 +69,20 @@
                     <tr>
                         <td colspan="36">
                              <div id="curso">
-                                UNIDAD DE CAPACITACI&Oacute;N: <span class="tab">{{$curso->plantel}} {{ $curso->unidad }}</span>
-                                CLAVE CCT: <span class="tab">{{ $curso->cct }}</span>
-                                CICLO ESCOLAR: <span class="tab">{{ $curso->ciclo }}</span>
-                                GRUPO: <span class="tab">{{ $curso->grupo }}</span>
-                                MES: <span class="tab">@if(isset($mes[$m[1]])){{ $mes[$m[1]] }}@endif</span>
-                                A&Ntilde;O: &nbsp;&nbsp;{{ $m[0] }}
-                                <br />
-                                AREA: <span class="tab1">{{ $curso->area }}</span>
-                                ESPECIALIDAD: <span class="tab1">{{ $curso->espe }}</span>
-                                CURSO: <span class="tab1"> {{ $curso->curso }}</span>
-                                CLAVE: &nbsp;&nbsp; {{ $curso->clave }}
-                                <br />
-                                FECHA INICIO: <span class="tab1"> {{ $curso->fechaini }}</span>
-                                FECHA TERMINO: <span class="tab1"> {{ $curso->fechafin }}</span>
-                                HORARIO: <span class="tab2"> {{ $curso->hini }} A {{ $curso->hfin }}</span>
-                                CURP: &nbsp;&nbsp;{{ $curso->curp}}
+                                <span class="block">UNIDAD DE CAPACITACI&Oacute;N: &nbsp;{{$curso->plantel}} {{ $curso->unidad }}</span>
+                                <span class="block">CLAVE CCT: &nbsp;{{ $curso->cct }}</span>
+                                <span class="block">CICLO ESCOLAR: &nbsp;{{ $curso->ciclo }}</span>
+                                <span class="block">GRUPO: &nbsp;{{ $curso->grupo }}</span>
+                                <span class="block">MES: &nbsp;@if(isset($mes[$m[1]])){{ $mes[$m[1]] }}@endif</span>
+                                <span class="block">A&Ntilde;O: &nbsp;{{ $m[0] }}</span>
+                                <span class="block">AREA: &nbsp;{{ $curso->area }}</span><br/>
+                                <span class="block">ESPECIALIDAD: &nbsp;{{ $curso->espe }}</span>
+                                <span class="block">CURSO: &nbsp;{{ $curso->curso }}</span>
+                                <span class="block">CLAVE: &nbsp;{{ $curso->clave }}</span>                                
+                                <span class="block">FECHA INICIO: &nbsp;{{ $curso->fechaini }}</span>
+                                <span class="block">FECHA TERMINO: &nbsp;{{ $curso->fechafin }}</span>                                
+                                <span class="block">HORARIO: &nbsp;{{ $curso->hini }} A {{ $curso->hfin }}</span>
+                                <span class="block">CURP: &nbsp;{{ $curso->curp}}</span>
                             </div>
 
                         </td>

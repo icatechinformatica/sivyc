@@ -500,21 +500,33 @@
                                <br><span id="imageName7"></span>
                             </label>
                         </td>
-                        {{-- <td id="center" width="100px">
-                            <H5><small><small>Alta Instructor</small></small></H5>
+                        <td id="center" width="100px">
+                            <H5><small><small>Curriculum</small></small></H5>
                         </td>
                         <td id="center" width="50px">
-                            <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger"></i>
+                            @if($datainstructor->archivo_curriculum_personal == NULL)
+                                <i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i>
+                            @else
+                                <a href={{$datainstructor->archivo_curriculum_personal}} target="_blank"><i  class="fa fa-file-pdf-o  fa-2x fa-lg text-danger from-control"></i></a>
+                            @endif
                         </td>
                         <td id="center" width="160px">
-                            <label class='onpoint' for="arch_alta">
-                                <a class="btn mr-sm-4 mt-3 btn-sm">
-                                    Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
-                                </a>
-                                <input style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_alta" name="arch_alta" placeholder="Archivo PDF">
-                               <br><span id="imageName8"></span>
-                            </label>
-                        </td> --}}
+                            @if($datainstructor->status != "PREVALIDACION")
+                                @if($datainstructor->status != "EN FIRMA")
+                                    @can('instructor.editar_fase2')
+                                        <label class='onpoint' for="arch_curriculum_personal">
+                                            <a class="btn mr-sm-4 mt-3 btn-sm">
+                                                Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
+                                            </a>
+                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
+                                            <br><span id="imageName8"></span>
+                                        </label>
+                                    @else
+                                        <input hidden id="arch_curriculum_personal">
+                                    @endcan
+                                @endif
+                            @endif
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -2318,7 +2330,7 @@
         let arid = document.getElementById("arch_id");
         let arrfc = document.getElementById("arch_rfc");
         let arest = document.getElementById("arch_estudio");
-        let aralt = document.getElementById("arch_alta");
+        let aralt = document.getElementById("arch_curriculum_personal");
         let arent = document.getElementById("arch_entrevista");
         let imageName0 = document.getElementById("imageName0");
         let imageName = document.getElementById("imageName");
@@ -2359,17 +2371,13 @@
             imageName6.innerText = inputImage6.name;
         })
         arest.addEventListener("change", ()=>{
-            let inputImage7 = document.querySelector("#arch_rfc").files[0];
+            let inputImage7 = document.querySelector("#arch_estudio").files[0];
             imageName7.innerText = inputImage7.name;
         })
-        arest.addEventListener("change", ()=>{
-            let inputImage7 = document.querySelector("#arch_rfc").files[0];
-            imageName7.innerText = inputImage7.name;
+        aralt.addEventListener("change", ()=>{
+            let inputImage8 = document.querySelector("#arch_curriculum_personal").files[0];
+            imageName8.innerText = inputImage8.name;
         })
-        // aralt.addEventListener("change", ()=>{
-        //     let inputImage8 = document.querySelector("#arch_rfc").files[0];
-        //     imageName8.innerText = inputImage8.name;
-        // })
 
         $('#addperprofModal').on('show.bs.modal', function(event){
             // console.log(document.getElementById("tableperfiles").rows.length);

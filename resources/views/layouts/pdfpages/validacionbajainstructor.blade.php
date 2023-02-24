@@ -148,10 +148,13 @@
                                 <td><small>
                                     @if(isset($cold->hvalidacion[$lastkey]['memo_val']))
                                         {{$cold->hvalidacion[$lastkey]['memo_val']}}
-                                    @else
+                                    @elseif(isset($cold->hvalidacion[$lastkey]['memo_baja']))
                                         {{$cold->hvalidacion[$lastkey]['memo_baja']}}
+                                    @else
+                                        {{$cold->memorandum_validacion}}
                                     @endif
                                 </small></td>
+
                                 <td><small>{{$cold->especialidad}}</small></td>
                                 <td><small>{{$instructor->motivo}}</small></td>
                             </tr>
