@@ -391,6 +391,8 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:convenios.show');
     Route::post('/convenios/sid/municipios', 'webController\ConveniosController@getmunicipios');
     Route::get('/convenios/organismo', 'webController\ConveniosController@getcampos');
+    Route::get('/convenios/generar/excel', 'webController\ConveniosController@generar_excel')->name('convenios.genexcel');
+    Route::post('/convenios/busqueda/autocomplete', 'webController\ConveniosController@conveniosAutocomplete')->name('convenios.autocomplete');
     /**
      * agregando financiero rutas -- DMC
      */
