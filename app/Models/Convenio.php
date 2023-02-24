@@ -29,10 +29,7 @@ class Convenio extends Model
         return Carbon::parse($value)->format('d-m-Y');
     }
 
-    protected function scopeBusqueda($query, $tipo, $datos){
-        $buscar = $datos['campo_buscar'];
-        $fecha1 = $datos['fecha1'];
-        $fecha2 = $datos['fecha2'];
+    protected function scopeBusqueda($query, $tipo, $buscar){
         // dd($buscar);
         if (!empty($tipo)) {
             if (!empty(trim($buscar))) {
@@ -53,12 +50,7 @@ class Convenio extends Model
                         return $query->where('convenios.institucion', 'LIKE', "%$buscar%");
                         break;
                 }
-            }else if(!empty(trim($fecha1)) && !empty(trim($fecha2))){
-                return $query->whereBetween('convenios.updated_at', [$fecha1, $fecha2]);
             }
-
         }
-
     }
-
 }
