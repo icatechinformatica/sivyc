@@ -1,6 +1,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 @php
-    $hestilo = "background-color:#DEDEDE;";
+    $hestilo = "background-color:#900C3F; color:white;";
 @endphp
 
 @if ($data['fecha1'] != '' && $data['fecha2'] != '' && $data['opcionsel'] == 'fechas')
@@ -42,7 +42,7 @@
     </thead>
         <tbody>
             @php
-                $estilo = "background-color:#900C3F; color:white;";
+                $estilo = "background-color:#DEDEDE; color:black;";
                 $data = $data['data'];
             @endphp
             @foreach ($data as $i)
@@ -55,7 +55,7 @@
                     <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->tipo_convenio }}</td>
                     <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->sector }}</td>
                     <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->activo  == 'false' ? 'NO PUBLICADO' : 'PUBLICADO' }}</td>
-                    <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->updated_at == '' ? 'SIN FECHA' : $i->updated_at }}</td>
+                    <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->updated_at == '' ? 'SIN FECHA' : $i->updated_at->format('d-m-Y') }}</td>
                 </tr>
             @endforeach
     </tbody>
