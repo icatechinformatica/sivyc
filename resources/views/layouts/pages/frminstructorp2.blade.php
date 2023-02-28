@@ -531,10 +531,10 @@
                 </tbody>
             </table>
             <br>
+            <div>
+                <label><h3>Entrevista para Candidatos a Instructores</h3></label>
+            </div>
             @if(isset($datainstructor->entrevista))
-                <div>
-                    <label><h3>Entrevista para Candidatos a Instructores</h3></label>
-                </div>
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <br>
@@ -582,6 +582,17 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            @else
+                <div class="pull-right">
+                    @can('instructor.editar_fase2')
+                        <button type="button" class="btn mr-sm-4 mt-3"
+                            data-toggle="modal"
+                            data-placement="top"
+                            data-target="#entrevistaModal"
+                            data-id='{{$datainstructor->id}}'><small>Llenar Entrevista</small>
+                        </button>
+                    @endcan
                 </div>
             @endif
             <hr style="border-color:dimgray">
