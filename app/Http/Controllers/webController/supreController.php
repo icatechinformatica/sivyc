@@ -448,7 +448,6 @@ class supreController extends Controller
         // supre_directorio::WHERE('id_supre', '=', $id)->DELETE();
         // folio::where('id_supre', '=', $id)->delete();
         // supre::where('id', '=', $id)->delete();
-        $id = base64_decode($id);
         $folio = folio::WHERE('id_supre','=',$id)->FIRST();
         $folio->status = 'Cancelado';
         $folio->save();
@@ -462,7 +461,6 @@ class supreController extends Controller
 
     public function restartSupre($id)
     {
-        $id = base64_decode($id);
         $list = folio::SELECT('id_folios')->WHERE('id_supre', '=', $id)->GET();
         foreach($list as $item)
         {
