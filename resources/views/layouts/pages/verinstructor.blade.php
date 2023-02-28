@@ -3038,8 +3038,16 @@
             for (; i < il; i += 1)
             {
                 newOption = document.createElement('option');
-                newOption.value = id[i].arch_val;
-                newOption.text=id[i].memo_val;
+                if(id[i].arch_val != null)
+                {
+                    newOption.value = id[i].arch_val;
+                    newOption.text=id[i].memo_val;
+                }
+                else
+                {
+                    newOption.value = id[i].arch_baja;
+                    newOption.text=id[i].memo_baja;
+                }
                 // selectL.appendChild(option);
                 selectL.add(newOption);
             }
