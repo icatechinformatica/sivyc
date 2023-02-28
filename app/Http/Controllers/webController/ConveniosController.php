@@ -184,6 +184,9 @@ class ConveniosController extends Controller
         $convenios['activo'] = $publicar;
         $convenios['sector'] = trim($request->input('sector'));
         $convenios['unidades'] = json_encode($unity);
+        //agregamos la fecha updated_at
+        $fecha_updated_at = date('Y-m-d');
+        $convenios['updated_at'] = $fecha_updated_at;
 
         $convenios->save();
 
@@ -318,7 +321,8 @@ class ConveniosController extends Controller
             }
 
             $organismo = DB::table('organismos_publicos')->where('id', $request->institucion)->first();
-
+            //agregamos la fecha updated_at
+            $fecha_updated_at = date('Y-m-d');
             $array_update = [
                 'no_convenio' => trim($request->no_convenio),
                 'tipo_sector' => $request->no_convenio[0],
@@ -343,7 +347,7 @@ class ConveniosController extends Controller
                 'correo_enlace' => $request->correo_en,
                 // 'id_estado' => $request->estadoG,
                 'id_organismo' => trim($request->input('institucion')),
-
+                'updated_at' => $fecha_updated_at,
                 'unidades' => json_encode($unity)
             ];
 
