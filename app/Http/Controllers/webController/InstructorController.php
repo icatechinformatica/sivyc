@@ -3322,7 +3322,7 @@ class InstructorController extends Controller
 
     private function guardado_ins($saveInstructor,$request,$id)
     {
-        // dd($request);
+        // dd($saveInstructor);
         $arresp = $arrper = $arrtemp = array();
         $perfiles = InstructorPerfil::WHERE('numero_control',$id)->GET();
         $especialidades = especialidad_instructor::WHERE('id_instructor', '=', $id)->GET();
@@ -3370,7 +3370,10 @@ class InstructorController extends Controller
         $saveInstructor->banco = $request->banco;
         $saveInstructor->interbancaria = $request->clabe;
         $saveInstructor->no_cuenta = $request->numero_cuenta;
-        $saveInstructor->numero_control = $request->numero_control;
+        if(isset($request->numero_control))
+        {
+            $saveInstructor->numero_control = $request->numero_control;
+        }
         if(!isset($saveInstructor->numero_control))
         {
             $saveInstructor->numero_control = "Pendiente";
