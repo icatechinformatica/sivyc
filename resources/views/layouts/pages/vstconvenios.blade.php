@@ -89,7 +89,7 @@
                         <td>{{ $itemData->tipo_convenio }}</td>
                         <td>{{ $itemData->sector }}</td>
                         <td>{{ $itemData->activo == 'false' ? 'NO PUBLICADO' : 'PUBLICADO'}}</td>
-                        <td>{{ $itemData->updated_at->format('d-m-Y') }}</td>
+                        <td>{{ $itemData->updated_at == '' ? 'SIN FECHA' : $itemData->updated_at->format('d-m-Y')}}</td>
                         <td>
                             <div class="custom-file">
                                 @if (isset($itemData->archivo_convenio))
