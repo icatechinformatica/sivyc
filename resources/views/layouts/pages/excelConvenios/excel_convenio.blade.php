@@ -16,7 +16,7 @@
         <th colspan='2' style="{{$hestilo}}"><b></b></th>
         <th colspan='2' style="{{$hestilo}}"><b></b></th>
         <th colspan='2' style="{{$hestilo}}"><b></b></th>
-        <th colspan='2' style="{{$hestilo}}"><b></b></th>
+        {{-- <th colspan='2' style="{{$hestilo}}"><b></b></th> --}}
     </tr>
     <tr>
         <th colspan='2' style="{{$hestilo}}" align="left"><b>NO. DE CONVENIO</b></th>
@@ -26,7 +26,7 @@
         <th colspan='2' style="{{$hestilo}}" align="left"><b>TIPO DE CONVENIO</b></th>
         <th colspan='2' style="{{$hestilo}}" align="left"><b>SECTOR</b></th>
         <th colspan='2' style="{{$hestilo}}" align="left"><b>STATUS</b></th>
-        <th colspan='2' style="{{$hestilo}}" align="left"><b>FECHA ALTA</b></th>
+        {{-- <th colspan='2' style="{{$hestilo}}" align="left"><b>FECHA ALTA</b></th> --}}
 
     </tr>
     <tr>
@@ -37,7 +37,7 @@
         <th colspan='2' style="{{$hestilo}}"><b></b></th>
         <th colspan='2' style="{{$hestilo}}"><b></b></th>
         <th colspan='2' style="{{$hestilo}}"><b></b></th>
-        <th colspan='2' style="{{$hestilo}}"><b></b></th>
+        {{-- <th colspan='2' style="{{$hestilo}}"><b></b></th> --}}
     </tr>
     </thead>
         <tbody>
@@ -55,7 +55,7 @@
                     <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->tipo_convenio }}</td>
                     <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->sector }}</td>
                     <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->activo  == 'false' ? 'NO PUBLICADO' : 'PUBLICADO' }}</td>
-                    <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->updated_at == '' ? 'SIN FECHA' : $i->updated_at->format('d-m-Y') }}</td>
+                    {{-- <td colspan='2' style ="{{$estilo}}" align="left">{{ $i->updated_at == '' ? 'SIN FECHA' : $i->updated_at->format('d-m-Y') }}</td> --}}
                 </tr>
             @endforeach
     </tbody>

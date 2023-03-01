@@ -59,7 +59,7 @@ class ConveniosController extends Controller
             ->get();
 
         $head = ['NO. DE CONVENIO', 'INSTITUCIÓN', 'FECHA DE FIRMA', 'FECHA DE TERMINO', 'TIPO DE CONVENIO',
-                'SECTOR', 'STATUS','FECHA ALTA'];
+                'SECTOR', 'STATUS'];
         $title = "CONVENIOS";
         $name = $title."_".date('Ymd').".xlsx";
         $view = 'layouts.pages.excelConvenios.excel_convenio';
