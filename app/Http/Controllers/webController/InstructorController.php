@@ -3268,7 +3268,7 @@ class InstructorController extends Controller
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
-        // dd($data_unidad);
+        // dd($especialidades);
 
         $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades'));
         $pdf->setPaper('letter');
