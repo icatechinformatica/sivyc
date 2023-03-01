@@ -3097,6 +3097,7 @@ class InstructorController extends Controller
         }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
+        $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -3104,7 +3105,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('distintivo','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
