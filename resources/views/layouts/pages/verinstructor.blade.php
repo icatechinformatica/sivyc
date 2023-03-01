@@ -860,76 +860,78 @@
                                     }
                                 }
                             @endphp
-                            <tr>
-                                <th scope="row">{{$item->nombre}}</th>
-                                <td>{{ $item->memorandum_validacion}}</td>
-                                <td>{{ $item->fecha_validacion}}</td>
-                                <td style="text-align: center;">{{ $item->criterio_pago_id }}</td>
-                                <td>{{ $item->observacion }}</td>
-                                <td>{{ $item->status}}</td>
-                                <td><small>
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
-                                        @can('instructor.editar_fase2')
-                                            <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
-                                            <button type="button" class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
+                            @if($item->status != 'INACTIVO')
+                                <tr>
+                                    <th scope="row">{{$item->nombre}}</th>
+                                    <td>{{ $item->memorandum_validacion}}</td>
+                                    <td>{{ $item->fecha_validacion}}</td>
+                                    <td style="text-align: center;">{{ $item->criterio_pago_id }}</td>
+                                    <td>{{ $item->observacion }}</td>
+                                    <td>{{ $item->status}}</td>
+                                    <td><small>
+                                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
+                                            @can('instructor.editar_fase2')
+                                                <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
+                                                <button type="button" class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
+                                                    data-toggle="modal"
+                                                    data-placement="top"
+                                                    data-target="#verespevaliModal"
+                                                    @if($item->status != 'VALIDADO')
+                                                    data-id='["{{$item->nombre}}", "{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
+                                                            "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
+                                                            "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                    @else
+                                                        data-id='["{{$item->espinid}}","{{$item->status}}"]'
+                                                    @endif
+                                                    ><i class="fa fa-eye" aria-hidden="true"></i>
+                                                </button>
+                                                @if($item->status != 'BAJA EN PREVALIDACION')
+                                                    <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="BAJA DE ESPECIALIDAD"
+                                                        data-toggle="modal"
+                                                        data-placement="top"
+                                                        data-target="#bajaespeModal"
+                                                        data-id='{{$item->espinid}}'>
+                                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </button>
+                                                @endif
+                                            @endcan
+                                        @else
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#verespevaliModal"
                                                 @if($item->status != 'VALIDADO')
-                                                data-id='["{{$item->nombre}}", "{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
-                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                    data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
+                                                            "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
+                                                            "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}","{{$item->cursos_impartir}}"]'
                                                 @else
                                                     data-id='["{{$item->espinid}}","{{$item->status}}"]'
                                                 @endif
                                                 ><i class="fa fa-eye" aria-hidden="true"></i>
                                             </button>
-                                            @if($item->status != 'BAJA EN PREVALIDACION')
-                                                <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                                                <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="BAJA DE ESPECIALIDAD"
-                                                    data-toggle="modal"
-                                                    data-placement="top"
-                                                    data-target="#bajaespeModal"
-                                                    data-id='{{$item->espinid}}'>
-                                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                                </button>
-                                            @endif
-                                        @endcan
-                                    @else
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#verespevaliModal"
-                                            @if($item->status != 'VALIDADO')
-                                                data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
-                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}","{{$item->cursos_impartir}}"]'
-                                            @else
-                                                data-id='["{{$item->espinid}}","{{$item->status}}"]'
-                                            @endif
-                                            ><i class="fa fa-eye" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                    {{-- @if($item->status == 'EN CAPTURA')
-                                        <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#delespecvalidModal"
-                                            data-id='["{{$item->espinid}}","{{$loc2}}"]'>
-                                                <i class="fa fa-eraser" aria-hidden="true"></i>
-                                        </button>
-                                    @endif --}}
-                                    @if(isset($item->hvalidacion))
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#validacionesModal"
-                                            data-id='{{$item->hvalidacion}}'>
-                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                </small></td>
-                            </tr>
+                                        @endif
+                                        {{-- @if($item->status == 'EN CAPTURA')
+                                            <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
+                                                data-toggle="modal"
+                                                data-placement="top"
+                                                data-target="#delespecvalidModal"
+                                                data-id='["{{$item->espinid}}","{{$loc2}}"]'>
+                                                    <i class="fa fa-eraser" aria-hidden="true"></i>
+                                            </button>
+                                        @endif --}}
+                                        @if(isset($item->hvalidacion))
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
+                                                data-toggle="modal"
+                                                data-placement="top"
+                                                data-target="#validacionesModal"
+                                                data-id='{{$item->hvalidacion}}'>
+                                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                            </button>
+                                        @endif
+                                    </small></td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
