@@ -54,7 +54,7 @@ class Convenio extends Model
                         break;
                 }
             }else if(!empty(trim($fecha1)) && !empty(trim($fecha2))){
-                return $query->whereBetween('convenios.updated_at', [$fecha1, $fecha2]);
+                return $query->whereBetween('convenios.fecha_firma', [$fecha1, $fecha2]);
             }
 
         }
