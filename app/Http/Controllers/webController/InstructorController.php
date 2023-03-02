@@ -1078,7 +1078,7 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
         $idlist = explode(",", $request->idinstructoresreturn);
         $newb = $newc = $arrtemp = array();
-        $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION');
+        $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','BAJA EN PREVALIDACION');
 
         foreach($idlist as $bosmer)
         {
@@ -1134,6 +1134,9 @@ class InstructorController extends Controller
                                 $perfiles[$key]->status = 'REVALIDACION RETORNADA';
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION), ';
                             break;
+                            case 'BAJA EN PREVALIDACION':
+                                $perfiles[$key]->status = 'RETORNO';
+                            break;
                         }
                     }
                 }
@@ -1159,6 +1162,9 @@ class InstructorController extends Controller
                             case 'REVALIDACION EN PREVALIDACION':
                                 $especialidades[$space]->status = 'REVALIDACION RETORNADA';
                                 $movimiento = $movimiento . $especialidad->nombre . ' (REVALIDACION),  ';
+                            case 'BAJA EN PREVALIDACION':
+                                $especialidades[$space]->status = 'RETORNO';
+                                $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
                         }
                     }
                 }
@@ -1213,7 +1219,7 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $instructor = pre_instructor::find($request->idbajains);
-        if(!isset($instructorupd))
+        if(!isset($instructor))
         {
             $instructorof = instructor::find($request->idbajains);
             // dd($instructor);
@@ -2457,15 +2463,18 @@ class InstructorController extends Controller
                     $arrtemp[$key]['status'] = 'REVALIDACION EN CAPTURA';
                 }
 
-                foreach ($request->itemEdit as $keys=>$roshan)
+                if(isset($request->itemEdit))
                 {
-                    if($cursos_impartir[0] == 0)
+                    foreach ($request->itemEdit as $keys=>$roshan)
                     {
-                        $cursos_impartir[0] = $roshan['check_cursos_edit'];
-                    }
-                    else
-                    {
-                        array_push($cursos_impartir,$roshan['check_cursos_edit']);
+                        if($cursos_impartir[0] == 0)
+                        {
+                            $cursos_impartir[0] = $roshan['check_cursos_edit'];
+                        }
+                        else
+                        {
+                            array_push($cursos_impartir,$roshan['check_cursos_edit']);
+                        }
                     }
                 }
 

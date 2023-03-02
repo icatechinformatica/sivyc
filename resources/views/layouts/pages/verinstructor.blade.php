@@ -997,7 +997,7 @@
                     </table>
                 </div>
             </div>
-            @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+            @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                 <hr style="border-color:dimgray">
                 <label><h2>Solicitar Baja del Instructor</h2></label>
                 <div class="form-group col-md-8">
