@@ -1,52 +1,51 @@
 @extends('theme.formatos.hlayout')
 @section('title', 'Solicitud de Apertura | SIVyC Icatech')
-@section('content_script_css')
+@section('css')
     <style>
+         @page { margin-bottom: 107px; }
         .tb {width: 100%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 5px;}
         .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}
-        .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:15px;}
+        .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
-        .tablaf p {margin:5px; padding:0px}
+        p {margin:5px; padding:0px;font-size: 10px;}
+        #titulo{position: fixed; top: 45px;}
+        #titulo h2{padding:0px; margin:0px 0px 2px 0px; font-size: 13px; font-weight:normal;}
+        #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:normal;}
+        #titulo table{position: fixed; top: 93px;}
+        #para {position: relative; top: -25px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-15;}
     </style>
 @endsection
-@section('content')
-        <main>
-        <div class="container">
-            <table style="border-collapse: collapse; text-align: right; width:100%; margin-top:-10px;" >
-                <tr>
-                    @if($reg_unidad->unidad=="COMITAN" || $reg_unidad->unidad=="OCOSINGO" || $reg_unidad->unidad=="SAN CRISTOBAL" || $reg_unidad->unidad=="TUXTLA" || $reg_unidad->unidad=="CATAZAJA" || $reg_unidad->unidad=="YAJALON" || $reg_unidad->unidad=="JIQUIPILAS" || $reg_unidad->unidad=="REFORMA" || $reg_unidad->unidad=="TAPACHULA" || $reg_unidad->unidad=="TONALA" || $reg_unidad->unidad=="VILLAFLORES")
-                        <td><strong>Unidad de Capacitación {{$reg_unidad->unidad}}</strong></td>
+@section('header') 
+    <div id="titulo">
+        <h2>Solicitud de Apertura de Curso</h2>
+        <h3>Departamento de Vinculación</h3>
+        <table width="100%">
+            <tr>        
+                <td style='text-align:right;'>           
+                    @if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0")) 
+                        Unidad de Capacitación
                     @else
-                        <td><strong>Acción Móvil {{$reg_unidad->unidad}}</strong></td>
-                    @endif
-                </tr>
-                <tr>
-                    <td><strong>Memorándum No. {{$memo}}</strong></td>
-                </tr>
-                <tr>
-                    <td><strong>{{$reg_unidad->municipio_acm}}, Chiapas; {{$date}}.</strong></td>
-                </tr>
-            </table>
-            <table style="margin-top:-25px;">
-                <tr>
-                    <td>PARA:</td>
-                    <td>{{$reg_unidad->academico}}, {{ $reg_unidad->pacademico }}.</td>
-                </tr>
-                <tr>
-                    <td>DE:</td>
-                    <td>{{$reg_unidad->vinculacion}}, {{ $reg_unidad->pvinculacion }}.</td>
-                </tr>
-                <tr>
-                    <td>CCP:</td>
-                    <td>{{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}. <br> {{ $reg_unidad->delegado_administrativo }},{{ $reg_unidad->pdelegado_administrativo }}.</td>
-                </tr>
-            </table>
-            <div>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Archivo/Minutario</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Por medio del presente le solicito a Usted la siguiente apertura:</p>
-            </div>
-            <table class="tb">
+                        Acción Móvil
+                    @endif               
+                    {{ $reg_unidad->unidad}}<br/>
+                    Memorándum No. {{$memo}} <br/>
+                    {{$reg_unidad->municipio_acm}}, Chiapas; {{$date}}.<br/>
+                </td>                    
+            </tr>   
+        </table>  
+    </div>     
+@endsection
+@section('body')     
+        <div id="para">        
+            PARA: {{$reg_unidad->academico}}, {{ $reg_unidad->pacademico }}. <br/>
+            DE: {{$reg_unidad->vinculacion}}, {{ $reg_unidad->pvinculacion }}.<br/>
+            CCP: {{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}. <br> 
+            {{ $reg_unidad->delegado_administrativo }},{{ $reg_unidad->pdelegado_administrativo }}.            
+        </div>
+        Archivo/Minutario<br/>
+        <p>&nbsp;&nbsp;&nbsp;Por medio del presente le solicito a Usted la siguiente apertura:</p>
+        <table class="tb">
                 <tr style="background: #EAECEE;">
                     <th>NÚMERO DE SOLICITUD</th>
                     <th>SERVICIO</th>
@@ -103,12 +102,14 @@
                         <td>{{$item['vincu']}}</td>
                         <td width='auto'>{{$item['efisico']}}</td>
                         <td width='auto'>{{$item['observaciones']}}</td>
-                    </tr>
+                    </tr>                    
                 @endforeach
             </table>
             <div>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sin más por el momento, le envío un cordial saludo.</p>
+                <p>&nbsp;&nbsp;&nbsp;Sin más por el momento, le envío un cordial saludo.</p>
             </div>
+            <br/>
+            <br/>
             <table class="tablaf">
                 <tr>
                     <td>
@@ -132,10 +133,9 @@
                     </td>
                 </tr>
             </table>
-        </div>
-    </main>
+       
 @endsection
-@section('script_content_js')
+@section('js')
     <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('

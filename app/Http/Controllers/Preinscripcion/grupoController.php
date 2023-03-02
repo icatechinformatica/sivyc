@@ -874,7 +874,7 @@ class grupoController extends Controller
                     $date = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
                     $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);
                     $direccion = $reg_unidad->direccion; 
-                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'unidad','memo','direccion'));
+                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
                     $pdf->setpaper('letter', 'landscape');
                     return $pdf->stream('SOLICITUD.pdf');
                 } else {
