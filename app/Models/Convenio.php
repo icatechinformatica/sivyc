@@ -26,7 +26,7 @@ class Convenio extends Model
     // in your model
     public function getMyDateFormat($value)
     {
-        return Carbon::parse($value)->format('d-m-Y');
+        return Carbon::parse($value)->format('Y-m-d');
     }
 
     protected function scopeBusqueda($query, $tipo, $datos){

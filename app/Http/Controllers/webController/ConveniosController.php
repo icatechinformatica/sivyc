@@ -117,7 +117,6 @@ class ConveniosController extends Controller
      */
     public function store(Request $request) {
         // convenios guardarlo en el metodo store
-
         $unity = [];
         foreach ($request->unidades as $unidad) {
             $unity[] = $unidad;
@@ -322,6 +321,7 @@ class ConveniosController extends Controller
 
             $organismo = DB::table('organismos_publicos')->where('id', $request->institucion)->first();
             //agregamos la fecha updated_at
+
             $fecha_updated_at = date('Y-m-d');
             $array_update = [
                 'no_convenio' => trim($request->no_convenio),
@@ -329,8 +329,8 @@ class ConveniosController extends Controller
                 // 'institucion' => trim($request->institucion),
                 'institucion' => $organismo->organismo,
 
-                'fecha_firma' => trim($request->fecha_firma),
-                'fecha_vigencia' => trim($request->fecha_termino),
+                'fecha_firma' => Carbon::parse(trim($request->fecha_firma))->format('Y-m-d'),
+                'fecha_vigencia' => Carbon::parse(trim($request->fecha_termino))->format('Y-m-d'),
                 'poblacion' => trim($request->poblacion),
                 'municipio' => trim($request->municipio),
                 'nombre_titular' => trim($request->nombre_titular),
