@@ -220,7 +220,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-8">
                     <label for="inputbanco">Dirección de Domicilio</label>
                     <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->domicilio}}">
                 </div>
