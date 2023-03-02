@@ -5,7 +5,7 @@
          @page { margin-bottom: 107px; }
         .tb {width: 100%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 5px;}
-        .tb td{border: 1px solid black; padding: 1px; font-size: 8px; height: auto;}
+        .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}
         .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
         p {margin:5px; padding:0px;font-size: 10px;}
@@ -13,35 +13,35 @@
         #titulo h2{padding:0px; margin:0px 0px 2px 0px; font-size: 13px; font-weight:normal;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:normal;}
         #titulo table{position: fixed; top: 93px;}
-        #para {position: relative; top: -25px; height:auto; width:60%; font-size: 9px; font-weight:bold; margin-bottom:-15;}
+        #para {position: relative; top: -25px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-15;}
     </style>
 @endsection
-@section('header') 
+@section('header')
     <div id="titulo">
         <h2>Solicitud de Apertura de Curso</h2>
         <h3>Departamento de Vinculación</h3>
         <table width="100%">
-            <tr>        
-                <td style='text-align:right;'>           
-                    @if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0")) 
+            <tr>
+                <td style='text-align:right;'>
+                    @if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0"))
                         Unidad de Capacitación
                     @else
                         Acción Móvil
-                    @endif               
+                    @endif
                     {{ $reg_unidad->unidad}}<br/>
                     Memorándum No. {{$memo}} <br/>
                     {{$reg_unidad->municipio_acm}}, Chiapas; {{$date}}.<br/>
-                </td>                    
-            </tr>   
-        </table>  
-    </div>     
+                </td>
+            </tr>
+        </table>
+    </div>
 @endsection
-@section('body')     
-        <div id="para">        
+@section('body')
+        <div id="para">
             PARA: {{$reg_unidad->academico}}, {{ $reg_unidad->pacademico }}. <br/>
             DE: {{$reg_unidad->vinculacion}}, {{ $reg_unidad->pvinculacion }}.<br/>
-            CCP: {{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}. <br> 
-            {{ $reg_unidad->delegado_administrativo }},{{ $reg_unidad->pdelegado_administrativo }}.            
+            CCP: {{ $reg_unidad->dunidad }}, {{ $reg_unidad->pdunidad }}. <br>
+            {{ $reg_unidad->delegado_administrativo }},{{ $reg_unidad->pdelegado_administrativo }}.
         </div>
         Archivo/Minutario<br/>
         <p>&nbsp;&nbsp;&nbsp;Por medio del presente le solicito a Usted la siguiente apertura:</p>
@@ -102,7 +102,7 @@
                         <td>{{$item['vincu']}}</td>
                         <td width='auto'>{{$item['efisico']}}</td>
                         <td width='auto'>{{$item['observaciones']}}</td>
-                    </tr>                    
+                    </tr>
                 @endforeach
             </table>
             <div>
@@ -133,7 +133,7 @@
                     </td>
                 </tr>
             </table>
-       
+
 @endsection
 @section('js')
     <script type="text/php">

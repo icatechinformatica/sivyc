@@ -3179,7 +3179,8 @@ class InstructorController extends Controller
         }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
-        $direccion = explode("*", $data_unidad->direccion);
+        $direccion = $data_unidad->direccion;
+        // $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
         $D = date('d', $date);
         $MO = date('m',$date);

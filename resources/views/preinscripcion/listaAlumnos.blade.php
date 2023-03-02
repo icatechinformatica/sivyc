@@ -11,16 +11,16 @@
     .tb {width: 100%; border-collapse: collapse; text-align: center; }
     .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
     .tb thead{background: #EAECEE;}
-    
+
     </style>
 @endsection
-@section('header') 
+@section('header')
     <div id="titulo">
         <h2>Lista de Alumnos</h2>
         <h3>Grupo: {{ $folio_grupo}}</h3>
-    </div>     
+    </div>
 @endsection
-@section('body') 
+@section('body')
     <div class="container">
             @php
                 $consc = 1;
