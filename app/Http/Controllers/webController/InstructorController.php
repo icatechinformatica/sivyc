@@ -1212,8 +1212,18 @@ class InstructorController extends Controller
         // dd($request);
         $userId = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
-        $nrev = $this->new_revision($request->idbajains);
         $instructor = pre_instructor::find($request->idbajains);
+        if(!isset($instructorupd))
+        {
+            $instructorof = instructor::find($request->idbajains);
+            // dd($instructor);
+            $instructor = new pre_instructor();
+            $instructor  = $this->guardado_ins_model($instructor, $instructorof, $request->idbajains);
+            $instructor->id_oficial = $instructor->id;
+            $instructor->registro_activo = TRUE;
+            $instructor->save();
+        }
+        $nrev = $this->new_revision($request->idbajains);
         $perfiles = $this->make_collection($instructor->data_perfil);
         $especialidades = $this->make_collection($instructor->data_especialidad);
         $movimiento = 'Solicitud de baja de instructor con motivo: ' .  $request->motivo_baja;
