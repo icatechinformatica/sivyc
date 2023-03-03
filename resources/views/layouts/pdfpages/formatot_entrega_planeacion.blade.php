@@ -76,7 +76,10 @@
             }
         </script>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+        {{-- <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p> --}}
+        <p class='direccion'><b><br> Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma
+            <br> C.P. 29030; Tuxtla Gutiérrez, Chiapas.Teléfono (961)6121621
+            <br> Email: dtecnicaacademica@gmail.com</b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}
