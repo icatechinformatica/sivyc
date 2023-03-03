@@ -788,7 +788,11 @@ class grupoController extends Controller
                 ->orderBy('alumno')
                 ->get();//dd($alumnos);
             if (count($alumnos)>0) {
-                $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo'));
+                $folio_grupo = $_SESSION['folio_grupo'];                
+                $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first(); 
+                $direccion = $reg_unidad->direccion;
+
+                $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('LISTA.pdf');
             }else {

@@ -5,7 +5,7 @@
          @page { margin-bottom: 107px; }
         .tb {width: 100%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 5px;}
-        .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}
+        .tb td{border: 1px solid black; padding: 1px; font-size: 8px; height: auto;}
         .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
         p {margin:5px; padding:0px;font-size: 10px;}
@@ -13,7 +13,7 @@
         #titulo h2{padding:0px; margin:0px 0px 2px 0px; font-size: 13px; font-weight:normal;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:normal;}
         #titulo table{position: fixed; top: 93px;}
-        #para {position: relative; top: -25px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-15;}
+        #para {position: relative; top: -25px; height:auto; width:60%; font-size: 9px; font-weight:bold; margin-bottom:-15;}
     </style>
 @endsection
 @section('header') 
