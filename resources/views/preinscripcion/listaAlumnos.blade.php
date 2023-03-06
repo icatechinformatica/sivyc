@@ -1,62 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>LISTA DE ALUMNOS</title>
-    <style>
-        @page {
-            margin: 40px 30px 10px 30px;
-        }
-        body {
-            /*margin: 3cm 2cm 2cm;*/
-            margin-top: 120px;
-            font-family: sans-serif; font-size: 12px;
-        }
-        header {
-            position: fixed;
-            top: 0cm;
-            left: 0cm;
-            right: 0cm;
-            height: 4cm;
-            text-align: center;
-            /*line-height: 5px;*/
-        }
-        footer {
-            position: fixed;
-            bottom: 0cm;
-            left: 0cm;
-            right: 0cm;
-            height: 2cm;
-            text-align: center;
-            line-height: 35px;
-        }
-        img.izquierda {float: left;width: 200px;height: 60px;}
-        img.derecha {float: right;width: 200px;height: 60px;}
-        .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 8px;}
-        .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
-        .tb thead{background: #EAECEE;}
+@extends('theme.formatos.hlayout')
+@section('title', 'Lista de Alumnos | SIVyC Icatech')
+@section('css')
+<style>
+    body { margin-top: 105px;}
+    @page { margin-bottom: 120px; }
+    #titulo{position: fixed; top: 45px;}
+    #titulo h2{padding:0px; margin:10px 0px 5px 0px; font-size: 14px;}
+    #titulo h3{padding:0px; margin:0px; font-size: 12px;}
+
+    .tb {width: 100%; border-collapse: collapse; text-align: center; }
+    .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
+    .tb thead{background: #EAECEE;}
+    
     </style>
-</head>
-<body>
-    <header>
-        <img class="izquierda" src='img/logohorizontalica1.png'>
-        <img class="derecha" src='img/chiapas.png'>
-        <div style="clear: both;">
-            <font size="1" align="center"><b>{{$distintivo}}</b></font>
-        </div>
-        {{-- <table style="text-align: right; border-collapse: collapse;" align="right">
-            <tr>
-                <td><b>Unidad de Capacitación .</b></td> 
-            </tr>
-            <tr>
-                <td>, Chis., .</td>
-            </tr>
-        </table> --}}
-    </header>
-    <main>
-        <div class="container">
+@endsection
+@section('header') 
+    <div id="titulo">
+        <h2>Lista de Alumnos</h2>
+        <h3>Grupo: {{ $folio_grupo}}</h3>
+    </div>     
+@endsection
+@section('body') 
+    <div class="container">
             @php
                 $consc = 1;
                 $mod = $alumnos[0]->mod;
@@ -126,18 +91,16 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-    </main>
-    <footer>
-        {{--  <p><strong></strong></p>  --}}
-    </footer>
+    </div>
+
+@endsection
+@section('js')
     <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('
                 $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                $pdf->text(40, 538, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
             ');
         }
     </script>
-</body>
-</html>
+@endsection
