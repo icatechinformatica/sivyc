@@ -168,11 +168,11 @@
                             </tr>
                             <tr>
                                 <td style='width: 180px;'>Nivel de Estudios que Cubre para la Especialidad:</td>
-                                <td style='width: 360px;' colspan="2">{{$especialidades[0]->perfil_profesional}}</td>
+                                <td style='width: 360px;' colspan="2"> @if($especialidades[0]->status != 'BAJA EN FIRMA'){{$especialidades[0]->perfil_profesional}} @else {{$especialidades[1]->perfil_profesional}}@endif</td>
                             </tr>
                             <tr>
                                 <td style='width: 180px;'>Observaciones:</td>
-                                <td style='width: 360px;' colspan="2">{{$especialidades[0]->observacion_validacion}}</td>
+                                <td style='width: 360px;' colspan="2"> @if($especialidades[0]->status != 'BAJA EN FIRMA'){{$especialidades[0]->observacion_validacion}} @else {{$especialidades[1]->observacion_validacion}}@endif</td>
                             </tr>
                         </tbody>
                     </table>

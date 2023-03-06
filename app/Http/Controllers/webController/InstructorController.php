@@ -2484,7 +2484,7 @@ class InstructorController extends Controller
         }
 
         $instructor->status = 'EN CAPTURA';
-        $instructor->registro_activo = TRUE;
+
         $instructor->lastUserId = Auth::user()->id;
         $instructor->data_especialidad = $arrtemp;
 
@@ -2500,6 +2500,9 @@ class InstructorController extends Controller
         {
             $nrevisiontext = 'Modificaciones agregadas al numero de revisión: ' . $instructor->nrevision;
         }
+
+        $instructor->registro_activo = TRUE;
+        $instructor->save();
 
         if($instructor->numero_control == 'Pendiente')
         {
@@ -3059,7 +3062,7 @@ class InstructorController extends Controller
                             ->FIRST();
             $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
                             ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->WHERENOTIN('id',$item->cursos_impartir)->GET();
+                            ->WHERENOTIN('id',$item->cursos_impartir)->GET(); DD($cursosnoav[$count]);
 
             $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
             }
