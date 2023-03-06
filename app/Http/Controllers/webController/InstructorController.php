@@ -1094,21 +1094,15 @@ class InstructorController extends Controller
         $userId = Auth::user()->id;
         $idlist = explode(",", $request->idinstructoresreturn);
         $newb = $newc = $arrtemp = array();
-        $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','BAJA EN PREVALIDACION');
+        $stat_arr = array('PREVALIDACION','REVALIDACION EN PREVALIDACION','BAJA EN PREVALIDACION','BAJA EN FIRMA','EN FIRMA','REVALIDACION EN FIRMA');
 
         foreach($idlist as $bosmer)
         {
-            $chk_mod_perfil = $chk_mod_esp = FALSE;
+            $chk_mod_perfil = $chk_mod_esp = $retorno_firma = FALSE;
             $movimiento = 'Retorno a unidad para su modificacion ';
             $modInstructor = pre_instructor::find($bosmer);
             $modInstructor->turnado = 'UNIDAD';
             $modInstructor->rechazo = $request->observacion_retorno;
-
-
-            if($modInstructor->status != 'VALIDADO')
-            {
-                $modInstructor->status = 'RETORNO';
-            }
 
             $modInstructor->lastUserId = $userId;
 
@@ -1153,6 +1147,18 @@ class InstructorController extends Controller
                             case 'BAJA EN PREVALIDACION':
                                 $perfiles[$key]->status = 'RETORNO';
                             break;
+                            case 'REVALIDACION EN FIRMA':
+                                $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
+                                $retorno_firma = TRUE;
+                            break;
+                            case 'BAJA EN FIRMA':
+                                $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                                $retorno_firma = TRUE;
+                            break;
+                            case 'EN FIRMA':
+                                $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
+                                $retorno_firma = TRUE;
+                            break;
                         }
                     }
                 }
@@ -1181,6 +1187,22 @@ class InstructorController extends Controller
                             case 'BAJA EN PREVALIDACION':
                                 $especialidades[$space]->status = 'RETORNO';
                                 $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                            break;
+                            case 'REVALIDACION EN FIRMA':
+                                $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
+                                $retorno_firma = TRUE;
+                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                            break;
+                            case 'BAJA EN FIRMA':
+                                $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                                $retorno_firma = TRUE;
+                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                            break;
+                            case 'EN FIRMA':
+                                $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
+                                $retorno_firma = TRUE;
+                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                            break;
                         }
                     }
                 }
@@ -1192,6 +1214,10 @@ class InstructorController extends Controller
                 $movimiento = $movimiento . 'de la informacion general del instructor ';
             }
 
+            if($modInstructor->status != 'VALIDADO' && $retorno_firma == FALSE)
+            {
+                $modInstructor->status = 'RETORNO';
+            }
             $movimiento = $movimiento . 'con la observacion: ' . $request->observacion_retorno;
 
             $historico = new instructor_history;
