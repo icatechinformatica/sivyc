@@ -377,7 +377,7 @@ class InstructorController extends Controller
         $chk_mod_perfil = $chk_mod_esp = false;
         $movimiento = NULL;
         $newb = $newc = $arrtemp = array();
-        $stat_arr = array('EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA');
+        $stat_arr = array('EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA','RETORNO');
 
             $bajachk = FALSE;
             $movimiento = 'Envio a DTA para su prevalidacion ';
@@ -443,8 +443,16 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
                             break;
                             case 'RETORNO':
-                                $perfiles[$key]->status = 'PREVALIDACION';
-                                $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ', ';
+                                if($especialidades[$llave]->new == FALSE)
+                                {
+                                    $perfiles[$key]->status = 'REVALIDACION EN PREVALIDACION';
+                                    $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION), ';
+                                }
+                                else
+                                {
+                                    $perfiles[$key]->status = 'PREVALIDACION';
+                                    $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ', ';
+                                }
                             break;
                             case 'REVALIDACION RETORNADA':
                                 $perfiles[$key]->status = 'REVALIDACION EN PREVALIDACION';
@@ -487,8 +495,16 @@ class InstructorController extends Controller
                                 $bajachk = TRUE;
                             break;
                             case 'RETORNO':
-                                $especialidades[$llave]->status = 'PREVALIDACION';
-                                $movimiento = $movimiento . $especialidad->nombre . ',  ';
+                                if($especialidades[$llave]->new == FALSE)
+                                {
+                                    $especialidades[$llave]->status = 'REVALIDACION EN PREVALIDACION';
+                                    $movimiento = $movimiento . $especialidad->nombre . ' (REVALIDACION),  ';
+                                }
+                                else
+                                {
+                                    $especialidades[$llave]->status = 'PREVALIDACION';
+                                    $movimiento = $movimiento . $especialidad->nombre . ',  ';
+                                }
                             break;
                             case 'REVALIDACION RETORNADA':
                                 $especialidades[$llave]->status = 'REVALIDACION EN PREVALIDACION';
@@ -3062,7 +3078,7 @@ class InstructorController extends Controller
                             ->FIRST();
             $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
                             ->WHERE('id_especialidad','=',$item->especialidad_id)
-                            ->WHERENOTIN('id',$item->cursos_impartir)->GET(); DD($cursosnoav[$count]);
+                            ->WHERENOTIN('id',$item->cursos_impartir)->GET();
 
             $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
             }
