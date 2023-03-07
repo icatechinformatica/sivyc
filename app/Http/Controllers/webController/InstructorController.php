@@ -315,8 +315,18 @@ class InstructorController extends Controller
                             ->ORDERBY('muni','ASC')->GET();
         }
 
-        $munix = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')->WHERE('muni', '=', $datainstructor->municipio)->FIRST();
-        $munixnac = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')->WHERE('muni', '=', $datainstructor->municipio_nacimiento)->FIRST();
+
+        $munix = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')
+                ->WHERE('muni', '=', $datainstructor->municipio)
+                ->WHERE('estados.nombre',$datainstructor->entidad)
+                ->JOIN('estados',DB::raw('CAST(estados.id AS varchar)'),'tbl_municipios.id_estado')
+                ->FIRST();
+        $munixnac = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')
+                ->WHERE('muni', '=', $datainstructor->municipio_nacimiento)
+                ->WHERE('estados.nombre',$datainstructor->entidad_nacimiento)
+                ->JOIN('estados',DB::raw('CAST(estados.id AS varchar)'),'tbl_municipios.id_estado')
+                ->FIRST();
+
         if($munix != NULL)
         {
             $localidades = DB::TABLE('tbl_localidades')->SELECT('tbl_localidades.clave','localidad')
@@ -1573,8 +1583,16 @@ class InstructorController extends Controller
                             ->ORDERBY('muni','ASC')->GET();
         }
 
-        $munix = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')->WHERE('muni', '=', $datainstructor->municipio)->FIRST();
-        $munixnac = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')->WHERE('muni', '=', $datainstructor->municipio_nacimiento)->FIRST();
+        $munix = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')
+                ->WHERE('muni', '=', $datainstructor->municipio)
+                ->WHERE('estados.nombre',$datainstructor->entidad)
+                ->JOIN('estados',DB::raw('CAST(estados.id AS varchar)'),'tbl_municipios.id_estado')
+                ->FIRST();
+        $munixnac = DB::TABLE('tbl_municipios')->SELECT('clave', 'id_estado')
+                ->WHERE('muni', '=', $datainstructor->municipio_nacimiento)
+                ->WHERE('estados.nombre',$datainstructor->entidad_nacimiento)
+                ->JOIN('estados',DB::raw('CAST(estados.id AS varchar)'),'tbl_municipios.id_estado')
+                ->FIRST();
 
         if($munix != NULL)
         {
