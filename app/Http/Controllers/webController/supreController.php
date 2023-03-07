@@ -841,7 +841,7 @@ class supreController extends Controller
     }
 
     public function dar_permiso_folio(Request $request)
-    {
+    {dd($request);
         $folio = folio::find($request->folios);
         $folio->permiso_editar = TRUE;
         $folio->save();
