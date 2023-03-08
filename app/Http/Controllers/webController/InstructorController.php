@@ -3262,8 +3262,8 @@ class InstructorController extends Controller
         $unidad = DB::TABLE('tbl_unidades')
                         ->WHERE('unidad', '=', $ubicacion)
                         ->FIRST();
-        $direccion = $unidad->direccion;
-        $direccion = explode("*", $unidad->direccion);
+        $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
+        $direccion = explode("*", $direccion);
         if($instructor->numero_control == 'Pendiente')
         {
             $uni = substr($unidad->cct, -3, 2) * 1 . substr($unidad->cct, -1);
@@ -3393,8 +3393,8 @@ class InstructorController extends Controller
         $instructor->data_especialidad = $special;
         $instructor->save();
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $especialidades[0]->unidad_solicita)->FIRST();
-        $direccion = $data_unidad->direccion;
-        $direccion = explode("*", $data_unidad->direccion);
+        $direccion = '14 PONIENTE NORTE NO. 239*COLONIA MOCTEZUMA.*TUXTLA GUTIÉRREZ, CP 29030 TELEFONO: 9616121621* EMAIL: ICATECH@ICATECH.CHIAPAS.GOB.MX';
+        $direccion = explode("*", $direccion);
         $date = strtotime($especialidades[0]->fecha_baja);
         $datesol = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
