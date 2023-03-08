@@ -70,7 +70,8 @@ class modificarAperturaController extends Controller
                 'opcion' => $request->opcion,
                 'motivo' => $request->opcion,
                 'arc' => '02',  
-                'status_solicitud_arc02' => null,                             
+                'status_solicitud_arc02' => null,  
+                'realizo' => $this->realizo,                           
                 'observaciones' => strtoupper($request->observaciones)
                 ]
             );
