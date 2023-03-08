@@ -3180,7 +3180,7 @@ class InstructorController extends Controller
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
         $direccion = $data_unidad->direccion;
-        // $direccion = explode("*", $data_unidad->direccion);
+        $direccion = explode("*", $data_unidad->direccion);
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -3262,6 +3262,8 @@ class InstructorController extends Controller
         $unidad = DB::TABLE('tbl_unidades')
                         ->WHERE('unidad', '=', $ubicacion)
                         ->FIRST();
+        $direccion = $unidad->direccion;
+        $direccion = explode("*", $unidad->direccion);
         if($instructor->numero_control == 'Pendiente')
         {
             $uni = substr($unidad->cct, -3, 2) * 1 . substr($unidad->cct, -1);
@@ -3301,7 +3303,7 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','elaboro','instructor','especialidades','unidad','D','M','Y'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('distintivo','elaboro','instructor','especialidades','unidad','D','M','Y','direccion'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
@@ -3346,6 +3348,8 @@ class InstructorController extends Controller
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
         ->WHERE('unidad', '!=', 'VILLA CORZO')->FIRST();
+        $direccion = $data_unidad->direccion;
+        $direccion = explode("*", $data_unidad->direccion);
         $date = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -3353,7 +3357,7 @@ class InstructorController extends Controller
         $Y = date("Y",$date);
         // dd($especialidades);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('distintivo','instructor','data_unidad','D','M','Y','especialidades','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3389,6 +3393,8 @@ class InstructorController extends Controller
         $instructor->data_especialidad = $special;
         $instructor->save();
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $especialidades[0]->unidad_solicita)->FIRST();
+        $direccion = $data_unidad->direccion;
+        $direccion = explode("*", $data_unidad->direccion);
         $date = strtotime($especialidades[0]->fecha_baja);
         $datesol = strtotime($especialidades[0]->fecha_solicitud);
         $D = date('d', $date);
@@ -3401,7 +3407,7 @@ class InstructorController extends Controller
         $YS = date("Y",$datesol);
         // dd($data_unidad);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('elabora','distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS'));
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('elabora','distintivo','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','direccion'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }
