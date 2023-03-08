@@ -15,20 +15,7 @@
             page-break-after: always;
         }
         #watermark {
-            position: fixed;
-
-            /** 
-                Establece una posición en la página para tu imagen
-                Esto debería centrarlo verticalmente
-            **/
-            bottom:   .1cm;
-            left:     .1cm;
-
-            /** Cambiar las dimensiones de la imagen **/
-            width:    26cm;
-            height:   20cm;
-
-            /** Tu marca de agua debe estar detrás de cada contenido **/
+            position: fixed;          
             z-index:  -1000;
         }
         .fa-arrow-right:before {
@@ -52,7 +39,7 @@
 @section('body')
 @if ($marca)
         <div id="watermark">
-            <img src="img/borrador.jfif" height="100%" width="100%" />
+            <img src="img/borrador.jfif"  width="100%" />
         </div>  
     @endif
     <main>
