@@ -178,7 +178,7 @@ class exoneracionesController extends Controller
                             'e.no_memorandum','e.fecha_memorandum','e.nrevision','tc.hini','tc.hfin')
                             ->get();    //dd($cursos);
             $reg_unidad = DB::table('tbl_unidades')->select('ubicacion','dgeneral','dunidad','academico','vinculacion','dacademico','pdgeneral','pdacademico',
-                                'pdunidad','pacademico','pvinculacion','municipio')
+                                'pdunidad','pacademico','pvinculacion','municipio','direccion')
                                 ->where('id',$cursos[0]->id_unidad_capacitacion)
                                 ->first(); //dd($reg_unidad);
             $depen = $cursos[0]->depen; //ucwords(strtolower($cursos[0]->depen));
@@ -208,9 +208,10 @@ class exoneracionesController extends Controller
                 $data[$key]['instructor'] = $value->instructor;
                 $data[$key]['alumnos'] = $alumnos;
             }
+            $direccion = $reg_unidad->direccion;
             setlocale(LC_TIME, "spanish");
             $fecha = strftime("%d de %B del %Y");
-            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha','reg_unidad','depen','marca','data'));
+            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha','reg_unidad','depen','marca','data','direccion'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('EXONERACION.pdf');
         } else {
