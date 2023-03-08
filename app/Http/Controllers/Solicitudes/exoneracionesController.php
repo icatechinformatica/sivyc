@@ -208,7 +208,9 @@ class exoneracionesController extends Controller
                 $data[$key]['instructor'] = $value->instructor;
                 $data[$key]['alumnos'] = $alumnos;
             }
-            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','date','reg_unidad','depen','marca','data'));
+            setlocale(LC_TIME, "spanish");
+            $fecha = strftime("%d de %B del %Y");
+            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha','reg_unidad','depen','marca','data'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('EXONERACION.pdf');
         } else {
