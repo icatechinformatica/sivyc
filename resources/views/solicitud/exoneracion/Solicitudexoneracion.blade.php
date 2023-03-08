@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SOLICITUD EXONERACIÓN {{$mexoneracion}}</title>
-    <style>
-        @page {
-            margin: 40px 30px 10px 30px;
-        }
+@extends('theme.formatos.hlayout')
+@section('title', 'Solicitud de Exoneración | SIVyC Icatech')
+@section('css')
+    <style>    
+        @page { margin-bottom: 107px; }    
         body {
-            /*margin: 3cm 2cm 2cm;*/
-            margin-top: 120px;
+            margin-top: 150px;
             font-family: sans-serif; font-size: 12px;
         }
-        header {
-            position: fixed;
-            top: 0cm;
-            left: 0cm;
-            right: 0cm;
-            height: 4cm;
-            text-align: center;
-            /*line-height: 5px;*/
-        }
-        footer {
-            position: fixed;
-            bottom: 0cm;
-            left: 0cm;
-            right: 0cm;
-            height: 2cm;
-            text-align: center;
-            line-height: 35px;
-        }
-        img.izquierda {float: left;width: 200px;height: 60px;}
-        img.derecha {float: right;width: 200px;height: 60px;}
+        
         .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 8px;}
         .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
         .tb thead{background: #EAECEE;}
@@ -63,28 +37,20 @@
             color:black;
             font-size:10px;
         }
+        #titulo table {position: fixed; top: 45px;}
+        .container{ margin-top: -50px; }
+        
     </style>
-</head>
-<body>
-    <header>
-        <img class="izquierda" src='img/logohorizontalica1.png'>
-        <img class="derecha" src='img/chiapas.png'>
-        <div style="clear: both;">
-            <font size="1" align="center"><b>{{$distintivo}}</b></font>
-        </div>
-        <table style="text-align: right; border-collapse: collapse;" align="right">
-            <tr>
-                <td><b>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</b></td> 
-            </tr>
-            <tr>
-                <td>@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td>
-            </tr>
-            <tr>
-                <td>{{$reg_unidad->municipio}}, Chis., {{$date}}.</td>
-            </tr>
-        </table>
-    </header>
-    @if ($marca)
+@endsection
+@section('header') 
+    <table style="text-align: right; border-collapse: collapse;" align="right">
+        <tr><td>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</td></tr>
+        <tr><td style="font-weight:normal;">@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td></tr>
+        <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
+    </table>    
+@endsection
+@section('body')
+@if ($marca)
         <div id="watermark">
             <img src="img/borrador.jfif" height="100%" width="100%" />
         </div>  
@@ -102,13 +68,13 @@
                     <td><b>Presente.</b></td>
                 </tr>
             </table>
-            <br>
-            <div style="text-align: justify;">Conforme a las atribuciones que me confiere el artículo 42 fracción II, IV y V del Reglamento Interior de nuestro Instituto, me 
+            
+            <div style="text-align: justify; padding-top:7px; margin-bottom:7px;">Conforme a las atribuciones que me confiere el artículo 42 fracción II, IV y V del Reglamento Interior de nuestro Instituto, me 
                 permito solicitarle la @if ($cursos[0]->tipo_exoneracion=='EXO') {{"Exoneración"}} @else {{"Reducción de Cuota de Recuperación"}} @endif
                 , derivado de la solicitud del @if ($depen=='CAPACITACION ABIERTA') {{"(los) grupo(s) de CAPACITACION ABIERTA"}} @else {{$depen}} @endif
                 que será(n) atendido(s) con el(los) siguiente(s) curso(s) de capacitación, conforme a lo siguiente:
             </div>
-            <br>
+            
             <table class="tb">
                 <thead>
                     <tr>
@@ -163,35 +129,37 @@
                         <td>@if ($item->no_convenio) {{$item->no_convenio}} @else {{$item->noficio}} <br> {{$item->foficio}} @endif</td>
                         <td>{{$item->razon_exoneracion}}</td>
                         <td>{{$item->observaciones}}</td>
-                    </tr>
+                    </tr>                     
                     @endforeach 
                 </tbody>                   
             </table>
-            <br>
-            <p style="width: 100%; border: black 1px solid; font-size: 8px; padding: 1px;">
+            
+            <p style="page-break-inside: avoid;  width: 100%; border: black 1px solid; font-size: 8px; padding: 2px; margin-top:7px; ">
                 GLOSARIO: <br>
                 Tipo de exoneración:&nbsp;&nbsp;EXO <span class="fa-arrow-right"></span> EXONERACIÓN&nbsp;&nbsp;&nbsp;REDU <span class="fa-arrow-right"></span> REDUCCIÓN DE PAGO <br>
                 Razón de la exoneración:&nbsp;&nbsp;AM <span class="fa-arrow-right"></span> ADULTOS MAYORES&nbsp;&nbsp;BR <span class="fa-arrow-right"></span> BAJOS RECURSOS&nbsp;&nbsp;D <span class="fa-arrow-right"></span> DISCAPACITADOS&nbsp;&nbsp;MS <span class="fa-arrow-right"></span> MADRES SOLTERAS&nbsp;&nbsp;PPL <span class="fa-arrow-right"></span> PERSONAS PRIVADAS DE LA LIBERTAD&nbsp;&nbsp;GRS <span class="fa-arrow-right"></span> GRUPOS DE REINSERCIÓN SOCIAL&nbsp;&nbsp;O <span class="fa-arrow-right"></span> OTRO
             </p>
-            <br>
-            <div style="text-align: justify;">Lo anterior, con la finalidad de atender grupos en situación de vulnerabilidad que por sus características presentan desventaja por sexo, estado civil,
+            
+            <div style="page-break-inside: avoid; text-align: justify;">
+                Lo anterior, con la finalidad de atender grupos en situación de vulnerabilidad que por sus características presentan desventaja por sexo, estado civil,
                  nivel educativo, origen étnico, situación o condición física y/o mental y requieren de un esfuerzo adicional para incorporarse al desarrollo 
                 y a la convivencia, como  lo señala el artículo 32 de la Ley General de Educación y artículo 23, de los 
-                lineamientos para los procesos de vinculación y capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas. <br>
+                lineamientos para los procesos de vinculación y capacitación del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas.<br/>
                 Considerando que los costos de los cursos que imparte esta Institución, varían de los $100.00 (Cien pesos 00/100 M.N.) a los $1,200.00 (Mil Doscientos 00/100 M.N.); 
                 según su tipo Oficios, Profesionalización, Especialización y Salud, así como su clasificación Básico, Medio o Avanzado y duración total de horas de capacitación. <br>
-                Se anexa(n) lista de alumnos y solicitud de la parte interesada. <br>
+                Se anexa(n) lista de alumnos y solicitud de la parte interesada. 
+                <br/>
                 Atentamente.
             </div>
-            <table style="width: 100%; text-align: center; border-collapse: collapse; font-size: 8px;">
+            <table style="page-break-inside: avoid; width: 100%; text-align: center; border-collapse: collapse; font-size: 8px; margin-top:-10px;" >
                 <tr>
                     <td style="padding: 0px;">
                         <div></div>
                         <div style="border: black 1px solid;">
-                            <br><b>Elabora</b><br><br><br>
+                            <br><b>Elabora</b><br><br><br><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->vinculacion}}</b><br>
-                            Titular del Departamento de Vinculación de la Unidad de Capacitación {{$reg_unidad->ubicacion}} <br>
+                            Titular del Departamento de Vinculación de la Unidad de Capacitación {{$reg_unidad->ubicacion}} <br>&nbsp;
                         </div>
                         <div></div>
                     </td>
@@ -201,10 +169,10 @@
                     <td style="padding: 0px;">
                         <div></div>
                         <div style="border: black 1px solid;">
-                            <br><b>Valida</b><br><br><br>
+                            <br><b>Valida</b><br><br><br><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->dunidad}}</b> <br>
-                            Titular de la Dirección de la Unidad de Capacitación <br> {{$reg_unidad->ubicacion}} <br>
+                            Titular de la Dirección de la Unidad de Capacitación {{$reg_unidad->ubicacion}} <br>&nbsp;
                         </div>
                         <div></div>                        
                     </td>
@@ -219,13 +187,13 @@
                             <b>Autoriza</b><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->dgeneral}}.</b> <br>
-                            Director(a) General del ICATECH <br>
+                            Director(a) General del ICATECH <br>&nbsp;
                         </div>
                         <div style="border: black 1px solid;"> <br>
                             <b>Vo.Bo.</b><br><br>
                             ________________________________________________ <br>
                             <b>{{$reg_unidad->dacademico}}</b> <br>
-                            Director(a) de Técnica Académica <br>
+                            Director(a) de Técnica Académica <br>&nbsp;
                         </div>
                     </td>
                 </tr>
@@ -304,22 +272,21 @@
                         <td>{{$value->edad}}</td>
                         <td>{{$value->costo}}</td>
                     </tr>
+                    
                     @endforeach
                 </tbody>
             </table>
             @endforeach
         </div>
     </main>
-    <footer>
-        {{--  <p><strong></strong></p>  --}}
-    </footer>
-    <script type="text/php">
+
+@endsection
+@section('js')
+<script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('
                 $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
-                $pdf->text(50, 570, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
+                $pdf->text(40, 540, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 8);
             ');
         }
-    </script>
-</body>
-</html>
+@endsection
