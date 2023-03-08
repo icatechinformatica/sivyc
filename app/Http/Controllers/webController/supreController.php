@@ -1582,6 +1582,7 @@ class supreController extends Controller
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
+                    \DB::raw('tbl_cursos.hombre + tbl_cursos.mujer'),
                     'tbl_cursos.clave',
                     'tbl_cursos.ze',
                     'tbl_cursos.dura',
@@ -1620,6 +1621,7 @@ class supreController extends Controller
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
                     'tbl_cursos.curso',
+                    \DB::raw('tbl_cursos.hombre + tbl_cursos.mujer'),
                     'tbl_cursos.clave',
                     'tbl_cursos.ze',
                     'tbl_cursos.dura',
@@ -1653,7 +1655,9 @@ class supreController extends Controller
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
-                    'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tbl_cursos.curso',
+                    \DB::raw('tbl_cursos.hombre + tbl_cursos.mujer'),
+                     'tbl_cursos.clave',
                     'tbl_cursos.ze',
                     'tbl_cursos.dura',
                     'tbl_cursos.muni',
@@ -1686,7 +1690,9 @@ class supreController extends Controller
                     'tabla_supre.fecha', \DB::raw('CONCAT(instructores.nombre, '."' '".' ,instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno")'),
                     'tbl_cursos.unidad',
                     \DB::raw("CASE WHEN tbl_cursos.tipo_curso = 'CURSO' THEN 'CURSO' ELSE 'CERTIFICACION EXTRAORDINARIA' END AS tipo_curso"),
-                    'tbl_cursos.curso', 'tbl_cursos.clave',
+                    'tbl_cursos.curso',
+                    \DB::raw('tbl_cursos.hombre + tbl_cursos.mujer'),
+                     'tbl_cursos.clave',
                     'tbl_cursos.ze',
                     'tbl_cursos.dura',
                     'tbl_cursos.muni',
@@ -1715,8 +1721,8 @@ class supreController extends Controller
 
         $cabecera = [
             'MEMO. SOLICITADO', 'NO. DE SUFICIENCIA', 'FECHA DE CREACION EN EL SISTEMA', 'FECHA',
-            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CLAVE DEL GRUPO',
-            'Z.E.','HSM','MUNICIPIO','LOCALIDAD',  'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
+            'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
+            'Z.E.','HSM','MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
             'FECHA REGISTRO', 'OBSERVACIONES'
         ];
