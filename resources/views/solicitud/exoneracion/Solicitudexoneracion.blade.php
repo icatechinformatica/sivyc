@@ -2,7 +2,7 @@
 @section('title', 'Solicitud de Exoneración | SIVyC Icatech')
 @section('css')
     <style>    
-        @page { margin-bottom: 107px; }    
+        @page { margin-bottom: 125px; }    
         body {
             margin-top: 150px;
             font-family: sans-serif; font-size: 12px;
