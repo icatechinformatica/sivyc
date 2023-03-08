@@ -297,7 +297,7 @@ class ExoneracionController extends Controller
                                 ->orderBy('e.fini','asc')
                                 ->get();    //dd($cursos);
                 $reg_unidad = DB::table('tbl_unidades')->select('ubicacion','dgeneral','dunidad','academico','vinculacion','dacademico','pdgeneral','pdacademico',
-                                    'pdunidad','pacademico','pvinculacion','municipio')
+                                    'pdunidad','pacademico','pvinculacion','municipio','direccion')
                                     ->where('id',$cursos[0]->id_unidad_capacitacion)
                                     ->first(); //dd($reg_unidad);
                 $depen = $cursos[0]->depen;
@@ -329,7 +329,12 @@ class ExoneracionController extends Controller
                     $data[$key]['instructor'] = $value->instructor;
                     $data[$key]['alumnos'] = $alumnos;
                 }
-                $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','date','reg_unidad','depen','marca','data'));
+                $direccion = $reg_unidad->direccion;
+
+                setlocale(LC_TIME, "spanish");
+                $fecha = strftime("%d de %B del %Y" ,strtotime($date));
+                
+                $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha','reg_unidad','depen','marca','data','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('EXONERACION.pdf');
            // } else {
