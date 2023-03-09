@@ -494,7 +494,6 @@ class ContratoController extends Controller
         {
             $memoval = $data->archivo_alta;
         }
-
         // $comprobante_pago = DB::TABLE('alumnos_registro')->WHERE('folio_grupo')->VALUE('comprobante_pago');
         $data->comprobante_pago = '/storage/uploadFiles' . $data->comprobante_pago;
         $cupo = $data->hombre + $data->mujer;
