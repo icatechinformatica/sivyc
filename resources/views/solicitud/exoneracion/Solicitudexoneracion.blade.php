@@ -10,24 +10,36 @@
         
         .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 8px;}
         .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
-        .tb thead{background: #EAECEE;}
+        .tb thead{background: #EAECEE; }
         .page-break {
             page-break-after: always;
         }
-        #watermark {
-            position: fixed;          
-            z-index:  -1000;
-        }
-        .fa-arrow-right:before {
-            font-family: DejaVu Sans;
-            content: "\2192";
-            color:black;
-            font-size:10px;
-        }
+           
         #titulo table {position: fixed; top: 45px;}
-        .container{ margin-top: -50px; }
-        
+        .container{ margin-top: -50px; }        
     </style>
+     @if ($marca)
+        <style>
+            header:after {
+            content: "BORRADOR"; 
+            font-size: 13em;  
+            color: rgba(40, 40, 43, 0.4);
+            z-index: 9999;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 1700px;
+            right: 0;
+            bottom: 0;
+            left: 1100px;           
+            transform: rotate(-25deg);
+            }
+       
+        
+        </style>        
+     @endif
 @endsection
 @section('header') 
     <table style="text-align: right; border-collapse: collapse;" align="right">
@@ -36,12 +48,7 @@
         <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
     </table>    
 @endsection
-@section('body')
-@if ($marca)
-        <div id="watermark">
-            <img src="img/borrador.jfif"  width="100%" />
-        </div>  
-    @endif
+@section('body')   
     <main>
         <div class="container">
             <table style="border-collapse: collapse;">
