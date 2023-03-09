@@ -1398,10 +1398,30 @@ class InstructorController extends Controller
 
     public function solicitud_reactivacion(Request $request)
     {
-        // dd($request);
         $userId = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $instructor = pre_instructor::find($request->idreacins);
+
+        $extract_inf = instructor::find($request->idreacins);
+        if(!isset($instructor))
+        {
+            $pre_instructor = new pre_instructor();
+            $instructor  = $this->guardado_ins_model($pre_instructor, $extract_inf, $request->idreacins);
+            $pre_instructor->id_oficial = $request->idreacins;
+            $pre_instructor->archivo_ine = $extract_inf->archivo_ine;
+            $pre_instructor->archivo_domicilio = $extract_inf->archivo_domicilio;
+            $pre_instructor->archivo_curp = $extract_inf->archivo_curp;
+            $pre_instructor->archivo_alta = $extract_inf->archivo_alta;
+            $pre_instructor->archivo_bancario = $extract_inf->archivo_bancario;
+            $pre_instructor->archivo_fotografia = $extract_inf->archivo_fotografia;
+            $pre_instructor->archivo_estudios = $extract_inf->archivo_estudios;
+            $pre_instructor->archivo_otraid = $extract_inf->archivo_otraid;
+            $pre_instructor->archivo_rfc = $extract_inf->archivo_rfc;
+            $pre_instructor->numero_control = $extract_inf->numero_control;
+            $pre_instructor->registro_activo = TRUE;
+            $instructor->save();
+        }
+
         $especialidades = $this->make_collection($instructor->data_especialidad);
         $perfiles = $this->make_collection($instructor->data_perfil);
         $movimiento = 'Solicitud de reactivacion de instructor';
@@ -1437,7 +1457,7 @@ class InstructorController extends Controller
         // dd($historico);
 
         return redirect('/instructor/ver/'.$instructor->id)
-            ->with('success','Solicitud de Baja Solicitada con Numero de Revision: ' . $instructor->nrevision);
+            ->with('success','Solicitud de Reactivación Solicitada con Numero de Revision: ' . $instructor->nrevision);
     }
 
     public function solicitud_baja_especialidad(Request $request)
@@ -1447,7 +1467,7 @@ class InstructorController extends Controller
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $especialidad = especialidad_instructor::find($request->idbajaespe);
         $nomesp = especialidad::WHERE('id', '=', $especialidad->especialidad_id)->SELECT('nombre')->FIRST();
-        $instructor = pre_instructor::find($especialidad->id_instructor);
+        $instructor = pre_instructor::find($especialidad->id_instructor);DD($instructor);
         $especialidades = $this->make_collection($instructor->data_especialidad);
         foreach($especialidades AS $key => $cadwell)
         {
