@@ -459,31 +459,30 @@ class turnarAperturaController extends Controller
    
     public function pdfARC01(Request $request){
         if($request->fecha AND $request->memo){ 
-            $marca = null;       
+            $marca = true;       
             //$fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
             //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
-                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01');                
+                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01','status_solicitud');                
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
                 
-            if(count($reg_cursos)>0){   
-                foreach ($reg_cursos as $value) {
-                    if (!$value->fecha_arc01) {
-                        $result = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->update(['fecha_arc01'=>$request->fecha]);
-                    }
-                }  
-                $fecha_memo = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->pluck('fecha_arc01')->first();
-                $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
+            if(count($reg_cursos)>0){
+                $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);
+                $fecha_memo = $reg_cursos[0]->fecha_arc01;
+                $fecha_memo = date('d-m-Y',strtotime($fecha_memo));
+
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
-                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');
+                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','direccion','unidad','cct');
                 if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);                            
                 $reg_unidad = $reg_unidad->first();            
-                
-                $pdf = PDF::loadView('reportes.arc01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca'));
+                $direccion = $reg_unidad->direccion;
+
+                if($reg_cursos[0]->status_solicitud=="VALIDADO") $marca = false;
+                $pdf = PDF::loadView('solicitud.apertura.pdfARC01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC01.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
@@ -492,30 +491,32 @@ class turnarAperturaController extends Controller
     
     public function pdfARC02(Request $request) { 
         if($request->fecha AND $request->memo){  
-            $marca = null;    
+            $marca = true;    
             //$fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
             //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
-                'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02');
+                'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02','status_solicitud_arc02');
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
             $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
                 
             if(count($reg_cursos)>0){
-                if (!$reg_cursos[0]->fecha_arc02) {
-                    $result = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->update(['fecha_arc02'=>$request->fecha]);
-                }  
+                
+                $asigna_fecha = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->whereNull('fecha_arc02')->update(['fecha_arc02'=>$request->fecha]);
+                  
                 $fecha_memo = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->pluck('fecha_arc02')->first();
                 $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
                // var_dump($instituto);exit;
 
-                $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion');                
+                $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','direccion','unidad','cct');                
                 if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);           
                 $reg_unidad = $reg_unidad->first();                
-                    
-                $pdf = PDF::loadView('reportes.arc02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca'));
+                $direccion = $reg_unidad->direccion;
+                if($reg_cursos[0]->status_solicitud_arc02=="VALIDADO") $marca = false;
+
+                $pdf = PDF::loadView('solicitud.apertura.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC02.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;   
