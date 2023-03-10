@@ -57,14 +57,14 @@ class InstructorController extends Controller
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION'])
+            ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
             ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
         }
         else
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
-            ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION'])
+            ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
             ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
         }
         return view('layouts.pages.initinstructor', compact('data'));
@@ -1398,6 +1398,7 @@ class InstructorController extends Controller
 
     public function solicitud_reactivacion(Request $request)
     {
+        // dd($request);
         $userId = Auth::user()->id;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $instructor = pre_instructor::find($request->idreacins);
@@ -1429,17 +1430,17 @@ class InstructorController extends Controller
 
         foreach($perfiles AS $key => $cadwell)
         {
-            $perfiles[$key]->status = 'REACTIVACION EN PREVALIDACION';
+            $perfiles[$key]->status = 'REACTIVACION EN CAPTURA';
         }
 
         foreach($especialidades AS $rise => $moist)
         {
-            $especialidades[$rise]->status = 'REACTIVACION EN PREVALIDACION';
+            $especialidades[$rise]->status = 'REACTIVACION EN CAPTURA';
         }
 
         $instructor->data_perfil = $perfiles;
         $instructor->data_especialidad = $especialidades;
-        $instructor->status = 'REACTIVACION EN PREVALIDACION';
+        $instructor->status = 'REACTIVACION EN CAPTURA';
         $instructor->turnado = 'DTA';
         $instructor->registro_activo = TRUE;
         $instructor->motivo = NULL;
@@ -1467,7 +1468,7 @@ class InstructorController extends Controller
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $especialidad = especialidad_instructor::find($request->idbajaespe);
         $nomesp = especialidad::WHERE('id', '=', $especialidad->especialidad_id)->SELECT('nombre')->FIRST();
-        $instructor = pre_instructor::find($especialidad->id_instructor);DD($instructor);
+        $instructor = pre_instructor::find($especialidad->id_instructor);
         $especialidades = $this->make_collection($instructor->data_especialidad);
         foreach($especialidades AS $key => $cadwell)
         {
@@ -3143,7 +3144,7 @@ class InstructorController extends Controller
             $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
                             ->WHERE('id_especialidad','=',$item->especialidad_id)
                             ->WHERENOTIN('id',$item->cursos_impartir)->GET();
-
+            print_r($totalcursos->total . '-' . $item->especialidad_id . '///');
             $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
             }
             else
