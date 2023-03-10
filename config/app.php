@@ -178,8 +178,6 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         // Passport
         Laravel\Passport\PassportServiceProvider::class,
-        //spatie
-        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*
@@ -193,7 +191,7 @@ return [
     |
     */
 
-
+    
     'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,
