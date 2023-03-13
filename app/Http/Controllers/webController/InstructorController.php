@@ -1172,15 +1172,15 @@ class InstructorController extends Controller
                                 $perfiles[$key]->status = 'RETORNO';
                             break;
                             case 'REVALIDACION EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (REVALIDACION EN FIRMA), ';
+                                $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION EN FIRMA), ';
                                 $retorno_firma = TRUE;
                             break;
                             case 'BAJA EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
+                                $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
                                 $retorno_firma = TRUE;
                             break;
                             case 'EN FIRMA':
-                                $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
+                                $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (EN FIRMA), ';
                                 $retorno_firma = TRUE;
                             break;
                         }
