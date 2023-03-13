@@ -114,7 +114,7 @@ class InstructorController extends Controller
             }
             else // OPCION PARA UNIDAD CUANDO ROL NO ESTA ASIGNADO
             {
-                $status = ['EN CAPTURA','RETORNO','EN FIRMA','REVALIDACION EN CAPTURA', 'REVALIDACION EN FIRMA','BAJA EN PREVALIDACION', 'BAJA EN FIRMA','REACTIVACION EN FIRMA'];
+                $status = ['EN CAPTURA','REACTIVACION EN CAPTURA','RETORNO','EN FIRMA','REVALIDACION EN CAPTURA', 'REVALIDACION EN FIRMA','BAJA EN PREVALIDACION', 'BAJA EN FIRMA','REACTIVACION EN FIRMA'];
                 $turnado = ['UNIDAD'];
                 $uni = $userunidad->ubicacion;
             }
@@ -199,7 +199,7 @@ class InstructorController extends Controller
             {
                 $unirev = $userunidad->ubicacion['0'] . $userunidad->ubicacion['1'];
                 $nrevisiones = $nrevisiones->WHERE('nrevision', 'LIKE', '%' . $unirev . '%')//'data_especialidad', [['unidad_solicita' => $userunidad->ubicacion]])
-                                ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
+                                ->WHEREIN('status', ['EN CAPTURA','REACTIVACION EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
                                 ->WHERE('turnado', '=', 'UNIDAD')
                                 ->GET();
 
@@ -207,7 +207,7 @@ class InstructorController extends Controller
                 $databuzon = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','UNIDAD')
                                                 ->WHERE('nrevision', 'LIKE', $unirev . '%')
-                                                ->WHEREIN('status', ['EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
+                                                ->WHEREIN('status', ['EN CAPTURA','REACTIVACION EN CAPTURA','EN FIRMA','BAJA EN PREVALIDACION','BAJA EN FIRMA','REACTIVACION EN FIRMA','RETORNO'])
                                                 ->GET();
                 $buzonhistory = pre_instructor::SELECT('id','nombre', 'apellidoPaterno', 'apellidoMaterno', 'nrevision', 'updated_at','lastUserId','status','turnado')
                                                 ->WHERE('turnado','DTA')
@@ -387,7 +387,7 @@ class InstructorController extends Controller
         $chk_mod_perfil = $chk_mod_esp = false;
         $movimiento = NULL;
         $newb = $newc = $arrtemp = array();
-        $stat_arr = array('EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA','RETORNO');
+        $stat_arr = array('EN CAPTURA','REACTIVACION EN CAPTURA','REVALIDACION EN CAPTURA','BAJA EN CAPTURA','RETORNO');
 
             $bajachk = FALSE;
             $movimiento = 'Envio a DTA para su prevalidacion ';
@@ -448,6 +448,10 @@ class InstructorController extends Controller
                                 $perfiles[$key]->status = 'REVALIDACION EN PREVALIDACION';
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION), ';
                             break;
+                            case 'REACTIVACION EN CAPTURA':
+                                $perfiles[$key]->status = 'REACTIVACION EN PREVALIDACION';
+                                $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (REACTIVACION), ';
+                            break;
                             case 'BAJA EN CAPTURA':
                                 $perfiles[$key]->status = 'BAJA EN PREVALIDACION';
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
@@ -498,6 +502,10 @@ class InstructorController extends Controller
                             case 'REVALIDACION EN CAPTURA':
                                 $especialidades[$llave]->status = 'REVALIDACION EN PREVALIDACION';
                                 $movimiento = $movimiento . $especialidad->nombre . ' (REVALIDACION),  ';
+                            break;
+                            case 'REACTIVACION EN CAPTURA':
+                                $especialidades[$llave]->status = 'REACTIVACION EN PREVALIDACION';
+                                $movimiento = $movimiento . $especialidad->nombre . ' (REACTIVACION),  ';
                             break;
                             case 'BAJA EN CAPTURA':
                                 $especialidades[$llave]->status = 'BAJA EN PREVALIDACION';
@@ -1446,8 +1454,8 @@ class InstructorController extends Controller
 
         $instructor->data_perfil = $perfiles;
         $instructor->data_especialidad = $especialidades;
-        $instructor->status = 'REACTIVACION EN CAPTURA';
-        $instructor->turnado = 'DTA';
+        $instructor->status = 'EN CAPTURA';
+        $instructor->turnado = 'UNIDAD';
         $instructor->registro_activo = TRUE;
         $instructor->motivo = NULL;
         $instructor->nrevision = $nrev;
@@ -2234,6 +2242,10 @@ class InstructorController extends Controller
                 {
                     $arrmod['status'] = 'EN CAPTURA';
                 }
+                else if($cadwell['status'] == 'REACTIVACION EN CAPTURA')
+                {
+                    $arrtemp[$key]['status'] = 'REACTIVACION EN CAPTURA';
+                }
                 else
                 {
                     $arrmod['status'] = 'REVALIDACION EN CAPTURA';
@@ -2562,9 +2574,13 @@ class InstructorController extends Controller
                 $arrtemp[$key]['lastUserId'] = $userId;
                 $arrtemp[$key]['id_instructor'] = $request->idins;
 
-                if($cadwell == 'EN CAPTURA')
+                if($cadwell['status'] == 'EN CAPTURA')
                 {
                     $arrtemp[$key]['status'] = 'EN CAPTURA';
+                }
+                else if($cadwell['status'] == 'REACTIVACION EN CAPTURA')
+                {
+                    $arrtemp[$key]['status'] = 'REACTIVACION EN CAPTURA';
                 }
                 else
                 {
