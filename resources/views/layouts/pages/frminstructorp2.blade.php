@@ -348,7 +348,7 @@
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#delexplabModal"
-                                            data-id='["{{$lock}}", "{{$datainstructor->id}}"]'>
+                                            data-id='["{{$lock2}}", "{{$datainstructor->id}}"]'>
                                                 <i class="fa fa-eraser" aria-hidden="true"></i>
                                         </button>
                                     @endcan
