@@ -621,7 +621,7 @@
                     @if(isset($datainstructor->entrevista))
                         <div class="form-group col-md-2"><br>
                             @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
+                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'REACTIVACION EN CAPTURA') disabled @endif
                                     data-toggle="modal"
                                     data-placement="top"
                                     data-target="#modentrevistaModal"
@@ -635,7 +635,7 @@
                     @else
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif
+                                <button type="button" class="btn mr-sm-4 mt-3" @if(!in_array($datainstructor->status, $ari)) disabled @endif
                                     data-toggle="modal"
                                     data-placement="top"
                                     data-target="#entrevistaModal"
@@ -663,7 +663,7 @@
                                     <td></td>
                                     <td id="center" width="160px">
                                         <label class='onpoint' for="arch_entrevista">
-                                            <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if(!in_array($datainstructor->status, $ari)) disabled @endif
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#updentrevistaModal"

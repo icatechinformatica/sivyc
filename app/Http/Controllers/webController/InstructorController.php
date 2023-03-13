@@ -968,7 +968,7 @@ class InstructorController extends Controller
                     $end = count($hvalidacion) - 1;
                     if($cadwell->status == 'BAJA EN FIRMA')
                     {
-                        $hvalidacion[$end]['memo_baja'] = $cadwell->memorandum_validacion;
+                        $hvalidacion[$end]['memo_baja'] = $cadwell->memorandum_baja;
                         $hvalidacion[$end]['fecha_baja'] = $cadwell->fecha_validacion;
                         $hvalidacion[$end]['arch_baja'] = $url;
                         $especialidades[$key]->hvalidacion = $hvalidacion;
@@ -1043,6 +1043,12 @@ class InstructorController extends Controller
                     {
                         $espins->memorandum_baja = $especialidades[$key]->memorandum_baja;
                         $espins->fecha_baja = $especialidades[$key]->fecha_baja;
+                    }
+
+                    if($espins->status == 'BAJA' && $cadwell->new == TRUE)
+                    {
+                        $espins->memorandum_validacion = $espins->memorandum_baja = $especialidades[$key]->memorandum_baja;
+                        $espins->fecha_validacion = $especialidades[$key]->fecha_baja;
                     }
                     $espins->save();
                     $especialidades[$key]->new = FALSE;
@@ -1753,7 +1759,14 @@ class InstructorController extends Controller
         }
 
         $instructorupd->exp_docente = $expdoc;
-        $instructorupd->status = 'EN CAPTURA';
+        if($instructorupd->status == 'REACTIVACION EN CAPTURA')
+        {
+            $instructorupd->status = 'REACTIVACION EN CAPTURA';
+        }
+        else
+        {
+            $instructorupd->status = 'EN CAPTURA';
+        }
         $instructorupd->registro_activo = TRUE;
         $instructorupd->save();
 
@@ -1868,7 +1881,14 @@ class InstructorController extends Controller
 
 
         $instructorupd->exp_laboral = $explab;
-        $instructorupd->status = 'EN CAPTURA';
+        if($instructorupd->status == 'REACTIVACION EN CAPTURA')
+        {
+            $instructorupd->status = 'REACTIVACION EN CAPTURA';
+        }
+        else
+        {
+            $instructorupd->status = 'EN CAPTURA';
+        }
         $instructorupd->registro_activo = TRUE;
         $instructorupd->save();
 
@@ -1967,7 +1987,14 @@ class InstructorController extends Controller
                        '10' => $request->Q10, '11' => $request->Q11, '12' => $request->Q12,
                        '13' => $request->Q13, '14' => $request->Q14, 'link' => null];
         $instructorupd->entrevista = $entrevista;
-        $instructorupd->status = 'EN CAPTURA';
+        if($instructorupd->status == 'REACTIVACION EN CAPTURA')
+        {
+            $instructorupd->status = 'REACTIVACION EN CAPTURA';
+        }
+        else
+        {
+            $instructorupd->status = 'EN CAPTURA';
+        }
         $instructorupd->registro_activo = TRUE;
         $instructorupd->save();
 
@@ -3144,7 +3171,7 @@ class InstructorController extends Controller
             $cursosnoav[$count] = DB::TABLE('cursos')->SELECT('nombre_curso')
                             ->WHERE('id_especialidad','=',$item->especialidad_id)
                             ->WHERENOTIN('id',$item->cursos_impartir)->GET();
-            print_r($totalcursos->total . '-' . $item->especialidad_id . '///');
+
             $porcentaje[$count] = (100*count($cursos[$count]))/$totalcursos->total;
             }
             else
