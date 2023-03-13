@@ -379,6 +379,7 @@ class supreController extends Controller
     }
 
     public function supre_validado(Request $request){
+        // dd($request);
         $supre = supre::find($request->id);
         $supre->status = 'Validado';
         $supre->folio_validacion = $request->folio_validacion;

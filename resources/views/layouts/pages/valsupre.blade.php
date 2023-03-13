@@ -78,9 +78,9 @@
                     <div class="form-group col-md-3">
                         <label for="inputfinanciamiento">Fuente de Financiamiento</label>
                         <select class="form-control" name="financiamiento" id="financiamiento" required>
-                            <option value="">SELECCIONE</option>
-                            <option value="FEDERAL">FEDERAL</option>
-                            <option value="ESTATAL">ESTATAL</option>
+                            {{-- <option value="">SELECCIONE</option> --}}
+                            <option value="FEDERAL" selected>FEDERAL</option>
+                            {{-- <option value="ESTATAL">ESTATAL</option> --}}
                         </select>
                     </div>
                 </div>
