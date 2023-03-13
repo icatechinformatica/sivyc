@@ -12,6 +12,28 @@
         footer { position: fixed; top: 17.7cm; width:100%;}
         .direccion {position: absolute;  top: 1.3cm; width:400px; margin-left:25px; height:auto; font-family: sans-serif; font-size: 8px; color:#FFF; }
     </style>
+    @if(isset($marca))
+        @if ($marca)
+            <style>
+                header:after {
+                content: "BORRADOR"; 
+                font-size: 19em;  
+                color: rgba(40, 40, 43, 0.35);
+                z-index: 9999;                
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: fixed;
+                top: 1700px;
+                right: 0;
+                bottom: 0;
+                left: 1100px;           
+                transform: rotate(-25deg);
+                }
+            </style>        
+            @endif
+    @endif
+
     @yield("css")
 </head>
 <body>

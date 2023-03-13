@@ -5,7 +5,7 @@
         @page { margin-bottom: 125px; }    
         body {
             margin-top: 150px;
-            font-family: sans-serif; font-size: 12px;
+            
         }
         
         .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 8px;}
@@ -14,35 +14,18 @@
         .page-break {
             page-break-after: always;
         }
-           
-        #titulo table {position: fixed; top: 45px;}
-        .container{ margin-top: -50px; }        
-    </style>
-     @if ($marca)
-        <style>
-            header:after {
-            content: "BORRADOR"; 
-            font-size: 13em;  
-            color: rgba(40, 40, 43, 0.4);
-            z-index: 9999;
-            
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            top: 1700px;
-            right: 0;
-            bottom: 0;
-            left: 1100px;           
-            transform: rotate(-25deg);
-            }
-       
-        
-        </style>        
-     @endif
+
+        .fa-arrow-right:before {
+            font-family: DejaVu Sans;
+            content: "\2192";
+            color:black;
+            font-size:10px;
+        }
+        .container{ margin-top: -50px; font-family: sans-serif; font-size: 12px;}        
+    </style>    
 @endsection
 @section('header') 
-    <table style="text-align: right; border-collapse: collapse;" align="right">
+    <table style="text-align: right; border-collapse: collapse; font-family: sans-serif; font-size: 12px;" align="right">
         <tr><td>Unidad de Capacitación {{$reg_unidad->ubicacion}}.</td></tr>
         <tr><td style="font-weight:normal;">@if ($marca) {{ "Revisión No. "}} @else {{ "Memorándum No. "}} @endif{{$mexoneracion}}.</td></tr>
         <tr><td style="font-weight:normal;">{{$reg_unidad->municipio}}, Chiapas; {{$fecha}}.</td></tr>
@@ -126,14 +109,12 @@
                     </tr>                     
                     @endforeach 
                 </tbody>                   
-            </table>
-            
+            </table>            
             <p style="page-break-inside: avoid;  width: 100%; border: black 1px solid; font-size: 8px; padding: 2px; margin-top:7px; ">
-                GLOSARIO: <br>
-                Tipo de exoneración:&nbsp;&nbsp;EXO <span class="fa-arrow-right"></span> EXONERACIÓN&nbsp;&nbsp;&nbsp;REDU <span class="fa-arrow-right"></span> REDUCCIÓN DE PAGO <br>
-                Razón de la exoneración:&nbsp;&nbsp;AM <span class="fa-arrow-right"></span> ADULTOS MAYORES&nbsp;&nbsp;BR <span class="fa-arrow-right"></span> BAJOS RECURSOS&nbsp;&nbsp;D <span class="fa-arrow-right"></span> DISCAPACITADOS&nbsp;&nbsp;MS <span class="fa-arrow-right"></span> MADRES SOLTERAS&nbsp;&nbsp;PPL <span class="fa-arrow-right"></span> PERSONAS PRIVADAS DE LA LIBERTAD&nbsp;&nbsp;GRS <span class="fa-arrow-right"></span> GRUPOS DE REINSERCIÓN SOCIAL&nbsp;&nbsp;O <span class="fa-arrow-right"></span> OTRO
-            </p>
-            
+                GLOSARIO:<br>
+                TIPO DE EXONERACIÓN:&nbsp;&nbsp;<b>EXO</b> <span class="fa-arrow-right"></span> EXONERACIÓN&nbsp;&nbsp;&nbsp;<b>REDU</b> <span class="fa-arrow-right"></span> REDUCCIÓN DE PAGO <br>
+                RAZÓN DE LA EXONERACIÓN:&nbsp;&nbsp;<b>AM</b> <span class="fa-arrow-right"></span> ADULTOS MAYORES&nbsp;&nbsp;<b>BR</b> <span class="fa-arrow-right"></span> BAJOS RECURSOS&nbsp;&nbsp;<b>D</b> <span class="fa-arrow-right"></span> DISCAPACITADOS&nbsp;&nbsp;<b>MS</b> <span class="fa-arrow-right"></span> MADRES SOLTERAS&nbsp;&nbsp;<b>PPL</b> <span class="fa-arrow-right"></span> PERSONAS PRIVADAS DE LA LIBERTAD&nbsp;&nbsp;<b>GRS</b> <span class="fa-arrow-right"></span> GRUPOS DE REINSERCIÓN SOCIAL&nbsp;&nbsp;<b>O</b> <span class="fa-arrow-right"></span> OTRO
+            </p>            
             <div style="page-break-inside: avoid; text-align: justify;">
                 Lo anterior, con la finalidad de atender grupos en situación de vulnerabilidad que por sus características presentan desventaja por sexo, estado civil,
                  nivel educativo, origen étnico, situación o condición física y/o mental y requieren de un esfuerzo adicional para incorporarse al desarrollo 

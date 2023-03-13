@@ -472,10 +472,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('reportes.formatoT');
 
     //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
-    Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
+    //Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
     Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
     Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
-    Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc')->Middleware('can:academicos.arc');
+    //Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc')->Middleware('can:academicos.arc');
     Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
     Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
     Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
@@ -509,7 +509,7 @@ Route::middleware(['auth'])->group(function () {
     /*Asignación de Clave de Aperturas*/
     Route::post('/solicitudes/aperturas/validar_preliminar', 'Solicitudes\aperturasController@validar_preliminar')->name('solicitudes.aperturas.pvalidar');
     Route::post('/solicitudes/aperturas/retornar_preliminar', 'Solicitudes\aperturasController@retornar_preliminar')->name('solicitudes.aperturas.pretornar');
-    Route::post('/solicitudes/aperturas/arc', 'Solicitudes\aperturasController@barc')->name('solicitudes.aperturas.barc');
+    //Route::post('/solicitudes/aperturas/arc', 'Solicitudes\aperturasController@barc')->name('solicitudes.aperturas.barc');
 
     Route::get('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
     Route::post('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
