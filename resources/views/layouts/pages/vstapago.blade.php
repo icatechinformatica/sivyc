@@ -102,6 +102,7 @@
                             <th scope="col">Fecha de Validación de Recepción Fisica</th>
                     @endcan
                     <th width="160px">Acciones</th>
+                    <th scope="col">Fecha de Entrega Fisica</th>
                 </tr>
             </thead>
             <tbody>
@@ -241,6 +242,7 @@
                                 @break
                             @endswitch
                         </td>
+                        <td>{{$itemData->fecha_agenda}}</td>
                     </tr>
                 @endforeach
             </tbody>
