@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\webController;
 
+use App\Excel\xlsConvenios;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Convenio;
@@ -17,6 +18,7 @@ use Maatwebsite\Excel\Concerns\ToArray;
 use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 use PhpParser\Node\Stmt\Foreach_;
 use SebastianBergmann\Environment\Console;
+use Maatwebsite\Excel\Facades\Excel;
 
 use function Complex\add;
 
@@ -28,13 +30,68 @@ class ConveniosController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $data = Convenio::Busqueda($request->get('busqueda'), $request->get('busqueda_conveniopor'))
+        $datos = [
+            'selectOpcion' => $request->get('busqueda'),
+            'campo_buscar' => $request->get('busqueda_conveniopor'),
+            'fecha1' => $request->get('fecha1'),
+            'fecha2' => $request->get('fecha2')
+        ];
+
+        $data = Convenio::Busqueda($request->get('busqueda'), $datos)
             ->select('convenios.*')
             ->orderByDesc('convenios.id')
             ->paginate(15, ['convenios.*']);
 
-        return view('layouts.pages.vstconvenios', compact('data'));
+        return view('layouts.pages.vstconvenios', compact('data', 'datos', 'request'));
     }
+
+    //generamos el excel
+    protected function generar_excel(Request $request) {
+        $datos = [
+            'campo_buscar' => $request->get('busqueda_conveniopor'),
+            'fecha1' => $request->get('fecha1'),
+            'fecha2' => $request->get('fecha2')
+        ];
+
+        $data = Convenio::Busqueda($request->get('busqueda'), $datos)
+            ->select('convenios.*')
+            ->orderByDesc('convenios.id')
+            ->get();
+
+        $head = ['NO. DE CONVENIO', 'INSTITUCIÓN', 'FECHA DE FIRMA', 'FECHA DE TERMINO', 'TIPO DE CONVENIO',
+                'SECTOR', 'STATUS'];
+        $title = "CONVENIOS";
+        $name = $title."_".date('Ymd').".xlsx";
+        $view = 'layouts.pages.excelConvenios.excel_convenio';
+        $datos_vista = [
+            'data' => $data,
+            'fecha1' => $request->get('fecha1'),
+            'fecha2' => $request->get('fecha2'),
+            'opcionsel' => $request->get('busqueda')
+        ];
+
+        if(count($data)>0)return Excel::download(new xlsConvenios($datos_vista,$head, $title,$view), $name);
+
+    }
+
+    public function conveniosAutocomplete(Request $request) {
+        $search = $request->search;
+        $tipoCurso = $request->tipoCurso;
+
+        if($tipoCurso != '' && $tipoCurso != 'fechas'){
+            if (isset($search) && $search != '') {
+                $data = Convenio::select($tipoCurso)
+                    ->where($tipoCurso, 'like', '%'.$search.'%')
+                    ->limit(10)->get();
+            }
+            $response = array();
+            foreach ($data as $value) {
+                $response[] = array('label' => $value->$tipoCurso);
+            }
+            return json_encode($response);
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -60,7 +117,6 @@ class ConveniosController extends Controller
      */
     public function store(Request $request) {
         // convenios guardarlo en el metodo store
-
         $unity = [];
         foreach ($request->unidades as $unidad) {
             $unity[] = $unidad;
@@ -127,6 +183,9 @@ class ConveniosController extends Controller
         $convenios['activo'] = $publicar;
         $convenios['sector'] = trim($request->input('sector'));
         $convenios['unidades'] = json_encode($unity);
+        //agregamos la fecha updated_at
+        $fecha_updated_at = date('Y-m-d');
+        $convenios['updated_at'] = $fecha_updated_at;
 
         $convenios->save();
 
@@ -261,15 +320,17 @@ class ConveniosController extends Controller
             }
 
             $organismo = DB::table('organismos_publicos')->where('id', $request->institucion)->first();
+            //agregamos la fecha updated_at
 
+            $fecha_updated_at = date('Y-m-d');
             $array_update = [
                 'no_convenio' => trim($request->no_convenio),
                 'tipo_sector' => $request->no_convenio[0],
                 // 'institucion' => trim($request->institucion),
                 'institucion' => $organismo->organismo,
 
-                'fecha_firma' => trim($request->fecha_firma),
-                'fecha_vigencia' => trim($request->fecha_termino),
+                'fecha_firma' => Carbon::parse(trim($request->fecha_firma))->format('Y-m-d'),
+                'fecha_vigencia' => Carbon::parse(trim($request->fecha_termino))->format('Y-m-d'),
                 'poblacion' => trim($request->poblacion),
                 'municipio' => trim($request->municipio),
                 'nombre_titular' => trim($request->nombre_titular),
@@ -286,7 +347,7 @@ class ConveniosController extends Controller
                 'correo_enlace' => $request->correo_en,
                 // 'id_estado' => $request->estadoG,
                 'id_organismo' => trim($request->input('institucion')),
-
+                'updated_at' => $fecha_updated_at,
                 'unidades' => json_encode($unity)
             ];
 
@@ -526,4 +587,5 @@ class ConveniosController extends Controller
         $data['municipio']= $organismo->municipio;
         return response()->json($data);
     }
+
 }

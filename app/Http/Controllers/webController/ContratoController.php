@@ -208,8 +208,11 @@ class ContratoController extends Controller
                                 ->LEFTJOIN('especialidad_instructores','especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')->GET();
 
-        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
-        ->whereJsonContains('hvalidacion', [['memo_val' => $data->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($especialidad_seleccionada->id))
+        {
+            $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $data->instructor_mespecialidad]])->value('hvalidacion');
+        }
         if(isset($memoval))
         {
             foreach($memoval as $me)
@@ -491,7 +494,6 @@ class ContratoController extends Controller
         {
             $memoval = $data->archivo_alta;
         }
-
         // $comprobante_pago = DB::TABLE('alumnos_registro')->WHERE('folio_grupo')->VALUE('comprobante_pago');
         $data->comprobante_pago = '/storage/uploadFiles' . $data->comprobante_pago;
         $cupo = $data->hombre + $data->mujer;

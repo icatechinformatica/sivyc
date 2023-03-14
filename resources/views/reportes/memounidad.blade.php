@@ -69,7 +69,11 @@
             }
         </script>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+        {{-- <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p> --}}
+        <p class='direccion'><b>Av. Circunvalación Pichucalco N 212-B Colonia Moctezuma
+            <br>Tuxtla Gutiérrez, Chiapas, C.P.29030; Telefono (961)6121621 Ext.601
+            <br>Email: dtecnicaacademica@gmail.com</b>
+        </p>
     </footer>
     <div class= "contenedor">
         <div align=right style="font-size:11px;"><b>DIRECCION TECNICA ACADEMICA</b></div>
@@ -83,13 +87,22 @@
                 $num=1;
             @endphp
             <div class="table-responsive-sm">
-                <div align="justify" style="font-size:11px;">
+                {{-- <div align="justify" style="font-size:11px;">
                     En seguimiento a la integración del Formato T del mes de {{$mesReportado2}} del presente
                     año de su Unidad de Capacitación, recibido el pasado {{$diaArray[0]}} de {{$mesReportado2}} al correo electronico {{$correo_institucional}}, le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
                     RIAC-02 ACREDITACION, RIAC-02 CERTIFICACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
                     digitalizados con firmas y sellos de un total de {{ $sum_total }} cursos enviados a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
                     hago de su conocimiento que, una vez revisada la informacion le comento, se reportaron a la Dirección
                     de Planeación de este Instituto un total de {{ $totalReportados }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones
+                </div> --}}
+
+                <div align="justify" style="font-size:11px;">
+                    En seguimiento a la integración del Formato T del mes de {{@strtolower($mesReportado2)}} del presente
+                    año de su Unidad de Capacitación, le informo que fueron recibidos los formatos RIACD-02 INSCRIPCION,
+                    RIACD-02 ACREDITACION, LAD-04 LISTA DE ASISTENCIA, RESD-05 CALIFICACIONES
+                    digitalizados con firmas y sellos de {{ $sum_total }} cursos pertenecientes a la Unidad {{ $reg_unidad->unidad }}. De lo anterior,
+                    hago de su conocimiento que, una vez revisada la informacion en comento, se reportaron a la Dirección
+                    de Planeación de este Instituto {{ $totalReportados }} cursos y {{ $total }} no se reportaron de acuerdo a las siguientes observaciones:
                 </div>
                 <br>
                 <table class="tablas">
@@ -123,9 +136,9 @@
                 </table>
                 <br>
                 <div align="justify" style="font-size:11px;">
-                    No omito manifestar sobre la información antes mencionada, que se encuentran pendientes los documentos
+                    {{-- No omito manifestar sobre la información antes mencionada, que se encuentran pendientes los documentos
                     originales de las entregas realizadas por su Unidad de Capacitación para el reporte estadístico una vez
-                    reintegrados al trabajo presencial.
+                    reintegrados al trabajo presencial. --}}
                 </div>
                 <br>
                 <div style="font-size:11px;">Sin más por el momento, agradezco su atención y le envío un cordial saludo.</div>
@@ -135,8 +148,9 @@
                 <div style="font-size:11px;"> <b>{{ $reg_unidad->dacademico }}</b> </div>
                 <div style="font-size:11px;"> <b>{{ $reg_unidad->pdacademico }}</b> </div>
                 <br>
-                <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div>
-                <div style="font-size:9px;"> <b>{{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
+                {{-- <div style="font-size:9px;"> <b>C.C.P MTRA. FABIOLA LIZBETH ASTUDILLO REYES, DIRECTORA GENERAL DEL ICATECH. PARA SU CONOCIMIENTO. - CIUDAD</b> </div> --}}
+                {{-- <div style="font-size:9px;"> <b>C.C.P LIC. YESENIA FUSIKO. KOMUKAI HORITA, JEFA DEL DEPARTAMENTO ACADÉMICO. PARA SU CONOCIMIENTO, CIUDAD.</b> </div> --}}
+                <div style="font-size:9px;"> <b>C.c.p. {{ $reg_unidad->academico }}. {{ $reg_unidad->pacademico }}.</b> </div>
                 <div style="font-size:9px;"> <b>ARCHIVO / MINUTARIO.</b> </div>
                 <div style="font-size:7px;"> <b>VALIDÓ: ING. MARÍA TERESA JIMÉNEZ FONSECA. JEFA DEL DEPTO. DE CERTIFICACIÓN Y CONTROL</b> </div>
                 <div style="font-size:7px;"> <b>ELABORÓ: {{ $elabora }}.</b> </div>

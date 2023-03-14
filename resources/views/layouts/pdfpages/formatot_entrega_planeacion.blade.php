@@ -76,7 +76,10 @@
             }
         </script>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+        {{-- <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p> --}}
+        <p class='direccion'><b><br> Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma
+            <br> C.P. 29030; Tuxtla Gutiérrez, Chiapas.Teléfono (961)6121621
+            <br> Email: dtecnicaacademica@gmail.com</b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}
@@ -113,8 +116,8 @@
             <div style="font-size:9px;"> <b>C.c.p  {{ $reg_unidad->dgeneral }}  , {{ $reg_unidad->pdgeneral }} . Para su conocimiento.</b> </div>
             <div style="font-size:9px"><b>C.c. {{ $directorio->nombre." ".$directorio->apellidoPaterno." ".$directorio->apellidoMaterno }} - {{ $directorio->puesto }} . Para su conocimiento.</b></div>
             <div style="font-size:9px;"> <b>Archivo: Minutario.</b> </div>
-            <div style="font-size:8px;"> <b>Validó:  {{ $jefeDepto->nombre." ".$jefeDepto->apellidoPaterno." ".$jefeDepto->apellidoMaterno }} - {{ $jefeDepto->puesto }} .</b> </div>
-            <div style="font-size:8px;"> <b>Elaboró:  AUXILIAR DEL DEPARTAMENTO DE CERTIFICACIÓN Y CONTROL.</b></div>
+            <div style="font-size:8px;"> <b>Validó: {{ $reg_unidad->dacademico }} - {{ $reg_unidad->pdacademico }}</b></div>
+            <div style="font-size:8px;"> <b>Elaboró: {{ $jefeDepto->nombre." ".$jefeDepto->apellidoPaterno." ".$jefeDepto->apellidoMaterno }} - {{ $jefeDepto->puesto }} . </b></div>
             {{-- <div style="font-size:8px;"> <b>Elaboró:  {{ $reg_unidad->academico }} .  {{ $reg_unidad->pacademico }} .</b></div> --}}
             <br><br>
         </div>

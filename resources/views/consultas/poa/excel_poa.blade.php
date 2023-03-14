@@ -1,9 +1,9 @@
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 @php
     $hestilo = "background-color:#DEDEDE;";
 @endphp
 <table>
-    <thead>    
+    <thead>
     <tr>
         <th rowspan='2' style="{{$hestilo}}" align="center"><b>UNIDAD/ACC.MÓVIL/ZONA</b></th>
         <th colspan='4' style="{{$hestilo}}" align="center"><b>CURSOS</b></th>
@@ -11,7 +11,7 @@
         <th colspan='4' style="{{$hestilo}}" align="center"><b>COSTOS</b></th>
         <th colspan='5' style="{{$hestilo}}" align="center"><b>REPORTADO EN FORMATO T</b></th>
     </tr>
-    <tr>                        
+    <tr>
         <th style="{{$hestilo}}"><b>PROG.ANUAL</b></th>
         <th style="{{$hestilo}}"><b>AUTORIZADOS</b></th>
         <th style="{{$hestilo}}"><b>DIFER.</b></th>
@@ -31,16 +31,16 @@
         <th style="{{$hestilo}}"><b>DESERCIÓN</b></th>
         <th style="{{$hestilo}}"><b>HORAS</b></th>
     </tr>
-    </thead>    
-        <tbody>  
+    </thead>
+        <tbody>
             @php
                 $totales = ['0'=>0,'1'=>0,'2'=>0,'3'=>0,'4'=>0,'5'=>0,'6'=>0,'7'=>0,'8'=>0,'9'=>0,'10'=>0,'11'=>0,'12'=>0,'13'=>0,'14'=>0,'15'=>0];
             @endphp
-            @foreach ($data as $i)                            
-                @if($i->orden==1)                    
+            @foreach ($data as $i)
+                @if($i->orden==1)
                     @php
                         $estilo = "background-color:#900C3F; color:white;";
-                        $unidad = "UNIDAD ".$i->unidad;                                             
+                        $unidad = "UNIDAD ".$i->unidad;
                         $totales[0] += $i->cursos_programados;
                         $totales[1] += $i->cursos_autorizados;
                         $totales[2] += $i->cursos_programados-$i->cursos_autorizados;
@@ -59,16 +59,16 @@
                         $totales[13] += $i->egresados;
                         $totales[14] += $i->desercion;
                         $totales[15] += $i->horas_reportadas;
-                    @endphp                        
+                    @endphp
                 @elseif($i->orden==2)
                     @php
                         $estilo = "";
-                        $unidad =  "ZONA ".$i->ze ;                            
-                     @endphp                    
+                        $unidad =  "ZONA ".$i->ze ;
+                     @endphp
                 @else
                     @php
                         $estilo = "";
-                        $unidad =  $i->unidad ;                           
+                        $unidad =  $i->unidad ;
                     @endphp
                 @endif
                 <tr>
@@ -82,7 +82,7 @@
                     @else
                         <td style ="{{$estilo}}"align="center">{{ number_format($i->cursos_programados-$i->cursos_autorizados, 0, '', ',') }}</td>
                     @endif
-                    <td style ="{{$estilo}}" align="center">{{ number_format($i->suficiencia_autorizada, 0, '', ',') }}</td>                                
+                    <td style ="{{$estilo}}" align="center">{{ number_format($i->suficiencia_autorizada, 0, '', ',') }}</td>
                     <td style ="{{$estilo}}" align="center">
                         @if($i->ze == $i->poa_ze)
                             {{ number_format($i->horas_programadas, 0, '', ',') }}
@@ -95,7 +95,7 @@
                         <td style ="color:red;" align="center">{{ number_format($i->horas_programadas-$i->horas_impartidas, 0, '', ',') }}</td>
                     @else
                         <td style ="{{$estilo}}" align="center">{{ number_format($i->horas_programadas-$i->horas_impartidas, 0, '', ',') }}</td>
-                    @endif                    
+                    @endif
                     <td style ="{{$estilo}}">{{ number_format($i->costo_aperturado, 0, '', ',') }}</td>
                     <td style ="{{$estilo}}">{{ number_format($i->costo_supre, 0, '', ',') }}</td>
                     <td style ="{{$estilo}}">{{ number_format($i->costo_aperturado-$i->costo_supre, 0, '', ',') }}</td>
@@ -107,12 +107,12 @@
                     <td style ="{{$estilo}}" align="center">{{ number_format($i->desercion, 0, '', ',') }}</td>
                     <td style ="{{$estilo}}" align="center">{{ number_format($i->horas_reportadas, 0, '', ',') }}</td>
                 </tr>
-            @endforeach 
+            @endforeach
         <tr>
-            <td style="{{$hestilo}}"  align="center"><b>TOTALES</b></td> 
+            <td style="{{$hestilo}}"  align="center"><b>TOTALES</b></td>
             @for($n=0;$n<=15;$n++)
-                <td style="{{$hestilo}}" align="center"><b>{{ number_format($totales[$n], 0, '', ',') }}</b></td>                             
+                <td style="{{$hestilo}}" align="center"><b>{{ number_format($totales[$n], 0, '', ',') }}</b></td>
              @endfor
-        </tr>   
-    </tbody>        
+        </tr>
+    </tbody>
 </table>

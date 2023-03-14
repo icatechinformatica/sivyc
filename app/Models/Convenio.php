@@ -26,10 +26,13 @@ class Convenio extends Model
     // in your model
     public function getMyDateFormat($value)
     {
-        return Carbon::parse($value)->format('d-m-Y');
+        return Carbon::parse($value)->format('Y-m-d');
     }
 
-    protected function scopeBusqueda($query, $tipo, $buscar){
+    protected function scopeBusqueda($query, $tipo, $datos){
+        $buscar = $datos['campo_buscar'];
+        $fecha1 = $datos['fecha1'];
+        $fecha2 = $datos['fecha2'];
         // dd($buscar);
         if (!empty($tipo)) {
             if (!empty(trim($buscar))) {
@@ -50,7 +53,12 @@ class Convenio extends Model
                         return $query->where('convenios.institucion', 'LIKE', "%$buscar%");
                         break;
                 }
+            }else if(!empty(trim($fecha1)) && !empty(trim($fecha2))){
+                return $query->whereBetween('convenios.fecha_firma', [$fecha1, $fecha2]);
             }
+
         }
+
     }
+
 }

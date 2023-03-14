@@ -67,7 +67,7 @@
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option>
                         <option value="ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIO') selected @endif>Asimilados a Salarios</option>
-                        <option value="HONORARIOS Y ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIOS') selected @endif>Honorarios y Asimilado a Salarios</option>
+                        <option value="HONORARIOS Y ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIO') selected @endif>Honorarios y Asimilado a Salarios</option>
                     </select>
                 </div>
             </div>
@@ -348,7 +348,7 @@
                                             data-toggle="modal"
                                             data-placement="top"
                                             data-target="#delexplabModal"
-                                            data-id='["{{$lock}}", "{{$datainstructor->id}}"]'>
+                                            data-id='["{{$lock2}}", "{{$datainstructor->id}}"]'>
                                                 <i class="fa fa-eraser" aria-hidden="true"></i>
                                         </button>
                                     @endcan
@@ -531,10 +531,10 @@
                 </tbody>
             </table>
             <br>
+            <div>
+                <label><h3>Entrevista para Candidatos a Instructores</h3></label>
+            </div>
             @if(isset($datainstructor->entrevista))
-                <div>
-                    <label><h3>Entrevista para Candidatos a Instructores</h3></label>
-                </div>
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <br>
@@ -582,6 +582,17 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            @else
+                <div class="pull-right">
+                    @can('instructor.editar_fase2')
+                        <button type="button" class="btn mr-sm-4 mt-3"
+                            data-toggle="modal"
+                            data-placement="top"
+                            data-target="#entrevistaModal"
+                            data-id='{{$datainstructor->id}}'><small>Llenar Entrevista</small>
+                        </button>
+                    @endcan
                 </div>
             @endif
             <hr style="border-color:dimgray">
