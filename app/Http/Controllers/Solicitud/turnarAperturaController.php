@@ -473,13 +473,16 @@ class turnarAperturaController extends Controller
             if(count($reg_cursos)>0){
                 $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);
                 $fecha_memo = $reg_cursos[0]->fecha_arc01;
-                $fecha_memo = date('d-m-Y',strtotime($fecha_memo));
+               //CONVERSION DE FECHA                
+                $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+                $mes = $meses[date('m',strtotime($fecha_memo))];
+                $fecha_memo = date('d',strtotime($fecha_memo)).' de '.$mes.' del '.date('Y',strtotime($fecha_memo));
 
-                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
-                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','direccion','unidad','cct');
-                if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);                            
-                $reg_unidad = $reg_unidad->first();            
-                $direccion = $reg_unidad->direccion;
+
+                $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();                 
+                $unidad = $reg_cursos[0]->unidad;
+                $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();       
+                $direccion = $reg_unidad->direccion;                
 
                 if($reg_cursos[0]->status_solicitud=="VALIDADO") $marca = false;
                 $pdf = PDF::loadView('solicitud.apertura.pdfARC01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
@@ -506,16 +509,18 @@ class turnarAperturaController extends Controller
                 $asigna_fecha = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->whereNull('fecha_arc02')->update(['fecha_arc02'=>$request->fecha]);
                   
                 $fecha_memo = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->pluck('fecha_arc02')->first();
-                $fecha_memo=date('d-m-Y',strtotime($fecha_memo));
+                //CONVERSION DE FECHA                
+                $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+                $mes = $meses[date('m',strtotime($fecha_memo))];
+                $fecha_memo = date('d',strtotime($fecha_memo)).' de '.$mes.' del '.date('Y',strtotime($fecha_memo));
+
+
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
-               // var_dump($instituto);exit;
-
-                $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','direccion','unidad','cct');                
-                if($_SESSION['unidades'])$reg_unidad = $reg_unidad->whereIn('unidad',$_SESSION['unidades']);           
-                $reg_unidad = $reg_unidad->first();                
+                $unidad = $reg_cursos[0]->unidad;
+                $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();       
                 $direccion = $reg_unidad->direccion;
-                if($reg_cursos[0]->status_solicitud_arc02=="VALIDADO") $marca = false;
 
+                if($reg_cursos[0]->status_solicitud_arc02=="VALIDADO") $marca = false;
                 $pdf = PDF::loadView('solicitud.apertura.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC02.pdf');

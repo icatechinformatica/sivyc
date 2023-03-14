@@ -33,7 +33,7 @@
                 <td style='text-align:right;font-size: 9px;'>
                     {{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
                     MEMORÁNDUM NO. {{ $memo_apertura }} <br/>
-                    {{ $reg_cursos[0]->unidad }},CHIAPAS; {{$fecha_memo }}.<br/>
+                    {{ $reg_unidad->municipio }}, Chiapas; {{$fecha_memo }}.<br/>
                 </td>                    
             </tr>   
         </table>  
