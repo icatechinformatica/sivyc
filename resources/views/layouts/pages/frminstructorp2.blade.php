@@ -110,7 +110,7 @@
                                 </td>
                                 <td></td>
                                 <td id="center">
-                                    <label class='onpoint' for="arch_domicilio">
+                                    <label class='onpoint' for="arch_ine">
                                         <a class="btn mr-sm-4 mt-3 btn-sm">
                                             Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                         </a>
