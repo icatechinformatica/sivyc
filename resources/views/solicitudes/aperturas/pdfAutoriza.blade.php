@@ -48,16 +48,20 @@
                 $det = "Por este medio envió a Usted el formato de autorización de reprogramación, modificación o cancelación de aperturas de servicios, en atención a la solicitud con número de memorándum $nmunidad.";
             break;
         }
+        //CONVERSION DE FECHA                
+        $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+        $mes = $meses[date('m',strtotime($fecha))];
+        $fecha = date('d',strtotime($fecha)).' de '.$mes.' del '.date('Y',strtotime($fecha));
     @endphp
     <div id="titulo">
         <h3>AUTORIZACIÓN DE {{$opt}}</h3>
         <br/>
         <table width="100%">
             <tr>        
-                <td style='text-align:right;font-size:9px;'>
+                <td style='text-align:right;font-size:10px;'>
                     DIRECCIÓN TÉCNICA ACADÉMICA<br/>                    
-                    MEMORÁNDUM NO. {{ $memo}} <br/>
-                    TUXTLA GUTIÉRREZ, CHIAPAS; {{$fecha}}.<br/>
+                    Memorándum No. {{ $memo}} <br/>
+                    Tuxtla Gutiérrez, Chiapas; {{$fecha}}.<br/>
                 </td>                    
             </tr>   
         </table>
