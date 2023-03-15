@@ -29,8 +29,7 @@ class turnarAperturaController extends Controller
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
             $this->realizo = Auth::user()->name;  
-            $this->id_unidad = Auth::user()->unidad;
-            
+            $this->id_unidad = Auth::user()->unidad;            
             $this->data = $this->unidades_user('unidad');
             $_SESSION['unidades'] =  $this->data['unidades'];            
             return $next($request); 
@@ -460,9 +459,8 @@ class turnarAperturaController extends Controller
     public function pdfARC01(Request $request){
         if($request->fecha AND $request->memo){ 
             $marca = true;       
-            //$fecha_memo =  $request->fecha;
-            $memo_apertura =  $request->memo;
-            //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
+            $fecha_memo =  $request->fecha;
+            $memo_apertura =  $request->memo;            
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
@@ -470,14 +468,17 @@ class turnarAperturaController extends Controller
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);                
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
                 
-            if(count($reg_cursos)>0){
-                $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);
-                $fecha_memo = $reg_cursos[0]->fecha_arc01;
+            if(count($reg_cursos)>0){               
+                if(preg_match('/unidad\b/',$this->data['slug'])){
+                    $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);                   
+                }elseif( $reg_cursos[0]->fecha_arc01) $fecha_memo = $reg_cursos[0]->fecha_arc01;
+                
+                
                //CONVERSION DE FECHA                
                 $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
                 $mes = $meses[date('m',strtotime($fecha_memo))];
                 $fecha_memo = date('d',strtotime($fecha_memo)).' de '.$mes.' del '.date('Y',strtotime($fecha_memo));
-
+                
 
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();                 
                 $unidad = $reg_cursos[0]->unidad;
@@ -495,9 +496,8 @@ class turnarAperturaController extends Controller
     public function pdfARC02(Request $request) { 
         if($request->fecha AND $request->memo){  
             $marca = true;    
-            //$fecha_memo =  $request->fecha;
-            $memo_apertura =  $request->memo;
-            //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
+            $fecha_memo =  $request->fecha;
+            $memo_apertura =  $request->memo;            
 
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
                 'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02','status_solicitud_arc02');
@@ -505,10 +505,10 @@ class turnarAperturaController extends Controller
             $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
                 
             if(count($reg_cursos)>0){
-                
-                $asigna_fecha = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->whereNull('fecha_arc02')->update(['fecha_arc02'=>$request->fecha]);
-                  
-                $fecha_memo = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->pluck('fecha_arc02')->first();
+                if(preg_match('/unidad\b/',$this->data['slug'])){
+                    $asigna_fecha = DB::table('tbl_cursos')->where('nmunidad',$memo_apertura)->whereNull('fecha_arc02')->update(['fecha_arc02'=>$request->fecha]);
+                }elseif( $reg_cursos[0]->fecha_arc02) $fecha_memo = $reg_cursos[0]->fecha_arc02;
+
                 //CONVERSION DE FECHA                
                 $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
                 $mes = $meses[date('m',strtotime($fecha_memo))];
