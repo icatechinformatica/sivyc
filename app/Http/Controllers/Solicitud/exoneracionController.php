@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 
-class ExoneracionController extends Controller
+class exoneracionController extends Controller
 {
     function __construct()
     {
