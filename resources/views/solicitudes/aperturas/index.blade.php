@@ -56,9 +56,9 @@
             @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
             <div class="form-group col-md-2 mr-sm-1">
                 @if ($opt== "ARC01")
-                {{ Form::button('ARC 01 BORRADOR', ['id'=>'arc','class' => 'btn']) }}
+                {{ Form::button('ARC-01 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
                 @else
-                {{ Form::button('ARC 02 BORRADOR', ['id'=>'arc','class' => 'btn']) }}
+                {{ Form::button('ARC-02 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
                 @endif
             </div>
             @endif        
@@ -68,6 +68,7 @@
                 </div>  
             @endif
         @endif
+        {!! Form::hidden('fecha', date('Y-m-d')) !!}
     </div>
    
 
@@ -101,7 +102,7 @@
                     $("#file").hide();
                     $("#espacio").hide();
                     break;
-                case "AUTORIZADO": alert($("#movimiento").val());
+                case "AUTORIZADO": 
                     $("#mrespuesta").hide();
                     $("#fecha").hide();
                     $("#file").show();
@@ -133,12 +134,12 @@
             $('#frm').attr('action', "{{route('solicitudes.aperturas')}}");
             $('#frm').attr('target', '_self').submit();
         });
-        $("#arc").click(function() {
+        $("#BorradorARC").click(function() {
             if ($("#opt").val() == "ARC01") {
-                $('#frm').attr('action', "{{route('solicitudes.aperturas.barc')}}");
+                $('#frm').attr('action', "{{route('solicitud.generar.arc01')}}");
                 $('#frm').attr('target', '_blank').submit();
             } else if ($("#opt").val() == "ARC02") {
-                $('#frm').attr('action', "{{route('solicitudes.aperturas.barc')}}");
+                $('#frm').attr('action', "{{route('solicitud.generar.arc02')}}");
                 $('#frm').attr('target', '_blank').submit();
             }
         });

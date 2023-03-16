@@ -28,7 +28,7 @@
             @else
                 <a class="btn btn-danger" disabled>Comprobante de Domicilio</a><br>
             @endif
-            @if ($data->archivo_alta != NULL)
+            @if ($memoval != NULL)
                 <a class="btn btn-info" href={{$memoval}} target="_blank">Validación de Instructor</a><br>
             @else
                 <a class="btn btn-danger" disabled>Validación de Instructor</a><br>

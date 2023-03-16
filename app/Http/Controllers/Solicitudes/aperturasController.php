@@ -380,19 +380,20 @@ class aperturasController extends Controller
             $memo_apertura =  $request->memo;
             $fecha_memo=date('d/M/Y',strtotime($fecha_memo));
             $opt = $request->opt;
-
+            $marca = true;
             $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
                 DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','nmunidad','efisico','hombre','mujer','tipo','opcion',
-                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_apertura','fecha_modificacion','observaciones','valido','realizo','mvalida','nmacademico');
+                'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_apertura','fecha_modificacion','observaciones','valido','realizo','mvalida','nmacademico',
+                'status_solicitud','status_solicitud_arc02');
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
             switch($_SESSION['opt'] ){
                 case "ARC01":
                      $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
-
+                     if($reg_cursos[0]->status_solicitud=="VALIDADO") $marca = false;
                 break;
                 case "ARC02":
                     $reg_cursos = $reg_cursos->WHERE('nmunidad', $memo_apertura)->orderby('espe')->get();
-
+                    if($reg_cursos[0]->status_solicitud_arc02=="VALIDADO") $marca = false;
                 break;
             }
 
@@ -401,14 +402,17 @@ class aperturasController extends Controller
                 $unidad = DB::table('tbl_unidades')->where('unidad',$reg_cursos[0]->unidad)->value('ubicacion');
 
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
-                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','jcyc','dacademico','pjcyc','pdacademico','ubicacion')
+                $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion','jcyc','dacademico','pjcyc','pdacademico','ubicacion','direccion','unidad','cct')
                 ->where('unidad',$unidad)->first();
 
                 if($opt=="ARC01") $opt = "ARC-01";
                 else $opt = "ARC-02";
+                
+                $direccion = "Av. Circunvalación Pichucalco núm. 212-B. Colonia Moctezuma C.P. 29030; Tuxtla Gutiérrez, Chiapas.
+                Teléfono (961)6121621 Email: dtecnicaacademica@gmail.com";
                 $realizo = $this->realizo;
                 $puesto = $this->puesto;
-                $pdf = PDF::loadView('solicitudes.aperturas.pdfAutoriza',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','opt','distintivo','realizo','puesto'));
+                $pdf = PDF::loadView('solicitudes.aperturas.pdfAutoriza',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','opt','distintivo','realizo','puesto','marca','direccion'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('AutorizacionARC.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
@@ -482,59 +486,6 @@ class aperturasController extends Controller
             }
         };
         return redirect('solicitudes/aperturas')->with('message',$message);
-    }
-
-    public function barc(Request $request){
-        // dd($request->all());
-        if($request->opt AND $request->memo){
-            $marca = true;
-            if ($request->opt=='ARC01') {
-                //$fecha_memo =  $request->fecha;
-                $memo_apertura =  $request->memo;
-                //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
-
-                $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','espe','curso','inicio','termino','dia','dura',
-                    DB::raw("concat(hini,' A ',hfin) AS horario"),'horas','plantel','depen','muni','nota','munidad','efisico','hombre','mujer','tipo','opcion',
-                    'motivo','cp','ze','tcapacitacion','tipo_curso','fecha_arc01');
-                if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
-                $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
-
-                if(count($reg_cursos)>0){
-                    $fecha_memo=null;
-                    $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
-                    $reg_unidad=DB::table('tbl_unidades')->select('dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion')
-                                                        ->where('unidad',$reg_cursos[0]->unidad)
-                                                        ->first();
-
-                    $pdf = PDF::loadView('reportes.arc01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca'));
-                    $pdf->setpaper('letter','landscape');
-                    return $pdf->stream('ARC01.pdf');
-                }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
-            }else {
-                 //$fecha_memo =  $request->fecha;
-                $memo_apertura =  $request->memo;
-                //$fecha_memo=date('d-m-Y',strtotime($fecha_memo));
-
-                $reg_cursos = DB::table('tbl_cursos')->SELECT('id','unidad','nombre','clave','mvalida','mod','curso','inicio','termino','dura',
-                    'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02');
-                if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
-                $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
-
-                if(count($reg_cursos)>0){
-                    $fecha_memo=null;
-                    $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
-                // var_dump($instituto);exit;
-
-                    $reg_unidad=DB::table('tbl_unidades')->select('unidad','dunidad','academico','vinculacion','dacademico','pdacademico','pdunidad','pacademico','pvinculacion')
-                                                        ->where('unidad',$reg_cursos[0]->unidad)
-                                                        ->first();
-
-                    $pdf = PDF::loadView('reportes.arc02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca'));
-                    $pdf->setpaper('letter','landscape');
-                    return $pdf->stream('ARC02.pdf');
-                }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
-            }
-        }return "ACCIÓN INVÁlIDA";exit;
     }
 
     public function retornar_preliminar(Request $request){

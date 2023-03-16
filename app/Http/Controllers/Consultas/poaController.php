@@ -69,15 +69,15 @@ class poaController extends Controller
                     ->select('d.id_curso',DB::raw("sum(CASE WHEN d.status= 'INSCRITO' and d.calificacion='NP' THEN 1 ELSE 0 END)  as desercion"))
                     ->groupby('d.id_curso');
 
-            /*TOTAL GENERAL*/      
+            /*TOTAL GENERAL*/
                     $vigencia_CP = date('Y-m-d',strtotime('2022-11-01'));
-                    
+
                     $data_total = DB::table('tbl_unidades as u')
                     ->select('poa.id_unidad','u.ubicacion as unidad',DB::raw('poa.total_cursos as cursos_programados'),
                     DB::raw("count(*)  as cursos_autorizados"),
-                    DB::raw('count(f.*) as suficiencia_autorizada'),                    
-                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),                    
-                    DB::raw('MAX(poa.total_horas) as horas_programadas'),                    
+                    DB::raw('count(f.*) as suficiencia_autorizada'),
+                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
+                    DB::raw('MAX(poa.total_horas) as horas_programadas'),
                     DB::raw("sum(tc.dura)  as horas_impartidas"),
 
                     /***COSTOS **/
@@ -88,18 +88,18 @@ class poaController extends Controller
                             WHEN tc.ze ='III' THEN
                               (tc.dura*cp.ze3_2022)+(tc.dura*cp.ze3_2022*.16)
                             END
-                        ELSE 
+                        ELSE
                             CASE WHEN tc.ze ='II' THEN
                             (tc.dura*cp.ze2_2021)+(tc.dura*cp.ze2_2021*.16)
                             WHEN tc.ze ='III' THEN
                             (tc.dura*cp.ze3_2021)+(tc.dura*cp.ze3_2021*.16)
                             END
                         END
-                    )  as costo_aperturado"),   
-                    
-                    DB::raw("sum(f.importe_total)  as costo_supre"),                    
+                    )  as costo_aperturado"),
+
+                    DB::raw("sum(f.importe_total)  as costo_supre"),
                     DB::raw("sum(CASE WHEN f.status='Finalizado' THEN importe_total ELSE 0 END)  as pagado"),
-                                        
+
                     /***FORMATO T **/
                     DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
                     DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
@@ -116,10 +116,10 @@ class poaController extends Controller
 
                     })
                     ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
-                        $join->on('tc.unidad','=','u.unidad')    
+                        $join->on('tc.unidad','=','u.unidad')
                         ->where('tc.status_curso','AUTORIZADO')
 
-                        ->whereBetween('fecha_apertura', [$fecha1, $fecha2])   
+                        ->whereBetween('fecha_apertura', [$fecha1, $fecha2])
                         ->leftjoinSub($desercion, 'd', function($join){
                             $join->on('tc.id','=','d.id_curso');
                         })
@@ -127,31 +127,31 @@ class poaController extends Controller
                             $join->on('cp.id','=','tc.cp');
                         })
                         ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
-                            $join->on('f.id_cursos','=','tc.id')                            
-                            ->whereNotIn('f.status',['En_Proceso','Rechazado','Cancelado']);                            
+                            $join->on('f.id_cursos','=','tc.id')
+                            ->whereNotIn('f.status',['En_Proceso','Rechazado','Cancelado']);
                         });
-                        
-                    })  
-                    ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
-                    ->groupby('poa.id_unidad','u.ubicacion','poa.id');               
 
-                
-            /*TOTALES POR ZONA*/  
-                 
+                    })
+                    ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
+                    ->groupby('poa.id_unidad','u.ubicacion','poa.id');
+
+
+            /*TOTALES POR ZONA*/
+
                  $data_total_ze = DB::table('tbl_unidades as u')
                  ->select(DB::raw('CASE WHEN COALESCE(poa.id_unidad)>0 THEN poa.id_unidad ELSE  0 END as id_unidad'),'u.ubicacion as unidad',
-                 
+
                  DB::raw("(SELECT sum(p.total_cursos) FROM poa as p, tbl_unidades as tu
                  WHERE p.id_unidad=tu.id  and p.ejercicio='2022' and p.ze is not null and p.id_unidad=poa.id_unidad and p.ze=poa.ze
                  group by p.id_unidad,tu.unidad,p.ze
-                 order by p.id_unidad) AS total_curso"),                 
+                 order by p.id_unidad) AS total_curso"),
                  DB::raw("count(tc.*)  as cursos_autorizados"),
                  DB::raw('count(f.*) as suficiencia_autorizada'),
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                  DB::raw('MAX(poa.total_horas) as horas_programadas'),
                  DB::raw("sum(tc.dura)  as horas_impartidas"),
-                
-                 /***COSTOS ***/                
+
+                 /***COSTOS ***/
                  DB::raw("sum(
                     CASE WHEN tc.inicio>='$vigencia_CP' THEN
                         CASE WHEN tc.ze ='II' THEN
@@ -159,18 +159,18 @@ class poaController extends Controller
                         WHEN tc.ze ='III' THEN
                           (tc.dura*cp.ze3_2022)+(tc.dura*cp.ze3_2022*.16)
                         END
-                    ELSE 
+                    ELSE
                         CASE WHEN tc.ze ='II' THEN
                         (tc.dura*cp.ze2_2021)+(tc.dura*cp.ze2_2021*.16)
                         WHEN tc.ze ='III' THEN
                         (tc.dura*cp.ze3_2021)+(tc.dura*cp.ze3_2021*.16)
                         END
                     END
-                )  as costo_aperturado"),  
+                )  as costo_aperturado"),
 
                 DB::raw("sum(f.importe_total)  as costo_supre"),
                 DB::raw("sum(CASE WHEN f.status='Finalizado' THEN importe_total ELSE 0 END)  as pagado"),
-                
+
                 /***FORMATO T ***/
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
@@ -183,7 +183,7 @@ class poaController extends Controller
                      ->where('poa.ejercicio',$ejercicio)
                      ->where('poa.id_plantel','>',0);
 
-                 })               
+                 })
                  ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
                      $join->on('tc.unidad','=','u.unidad')
                      ->where('tc.status_curso','AUTORIZADO')
@@ -195,23 +195,23 @@ class poaController extends Controller
                         $join->on('cp.id','=','tc.cp');
                     })
                      ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
-                         $join->on('f.id_cursos','=','tc.id')                         
-                         ->whereNotIn('f.status',['En_Proceso','Rechazado','Cancelado']);                         
+                         $join->on('f.id_cursos','=','tc.id')
+                         ->whereNotIn('f.status',['En_Proceso','Rechazado','Cancelado']);
                      });
                  })
                   ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
                  ->groupby('u.ubicacion','poa.id_unidad','u.ze','poa.ze');
 
             /***DETALLE POR UNIDAD/ACCION MOVIL */
-                 
+
                  $data_unidad = DB::table('tbl_unidades as u')
                  ->select(DB::raw('poa.id_unidad'),'u.unidad','poa.total_cursos as cursos_programados',
                   DB::raw("count(tc.*)  as cursos_autorizados"),
                   DB::raw('count(f.*) as suficiencia_autorizada'),
-                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),                    
+                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                   'poa.total_horas as horas_programadas',
                   DB::raw("sum(tc.dura)  as horas_impartidas"),
-                  
+
                   /**COSTOS***/
                     DB::raw("sum(
                         CASE WHEN tc.inicio>='$vigencia_CP' THEN
@@ -220,34 +220,34 @@ class poaController extends Controller
                             WHEN tc.ze ='III' THEN
                               (tc.dura*cp.ze3_2022)+(tc.dura*cp.ze3_2022*.16)
                             END
-                        ELSE 
+                        ELSE
                             CASE WHEN tc.ze ='II' THEN
                             (tc.dura*cp.ze2_2021)+(tc.dura*cp.ze2_2021*.16)
                             WHEN tc.ze ='III' THEN
                             (tc.dura*cp.ze3_2021)+(tc.dura*cp.ze3_2021*.16)
                             END
                         END
-                    )  as costo_aperturado"),  
+                    )  as costo_aperturado"),
 
                   DB::raw("sum(f.importe_total)  as costo_supre"),
                   DB::raw("sum(CASE WHEN f.status='Finalizado' THEN importe_total ELSE 0 END)  as pagado"),
-                 
+
                   /**FORMATO T **/
                   DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
                   DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as desercion'),
                   DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END )- sum(CASE WHEN tc.proceso_terminado=true THEN d.desercion ELSE 0 END ) as egresados'),
-                  DB::raw("sum(CASE WHEN tc.proceso_terminado=true THEN tc.dura ELSE 0 END)  as horas_reportadas"),                   
+                  DB::raw("sum(CASE WHEN tc.proceso_terminado=true THEN tc.dura ELSE 0 END)  as horas_reportadas"),
                  'poa.tbl_unidades_plantel as plantel',DB::raw("'Z' as ze"),DB::raw("'Z' as poa_ze"),DB::raw("poa.id as orden")
                  )
                  ->leftjoin('poa', function ($join) use($ejercicio){
                      $join->on('poa.tbl_unidades_unidad','=','u.unidad')
-                     ->where('poa.ejercicio',$ejercicio)                     
+                     ->where('poa.ejercicio',$ejercicio)
                      ->where('poa.id_plantel','>',0);
                  })
                  ->leftjoin('tbl_cursos as tc', function ($join) use($fecha1, $fecha2,$ejercicio,$desercion){
                       $join->on('tc.unidad','=','u.unidad')
-                      ->where('tc.status_curso','AUTORIZADO')                  
-                      ->whereBetween('fecha_apertura', [$fecha1, $fecha2])   
+                      ->where('tc.status_curso','AUTORIZADO')
+                      ->whereBetween('fecha_apertura', [$fecha1, $fecha2])
                       ->leftjoinSub($desercion, 'd', function($join){
                           $join->on('tc.id','=','d.id_curso');
                       })
@@ -255,17 +255,17 @@ class poaController extends Controller
                         $join->on('cp.id','=','tc.cp');
                         })
                       ->leftjoin('folios as f', function ($join) use($fecha1, $fecha2){
-                          $join->on('f.id_cursos','=','tc.id')                          
-                          ->whereNotIn('f.status',['En_Proceso','Rechazado','Cancelado']);                          
+                          $join->on('f.id_cursos','=','tc.id')
+                          ->whereNotIn('f.status',['En_Proceso','Rechazado','Cancelado']);
                       });
-                  })                                  
+                  })
                  ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
                  ->groupby('tc.unidad','u.unidad','poa.total_cursos','poa.total_horas','tc.cct','poa.id',
                  'poa.tbl_unidades_plantel')
                  ->union($data_total_ze)
                  ->union($data_total);
                  $data2 = $data_unidad->toSql();
-                 $data = DB::table(DB::raw("($data2 order by id_unidad,orden ASC) as a"))->mergeBindings($data_unidad)->get();                
+                 $data = DB::table(DB::raw("($data2 order by id_unidad,orden ASC) as a"))->mergeBindings($data_unidad)->get();
                 break;
             }
         }

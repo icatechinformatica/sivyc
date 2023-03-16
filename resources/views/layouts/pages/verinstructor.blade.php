@@ -38,33 +38,33 @@
             <div>
                 <label><h2>Datos Personales</h2></label>
             </div>
-            @php $stats = array('PREVALIDACION','EN FIRMA'); $perfilprof_nom = NULL; @endphp
+            @php $stats = array('PREVALIDACION','EN FIRMA'); $ari = ['VALIDADO','EN CAPTURA','RETORNO','REACTIVACION EN CAPTURA']; $perfilprof_nom = NULL; @endphp
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputnombre">Nombre</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='nombre' id='nombre' type="text" class="form-control" aria-required="true" value="{{$datainstructor->nombre}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='nombre' id='nombre' type="text" class="form-control" aria-required="true" value="{{$datainstructor->nombre}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_paterno">Apellido Paterno</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='apellido_paterno' id='apellido_paterno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoPaterno}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='apellido_paterno' id='apellido_paterno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoPaterno}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputapellido_materno">Apellido Materno</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='apellido_materno' id='apellido_materno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoMaterno}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='apellido_materno' id='apellido_materno' type="text" class="form-control" aria-required="true" value="{{$datainstructor->apellidoMaterno}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputcurp">CURP</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datainstructor->curp}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datainstructor->curp}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputrfc">RFC/Constancia Fiscal</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datainstructor->rfc}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datainstructor->rfc}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputhonorarios">Regimen</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="honorario" id="honorario">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option>
                         <option value="ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIO') selected @endif>Asimilados a Salarios</option>
@@ -75,7 +75,7 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputtipo_identificacion">Tipo de Identificación</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="tipo_identificacion" id="tipo_identificacion">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="tipo_identificacion" id="tipo_identificacion">
                         <option value="">SIN ESPECIFICAR</option>
                         <option value="INE" @if($datainstructor->tipo_identificacion == 'INE') selected @endif>INE</option>
                         <option value="PASAPORTE" @if($datainstructor->tipo_identificacion == 'PASAPORTE') selected @endif>PASAPORTE</option>
@@ -86,11 +86,11 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputfolio_ine">Folio de Identificación</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true" value="{{$datainstructor->folio_ine}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='folio_ine' id='folio_ine' type="text" class="form-control" aria-required="true" value="{{$datainstructor->folio_ine}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputexpiracion_identificacion">Expiración de Identificación</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='expiracion_identificacion' id='expiracion_identificacion' type="date" class="form-control" aria-required="true" required value="{{$datainstructor->expiracion_identificacion}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='expiracion_identificacion' id='expiracion_identificacion' type="date" class="form-control" aria-required="true" required value="{{$datainstructor->expiracion_identificacion}}">
                 </div>
                 <div class="form-group col-md-1">
                     {{-- <label for="inputarch_ine">Archivo Identificación</label> --}}
@@ -137,7 +137,7 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputsexo">Sexo</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="sexo" id="sexo">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="sexo" id="sexo">
                         <option value="">SELECCIONE</option>
                         <option value='MASCULINO' @if($datainstructor->sexo == 'MASCULINO')selected @endif>Masculino</option>
                         <option value='FEMENINO' @if($datainstructor->sexo == 'FEMENINO')selected @endif>Femenino</option>
@@ -145,7 +145,7 @@
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputestado_civil">Estado Civil</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="estado_civil" id="estado_civil">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="estado_civil" id="estado_civil">
                         <option value="">SELECCIONE</option>
                         @foreach ($lista_civil as $item)
                             <option value="{{$item->nombre}}" @if($datainstructor->estado_civil == $item->nombre)selected @endif>{{$item->nombre}}</option>
@@ -154,13 +154,13 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputfecha_nacimiento">Fecha de Nacimiento</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='fecha_nacimientoins' id='fecha_nacimientoins' type="date" class="form-control" aria-required="true" value="{{$datainstructor->fecha_nacimiento}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Nacimiento</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="entidad_nacimiento" id="entidad_nacimiento" onchange="local2_nacimiento()">
                         <option value="">SELECCIONE</option>
                         @foreach ($estados as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->entidad_nacimiento == $cadwell->nombre) selected @endif>{{$cadwell->nombre}}</option>
@@ -169,7 +169,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio de Nacimiento</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="municipio_nacimiento" id="municipio_nacimiento" onchange="local_nacimiento()">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="municipio_nacimiento" id="municipio_nacimiento" onchange="local_nacimiento()">
                         <option value="sin especificar">Sin Especificar</option>
                         @if(isset($municipios_nacimiento))
                             @foreach ($municipios_nacimiento as $cadwell)
@@ -180,7 +180,7 @@
                 </div>
                 <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Nacimiento</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="localidad_nacimiento" id="localidad_nacimiento">
                         <option value="sin especificar">Sin Especificar</option>
                         @if(isset($localidades_nacimiento))
                             @foreach ($localidades_nacimiento as $cadwell)
@@ -193,7 +193,7 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputentidad">Entidad de Residencia</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="entidad" id="entidad" onchange="local2()">
                         <option value="">SELECCIONE</option>
                         @foreach ($estados as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->entidad == $cadwell->nombre) selected @endif>{{$cadwell->nombre}}</option>
@@ -202,7 +202,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputmunicipio">Municipio de Residencia</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="municipio" id="municipio" onchange="local()">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="municipio" id="municipio" onchange="local()">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ($municipios as $cadwell)
                             <option value="{{$cadwell->id}}" @if($datainstructor->municipio == $cadwell->muni) selected @endif>{{$cadwell->muni}}</option>
@@ -211,7 +211,7 @@
                 </div>
                 <div class="form-gorup col-md-3">
                     <label for="inputlocalidad">Localidad de Residencia</label>
-                    <select @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif class="form-control" name="localidad" id="localidad">
+                    <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="localidad" id="localidad">
                         <option value="sin especificar">Sin Especificar</option>
                         @foreach ($localidades as $cadwell)
                             <option value="{{$cadwell->clave}}" @if($datainstructor->localidad == $cadwell->localidad) selected @endif>{{$cadwell->localidad}}</option>
@@ -220,41 +220,41 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-8">
                     <label for="inputbanco">Dirección de Domicilio</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->domicilio}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="domicilio" id="domicilio" type="text" class="form-control" aria-required="true" value="{{$datainstructor->domicilio}}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputbanco">Codigo Postal</label>
-                    <input  @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required value="{{$datainstructor->codigo_postal}}">
+                    <input  @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="codigo_postal" id="codigo_postal" type="text" class="form-control" aria-required="true" required value="{{$datainstructor->codigo_postal}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono Personal</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" value="{{$datainstructor->telefono}}" required>
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="telefono" id="telefono" type="tel" class="form-control" aria-required="true" value="{{$datainstructor->telefono}}" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputtelefono">Numero de Telefono de Casa</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="telefono_casa" id="telefono_casa" type="tel" class="form-control" aria-required="true" required value="{{$datainstructor->telefono_casa}}" required>
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="telefono_casa" id="telefono_casa" type="tel" class="form-control" aria-required="true" required value="{{$datainstructor->telefono_casa}}" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputcorreo">Correo Electronico</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" value="{{$datainstructor->correo}}" required>
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="correo" id="correo" type="email" class="form-control" placeholder="correo_electronico@ejemplo.com" aria-required="true" value="{{$datainstructor->correo}}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputbanco">Nombre del Banco</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="banco" id="banco" type="text" class="form-control" aria-required="true" value="{{$datainstructor->banco}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputclabe">Clabe Interbancaria</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="clabe" id="clabe" type="text" class="form-control" aria-required="true" value="{{$datainstructor->interbancaria}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="clabe" id="clabe" type="text" class="form-control" aria-required="true" value="{{$datainstructor->interbancaria}}">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputnumero_cuenta">Numero de Cuenta</label>
-                    <input @if(($datainstructor->status != "VALIDADO" && $datainstructor->status != "EN CAPTURA" && $datainstructor->status != "RETORNO") || $roluser->role_id == 3) disabled @endif name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true" value="{{$datainstructor->no_cuenta}}">
+                    <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name="numero_cuenta" id="numero_cuenta" type="text" class="form-control" aria-required="true" value="{{$datainstructor->no_cuenta}}">
                 </div>
             </div>
             <hr style="border-color:dimgray">
@@ -263,7 +263,7 @@
                     <div class="pull-left">
                         <h4>Experiencia Docente</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
+                    @if(in_array($datainstructor->status, $ari))
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" class="btn mr-sm-4 mt-3"
@@ -298,7 +298,7 @@
                                 <td>{{ $exdoc['funcion'] }}</td>
                                 <td>{{ $exdoc['periodo'] }}</td>
                                 <td width="13%">
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
+                                    @if(in_array($datainstructor->status, $ari))
                                         @can('instructor.editar_fase2')
                                             <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
                                                 data-toggle="modal"
@@ -321,7 +321,7 @@
                     <div class="pull-left">
                         <h4>Experiencia Laboral</h4>
                     </div>
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
+                    @if(in_array($datainstructor->status, $ari))
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
                                 <button type="button" class="btn mr-sm-4 mt-3"
@@ -398,7 +398,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="application/pdf" id="arch_domicilio" name="arch_domicilio" placeholder="Archivo PDF">
                                             <br><span id="imageName"></span>
                                         </label>
                                     @else
@@ -425,7 +425,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curp" name="arch_curp" placeholder="Archivo PDF">
                                             <br><span id="imageName2"></span>
                                         </label>
                                     @else
@@ -452,7 +452,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_banco" name="arch_banco" placeholder="Archivo PDF">
                                             <br><span id="imageName3"></span>
                                         </label>
                                     @else
@@ -479,7 +479,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="image/jpeg" class="form-control" id="arch_foto" name="arch_foto" placeholder="Archivo PDF">
                                             <br><span id="imageName4"></span>
                                         </label>
                                     @else
@@ -508,7 +508,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_id" name="arch_id" placeholder="Archivo PDF">
                                             <br><span id="imageName5"></span>
                                         </label>
                                     @else
@@ -535,7 +535,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_rfc" name="arch_rfc" placeholder="Archivo PDF">
                                             <br><span id="imageName6"></span>
                                         </label>
                                     @else
@@ -562,7 +562,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_estudio" name="arch_estudio" placeholder="Archivo PDF">
                                             <br><span id="imageName7"></span>
                                         </label>
                                     @else
@@ -589,7 +589,7 @@
                                             <a class="btn mr-sm-4 mt-3 btn-sm">
                                                 Subir &nbsp; <i class="fa fa-2x fa-cloud-upload"></i>
                                             </a>
-                                            <input @if($datainstructor->status != "VALIDADO" && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
+                                            <input @if(!in_array($datainstructor->status, $ari)) disabled @endif style='display:none;' type="file" accept="application/pdf" class="form-control" id="arch_curriculum_personal" name="arch_curriculum_personal" placeholder="Archivo PDF">
                                             <br><span id="imageName8"></span>
                                         </label>
                                     @else
@@ -621,7 +621,7 @@
                     @if(isset($datainstructor->entrevista))
                         <div class="form-group col-md-2"><br>
                             @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA') disabled @endif
+                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'REACTIVACION EN CAPTURA') disabled @endif
                                     data-toggle="modal"
                                     data-placement="top"
                                     data-target="#modentrevistaModal"
@@ -635,7 +635,7 @@
                     @else
                         <div class="pull-right">
                             @can('instructor.editar_fase2')
-                                <button type="button" class="btn mr-sm-4 mt-3" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif
+                                <button type="button" class="btn mr-sm-4 mt-3" @if(!in_array($datainstructor->status, $ari)) disabled @endif
                                     data-toggle="modal"
                                     data-placement="top"
                                     data-target="#entrevistaModal"
@@ -663,7 +663,7 @@
                                     <td></td>
                                     <td id="center" width="160px">
                                         <label class='onpoint' for="arch_entrevista">
-                                            <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if($datainstructor->status != 'VALIDADO' && $datainstructor->status != 'EN CAPTURA' && $datainstructor->status != 'RETORNO') disabled @endif
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-sm" @if(!in_array($datainstructor->status, $ari)) disabled @endif
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#updentrevistaModal"
@@ -860,76 +860,78 @@
                                     }
                                 }
                             @endphp
-                            <tr>
-                                <th scope="row">{{$item->nombre}}</th>
-                                <td>{{ $item->memorandum_validacion}}</td>
-                                <td>{{ $item->fecha_validacion}}</td>
-                                <td style="text-align: center;">{{ $item->criterio_pago_id }}</td>
-                                <td>{{ $item->observacion }}</td>
-                                <td>{{ $item->status}}</td>
-                                <td><small>
-                                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
-                                        @can('instructor.editar_fase2')
-                                            <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
-                                            <button type="button" class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
+                            @if($item->status != 'INACTIVO')
+                                <tr>
+                                    <th scope="row">{{$item->nombre}}</th>
+                                    <td>{{ $item->memorandum_validacion}}</td>
+                                    <td>{{ $item->fecha_validacion}}</td>
+                                    <td style="text-align: center;">{{ $item->criterio_pago_id }}</td>
+                                    <td>{{ $item->observacion }}</td>
+                                    <td>{{ $item->status}}</td>
+                                    <td><small>
+                                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
+                                            @can('instructor.editar_fase2')
+                                                <!--<a class="btn btn-info" href="{ route('instructor-editespectval', ['id' => item->especialidadinsid,'idins' => datains->id]) }}">Modificar</a>-->
+                                                <button type="button" class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
+                                                    data-toggle="modal"
+                                                    data-placement="top"
+                                                    data-target="#verespevaliModal"
+                                                    @if($item->status != 'VALIDADO')
+                                                    data-id='["{{$item->nombre}}", "{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
+                                                            "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
+                                                            "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                    @else
+                                                        data-id='["{{$item->espinid}}","{{$item->status}}"]'
+                                                    @endif
+                                                    ><i class="fa fa-eye" aria-hidden="true"></i>
+                                                </button>
+                                                @if($item->status != 'BAJA EN PREVALIDACION')
+                                                    <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                    <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="BAJA DE ESPECIALIDAD"
+                                                        data-toggle="modal"
+                                                        data-placement="top"
+                                                        data-target="#bajaespeModal"
+                                                        data-id='{{$item->espinid}}'>
+                                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </button>
+                                                @endif
+                                            @endcan
+                                        @else
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
                                                 data-toggle="modal"
                                                 data-placement="top"
                                                 data-target="#verespevaliModal"
                                                 @if($item->status != 'VALIDADO')
-                                                data-id='["{{$item->nombre}}", "{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
-                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}"]'
+                                                    data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
+                                                            "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
+                                                            "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}","{{$item->cursos_impartir}}"]'
                                                 @else
                                                     data-id='["{{$item->espinid}}","{{$item->status}}"]'
                                                 @endif
                                                 ><i class="fa fa-eye" aria-hidden="true"></i>
                                             </button>
-                                            @if($item->status != 'BAJA EN PREVALIDACION')
-                                                <a class="btn  mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="MODIFICAR REGISTRO" href="{{ route('instructor-editespectval', ['id' => $item->espinid, 'idins' => $id]) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                                                <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="BAJA DE ESPECIALIDAD"
-                                                    data-toggle="modal"
-                                                    data-placement="top"
-                                                    data-target="#bajaespeModal"
-                                                    data-id='{{$item->espinid}}'>
-                                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                                </button>
-                                            @endif
-                                        @endcan
-                                    @else
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VER REGISTRO"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#verespevaliModal"
-                                            @if($item->status != 'VALIDADO')
-                                                data-id='["{{$item->nombre}}","{{$perfilprof_nom}}","{{$item->unidad_solicita}}",
-                                                        "{{$item->criterio_pago_id}}","{{$item->memorandum_solicitud}}","{{$item->fecha_solicitud}}",
-                                                        "{{$item->observacion}}","{{$item->status}}","{{$item->espinid}}","{{$item->cursos_impartir}}"]'
-                                            @else
-                                                data-id='["{{$item->espinid}}","{{$item->status}}"]'
-                                            @endif
-                                            ><i class="fa fa-eye" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                    {{-- @if($item->status == 'EN CAPTURA')
-                                        <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#delespecvalidModal"
-                                            data-id='["{{$item->espinid}}","{{$loc2}}"]'>
-                                                <i class="fa fa-eraser" aria-hidden="true"></i>
-                                        </button>
-                                    @endif --}}
-                                    @if(isset($item->hvalidacion))
-                                        <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
-                                            data-toggle="modal"
-                                            data-placement="top"
-                                            data-target="#validacionesModal"
-                                            data-id='{{$item->hvalidacion}}'>
-                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                </small></td>
-                            </tr>
+                                        @endif
+                                        {{-- @if($item->status == 'EN CAPTURA')
+                                            <button type="button" class="btn btn-warning mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="ELIMINAR REGISTRO"
+                                                data-toggle="modal"
+                                                data-placement="top"
+                                                data-target="#delespecvalidModal"
+                                                data-id='["{{$item->espinid}}","{{$loc2}}"]'>
+                                                    <i class="fa fa-eraser" aria-hidden="true"></i>
+                                            </button>
+                                        @endif --}}
+                                        @if(isset($item->hvalidacion))
+                                            <button type="button" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" style="color: white;" title="VALIDACIÓN"
+                                                data-toggle="modal"
+                                                data-placement="top"
+                                                data-target="#validacionesModal"
+                                                data-id='{{$item->hvalidacion}}'>
+                                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                            </button>
+                                        @endif
+                                    </small></td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -995,7 +997,7 @@
                     </table>
                 </div>
             </div>
-            @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
+            @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
                 <hr style="border-color:dimgray">
                 <label><h2>Solicitar Baja del Instructor</h2></label>
                 <div class="form-group col-md-8">
@@ -3038,8 +3040,16 @@
             for (; i < il; i += 1)
             {
                 newOption = document.createElement('option');
-                newOption.value = id[i].arch_val;
-                newOption.text=id[i].memo_val;
+                if(id[i].arch_val != null)
+                {
+                    newOption.value = id[i].arch_val;
+                    newOption.text=id[i].memo_val;
+                }
+                else
+                {
+                    newOption.value = id[i].arch_baja;
+                    newOption.text=id[i].memo_baja;
+                }
                 // selectL.appendChild(option);
                 selectL.add(newOption);
             }
