@@ -92,7 +92,7 @@
                         <td>{{$itemData->telefono}}</td>
                         <td>{{$itemData->status}}</td>
                         <td>
-                            @if ($itemData->status == 'EN CAPTURA')
+                            @if ($itemData->status == 'EN CAPTURA' || $itemData->status == 'REACTIVACION EN CAPTURA')
                                 {{-- @can('instructor.validar')
                                     <a class="btn btn-info" href="{{route('instructor-validar', ['id' => itemData->id])}}">Validar</a>
                                 @endcan --}}

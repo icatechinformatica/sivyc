@@ -64,7 +64,7 @@
             footer {
             position: fixed;
             /* left: 0px; */
-            bottom: 45px;
+            bottom: 80px;
             /* right: 0px; */
             /* height: 60px; */
             /* text-align: center; */
@@ -73,14 +73,14 @@
             }
             img.izquierda {
                 float: left;
-                width: 300px;
-                height: 60px;
+                width: 100%;
+                height: 90px;
             }
 
             img.izquierdabot {
                 float: inline-end;
-                width: 350px;
-                height: 60px;
+                width: 100%;
+                height: 80px;
             }
 
             img.derecha {
@@ -118,20 +118,26 @@
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
+        .direccion
+            {
+                text-align: left;
+                position: absolute;
+                bottom: 10px;
+                left: 15px;
+                font-size: 8.5px;
+                color: rgb(255, 255, 255);
+                line-height: 1;
+            }
         </style>
     </head>
     <body style="margin-top:90px; margin-bottom:70px;">
         <header>
-            <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
-            <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <div style="clear:both;">
-                <h6>{{$distintivo}}</h6>
-            </div>
+            <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
+            <br><h6>{{$distintivo}}</h6>
         </header>
         <footer>
-            <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
-            <div class="page-break-non"></div>
+            <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
         <div class= "container">
             @php $cont=0; foreach($especialidades AS $ari){if($ari->status != 'BAJA EN FIRMA'){$cont++;}} @endphp
@@ -168,11 +174,11 @@
                             </tr>
                             <tr>
                                 <td style='width: 180px;'>Nivel de Estudios que Cubre para la Especialidad:</td>
-                                <td style='width: 360px;' colspan="2">{{$especialidades[0]->perfil_profesional}}</td>
+                                <td style='width: 360px;' colspan="2"> @if($especialidades[0]->status != 'BAJA EN FIRMA'){{$especialidades[0]->perfil_profesional}} @else {{$especialidades[1]->perfil_profesional}}@endif</td>
                             </tr>
                             <tr>
                                 <td style='width: 180px;'>Observaciones:</td>
-                                <td style='width: 360px;' colspan="2">{{$especialidades[0]->observacion_validacion}}</td>
+                                <td style='width: 360px;' colspan="2"> @if($especialidades[0]->status != 'BAJA EN FIRMA'){{$especialidades[0]->observacion_validacion}} @else {{$especialidades[1]->observacion_validacion}}@endif</td>
                             </tr>
                         </tbody>
                     </table>

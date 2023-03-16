@@ -24,9 +24,18 @@
                     <label for="">FECHA:</label>
                     <input type="date" id="fecha" name="fecha" class="form-control" value="{{date('Y-m-d')}}" readonly/>
                 </div>  
-            <div class="form-group col-md-1 mt-4">
+            <div class="form-group col-md-3 mt-4">
                 {{ Form::button('FILTRAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div>               
+            </div>   
+            @if (($opt== "ARC01" AND $status_solicitud != "VALIDADO") OR ($opt== "ARC02" AND $status_solicitud != "VALIDADO"))
+                <div class="form-group col-md-2 mt-4">
+                    @if ($opt== "ARC01")
+                    {{ Form::button('ARC-01 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
+                    @else
+                    {{ Form::button('ARC-02 BORRADOR', ['id'=>'BorradorARC','class' => 'btn']) }}
+                    @endif
+                </div>
+            @endif             
         </div>
         @if ($message)
             <div class="row ">
@@ -60,6 +69,16 @@
                         }else if($("#opt" ).val() == "ARC02"){
                             $('#frm').attr('action', "{{route('solicitud.generar.arc02')}}"); $('#frm').attr('target', '_blank').submit();
                         }
+                    }
+                });
+
+                $("#BorradorARC").click(function() {
+                    if ($("#opt").val() == "ARC01") {
+                        $('#frm').attr('action', "{{route('solicitud.generar.arc01')}}");
+                        $('#frm').attr('target', '_blank').submit();
+                    } else if ($("#opt").val() == "ARC02") {
+                        $('#frm').attr('action', "{{route('solicitud.generar.arc02')}}");
+                        $('#frm').attr('target', '_blank').submit();
                     }
                 });
                 
