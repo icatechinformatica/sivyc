@@ -6,7 +6,9 @@
 @section('title', 'Catálogo de Cursos | SIVyC ICATECH')
 @section('content')
 <style>
- #table-instructor .nav-link {padding:0; margin:0px; width:auto;}
+ .nav-link {padding:0; margin:0px; width:auto;}
+ #table-instructor thead th {padding:3px; margin:0px; width:auto; text-align:center; vertical-align: middle;}
+ #table-instructor  tbody td {padding:3px; margin:0px; width:auto; vertical-align: middle; text-align:center;}
 </style>
 
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
@@ -51,54 +53,58 @@
         <table  id="table-instructor" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th scope="col">ESPECIALIDAD</th>
-                    <th scope="col">SERVICIO</th>
-                    <th scope="col">CURSO</th>
-                    <th scope="col">CAPACITACIÓN</th>
-                    <th scope="col">DURA CiÓN</th>
-                    <th scope="col">MODA LIDAD</th>
-                    <th scope="col">CLASIFI CACIÓN</th>
-                    <th scope="col">COSTO</th>
-                    <th scope="col">ESTATUS</th>
+                    <th>ESPECIALIDAD</th>                    
+                    <th>CURSO</th>
+                    <th >CAPACITACIÓN</th>
+                    <th >DURA CiÓN</th>
+                    <th >MODA LIDAD</th>
+                    <th >CLASIFI CACIÓN</th>
+                    <th >COSTO</th>
+                    <th >ESTATUS</th>
+                    <th >SERVICIO</th>
+                    <th >PROG. ESTRA.</th>
                     @can('cursos.show')
-                        <th scope="col">EDIT</th>
+                        <th >&nbsp;EDIT&nbsp;</th>
                     @endcan
-                    <th scope="col">VER</th>
-                    <th scope="col">CARTA DESCRI</th>
+                    <th >&nbsp;VER&nbsp;</th>
+                    <th >CARTA DESCRI</th>
                     @can('paqueteriasdidacticas')
-                    <th scope="col">PAQUE TERÍA</th>
+                    <th >PAQUE TERÍA</th>
                     @endcan
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $itemData)
                 @php 
-                    $servicio = $itemData->servicio;
+                    $servicio = str_replace(array('["','"]'),'',$itemData->servicio);
+                    if($itemData->proyecto) $prog = 'SI';
+                    else $prog = 'NO';
                 @endphp
                     <tr>
-                        <th scope="row">{{$itemData->nombre}}</th>
-                        <td>{{$servicio}}</td>
-                        <td>{{$itemData->nombre_curso}}</td>
+                        <th scope="row">{{$itemData->nombre}}</th>                       
+                        <td class="text-left pl-2"> {{$itemData->nombre_curso}}</td>
                         <td>{{$itemData->tipo_curso}}</td>
                         <td>{{$itemData->horas}}</td>
                         <td>{{$itemData->modalidad}}</td>
                         <td>{{$itemData->clasificacion}}</td>
                         <td>{{$itemData->costo}}</td>
                         <td>{{$itemData->estado}}</td>
+                        <td>{{$servicio}}</td>
+                        <td>{{$prog}}</td>
                         @can('cursos.show')
-                        <td class="text-center">
+                        <td>
                             <a class="nav-link" alt="Editar Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}">
                                 <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
                         </td>
                         @endcan
-                        <td class="text-center">
+                        <td>
                             <a class="nav-link" alt="Ver Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" data-toggle="modal" data-placement="top" data-target="#fullHeightModalRight"
                                 data-id="{{$itemData->id}}">
                                 <i  class="fa fa-search  fa-2x fa-lg text-primary"></i>
                             </a>
                         </td>
-                        <td class="text-center">
+                        <td>
                             @if($itemData->file_carta_descriptiva)
                             
                                 <a class="nav-link"  alt="Descargar PDF" href="{{env('APP_URL').'/'.'storage'.$itemData->file_carta_descriptiva}}" target="_blank">
@@ -108,7 +114,7 @@
                             @endif
                         </td>                   
                         @can('paqueteriasdidacticas')
-                        <td class="text-center">
+                        <td>
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
                             <i class="fa fa-2x fa-folder text-muted"></i></a>
                         </td>
