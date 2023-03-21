@@ -457,7 +457,7 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
                             break;
                             case 'RETORNO':
-                                if($especialidades[$llave]->new == FALSE)
+                                if($perfiles[$key]->new == FALSE)
                                 {
                                     $perfiles[$key]->status = 'REVALIDACION EN PREVALIDACION';
                                     $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION), ';
@@ -1183,6 +1183,10 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (EN FIRMA), ';
                                 $retorno_firma = TRUE;
                             break;
+                            case 'BAJA EN FIRMA':
+                                $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA EN FIRMA), ';
+                                $retorno_firma = TRUE;
+                            break;
                         }
                     }
                 }
@@ -1220,12 +1224,12 @@ class InstructorController extends Controller
                             case 'BAJA EN FIRMA':
                                 $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
                                 $retorno_firma = TRUE;
-                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                                unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                             case 'EN FIRMA':
                                 $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
                                 $retorno_firma = TRUE;
-                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                                unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                         }
                     }

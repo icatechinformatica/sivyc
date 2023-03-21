@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label for="clavecurso" class="control-label">Validación de instructor</label>
-                    @if ($data->archivo_alta != NULL)
+                    @if ($memoval != NULL)
                         <a class="btn btn-info control-label" href={{$memoval}} target="_blank">Validación de Instructor</a><br>
                     @else
                         <a class="btn btn-danger" disabled>Validación de Instructor</a><br>

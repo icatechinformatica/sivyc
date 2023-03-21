@@ -263,7 +263,7 @@
         <div class="row">
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
-                    @if($data->status == 'PREVALIDACION' || $data->status == 'BAJA EN PREVALIDACION' || $data->status == 'EN FIRMA')
+                    @if($data->status == 'PREVALIDACION' || $data->status == 'BAJA EN PREVALIDACION' || $data->status == 'EN FIRMA' || $data->status == 'BAJA EN FIRMA')
                         @can('instructor.prevalidar')
                             <button type="button" class="btn mr-sm-4 mt-3 btn-danger"
                                     data-toggle="modal"
