@@ -36,7 +36,7 @@ Route::post('/alumnos/sid/checkcursos', 'webController\AlumnoController@checkcur
 
 //ruta Pago
 Route::post('/pago/rechazar_pago', 'webController\PagoController@rechazar_pago')->name('pago-rechazo');
-Route::get('/pago/solicitud/modificar/{id}', 'webController\Contratocontroller@mod_solicitud_pago')->name('pago-mod');
+Route::get('/pago/solicitud/modificar/{id}', 'webController\ContratoController@mod_solicitud_pago')->name('pago-mod');
 Route::post('/pago/savemod/solpa', 'webController\ContratoController@save_mod_solpa')->name('savemod-solpa');
 Route::get('/pago/reiniciar/{id}', 'webController\PagoController@pagoRestart')->name('reiniciar-pago');
 
@@ -47,19 +47,19 @@ Route::get('/convenios/alta-baja/{id}', 'webController\ConveniosController@alta_
 Route::post('/Convenios/alta-baja/save','webController\ConveniosController@alta_baja_save')->name('convenio-alta-baja-save');
 
 // Ruta Supre busqueda & misc
-Route::post('/supre/busqueda/curso', 'webController\suprecontroller@getcursostats')->name('supre.busqueda.curso');
-Route::post('/supre/busqueda/tipo_curso', 'webController\suprecontroller@gettipocurso')->name('supre.busqueda.tipocurso');
-Route::post('/supre/busqueda/folio', 'webController\suprecontroller@getfoliostats');
+Route::post('/supre/busqueda/curso', 'webController\supreController@getcursostats')->name('supre.busqueda.curso');
+Route::post('/supre/busqueda/tipo_curso', 'webController\supreController@gettipocurso')->name('supre.busqueda.tipocurso');
+Route::post('/supre/busqueda/folio', 'webController\supreController@getfoliostats');
 Route::post('/alumnos/sid/municipios', 'webController\AlumnoController@getmunicipios')->name('alumnos.sid.municipios');
-Route::post('/supre/validacion/upload_doc','webController\SupreController@doc_valsupre_upload')->name('doc-valsupre-guardar');
-Route::post('/supre/busqueda/folios/modal', 'webController\suprecontroller@getfoliostatsmodal')->name('supre.busqueda.foliosmodal');
-Route::post('/supre/folio/permiso','webController\SupreController@dar_permiso_folio')->name('folio-permiso-mod');
-Route::post('/supre/folio/modificacion-especial','webController\SupreController@folio_edicion_especial_save')->name('folio-especialedit-save');
-Route::post('/supre/delegado/upload_doc','webController\SupreController@doc_supre_upload')->name('doc-supre-guardar');
-Route::get('/supre/eliminar/{id}', 'webController\SupreController@delete')->name('eliminar-supre');
-Route::get('/supre/reiniciar/{id}', 'webController\SupreController@restartSupre')->name('restart-supre');
-Route::get('/valsupre/modespec/{id}', 'webController\SupreController@dar_permiso_valsupre')->name('darpermisovalsupre');
-Route::get('/folio/edicion_especial/{id}', 'webController\SupreController@folio_edicion_especial')->name('folio_especialedit');
+Route::post('/supre/validacion/upload_doc','webController\supreController@doc_valsupre_upload')->name('doc-valsupre-guardar');
+Route::post('/supre/busqueda/folios/modal', 'webController\supreController@getfoliostatsmodal')->name('supre.busqueda.foliosmodal');
+Route::post('/supre/folio/permiso','webController\supreController@dar_permiso_folio')->name('folio-permiso-mod');
+Route::post('/supre/folio/modificacion-especial','webController\supreController@folio_edicion_especial_save')->name('folio-especialedit-save');
+Route::post('/supre/delegado/upload_doc','webController\supreController@doc_supre_upload')->name('doc-supre-guardar');
+Route::get('/supre/eliminar/{id}', 'webController\supreController@delete')->name('eliminar-supre');
+Route::get('/supre/reiniciar/{id}', 'webController\supreController@restartSupre')->name('restart-supre');
+Route::get('/valsupre/modespec/{id}', 'webController\supreController@dar_permiso_valsupre')->name('darpermisovalsupre');
+Route::get('/folio/edicion_especial/{id}', 'webController\supreController@folio_edicion_especial')->name('folio_especialedit');
 Route::get('/supre/reporte/solicitados', 'webController\supreController@reporte_solicitados')->name('reporte-solicitados');
 Route::get('/supre/reporte/solicitados/{un}/{ini}/{fin}', 'webController\supreController@reporte_solicitados_detail')->name('reporte-solicitados-detail');
 
