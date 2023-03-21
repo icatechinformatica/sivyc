@@ -457,7 +457,7 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
                             break;
                             case 'RETORNO':
-                                if($especialidades[$llave]->new == FALSE)
+                                if($perfiles[$key]->new == FALSE)
                                 {
                                     $perfiles[$key]->status = 'REVALIDACION EN PREVALIDACION';
                                     $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION), ';
