@@ -3,6 +3,8 @@
 @section('title', 'Pagos | SIVyC Icatech')
 <!--seccion-->
 @section('content')
+    <link rel="stylesheet" href="{{asset("vendor/bootstrap/bootstrapcustomizer.css") }}">
+    <link href="{{ asset("vendor/toggle/bootstrap-toggle.css") }}" rel="stylesheet">
     <style>
         * {
         box-sizing: border-box;
@@ -19,12 +21,89 @@
         border: 1px solid #ddd;
         margin-bottom: 12px;
         }
+
+        .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
+        .toggle.ios .toggle-handle { border-radius: 20px; }
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 90px;
+          height: 34px;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(50px);
+          -ms-transform: translateX(50px);
+          transform: translateX(50px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
     </style>
     <div class="container g-pt-50">
         @if ($message =  Session::get('info'))
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 <strong>{{ $message }}</strong>
+            </div>
+        @endif
+        @if ($message = Session::get('success'))
+            <div class="alert alert-success">
+                <p>{{ $message }}</p>
             </div>
         @endif
         <div class="row">
@@ -43,6 +122,7 @@
                             <option value="unidad_capacitacion">UNIDAD CAPACITACIÓN</option>
                             <option value="fecha_firma">FECHA</option>
                             <option value="mes">MES</option>
+                            <option value="agendar_fecha" @if($tipoPago == 'agendar_fecha') selected @endif>LISTOS PARA ENTREGA FISICA</option>
                         </select>
                         <Div id="divmes" name="divmes" class="d-none d-print-none">
                             <select name="mes" class="form-control mr-sm-2" id="mes">
@@ -69,10 +149,10 @@
                                 @endforeach
                             </select>
                         </Div>
-                        <div id="divcampo" name="divcampo">
+                        <div id="divcampo" name="divcampo" @if($tipoPago == 'agendar_fecha') class="d-none d-print-none" @endif>
                         {!! Form::text('busquedaPorPago', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
                         </div>
-                        <Div id="divstat" name="divstat">
+                        <Div id="divstat" name="divstat" @if($tipoPago == 'agendar_fecha') class="d-none d-print-none" @endif>
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
                                 <option value="Verificando_Pago">VERIFICANDO PAGO</option>
@@ -89,6 +169,35 @@
         <div class="pull-left">
         </div>
         <hr style="border-color:dimgray">
+        @if($tipoPago == 'agendar_fecha')
+            <form action="{{ route('agendar-entrega-pago') }}" method="post">
+                @csrf
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                    </div>
+                    <div class="form-group col-md-2" style="text-align: right;">
+                        <h5>Fecha a Agendar</h5>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <input type="date" class="form-control" id="agendar_date" name="agendar_date" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <h5 for="agendar_date"></h5>
+                        <button type="submit" class="btn btn-primary" style="bottom: 25%;" >Agendar</button>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <label style="color: black">Seleccionar Todo</label>
+                    <input  type="checkbox" id="ckbCheckAll"
+                            data-toggle="toggle"
+                            data-style="ios"
+                            data-on= " "
+                            data-off= " "
+                            data-onstyle="success"
+                            data-offstyle="danger"
+                            onchange="toggleOnOff()"/>
+                </div>
+        @endif
         <table  id="table-instructor" class="table table-bordered table-responsive-md Datatables">
             <caption>Lista de Contratos en Espera</caption>
             <thead>
@@ -97,12 +206,12 @@
                     <th scope="col">Fecha</th>
                     <th scope="col">Unidad de Capacitación</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Ultima Modificación de Status</th>
-                    @can('contratos.create')
-                            <th scope="col">Fecha de Validación de Recepción Fisica</th>
-                    @endcan
+                    {{-- <th scope="col" style="width: 150px;">Ultima Modificación de Status</th> --}}
+                    {{-- @can('contratos.create')
+                            <th scope="col" style="width: 150px;">Fecha de Validación de Recepción Fisica</th>
+                    @endcan --}}
                     <th width="160px">Acciones</th>
-                    <th scope="col">Fecha de Entrega Fisica</th>
+                    <th scope="col" width="200px">Fecha de Entrega Fisica</th>
                 </tr>
             </thead>
             <tbody>
@@ -117,14 +226,14 @@
                         </td>
                         <td>{{$itemData->unidad_capacitacion}}</td>
                         <td>{{$itemData->status}}</td>
-                        <td>{{$itemData->fecha_status}}</td>
-                        @can('contratos.create')
+                        {{-- <td>{{$itemData->fecha_status}}</td> --}}
+                        {{-- @can('contratos.create')
                             @if($itemData->recepcion != NULL)
                                 <td>{{$itemData->recepcion}}</td>
                             @else
                                 <td>N/A</td>
                             @endif
-                        @endcan
+                        @endcan --}}
                         <td>
                             @switch($itemData->status)
                                 @case('Verificando_Pago')
@@ -242,7 +351,34 @@
                                 @break
                             @endswitch
                         </td>
-                        <td>{{$itemData->fecha_agenda}}</td>
+                        <td>
+                            @if(isset($itemData->recepcion))
+                                Entregado: {{$itemData->recepcion}}
+                            @else
+                                Fecha Actual: {{$itemData->fecha_agenda}}
+                                @can('contratos.create')
+                                    <div @if($tipoPago == 'agendar_fecha') class="form-control-plaintext text-truncate" @else class="d-none d-print-none" @endif >
+                                        <label>AÑADIR</label>
+                                        <input type="checkbox" class="checkBoxClass"
+                                            data-toggle="toggle"
+                                            data-style="ios"
+                                            data-on=" "
+                                            data-off=" "
+                                            data-onstyle="success"
+                                            data-offstyle="danger"
+                                            name="agendar[{{$itemData->id_contrato}}]"
+                                            value="{{$itemData->id_contrato}}">
+                                    </div>
+                                @endcan
+                                @if(isset($itemData->fecha_agenda))
+                                    @can('verificar_pago.create')
+                                        <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" data-target="#recepcionarModal" data-id='["{{$itemData->id_folios}}"]'>
+                                            Confirmar Entrega
+                                        </a>
+                                    @endcan
+                                @endif
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -254,6 +390,9 @@
                 </tr>
             </tfoot>
         </table>
+        @if($tipoPago == 'agendar_fecha')
+            </form>
+        @endif
         <br>
     </div>
     <!-- Modal -->
@@ -401,9 +540,38 @@
     </div>
 </div>
 <!-- END -->
+<!-- Modal Confirmar Entrega de Documentacion-->
+<div class="modal fade" id="recepcionarModal" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('confirmar-entrega-fisica') }}" id="confirmar_entrega">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">¿Confirmar Entrega Fisica?</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <div style="text-align:center" class="form-group">
+                        <p>Si confirmas la entrega fisica se hara el cambio de manera permanente.</p>
+                        <input id="id_folio_entrega" name="id_folio_entrega" hidden>
+                        <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-dismiss="modal">No, Mantener Pendiente la Entrega</button>
+                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" >Sí, Confirmar Entrega</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END -->
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/modals.js") }}"></script>
+<script src="{{ asset("js/scripts/bootstrap-toggle.js") }}"></script>
 <script>
     $(function(){
     //metodo
@@ -455,6 +623,13 @@
             $('#divunidades').prop("class", "form-row d-none d-print-none")
             $('#divcampo').prop("class", "")
         }
+        if(inputText == 'LISTOS PARA ENTREGA FISICA')
+        {
+            $('#divstat').prop("class", "form-row d-none d-print-none")
+            $('#divmes').prop("class", "form-row d-none d-print-none")
+            $('#divunidades').prop("class", "form-row d-none d-print-none")
+            $('#divcampo').prop("class", "form-row d-none d-print-none")
+        }
       }
 
     $('#Modaluploadpago').on('show.bs.modal', function(event){
@@ -464,6 +639,22 @@
         document.getElementById('idfolpa').value = id;
     });
 
+    $('#recepcionarModal').on('show.bs.modal', function(event){
+        // console.log('hola');
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        document.getElementById('id_folio_entrega').value = id;
+    });
+
 });
+
+function toggleOnOff() {
+        var checkBox = document.getElementById("ckbCheckAll");
+        if (checkBox.checked == true){
+            $('.checkBoxClass').prop('checked', true).change()
+        } else {
+            $('.checkBoxClass').prop('checked', false).change()
+        }
+    }
 </script>
 @endsection

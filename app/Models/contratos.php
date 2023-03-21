@@ -75,7 +75,8 @@ class contratos extends Model
                     return $query->whereDate('contratos.created_at', '>=', $dateini)->whereDate('contratos.created_at', '<=', $datefin);
                 }
             }
-            if (!empty(trim($buscar))) {
+            if (!empty(trim($buscar)))
+            {
                 # busqueda
                 switch ($tipo) {
                     case 'no_memorandum':
@@ -99,6 +100,10 @@ class contratos extends Model
                     case 'folio_validacion':
                         # busqueda por folio de validacion
                         return $query->WHERE('folios.folio_validacion', '=', $buscar);
+                        break;
+                    case 'agendar_fecha':
+                        return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
+                                    ->WHERE('folios.recepcion',NULL);
                         break;
                 }
             }
@@ -171,6 +176,11 @@ class contratos extends Model
                         }
                         break;
                 }
+            }
+            if($tipo == 'agendar_fecha')
+            {
+                return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
+                                ->WHERE('folios.recepcion',NULL);
             }
         }
         if (!empty($tipo_status)) {

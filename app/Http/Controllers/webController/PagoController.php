@@ -19,6 +19,9 @@ use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportExcelGenerator;
+use App\Exports\ExportExcelPOA;
 
 class PagoController extends Controller
 {
@@ -88,7 +91,7 @@ class PagoController extends Controller
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
         ->orderBy('pagos.created_at', 'desc')
-        ->PAGINATE(25, [
+        ->PAGINATE(50, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
             'contratos.docs', 'contratos.observacion', 'folios.status','folios.recepcion', 'folios.id_folios',
@@ -140,16 +143,16 @@ class PagoController extends Controller
                 ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                 ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                 ->orderBy('contratos.fecha_firma', 'desc')
-                ->PAGINATE(25, [
+                ->PAGINATE(50, [
                     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
-                    'folios.permiso_editar','contratos.docs',
-                    'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago','pagos.fecha_agenda'
+                    'folios.permiso_editar','contratos.docs','contratos.observacion', 'folios.status',
+                    'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago','pagos.fecha_agenda'
                 ]);
                 break;
         }
 
-        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio'));
+        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago'));
     }
 
     public function crear_pago($id)
@@ -354,20 +357,32 @@ class PagoController extends Controller
     public function tramitesrecepcionados_pdf(Request $request)
     {
         // dd($request);
-        $data = contratos::SELECT('contratos.fecha_status', 'contratos.numero_contrato',
+        $data = contratos::SELECT('contratos.fecha_status', 'contratos.numero_contrato', 'contratos.fecha_firma',
             'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'folios.recepcion', 'tbl_cursos.clave',
 		    'tbl_cursos.inicio', 'tbl_cursos.nombre','folios.status')
             ->JOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
             ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-            ->WHERE('contratos.id_contrato', '=', '4228')
+            // ->WHERE('contratos.id_contrato', '=', '4228')
             // ->WHERE('tbl_unidades.ubicacion', '=', $request->unidad)
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
-            // ->WHEREBETWEEN('tbl_cursos.inicio', [$request->fecha1, $request->fecha2])
+            ->WHERE('folios.recepcion', '!=', NULL)
+            ->WHEREBETWEEN('contratos.fecha_firma', [$request->fecha1, $request->fecha2])
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
             // dd($data);
+
+        foreach ($data as $ari)
+        {
+            // dd($ari->fecha_rechazo);
+        }
+
+        $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FFECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
+        $title = "DOCUMENTOS RECEPCIONADOS";
+        $name = $title."_".date('Ymd').".xlsx";
+        $view = 'layouts.pages.reportes.excel_contratos_recepcionados';
+        if(count($data)>0)return Excel::download(new ExportExcelPOA($data,$head, $title,$view), $name);
         // dd($data[1]->fecha_rechazo);
         if ($request->tipo == 'CURSO')
         {
@@ -491,6 +506,25 @@ class PagoController extends Controller
         //return view('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
         $pdf = PDF::loadView('layouts.pages.vstapagofinalizado', compact('data', 'nomins'));
         return $pdf->download('medium.pdf');
+    }
+
+    public function agendar_entrega_pago(Request $request)
+    {
+        foreach ($request->agendar as $cadwell)
+        {
+            $pago = pago::where('id_contrato', $cadwell)->update(['fecha_agenda' => $request->agendar_date]);
+        }
+
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Entrega de Documentos Agendada Correctamente');
+    }
+
+    public function confirmar_entrega_fisica(Request $request)
+    {
+        $fecha_actual = carbon::now();
+        $folio = folio::find($request->id_folio_entrega)->update(['recepcion' => $fecha_actual->toDateString()]);
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Entrega de Documentos Confirmada Correctamente');
     }
 
     public function financieros_reporte()

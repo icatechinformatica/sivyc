@@ -761,11 +761,14 @@ Route::put('/exoneraciones/modificar/{id}', 'webController\ExoneracionesControll
     ->middleware('can:exoneraciones.update');
 Route::post('/exoneraciones/sid/municipios', 'webController\ExoneracionesController@getmunicipios');
 
-/*Reporte Financieros 03032021*/
+/*Reporte Financieros 17032023*/
 Route::get('/financieros/reporte', 'webController\PagoController@financieros_reporte')->name('financieros.reporte')->middleware('can:financieros.reporte');
 Route::post('/financieros/reporte/pdf','webController\PagoController@financieros_reportepdf')->name('financieros.reportepdf');
 Route::post('/financieros/upload/pago-autorizado','webController\PagoController@upload_pago_autorizado')->name('doc-pago-guardar');
 Route::post('/financieros/reporte/tramites_valrec','webController\PagoController@reporte_validados_recepcionados')->name('reporte_valrecep');
+Route::post('/financieros/agendar-fecha-entrega-pago','webController\PagoController@agendar_entrega_pago')->name('agendar-entrega-pago');
+Route::post('/financieros/recepcion-entrega-fisica','webController\PagoController@confirmar_entrega_fisica')->name('confirmar-entrega-fisica');
+
 //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
