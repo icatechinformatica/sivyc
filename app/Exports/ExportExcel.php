@@ -6,19 +6,19 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-class ExportExcelPOA implements FromView
+class ExportExcel implements FromView
 {
     public function __construct($data,$head,$title,$view)
-    {   
-        $this->head = $head;     
+    {
+        $this->head = $head;
         $this->data = $data;
         $this->title = $title;
         $this->view = $view;
     }
-    
+
     public function headings(): array
     {
-        return   $this->head;        
+        return   $this->head;
     }
 
     public function collection()
@@ -26,11 +26,11 @@ class ExportExcelPOA implements FromView
         //
         return $this->data;
     }
-    
+
     public function sheets(): array
     {
-        $sheets[] = new ProductsPerMonthSheet($this->title); 
-        $sheet->setColumnFormat(array('Y' => 'dd/mm/yyyy', ));               
+        $sheets[] = new ProductsPerMonthSheet($this->title);
+        $sheet->setColumnFormat(array('Y' => 'dd/mm/yyyy', ));
         return $sheets;
     }
 
@@ -43,6 +43,6 @@ class ExportExcelPOA implements FromView
     {
         $data = $this->data;
         return view($this->view,compact('data'));
-    }    
+    }
 
 }

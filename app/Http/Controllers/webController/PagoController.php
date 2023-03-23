@@ -20,8 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ExportExcelGenerator;
-use App\Exports\ExportExcelPOA;
+use App\Exports\ExportExcel;
 
 class PagoController extends Controller
 {
@@ -372,17 +371,11 @@ class PagoController extends Controller
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
             // dd($data);
-
-        foreach ($data as $ari)
-        {
-            // dd($ari->fecha_rechazo);
-        }
-
         $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FFECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
         $title = "DOCUMENTOS RECEPCIONADOS";
         $name = $title."_".date('Ymd').".xlsx";
         $view = 'layouts.pages.reportes.excel_contratos_recepcionados';
-        if(count($data)>0)return Excel::download(new ExportExcelPOA($data,$head, $title,$view), $name);
+        if(count($data)>0)return Excel::download(new ExportExcel($data,$head, $title,$view), $name);
         // dd($data[1]->fecha_rechazo);
         if ($request->tipo == 'CURSO')
         {
