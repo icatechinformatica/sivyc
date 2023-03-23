@@ -141,7 +141,8 @@ class PagoController extends Controller
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                 ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                 ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
-                ->orderBy('contratos.fecha_firma', 'desc')
+                ->orderBy('pagos.created_at', 'desc')
+                // ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(50, [
                     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
@@ -367,7 +368,7 @@ class PagoController extends Controller
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
             ->WHERE('folios.recepcion', '!=', NULL)
-            ->WHEREBETWEEN('contratos.fecha_firma', [$request->fecha1, $request->fecha2])
+            ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
             // dd($data);

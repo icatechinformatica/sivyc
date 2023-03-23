@@ -371,7 +371,7 @@
                                     </div>
                                 @endcan
                                 @if(isset($itemData->fecha_agenda))
-                                    @can('verificar_pago.create')
+                                    @can('contrato.validate')
                                         <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" data-target="#recepcionarModal" data-id='["{{$itemData->id_folios}}"]'>
                                             Confirmar Entrega
                                         </a>
