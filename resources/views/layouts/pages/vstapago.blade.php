@@ -169,7 +169,7 @@
         <div class="pull-left">
         </div>
         <hr style="border-color:dimgray">
-        @if($tipoPago == 'agendar_fecha')
+        {{-- @if($tipoPago == 'agendar_fecha')
             <form action="{{ route('agendar-entrega-pago') }}" method="post">
                 @csrf
                 <div class="form-row">
@@ -197,7 +197,7 @@
                             data-offstyle="danger"
                             onchange="toggleOnOff()"/>
                 </div>
-        @endif
+        @endif --}}
         <table  id="table-instructor" class="table table-bordered table-responsive-md Datatables">
             <caption>Lista de Contratos en Espera</caption>
             <thead>
@@ -357,7 +357,10 @@
                             @else
                                 Fecha Actual: {{$itemData->fecha_agenda}}
                                 @can('contratos.create')
-                                    <div @if($tipoPago == 'agendar_fecha') class="form-control-plaintext text-truncate" @else class="d-none d-print-none" @endif >
+                                    <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-target="#agendarModal" data-id='["{{$itemData->id_contrato}}"]'>
+                                        AGENDAR ENTREGA
+                                    </a>
+                                    {{-- <div @if($tipoPago == 'agendar_fecha') class="form-control-plaintext text-truncate" @else class="d-none d-print-none" @endif >
                                         <label>AÑADIR</label>
                                         <input type="checkbox" class="checkBoxClass"
                                             data-toggle="toggle"
@@ -368,7 +371,7 @@
                                             data-offstyle="danger"
                                             name="agendar[{{$itemData->id_contrato}}]"
                                             value="{{$itemData->id_contrato}}">
-                                    </div>
+                                    </div> --}}
                                 @endcan
                                 @if(isset($itemData->fecha_agenda))
                                     @can('contrato.validate')
@@ -390,9 +393,9 @@
                 </tr>
             </tfoot>
         </table>
-        @if($tipoPago == 'agendar_fecha')
+        {{-- @if($tipoPago == 'agendar_fecha')
             </form>
-        @endif
+        @endif --}}
         <br>
     </div>
     <!-- Modal -->
@@ -568,6 +571,59 @@
     </div>
 </div>
 <!-- END -->
+<!-- Modal Agendar Entrega de Documentacion-->
+<div class="modal fade" id="agendarModal" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('agendar-entrega-pago') }}" id="agendar_entrega" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">¿Agendar Entrega Fisica?</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                    <p style="text-align:center">Documentación Necesaria para agendar</p><br>
+                <div class="modal-body" style="text-align:center; margin-top:-8%;">
+                    <div style="text-align:left" class="form-row">
+                        <div class="form-group col-md-1"></div>
+                        <div class="form-group col-md-4">
+                            <label for="inputfactura_pdf">Factura PDF</label>
+                            <input type="file" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-1"></div>
+                        <div class="form-group col-md-5">
+                            <label for="inputfactura_xml">Factura XML</label>
+                            <input type="file" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control" required>
+                        </div>
+                    </div>
+                    <div style="text-align:left" class="form-row">
+                        <div class="form-group col-md-1"></div>
+                        <div class="form-group col-md-4">
+                            <label for="inputfactura_pdf">Contrato Firmado</label>
+                            <input type="file" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-1"></div>
+                        <div class="form-group col-md-5">
+                            <label for="inputfactura_xml">Solicitud de Pago Firmada</label>
+                            <input type="file" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control" required>
+                        </div>
+                    </div>
+                    <div style="text-align:center" class="form-group">
+                        <p>Si confirmas se asignara la fecha deseada a este registro.</p>
+                        <input id="id_contrato_agenda" name="id_contrato_agenda" hidden>
+                        <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-dismiss="modal">No, Mantener Pendiente la Entrega</button>
+                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" >Sí, Confirmar</button>
+                    </div>
+                </div>
+                <div class="modal-footer"><div class="form-group"></div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END -->
 @endsection
 @section('script_content_js')
 <script src="{{ asset("js/validate/modals.js") }}"></script>
@@ -644,6 +700,13 @@
         var button = $(event.relatedTarget);
         var id = button.data('id');
         document.getElementById('id_folio_entrega').value = id;
+    });
+
+    $('#agendarModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        // console.log(id);
+        document.getElementById('id_contrato_agenda').value = id;
     });
 
 });
