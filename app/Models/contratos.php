@@ -12,8 +12,8 @@ class contratos extends Model
     protected $primaryKey = 'id_contrato';
 
     protected $fillable = ['id_contrato','numero_contrato','cantidad_letras1','fecha_firma','municipio',
-    'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero','arch_factura',
-    'fecha_status','chk_rechazado','fecha_rechazo','tipo_factura'
+    'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero','arch_factura','arch_factura_xml',
+    'fecha_status','chk_rechazado','fecha_rechazo','tipo_factura','arch_contrato'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

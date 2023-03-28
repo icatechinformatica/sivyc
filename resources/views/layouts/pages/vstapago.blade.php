@@ -212,6 +212,7 @@
                     @endcan --}}
                     <th width="160px">Acciones</th>
                     <th scope="col" width="200px">Fecha de Entrega Fisica</th>
+                    <th scope="col" width="130px">Factura</th>
                 </tr>
             </thead>
             <tbody>
@@ -380,6 +381,14 @@
                                         </a>
                                     @endcan
                                 @endif
+                            @endif
+                        </td>
+                        <td>
+                            @if (isset($itemData->arch_factura))
+                                <a class="btn btn-info" href="{{$itemData->arch_factura}}" target="_blank">PDF</a>
+                            @endif
+                            @if (isset($itemData->arch_factura_xml))
+                                <a class="btn btn-info" href="{{$itemData->arch_factura_xml}}" target="_blank">XML</a>
                             @endif
                         </td>
                     </tr>
@@ -583,30 +592,36 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                    <p style="text-align:center">Documentación Necesaria para agendar</p><br>
-                <div class="modal-body" style="text-align:center; margin-top:-8%;">
+                <div class="modal-body" style="text-align:center;">
+                    <div>
+                        <p style="text-align:center">Fecha a Agendar</p>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                        <input type="date" id="agendar_date" name="agendar_date" class="form-control" style="text-align: center; width: 33%;" required>
+                    </div>
+                    <p style="text-align:center; margin-bottom: -3%; margin-top: 1%;">Documentación Necesaria para agendar</p><br>
                     <div style="text-align:left" class="form-row">
                         <div class="form-group col-md-1"></div>
                         <div class="form-group col-md-4">
                             <label for="inputfactura_pdf">Factura PDF</label>
-                            <input type="file" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
+                            <input type="file" accept="application/pdf" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
                         </div>
                         <div class="form-group col-md-1"></div>
                         <div class="form-group col-md-5">
                             <label for="inputfactura_xml">Factura XML</label>
-                            <input type="file" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control" required>
+                            <input type="file" accept="application/xml" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control" required>
                         </div>
                     </div>
                     <div style="text-align:left" class="form-row">
                         <div class="form-group col-md-1"></div>
                         <div class="form-group col-md-4">
                             <label for="inputfactura_pdf">Contrato Firmado</label>
-                            <input type="file" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
+                            <input type="file" accept="application/pdf" name="contrato_pdf" id="contrato_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
                         </div>
                         <div class="form-group col-md-1"></div>
                         <div class="form-group col-md-5">
                             <label for="inputfactura_xml">Solicitud de Pago Firmada</label>
-                            <input type="file" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control" required>
+                            <input type="file" accept="application/pdf" name="solpa_pdf" id="solpa_pdf" style="text-align: right; font-size: 12px;" class="form-control" required>
                         </div>
                     </div>
                     <div style="text-align:center" class="form-group">

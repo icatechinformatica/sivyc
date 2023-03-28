@@ -93,8 +93,9 @@ class PagoController extends Controller
         ->PAGINATE(50, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
-            'contratos.docs', 'contratos.observacion', 'folios.status','folios.recepcion', 'folios.id_folios',
-            'folios.id_supre','pagos.created_at','pagos.arch_pago','pagos.fecha_agenda'
+            'contratos.docs', 'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml', 'contratos.arch_contrato',
+            'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_pago',
+            'pagos.fecha_agenda','pagos.arch_solicitud_pago'
         ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
@@ -503,11 +504,24 @@ class PagoController extends Controller
 
     public function agendar_entrega_pago(Request $request)
     {
-        dd($request);
-        foreach ($request->agendar as $cadwell)
-        {
-            $pago = pago::where('id_contrato', $cadwell)->update(['fecha_agenda' => $request->agendar_date]);
-        }
+        // dd($request);
+        $doc_factura_pdf = $request->file('factura_pdf'); # obtenemos el archivo
+        $doc_factura_xml = $request->file('factura_xml'); # obtenemos el archivo
+        $doc_contrato = $request->file('contrato_pdf'); # obtenemos el archivo
+        $doc_solpa = $request->file('solpa_pdf'); # obtenemos el archivo
+        $factura_pdf = $this->pdf_upload($doc_factura_pdf, $request->id_contrato_agenda, 'factura_pdf'); # invocamos el método
+        $factura_xml = $this->xml_upload($doc_factura_xml, $request->id_contrato_agenda, 'factura_xml'); # invocamos el método
+        $contrato_pdf = $this->pdf_upload($doc_contrato, $request->id_contrato_agenda, 'contrato'); # invocamos el método
+        $solpa_pdf = $this->pdf_upload($doc_solpa, $request->id_contrato_agenda, 'solicitud_pago'); # invocamos el método
+
+        $pago = pago::where('id_contrato', $request->id_contrato_agenda)
+            ->update(['fecha_agenda' => $request->agendar_date,
+                      'arch_solicitud_pago' => $solpa_pdf]);
+
+        $contrato = contratos::where('id_contrato', $request->id_contrato_agenda)
+            ->update(['arch_factura' => $factura_pdf,
+                      'arch_factura_xml' => $factura_xml,
+                      'arch_contrato' => $contrato_pdf]);
 
         return redirect()->route('pago-inicio')
                 ->with('success', 'Entrega de Documentos Agendada Correctamente');
@@ -613,6 +627,15 @@ class PagoController extends Controller
         $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
         $pdfUrl = Storage::url('/uploadFiles/supre/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
+    }
+
+    protected function xml_upload($xml, $id, $nom)
+    {
+        # nuevo nombre del archivo
+        $xmlFile = trim($nom."_".date('YmdHis')."_".$id.".xml");
+        $xml->storeAs('/uploadFiles/supre/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
+        $xmlUrl = Storage::url('/uploadFiles/supre/'.$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $xmlUrl;
     }
 
 
