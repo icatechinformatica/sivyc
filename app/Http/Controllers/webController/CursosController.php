@@ -566,12 +566,15 @@ class CursosController extends Controller
 
     public function exportar_cursos($xls)
     {   
-        $nombreLayout = "Catalogo de cursos.xlsx";
+        $fecha = date("dmy");
         switch($xls){
             case 'ACTIVOS':
+                $nombreLayout = "Catalogo de Cursos Activos ".$fecha.".xlsx";
                 return (new xlsCursosMultiple(1))->download($nombreLayout);
             break;
             case 'CURSOS'|| 'CERTIFICACION' || 'PROGRAMA':
+                $file_name = ['CURSOS'=>'CURSOS', 'CERTIFICACION'=>'CERTIFICACIÓN EXTRAORDINARIA', 'PROGRAMA'=>'PROGRAMA ESTRATÉGICO'];
+                $nombreLayout = "CATALOGO DE ".$file_name[$xls]."_".$fecha.'.xlsx';
                 return (new xlsCursosDV($xls))->download($nombreLayout);
             break;
         }            
