@@ -253,9 +253,15 @@
             </div>            
         </div>
         <div class="form-row">            
-            <div class="form-group col-md-12">
-              <label for="perfil" class="control-label">PERFIL DEL ALUMNO</label>
-              <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil" value="{{$cursos[0]->perfil}}">
+            <div class="form-group col-md-4">
+              <label for="perfil" class="control-label">PERFIL DE INGRESO SUGERIDO</label>
+              
+              <select class="form-control" id="perfil" name="perfil">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($perfil as $p)                        
+                        <option value="{{$p}}" {{$cursos[0]->perfil == $p ? "selected" : "" }} >{{$p}}</option>
+                    @endforeach
+                </select>
             </div>            
         </div>
         <div class="form-row">
@@ -315,14 +321,15 @@
             <div class="form-group col-md-3">
                 <label for="cambios_especialidad" class="control-label">CAMBIOS DE ESPECIALIDAD</label>
                 <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control" value="{{$cursos[0]->cambios_especialidad}}">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
-                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" value="{{$cursos[0]->nivel_estudio}}">
-            </div>
+            </div>            
             <div class="form-group col-md-3">
-                <label for="categoria" class="control-label">CATEGORIA</label>
-                <input type="text" name="categoria" id="categoria" class="form-control" value="{{$cursos[0]->categoria}}">
+                <label for="categoria" class="control-label">CATEGORIA</label>                
+                <select class="form-control" id="categoria" name="categoria">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($categorias as $c)
+                        <option value="{{$c}}" {{$cursos[0]->categoria == $c ? "selected" : "" }} >{{$c}}</option>
+                    @endforeach
+                </select>
             </div>
             <input type="hidden" name="idCursos" id="idCursos" value="{{$cursos[0]->id}}">
         </div>

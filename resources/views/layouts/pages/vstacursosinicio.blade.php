@@ -23,7 +23,7 @@
             </div>
         @endif
         <div class="row">
-            <div class="col-lg-12 margin-tb">
+            <div class="form-group col-md-6 margin-tb">
                     {!! Form::open(['route' => 'curso-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
                         <select name="tipo_curso" class="form-control mr-sm-2" id="tipo_curso">
                             <option value="">BUSCAR POR</option>
@@ -37,19 +37,45 @@
                         {!! Form::text('busquedaPorCurso', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}                       
                         {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
                     {!! Form::close() !!}
-                <div class="pull-right">
-                    @can('academico.catalogo.cursos')                     
-                        <a class="btn btn-warning text-dark" href="{{route('academico.exportar.cursos')}}">EXPORTAR CURSOS ACTIVOS &nbsp;&nbsp;<i  class="fa fa-file-excel-o fa-2x fa-lg text-dark"></i></a>
-                    @endcan
-                    @can('academico.catalogo.cursosall')
-                        <a class="btn btn-warning text-dark" href="{{route('academico.exportar.cursosall')}}">EXPORTAR TODOS LOS CURSOS &nbsp;&nbsp;<i  class="fa fa-file-excel-o fa-2x fa-lg text-dark"></i></a>
-                    @endcan
-                    @can('cursos.create')
-                        <a class="btn" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
-                    @endcan                   
+            </div>       
+            <div class="form-group col-md-3">
+                <div class="dropdown show">
+                    <a class="btn btn-warning dropdown-toggle text-dark" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        EXPORTAR CATÁLOGO
+                    </a>
+                    <div class="dropdown-menu bg-warning" aria-labelledby="dropdownMenuLink">
+                        @can('exportar.cursosdv')
+                            <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'CURSOS'])}}" target="_blank">
+                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> CURSOS
+                            </a>                            
+                            <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'CERTIFICACION'])}}" target="_blank">
+                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> CERTIFICIÓN EXTRAORDINARIA 
+                            </a>
+                            <a class="dropdown-item border-bottom  text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'PROGRAMA'])}}" target="_blank">
+                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> PROGRAMA ESTRATÉGICO
+                            </a>
+                        @endcan  
+                        @can('academico.catalogo.cursos') 
+                            <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'ACTIVOS'])}}" target="_blank">
+                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> CURSOS ACTIVOS
+                            </a>
+                        @endcan
+                        @can('academico.catalogo.cursosall')
+                            <a class="dropdown-item text-dark"  href="{{route('academico.exportar.cursosall')}}" target="_blank">
+                                <i  class="fa fa-file-excel-o fa-1x fa-sm"></i> TODO LOS CURSOS
+                            </a>
+                        @endcan
+                    </div>
+                </div>           
+            </div>   
+            @can('cursos.create')
+                <div class="form-group col-md-3">
+                    <a class="btn" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
                 </div>
-            </div>
-        </div>
+            @endcan                   
+                
+        </div>                
+           
         <table  id="table-instructor" class="table table-bordered table-striped">
             <thead>
                 <tr>

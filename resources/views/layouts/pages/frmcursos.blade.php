@@ -227,9 +227,14 @@
             </div>            
         </div>
         <div class="form-row">            
-            <div class="form-group col-md-12">
-              <label for="perfil" class="control-label">PERFIL DEL ALUMNO</label>
-              <input type="text" class="form-control" id="perfil" name="perfil" placeholder="perfil" >
+            <div class="form-group col-md-4">
+              <label for="perfil" class="control-label">PERFIL DE INGRESO SUGERIDO</label>              
+                <select class="form-control" id="perfil" name="perfil">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($perfil as $p)
+                        <option value="{{$p}}">{{$p}}</option>
+                    @endforeach
+                </select>              
             </div>            
         </div>
         <div class="form-row">
@@ -289,14 +294,15 @@
             <div class="form-group col-md-3">
                 <label for="cambios_especialidad" class="control-label">CAMBIOS DE ESPECIALIDAD</label>
                 <input type="text" name="cambios_especialidad" id="cambios_especialidad" class="form-control" >
-            </div>
-            <div class="form-group col-md-6">
-                <label for="nivel_estudio" class="control-label">NIVEL DE ESTUDIO DEL INSTRUCTOR</label>
-                <input type="text" name="nivel_estudio" id="nivel_estudio" class="form-control" >
-            </div>
+            </div>           
             <div class="form-group col-md-3">
-                <label for="categoria" class="control-label">CATEGORIA</label>
-                <input type="text" name="categoria" id="categoria" class="form-control" >
+                <label for="categoria" class="control-label">CATEGORIA</label>                
+                <select class="form-control" id="categoria" name="categoria">
+                    <option value="">--SELECCIONAR--</option>
+                    @foreach ($categorias as $c)
+                        <option value="{{$c}}">{{$c}}</option>
+                    @endforeach
+                </select>
             </div>
             <input type="hidden" name="idCursos" id="idCursos">
         </div>

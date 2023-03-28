@@ -19,67 +19,28 @@ use App\Models\grupos_vulnerables;
 use App\Models\instructor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Excel\xlsCursosMultiple;
+use App\Excel\xlsCursosDV;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\FormatoTReport;
 
 class CursosController extends Controller
 {
 
-    protected function prueba2()
-    {
-        $data = curso::SELECT('id','unidades_disponible')->GET();
-        $insdata = instructor::SELECT('id','unidades_disponible')->GET();
-        foreach($data as $cadwell)
-        {
-            $newlist = [];
-            $newlistins = [];
-            foreach($cadwell->unidades_disponible as $key=>$lista)
-            {
-                if($lista == 'TILA')
-                {
-                    array_push($newlist, 'SALTO DE AGUA');
-                }
-                else
-                {
-                    array_push($newlist, $lista);
-                }
-            }
-            $cursoUpdate = curso::find($cadwell->id);
-            $cursoUpdate->unidades_disponible = $newlist;
-            $cursoUpdate->save();
-
-        }
-        foreach($insdata as $inscadwell)
-        {
-            $newlistins = [];
-            if($inscadwell->unidades_disponible != null)
-            {
-                foreach($inscadwell->unidades_disponible as $keyins=>$listains)
-                {
-                    if($listains == 'TILA')
-                    {
-                        array_push($newlistins, 'SALTO DE AGUA');
-                    }
-                    else
-                    {
-                        array_push($newlistins, $listains);
-                    }
-                }
-                $insUpdate = instructor::find($inscadwell->id);
-                $insUpdate->unidades_disponible = $newlist;
-                $insUpdate->save();
-            }
-
-        }
-        dd('listo');
+    private $slug;
+    function __construct() {
+        $this->categorias = ['OFICIOS','PROFESIONALIZACIÓN','ESPECIALIZACIÓN','SALUD'];       
+        $this->perfil = [  
+            'PRIMARIA INCONCLUSA',
+            'PRIMARIA TERMINADA',
+            'SECUNDARIA INCONCLUSA',
+            'SECUNDARIA TERMINADA',
+            'NIVEL MEDIO SUPERIOR INCONCLUSO',
+            'NIVEL MEDIO SUPERIOR TERMINADO',
+            'NIVEL SUPERIOR INCONCLUSO',
+            'NIVEL SUPERIOR TERMINADO',
+            'POSTGRADO'
+        ];
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
     public function index(Request $request)
     {
         /**
@@ -96,7 +57,8 @@ class CursosController extends Controller
             ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->SELECT('roles.slug AS role_name')
             ->WHERE('role_user.user_id', '=', $userId)
-            ->GET();
+            ->GET(); 
+        $this->slug = $roles[0]->role_name; 
         $data = curso::searchporcurso($tipoCurso, $buscar_curso)->WHERE('cursos.id', '!=', '0');
         if($roles[0]->role_name != 'admin' && $roles[0]->role_name != 'auxiliar_paqueteias-todos' && $roles[0]->role_name != 'titular-innovacion'){
             $data = $data->WHERE('cursos.estado', '=', true);
@@ -129,8 +91,10 @@ class CursosController extends Controller
         $areas = $area->all();
         $gruposvulnerables = DB::table('grupos_vulnerables')->SELECT('id','grupo')->ORDERBY('grupo','ASC')->GET();
         $dependencias = DB::table('organismos_publicos')->SELECT('id','organismo')->ORDERBY('organismo','ASC')->GET();
-        // mostramos el formulario de cursos
-        return view('layouts.pages.frmcursos', compact('especialidades', 'areas', 'unidadesMoviles', 'cp', 'gruposvulnerables','dependencias'));
+        $categorias = $this->categorias;
+        $perfil = $this->perfil;
+        // mostramos el formulario   de cursos
+        return view('layouts.pages.frmcursos', compact('especialidades', 'areas', 'unidadesMoviles', 'cp', 'gruposvulnerables','dependencias','categorias','perfil'));
     }
 
     /**
@@ -239,8 +203,7 @@ class CursosController extends Controller
                 $cursos->solicitud_autorizacion = $request->solicitud_autorizacion;
                 $cursos->memo_actualizacion = trim($request->memo_actualizacion);
                 $cursos->memo_validacion = trim($request->memo_validacion);
-                $cursos->cambios_especialidad = trim($request->cambios_especialidad);
-                $cursos->nivel_estudio = trim($request->nivel_estudio);
+                $cursos->cambios_especialidad = trim($request->cambios_especialidad);                
                 $cursos->categoria = trim($request->categoria);
                 $cursos->tipo_curso = trim($request->tipo_curso);
                 $cursos->rango_criterio_pago_minimo = trim($request->criterio_pago_minimo);
@@ -339,7 +302,7 @@ class CursosController extends Controller
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad', 'cursos.id_especialidad',
-                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria', 'cursos.documento_memo_validacion',
+                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.categoria', 'cursos.documento_memo_validacion',
                     'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
                     'cursos.rango_criterio_pago_minimo', 'rango_criterio_pago_maximo','cursos.observacion',
                     'cursos.grupo_vulnerable', 'cursos.dependencia','cursos.proyecto','cursos.motivo',
@@ -364,7 +327,9 @@ class CursosController extends Controller
             // $dp = $cursos[0]->dependencia;
 
             // dd($gv);
-            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios'));
+            $categorias = $this->categorias;
+            $perfil = $this->perfil;
+            return view('layouts.pages.frmedit_curso', compact('cursos', 'areas', 'especialidades', 'fechaVal', 'fechaAct', 'unidadesMoviles', 'criterio_pago','gruposvulnerables','otrauni','gv','dependencias','dp','servicios','categorias','perfil'));
 
         // } catch (\Throwable $th) {
         //     //throw $th;
@@ -411,7 +376,7 @@ class CursosController extends Controller
                     'cursos.objetivo','cursos.perfil','cursos.solicitud_autorizacion','cursos.fecha_validacion','cursos.memo_validacion',
                     'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.unidad_amovil','cursos.descripcion','cursos.no_convenio',
                     'especialidades.nombre AS especialidad','cursos.tipo_curso' ,
-                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.nivel_estudio', 'cursos.categoria',
+                    'cursos.area', 'cursos.cambios_especialidad', 'cursos.categoria',
                     'cursos.documento_memo_validacion',
                     'cursos.documento_memo_actualizacion', 'cursos.documento_solicitud_autorizacion',
                     'cursos.rango_criterio_pago_minimo', 'cursos.rango_criterio_pago_maximo',
@@ -422,16 +387,16 @@ class CursosController extends Controller
                     )
                     ->WHERE('cursos.id', '=', $idCurso)
                     ->LEFTJOIN('especialidades', 'especialidades.id', '=' , 'cursos.id_especialidad')
-                    ->GET();
+                    ->FIRST();
 
             $cadwell = DB::TABLE('criterio_pago')->SELECT('perfil_profesional')
-                ->WHERE('id', '=', $curso[0]->rango_criterio_pago_minimo)
+                ->WHERE('id', '=', $curso->rango_criterio_pago_minimo)
                 ->FIRST();
-            $curso[0]->rango_criterio_pago_minimo = $cadwell->perfil_profesional;
+            $curso->rango_criterio_pago_minimo = $curso->rango_criterio_pago_minimo." - ".$cadwell->perfil_profesional;
             $cadwell = DB::TABLE('criterio_pago')->SELECT('perfil_profesional')
-                ->WHERE('id', '=', $curso[0]->rango_criterio_pago_maximo)
+                ->WHERE('id', '=', $curso->rango_criterio_pago_maximo)
                 ->FIRST();
-            $curso[0]->rango_criterio_pago_maximo = $cadwell->perfil_profesional;
+            $curso->rango_criterio_pago_maximo = $curso->rango_criterio_pago_maximo." - ".$cadwell->perfil_profesional;
 
             $json= response()->json($curso, 200);
         } else {
@@ -545,8 +510,7 @@ class CursosController extends Controller
                 'solicitud_autorizacion' => (isset($request->solicitud_autorizacion)) ? $request->solicitud_autorizacion : false,
                 'memo_actualizacion' => trim($request->memo_actualizacion),
                 'memo_validacion' => trim($request->memo_validacion),
-                'cambios_especialidad' => trim($request->cambios_especialidad),
-                'nivel_estudio' => trim($request->nivel_estudio),
+                'cambios_especialidad' => trim($request->cambios_especialidad),                
                 'categoria' => trim($request->categoria),
                 'tipo_curso' => trim($request->tipo_curso),                
                 'rango_criterio_pago_minimo' => trim($request->criterio_pago_minimo_edit),
@@ -599,42 +563,17 @@ class CursosController extends Controller
         return view('layouts.pages.vstaltabajacur', compact('id','available'));
     }
 
-    public function exportar_cursos()
-    {
-        $data = curso::SELECT('area.formacion_profesional','cursos.categoria','dependencia',
-                        'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
-                        'cursos.horas','cursos.objetivo','cursos.perfil','nivel_estudio',
-                        DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),
-                        'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
-                        'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
-                        'cursos.modalidad','cursos.clasificacion','observacion','cursos.costo',
-                        'cursos.rango_criterio_pago_minimo',
-                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_minimo) as mini"),
-                        'cursos.rango_criterio_pago_maximo',
-                        DB::raw("(select perfil_profesional from criterio_pago where id = rango_criterio_pago_maximo) as maxi"),
-                        'cursos.unidades_disponible','cursos.servicio',
-                        DB::raw("(case when cursos.proyecto = 'true' then 'SI' else 'NO' end) as proyecto"),
-                        )
-                        ->WHERE('cursos.estado', '=', true)
-                        ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'cursos.id_especialidad')
-                        ->LEFTJOIN('area', 'area.id', '=', 'especialidades.id_areas')
-                        ->ORDERBY('especialidades.nombre', 'ASC')
-                        ->ORDERBY('cursos.nombre_curso', 'ASC')
-                        ->GET();
-                        //dd($data[0]);
-
-        $cabecera = [
-            'CAMPO','CATEGORIA','DEPENDENCIA','GRUPO VULNERABLE','ESPECIALIDAD','NOMBRE','HORAS','OBJETIVO',
-            'PERFIL INGRESO DEL ALUMNO','NIVEL DE ESTUDIO DEL INSTRUCTOR','SOLICITUD AUTORIZACION DE RIESGO','FECHA DE VALIDACION','MEMO DE VALIDACION',
-            'UNIDAD MOVIL','MEMO DE ACTUALIZACION','FECHA DE ACTUALIZACION','TIPO CAPACITACION','MODALIDAD','CLASIFICACION',
-            'OBSERVACION','COSTO','CRITERIO DE PAGO MINIMO','NOMBRE CRITERIO MINIMO','CRITERIO DE PAGO MAXIMO',
-            'NOMBRE DE CRITERIO MAXIMO','UNIDADES DISPONIBLES','SERVICIO','PROYECTO'
-        ];
+    public function exportar_cursos($xls)
+    {   
         $nombreLayout = "Catalogo de cursos.xlsx";
-        $titulo = "Catalogo de cursos";
-        if(count($data)>0){
-            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
-        }
+        switch($xls){
+            case 'ACTIVOS':
+                return (new xlsCursosMultiple(1))->download($nombreLayout);
+            break;
+            case 'CURSOS'|| 'CERTIFICACION' || 'PROGRAMA':
+                return (new xlsCursosDV($xls))->download($nombreLayout);
+            break;
+        }            
     }
 
     public function alta_baja_save(Request $request)
@@ -837,7 +776,7 @@ class CursosController extends Controller
     {
         $data = curso::SELECT('cursos.id','area.formacion_profesional','cursos.categoria','dependencia',
                         'grupo_vulnerable', 'especialidades.nombre as especialidad','cursos.nombre_curso',
-                        'cursos.horas','cursos.objetivo','cursos.perfil','nivel_estudio',
+                        'cursos.horas','cursos.objetivo','cursos.perfil',
                         DB::raw("(case when cursos.solicitud_autorizacion = 'true' then 'SI' else 'NO' end) as etnia"),
                         'cursos.fecha_validacion','cursos.memo_validacion','cursos.unidad_amovil',
                         'cursos.memo_actualizacion','cursos.fecha_actualizacion','cursos.tipo_curso',
