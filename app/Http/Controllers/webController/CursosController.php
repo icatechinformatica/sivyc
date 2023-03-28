@@ -19,6 +19,7 @@ use App\Models\grupos_vulnerables;
 use App\Models\instructor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\FormatoTReport;
 use App\Excel\xlsCursosMultiple;
 use App\Excel\xlsCursosDV;
 use Maatwebsite\Excel\Facades\Excel;
