@@ -797,7 +797,7 @@ Route::get('planeacion/generar/reporte/{filtrotipo}/{idcurso}/{unidad}/{idInstru
 Route::get('planeacion/generar/reporte/xls/{filtrotipo}/{idcurso}/{unidad}/{idInstructor}/{fecha1}/{fecha2}', 'webController\supreController@generate_report_supre_xls')->name('planeacion.generar.reporte.supre.xls');
 
 //exportar catalogos de cursos e instructores08072021
-Route::get('academico/catalogo/exportar/cursos', 'webController\CursosController@exportar_cursos')->name('academico.exportar.cursos');
+Route::get('academico/catalogo/exportar/cursos/{xls}', 'webController\CursosController@exportar_cursos')->name('academico.exportar.cursos');
 Route::get('academico/catalogo/exportar/cursosall', 'webController\CursosController@exportar_cursos_all')->name('academico.exportar.cursosall');
 Route::get('academico/catalogo/exportar/instructores', 'webController\InstructorController@exportar_instructores')->name('academico.exportar.instructores');
 Route::get('academico/catalogo/exportar/instructores_especialidades', 'webController\InstructorController@exportar_instructoresByEspecialidad')->name('academico.exportar.instructoresByespecialidad');
