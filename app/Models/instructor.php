@@ -17,7 +17,7 @@ class instructor extends Model
     'archivo_otraid','id_especialidad','archivo_rfc','estado','lastUserId','stps','conocer','clave_loc','localidad',
     'tipo_identificacion','expiracion_identificacion','solicito','turnado','nacionalidad','entidad_nacimiento',
     'municipio_nacimiento','localidad_nacimiento','clave_loc_nacimiento','codigo_postal','telefono_casa','curriculum',
-    'archivo_curriculum_personal'];
+    'archivo_curriculum_personal','tipo_instructor'];
 
     protected $casts = [
         'unidades_disponible' => 'array',
