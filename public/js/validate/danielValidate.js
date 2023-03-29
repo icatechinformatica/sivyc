@@ -627,10 +627,7 @@ $(function(){
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> Unidad Móvil: </b> '+ response[0].unidad_amovil
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> NIVEL DE ESTUDIOS: </b> ' + response[0].nivel_estudio
-                  +   '</li>'
+                  +   '</li>'                 
                   +   '<li class="list-group-item justify-content-between">'
                   +     '<b> COSTO: </b> ' + response[0].costo
                   +   '</li>'
