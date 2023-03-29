@@ -97,11 +97,11 @@
                 </div>-->
                 <div id="div7" class="form-row ">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" value="{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}">
+                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" required @if(isset($getccp4->nombre)) value="{{$getccp4->nombre}} {{$getccp4->apellidoPaterno}} {{$getccp4->apellidoMaterno}}" @endif>
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" value="{{$getccp4->puesto}}">
-                        <input id="id_ccp4" name="id_ccp4" hidden value='{{$getccp4->id}}'>
+                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" required @if(isset($getccp4->puesto)) value="{{$getccp4->puesto}}" @endif>
+                        <input id="id_ccp4" name="id_ccp4" required hidden @if((isset($getccp4->id))) value='{{$getccp4->id}}' @endif>
                     </div>
                 </div>
             <!--END CCP-->
