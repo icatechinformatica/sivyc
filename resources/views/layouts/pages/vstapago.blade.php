@@ -376,7 +376,7 @@
                                 @endcan
                                 @if(isset($itemData->fecha_agenda))
                                     @can('contrato.validate')
-                                        <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" data-target="#recepcionarModal" data-id='["{{$itemData->id_folios}}"]'>
+                                        <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" data-target="#recepcionarModal" data-id='["{{$itemData->id_folios}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->arch_contrato}}"]'>
                                             Confirmar Entrega
                                         </a>
                                     @endcan
@@ -565,6 +565,19 @@
                     </button>
                 </div>
                 <div class="modal-body" style="text-align:center">
+                    <p st>Vista de Documentos</p>
+                    <div style="text-align:left" class="form-row">
+                        <div class="form-group col-md-1"></div>
+                        <div class="form-group col-md-4" style="margin-left: 3%;">
+                            <label for="inputfactura_pdf">Contrato Firmado</label>
+                            <a class="btn btn-info" id="archivo_contrato_firmado" name="archivo_contrato_firmado" href="#" target="_blank">Contrato</a>
+                        </div>
+                        <div class="form-group col-md-1"></div>
+                        <div class="form-group col-md-5">
+                            <label for="inputfactura_xml">Solicitud de Pago Firmada</label>
+                            <a class="btn btn-info" id="archivo_pago_firmado" name="archivo_contrato_firmado" href="#" target="_blank">Solicitud de Pago</a>
+                        </div>
+                    </div>
                     <div style="text-align:center" class="form-group">
                         <p>Si confirmas la entrega fisica se hara el cambio de manera permanente.</p>
                         <input id="id_folio_entrega" name="id_folio_entrega" hidden>
@@ -604,12 +617,12 @@
                         <div class="form-group col-md-1"></div>
                         <div class="form-group col-md-4">
                             <label for="inputfactura_pdf">Factura PDF</label>
-                            <input type="file" accept="application/pdf" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
+                            <input type="file" accept="application/pdf" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control">
                         </div>
                         <div class="form-group col-md-1"></div>
                         <div class="form-group col-md-5">
                             <label for="inputfactura_xml">Factura XML</label>
-                            <input type="file" accept="application/xml" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control" required>
+                            <input type="file" accept="application/xml" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control">
                         </div>
                     </div>
                     <div style="text-align:left" class="form-row">
@@ -714,7 +727,10 @@
         // console.log('hola');
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        document.getElementById('id_folio_entrega').value = id;
+        console.log(id[1]);
+        document.getElementById('id_folio_entrega').value = id[0];
+        $('#archivo_pago_firmado').attr("href", id[1]);
+        $('#archivo_contrato_firmado').attr("href", id[2]);
     });
 
     $('#agendarModal').on('show.bs.modal', function(event){

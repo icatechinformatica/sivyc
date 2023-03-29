@@ -90,6 +90,10 @@
                         <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
                     </div>
                     <div class="form-group col-md-3">
+                        <label for="inputarch_factura_xml" class="control-label">Factura de Instructor XML</label>
+                        <input type="file" accept="application/xml" class="form-control" id="arch_factura_xml" name="arch_factura_xml" placeholder="Archivo XML">
+                    </div>
+                    <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
                         <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
                     </div>
@@ -99,6 +103,8 @@
                         <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
                     </div>
                 @endif
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
                     <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">

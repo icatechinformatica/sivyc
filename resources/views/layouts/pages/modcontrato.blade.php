@@ -102,21 +102,13 @@
                 <div class="form-group col-md-3">
                     <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>
                     <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
-                    <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
                 </div>
-                {{-- <div class="form-group col-md-3">
-                    <label for="testigo_icatech" class="control-label">Tipo de Factura</label>
-                    <select name="tipo_factura" class="form-control mr-sm-2" id="tipo_factura">
-                        @if ($datacon->tipo_factura == 'NORMAL')
-                            <option value="NORMAL" selected>NORMAL</option>
-                            <option value="NUEVA">NUEVA</option>
-                        @else
-                            <option value="NORMAL">NORMAL</option>
-                            <option value="NUEVA" selected>NUEVA</option>
-                        @endif
-                    </select>
-                </div> --}}
+                <div class="form-group col-md-3">
+                    <label for="inputfactura_xml" class="control-label">Factura de Instructor XML</label>
+                    <input type="file" accept="application/xml" id="factura_xml" name="factura_xml" class="form-control" placeholder="Archivo XML">
+                </div>
             </div>
+            <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
             <hr style="border-color:dimgray">
             <h2>Testigos</h2>
             <br>
