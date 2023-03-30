@@ -217,7 +217,7 @@
             </thead>
             <tbody>
                 @foreach ($contratos_folios as $itemData)
-                    <tr>
+                    <tr @if($itemData->alerta == TRUE && is_null($itemData->fecha_agenda)) style='background-color: #621032;;' @endif>
                         <td>{{$itemData->numero_contrato}}</td>
                         <td>
                             @if($itemData->created_at != NULL)

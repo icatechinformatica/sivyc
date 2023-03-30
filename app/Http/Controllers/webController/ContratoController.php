@@ -639,7 +639,7 @@ class ContratoController extends Controller
                 'no_memo' => $request->no_memo,
                 'liquido' => $request->liquido,
                 'solicitud_fecha' => $request->solicitud_fecha,
-                'fecha_agenda' => $request->fecha_agenda,
+                // 'fecha_agenda' => $request->fecha_agenda,
                 'arch_asistencia' => trim($urldocs),
                 'arch_evidencia' => trim($urldocs2),
                 'fecha_status' => carbon::now(),
@@ -743,7 +743,7 @@ class ContratoController extends Controller
         $pago->id_contrato = $request->id_contrato;
         $pago->liquido = $request->liquido;
         $pago->solicitud_fecha = $request->solicitud_fecha;
-        $pago->fecha_agenda = $request->fecha_agenda;
+        // $pago->fecha_agenda = $request->fecha_agenda;
         $pago->fecha_status = carbon::now();
 
         if($request->arch_asistencia != NULL)

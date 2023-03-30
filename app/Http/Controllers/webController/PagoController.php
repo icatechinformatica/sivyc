@@ -92,10 +92,11 @@ class PagoController extends Controller
         ->orderBy('pagos.created_at', 'desc')
         ->PAGINATE(50, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
-            'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
+            'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.fecha_status','folios.permiso_editar',
             'contratos.docs', 'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml', 'contratos.arch_contrato',
             'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_pago',
-            'pagos.fecha_agenda','pagos.arch_solicitud_pago'
+            'pagos.fecha_agenda','pagos.arch_solicitud_pago',
+            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta')
         ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
@@ -145,10 +146,11 @@ class PagoController extends Controller
                 ->orderBy('pagos.created_at', 'desc')
                 // ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(50, [
-                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
+                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status',
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
                     'folios.permiso_editar','contratos.docs','contratos.observacion', 'folios.status',
-                    'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago','pagos.fecha_agenda'
+                    'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago','pagos.fecha_agenda',
+                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta')
                 ]);
                 break;
         }
@@ -509,8 +511,19 @@ class PagoController extends Controller
         $doc_factura_xml = $request->file('factura_xml'); # obtenemos el archivo
         $doc_contrato = $request->file('contrato_pdf'); # obtenemos el archivo
         $doc_solpa = $request->file('solpa_pdf'); # obtenemos el archivo
-        $factura_pdf = $this->pdf_upload($doc_factura_pdf, $request->id_contrato_agenda, 'factura_pdf'); # invocamos el método
-        $factura_xml = $this->xml_upload($doc_factura_xml, $request->id_contrato_agenda, 'factura_xml'); # invocamos el método
+
+        $contrato = contratos::find($request->id_contrato_agenda);
+        if(isset($doc_factura_pdf))
+        {
+            $factura_pdf = $this->pdf_upload($doc_factura_pdf, $request->id_contrato_agenda, 'factura_pdf'); # invocamos el método
+            $contrato->arch_fatura = $factura_pdf;
+        }
+        if(isset($doc_factura_xml))
+        {
+            $factura_xml = $this->xml_upload($doc_factura_xml, $request->id_contrato_agenda, 'factura_xml'); # invocamos el método
+            $contrato->arch_factura_xml = $factura_xml;
+        }
+
         $contrato_pdf = $this->pdf_upload($doc_contrato, $request->id_contrato_agenda, 'contrato'); # invocamos el método
         $solpa_pdf = $this->pdf_upload($doc_solpa, $request->id_contrato_agenda, 'solicitud_pago'); # invocamos el método
 
@@ -518,10 +531,8 @@ class PagoController extends Controller
             ->update(['fecha_agenda' => $request->agendar_date,
                       'arch_solicitud_pago' => $solpa_pdf]);
 
-        $contrato = contratos::where('id_contrato', $request->id_contrato_agenda)
-            ->update(['arch_factura' => $factura_pdf,
-                      'arch_factura_xml' => $factura_xml,
-                      'arch_contrato' => $contrato_pdf]);
+        $contrato->arch_contrato = $contrato_pdf;
+        $contrato->save();
 
         return redirect()->route('pago-inicio')
                 ->with('success', 'Entrega de Documentos Agendada Correctamente');
