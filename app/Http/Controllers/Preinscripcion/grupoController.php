@@ -1174,7 +1174,7 @@ class grupoController extends Controller
                 ->whereRaw("(((inicio >= '$imes') AND (inicio <= '$termino_curso')) OR ((termino >= '$imes') AND (termino <= '$termino_curso')))")
                 ->orderBy('termino','desc')->get();//dd($actinstru);
             foreach ($actinstru as $key => $value) {
-                if ($conteo1 > 5) {
+                if ($conteo1 > 6) {
                    return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
                 } elseif ($key == 0) {
                     $temp = $value->inicio;
@@ -1211,7 +1211,7 @@ class grupoController extends Controller
                 ->whereRaw("(((inicio <= '$tmes') AND (inicio >= '$inicio_curso')) OR ((termino <= '$tmes') AND (termino >= '$inicio_curso')))")
                 ->orderBy('inicio','asc')->get();//dd($actinstru);
                 foreach ($actinstru as $key => $value) {
-                    if ($conteo2 > 5) {
+                    if ($conteo2 > 6) {
                        return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
                     } elseif ($key == 0) {
                         $temp = $value->inicio;
