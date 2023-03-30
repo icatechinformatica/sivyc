@@ -1240,7 +1240,7 @@ class grupoController extends Controller
                     }
                 }
         }
-        if (($conteo1 + $conteo2) > 5) {
+        if (($conteo1 + $conteo2) > 6) {
             return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
         }
         //
