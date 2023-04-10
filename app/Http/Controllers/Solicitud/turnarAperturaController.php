@@ -46,6 +46,7 @@ class turnarAperturaController extends Controller
 
         $_SESSION['grupos'] = NULL;        
         $grupos = $mextemporaneo = [];
+        $ids_extemp =null; 
         if($memo){     
             $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from 
 			(select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
@@ -75,7 +76,7 @@ class turnarAperturaController extends Controller
                     $status_solicitud = $grupos[0]->status_solicitud;
                     $num_revision = $grupos[0]->num_revision;
                     if(isset($_SESSION['memo']))$ids_extemp = $this->ids_extemp($_SESSION['memo']);
-                    else $ids_extemp =null;                    
+                                       
                     if(count($ids_extemp)>0){
                         $extemporaneo = true;
                         $mextemporaneo = ['VALIDACION VENCIDA DEL INSTRUCTOR'=>'VALIDACION VENCIDA DEL INSTRUCTOR','REQUISITOS FALTANTES'=>'REQUISITOS FALTANTES',
