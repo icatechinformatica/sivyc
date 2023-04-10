@@ -3530,6 +3530,7 @@ class InstructorController extends Controller
         $saveInstructor->banco = $request->banco;
         $saveInstructor->interbancaria = $request->clabe;
         $saveInstructor->no_cuenta = $request->numero_cuenta;
+        $saveInstructor->tipo_instructor = $request->tipo_instructor;
         if(isset($request->numero_control))
         {
             $saveInstructor->numero_control = $request->numero_control;
@@ -3760,6 +3761,7 @@ class InstructorController extends Controller
         $saveInstructor->telefono = $request->telefono;
         $saveInstructor->correo = $request->correo;
         $saveInstructor->banco = $request->banco;
+        $saveInstructor->tipo_instructor = $request->tipo_instructor;
         $saveInstructor->interbancaria = $request->interbancaria;
         $saveInstructor->no_cuenta = $request->no_cuenta;
         $saveInstructor->numero_control = $request->numero_control;
@@ -4124,6 +4126,7 @@ class InstructorController extends Controller
         $instructor->entrevista = $saveInstructor->entrevista;
         $instructor->exp_laboral = $saveInstructor->exp_laboral;
         $instructor->exp_docente = $saveInstructor->exp_docente;
+        $instructor->tipo_instructor = $saveInstructor->tipo_instructor;
         $instructor->telefono_casa = $saveInstructor->telefono_casa;
         $instructor->curriculum = $saveInstructor->curriculum;
         $instructor->clave_loc_nacimiento = $saveInstructor->clave_loc_nacimiento;

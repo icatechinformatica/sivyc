@@ -45,21 +45,29 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputcurp">CURP</label>
                     <input name='curp' id='curp' type="text" class="form-control" aria-required="true">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputrfc">RFC/Constancia Fiscal</label>
                     <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputhonorarios">Regimen</label>
                     <select class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS">Honorarios</option>
                         {{-- <option value="ASIMILADOS A SALARIOS">Asimilados a Salarios</option> --}}
                         <option value="HONORARIOS Y ASIMILADOS A SALARIOS">Honorarios y Asimilado a Salario</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputhonorarios">Tipo de Instructor</label>
+                    <select class="form-control" name="tipo_instructor" id="tipo_instructor">
+                        <option value="sin especificar">Sin Especificar</option>
+                        <option value="INTERNO">Interno</option>
+                        <option value="EXTERNO">Externo</option>
                     </select>
                 </div>
             </div>
