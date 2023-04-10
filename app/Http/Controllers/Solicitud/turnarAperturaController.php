@@ -46,7 +46,7 @@ class turnarAperturaController extends Controller
 
         $_SESSION['grupos'] = NULL;        
         $grupos = $mextemporaneo = [];
-        $ids_extemp =null; 
+        $ids_extemp = []; 
         if($memo){     
             $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from 
 			(select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
