@@ -87,7 +87,7 @@
                     
                     if ($g->option =='ARC01'){
                         $id_mextemporaneo = $g->mextemporaneo;
-                        $rextemporaneo = $g->rextemporaneo;
+                        $rextemporaneo = $g->rextemporaneo;                           
                     }else if($g->option =='ARC02'){
                         $id_mextemporaneo = $g->mextemporaneo_arc02;
                         $rextemporaneo = $g->rextemporaneo_arc02;
@@ -100,14 +100,22 @@
                         <td class='text-center'><div style="width: 400px;">{{$g->obspreliminar}}</div></td>
                         @endif
                         @if (($status_solicitud=='VALIDADO')&&($extemporaneo))
-                        <td class='text-center'> <div style="width:305px;">{!! Form::select('motivo['.$g->id.']',$mextemporaneo,$id_mextemporaneo,['id' =>'motivo['.$g->id.']', 'class' => 'form-control','placeholder' =>'-- SELECCIONAR --']) !!}</div></td>
-                        <td class='text-center'><div style="width:400px;">{!! Form::textarea('mrespuesta['.$g->id.']',  $rextemporaneo,['id' =>'mrespuesta['.$g->id.']', 'class' => 'form-control','rows' =>'3']) !!}</div></td>      
+                        <td class='text-center'> 
+                            @if(in_array($g->id, $ids_extemp))
+                                <div style="width:305px;">{!! Form::select('motivo['.$g->id.']',$mextemporaneo,$id_mextemporaneo,['id' =>'motivo['.$g->id.']', 'class' => 'form-control','placeholder' =>'-- SELECCIONAR --']) !!}</div>
+                            @endif                            
+                        </td>
+                        <td class='text-center'>
+                            @if(in_array($g->id, $ids_extemp))
+                                <div style="width:400px;"> {!! Form::textarea('mrespuesta['.$g->id.']',  $rextemporaneo,['id' =>'mrespuesta['.$g->id.']', 'class' => 'form-control','rows' =>'3']) !!}</div>
+                            @endif
+                        </td>      
                         @endif
-                        <td class="text-center"><div style="width:128px;"> {{ $g->folio_grupo}} </div> </td>
+                        <td class="text-center"><div style="width:60px;"> {{ $g->folio_grupo}} </div> </td>
                         <td><div style="width:128px;"> {{ $g->clave}} </div> </td>              
                         <td class="text-center"> {{ $g->tipo_curso }} </td>
                         <td> {{ $g->espe }} </td>
-                        <td> {{ $g->curso }} </td>
+                        <td> <div style="width:200px;">{{ $g->curso }} </div></td>
                         <td><div style="width:120px;">{{ $g->nombre }}</div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center">
@@ -128,9 +136,9 @@
                         <td class="text-center"> {{ $g->turnado_solicitud }} </td>
                         <td class="text-center"> @if($g->status_curso) {{ $g->status_curso }} @else {{"EN CAPTURA" }} @endif </td>
                         <td class="text-center"> {{ $g->status }} </td>
-                        <td> {{ $g->efisico }} </td>
+                        <td > <div style="width:350px;">{{ $g->efisico }} </div></td>
                         <td class="text-left">
-                            <div style="width:900px;">
+                            <div style="width:650px;">
                                 @if($g->option =='ARC01')  {{ $g->nota }}
                                 @elseif($g->option =='ARC02') {{ $g->observaciones }} @endif
                             </div>    

@@ -46,7 +46,7 @@ class turnarAperturaController extends Controller
 
         $_SESSION['grupos'] = NULL;        
         $grupos = $mextemporaneo = [];
-        if($memo){            
+        if($memo){     
             $grupos = DB::table('tbl_cursos as tc')->select(db::raw("(select sum(hours) from 
 			(select ( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
 			 ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) ) 
@@ -68,61 +68,48 @@ class turnarAperturaController extends Controller
                 }
                 $grupos = $grupos->groupby('tc.id','ar.turnado')->get();
 
-            if(count($grupos)>0){
-                if($opt == 'ARC01' AND $grupos[0]->file_arc01) $file =  $this->path_files.$grupos[0]->file_arc01;
-                elseif($opt == 'ARC02' AND $grupos[0]->file_arc02) $file =  $this->path_files.$grupos[0]->file_arc02;
-                foreach ($grupos as $grupo) {
-                    if ($opt == 'ARC01') {
-                        $dia_sem = intval(date('N', strtotime($grupo->inicio)));
-                        if (($dia_sem >= 4) AND ($dia_sem <= 6)) {
-                            $add = 4;
-                        } elseif ($dia_sem==7) {
-                            $add = 3;
-                        } else {
-                            $add = 2;
-                        }
-                        $dias_fes = DB::table('dias_inhabiles')->where('fecha','>=',$grupo->inicio)
-                            ->where('fecha','<=', date('Y-m-d', strtotime($grupo->inicio. (' + '.$add.' days'))))
-                            ->value(DB::raw('count(id)'));
-                        $sum = $add + $dias_fes;
-                        $dia_ext = date('Y-m-d', strtotime($grupo->inicio. (' + '.$sum.' days')));
-                        if (($dia_ext < date('Y-m-d')) OR ($grupo->termino < date('Y-m-d'))) {
-                            $extemporaneo = true;
-                        }
-                    } elseif ($opt == 'ARC02') {
+            if(count($grupos)>0){             
+                              
+                if ($opt == 'ARC01') {
+                    if($grupos[0]->file_arc01) $file =  $this->path_files.$grupos[0]->file_arc01;
+                    $status_solicitud = $grupos[0]->status_solicitud;
+                    $num_revision = $grupos[0]->num_revision;
+                    if(isset($_SESSION['memo']))$ids_extemp = $this->ids_extemp($_SESSION['memo']);
+                    else $ids_extemp =null;                    
+                    if(count($ids_extemp)>0){
+                        $extemporaneo = true;
+                        $mextemporaneo = ['VALIDACION VENCIDA DEL INSTRUCTOR'=>'VALIDACION VENCIDA DEL INSTRUCTOR','REQUISITOS FALTANTES'=>'REQUISITOS FALTANTES',
+                             'ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO','SOLICITUD DE LA DEPENDENCIA'=>'SOLICITUD DE LA DEPENDENCIA',
+                             'ACTUALIZACION DE PAQUETERIA DIDACTICA'=>'ACTUALIZACION DE PAQUETERIA DIDACTICA'];
+                    }
+                     
+                } elseif ($opt == 'ARC02') {
+                    if($grupos[0]->file_arc02) $file =  $this->path_files.$grupos[0]->file_arc02;
+                    $status_solicitud = $grupos[0]->status_solicitud_arc02;
+                    $num_revision = $grupos[0]->num_revision_arc02;
+                    foreach ($grupos as $grupo) {
+                        
                         $interval = (Carbon::parse($grupo->termino)->diffInDays($grupo->inicio))/2; 
                         $interval = intval(ceil($interval));
                         $interval = (Carbon::parse($grupo->inicio)->addDay($interval))->format('Y-m-d');
                         $i = date($interval);
-                        if ($i < date('Y-m-d')) {
-                            $extemporaneo = true;
+                        if ($i < date('Y-m-d')){
+                             $extemporaneo = true;                                
+                             $ids_extemp[] = $grupo->id;
                         }
                     }
-                }
-                if ($opt == 'ARC01') {
-                    $mextemporaneo = ['VALIDACION VENCIDA DEL INSTRUCTOR'=>'VALIDACION VENCIDA DEL INSTRUCTOR','REQUISITOS FALTANTES'=>'REQUISITOS FALTANTES',
-                                    'ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO','SOLICITUD DE LA DEPENDENCIA'=>'SOLICITUD DE LA DEPENDENCIA',
-                                    'ACTUALIZACION DE PAQUETERIA DIDACTICA'=>'ACTUALIZACION DE PAQUETERIA DIDACTICA'];
-                    $status_solicitud = $grupos[0]->status_solicitud;
-                    $num_revision = $grupos[0]->num_revision;
-                } else if ($opt == 'ARC02') {
-                    $mextemporaneo = ['OBSERVACIONES DE FINANCIEROS'=>'OBSERVACIONES DE FINANCIEROS','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO',
-                                        'TRAMITES ADMINISTRATIVOS'=>'TRAMITES ADMINISTRATIVOS'];
-                    $status_solicitud = $grupos[0]->status_solicitud_arc02;
-                    $num_revision = $grupos[0]->num_revision_arc02;
-                }
-            }          
-        }
-        if(count($grupos)>0){
-            $_SESSION['grupos'] = $grupos;
-            $_SESSION['memo'] = $memo;
-            $_SESSION['opt'] = $opt;
-            
-        }elseif($memo AND $opt) $message = "No se encuentran registros que mostrar.";
-        //echo $file; exit;
-        //var_dump($grupos);exit;
+                    if($extemporaneo == true)$mextemporaneo = ['OBSERVACIONES DE FINANCIEROS'=>'OBSERVACIONES DE FINANCIEROS','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO',
+                    'TRAMITES ADMINISTRATIVOS'=>'TRAMITES ADMINISTRATIVOS'];
+                }          
+                $_SESSION['grupos'] = $grupos;
+                $_SESSION['memo'] = $memo;
+                $_SESSION['opt'] = $opt;
+
+            }else $message = "No se encuentran registros que mostrar.";
+        }else $message = "Ingrese el número de revisión o número de memorándum.";
+
         if(session('message')) $message = session('message');
-        return view('solicitud.turnar.index', compact('message','grupos','memo', 'file','opt','extemporaneo','mextemporaneo','status_solicitud','num_revision'));
+        return view('solicitud.turnar.index', compact('message','grupos','memo', 'file','opt','extemporaneo','mextemporaneo','status_solicitud','num_revision','ids_extemp'));
     }  
    
     public function regresar(Request $request){
@@ -139,83 +126,45 @@ class turnarAperturaController extends Controller
         }
         return redirect('solicitud/apertura')->with('message',$message);
    }
-   
-    //  ICATECH/1300/1537/2021
+       
     public function enviar(Request $request){
         $result = $extemporaneo = NULL;
         $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..';
 
-        if($_SESSION['memo']){
+        if($_SESSION['memo']==$request->nmemo){
             if ($request->hasFile('file_autorizacion')) {               
                 $name_file = $this->id_unidad."_".str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;                                
                 $file = $request->file('file_autorizacion');
                 $file_result = $this->upload_file($file,$name_file);                
-                $url_file = $file_result["url_file"];
-                if($file_result){
+                $url_file = $file_result["url_file"]; 
+                if($file_result['up']){                    
                     switch($_SESSION['opt']){
                         case "ARC01":
-                            $cursos = DB::table('tbl_cursos')->select('tbl_cursos.*')->where('munidad',$_SESSION['memo'])->get();
-                            foreach ($cursos as $key => $value) {
-                                if ($value->fecha_arc01 == null) {
-                                    $message = "La fecha del arc 01 no se ha generado, genere el memorandum pdf.";
-                                    return redirect('solicitud/apertura/turnar')->with('message',$message);
-                                }
-                                $dia_sem = intval(date('N', strtotime($value->inicio)));
-                                if (($dia_sem >= 4) AND ($dia_sem <= 6)) {
-                                    $add = 4;
-                                } elseif ($dia_sem==7) {
-                                    $add = 3;
-                                } else {
-                                    $add = 2;
-                                }
-                                $dias_fes = DB::table('dias_inhabiles')->where('fecha','>=',$value->inicio)
-                                    ->where('fecha','<=', date('Y-m-d', strtotime($value->inicio. (' + '.$add.' days'))))
-                                    ->value(DB::raw('count(id)'));
-                                $sum = $add + $dias_fes;
-                                $dia_ext = date('Y-m-d', strtotime($value->inicio. (' + '.$sum.' days')));
-                                if (($dia_ext < date('Y-m-d')) OR ($value->termino < date('Y-m-d'))) {
-                                    foreach ($request->motivo as $m => $motivo) {
-                                        foreach ($request->mrespuesta as $i => $x) {
-                                            if (($i == $value->id) AND ($x == null)) {
-                                                $message = "Escriba la razón extemporaneo.";
-                                                return redirect('solicitud/apertura/turnar')->with('message',$message);
-                                            }
-                                        }
-                                        if (($value->id == $m) AND ($motivo == null)) {
-                                            $message = "Seleccione el motivo extemporaneo.";
-                                            return redirect('solicitud/apertura/turnar')->with('message',$message);
-                                        }else {
-                                            $extemporaneo = true;
-                                        }
-                                    }
-                                }
-                            }
+                            //VALIDACION DE EXTEMPORANEIDAD*/
+                            $ids_extemp = $this->ids_extemp($_SESSION['memo']);
+
+                            foreach($ids_extemp as $t){ //GUARDANDO EL VALIDANDO MOTIVO DE LA EXONERACION                                 
+
+                                if(!$request->mrespuesta[$t]) $message = "Escriba la razón extemporaneo.";                                                                                                    
+                                if(!$request->motivo[$t]) $message = "Selecione el motivo extemporaneo.";                                   
+                                
+                                if(!$request->mrespuesta[$t] OR !$request->motivo[$t])  return redirect('solicitud/apertura/turnar')->with('message',$message);
+                                else  $result = DB::table('tbl_cursos')->where('id',$t)
+                                ->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
+                                ->update(['mextemporaneo' => $request->motivo[$t] , 'rextemporaneo'=>$request->mrespuesta[$t]]); 
+                            }                          
+                            //FIN VALIDACION DE EXTEMPORANEIDAD*/
+                            
                             $titulo = 'Clave de Apertura';
                             $cuerpo = 'Solicitud de asignación de clave de apertura del memo '.$_SESSION['memo'];
-                            $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');
-                            $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);
-                            if($alumnos){
-                                $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
+                            $folios = array_column(json_decode(json_encode($_SESSION['grupos']), true), 'folio_grupo');                            
+                            $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('status_curso',null)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
                                 ->update(['status_curso' => 'SOLICITADO', 'updated_at'=>date('Y-m-d H:i:s'), 'file_arc01' => $url_file]); 
-                                if ($result) {
-                                    if ($extemporaneo) {
-                                        foreach ($request->motivo as $key => $value) {
-                                            if ($value != null) {
-                                                $respuesta = null;
-                                                foreach ($request->mrespuesta as $i => $x) {
-                                                    if ($i == $key) {
-                                                        $respuesta = $x;
-                                                    }
-                                                }
-                                                $result2 = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->where('id',$key)->where('turnado','UNIDAD')->where('status','NO REPORTADO')
-                                                                ->update(['mextemporaneo' => $value, 'rextemporaneo'=>$respuesta]);
-                                            }
-                                        }
-                                    }
-                                }                               
-                                              
-                            }else $message = "Error al turnar la solictud, volver a intentar.";
+
+                            if($result) $alumnos = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "DTA",'fecha_turnado' => date('Y-m-d')]);
+                            else $message = "Error al turnar la solictud, volver a intentar.";                            
+                           
                         break;
                         case "ARC02":
                             $cursos = DB::table('tbl_cursos')->select('tbl_cursos.*')->where('nmunidad',$_SESSION['memo'])->get();
@@ -282,7 +231,7 @@ class turnarAperturaController extends Controller
                     
                 }else $message = "Error al subir el archivo, volver a intentar.";
             }else $message = "Archivo inválido";
-        }
+        }else $message = "Operación inválida!!";
         return redirect('solicitud/apertura/turnar')->with('message',$message);   
    }
 
@@ -423,17 +372,17 @@ class turnarAperturaController extends Controller
     protected function upload_file($file,$name){       
         $ext = $file->getClientOriginalExtension(); // extension de la imagen
         $ext = strtolower($ext);
-        $url = $mgs= null;
-
+        $path=$url = $mgs= null;
+        $up = false;
         if($ext == "pdf"){
             $name = trim($name.".pdf");
             $path = $this->path_pdf.$name;
-            Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
+            $up = Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
             //echo $url = Storage::disk('custom_folder_1')->url($path); exit;
             $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
         }else $msg= "Formato de Archivo no válido, sólo PDF.";
                 
-        $data_file = ["message"=>$msg, 'url_file'=>$path];
+        $data_file = ["message"=>$msg, 'url_file'=>$path, 'up'=>$up];
        
         return $data_file;
     }
@@ -530,28 +479,20 @@ class turnarAperturaController extends Controller
 
     public function cambiar_memorandum(Request $request){
          //dd($request->all());
-        $message = "Ingrese el número de memorándum";
+        $message = "Operación fallida, vuelva a intentar..";        
         if ($request->memo AND $request->nmemo AND $request->opt) {
             if ($request->opt === 'ARC01') {
                 if ((DB::table('tbl_cursos')->where('munidad',$request->nmemo)->value('id'))) {
                     $message = "El memorándum ya se encuentra en uso..";
-                } else {
-                    $r = DB::table('tbl_cursos')->where('num_revision',$request->memo)->orWhere('munidad',$request->memo)->value('num_revision');
-                    if ($r) {
-                        $result = DB::table('tbl_cursos')->where('num_revision',$r)->update(['munidad' => $request->nmemo]);
-                        if ($result) {
-                            $result2 = DB::table('tbl_cursos_history')->where('munidad',$r)->update(['munidad' => $request->nmemo,'num_revision'=>$r]);
-                            $_SESSION['memo'] = $request->nmemo;
-                            $message = "El Guardado del Memorándum fué exitoso";
-                        }else{
-                            $message = "Operación fallida, vuelva a intentar..";
-                        }
-                    } else {
-                        $message = "Operación fallida, vuelva a intentar..";
+                } else {                    
+                    $result = DB::table('tbl_cursos')->where('num_revision',$request->memo)->orWhere('munidad',$request->memo)->update(['munidad' => $request->nmemo]);
+                    if($result){
+                        $history = DB::table('tbl_cursos_history')->where('num_revision',$request->memo)->orWhere('munidad',$request->memo)->update(['munidad' => $request->nmemo,'num_revision'=>$request->memo]);
+                        $_SESSION['memo'] = $request->nmemo;
+                        $message = "El Guardado del Memorándum fué exitoso";
                     }
-                    
-                } 
-            }else {
+                }
+            }else{
                 if ((DB::table('tbl_cursos')->where('nmunidad',$request->nmemo)->value('id'))) {
                     $message = "El memorándum ya se encuentra en uso..";
                 } else {
@@ -571,8 +512,28 @@ class turnarAperturaController extends Controller
                     
                 }
             }
-        }
+        }else $message = "Ingrese el número de memorándum";
         return redirect('solicitud/apertura/turnar')->with('message',$message); 
     }
+
+    private function ids_extemp($memo){
+        $result = DB::select("SELECT id
+            FROM (
+                    SELECT id, inicio,(
+                        SELECT generate_series::date as fecha_extemp
+                        FROM tbl_cursos c 
+                        CROSS JOIN generate_series(
+                        c.inicio,
+                        c.termino,
+                        '1 day'::interval
+                        )
+                    WHERE c.id= tbl_cursos.id and generate_series::date NOT IN(
+                        SELECT fecha FROM dias_inhabiles dh WHERE fecha BETWEEN c.inicio AND c.termino
+                        ) and date_part('dow',generate_series::date) not in(0,6) LIMIT 1 offset 3)
+                    FROM tbl_cursos where  munidad = ?
+                ) as global WHERE now()::date>=fecha_extemp ",[$memo]);
+        return $resultArray = array_column(json_decode(json_encode($result), true),'id'); 
+    }
+
    
 }
