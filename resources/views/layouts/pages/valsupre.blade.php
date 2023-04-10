@@ -69,11 +69,11 @@
                 <div id="div1" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
                         <label for="inputfolio_validacion">Folio de Validación</label>
-                        <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control">
+                        <input  type="text" name="folio_validacion" id="folio_validacion" class="form-control" required>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputfecha_validacion">Fecha de Validación</label>
-                        <input name="fecha_val" id="fecha_val" type="date" class="form-control">
+                        <input name="fecha_val" id="fecha_val" type="date" class="form-control" required>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputfinanciamiento">Fuente de Financiamiento</label>
@@ -129,11 +129,11 @@
                 </div>
                 <div id="div7" class="form-row d-none d-print-none">
                     <div class="form-group col-md-4">
-                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo">
+                        <input  type="text" name="ccp4" id="ccp4" class="form-control" placeholder="Nombre Completo" required>
                     </div>
                     <div class="form-group col-md-4">
-                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto">
-                        <input id="id_ccp4" name="id_ccp4" hidden >
+                        <input name="ccpa4" id="ccpa4" readonly class="form-control" placeholder="puesto" required>
+                        <input id="id_ccp4" name="id_ccp4" hidden required>
                     </div>
                 </div>
             <!--END CCP-->

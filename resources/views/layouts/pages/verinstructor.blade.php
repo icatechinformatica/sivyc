@@ -54,21 +54,28 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputcurp">CURP</label>
                     <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='curp' id='curp' type="text" class="form-control" aria-required="true" value="{{$datainstructor->curp}}">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputrfc">RFC/Constancia Fiscal</label>
                     <input @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif name='rfc' id='rfc' type="text" class="form-control" aria-required="true" value="{{$datainstructor->rfc}}">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="inputhonorarios">Regimen</label>
                     <select @if(!in_array($datainstructor->status, $ari) || $roluser->role_id == 3) disabled @endif class="form-control" name="honorario" id="honorario">
                         <option value="sin especificar">Sin Especificar</option>
                         <option value="HONORARIOS" @if($datainstructor->tipo_honorario == 'HONORARIOS') selected @endif >Honorarios</option>
                         {{-- <option value="ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'ASIMILADOS A SALARIO') selected @endif>Asimilados a Salarios</option> --}}
                         <option value="HONORARIOS Y ASIMILADOS A SALARIO" @if($datainstructor->tipo_honorario == 'HONORARIOS Y ASIMILADOS A SALARIO') selected @endif>Honorarios y Asimilados a Salario</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputhonorarios">Tipo de Instructor</label>
+                    <select class="form-control" name="tipo_instructor" id="tipo_instructor">
+                        <option value="INTERNO" @if($datainstructor->tipo_instructor == 'INTERNO') selected @endif>Interno</option>
+                        <option value="EXTERNO" @if($datainstructor->tipo_instructor == 'EXTERNO') selected @endif>Externo</option>
                     </select>
                 </div>
             </div>

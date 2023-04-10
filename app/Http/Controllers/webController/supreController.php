@@ -346,9 +346,9 @@ class supreController extends Controller
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
 
-        $notification = DB::table('notifications')
-                        ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
-                        ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
+        // $notification = DB::table('notifications')
+        //                 ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
+        //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
         return view('layouts.pages.valsupre',compact('data','getremitente','directorio'));
