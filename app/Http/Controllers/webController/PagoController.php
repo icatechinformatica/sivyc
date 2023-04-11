@@ -95,8 +95,9 @@ class PagoController extends Controller
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.fecha_status','folios.permiso_editar',
             'contratos.docs', 'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml', 'contratos.arch_contrato',
             'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_pago',
-            'pagos.fecha_agenda','pagos.arch_solicitud_pago',
-            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta')
+            'pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo',
+            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
+            // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
         ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
@@ -150,7 +151,9 @@ class PagoController extends Controller
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
                     'folios.permiso_editar','contratos.docs','contratos.observacion', 'folios.status',
                     'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago','pagos.fecha_agenda',
-                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta')
+                    'pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo',
+                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
+                    // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
                 ]);
                 break;
         }
@@ -516,7 +519,7 @@ class PagoController extends Controller
         if(isset($doc_factura_pdf))
         {
             $factura_pdf = $this->pdf_upload($doc_factura_pdf, $request->id_contrato_agenda, 'factura_pdf'); # invocamos el método
-            $contrato->arch_fatura = $factura_pdf;
+            $contrato->arch_factura = $factura_pdf;
         }
         if(isset($doc_factura_xml))
         {
@@ -531,6 +534,8 @@ class PagoController extends Controller
             ->update(['fecha_agenda' => $request->agendar_date,
                       'arch_solicitud_pago' => $solpa_pdf]);
 
+        $folio = folio::find($contrato->id_folios)->update(['observacion_recepcion_rechazo' => NULL]);
+
         $contrato->arch_contrato = $contrato_pdf;
         $contrato->save();
 
@@ -544,6 +549,14 @@ class PagoController extends Controller
         $folio = folio::find($request->id_folio_entrega)->update(['recepcion' => $fecha_actual->toDateString()]);
         return redirect()->route('pago-inicio')
                 ->with('success', 'Entrega de Documentos Confirmada Correctamente');
+    }
+
+    public function rechazar_entrega_fisica(Request $request)
+    {
+        // dd($request);
+        $folio = folio::find($request->id_folio_entrega_rechazo)->update(['observacion_recepcion_rechazo' => $request->observacion_rechazo]);
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Rechazo de entrega de Documentos Correctamente');
     }
 
     public function financieros_reporte()

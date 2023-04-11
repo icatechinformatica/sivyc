@@ -356,28 +356,27 @@
                             @if(isset($itemData->recepcion))
                                 Entregado: {{$itemData->recepcion}}
                             @else
-                                Fecha Actual: {{$itemData->fecha_agenda}}
-                                @can('contratos.create')
-                                    <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-target="#agendarModal" data-id='["{{$itemData->id_contrato}}"]'>
-                                        AGENDAR ENTREGA
-                                    </a>
-                                    {{-- <div @if($tipoPago == 'agendar_fecha') class="form-control-plaintext text-truncate" @else class="d-none d-print-none" @endif >
-                                        <label>AÑADIR</label>
-                                        <input type="checkbox" class="checkBoxClass"
-                                            data-toggle="toggle"
-                                            data-style="ios"
-                                            data-on=" "
-                                            data-off=" "
-                                            data-onstyle="success"
-                                            data-offstyle="danger"
-                                            name="agendar[{{$itemData->id_contrato}}]"
-                                            value="{{$itemData->id_contrato}}">
-                                    </div> --}}
-                                @endcan
-                                @if(isset($itemData->fecha_agenda))
+                                @if(is_null($itemData->observacion_recepcion_rechazo))
+                                    Fecha Actual: {{$itemData->fecha_agenda}}
+                                @else
+                                    Fecha Rechazada: {{$itemData->fecha_agenda}}
+                                @endif
+                                    @can('contratos.create')
+                                        @if(isset($itemData->observacion_recepcion_rechazo))
+                                            <p style="color: red;">{{$itemData->observacion_recepcion_rechazo}}</p>
+                                        @endif
+                                        <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-target="#agendarModal" data-id='["{{$itemData->id_contrato}}"]'>
+                                            AGENDAR ENTREGA
+                                        </a>
+                                    @endcan
+                                {{-- @endif --}}
+                                @if(isset($itemData->fecha_agenda) && is_null($itemData->observacion_recepcion_rechazo))
                                     @can('contrato.validate')
                                         <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" data-target="#recepcionarModal" data-id='["{{$itemData->id_folios}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->arch_contrato}}"]'>
                                             Confirmar Entrega
+                                        </a>
+                                        <a class="btn btn-warning" id="rechazar_entrega" name="rechazar_entrega" data-toggle="modal" data-target="#rechazar_entregaModal" data-id='["{{$itemData->id_folios}}"]'>
+                                            Rechazar Entrega
                                         </a>
                                     @endcan
                                 @endif
@@ -593,6 +592,36 @@
     </div>
 </div>
 <!-- END -->
+<!-- Modal Rechazar Entrega de Documentacion-->
+<div class="modal fade" id="rechazar_entregaModal" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('rechazar-entrega-fisica') }}" id="rechazar_entrega">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">¿Rechazar Entrega Fisica?</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <div style="text-align:center" class="form-group">
+                        <p>Si confirmas el rechazo se hara el cambio de manera permanente.</p>
+                        <p style="text-align: left; padding-left: 15%;"><small>Observacion de Rechazo</small></p>
+                        <textarea name="observacion_rechazo" id="observacion_rechazo" cols="50" rows="5" required></textarea><br>
+                        <input id="id_folio_entrega_rechazo" name="id_folio_entrega_rechazo" hidden>
+                        <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-dismiss="modal">No, Mantener Pendiente la Entrega</button>
+                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" >Sí, Confirmar Entrega</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END -->
 <!-- Modal Agendar Entrega de Documentacion-->
 <div class="modal fade" id="agendarModal" role="dialog">
     <div class="modal-dialog">
@@ -731,6 +760,13 @@
         document.getElementById('id_folio_entrega').value = id[0];
         $('#archivo_pago_firmado').attr("href", id[1]);
         $('#archivo_contrato_firmado').attr("href", id[2]);
+    });
+
+    $('#rechazar_entregaModal').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        console.log(id)
+        document.getElementById('id_folio_entrega_rechazo').value = id;
     });
 
     $('#agendarModal').on('show.bs.modal', function(event){
