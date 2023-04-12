@@ -68,7 +68,7 @@ class ContratoController extends Controller
             array_push($array_ejercicio, $x);
         }
         $contratos = new contratos();
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->WHERE('cct','LIKE','07EI%')->GET();
 
         $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
         ->SELECT('tabla_supre.id','tabla_supre.no_memo',

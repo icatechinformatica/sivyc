@@ -75,7 +75,7 @@ class PagoController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->WHERE('cct','LIKE','07EI%')->GET();
 
         //dd($roles[0]->role_name);
 
