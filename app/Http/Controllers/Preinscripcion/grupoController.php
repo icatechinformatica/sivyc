@@ -335,6 +335,11 @@ class grupoController extends Controller
     {
         //dd($request->all());
         if ($_SESSION['folio_grupo']) {
+            ///VALIDA INSTRUCTOR
+            $internos = $this->valida_instructor($request->instructor);
+            if(!$internos['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $internos['message']]); ;
+
+
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
                 if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
@@ -638,7 +643,13 @@ class grupoController extends Controller
                             //         }
                             //     }
                             // }
-                            $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                            
+                            $internos = $this->valida_instructor($alumnos[0]->id_instructor);
+                            if($internos['valido']){
+                                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                                if($result) DB::table('instructores')->where('id',$alumnos[0]->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']); 
+                            }else return redirect()->route('preinscripcion.grupo')->with(['message' => $internos['message']]);
                         } else {
                             $message = "Las horas agendadas no corresponden a la duración del curso..";
                             return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
@@ -897,6 +908,13 @@ class grupoController extends Controller
     public function cmbinstructor(Request $request)
     {
         if (isset($request->id) and isset($request->inicio) and isset($request->termino)) {
+            $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
+            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
+            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
+            ->havingRaw('count(*) >= 2')
+            ->groupby('i.id');
+            
             $id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
                 ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
@@ -910,9 +928,10 @@ class grupoController extends Controller
                 ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
                 ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
                 //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
-                //->where('especialidad_instructor_curso.activo', true)
+                //->where('especialidad_instructor_curso.activo', true)            
                 ->WHERE('fecha_validacion','<',$request->inicio)
                 ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
+                ->whereNotIn('instructores.id', $internos)
                 ->groupBy('t.id_instructor','instructores.id')
                 ->orderBy('instructor')
                 ->get();
@@ -989,6 +1008,12 @@ class grupoController extends Controller
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }
         //CRITERIOS INSTRUCTOR ::
+
+        // INSTRUCTORES INTERNOS,MÁXIMO 2 CURSOS EN EL MES. 
+
+        $internos = $this->valida_instructor($id_instructor);
+        if(!$internos['valido'])  return $internos['message'];
+
         //DISPONIBILIDAD FECHA Y HORA
         $duplicado = DB::table('agenda as a')
             ->leftJoin('tbl_cursos as tc','a.id_curso','tc.folio_grupo')
@@ -1348,5 +1373,23 @@ class grupoController extends Controller
         $insert_dias ['nombre'] = $dias_a;
         $insert_dias ['total'] = $tdias;
         return $insert_dias;
+    }
+
+    private function valida_instructor($id_instructor)
+    {
+        //echo $id_instructor;
+        $valido = false;
+        $message = null;
+        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id') ->where('i.id',$id_instructor)
+            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
+            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
+            ->havingRaw('count(*) >= 2')
+            ->groupby('i.id')->first();
+            //var_dump($internos);exit;
+        if($internos) $message = "El instructor interno ha excedido el número de cursos a impartir (máximo 2 cursos al mes). Favor de verificar.";
+        else $valido = true;
+        //echo $valido;exit;
+        return ['valido' => $valido, 'message' => $message];
     }
 }
