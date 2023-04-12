@@ -1384,7 +1384,7 @@ class grupoController extends Controller
             ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
             ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
             ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
-            ->havingRaw('count(*) >= 2')
+            ->havingRaw('count(*) > 2')
             ->groupby('i.id')->first();
             //var_dump($internos);exit;
         if($internos) $message = "El instructor interno ha excedido el número de cursos a impartir (máximo 2 cursos al mes). Favor de verificar.";
