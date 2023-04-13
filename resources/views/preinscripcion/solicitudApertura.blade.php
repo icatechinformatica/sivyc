@@ -93,7 +93,7 @@
                         <td>{{$item['tpar']}}</td>
                         <td  >{{$item['hombre']}}</td>
                         <td>{{$item['mujer']}}</td>
-                        <td >@if ($item['mexoneracion'])  {{ substr($item['mexoneracion'],0,12)}}  {{ substr($item['mexoneracion'],13,strlen($item['mexoneracion']))}}   @else {{"N/A"}}  @endif</td>
+                        <td >@if ($item['mexoneracion'])  {{ substr($item['mexoneracion'],0,12)}}  {{ substr($item['mexoneracion'],12,strlen($item['mexoneracion']))}}   @else {{"N/A"}}  @endif</td>
                         <td>@if ($item['cgeneral']!='0') {{ substr($item['cgeneral'],0,5)}} {{ substr($item['cgeneral'],5,strlen($item['cgeneral']))}}@else {{"N/A"}} @endif</td>
                         <td>@if ($item['cespecifico']) {{$item['cespecifico']}} @else {{"N/A"}} @endif </td>
                         <td>{{$item['depen']}}</td>
