@@ -369,7 +369,7 @@ class PagoController extends Controller
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
             ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
             // ->WHERE('contratos.id_contrato', '=', '4228')
-            // ->WHERE('tbl_unidades.ubicacion', '=', $request->unidad)
+            ->WHERE('contratos.unidad_capacitacion', '=', $request->unidad)
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
             ->WHERE('folios.recepcion', '!=', NULL)
