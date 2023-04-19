@@ -7,6 +7,7 @@ use App\Models\instructor;
 use App\Models\contratos;
 use App\Models\folio;
 use App\Models\directorio;
+use App\Models\especialidad_instructor;
 use App\Models\contrato_directorio;
 use Illuminate\Http\Request;
 use Redirect,Response;
@@ -89,13 +90,16 @@ class PagoController extends Controller
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+        ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
         ->orderBy('pagos.created_at', 'desc')
         ->PAGINATE(50, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.fecha_status','folios.permiso_editar',
             'contratos.docs', 'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml', 'contratos.arch_contrato',
-            'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_pago',
-            'pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo',
+            'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_solicitud_pago','pagos.arch_asistencia','pagos.arch_evidencia',
+            'pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','instructores.archivo_bancario',
+            'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
+            'pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo', 'instructores.archivo_alta','instructores.archivo_ine',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
             // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
         ]);
@@ -144,18 +148,43 @@ class PagoController extends Controller
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                 ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                 ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+                ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
                 ->orderBy('pagos.created_at', 'desc')
                 // ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(50, [
                     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status',
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
                     'folios.permiso_editar','contratos.docs','contratos.observacion', 'folios.status',
-                    'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago','pagos.fecha_agenda',
-                    'pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo',
+                    'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.arch_asistencia','pagos.arch_evidencia',
+                    'pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso',
+                    'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
+                    'pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo', 'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
                     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
                 ]);
                 break;
+        }
+
+        foreach($contratos_folios as $pointer => $ari)
+        {
+            $memoval = especialidad_instructor::WHERE('id_instructor',$ari->id_instructor) // obtiene la validacion del instructor
+            ->whereJsonContains('hvalidacion', [['memo_val' => $ari->instructor_mespecialidad]])->value('hvalidacion');
+            if(isset($memoval))
+            {
+                foreach($memoval as $me)
+                {
+                    if($me['memo_val'] == $ari->instructor_mespecialidad)
+                    {
+                        $contratos_folios[$pointer]->arch_mespecialidad = $me['arch_val'];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                $contratos_folios[$pointer]->arch_mespecialidad = $ari->archivo_alta;
+            }
+
         }
 
         return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago'));
@@ -173,7 +202,7 @@ class PagoController extends Controller
                                     ->FIRST();
 
         $importe = round($data->importe_total-$data->iva, 2);
-        return view('layouts.pages.frmpago', compact('data', 'nomins','importe'));
+        return view('layouts.pages.frmpago', compact('data','importe'));
     }
 
     public function modificar_pago()

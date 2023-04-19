@@ -5,93 +5,44 @@
 @section('content')
     <link rel="stylesheet" href="{{asset("vendor/bootstrap/bootstrapcustomizer.css") }}">
     <link href="{{ asset("vendor/toggle/bootstrap-toggle.css") }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
         * {
         box-sizing: border-box;
+        font-size: 15px;
         }
 
         #myInput {
-        background-image: url('img/search.png');
-        background-position: 5px 10px;
-        background-repeat: no-repeat;
-        background-size: 32px;
-        width: 100%;
-        font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
+            background-image: url('img/search.png');
+            background-position: 5px 10px;
+            background-repeat: no-repeat;
+            background-size: 32px;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+            width: 20px;
+            text-align: left;
         }
 
-        .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
-        .toggle.ios .toggle-handle { border-radius: 20px; }
-        .switch {
-          position: relative;
-          display: inline-block;
-          width: 90px;
-          height: 34px;
+        input[type=file]::file-selector-button {
+            margin-right: 20px;
+            border: none;
+            background: #084cdf;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: background .2s ease-in-out;
+            width: 110px;
+            text-align: left;
         }
 
-        .switch input {
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-
-        .slider {
-          position: absolute;
-          cursor: pointer;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: #ccc;
-          -webkit-transition: .4s;
-          transition: .4s;
-        }
-        .slider {
-          position: absolute;
-          cursor: pointer;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: #ccc;
-          -webkit-transition: .4s;
-          transition: .4s;
-        }
-        .slider:before {
-          position: absolute;
-          content: "";
-          height: 26px;
-          width: 26px;
-          left: 4px;
-          bottom: 4px;
-          background-color: white;
-          -webkit-transition: .4s;
-          transition: .4s;
-        }
-
-        input:checked + .slider {
-          background-color: #2196F3;
-        }
-
-        input:focus + .slider {
-          box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .slider:before {
-          -webkit-transform: translateX(50px);
-          -ms-transform: translateX(50px);
-          transform: translateX(50px);
-        }
-
-        /* Rounded sliders */
-        .slider.round {
-          border-radius: 34px;
-        }
-
-        .slider.round:before {
-          border-radius: 50%;
+        input[type=file]::file-selector-button:hover {
+            background: #0d45a5;
         }
     </style>
     <div class="container g-pt-50">
@@ -169,64 +120,35 @@
         <div class="pull-left">
         </div>
         <hr style="border-color:dimgray">
-        {{-- @if($tipoPago == 'agendar_fecha')
-            <form action="{{ route('agendar-entrega-pago') }}" method="post">
-                @csrf
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                    </div>
-                    <div class="form-group col-md-2" style="text-align: right;">
-                        <h5>Fecha a Agendar</h5>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <input type="date" class="form-control" id="agendar_date" name="agendar_date" required>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <h5 for="agendar_date"></h5>
-                        <button type="submit" class="btn btn-primary" style="bottom: 25%;" >Agendar</button>
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <label style="color: black">Seleccionar Todo</label>
-                    <input  type="checkbox" id="ckbCheckAll"
-                            data-toggle="toggle"
-                            data-style="ios"
-                            data-on= " "
-                            data-off= " "
-                            data-onstyle="success"
-                            data-offstyle="danger"
-                            onchange="toggleOnOff()"/>
-                </div>
-        @endif --}}
         <table  id="table-instructor" class="table table-bordered table-responsive-md Datatables">
             <caption>Lista de Contratos en Espera</caption>
             <thead>
                 <tr>
-                    <th scope="col">N°. Contrato</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Unidad de Capacitación</th>
-                    <th scope="col">Status</th>
+                    <th scope="col" style="font-size: 15px">N°. Contrato</th>
+                    <th scope="col" style="font-size: 15px">Fecha</th>
+                    <th scope="col" style="font-size: 15px">Unidad de Capacitación</th>
+                    <th scope="col" style="font-size: 15px">Status</th>
                     {{-- <th scope="col" style="width: 150px;">Ultima Modificación de Status</th> --}}
                     {{-- @can('contratos.create')
                             <th scope="col" style="width: 150px;">Fecha de Validación de Recepción Fisica</th>
                     @endcan --}}
-                    <th width="160px">Acciones</th>
-                    <th scope="col" width="200px">Fecha de Entrega Fisica</th>
-                    <th scope="col" width="130px">Factura</th>
+                    <th width="160px" style="font-size: 15px">Acciones</th>
+                    <th scope="col" width="200px" style="font-size: 15px">Fecha de Entrega Fisica</th>
+                    <th scope="col" width="130px" style="font-size: 15px">Factura</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($contratos_folios as $itemData)
-                    <tr @if($itemData->alerta == TRUE && is_null($itemData->fecha_agenda)) style='background-color: #621032;;' @endif>
-                        <td>{{$itemData->numero_contrato}}</td>
-                        <td>
+                    <tr @if($itemData->alerta == TRUE && is_null($itemData->fecha_agenda)) style='background-color: #621032; color: white;' @endif>
+                        <td style="font-size: 13px">{{$itemData->numero_contrato}}</td>
+                        <td style="font-size: 13px">
                             @if($itemData->created_at != NULL)
                                 <?php $d = $itemData->created_at->format('d'); $m = $itemData->created_at->format('m'); $y = $itemData->created_at->format('y'); ?>
                                 {{$d}}/{{$m}}/{{$y}}
                             @endif
                         </td>
-                        <td>{{$itemData->unidad_capacitacion}}</td>
-                        <td>{{$itemData->status}}</td>
+                        <td style="font-size: 13px">{{$itemData->unidad_capacitacion}}</td>
+                        <td style="font-size: 13px">{{$itemData->status}}</td>
                         {{-- <td>{{$itemData->fecha_status}}</td> --}}
                         {{-- @can('contratos.create')
                             @if($itemData->recepcion != NULL)
@@ -235,7 +157,7 @@
                                 <td>N/A</td>
                             @endif
                         @endcan --}}
-                        <td>
+                        <td style="font-size: 13px">
                             @switch($itemData->status)
                                 @case('Verificando_Pago')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->arch_pago}}"]'>
@@ -352,7 +274,7 @@
                                 @break
                             @endswitch
                         </td>
-                        <td>
+                        <td style="font-size: 13px">
                             @if(isset($itemData->recepcion))
                                 Entregado: {{$itemData->recepcion}}
                             @else
@@ -365,7 +287,7 @@
                                         @if(isset($itemData->observacion_recepcion_rechazo))
                                             <p style="color: red;">{{$itemData->observacion_recepcion_rechazo}}</p>
                                         @endif
-                                        <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-target="#agendarModal" data-id='["{{$itemData->id_contrato}}"]'>
+                                        <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->arch_contrato}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->archivo_ine}}"]'>
                                             AGENDAR ENTREGA
                                         </a>
                                     @endcan
@@ -382,7 +304,7 @@
                                 @endif
                             @endif
                         </td>
-                        <td>
+                        <td style="font-size: 13px">
                             @if (isset($itemData->arch_factura))
                                 <a class="btn btn-info" href="{{$itemData->arch_factura}}" target="_blank">PDF</a>
                             @endif
@@ -622,9 +544,125 @@
     </div>
 </div>
 <!-- END -->
-<!-- Modal Agendar Entrega de Documentacion-->
-<div class="modal fade" id="agendarModal" role="dialog">
-    <div class="modal-dialog">
+<!-- Modal Agendar Entrega de Documentacion ordinaria-->
+<div class="modal fade bs-example-modal-lg" id="agendarModalOrdinaria" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="width: 90%;">
+        <form method="POST" action="{{ route('agendar-entrega-pago') }}" id="agendar_entrega" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">¿Agendar Entrega Fisica?</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align:center;">
+                    {{-- <div>
+                        <p style="text-align:center">Fecha a Agendar</p>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                        <input type="date" id="agendar_date" name="agendar_date" class="form-control" style="text-align: center; width: 33%;" required>
+                    </div> --}}
+                    <p style="text-align:center; margin-bottom: -3%; margin-top: 1%;">Documentación Necesaria para agendar</p><br>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home">Carga</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane fade in active">
+                            <table  class="table table-bordered">
+                                <caption>Documentos para Recepción</caption>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">1.- Solicitud de Pago</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpa" name="show_solpa">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf"></td>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">8.- Contrato</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Contrato Firmada" id="show_contrato" name="show_contrato">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="contrato_pdf" name="contrato_pdf"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancaria" name="show_cuenta_bancaria">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">9.- Identificación de Instructor</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Identificación de Instructor" id="show_identificacion" name="show_identificacion">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">3.- Validación de Instructor</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Instructor" id="show_validacion_instructor" name="show_validacion_instructor">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">10.- Lista de Asistencias</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Lista de Asistencias" id="show_asistencias" name="show_asistencias">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="asistencias_pdf" name="asistencias_pdf"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">4.- ARC-01/02</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="ARC-01" id="show_arc01" name="show_arc01">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">11.- Reporte de Evidencias Fotográficas</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotografica" name="show_evidencia_fotografica">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="evidencia_fotografica_pdf" name="evidencia_fotografica_pdf"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_supre" name="show_validacion_supre">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">6.- Factura PDF</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura PDF" id="show_fact_pdf" name="show_fact_pdf">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="factura_pdf" name="factura_pdf"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">7.- Factura XML</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura XML" id="show_fact_xml" name="show_fact_xml">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/xml" id="factura_xml" name="factura_xml"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="text-align:center" class="form-group">
+                        <p>Si confirmas se asignara la fecha deseada a este registro.</p>
+                        <input id="id_contrato_agenda" name="id_contrato_agenda">
+                        <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-dismiss="modal">No, Mantener Pendiente la Entrega</button>
+                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" >Sí, Confirmar</button>
+                    </div>
+                </div>
+                <div class="modal-footer"><div class="form-group"></div>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END -->
+<!-- Modal Agendar Entrega de Documentacion certificacion-->
+<div class="modal fade bs-example-modal-lg" id="agendarModalCertificacion" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="width: 90%;">
         <form method="POST" action="{{ route('agendar-entrega-pago') }}" id="agendar_entrega" enctype="multipart/form-data">
             @csrf
             <div class="modal-content">
@@ -642,28 +680,80 @@
                         <input type="date" id="agendar_date" name="agendar_date" class="form-control" style="text-align: center; width: 33%;" required>
                     </div>
                     <p style="text-align:center; margin-bottom: -3%; margin-top: 1%;">Documentación Necesaria para agendar</p><br>
-                    <div style="text-align:left" class="form-row">
-                        <div class="form-group col-md-1"></div>
-                        <div class="form-group col-md-4">
-                            <label for="inputfactura_pdf">Factura PDF</label>
-                            <input type="file" accept="application/pdf" name="factura_pdf" id="factura_pdf" style="text-align: left; font-size: 12px;" class="form-control">
-                        </div>
-                        <div class="form-group col-md-1"></div>
-                        <div class="form-group col-md-5">
-                            <label for="inputfactura_xml">Factura XML</label>
-                            <input type="file" accept="application/xml" name="factura_xml" id="factura_xml" style="text-align: right; font-size: 12px;" class="form-control">
-                        </div>
-                    </div>
-                    <div style="text-align:left" class="form-row">
-                        <div class="form-group col-md-1"></div>
-                        <div class="form-group col-md-4">
-                            <label for="inputfactura_pdf">Contrato Firmado</label>
-                            <input type="file" accept="application/pdf" name="contrato_pdf" id="contrato_pdf" style="text-align: left; font-size: 12px;" class="form-control" required>
-                        </div>
-                        <div class="form-group col-md-1"></div>
-                        <div class="form-group col-md-5">
-                            <label for="inputfactura_xml">Solicitud de Pago Firmada</label>
-                            <input type="file" accept="application/pdf" name="solpa_pdf" id="solpa_pdf" style="text-align: right; font-size: 12px;" class="form-control" required>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#home">Carga</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="home" class="tab-pane fade in active">
+                            <table  class="table table-bordered">
+                                <caption>Documentos para Recepción</caption>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">1.- Solicitud de Pago</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpa" name="show_solpa">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf"></td>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">8.- Contrato</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Contrato Firmada" id="show_contrato" name="show_contrato">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="contrato_pdf" name="contrato_pdf"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancaria" name="show_cuenta_bancaria">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">9.- Identificación de Instructor</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Identificación de Instructor" id="show_identificacion" name="show_identificacion">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">3.- Validación de Instructor</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Instructor" id="show_validacion_instructor" name="show_validacion_instructor">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">10.- Lista de Calificaciones</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Lista de Calificaciones" id="show_calificaciones" name="show_calificaciones">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="calificaciones_pdf" name="calificaciones_pdf"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">4.- ARC-01/02</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="ARC-01" id="show_arc01" name="show_arc01">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_supre" name="show_validacion_supre">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">6.- Factura PDF</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura PDF" id="show_fact_pdf" name="show_fact_pdf">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="factura_pdf" name="factura_pdf"></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; vertical-align: middle; font-size: 12px;">7.- Factura XML</td>
+                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura XML" id="show_fact_xml" name="show_fact_xml">
+                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/xml" id="factura_xml" name="factura_xml"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div style="text-align:center" class="form-group">
@@ -756,7 +846,7 @@
         // console.log('hola');
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        console.log(id[1]);
+        console.log(id);
         document.getElementById('id_folio_entrega').value = id[0];
         $('#archivo_pago_firmado').attr("href", id[1]);
         $('#archivo_contrato_firmado').attr("href", id[2]);
@@ -769,12 +859,38 @@
         document.getElementById('id_folio_entrega_rechazo').value = id;
     });
 
-    $('#agendarModal').on('show.bs.modal', function(event){
+    $('#agendarModalOrdinaria').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        // console.log(id);
-        document.getElementById('id_contrato_agenda').value = id;
+        console.log(id);
+        document.getElementById('id_contrato_agenda').value = id[0];
+        setAnchorHrefs(id);
     });
+
+    $('#agendarModalCertificacion').on('show.bs.modal', function(event){
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        console.log(id);
+        document.getElementById('id_contrato_agenda').value = id[0];
+        setAnchorHrefs(id);
+    });
+
+    function setAnchorHrefs(id) {
+        const anchors = ['#show_fact_pdf', '#show_fact_xml', '#show_solpa', '#show_contrato', '#show_asistencias', '#show_calificaciones',
+                        '#show_evidencia_fotografica', '#show_cuenta_bancaria', '#show_validacion_instructor', '#show_arc01',
+                        '#show_validacion_supre', '#show_identificacion'];
+
+        for (let i = 0; i < anchors.length; i++) {
+            const href = id[i+1];
+            if (id[i+1] != "") {
+            $(anchors[i]).attr('href', href);
+            $(anchors[i]).attr('hidden', false);
+            } else {
+                console.log('a');
+            $(anchors[i]).attr('hidden', true);
+            }
+        }
+    }
 
 });
 
