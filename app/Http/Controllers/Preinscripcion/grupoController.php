@@ -185,8 +185,8 @@ class grupoController extends Controller
         $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
         
         //VALIDACIÓN DE INSTRUCTOR EN OBSERVACIÓN 
-        $instructor_valido = $this->valida_instructor($request->instructor);
-        if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]); 
+        //$instructor_valido = $this->valida_instructor($request->instructor);
+        //if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]); 
 
         if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
             if ($curp) {
@@ -1303,36 +1303,34 @@ class grupoController extends Controller
             ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
             ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
             ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
+            ->where(function($query){
+                $query->where('c.status_curso','<>','CANCELADO')->orWherenull('c.status_curso');
+            })
             ->havingRaw('count(*) > 2')
             ->groupby('i.id')->first();
             //var_dump($internos);exit;
         if($internos) $message = "El instructor interno ha excedido el número de cursos a impartir (máximo 2 cursos al mes). Favor de verificar.";
         else $valido = true;
         
-        
-        ///VALIDACIÓN 5 meses de actividad y 30 días naturales de RECESO
-        $receso =  DB::table('tbl_cursos as c')->where('id_instructor',$id_instructor)
-        ->where('c.inicio','>=',DB::raw("date_trunc('month', (SELECT max(tbl_cursos.termino) from tbl_cursos where tbl_cursos.id_instructor = c.id_instructor)::timestamp) - interval '5 month'"))
-        ->value(DB::raw("count( distinct(date_trunc('month', c.inicio)))"));
-       
-        //dd($receso);
-        if($receso>5){
-            $receso = DB::table('tbl_cursos as c')//->select('inicio','termino',DB::raw("COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp ) from tbl_cursos as tc where tc.id_instructor= c.id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0) as dias"))
-            ->where('c.id_instructor',$id_instructor)        
-            ->where('c.inicio', '>=', DB::raw("date_trunc('month', (SELECT max(termino) from tbl_cursos where tbl_cursos.id_instructor = c.id_instructor)::timestamp) - interval '5 month'"))        
-            
-            ->where(DB::raw("COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp ) from tbl_cursos as tc where tc.id_instructor=c.id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)::int"),'>',30)
-        
+        ///VALIDACIÓN 5 meses de actividad y 30 días naturales de RECESO        
+        if($valido==true){                    
+            $receso =  DB::table('tbl_cursos as tc')->where('id_instructor',$id_instructor)
             ->where(function($query){
-                $query->where('c.status_curso','<>','CANCELADO')->orWherenull('c.status_curso');
+                $query->where('tc.status_curso','<>','CANCELADO')->orWherenull('tc.status_curso');
             }) 
-            ->orderby('c.inicio','ASC')//->get();
-            ->first();//value(DB::raw("COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp ) from tbl_cursos as tc where tc.id_instructor= c.id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)"));
-            
-            if($receso) $valido = true;
-            else{
+            ->where('tc.inicio','>',DB::raw("
+            COALESCE(
+                (select max(inicio) from tbl_cursos as c where c.id_instructor = $id_instructor
+                    and c.inicio>= (SELECT  max(termino)::timestamp - interval '181 day' from tbl_cursos where tbl_cursos.id_instructor = $id_instructor)
+                    and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
+                    from tbl_cursos as tc where tc.id_instructor = $id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>30 )
+                    , (select min(inicio) from tbl_cursos where id_instructor = $id_instructor))
+            "))
+            ->value(DB::raw("DATE_PART('day', max(tc.termino)::timestamp - min(tc.inicio)::timestamp)+1"));
+            //dd($receso);
+            if($receso>150){
                 $valido = false;
-                $message = "La actividad del instructor supera el límite de 5 meses continuos. Deberá tomar un receso de 30 días naturales.";
+                $message = "El instructor supera el límite de 150 días de actividad, deberá tomar un receso mínimo 30 días naturales.";
             }
         }
         return ['valido' => $valido, 'message' => $message];
