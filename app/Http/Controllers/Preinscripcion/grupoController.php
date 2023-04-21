@@ -1320,8 +1320,7 @@ class grupoController extends Controller
             }) 
             ->where('tc.inicio','>',DB::raw("
             COALESCE(
-                (select max(inicio) from tbl_cursos as c where c.id_instructor = $id_instructor
-                    and c.inicio>= (SELECT  max(termino)::timestamp - interval '360 day' from tbl_cursos where tbl_cursos.id_instructor = $id_instructor)
+                (select max(inicio) from tbl_cursos as c where c.id_instructor = $id_instructor                    
                     and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
                     from tbl_cursos as tc where tc.id_instructor = $id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>30 )
                     , (select min(inicio) from tbl_cursos where id_instructor = $id_instructor))
