@@ -93,13 +93,14 @@ class PagoController extends Controller
         ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
         ->orderBy('pagos.created_at', 'desc')
         ->PAGINATE(50, [
-            'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
-            'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.fecha_status','folios.permiso_editar',
-            'contratos.docs', 'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml', 'contratos.arch_contrato',
-            'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_solicitud_pago','pagos.arch_asistencia','pagos.arch_evidencia',
-            'pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','instructores.archivo_bancario',
-            'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
-            'pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo', 'instructores.archivo_alta','instructores.archivo_ine',
+            'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.arch_contrato',
+            'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.fecha_status', 'contratos.docs',
+            'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml','folios.permiso_editar',
+            'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_solicitud_pago',
+            'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
+            'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor',
+            'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
+            'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
             // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
         ]);
@@ -153,12 +154,12 @@ class PagoController extends Controller
                 // ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(50, [
                     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status',
-                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
-                    'folios.permiso_editar','contratos.docs','contratos.observacion', 'folios.status',
-                    'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.arch_asistencia','pagos.arch_evidencia',
-                    'pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso',
-                    'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
-                    'pagos.agendado_extemporaneo','folios.observacion_recepcion_rechazo', 'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
+                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.docs','contratos.observacion',
+                    'folios.status','folios.id_folios','folios.id_supre','folios.recepcion','folios.permiso_editar','pagos.arch_solicitud_pago',
+                    'pagos.fecha_agenda','pagos.arch_asistencia','pagos.arch_evidencia','pagos.arch_calificaciones','pagos.arch_evidencia',
+                    'pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion','tbl_cursos.id_instructor',
+                    'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso','tabla_supre.doc_validado',
+                    'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
                     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
                 ]);
@@ -539,33 +540,63 @@ class PagoController extends Controller
     public function agendar_entrega_pago(Request $request)
     {
         // dd($request);
+        $id_instructor  = DB::TABLE('contratos')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->WHERE('contratos.id_contrato', $request->id_contrato_agenda)
+            ->VALUE('tbl_cursos.id_instructor');
+
         $doc_factura_pdf = $request->file('factura_pdf'); # obtenemos el archivo
         $doc_factura_xml = $request->file('factura_xml'); # obtenemos el archivo
-        $doc_contrato = $request->file('contrato_pdf'); # obtenemos el archivo
+        $doc_contrato = $request->file('contratof_pdf'); # obtenemos el archivo
         $doc_solpa = $request->file('solpa_pdf'); # obtenemos el archivo
+        $doc_asistencias = $request->file('asistencias_pdf'); # obtenemos el archivo
+        $doc_calificaciones = $request->file('calificaciones_pdf'); # obtenemos el archivo
+        $doc_evidencia_fotografica = $request->file('evidencia_fotografica_pdf');
 
         $contrato = contratos::find($request->id_contrato_agenda);
         if(isset($doc_factura_pdf))
         {
-            $factura_pdf = $this->pdf_upload($doc_factura_pdf, $request->id_contrato_agenda, 'factura_pdf'); # invocamos el método
+            $factura_pdf = $this->pdf_upload($doc_factura_pdf, $request->id_contrato_agenda, $id_instructor, 'factura_pdf'); # invocamos el método
             $contrato->arch_factura = $factura_pdf;
         }
         if(isset($doc_factura_xml))
         {
-            $factura_xml = $this->xml_upload($doc_factura_xml, $request->id_contrato_agenda, 'factura_xml'); # invocamos el método
+            $factura_xml = $this->xml_upload($doc_factura_xml, $request->id_contrato_agenda, $id_instructor, 'factura_xml'); # invocamos el método
             $contrato->arch_factura_xml = $factura_xml;
         }
+        if(isset($doc_contrato))
+        {
+            $contrato_pdf = $this->pdf_upload($doc_contrato, $request->id_contrato_agenda, $id_instructor, 'contrato'); # invocamos el método
+            $contrato->arch_contrato = $contrato_pdf;
+        }
+        if(isset($doc_solpa))
+        {
+            $solpa_pdf = $this->pdf_upload($doc_solpa, $request->id_contrato_agenda, $id_instructor, 'solicitud_pago'); # invocamos el método
+            $pago = pago::where('id_contrato', $request->id_contrato_agenda)
+            ->update(['arch_solicitud_pago' => $solpa_pdf]);
+        }
+        if(isset($doc_asistencias))
+        {
+            $asistencias_pdf = $this->pdf_upload($doc_asistencias, $request->id_contrato_agenda, $id_instructor, 'lista_asistencia'); # invocamos el método
+            $pago = pago::where('id_contrato', $request->id_contrato_agenda)
+            ->update(['arch_asistencia' => $asistencias_pdf]);
+        }
+        if(isset($doc_calificaciones))
+        {
+            $calificaciones_pdf = $this->pdf_upload($doc_calificaciones, $request->id_contrato_agenda, $id_instructor, 'lista_calificaciones'); # invocamos el método
+            $pago = pago::where('id_contrato', $request->id_contrato_agenda)
+            ->update(['arch_calificaciones' => $asistencias_pdf]);
+        }
+        if(isset($doc_evidencia_fotografica))
+        {
+            $evidencia_fotografica_pdf = $this->pdf_upload($doc_evidencia_fotografica, $request->id_contrato_agenda, $id_instructor, 'evidencia_fotografica'); # invocamos el método
+            $pago = pago::where('id_contrato', $request->id_contrato_agenda)
+            ->update(['arch_evidencia' => $evidencia_fotografica_pdf]);
+        }
 
-        $contrato_pdf = $this->pdf_upload($doc_contrato, $request->id_contrato_agenda, 'contrato'); # invocamos el método
-        $solpa_pdf = $this->pdf_upload($doc_solpa, $request->id_contrato_agenda, 'solicitud_pago'); # invocamos el método
-
-        $pago = pago::where('id_contrato', $request->id_contrato_agenda)
-            ->update(['fecha_agenda' => $request->agendar_date,
-                      'arch_solicitud_pago' => $solpa_pdf]);
-
-        $folio = folio::find($contrato->id_folios)->update(['observacion_recepcion_rechazo' => NULL]);
-
-        $contrato->arch_contrato = $contrato_pdf;
+        pago::where('id_contrato', $request->id_contrato_agenda)
+            ->update(['status_recepcion' => 'En Espera']);
         $contrato->save();
 
         return redirect()->route('pago-inicio')
@@ -673,21 +704,21 @@ class PagoController extends Controller
         return $pdf->stream('RF-001.pdf');
     }
 
-    protected function pdf_upload($pdf, $id, $nom)
+    protected function pdf_upload($pdf, $id, $idins, $nom)
     {
         # nuevo nombre del archivo
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
-        $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
-        $pdfUrl = Storage::url('/uploadFiles/supre/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $pdf->storeAs('/uploadFiles/instructor/'.$idins.'/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/instructor/'.$idins."/".$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
     }
 
-    protected function xml_upload($xml, $id, $nom)
+    protected function xml_upload($xml, $id, $idins, $nom)
     {
         # nuevo nombre del archivo
         $xmlFile = trim($nom."_".date('YmdHis')."_".$id.".xml");
-        $xml->storeAs('/uploadFiles/supre/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
-        $xmlUrl = Storage::url('/uploadFiles/supre/'.$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $xml->storeAs('/uploadFiles/instructor/'.$idins.'/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
+        $xmlUrl = Storage::url('/uploadFiles/instructor/'.$idins."/".$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $xmlUrl;
     }
 

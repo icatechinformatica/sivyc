@@ -602,6 +602,13 @@ class ContratoController extends Controller
         // dd($request);
         $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
         $urldocs = null;
+
+        $id_instructor  = DB::TABLE('contratos')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->WHERE('contratos.id_contrato', $request->id_contrato)
+            ->VALUE('tbl_cursos.id_instructor');
+
         if(isset($check_pago))
         {
             return back()->withErrors(sprintf('LO SENTIMOS, EL MEMORANDUM DE PAGO INGRESADO YA SE ENCUENTRA REGISTRADO', $request->no_memo));
@@ -614,14 +621,14 @@ class ContratoController extends Controller
         // $pago->solicitud_fecha = $request->solicitud_fecha;
 
         $file = $request->file('arch_asistencia'); # obtenemos el archivo
-        $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
+        $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_asistencia'); #invocamos el método
         // // guardamos en la base de datos
         // $pago->arch_asistencia = trim($urldocs);
 
         if ($request->arch_evidencia != NULL)
         {
             $file = $request->file('arch_evidencia'); # obtenemos el archivo
-            $urldocs2 = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
+            $urldocs2 = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_evidencia'); #invocamos el método
             // guardamos en la base de datos
             // $pago->arch_evidencia = trim($urldocs);
         }
@@ -659,7 +666,7 @@ class ContratoController extends Controller
         if(isset($request->arch_factura))
         {
             $file = $request->file('arch_factura'); # obtenemos el archivo
-            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'factura_pdf'); #invocamos el método
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'factura_pdf'); #invocamos el método
             $contrato = contratos::find($request->id_contrato);
             $contrato->arch_factura = trim($urldocs);
             $contrato->save();
@@ -667,7 +674,7 @@ class ContratoController extends Controller
         if(isset($request->arch_factura_xml))
         {
             $file_xml = $request->file('arch_factura_xml'); # obtenemos el archivo
-            $urldocs = $this->xml_upload($file_xml, $request->id_contrato, 'factura_xml'); #invocamos el método
+            $urldocs = $this->xml_upload($file_xml, $request->id_contrato, $id_instructor, 'factura_xml'); #invocamos el método
             $contrato = contratos::find($request->id_contrato);
             $contrato->arch_factura_xml = trim($urldocs);
             $contrato->save();
@@ -738,6 +745,12 @@ class ContratoController extends Controller
 
     public function save_mod_solpa(Request $request){
 
+        $id_instructor  = DB::TABLE('contratos')
+        ->JOIN('folios','folios.id_folios','contratos.id_folios')
+        ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+        ->WHERE('contratos.id_contrato', $request->id_contrato_agenda)
+        ->VALUE('tbl_cursos.id_instructor');
+
         $pago = pago::find($request->id_pago);
         $pago->no_memo = $request->no_memo;
         $pago->id_contrato = $request->id_contrato;
@@ -749,7 +762,7 @@ class ContratoController extends Controller
         if($request->arch_asistencia != NULL)
         {
             $file = $request->file('arch_asistencia'); # obtenemos el archivo
-            $urldocs = $this->pago_upload($file, $request->id_contrato, 'asistencia'); #invocamos el método
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'asistencia'); #invocamos el método
             // guardamos en la base de datos
             $pago->arch_asistencia = trim($urldocs);
         }
@@ -757,7 +770,7 @@ class ContratoController extends Controller
         if($request->arch_evidencia != NULL)
         {
             $file = $request->file('arch_evidencia'); # obtenemos el archivo
-            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'evidencia'); #invocamos el método
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'evidencia'); #invocamos el método
             // guardamos en la base de datos
             $pago->arch_evidencia = trim($urldocs);
         }
@@ -775,7 +788,7 @@ class ContratoController extends Controller
         if(isset($request->arch_factura))
         {
             $file = $request->file('arch_factura'); # obtenemos el archivo
-            $urldocs = $this->pdf_upload($file, $request->id_contrato, 'factura_pdf'); #invocamos el método
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'factura_pdf'); #invocamos el método
             $contrato = contratos::find($request->id_contrato);
             $contrato->arch_factura = trim($urldocs);
             $contrato->save();
@@ -783,7 +796,7 @@ class ContratoController extends Controller
         if(isset($request->arch_factura_xml))
         {
             $file_xml = $request->file('arch_factura_xml'); # obtenemos el archivo
-            $urldocs = $this->xml_upload($file_xml, $request->id_contrato, 'factura_xml'); #invocamos el método
+            $urldocs = $this->xml_upload($file_xml, $request->id_contrato, $id_instructor, 'factura_xml'); #invocamos el método
             $contrato = contratos::find($request->id_contrato);
             $contrato->arch_factura_xml = trim($urldocs);
             $contrato->save();
@@ -1182,20 +1195,20 @@ class ContratoController extends Controller
         return $pdfUrl;
     }
 
-    protected function pdf_upload($pdf, $id, $nom)
+    protected function pdf_upload($pdf, $id, $idins, $nom)
     {
         # nuevo nombre del archivo
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
-        $pdf->storeAs('/uploadContrato/contrato/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
-        $pdfUrl = Storage::url('/uploadContrato/contrato/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $pdf->storeAs('/uploadContrato/contrato/'.$idins.'/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadContrato/contrato/'.$idins."/".$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
     }
-    protected function xml_upload($xml, $id, $nom)
+    protected function xml_upload($xml, $id, $idins, $nom)
     {
         # nuevo nombre del archivo
         $xmlFile = trim($nom."_".date('YmdHis')."_".$id.".xml");
-        $xml->storeAs('/uploadContrato/contrato/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
-        $xmlUrl = Storage::url('/uploadContrato/contrato/'.$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $xml->storeAs('/uploadContrato/contrato/'.$idins .'/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
+        $xmlUrl = Storage::url('/uploadContrato/contrato/'.$idins."/".$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $xmlUrl;
     }
 

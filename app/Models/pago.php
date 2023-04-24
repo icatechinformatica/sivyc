@@ -14,11 +14,13 @@ class pago extends Model
         'id','no_memo','fecha','nombre_ccp1','puesto_ccp1','nombre_ccp2','puesto_ccp2','nombre_ccp3',
         'puesto_ccp3','elaboro','id_contrato','nombre_para','puesto_para','no_pago','descripcion',
         'observacion','fecha_status','liquido','solicitud_fecha','chk_rechazado','fecha_rechazo',
-        'fecha_validado','arch_pago','fecha_agenda','arch_solicitud_pago','agendado_extemporaneo','arch_calificaciones'
+        'fecha_validado','arch_pago','fecha_agenda','arch_solicitud_pago','agendado_extemporaneo','arch_calificaciones',
+        'status_recepcion','observacion_rechazo_recepcion'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
-    protected $casts = ['fecha_rechazo' => 'array'];
+    protected $casts = ['fecha_rechazo' => 'array',
+                        'historial' => 'array'];
 
     /**
      * obtener el instructor que pertenece al perfil
