@@ -29,7 +29,7 @@
             header {
             position: fixed;
             left: 0px;
-            top: 0px;
+            top: -10px;
             right: 0px;
             color: black;
             text-align: center;
@@ -146,7 +146,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $i = 32; @endphp
+                        @php $i = 30; @endphp
                         @foreach($cursos AS $key => $cold)
                             <tr>
                                 <td><small>{{$instructor->apellidoPaterno}} {{$instructor->apellidoMaterno}} {{$instructor->nombre}}</small></td>
