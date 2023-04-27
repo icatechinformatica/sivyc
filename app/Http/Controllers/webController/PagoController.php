@@ -96,7 +96,7 @@ class PagoController extends Controller
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.arch_contrato',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.fecha_status', 'contratos.docs',
             'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml','folios.permiso_editar',
-            'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.created_at','pagos.arch_solicitud_pago',
+            'folios.status','folios.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
             'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
             'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor',
             'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
@@ -153,13 +153,13 @@ class PagoController extends Controller
                 ->orderBy('pagos.created_at', 'desc')
                 // ->orderBy('contratos.fecha_firma', 'desc')
                 ->PAGINATE(50, [
-                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status',
+                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status','contratos.arch_contrato',
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.docs','contratos.observacion',
-                    'folios.status','folios.id_folios','folios.id_supre','folios.recepcion','folios.permiso_editar','pagos.arch_solicitud_pago',
-                    'pagos.fecha_agenda','pagos.arch_asistencia','pagos.arch_evidencia','pagos.arch_calificaciones','pagos.arch_evidencia',
-                    'pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion','tbl_cursos.id_instructor',
-                    'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso','tabla_supre.doc_validado',
-                    'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
+                    'contratos.arch_factura', 'contratos.arch_factura_xml','folios.status','folios.id_folios','folios.id_supre','folios.recepcion',
+                    'folios.permiso_editar','pagos.status_recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.arch_asistencia','pagos.arch_evidencia',
+                    'pagos.arch_calificaciones','pagos.arch_evidencia','pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion',
+                    'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso',
+                    'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
                     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
                 ]);
@@ -614,7 +614,71 @@ class PagoController extends Controller
     public function rechazar_entrega_fisica(Request $request)
     {
         // dd($request);
-        $folio = folio::find($request->id_folio_entrega_rechazo)->update(['observacion_recepcion_rechazo' => $request->observacion_rechazo]);
+        $updarray = $arrhistorial = array();
+        $update = pago::WHERE('id_contrato',$request->id_contrato_entrega_rechazo)->first();
+        $archivos = DB::TABLE('contratos')
+            ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
+            'instructor_mespecialidad','espe','archivo_alta')
+            ->WHERE('contratos.id_contrato', $request->id_contrato_entrega_rechazo)
+            ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+            ->SELECT('especialidad_instructores.id','especialidades.nombre')
+            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidades.nombre', '=', $archivos->espe)
+            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+            ->FIRST();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                {
+                    $archivos->instructor_mespecialidad = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+        }
+
+        $update->observacion_rechazo_recepcion = $request->observacion_rechazo;
+        $update->status_recepcion = 'Rechazado';
+        $updarray = ['status' => 'Rechazado',
+                     'observacion' => $update->observacion_rechazo_recepcion,
+                     'solicitud_pago' => $update->arch_solicitud_pago,
+                     'cuenta_bancaria' => $archivos->archivo_bancario,
+                     'validacion_instructor' => $archivos->instructor_mespecialidad,
+                     'arc' => $archivos->pdf_curso,
+                     'valsupre' => $archivos->doc_validado,
+                     'factura_pdf' => $archivos->arch_factura,
+                     'factura_xml' => $archivos->arch_factura_xml,
+                     'contrato' => $archivos->arch_contrato,
+                     'identificacion' => $archivos->archivo_ine,
+                     'asistencia' => $update->arch_asistencia,
+                     'calificacion' => $update->arch_calificaciones,
+                     'evidencia' => $update->arch_evidencia];
+
+        if(!isset($update->historial))
+        {
+            array_push($arrhistorial,$updarray);
+        }
+        else
+        {
+            $arrhistorial = $update->historial;
+            array_push($arrhistorial,$updarray); dd($arrhistorial);
+        }
+        $update->historial = $arrhistorial;
+        $update->save();
         return redirect()->route('pago-inicio')
                 ->with('success', 'Rechazo de entrega de Documentos Correctamente');
     }

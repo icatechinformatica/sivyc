@@ -1199,16 +1199,16 @@ class ContratoController extends Controller
     {
         # nuevo nombre del archivo
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
-        $pdf->storeAs('/uploadContrato/contrato/'.$idins.'/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
-        $pdfUrl = Storage::url('/uploadContrato/contrato/'.$idins."/".$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $pdf->storeAs('/uploadContrato/instructor/'.$idins.'/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadContrato/instructor/'.$idins."/".$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
     }
     protected function xml_upload($xml, $id, $idins, $nom)
     {
         # nuevo nombre del archivo
         $xmlFile = trim($nom."_".date('YmdHis')."_".$id.".xml");
-        $xml->storeAs('/uploadContrato/contrato/'.$idins .'/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
-        $xmlUrl = Storage::url('/uploadContrato/contrato/'.$idins."/".$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $xml->storeAs('/uploadContrato/instructor/'.$idins .'/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
+        $xmlUrl = Storage::url('/uploadContrato/instructor/'.$idins."/".$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $xmlUrl;
     }
 
