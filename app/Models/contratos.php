@@ -103,7 +103,7 @@ class contratos extends Model
                         break;
                     case 'agendar_fecha':
                         return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
-                                    ->WHERE('folios.recepcion',NULL);
+                                    ->WHERE('pagos.recepcion',NULL);
                         break;
                 }
             }
@@ -179,8 +179,12 @@ class contratos extends Model
             }
             if($tipo == 'agendar_fecha')
             {
+                if(isset($unidad))
+                {
+                    $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
+                }
                 return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
-                                ->WHERE('folios.recepcion',NULL);
+                                ->WHERE('pagos.recepcion',NULL);
             }
         }
         if (!empty($tipo_status)) {

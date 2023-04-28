@@ -768,7 +768,10 @@ Route::post('/financieros/upload/pago-autorizado','webController\PagoController@
 Route::post('/financieros/reporte/tramites_valrec','webController\PagoController@reporte_validados_recepcionados')->name('reporte_valrecep');
 Route::post('/financieros/agendar-fecha-entrega-pago','webController\PagoController@agendar_entrega_pago')->name('agendar-entrega-pago');
 Route::post('/financieros/recepcion-entrega-fisica','webController\PagoController@confirmar_entrega_fisica')->name('confirmar-entrega-fisica');
+Route::post('/financieros/validar-cita-fisica','webController\PagoController@validar_cita_fisica')->name('validar-cita-fisica');
 Route::post('/financieros/rechazo/recepcion-entrega-fisica','webController\PagoController@rechazar_entrega_fisica')->name('rechazar-entrega-fisica');
+Route::post('/financieros/denegado/recepcion-entrega-fisica','webController\PagoController@norecibido_entrega_fisica')->name('norecibido-entrega-fisica');
+Route::post('/financieros/aceptado/recepcion-entrega-fisica','webController\PagoController@recibido_entrega_fisica')->name('recibido-entrega-fisica');
 
 //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
