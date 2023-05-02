@@ -91,7 +91,7 @@ class PagoController extends Controller
         ->PAGINATE(25, [
             'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
             'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
-            'contratos.docs', 'contratos.observacion', 'folios.status','folios.recepcion', 'folios.id_folios',
+            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios',
             'folios.id_supre','pagos.created_at','pagos.arch_pago'
         ]);
         switch ($roles[0]->role_name) {
@@ -144,7 +144,7 @@ class PagoController extends Controller
                     'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
                     'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
                     'folios.permiso_editar','contratos.docs',
-                    'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','folios.recepcion','pagos.arch_pago'
+                    'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','pagos.arch_pago'
                 ]);
                 break;
         }
