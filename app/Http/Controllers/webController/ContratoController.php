@@ -165,7 +165,7 @@ class ContratoController extends Controller
                         'tabla_supre.id','tabla_supre.no_memo',
                         'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','contratos.created_at',
                         'folios.status','folios.id_folios', 'folios.folio_validacion','folios.permiso_editar',
-                        'folios.recepcion','tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
+                        'tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
                         'contratos.fecha_status','contratos.observacion','tbl_cursos.termino AS fecha_termino',
                         'tbl_cursos.inicio AS fecha_inicio',
                         DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")]);
