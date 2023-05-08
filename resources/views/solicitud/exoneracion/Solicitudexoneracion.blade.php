@@ -10,7 +10,7 @@
         
         .tb {width: 100%; border-collapse: collapse; text-align: center; font-size: 8px;}
         .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
-        .tb thead{background: #EAECEE; }
+        .tb thead{background: #EAECEE; width: 100%; }
         .page-break {
             page-break-after: always;
         }
@@ -209,7 +209,7 @@
                             <th>TIPO DE CAPACITACIÓN</th>
                             <th>PRESENCIAL</th>
                             <th colspan="2">LUGAR DE CAPACITACIÓN</th>
-                            <th colspan="3">{{$item['lugar']}}</th>
+                            <th colspan="3" width='55%'>{{$item['lugar']}} </th>
                         @else
                         <th>TIPO DE CAPACITACIÓN</th>
                         <th colspan="6">A DISTANCIA</th>
