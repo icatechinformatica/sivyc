@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportExcel;
+use ZipArchive;
 
 class PagoController extends Controller
 {
@@ -1020,6 +1021,92 @@ class PagoController extends Controller
         $xml->storeAs('/uploadFiles/instructor/'.$idins.'/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
         $xmlUrl = Storage::url('/uploadFiles/instructor/'.$idins."/".$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $xmlUrl;
+    }
+
+    public function downloadRar($id_contrato)
+    {
+        $archivos = DB::TABLE('pagos')->SELECT('pagos.arch_solicitud_pago','pagos.arch_asistencia','pagos.arch_evidencia','pagos.arch_calificaciones',
+        'instructores.archivo_bancario','tbl_cursos.instructor_mespecialidad','tbl_cursos.pdf_curso','tbl_cursos.espe','tabla_supre.doc_validado',
+        'contratos.arch_factura','contratos.arch_factura_xml','contratos.arch_contrato','contratos.numero_contrato','instructores.archivo_ine')
+        ->JOIN('contratos','contratos.id_contrato','pagos.id_contrato')
+        ->JOIN('folios','folios.id_folios','contratos.id_folios')
+        ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+        ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+        ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')
+        ->WHERE('pagos.id_contrato',$id_contrato)
+        ->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+            ->SELECT('especialidad_instructores.id','especialidades.nombre')
+            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidades.nombre', '=', $archivos->espe)
+            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+            ->FIRST();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                {
+                    $archivos->instructor_mespecialidad = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+        }
+
+    $zip = new ZipArchive;
+    $fileName = 'documentacion_'.$id_contrato.'.rar';
+    $filePath = public_path($fileName);
+
+    if ($zip->open($filePath, ZipArchive::CREATE) !== TRUE) {
+        // Handle error creating RAR archive
+        return response("Failed to create RAR archive", 500);
+    }
+
+        // Add files to the RAR archive
+        $zip->addFile($archivos->arch_solicitud_pago, 'solicitud_pago.pdf');
+        $zip->addFile($archivos->archivo_bancario, 'banco.pdf');
+        $zip->addFile($archivos->instructor_mespecialidad, 'validacion_instructor.pdf');
+        $zip->addFile($archivos->pdf_curso, 'ARC.pdf');
+        $zip->addFile($archivos->doc_validado, 'suficiencia_presupuestal.pdf');
+        $zip->addFile($archivos->arch_factura, 'factura.pdf');
+        $zip->addFile($archivos->arch_factura_xml, 'factura_xml.xml');
+        $zip->addFile($archivos->arch_contrato, 'contrato.pdf');
+        $zip->addFile($archivos->archivo_ine, 'identificacion pdf');
+        if(isset($archivos->arch_asistencia))
+        {
+            $zip->addFile($archivos->arch_asistencia, 'asistencias.pdf');
+        }
+        if(isset($archivos->arch_evidencia))
+        {
+            $zip->addFile($archivos->arch_evidencia, 'evidencia_fotografica.pdf');
+        }
+        if(isset($archivos->arch_calificaciones))
+        {
+            $zip->addFile($archivos->arch_calificaciones, 'calificaciones.pdf');
+        }
+
+        $zip->close();
+
+        if (!file_exists($filePath)) {
+            // Handle error: file not found
+            return response("File not found", 500);
+        }
+
+        $headers = [
+            'Content-Type' => 'application/rar',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        return response()->download($filePath, $fileName, $headers)->deleteFileAfterSend(true);
+
     }
 
 

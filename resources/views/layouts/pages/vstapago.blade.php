@@ -134,7 +134,7 @@
                     @endcan --}}
                     <th width="160px" style="font-size: 15px">Acciones</th>
                     <th scope="col" width="200px" style="font-size: 15px">Fecha de Entrega Fisica</th>
-                    {{-- <th scope="col" width="130px" style="font-size: 15px">Factura</th> --}}
+                    <th scope="col" width="130px" style="font-size: 15px">ZIP</th>
                 </tr>
             </thead>
             <tbody>
@@ -326,14 +326,11 @@
                                 @endswitch
                             @endif
                         </td>
-                        {{-- <td style="font-size: 13px">
-                            @if (isset($itemData->arch_factura))
-                                <a class="btn btn-info" href="{{$itemData->arch_factura}}" target="_blank">PDF</a>
-                            @endif
-                            @if (isset($itemData->arch_factura_xml))
-                                <a class="btn btn-info" href="{{$itemData->arch_factura_xml}}" target="_blank">XML</a>
-                            @endif
-                        </td> --}}
+                        <td style="font-size: 13px">
+                            <a class="btn btn-success" title="Descargar Documentación" href="{{route('downloadRarPagos', ['id_contrato' => $itemData->id_contrato])}}">
+                                Descargar
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
