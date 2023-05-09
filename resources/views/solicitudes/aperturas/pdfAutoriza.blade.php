@@ -67,7 +67,7 @@
         </table>
     </div>    
 @endsection
-@section('body')
+@section('content')
     <div id="para"> 
         PARA: {{ $reg_unidad->dunidad }}.- {{$reg_unidad->pdunidad}}<br/>
         DE: {{ $reg_unidad->dacademico }}.- {{$reg_unidad->pdacademico}}<br/>
