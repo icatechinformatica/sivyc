@@ -3222,20 +3222,23 @@ class InstructorController extends Controller
                     $especialidades[$pos] = $item;
                 }
             }
-            switch($item->status)
+            if($tipo_doc != 'REACTIVACION')
             {
-                case 'REVALIDACION EN FIRMA';
-                    $tipo_doc = 'REVALIDACION';
-                break;
-                case 'REACTIVACION EN FIRMA';
-                    $tipo_doc = 'REACTIVACION';
-                break;
-                case 'REVALIDACION EN PREVALIDACION';
-                    $tipo_doc = 'REVALIDACION';
-                break;
-                case 'REACTIVACION EN PREVALIDACION';
-                    $tipo_doc = 'REACTIVACION';
-                break;
+                switch($item->status)
+                {
+                    case 'REVALIDACION EN FIRMA';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
+                    case 'REACTIVACION EN FIRMA';
+                        $tipo_doc = 'REACTIVACION';
+                    break;
+                    case 'REVALIDACION EN PREVALIDACION';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
+                    case 'REACTIVACION EN PREVALIDACION';
+                        $tipo_doc = 'REACTIVACION';
+                    break;
+                }
             }
         }
 
