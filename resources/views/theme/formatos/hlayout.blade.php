@@ -50,7 +50,7 @@
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </div>
     </footer>
-    <conten>
+    <content>
         @yield("content")
     </content>
     
