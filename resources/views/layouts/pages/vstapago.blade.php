@@ -37,13 +37,15 @@
             color: #fff;
             cursor: pointer;
             transition: background .2s ease-in-out;
-            width: 110px;
+            width: 70px;
             text-align: left;
+            content: "Subir";
         }
 
         input[type=file]::file-selector-button:hover {
             background: #0d45a5;
         }
+
     </style>
     <div class="container g-pt-50">
         @if ($message =  Session::get('info'))
@@ -139,7 +141,7 @@
             </thead>
             <tbody>
                 @foreach ($contratos_folios as $itemData)
-                    <tr @if($itemData->alerta == TRUE && is_null($itemData->fecha_agenda)) style='background-color: #621032; color: white;' @endif>
+                    <tr @can('contratos.create')@if($itemData->alerta == TRUE && is_null($itemData->fecha_agenda)) style='background-color: #621032; color: white;' @endif @endcan>
                         <td style="font-size: 13px">{{$itemData->numero_contrato}}</td>
                         <td style="font-size: 13px">
                             @if($itemData->created_at != NULL)
@@ -282,7 +284,7 @@
                                     @case('En Espera')
                                         En Espera de Revisión Digital
                                         @can('contratos.create')
-                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","EN ESPERA"]'>
                                                 AGENDAR ENTREGA
                                             </a>
                                         @endcan
@@ -516,54 +518,54 @@
                                 <tbody>
                                     <tr>
                                         <td id="td1v" style="text-align: left; vertical-align: left; font-size: 12px;">1.- Solicitud de Pago</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpav" name="show_solpav">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpav" name="show_solpav">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td5v" style="text-align: left; vertical-align: left; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprev" name="show_validacion_suprev">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprev" name="show_validacion_suprev">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td9v" style="text-align: left; vertical-align: left; font-size: 12px;">9.- Identificación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Identificación de Instructor" id="show_identificacionv" name="show_identificacionv">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionv" name="show_identificacionv">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td2v" style="text-align: left; vertical-align: left; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariav" name="show_cuenta_bancariav">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariav" name="show_cuenta_bancariav">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td6v" style="text-align: left; vertical-align: left; font-size: 12px;">6.- Factura PDF</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td10v" style="text-align: left; vertical-align: left; font-size: 12px;">10.- Lista de Asistencias</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Lista de Asistencias" id="show_asistenciasv" name="show_asistenciasv">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Lista de Asistencias" id="show_asistenciasv" name="show_asistenciasv">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td3v" style="text-align: left; vertical-align: left; font-size: 12px;">3.- Validación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorv" name="show_validacion_instructorv">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorv" name="show_validacion_instructorv">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td7v" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Factura XML</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td11v" style="text-align: left; vertical-align: left; font-size: 12px;">11.- Reporte de Evidencias Fotográficas</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotograficav" name="show_evidencia_fotograficav">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotograficav" name="show_evidencia_fotograficav">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td4v" style="text-align: left; vertical-align: left; font-size: 12px;">4.- ARC-01/02</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="ARC-01" id="show_arc01v" name="show_arc01v">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01v" name="show_arc01v">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td8v" style="text-align: left; vertical-align: left; font-size: 12px;">8.- Contrato</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Contrato Firmada" id="show_contratov" name="show_contratov">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contratov" name="show_contratov">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                 </tbody>
@@ -609,50 +611,50 @@
                                 <tbody>
                                     <tr>
                                         <td id="td1vc" style="text-align: left; vertical-align: left; font-size: 12px;">1.- Solicitud de Pago</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpavc" name="show_solpavc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpavc" name="show_solpavc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td5vc" style="text-align: left; vertical-align: left; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprevc" name="show_validacion_suprevc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprevc" name="show_validacion_suprevc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td9vc" style="text-align: left; vertical-align: left; font-size: 12px;">9.- Identificación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Identificación de Instructor" id="show_identificacionvc" name="show_identificacionvc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionvc" name="show_identificacionvc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td2vc" style="text-align: left; vertical-align: left; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariavc" name="show_cuenta_bancariavc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariavc" name="show_cuenta_bancariavc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id='td10vc' style="text-align: left; vertical-align: left; font-size: 12px;">10.- Lista de Calificaciones</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesvc" name="show_calificacionesvc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesvc" name="show_calificacionesvc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td6vc" style="text-align: left; vertical-align: left; font-size: 12px;">6.- Factura PDF</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfvc" name="show_fact_pdfvc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td3vc" style="text-align: left; vertical-align: left; font-size: 12px;">3.- Validación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorvc" name="show_validacion_instructorvc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorvc" name="show_validacion_instructorvc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td7vc" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Factura XML</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlvc" name="show_fact_xmlvc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                     <tr>
                                         <td id="td4vc" style="text-align: left; vertical-align: left; font-size: 12px;">4.- ARC-01/02</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="ARC-01" id="show_arc01vc" name="show_arc01vc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01vc" name="show_arc01vc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td id="td8vc" style="text-align: left; vertical-align: left; font-size: 12px;">8.- Contrato</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Contrato Firmada" id="show_contratovc" name="show_contratovc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td><a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contratovc" name="show_contratovc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                     </tr>
                                 </tbody>
@@ -763,83 +765,99 @@
                                 <caption>Documentos para Recepción</caption>
                                 <tbody>
                                     <tr>
-                                        <td id="td1" style="text-align: centery; vertical-align: middley; font-size: 12px;">1.- Solicitud de Pago</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpa" name="show_solpa">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id="td1" style="text-align: left; vertical-align: middley; font-size: 12px;">1.- Solicitud de Pago</td>
+                                        <td><a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpa" name="show_solpa">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="solpa_pdf" name="solpa_pdf"></td>
-                                        <td id="td8" style="text-align: centery; vertical-align: middley; font-size: 12px;">8.- Contrato</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Contrato Firmada" id="show_contrato" name="show_contrato">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="solpa_icon" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
+                                        <td id="td8" style="text-align: left; vertical-align: middley; font-size: 12px;">8.- Contrato</td>
+                                        <td><a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contrato" name="show_contrato">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="contratof_pdf" name="contratof_pdf"></td>
+                                        <td width='10px;' style="vertical-align:middle;"><i id="contratof_icon" class="fas fa-times-circle text-danger"></td>
+                                    </tr>
+                                    <tr style="background-color:lightgray;">
+                                        <td id="td2" style="text-align: left; vertical-align: middley; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
+                                        <td style="margin-top:10px;"><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancaria" name="show_cuenta_bancaria">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="vertical-align:middle; background-color:white;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
+                                        <td id="td9" style="text-align: left; vertical-align: middley; font-size: 12px;">9.- Identificación de Instructor</td>
+                                        <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacion" name="show_identificacion">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="vertical-align:middle; background-color:white;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id="td2" style="text-align: centery; vertical-align: middley; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancaria" name="show_cuenta_bancaria">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id="td3" style="text-align: left; vertical-align: middley; font-size: 12px; background-color:lightgray;">3.- Validación de Instructor</td>
+                                        <td style="background-color:lightgray;"><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructor" name="show_validacion_instructor">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td></td>
-                                        <td id="td9" style="text-align: centery; vertical-align: middley; font-size: 12px;">9.- Identificación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Identificación de Instructor" id="show_identificacion" name="show_identificacion">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
-                                        </a></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td id="td3" style="text-align: centery; vertical-align: middley; font-size: 12px;">3.- Validación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Instructor" id="show_validacion_instructor" name="show_validacion_instructor">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
-                                        </a></td>
-                                        <td></td>
-                                        <td id="td10" style="text-align: centery; vertical-align: middley; font-size: 12px;">10.- Lista de Asistencias</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Lista de Asistencias" id="show_asistencias" name="show_asistencias">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td style="background-color:lightgray;"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
+                                        <td id="td10" style="text-align: left; vertical-align: middley; font-size: 12px;">10.- Lista de Asistencias</td>
+                                        <td><a class="nav-link" target="_blanks" title="Lista de Asistencias" id="show_asistencias" name="show_asistencias">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="asistencias_pdf" name="asistencias_pdf"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="asistencias_icon" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id="td4" style="text-align: centery; vertical-align: middley; font-size: 12px;">4.- ARC-01/02</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="ARC-01" id="show_arc01" name="show_arc01">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id="td4" style="text-align: left; vertical-align: middley; font-size: 12px; background-color:lightgray;">4.- ARC-01/02</td>
+                                        <td style="background-color:lightgray;"><a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01" name="show_arc01">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td></td>
-                                        <td id="td11" style="text-align: centery; vertical-align: middley; font-size: 12px;">11.- Reporte de Evidencias Fotográficas</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotografica" name="show_evidencia_fotografica">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td style="background-color:lightgray;"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
+                                        <td id="td11" style="text-align: left; vertical-align: middley; font-size: 12px;">11.- Reporte de Evidencias Fotográficas</td>
+                                        <td><a class="nav-link" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotografica" name="show_evidencia_fotografica">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="evidencia_fotografica_pdf" name="evidencia_fotografica_pdf"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="evidencia_icon" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id="td5" style="text-align: centery; vertical-align: middley; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_supre" name="show_validacion_supre">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id="td5" style="text-align: left; vertical-align: middley; font-size: 12px; background-color:lightgray;">5.- Validación de Suficiencia Presupuestal</td>
+                                        <td style="background-color:lightgray;"><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_supre" name="show_validacion_supre">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td></td>
+                                        <td style="background-color:lightgray;"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id="td6" style="text-align: centery; vertical-align: middley; font-size: 12px;">6.- Factura PDF</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura PDF" id="show_fact_pdf" name="show_fact_pdf">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id="td6" style="text-align: left; vertical-align: middley; font-size: 12px;">6.- Factura PDF</td>
+                                        <td><a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdf" name="show_fact_pdf">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="factura_pdf" name="factura_pdf"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="factura_icon" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id="td7" style="text-align: centery; vertical-align: middley; font-size: 12px;">7.- Factura XML</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura XML" id="show_fact_xml" name="show_fact_xml">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id="td7" style="text-align: left; vertical-align: middley; font-size: 12px;">7.- Factura XML</td>
+                                        <td><a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xml" name="show_fact_xml">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/xml" id="factura_xml" name="factura_xml"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_icon" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div style="text-align:center" class="form-group">
-                        <p>¿Esta Seguro de Enviar la Documentación de Manera Digital?</p>
+                        <p>¿Que accion deseas realizar?</p>
                         <input id="id_contrato_agenda" name="id_contrato_agenda" hidden>
-                        <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-dismiss="modal">No, Mantener Pendiente la Entrega</button>
-                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" >Sí, Confirmar</button>
+                        <input id="tipo_envio" name="tipo_envio" hidden>
+                        <button id='guardar' style="text-align: left; font-size: 10px;" type="submit" class="btn btn-danger" value="guardar" onclick="guardado(this.value)">Guardar</button>
+                        <button id='guardarenviar' style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" value="guardar_enviar" onclick="guardado(this.value)">Guardar y Enviar</button>
                     </div>
                 </div>
                 <div class="modal-footer"><div class="form-group"></div>
@@ -879,78 +897,92 @@
                                 <caption>Documentos para Recepción</caption>
                                 <tbody>
                                     <tr>
-                                        <td id='td1c' style="text-align: center; vertical-align: middle; font-size: 12px;">1.- Solicitud de Pago</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpac" name="show_solpac">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id='td1c' style="text-align: left; vertical-align: middle; font-size: 12px;">1.- Solicitud de Pago</td>
+                                        <td><a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpac" name="show_solpac">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="solpa_pdfc" name="solpa_pdfc"></td>
-                                        <td id='td8c' style="text-align: center; vertical-align: middle; font-size: 12px;">8.- Contrato</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Contrato Firmada" id="show_contratoc" name="show_contratoc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="solpa_iconc" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
+                                        <td id='td8c' style="text-align: left; vertical-align: middle; font-size: 12px;">8.- Contrato</td>
+                                        <td><a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contratoc" name="show_contratoc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="contratof_pdfc" name="contratof_pdfc"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="contratof_iconc" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+                                    </tr>
+                                    <tr style="background-color:lightgray;">
+                                        <td id='td2c' style="text-align: left; vertical-align: middle; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
+                                        <td><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariac" name="show_cuenta_bancariac">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="vertical-align:middle; background-color:white;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
+                                        <td id='td9c' style="text-align: left; vertical-align: middle; font-size: 12px;">9.- Identificación de Instructor</td>
+                                        <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionc" name="show_identificacionc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
+                                        </a></td>
+                                        <td></td>
+                                        <td style="vertical-align:middle; background-color:white;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id='td2c' style="text-align: center; vertical-align: middle; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariac" name="show_cuenta_bancariac">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id='td3c' style="text-align: left; vertical-align: middle; font-size: 12px; background-color:lightgray;">3.- Validación de Instructor</td>
+                                        <td style="background-color:lightgray;"><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorc" name="show_validacion_instructorc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td></td>
-                                        <td id='td9c' style="text-align: center; vertical-align: middle; font-size: 12px;">9.- Identificación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Identificación de Instructor" id="show_identificacionc" name="show_identificacionc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
-                                        </a></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td id='td3c' style="text-align: center; vertical-align: middle; font-size: 12px;">3.- Validación de Instructor</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorc" name="show_validacion_instructorc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
-                                        </a></td>
-                                        <td></td>
-                                        <td id='td10c' style="text-align: center; vertical-align: middle; font-size: 12px;">10.- Lista de Calificaciones</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesc" name="show_calificacionesc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td style="background-color:lightgray;"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
+                                        <td id='td10c' style="text-align: left; vertical-align: middle; font-size: 12px;">10.- Lista de Calificaciones</td>
+                                        <td><a class="nav-link" target="_blanks" title="Lista de Calificaciones" id="show_calificacionesc" name="show_calificacionesc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="calificaciones_pdfc" name="calificaciones_pdfc"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="calificaciones_iconc" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id='td4c' style="text-align: center; vertical-align: middle; font-size: 12px;">4.- ARC-01/02</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="ARC-01" id="show_arc01c" name="show_arc01c">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id='td4c' style="text-align: left; vertical-align: middle; font-size: 12px; background-color:lightgray;">4.- ARC-01/02</td>
+                                        <td style="background-color:lightgray;"><a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01c" name="show_arc01c">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td></td>
+                                        <td style="background-color:lightgray;"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id='td5c' style="text-align: center; vertical-align: middle; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprec" name="show_validacion_suprec">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id='td5c' style="text-align: left; vertical-align: middle; font-size: 12px; background-color:lightgray;">5.- Validación de Suficiencia Presupuestal</td>
+                                        <td style="background-color:lightgray;"><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprec" name="show_validacion_suprec">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
-                                        <td></td>
+                                        <td style="background-color:lightgray;"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id='td6c' style="text-align: center; vertical-align: middle; font-size: 12px;">6.- Factura PDF</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura PDF" id="show_fact_pdfc" name="show_fact_pdfc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id='td6c' style="text-align: left; vertical-align: middle; font-size: 12px;">6.- Factura PDF</td>
+                                        <td><a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfc" name="show_fact_pdfc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/pdf" id="factura_pdfc" name="factura_pdfc"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="factura_iconc" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
-                                        <td id='td7c' style="text-align: center; vertical-align: middle; font-size: 12px;">7.- Factura XML</td>
-                                        <td><a class="btn btn-danger btn-circle m-1 btn-circle-sm" target="_blanks" title="Factura XML" id="show_fact_xmlc" name="show_fact_xmlc">
-                                            <i class="fa fa-file" aria-hidden="true"></i>
+                                        <td id='td7c' style="text-align: left; vertical-align: middle; font-size: 12px;">7.- Factura XML</td>
+                                        <td><a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlc" name="show_fact_xmlc">
+                                            <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
                                         <td style="text-align: center; vertical-align: middle;"><input type="file" accept="application/xml" id="factura_xmlc" name="factura_xmlc"></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_iconc" class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div style="text-align:center" class="form-group">
-                        <p>Si confirmas se asignara la fecha deseada a este registro.</p>
+                        <p>¿Que accion deseas realizar?</p>
                         <input id="id_contrato_agendac" name="id_contrato_agendac" hidden>
-                        <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-dismiss="modal">No, Mantener Pendiente la Entrega</button>
-                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" >Sí, Confirmar</button>
+                        <input id="tipo_envioc" name="tipo_envioc" hidden>
+                        <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" value="guardar" onclick="guardado(this.value)">Guardar</button>
+                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" value="guardar_enviar" onclick="guardado(this.value)">Sí, Confirmar</button>
                     </div>
                 </div>
                 <div class="modal-footer"><div class="form-group"></div>
@@ -1054,6 +1086,7 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
 
       document.getElementById('tipo_pago').onchange = function() {
         var index = this.selectedIndex;
@@ -1189,6 +1222,7 @@
     function setAnchorHrefs(id, ordinario, validacion) {
         let anchors = null;
         let variables = null;
+        let icons = null;
         let td = null;
 
         if(ordinario) {
@@ -1199,6 +1233,8 @@
 
                 variables = ['#solpa_pdfv', , , , , '#factura_pdfv', '#factura_xmlv', '#contratof_pdfv', , '#asistencias_pdfv',
                         '#calificaciones_pdfv', '#evidencia_fotografica_pdfv'];
+                icons = ['#solpa_iconv', , , , , '#factura_iconv', '#facturaxml_iconv', '#contratof_iconv', , '#asistencias_iconv',
+                        '#calificaciones_iconv', '#evidencia_iconv'];
                 td = 'v';
             } else {
                 anchors = ['#show_solpa', '#show_cuenta_bancaria', '#show_validacion_instructor', '#show_arc01',
@@ -1207,6 +1243,8 @@
 
                 variables = ['#solpa_pdf', , , , , '#factura_pdf', '#factura_xml', '#contratof_pdf', , '#asistencias_pdf',
                         '#calificaciones_pdf', '#evidencia_fotografica_pdf'];
+                icons = ['#solpa_icon', , , , , '#factura_icon', '#facturaxml_icon', '#contratof_icon', , '#asistencias_icon',
+                        '#calificaciones_icon', '#evidencia_icon'];
                 td = '';
             }
         } else {
@@ -1217,6 +1255,9 @@
 
                 variables = ['#solpa_pdfvc', , , , , '#factura_pdfvc', '#factura_xmlvc', '#contratof_pdfvc', , '#asistencias_pdfvc',
                         '#calificaciones_pdfvc', '#evidencia_fotografica_pdfvc'];
+
+                icons = ['#solpa_iconvc', , , , , '#factura_iconvc', '#facturaxml_iconvc', '#contratof_iconvc', , '#asistencias_iconvc',
+                        '#calificaciones_iconvc', '#evidencia_iconvc'];
                 td = 'vc';
             } else {
                 anchors = ['#show_solpac', '#show_cuenta_bancariac', '#show_validacion_instructorc', '#show_arc01c',
@@ -1225,6 +1266,9 @@
 
                 variables = ['#solpa_pdfc', , , , , '#factura_pdfc', '#factura_xmlc', '#contratof_pdfc', , '#asistencias_pdfc',
                         '#calificaciones_pdfc', '#evidencia_fotografica_pdfc'];
+
+                icons = ['#solpa_iconc', , , , , '#factura_iconc', '#facturaxml_iconc', '#contratof_iconc', , '#asistencias_iconc',
+                        '#calificaciones_iconc', '#evidencia_iconc'];
                 td = 'c';
             }
         }
@@ -1234,30 +1278,71 @@
             anchors.splice(10, 1); // Remove #show_calificaciones from the anchors array
             id.splice(11, 1); // Remove #show_calificaciones link from the id array
             variables.splice(10, 1);
+            icons.splice(10, 1);
         } else {
             anchors.splice(9, 1); // Remove #show_asistencias from the anchors array
             id.splice(10, 1); // Remove #show_asistencias link from the id array
             variables.splice(9, 1);
+            icons.splice(9, 1);
             anchors.splice(10, 1); // Remove #show_evidencia_fotografica from the anchors array
             id.splice(11, 1); // Remove #show_evidencia_fotografica link from the aidarray
             variables.splice(10, 1);
+            icons.splice(10, 1);
         }
 
         for (let i = 0; i < anchors.length; i++) {
             const href = id[i+1];
             if (id[i+1] != "") {
-                $(anchors[i]).attr('href', href);
-                $(anchors[i]).attr('hidden', false);
-                document.getElementById('td'+[i+1]+td).style.color = "black";
-                $(variables[i]).prop('required', false);
+                    $(anchors[i]).attr('href', href);
+                    $(anchors[i]).attr('hidden', false);
+                    document.getElementById('td'+[i+1]+td).style.color = "black";
+
+                    if (id[id.length - 1] == "EN ESPERA"){
+                        $(variables[i]).attr('hidden', true);
+                        dnd = anchors[i].substring(1);
+                        // $(anchors[i]).parent().parent().css("background-color", "lightgray");
+                    } else {
+                        // $(anchors[i]).parent().parent().css("background-color", "white");
+                        $(variables[i]).attr('hidden', false);
+                        $(variables[i]).prop('required', false);
+                    }
+
+                    $(icons[i]).attr('class', "fas fa-check-circle text-success");
             } else {
                 $(anchors[i]).attr('hidden', true);
                 document.getElementById('td'+[i+1]+td).style.color = "red";
+                $(variables[i]).attr('hidden', false);
                 $(variables[i]).prop('required', true);
+                $(icons[i]).attr('class', "fas fa-times-circle text-danger");
+                // $(anchors[i]).parent().parent().css("background-color", "white");
 
             }
         }
     }
+
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+
+    // Agrega un escucha de eventos para cada input de tipo archivo
+    fileInputs.forEach(function(fileInput) {
+        fileInput.addEventListener("change", function() {
+            let icon_changer;
+            if(fileInput.id == "factura_xml" || fileInput.id == "factura_xmlc")
+            {
+                // Verifica si el id contiene "c" después de "xml"
+                if (fileInput.id.indexOf("xmlc") != -1) {
+                    icon_changer = "facturaxml_iconc";
+                } else {
+                    icon_changer = "facturaxml_icon";
+                }
+            }
+            else
+            {
+                icon_changer = fileInput.id.replace("pdf", "icon");
+            }
+            document.getElementById(fileInput.parentElement.previousElementSibling.previousElementSibling.id).style.color = "black";
+            document.getElementById(icon_changer).className = "fas fa-check-circle text-success";
+        });
+    });
 
 });
 
@@ -1269,5 +1354,24 @@ function toggleOnOff() {
             $('.checkBoxClass').prop('checked', false).change()
         }
     }
+
+function guardado(buttonValue) {
+    // Código de la función aquí
+    console.log(buttonValue);
+    var confirmacion = confirm("¿Está seguro de continuar?");
+    document.getElementById('tipo_envio').value = buttonValue;
+
+    // Si el usuario hace clic en "Aceptar", continuar con el envío del formulario
+    if (confirmacion) {
+        return true;
+    }
+    // Si el usuario hace clic en "Cancelar", detener el envío del formulario
+    else {
+        return false;
+    }
+}
+
+
+
 </script>
 @endsection

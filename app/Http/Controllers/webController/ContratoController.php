@@ -73,7 +73,7 @@ class ContratoController extends Controller
         $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
         ->SELECT('tabla_supre.id','tabla_supre.no_memo',
         'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-        'folios.recepcion','folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+        'folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
         'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
         'contratos.observacion','tbl_cursos.termino AS fecha_termino',
         'tbl_cursos.inicio AS fecha_inicio',
@@ -96,7 +96,7 @@ class ContratoController extends Controller
         $querySupre2 = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
             ->SELECT('tabla_supre.id','tabla_supre.no_memo',
             'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','folios.status','folios.permiso_editar',
-            'folios.recepcion','folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
+            'folios.id_folios', 'folios.id_supre', 'folios.folio_validacion', 'tbl_unidades.ubicacion',
             'contratos.docs','contratos.id_contrato','contratos.fecha_status','contratos.created_at',
             'contratos.observacion','tbl_cursos.termino AS fecha_termino',
             'tbl_cursos.inicio AS fecha_inicio',
@@ -165,7 +165,7 @@ class ContratoController extends Controller
                         'tabla_supre.id','tabla_supre.no_memo',
                         'tabla_supre.unidad_capacitacion', 'tabla_supre.fecha','contratos.created_at',
                         'folios.status','folios.id_folios', 'folios.folio_validacion','folios.permiso_editar',
-                        'folios.recepcion','tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
+                        'tbl_unidades.ubicacion','contratos.docs','contratos.id_contrato',
                         'contratos.fecha_status','contratos.observacion','tbl_cursos.termino AS fecha_termino',
                         'tbl_cursos.inicio AS fecha_inicio',
                         DB::raw("(DATE_PART('day', CURRENT_DATE::timestamp - termino::timestamp)) fecha_dif")]);

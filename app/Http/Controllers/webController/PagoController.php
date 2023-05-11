@@ -103,6 +103,7 @@ class PagoController extends Controller
             'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
             'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
+            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.created_at::timestamp)) >= 7 as alerta_financieros'),
             // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
         ]);
         switch ($roles[0]->role_name) {
@@ -162,6 +163,7 @@ class PagoController extends Controller
                     'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso',
                     'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
+                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.created_at::timestamp)) >= 7 as alerta_financieros'),
                     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
                 ]);
                 break;
@@ -610,8 +612,12 @@ class PagoController extends Controller
             ->update(['arch_evidencia' => $evidencia_fotografica_pdf]);
         }
 
-        pago::where('id_contrato', $id_contrato)
+        if($request->tipo_envio == 'guardar_enviar')
+        {
+            pago::where('id_contrato', $id_contrato)
             ->update(['status_recepcion' => 'En Espera']);
+        }
+
         $contrato->save();
 
         return redirect()->route('pago-inicio')
