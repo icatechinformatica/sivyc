@@ -531,8 +531,7 @@
             function recolectarDatos(method) {
                 nuevoEvento = []
                 nuevoEvento = {
-                   // title: '<?php echo $nombre_curso; ?>',
-                    title: '',
+                    title: '<?php echo addslashes($nombre_curso); ?>',                   
                     start: $('#fecha_firma').val() + ' ' + $('#txtHora').val(),
                     end: $('#fecha_termino').val() + ' ' + $('#txtHoraTermino').val(),
                     textColor: '#000000',
