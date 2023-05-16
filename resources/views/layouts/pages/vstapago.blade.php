@@ -284,12 +284,12 @@
                                     @case('En Espera')
                                         En Espera de Revisión Digital
                                         @can('contratos.create')
-                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","EN ESPERA"]'>
+                                            {{-- <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","EN ESPERA"]'>
                                                 AGENDAR ENTREGA
-                                            </a>
+                                            </a> --}}
                                         @endcan
                                         @can('contrato.validate')
-                                            <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                            <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}"]'>
                                                 Revisar Entrega Digital
                                             </a>
                                         @endcan
@@ -521,52 +521,70 @@
                                         <td><a class="nav-link" target="_blanks" title="Solicitud de Pago Firmada" id="show_solpav" name="show_solpav">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="solpa_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
+
                                         <td id="td5v" style="text-align: left; vertical-align: left; font-size: 12px;">5.- Validación de Suficiencia Presupuestal</td>
                                         <td><a class="nav-link" target="_blanks" title="Validación de Suficiencia Presupuestal" id="show_validacion_suprev" name="show_validacion_suprev">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
                                         <td id="td9v" style="text-align: left; vertical-align: left; font-size: 12px;">9.- Identificación de Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Identificación de Instructor" id="show_identificacionv" name="show_identificacionv">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle; background-color:white;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
                                         <td id="td2v" style="text-align: left; vertical-align: left; font-size: 12px;">2.- Cuenta Bancaria del Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Cuenta Bancaria del Instructor" id="show_cuenta_bancariav" name="show_cuenta_bancariav">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
                                         <td id="td6v" style="text-align: left; vertical-align: left; font-size: 12px;">6.- Factura PDF</td>
                                         <td><a class="nav-link" target="_blanks" title="Factura PDF" id="show_fact_pdfv" name="show_fact_pdfv">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="factura_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
+
                                         <td id="td10v" style="text-align: left; vertical-align: left; font-size: 12px;">10.- Lista de Asistencias</td>
                                         <td><a class="nav-link" target="_blanks" title="Lista de Asistencias" id="show_asistenciasv" name="show_asistenciasv">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="asistencias_iconxv" class="fas fa-minus-circle"" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
                                         <td id="td3v" style="text-align: left; vertical-align: left; font-size: 12px;">3.- Validación de Instructor</td>
                                         <td><a class="nav-link" target="_blanks" title="Validación de Instructor" id="show_validacion_instructorv" name="show_validacion_instructorv">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
                                         <td id="td7v" style="text-align: left; vertical-align: left; font-size: 12px;">7.- Factura XML</td>
                                         <td><a class="nav-link" target="_blanks" title="Factura XML" id="show_fact_xmlv" name="show_fact_xmlv">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="facturaxml_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
+
                                         <td id="td11v" style="text-align: left; vertical-align: left; font-size: 12px;">11.- Reporte de Evidencias Fotográficas</td>
                                         <td><a class="nav-link" target="_blanks" title="Reporte de Evidencias Fotográficas" id="show_evidencia_fotograficav" name="show_evidencia_fotograficav">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="evidencia_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
                                     </tr>
                                     <tr>
                                         <td id="td4v" style="text-align: left; vertical-align: left; font-size: 12px;">4.- ARC-01/02</td>
                                         <td><a class="nav-link" target="_blanks" title="ARC-01" id="show_arc01v" name="show_arc01v">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i class="fas fa-check-circle text-success" style="vertical-align:middle;"></i></td>
+
                                         <td id="td8v" style="text-align: left; vertical-align: left; font-size: 12px;">8.- Contrato</td>
                                         <td><a class="nav-link" target="_blanks" title="Contrato Firmada" id="show_contratov" name="show_contratov">
                                             <i class="fa fa-file-pdf-o fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                         </a></td>
+                                        <td style="vertical-align:middle;" width='10px;'><i id="contrato_iconxv" class="fas fa-minus-circle" style="vertical-align:middle;"></i></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -722,10 +740,11 @@
                     <div style="text-align:center" class="form-group">
                         <p>Si confirmas la fecha de cita se hara el cambio de manera permanente.</p>
                         <p style="text-align: center; padding-left: 0%;"><small>Fecha de Entrega Fisica</small></p>
-                        <input type="date" name="fecha_confirmada" id="fecha_confirmada"><br><br><br>
+                        <input type="date" name="fecha_confirmada" id="fecha_confirmada" hidden>
+                        <input style="text-align: center" type="text" name="mostrar_fecha" id="mostrar_fecha" readonly><br><br><br>
                         <input id="id_contrato_cita" name="id_contrato_cita" hidden>
                         <button style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" >Confirmar</button>
+                        <button style="text-align: right; font-size: 10px;" type="submit" class="btn btn-primary" onclick="cerrarValidarCitaModal()" >Confirmar</button>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1149,22 +1168,25 @@
     $('#validarRecepcionModalOrdinaria').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        // console.log(id);
+        var fecha = id[13];
+        var fechaTexto = fecha.toString();
+
         document.getElementById('id_contrato_agendav').value = id[0];
         setAnchorHrefs(id, true, true);
         $('#rechazar_recepcion').data('id', id[0]);
-        $('#validar_cita').data('id', id[0]);
-
+        $('#validar_cita').data('id', [id[0], fechaTexto]);
     });
 
     $('#validarRecepcionModalCertificacion').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var id = button.data('id');
+        var fecha = id[12];
+        var fechaTexto = fecha.toString();
         // console.log(id);
         document.getElementById('id_contrato_agendavc').value = id[0];
         setAnchorHrefs(id, false, true);
         $('#rechazar_recepcionvc').data('id', id[0]);
-        $('#validar_citavc').data('id', id[0]);
+        $('#validar_citavc').data('id', [id[0],id[12].toString()]);
     });
 
     $('#rechazar_entregaModal').on('show.bs.modal', function(event){
@@ -1177,8 +1199,10 @@
     $('#validarCitaModal').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        // console.log(id)
-        document.getElementById('id_contrato_cita').value = id;
+        console.log(id[0])
+        document.getElementById('id_contrato_cita').value = id[0];
+        $('#fecha_confirmada').val(id[1]);
+        $('#mostrar_fecha').val(id[1]);
     });
 
     $('#agendarModalOrdinaria').on('show.bs.modal', function(event){
@@ -1369,6 +1393,30 @@ function guardado(buttonValue) {
     else {
         return false;
     }
+}
+
+function validando(event) {
+    // Seleccionar el botón de envío del formulario
+    var submitBtn = document.getElementById('submit-btn');
+
+    // Cambiar el icono del botón a "fa-check-circle" y "text-success"
+    var icon = document.getElementById('solpa_iconxv');
+    icon.classList.remove('fa-minus');
+    icon.classList.add('fa-check-circle', 'text-success');
+
+    // Esperar 6 segundos antes de enviar el formulario
+    setTimeout(function() {
+        // Enviar el formulario
+        return true;
+    }, 2000);
+}
+
+function cerrarValidarCitaModal() {
+    // Cerrar el modal "validarCitaModal"
+    $('#validarCitaModal').modal('hide');
+
+    // Llamar a la función "validando()" después de cerrar el modal
+    setTimeout(validando(event), 500);
 }
 
 

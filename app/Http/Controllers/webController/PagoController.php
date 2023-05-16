@@ -9,6 +9,7 @@ use App\Models\folio;
 use App\Models\directorio;
 use App\Models\especialidad_instructor;
 use App\Models\contrato_directorio;
+use App\Models\Calendario_Entrega;
 use Illuminate\Http\Request;
 use Redirect,Response;
 use App\Http\Controllers\Controller;
@@ -191,7 +192,13 @@ class PagoController extends Controller
 
         }
 
-        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad'));
+        $calendario_entrega = Calendario_Entrega::whereDate('fecha_entrega', '>=', Carbon::now()->toDateString())
+            ->whereJsonContains('tipo_entrega', 'DOCUMENTACION_PAGO')
+            ->orderBy('fecha_entrega', 'asc')
+            ->value('fecha_entrega');
+
+
+        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega'));
     }
 
     public function crear_pago($id)
