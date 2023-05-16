@@ -622,7 +622,7 @@ class InstructorController extends Controller
             }
             foreach($especialidades as $joyo)
             {
-                if($joyo->status != 'VALIDADO' || $moist->status != 'BAJA')//A
+                if($joyo->status != 'VALIDADO' || $joyo->status != 'BAJA')//A
                 {
                     $chk_mod_esp = TRUE;
                 }
