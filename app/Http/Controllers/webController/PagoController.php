@@ -102,9 +102,9 @@ class PagoController extends Controller
             'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
             'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor',
             'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
-            'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
+            'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre',
             DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
-            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.created_at::timestamp)) >= 7 as alerta_financieros'),
+            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
             // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
         ]);
         switch ($roles[0]->role_name) {
@@ -163,8 +163,9 @@ class PagoController extends Controller
                     'pagos.arch_calificaciones','pagos.arch_evidencia','pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion',
                     'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso',
                     'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
+                    'tbl_cursos.nombre',
                     DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
-                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.created_at::timestamp)) >= 7 as alerta_financieros'),
+                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
                     // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
                 ]);
                 break;
@@ -403,16 +404,17 @@ class PagoController extends Controller
     {
         // dd($request);
         $data = contratos::SELECT('contratos.fecha_status', 'contratos.numero_contrato', 'contratos.fecha_firma',
-            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'folios.recepcion', 'tbl_cursos.clave',
+            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'pagos.recepcion', 'tbl_cursos.clave',
 		    'tbl_cursos.inicio', 'tbl_cursos.nombre','folios.status')
             ->JOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
             ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
+            ->JOIN('pagos','pagos.id_contrato','=', 'contratos.id_contrato')
             // ->WHERE('contratos.id_contrato', '=', '4228')
             ->WHERE('contratos.unidad_capacitacion', '=', $request->unidad)
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
-            ->WHERE('folios.recepcion', '!=', NULL)
+            ->WHERE('pagos.recepcion', '!=', NULL)
             ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
@@ -423,29 +425,6 @@ class PagoController extends Controller
         $view = 'layouts.pages.reportes.excel_contratos_recepcionados';
         if(count($data)>0)return Excel::download(new ExportExcel($data,$head, $title,$view), $name);
         // dd($data[1]->fecha_rechazo);
-        if ($request->tipo == 'CURSO')
-        {
-            $tipo = 'HONORARIOS';
-        }
-        else
-        {
-            $tipo = 'CERTIFICACIONES EXTRAORDINARIAS';
-        }
-
-        if ($request->modalidad == 'PRESENCIAL')
-        {
-            $modalidad = 'PRESENCIAL';
-        }
-        else
-        {
-            $modalidad = 'A DISTANCIA';
-        }
-        $unidad = $request->unidad;
-        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
-
-        $pdf = PDF::loadView('layouts.pdfpages.reportetramitesrecepcionados', compact('data','tipo', 'modalidad','unidad','distintivo'));
-        $pdf->setPaper('legal', 'Landscape');
-        return $pdf->Stream('Tramites recepcionados de la unidad '. $request->unidad . $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
     }
 
     public function  reporte_validados_recepcionados(Request $request)

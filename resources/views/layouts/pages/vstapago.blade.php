@@ -129,6 +129,7 @@
                     <th scope="col" style="font-size: 15px">N°. Contrato</th>
                     <th scope="col" style="font-size: 15px">Fecha</th>
                     <th scope="col" style="font-size: 15px">Unidad de Capacitación</th>
+                    <th scope="col" style="font-size: 15px">Instructor</th>
                     <th scope="col" style="font-size: 15px">Status</th>
                     {{-- <th scope="col" style="width: 150px;">Ultima Modificación de Status</th> --}}
                     {{-- @can('contratos.create')
@@ -141,7 +142,7 @@
             </thead>
             <tbody>
                 @foreach ($contratos_folios as $itemData)
-                    <tr @can('contratos.create')@if($itemData->alerta == TRUE && is_null($itemData->fecha_agenda)) style='background-color: #621032; color: white;' @endif @endcan>
+                    <tr @can('contratos.create')@if($itemData->alerta == TRUE && (is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')) style='background-color: #621032; color: white;' @endif @endcan @can('contrato.validate')@if($itemData->alerta_financieros == TRUE && $itemData->status_recepcion == 'En Espera') style='background-color: #621032; color: white;' @endif @endcan>
                         <td style="font-size: 13px">{{$itemData->numero_contrato}}</td>
                         <td style="font-size: 13px">
                             @if($itemData->created_at != NULL)
@@ -150,6 +151,7 @@
                             @endif
                         </td>
                         <td style="font-size: 13px">{{$itemData->unidad_capacitacion}}</td>
+                        <td style="font-size: 13px">{{$itemData->nombre}}</td>
                         <td style="font-size: 13px">{{$itemData->status}}</td>
                         {{-- <td>{{$itemData->fecha_status}}</td> --}}
                         {{-- @can('contratos.create')
@@ -329,8 +331,11 @@
                             @endif
                         </td>
                         <td style="font-size: 13px">
+                            <a class="btn btn-success" id="verdocs" name="verdocs" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}","{{$itemData->status_recepcion}}"]'>
+                                Ver
+                            </a>
                             <a class="btn btn-success" title="Descargar Documentación" href="{{route('downloadRarPagos', ['id_contrato' => $itemData->id_contrato])}}">
-                                Descargar
+                                <i class="fas fa-download"></i>
                             </a>
                         </td>
                     </tr>
@@ -349,63 +354,63 @@
         @endif --}}
         <br>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-      <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Archivos PDF Generables</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" style="text-align:center">
-                    <form action="" id="pdfForm" method="get">
-                    @csrf
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="sol_pdf" name="sol_pdf" href="#" target="_blank">Solicitud de Pago</a><br>
-                        </div>
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
-                        </div>
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="pagoautorizado_pdf" name="pagoautorizado_pdf" href="#" target="_blank" download>Solicitud de Pago Autorizado</a><br>
-                        </div>
-                        <div style="text-align:center" class="form-group">
-                            <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal</a><br>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerar</button>
-                </div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Archivos PDF Generables</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <form action="" id="pdfForm" method="get">
+                @csrf
+                    <div style="text-align:center" class="form-group">
+                        <a class="btn btn-danger" id="sol_pdf" name="sol_pdf" href="#" target="_blank">Solicitud de Pago</a><br>
+                    </div>
+                    <div style="text-align:center" class="form-group">
+                        <a class="btn btn-danger" id="contrato_pdf" name="contrato_pdf" href="#" target="_blank">Contrato de Instructor</a>
+                    </div>
+                    <div style="text-align:center" class="form-group">
+                        <a class="btn btn-danger" id="pagoautorizado_pdf" name="pagoautorizado_pdf" href="#" target="_blank" download>Solicitud de Pago Autorizado</a><br>
+                    </div>
+                    <div style="text-align:center" class="form-group">
+                        <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank" download>Validación de Suficiencia Presupuestal</a><br>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="restartModalPago" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="restartModalPago" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><b>¿Esta seguro de reiniciar este proceso?</b></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-2"></div>
-                    <div class="form-group col-md-4">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <a class="btn btn-success" id="confirm_restart2" name="confirm_restart2" href="#">Aceptar</a>
-                    </div>
-                    <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4">
+                    <a class="btn btn-success" id="confirm_restart2" name="confirm_restart2" href="#">Aceptar</a>
                 </div>
+                <div class="form-group col-md-2"></div>
             </div>
         </div>
     </div>
+</div>
 <!-- END -->
     <br>
 <!-- Modal -->
@@ -501,7 +506,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">¿Confirmar Documentación digital para Entrega Fisica?</h5>
+                    <h5 class="modal-title">@can('contrato.validate')¿Confirmar Documentación digital para Entrega Fisica? @endcan @can('contratos.create')Vista de Documentación @endcan</h5>
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -591,15 +596,17 @@
                         </div>
                     </div>
                 </div>
-                <div style="text-align:center" class="form-group">
-                    <p>Si validas podras asignar la fecha deseada a este registro.</p>
-                    <input id="id_contrato_agendav" name="id_contrato_agendav" hidden>
-                    <button id="rechazar_recepcion" style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega</button>
-                    <button id="validar_cita" style="text-align: right; font-size: 10px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#validarCitaModal">Agendar Entrega Fisica</button>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                </div>
+                <input id="id_contrato_agendav" name="id_contrato_agendav" hidden>
+                @can('contrato.validate')
+                    <div style="text-align:center" class="form-group" id="div_val_ordinario">
+                        <p>Si validas podras asignar la fecha deseada a este registro.</p>
+                        <button id="rechazar_recepcion" style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega</button>
+                        <button id="validar_cita" style="text-align: right; font-size: 10px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#validarCitaModal">Agendar Entrega Fisica</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                @endcan
             </div>
         </form>
     </div>
@@ -612,7 +619,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">¿Confirmar Documentación digital para Entrega Fisica?</h5>
+                    <h5 class="modal-title">@can('contrato.validate')¿Confirmar Documentación digital para Entrega Fisica? @endcan @can('contratos.create')Vista de Documentación @endcan</h5>
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -680,11 +687,13 @@
                         </div>
                     </div>
                 </div>
-                <div style="text-align:center" class="form-group">
-                    <p>Si validas podras asignar la fecha deseada a este registro.</p>
+                <div style="text-align:center" class="form-group" id="div_val_certificacion">
                     <input id="id_contrato_agendavc" name="id_contrato_agendavc" hidden>
-                    <button id="rechazar_recepcionvc" style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega</button>
-                    <button id="validar_citavc" style="text-align: right; font-size: 10px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#validarCitaModal">Agendar Entrega Fisica</button>
+                    @can('contrato.validate')
+                        <p>Si validas podras asignar la fecha deseada a este registro.</p>
+                        <button id="rechazar_recepcionvc" style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega</button>
+                        <button id="validar_citavc" style="text-align: right; font-size: 10px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#validarCitaModal">Agendar Entrega Fisica</button>
+                    @endcan
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -1171,22 +1180,40 @@
         var fecha = id[13];
         var fechaTexto = fecha.toString();
 
+        $('#div_val_ordinario').removeClass('d-none d-print-none');
+        $('#div_val_ordinario').addClass('form-group');
+
         document.getElementById('id_contrato_agendav').value = id[0];
         setAnchorHrefs(id, true, true);
         $('#rechazar_recepcion').data('id', id[0]);
         $('#validar_cita').data('id', [id[0], fechaTexto]);
+        if(typeof id[13] !== 'undefined'){
+            $('#div_val_ordinario').removeClass('form-group');
+            $('#div_val_ordinario').addClass('d-none d-print-none');
+        }
+
     });
 
     $('#validarRecepcionModalCertificacion').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
         var id = button.data('id');
-        var fecha = id[12];
+        var fecha = id[14];
+
+        $('#div_val_certificacion').removeClass('d-none d-print-none');
+        $('#div_val_certificacion').addClass('form-group');
+
         var fechaTexto = fecha.toString();
         // console.log(id);
         document.getElementById('id_contrato_agendavc').value = id[0];
         setAnchorHrefs(id, false, true);
         $('#rechazar_recepcionvc').data('id', id[0]);
         $('#validar_citavc').data('id', [id[0],id[12].toString()]);
+        console.log(id[12])
+        if(typeof id[12] !== 'undefined'){
+            $('#div_val_certificacion').removeClass('form-group');
+            $('#div_val_certificacion').addClass('d-none d-print-none');
+        }
+
     });
 
     $('#rechazar_entregaModal').on('show.bs.modal', function(event){
