@@ -614,7 +614,7 @@ class InstructorController extends Controller
 
             foreach($perfiles as $moist)
             {
-                if($moist->status != 'VALIDADO')
+                if($moist->status != 'VALIDADO' && $moist->status != 'BAJA')
                 {
                     $chk_mod_perfil = TRUE;
                 }
@@ -622,7 +622,7 @@ class InstructorController extends Controller
             }
             foreach($especialidades as $joyo)
             {
-                if($joyo->status != 'VALIDADO')
+                if($joyo->status != 'VALIDADO' && $joyo->status != 'BAJA')//A
                 {
                     $chk_mod_esp = TRUE;
                 }

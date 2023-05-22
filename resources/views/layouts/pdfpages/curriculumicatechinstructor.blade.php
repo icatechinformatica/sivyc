@@ -118,8 +118,9 @@
             <div class="page-break-non"></div>
         </footer>
         <div class= "container">
-            {{-- <img class="derecha img-thumbnail mb-3" src="{{ public_path($data->archivo_fotografia) }}"> --}}
-            <img style="border: 2px solid black; margin-top: -5px;" class="pull-right"  src="{{ public_path($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+            @if($data->archivo_fotografia != FALSE)
+                <img style="border: 2px solid black; margin-top: -5px;" class="pull-right"  src="{{ public_path($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+            @endif
             <br><br><br><br>
             <table class="tablaz" style="border-color: black">
                 <thead>
@@ -258,19 +259,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($perfiles as $cadwell)
-                            <tr>
-                                <td><small><small>{{$cadwell->grado_profesional}}</small></small></td>
-                                <td><small><small>{{$cadwell->nombre_institucion}}</small></small></td>
-                                <td><small><small>{{$cadwell->area_carrera}}</small></small></td>
-                                <td><small><small>{{$cadwell->carrera}}</small></small></td>
-                                <td><small><small>{{$cadwell->periodo}}</small></small></td>
-                                <td><small><small>{{$cadwell->entidad_institucion}}</small></small></td>
-                                <td><small><small>{{$cadwell->estatus}}</small></small></td>
-                                <td><small><small>{{$cadwell->fecha_expedicion_documento}}</small></small></td>
-                                <td><small><small>{{$cadwell->folio_documento}}</small></small></td>
-                            </tr>
-                        @endforeach
+                        @if(isset($perfiles))
+                            @foreach($perfiles as $cadwell)
+                                <tr>
+                                    <td><small><small>{{$cadwell->grado_profesional}}</small></small></td>
+                                    <td><small><small>{{$cadwell->nombre_institucion}}</small></small></td>
+                                    <td><small><small>{{$cadwell->area_carrera}}</small></small></td>
+                                    <td><small><small>{{$cadwell->carrera}}</small></small></td>
+                                    <td><small><small>{{$cadwell->periodo}}</small></small></td>
+                                    <td><small><small>{{$cadwell->entidad_institucion}}</small></small></td>
+                                    <td><small><small>{{$cadwell->estatus}}</small></small></td>
+                                    <td><small><small>{{$cadwell->fecha_expedicion_documento}}</small></small></td>
+                                    <td><small><small>{{$cadwell->folio_documento}}</small></small></td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -287,14 +290,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data->exp_docente AS $cadwell)
-                            <tr>
-                                <td>{{$cadwell['asignatura']}}</td>
-                                <td>{{$cadwell['institucion']}}</td>
-                                <td>{{$cadwell['funcion']}}</td>
-                                <td>{{$cadwell['periodo']}}</td>
-                            </tr>
-                        @endforeach
+                        @if(isset($data->exp_docente))
+                            @foreach($data->exp_docente AS $cadwell)
+                                <tr>
+                                    <td>{{$cadwell['asignatura']}}</td>
+                                    <td>{{$cadwell['institucion']}}</td>
+                                    <td>{{$cadwell['funcion']}}</td>
+                                    <td>{{$cadwell['periodo']}}</td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -310,13 +315,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data->exp_laboral AS $cadwell)
-                            <tr>
-                                <td>{{$cadwell['puesto']}}</td>
-                                <td>{{$cadwell['periodo']}}</td>
-                                <td>{{$cadwell['institucion']}}</td>
-                            </tr>
-                        @endforeach
+                        @if(isset($data->exp_laboral))
+                            @foreach($data->exp_laboral AS $cadwell)
+                                <tr>
+                                    <td>{{$cadwell['puesto']}}</td>
+                                    <td>{{$cadwell['periodo']}}</td>
+                                    <td>{{$cadwell['institucion']}}</td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

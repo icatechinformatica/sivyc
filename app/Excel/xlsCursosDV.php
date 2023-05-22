@@ -103,7 +103,7 @@ class xlsCursosDV implements WithMultipleSheets, WithTitle, FromQuery, WithHeadi
                 $data->where( 'cursos.proyecto', false)->where( 'cursos.servicio', 'LIKE', "%CURSO%");
             break;           
         }
-        $data->join('especialidades','especialidades.id','cursos.id_especialidad');
+        $data->where('cursos.estado', '=', true)->join('especialidades','especialidades.id','cursos.id_especialidad');
         
     
         if($this->title=='PROGRAMA ESTRATÉGICO') $data->select('categoria','especialidades.nombre','nombre_curso','horas','objetivo','perfil','tipo_curso','modalidad','clasificacion','costo',\DB::raw("TRANSLATE(cursos.servicio::TEXT,'[\"\"]','') as servicio"),\DB::raw("CASE WHEN proyecto=true THEN 'SI' ELSE 'NO' END "),\DB::raw("TRANSLATE(cursos.unidades_disponible::TEXT,'[\"\"]','') as unidades_disponibles"),\DB::raw("TRANSLATE(cursos.dependencia::TEXT,'[\"\"]','') as dependencias"));

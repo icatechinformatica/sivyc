@@ -1546,7 +1546,8 @@ class supreController extends Controller
             }
             else
             {
-                $point = $point.carbon::now()->year;
+                $point = $point.'2022';
+                // $point = $point.carbon::now()->year;dd($cp);
                 $data[$key]->importe_hora = $cp->$point;
             }
             $data[$key]->importe_total = ROUND($cadwell->dura * $cp->$point, 2);
