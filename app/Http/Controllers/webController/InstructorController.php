@@ -614,7 +614,7 @@ class InstructorController extends Controller
 
             foreach($perfiles as $moist)
             {
-                if($moist->status != 'VALIDADO')
+                if($moist->status != 'VALIDADO' && $moist->status != 'BAJA')
                 {
                     $chk_mod_perfil = TRUE;
                 }
@@ -622,7 +622,7 @@ class InstructorController extends Controller
             }
             foreach($especialidades as $joyo)
             {
-                if($joyo->status != 'VALIDADO')
+                if($joyo->status != 'VALIDADO' && $joyo->status != 'BAJA')//A
                 {
                     $chk_mod_esp = TRUE;
                 }
@@ -3222,20 +3222,23 @@ class InstructorController extends Controller
                     $especialidades[$pos] = $item;
                 }
             }
-            switch($item->status)
+            if($tipo_doc != 'REACTIVACION')
             {
-                case 'REVALIDACION EN FIRMA';
-                    $tipo_doc = 'REVALIDACION';
-                break;
-                case 'REACTIVACION EN FIRMA';
-                    $tipo_doc = 'REACTIVACION';
-                break;
-                case 'REVALIDACION EN PREVALIDACION';
-                    $tipo_doc = 'REVALIDACION';
-                break;
-                case 'REACTIVACION EN PREVALIDACION';
-                    $tipo_doc = 'REACTIVACION';
-                break;
+                switch($item->status)
+                {
+                    case 'REVALIDACION EN FIRMA';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
+                    case 'REACTIVACION EN FIRMA';
+                        $tipo_doc = 'REACTIVACION';
+                    break;
+                    case 'REVALIDACION EN PREVALIDACION';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
+                    case 'REACTIVACION EN PREVALIDACION';
+                        $tipo_doc = 'REACTIVACION';
+                    break;
+                }
             }
         }
 
