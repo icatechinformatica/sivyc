@@ -312,6 +312,7 @@ class CursoValidadoController extends Controller
 
         $i = 0;
         set_time_limit(0);
+        ini_set('memory_limit', '1024M');
 
         if ($request->filtro == "general")
         {
@@ -371,7 +372,7 @@ class CursoValidadoController extends Controller
 
             $i++;
         }
-
+        // dd($data);
         $pdf = PDF::loadView('layouts.pdfpages.reportevincalum', compact('data','curp','sexo','realizo'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
