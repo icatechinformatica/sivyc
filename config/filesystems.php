@@ -53,11 +53,11 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
-        ],        
+        ],
         'custom_folder_1' => [
             'driver' => 'local',
             'root' => storage_path('app/uploadFiles'),
-            'url' => env('APP_URL').'/storage',            
+            'url' => env('APP_URL').'/storage',
         ],
         's3' => [
             'driver' => 's3',
@@ -71,6 +71,7 @@ return [
     ],
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('uploadFiles') => storage_path('app/uploadFiles'), // se crea un nuevo enlace y se corre el comando php artisan storage:link
     ],
 
 ];
