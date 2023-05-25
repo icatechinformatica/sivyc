@@ -56,7 +56,7 @@ return [
         ],
         'custom_folder_1' => [
             'driver' => 'local',
-            'root' => storage_path('app/uploadFiles'),
+            'root' => storage_path('app/public/uploadFiles'),
             'url' => env('APP_URL').'/storage',
         ],
         's3' => [
