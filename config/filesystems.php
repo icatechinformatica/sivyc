@@ -46,6 +46,16 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
+            'permissions' => [
+                'file' => [
+                    'public' => 0664,
+                    'private' => 0600,
+                ],
+                'dir' => [
+                    'public' => 0775,
+                    'private' => 0700,
+                ],
+            ],
         ],
 
         'public' => [
@@ -57,6 +67,16 @@ return [
         'custom_folder_1' => [
             'driver' => 'local',
             'root' => storage_path('app/public/uploadFiles'),
+            'permissions' => [
+                'file' => [
+                    'public' => 0664,
+                    'private' => 0600,
+                ],
+                'dir' => [
+                    'public' => 0775,
+                    'private' => 0700,
+                ],
+            ],
             'url' => env('APP_URL').'/storage',
         ],
         's3' => [
