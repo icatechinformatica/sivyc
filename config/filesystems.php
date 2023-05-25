@@ -66,7 +66,7 @@ return [
         ],
         'custom_folder_1' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/uploadFiles'),
+            'root' => storage_path('app/uploadFiles'),
             'permissions' => [
                 'file' => [
                     'public' => 0664,
