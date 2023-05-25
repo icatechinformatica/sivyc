@@ -78,6 +78,7 @@ return [
                 ],
             ],
             'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
         ],
         's3' => [
             'driver' => 's3',
@@ -91,7 +92,7 @@ return [
     ],
     'links' => [
         public_path('storage') => storage_path('app/public'),
-        public_path('uploadFiles') => storage_path('app/uploadFiles'), // se crea un nuevo enlace y se corre el comando php artisan storage:link
+        public_path('uploadFiles') => storage_path('app/uploadFiles'), // se crea un nuevo Enlace y se corre el comando php artisan storage:link
     ],
 
 ];
