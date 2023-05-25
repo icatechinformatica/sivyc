@@ -1323,7 +1323,7 @@ class grupoController extends Controller
                 (select max(inicio) from tbl_cursos as c where c.id_instructor = $id_instructor                    
                     and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
                     from tbl_cursos as tc where tc.id_instructor = $id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>30 )
-                    , (select min(inicio) from tbl_cursos where id_instructor = $id_instructor))
+                    , (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = $id_instructor))
             "))
             ->value(DB::raw("DATE_PART('day', max(tc.termino)::timestamp - min(tc.inicio)::timestamp)+1"));
             //dd($receso);

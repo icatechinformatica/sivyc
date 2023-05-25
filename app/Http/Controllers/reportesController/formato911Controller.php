@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\reportesController;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\faCADE as PDF;
+use Barryvdh\DomPDF\facade as PDF;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -190,4 +190,6 @@ class formato911Controller extends Controller
         $pdf = PDF::loadView('reportes.911.forna', compact('encabezado','consulta_inscritos','turno','unidades','fecha_inicio','fecha_termino'));
         $pdf->setPaper('A4', 'landscape');
     	//portrait
+    }
 
+}
