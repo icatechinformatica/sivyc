@@ -382,7 +382,8 @@ class ftcontroller extends Controller {
                     $total=count($_POST['chkcursos_list']);
                     $id_user = Auth::user()->id;
                     $rol = DB::table('role_user')->select('roles.slug')->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')
-                    ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])->get();
+                    ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
+                    ->orWhere([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%admin%']])->get();
                     if(count($rol) > 0){
                         $unidad = Auth::user()->unidad;
                         $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
