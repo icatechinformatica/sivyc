@@ -65,13 +65,15 @@ return [
             'visibility' => 'public',
         ],
 
+        // Nueva Configuración
         'custom_folder_1' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => storage_path('app/public/uploadFiles'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
 
+        // ------ Vieja Configuración -------
         // 'custom_folder_1' => [
         //     'driver' => 'local',
         //     'root' => storage_path('app/uploadFiles'),
