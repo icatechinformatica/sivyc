@@ -64,22 +64,31 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+
         'custom_folder_1' => [
             'driver' => 'local',
-            'root' => storage_path('app/uploadFiles'),
-            'permissions' => [
-                'file' => [
-                    'public' => 0664,
-                    'private' => 0600,
-                ],
-                'dir' => [
-                    'public' => 0775,
-                    'private' => 0700,
-                ],
-            ],
-            'url' => env('APP_URL'),
+            'root' => storage_path('app/public'),
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+
+        // 'custom_folder_1' => [
+        //     'driver' => 'local',
+        //     'root' => storage_path('app/uploadFiles'),
+        //     'permissions' => [
+        //         'file' => [
+        //             'public' => 0664,
+        //             'private' => 0600,
+        //         ],
+        //         'dir' => [
+        //             'public' => 0775,
+        //             'private' => 0700,
+        //         ],
+        //     ],
+        //     'url' => env('APP_URL'),
+        //     'visibility' => 'public',
+        // ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
