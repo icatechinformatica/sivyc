@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'hs-icons';
   src:
-    url('https://sivyc-test.icatech.gob.mx/vendor/icon-hs/fonts/hs-icons.ttf?xa77py') format('truetype'),
-    url('https://sivyc-test.icatech.gob.mx/vendor/icon-hs/fonts/hs-icons.woff?xa77py') format('woff'),
+    url(https://sivyc-test.icatech.gob.mx/vendor/icon-hs/fonts/hs-icons.ttf?xa77py) format('truetype'),
+    url(https://sivyc-test.icatech.gob.mx/vendor/icon-hs/fonts/hs-icons.woff?xa77py) format('woff'),
     url('fonts/hs-icons.svg?xa77py#hs-icons') format('svg');
   font-weight: normal;
   font-style: normal;
