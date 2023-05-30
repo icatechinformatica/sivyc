@@ -69,7 +69,7 @@ function dataFormatoT($unidad, $status, $fecha) {
             DB::raw("0 as madres_solteras"), // debe ir madres solteras
 
             DB::raw("sum(case when ins.inmigrante = true then 1 else 0 end) as migrante"),
-            DB::raw("sum(case when ins.id_gvulnerable::text like '%7%' then 1 else 0 end) as indigena"),
+            DB::raw("sum(case when ins.id_gvulnerable::text like '7%' then 1 else 0 end) as indigena"),
             DB::raw("sum(case when ins.etnia <> NULL then 1 else 0 end) as etnia"),
             'c.programa',
             'c.muni',
