@@ -457,7 +457,7 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA), ';
                             break;
                             case 'RETORNO':
-                                if($especialidades[$llave]->new == FALSE)
+                                if($perfiles[$key]->new == FALSE)
                                 {
                                     $perfiles[$key]->status = 'REVALIDACION EN PREVALIDACION';
                                     $movimiento = $movimiento . $item->grado_profesional . ' ' . $item->area_carrera . ' (REVALIDACION), ';
@@ -614,7 +614,7 @@ class InstructorController extends Controller
 
             foreach($perfiles as $moist)
             {
-                if($moist->status != 'VALIDADO')
+                if($moist->status != 'VALIDADO' && $moist->status != 'BAJA')
                 {
                     $chk_mod_perfil = TRUE;
                 }
@@ -622,7 +622,7 @@ class InstructorController extends Controller
             }
             foreach($especialidades as $joyo)
             {
-                if($joyo->status != 'VALIDADO')
+                if($joyo->status != 'VALIDADO' && $joyo->status != 'BAJA')//A
                 {
                     $chk_mod_esp = TRUE;
                 }
@@ -1183,6 +1183,10 @@ class InstructorController extends Controller
                                 $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (EN FIRMA), ';
                                 $retorno_firma = TRUE;
                             break;
+                            case 'BAJA EN FIRMA':
+                                $movimiento = $movimiento. $item->grado_profesional . ' ' . $item->area_carrera . ' (BAJA EN FIRMA), ';
+                                $retorno_firma = TRUE;
+                            break;
                         }
                     }
                 }
@@ -1220,12 +1224,12 @@ class InstructorController extends Controller
                             case 'BAJA EN FIRMA':
                                 $movimiento = $movimiento. $especialidad->nombre . ' (BAJA), ';
                                 $retorno_firma = TRUE;
-                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                                unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                             case 'EN FIRMA':
                                 $movimiento = $movimiento. $especialidad->nombre . ' (EN FIRMA), ';
                                 $retorno_firma = TRUE;
-                                    unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
+                                unset($especialidades[$space]->hvalidacion[count($cadwell->hvalidacion) - 1]);
                             break;
                         }
                     }
@@ -3218,20 +3222,23 @@ class InstructorController extends Controller
                     $especialidades[$pos] = $item;
                 }
             }
-            switch($item->status)
+            if($tipo_doc != 'REACTIVACION')
             {
-                case 'REVALIDACION EN FIRMA';
-                    $tipo_doc = 'REVALIDACION';
-                break;
-                case 'REACTIVACION EN FIRMA';
-                    $tipo_doc = 'REACTIVACION';
-                break;
-                case 'REVALIDACION EN PREVALIDACION';
-                    $tipo_doc = 'REVALIDACION';
-                break;
-                case 'REACTIVACION EN PREVALIDACION';
-                    $tipo_doc = 'REACTIVACION';
-                break;
+                switch($item->status)
+                {
+                    case 'REVALIDACION EN FIRMA';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
+                    case 'REACTIVACION EN FIRMA';
+                        $tipo_doc = 'REACTIVACION';
+                    break;
+                    case 'REVALIDACION EN PREVALIDACION';
+                        $tipo_doc = 'REVALIDACION';
+                    break;
+                    case 'REACTIVACION EN PREVALIDACION';
+                        $tipo_doc = 'REACTIVACION';
+                    break;
+                }
             }
         }
 
@@ -3526,6 +3533,7 @@ class InstructorController extends Controller
         $saveInstructor->banco = $request->banco;
         $saveInstructor->interbancaria = $request->clabe;
         $saveInstructor->no_cuenta = $request->numero_cuenta;
+        $saveInstructor->tipo_instructor = $request->tipo_instructor;
         if(isset($request->numero_control))
         {
             $saveInstructor->numero_control = $request->numero_control;
@@ -3756,6 +3764,7 @@ class InstructorController extends Controller
         $saveInstructor->telefono = $request->telefono;
         $saveInstructor->correo = $request->correo;
         $saveInstructor->banco = $request->banco;
+        $saveInstructor->tipo_instructor = $request->tipo_instructor;
         $saveInstructor->interbancaria = $request->interbancaria;
         $saveInstructor->no_cuenta = $request->no_cuenta;
         $saveInstructor->numero_control = $request->numero_control;
@@ -4120,6 +4129,7 @@ class InstructorController extends Controller
         $instructor->entrevista = $saveInstructor->entrevista;
         $instructor->exp_laboral = $saveInstructor->exp_laboral;
         $instructor->exp_docente = $saveInstructor->exp_docente;
+        $instructor->tipo_instructor = $saveInstructor->tipo_instructor;
         $instructor->telefono_casa = $saveInstructor->telefono_casa;
         $instructor->curriculum = $saveInstructor->curriculum;
         $instructor->clave_loc_nacimiento = $saveInstructor->clave_loc_nacimiento;

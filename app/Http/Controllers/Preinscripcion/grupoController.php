@@ -183,6 +183,11 @@ class grupoController extends Controller
         $curp = $request->busqueda;    //dd($request->all());
         $matricula = $message = NULL;
         $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
+        
+        //VALIDACIÓN DE INSTRUCTOR EN OBSERVACIÓN 
+        //$instructor_valido = $this->valida_instructor($request->instructor);
+        //if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]); 
+
         if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
             if ($curp) {
                 $date = date('d-m-Y');
@@ -335,6 +340,11 @@ class grupoController extends Controller
     {
         //dd($request->all());
         if ($_SESSION['folio_grupo']) {
+            ///VALIDA INSTRUCTOR
+            $instructor_valido = $this->valida_instructor($request->instructor);
+            if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]); ;
+
+
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
                 if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
@@ -638,7 +648,13 @@ class grupoController extends Controller
                             //         }
                             //     }
                             // }
-                            $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                            
+                            $instructor_valido = $this->valida_instructor($alumnos[0]->id_instructor);
+                            if($instructor_valido['valido']){
+                                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                                if($result) DB::table('instructores')->where('id',$alumnos[0]->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
+                                else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']); 
+                            }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
                         } else {
                             $message = "Las horas agendadas no corresponden a la duración del curso..";
                             return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
@@ -897,6 +913,13 @@ class grupoController extends Controller
     public function cmbinstructor(Request $request)
     {
         if (isset($request->id) and isset($request->inicio) and isset($request->termino)) {
+            $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
+            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
+            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
+            ->havingRaw('count(*) >= 2')
+            ->groupby('i.id');
+            
             $id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
                 ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
@@ -905,13 +928,15 @@ class grupoController extends Controller
                 ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                 //->join('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-                ->WHERE('estado',true)
+                ->WHERE('estado',true)          
+                ->WHERE('instructores.tipo_honorario', 'like', '%HONORARIOS%')
                 ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
                 ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
                 //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
-                //->where('especialidad_instructor_curso.activo', true)
+                //->where('especialidad_instructor_curso.activo', true)            
                 ->WHERE('fecha_validacion','<',$request->inicio)
                 ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
+                ->whereNotIn('instructores.id', $internos)
                 ->groupBy('t.id_instructor','instructores.id')
                 ->orderBy('instructor')
                 ->get();
@@ -988,6 +1013,11 @@ class grupoController extends Controller
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }
         //CRITERIOS INSTRUCTOR ::
+
+        // INSTRUCTORES INTERNOS,MÁXIMO 2 CURSOS EN EL MES y 5 MESES DE ACTIVIDAD
+        $instructor_valido = $this->valida_instructor($id_instructor);
+        if(!$instructor_valido['valido'])  return $instructor_valido['message'];
+
         //DISPONIBILIDAD FECHA Y HORA
         $duplicado = DB::table('agenda as a')
             ->leftJoin('tbl_cursos as tc','a.id_curso','tc.folio_grupo')
@@ -1154,95 +1184,8 @@ class grupoController extends Controller
                     return "El instructor no debe impartir más de 40hrs semanales.";
                 }
             }
-        }
-        //5 MESES CONSECUTIVOS
-        $inicio_curso = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('inicio');
-        $termino_curso = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->value('termino');
-        $imes = Carbon::parse($inicio_curso)->subMonth(4);
-        $imes = Carbon::parse($imes)->firstOfMonth();
-        $tmes = Carbon::parse($inicio_curso)->addMonth(4);
-        $tmes = Carbon::parse($tmes)->firstOfMonth();
-        $conteo1 = 1;
-        $conteo2 = null;
-        $temp =  $temp2 = $mesact = '';
-        if (DB::table('tbl_cursos')->where('status','<>','CANCELADO')->where('id_instructor',$id_instructor)->where('folio_grupo','<>',$id_curso)->whereRaw("(((inicio >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (inicio <= '$termino_curso')) OR ((termino >= cast((cast('$inicio_curso' as date) - cast('30 days' as interval)) as date)) AND (termino <= '$termino_curso')))")->exists()) {
-            $actinstru = DB::table('tbl_cursos')->select('inicio','termino','folio_grupo')
-                ->where('status','<>','CANCELADO')
-                ->where('id_instructor',$id_instructor)
-                ->where('folio_grupo','<>',$id_curso)
-                ->whereRaw("(((inicio >= '$imes') AND (inicio <= '$termino_curso')) OR ((termino >= '$imes') AND (termino <= '$termino_curso')))")
-                ->orderBy('termino','desc')->get();//dd($actinstru);
-            foreach ($actinstru as $key => $value) {
-                if ($conteo1 > 5) {
-                   return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
-                } elseif ($key == 0) {
-                    $temp = $value->inicio;
-                    $temp2 = $value->termino;
-                    if (date('Y-m',strtotime($value->termino)) < date('Y-m',strtotime($inicio_curso))) {
-                        $conteo1 += 1;
-                    }
-                    if ((date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($inicio_curso)))) {
-                        $conteo1 += 1;
-                    }
-                    $mesact = date('m',strtotime($value->inicio));
-                } elseif ($key > 0) {
-                    if (($value->termino >= date('Y-m-d',strtotime(Carbon::parse($temp)->subDay(30)->format('Y-m-d')))) AND ($value->termino <= $temp2)) {
-                        if (date('m',strtotime($value->termino)) < $mesact) {
-                            $conteo1 += 1;
-                        }
-                        if ((date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($temp)))) {
-                            $conteo1 += 1;
-                        }
-                        $mesact = date('m',strtotime($value->inicio));
-                        $temp = $value->inicio;
-                        $temp2 = $value->termino;
-                    } elseif ($mesact <> date('m',strtotime($value->termino))) {
-                        break;
-                    }
-                }
-            }
-        }
-        if (DB::table('tbl_cursos')->where('status','<>','CANCELADO')->where('id_instructor',$id_instructor)->where('folio_grupo','<>',$id_curso)->whereRaw("((inicio <= cast((cast('$termino_curso' as date) + cast('30 days' as interval)) as date)) AND (inicio >= '$inicio_curso')) OR ((termino <= cast((cast('$termino_curso' as date) + cast('30 days' as interval)) as date)) AND (termino >= '$inicio_curso'))")->exists()) {
-            $actinstru = DB::table('tbl_cursos')->select('inicio','termino','folio_grupo')
-                ->where('status','<>','CANCELADO')
-                ->where('id_instructor',$id_instructor)
-                ->where('folio_grupo','<>',$id_curso)
-                ->whereRaw("(((inicio <= '$tmes') AND (inicio >= '$inicio_curso')) OR ((termino <= '$tmes') AND (termino >= '$inicio_curso')))")
-                ->orderBy('inicio','asc')->get();//dd($actinstru);
-                foreach ($actinstru as $key => $value) {
-                    if ($conteo2 > 5) {
-                       return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
-                    } elseif ($key == 0) {
-                        $temp = $value->inicio;
-                        $temp2 = $value->termino;
-                        if (date('Y-m',strtotime($value->inicio)) > date('Y-m',strtotime($termino_curso))) {
-                            $conteo2 += 1;
-                        }
-                        if ((date('m',strtotime($value->inicio)) <> date('m',strtotime($value->termino))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($inicio_curso)))) {
-                            $conteo2 += 1;
-                        }
-                        $mesact = date('m',strtotime($value->termino));
-                    } elseif ($key > 0) {
-                        if (($value->inicio >= $temp) AND ($value->inicio <= date('Y-m-d',strtotime(Carbon::parse($temp2)->addDay(30)->format('Y-m-d'))))) {
-                            if (date('m',strtotime($value->termino)) > $mesact) {
-                                $conteo2 += 1;
-                            }
-                            if ((date('m',strtotime($value->termino)) <> date('m',strtotime($value->inicio))) AND (date('Y-m',strtotime($value->inicio)) <> date('Y-m',strtotime($temp)))) {
-                                $conteo2 += 1;
-                            }
-                            $mesact = date('m',strtotime($value->termino));
-                            $temp = $value->inicio;
-                            $temp2 = $value->termino;
-                        } elseif ($mesact <> date('m',strtotime($value->inicio))) {
-                            break;
-                        }
-                    }
-                }
-        }
-        if (($conteo1 + $conteo2) > 5) {
-            return "La actividad del instructor por mes supera el límite permitido (5 meses) ";
-        }
-        //
+        }        
+        
         try {
             $titulo = $request->title;
             $agenda = new Agenda();
@@ -1347,5 +1290,48 @@ class grupoController extends Controller
         $insert_dias ['nombre'] = $dias_a;
         $insert_dias ['total'] = $tdias;
         return $insert_dias;
+    }
+
+    private function valida_instructor($id_instructor)
+    {
+        //echo $id_instructor;
+        $valido = false;
+        $message = null;
+
+        ///VALIDACION DE INSTRUCTORES INTERNOS
+        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id') ->where('i.id',$id_instructor)
+            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
+            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
+            ->where(function($query){
+                $query->where('c.status_curso','<>','CANCELADO')->orWherenull('c.status_curso');
+            })
+            ->havingRaw('count(*) > 2')
+            ->groupby('i.id')->first();
+            //var_dump($internos);exit;
+        if($internos) $message = "El instructor interno ha excedido el número de cursos a impartir (máximo 2 cursos al mes). Favor de verificar.";
+        else $valido = true;
+        
+        ///VALIDACIÓN 5 meses de actividad y 30 días naturales de RECESO        
+        if($valido==true){                    
+            $receso =  DB::table('tbl_cursos as tc')->where('id_instructor',$id_instructor)
+            ->where(function($query){
+                $query->where('tc.status_curso','<>','CANCELADO')->orWherenull('tc.status_curso');
+            }) 
+            ->where('tc.inicio','>',DB::raw("
+            COALESCE(
+                (select max(inicio) from tbl_cursos as c where c.id_instructor = $id_instructor                    
+                    and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
+                    from tbl_cursos as tc where tc.id_instructor = $id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>30 )
+                    , (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = $id_instructor))
+            "))
+            ->value(DB::raw("DATE_PART('day', max(tc.termino)::timestamp - min(tc.inicio)::timestamp)+1"));
+            //dd($receso);
+            if($receso>150){
+                $valido = false;
+                $message = "El instructor supera el límite de 150 días de actividad, deberá tomar un receso mínimo 30 días naturales.";
+            }
+        }
+        return ['valido' => $valido, 'message' => $message];
     }
 }

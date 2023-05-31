@@ -196,8 +196,9 @@ class ContratoController extends Controller
 
         $especialidad_seleccionada = DB::Table('especialidad_instructores')
                                     ->SELECT('especialidad_instructores.id','especialidades.nombre')
-                                    ->WHERE('especialidad_instructores.memorandum_validacion',$data->instructor_mespecialidad)
+                                    // ->WHERE('especialidad_instructores.memorandum_validacion',$data->instructor_mespecialidad)
                                     ->WHERE('especialidades.nombre', '=', $data->espe)
+                                    ->WHERE('especialidad_instructores.id_instructor',$data->id)
                                     ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
                                     ->FIRST();
                                     // dd($data->instructor_mespecialidad);

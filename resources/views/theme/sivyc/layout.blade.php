@@ -11,7 +11,7 @@
 
         <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="{{asset("vendor/fontawesome/css/all.css") }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.css"> {{-- ** --}}
         <!-- Google Fonts Roboto -->
         <link rel="stylesheet" href="{{asset("css/roboto.css") }}">
 
@@ -21,10 +21,10 @@
 
 
         <!-- CSS Implementing Plugins -->
-        <link rel="stylesheet" href="{{asset("fonts/font-awesome/css/font-awesome.min.css") }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {{-- ** --}}
         <link rel="stylesheet" href="{{asset("vendor/icon-line-pro/style.css") }}">
         <link rel="stylesheet" href="{{asset("vendor/icon-line/css/simple-line-icons.css") }} ">
-        <link rel="stylesheet" href="{{asset("vendor/icon-hs/style.css") }}">
+        <link rel="stylesheet" href="https://mail.cdn.wpchile.com/assets/vendor/icon-hs/style.css">
         <link rel="stylesheet" href="{{asset("vendor/dzsparallaxer/dzsparallaxer.css") }}">
         <link rel="stylesheet" href="{{asset("vendor/dzsparallaxer/dzsscroller/scroller.css") }}">
         <link rel="stylesheet" href="{{asset("vendor/dzsparallaxer/advancedscroller/plugin.css") }}">

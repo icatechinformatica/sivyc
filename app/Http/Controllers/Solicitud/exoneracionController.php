@@ -88,13 +88,15 @@ class exoneracionController extends Controller
                          as hours 
                          from agenda
                          where id_curso = tc.folio_grupo) as t) as horas_agenda"),'ar.id_unidad','ar.cct','tc.tipo','tc.cgeneral','ar.ejercicio','tc.status_solicitud',
-                         'tc.dura','tc.status_curso','ar.id_organismo','ar.folio_grupo')
+                         'tc.dura','tc.status_curso','ar.id_organismo','ar.folio_grupo','tc.status','tc.status_curso','tc.arc','tc.status_solicitud_arc02')
                         ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                         ->where('ar.id_organismo','!=',242)
                         ->whereIn('tc.tipo',['EXO','EPAR'])
                         ->where('tc.folio_grupo',$request->grupo)
-                        ->where('tc.status','NO REPORTADO')
+                        ->whereIn('tc.status',['NO REPORTADO','RETORNO_UNIDAD'])
+                        
                         ->where(function($query) {
+                            
                             $query->where(function($query) {
                                     $query->where('tc.status_curso','=',null)
                                     ->where(function($query) {
@@ -106,12 +108,14 @@ class exoneracionController extends Controller
                                     
                             })
                             ->orwhere(function($query) {
-                                $query->where('tc.status_curso','=','AUTORIZADO')                            
+                                $query->where('tc.status_curso','AUTORIZADO')                            
                                 ->where('tc.arc','02')
-                                ->where('tc.status_solicitud_arc02','!=','AUTORIZADO');                           
+                                ->where('tc.status_solicitud_arc02','=',null)
+                                ->orwhere('tc.status_solicitud_arc02','<>','AUTORIZADO');
                             });
-                        })                       
-                        ->first(); //dd($curso);
+                        })      
+                                      
+                        ->first();// dd($curso);
                                    
             if ($curso) {
                 if (($curso->tipo != 'EXO') AND (count(DB::table('alumnos_registro')->where('folio_grupo',$curso->folio_grupo)->where('tinscripcion','=','EXONERACION')->get())>0)) {

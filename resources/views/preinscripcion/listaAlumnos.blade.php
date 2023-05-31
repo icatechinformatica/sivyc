@@ -4,7 +4,7 @@
 <style>
     body { margin-top: 105px;}
     @page { margin-bottom: 120px; }
-    #titulo{position: fixed; top: 45px;}
+    #titulo {position: fixed; top: 45px; width: 100%;}
     #titulo h2{padding:0px; margin:10px 0px 5px 0px; font-size: 14px;}
     #titulo h3{padding:0px; margin:0px; font-size: 12px;}
 

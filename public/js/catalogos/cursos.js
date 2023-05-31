@@ -609,66 +609,45 @@ $(function(){
                  * modificación de una etiqueta
                  */
                 myModalLabel.append(
-                    response[0].nombre_curso
+                    response.nombre_curso
                 );
                 contenidoModal.append(
                     '<ul class="list-group z-depth-0">'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> CATEGORÍA: </b> '+ response[0].categoria
+                  +     '<b> CATEGORÍA: </b> '+ response.categoria
+                  +   '</li>'                  
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> UNIDAD MÓVIL: </b> '+ response.unidad_amovil
+                  +   '</li>'                  
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> FECHA ACTUALIZACIÓN: </b> ' + response.fecha_actualizacion
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> CLASIFICACIÓN: </b> '+ response[0].clasificacion
+                  +     '<b> FECHA VALIDACIÓN: </b> ' + response.fecha_validacion
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> MODALIDAD: </b> '+ response[0].modalidad
+                  +     '<b> PERFIL: </b> ' + response.perfil
+                  +   '</li>'                  
+                  +   '<li class="list-group-item justify-content-between">'
+                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response.solicitud_autorizacion ? 'SI' : 'NO')
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> UNIDAD MÓVIL: </b> '+ response[0].unidad_amovil
+                  +     '<b>OBJETIVO: </b>' + response.objetivo
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> NIVEL DE ESTUDIOS: </b> ' + response[0].nivel_estudio
+                  +     '<b>CRITERIO DE PAGO MINIMO: </b>' + response.rango_criterio_pago_minimo
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> COSTO: </b> ' + response[0].costo
+                  +     '<b>CRITERIO DE PAGO MAXIMO: </b>' + response.rango_criterio_pago_maximo
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> FECHA ACTUALIZACIÓN: </b> ' + response[0].fecha_actualizacion
+                  +     '<b>GRUPOS VULNERABLES: </b>' + response.grupo_vulnerable
                   +   '</li>'
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> FECHA VALIDACIÓN: </b> ' + response[0].fecha_validacion
-                  +   '</li>'
+                  +     '<b>DEPENDENCIAS: </b>' + response.dependencia
+                  +   '</li>'                 
                   +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> PERFIL: </b> ' + response[0].perfil
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> ESPECIALIDAD: </b> ' + response[0].especialidad
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> CAPACITACIÓN: </b> ' + response[0].tipo_curso
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b> SOLICITUD AUTORIZACION: </b> ' + (response[0].solicitud_autorizacion ? 'SI' : 'NO')
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b>OBJETIVO: </b>' + response[0].objetivo
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b>CRITERIO DE PAGO MINIMO: </b>' + response[0].rango_criterio_pago_minimo
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b>CRITERIO DE PAGO MAXIMO: </b>' + response[0].rango_criterio_pago_maximo
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b>GRUPOS VULNERABLES: </b>' + response[0].grupo_vulnerable
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b>DEPENDENCIAS: </b>' + response[0].dependencia
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b>PROYECTO: </b>' + response[0].proyecto
-                  +   '</li>'
-                  +   '<li class="list-group-item justify-content-between">'
-                  +     '<b>UNIDADES DISPONIBLES: </b>' + response[0].unidades_disponible
+                  +     '<b>UNIDADES DISPONIBLES: </b>' + response.unidades_disponible
                   +   '</li>'                  
                   + '</ul>'
               );

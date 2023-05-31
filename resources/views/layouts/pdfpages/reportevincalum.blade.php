@@ -135,13 +135,16 @@
                                 @else
                                     <td scope="col" class="text-center"><small style="font-size: 10px;"></td>
                                 @endif
-                                @if ($realizo[$key] != NULL)
+                                {{-- @php dd($realizo); @endphp --}}
+                                @if (array_key_exists($key, $realizo) && $realizo[$key] != NULL)
                                     <td scope="col" class="text-center"><small style="font-size: 10px;">X</td>
                                 @else
                                     <td scope="col" class="text-center"><small style="font-size: 10px;"></td>
                                 @endif
                                 <td scope="col" class="text-center"><small style="font-size: 10px;">{{$item->realizo}}</small></td>
-                                <td scope="col" class="text-center"><small style="font-size: 10px;">{{$realizo[$key]}}</small></td>
+                                @if (array_key_exists($key, $realizo) && $realizo[$key] != NULL)
+                                    <td scope="col" class="text-center"><small style="font-size: 10px;">{{$realizo[$key]}}</small></td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>

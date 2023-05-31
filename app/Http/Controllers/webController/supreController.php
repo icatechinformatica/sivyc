@@ -345,9 +345,9 @@ class supreController extends Controller
         $directorio = supre_directorio::WHERE('id_supre', '=', $id)->FIRST();
         $getremitente = directorio::WHERE('id', '=', $directorio->supre_rem)->FIRST();
 
-        $notification = DB::table('notifications')
-                        ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
-                        ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
+        // $notification = DB::table('notifications')
+        //                 ->WHERE('data', 'LIKE', '%"supre_id":'.$id.'%')->WHERE('read_at', '=', NULL)
+        //                 ->UPDATE(['read_at' => Carbon::now()->toDateTimeString()]);
         // dd($notification);
 
         return view('layouts.pages.valsupre',compact('data','getremitente','directorio'));
@@ -1545,7 +1545,8 @@ class supreController extends Controller
             }
             else
             {
-                $point = $point.carbon::now()->year;
+                $point = $point.'2022';
+                // $point = $point.carbon::now()->year;dd($cp);
                 $data[$key]->importe_hora = $cp->$point;
             }
             $data[$key]->importe_total = ROUND($cadwell->dura * $cp->$point, 2);
@@ -1599,7 +1600,8 @@ class supreController extends Controller
                     \DB::raw("ROUND(folios.importe_total * 0.1066, 2) AS retencion_iva"),
                     'tabla_supre.folio_validacion AS memo_validacion',
                     'tabla_supre.fecha_validacion AS fecha_registro',
-                    'folios.comentario AS observaciones')
+                    'folios.comentario AS observaciones',
+                    \DB::raw("hombre + mujer AS total_estudiantes"))
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -1724,7 +1726,7 @@ class supreController extends Controller
             'INSTRUCTOR', 'UNIDAD/A.M DE CAP.', 'SERVICIO', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
             'Z.E.','HSM','MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
-            'FECHA REGISTRO', 'OBSERVACIONES'
+            'FECHA REGISTRO', 'OBSERVACIONES','BENEFICIARIOS'
         ];
 
         $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now() . ".xlsx";

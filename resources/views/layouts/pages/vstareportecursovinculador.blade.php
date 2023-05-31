@@ -106,16 +106,16 @@
                 <div class="form-group col-md-2"></div>
                 <div class="form-group col-md-6">
                     <label for="inputid_curso"><h3>Nombre del Curso</h3></label>
-                    <input type="text" name="cursoaut" id="cursoaut" class="form-control" required>
-                    <input type="text" name="id_curso" id="id_curso" class="form-control" hidden required>
+                    <input type="text" name="cursoaut" id="cursoaut" class="form-control">
+                    <input type="text" name="id_curso" id="id_curso" class="form-control" hidden>
                 </div>
             </div>
             <div id="div_vinculador" class="form-row d-none d-print-none">
                 <div class="form-group col-md-2"></div>
                 <div class="form-group col-md-6">
                     <label for="inputid_vinculador"><h3>Nombre del Vinculador</h3></label>
-                    <input type="text" name="vinculadoraut" id="vinculadoraut" class="form-control" required>
-                    <input type="text" name="id_vinculador" id="id_vinculador" class="form-control" hidden  required>
+                    <input type="text" name="vinculadoraut" id="vinculadoraut" class="form-control">
+                    <input type="text" name="id_vinculador" id="id_vinculador" class="form-control" hidden>
                 </div>
             </div>
             <br>

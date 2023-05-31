@@ -31,6 +31,7 @@ class ftcontroller extends Controller {
                 ->select('roles.slug')
                 ->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')
                 ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
+                ->orwhere([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%admin%']])
                 ->get();
         $_SESSION['unidades'] = NULL;
         $meses = array(1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 7 => 'Julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'diciembre');
@@ -39,7 +40,9 @@ class ftcontroller extends Controller {
         if (!empty($rol[0]->slug)) {
             # si no está vacio
             if(count($rol) > 0) {
+
                 $unidad = Auth::user()->unidad;
+
                 $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
                 $_SESSION['unidad'] = $unidad;
             }
@@ -379,7 +382,8 @@ class ftcontroller extends Controller {
                     $total=count($_POST['chkcursos_list']);
                     $id_user = Auth::user()->id;
                     $rol = DB::table('role_user')->select('roles.slug')->leftjoin('roles', 'roles.id', '=', 'role_user.role_id')
-                    ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])->get();
+                    ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
+                    ->orWhere([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%admin%']])->get();
                     if(count($rol) > 0){
                         $unidad = Auth::user()->unidad;
                         $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');

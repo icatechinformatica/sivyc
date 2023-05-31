@@ -9,27 +9,63 @@
         body{font-family: sans-serif}
         /* margenes top 20px right 50px bottom 120px left 50px */
         @page {margin: 20px 50px 120px 50px;size: letter;}
-        header { position: fixed; left: 0px; top: 30px; right: 0px;text-align: center;width:100%;line-height: 30px;}
-        img.izquierda {float: left;width: 200px;height: 60px;}
-        img.izquierdabot {position:fixed;left: 50px;width: 350px;height: 60px;}
+        header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
+        /* header { position: fixed;
+                left: 0px;
+                top: -90px;
+                padding-left: 45px;
+                height: 70px;
+                width: 85%;
+                background-color: white;
+                color: black;
+                text-align: center;
+                line-height: 60px;
+            } */
+        img.izquierda {float: left;width: 100%;height: 60px;}
+        img.izquierdabot {
+                float: inline-end;
+                width: 100%;
+                height: 100%;
+            }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 200px;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
-        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;} 
-        .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}     
+        .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;}
+        .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
-        .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}     
+        .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
+        .direccion
+            {
+                text-align: left;
+                position: absolute;
+                bottom: 32px;
+                left: 65px;
+                font-size: 8.5px;
+                color: rgb(255, 255, 255);
+                line-height: 1;
+            }
         .tablag tr td { font-size: 8px; padding: 0px;}
-        footer { position:fixed;left:0px;bottom:0px;height:0px;width:100%;}
-        footer .page:after { content: counter(page, sans-serif);}   
-        .contenedor {  
+        footer {
+                position: fixed;
+                left: -40px;
+                bottom: -90px;
+                right: 0px;
+                height: 100px;
+                width: 85%;
+                padding-left: 45px;
+                background-color: white;
+                color: black;
+                text-align: center;
+            }
+        footer .page:after { content: counter(page, sans-serif);}
+        .contenedor {
         position:RELATIVE;
-        top:120px;  
-        width:100%;   
+        top:120px;
+        width:100%;
         margin:auto;
-        
+
         /* Propiedad que ha sido agreda*/
-        
+
         }
         .margin_top_ccp {
             margin-top: 7em;
@@ -38,17 +74,21 @@
 </head>
 <body>
     {{-- SECCIÓN DE LA CABECERA --}}
-    <header>
+    {{-- <header>
         <img class="izquierda" src='img/logohorizontalica1.jpg'>
         <img class="derecha" src='img/chiapas.png'>
         <br>
         <h6><b></b>{{$leyenda}}</h6>
+    </header> --}}
+    <header>
+        <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
+        <br><h6>{{$leyenda}}</h6>
     </header>
     {{-- SECCIÓN DE LA CABECERA FIN --}}
     {{-- SECCIÓN DE PIE DE PÁGINA --}}
-    <footer>
+    {{-- <footer>
         <script type="text/php">
-            if (isset($pdf)) 
+            if (isset($pdf))
             {
                 $x = 275;
                 $y = 725;
@@ -62,11 +102,11 @@
                 $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
             }
         </script>
-        
+
         <table class="tablad" bgcolor="#621132">
                 <tr>
                     <td colspan="4" style="color:white;"><b>14 Poniente Norte No. 239 Colonia Moctezuma </b></td>
-                </tr> 
+                </tr>
                 <tr>
                     <td colspan="4" style="color:white;"><b>Tuxtla Gutiérrez, CP 29030 Teléfono: +52 (961) 61 21621</b></td>
                 </tr>
@@ -75,13 +115,32 @@
                 </tr>
         </table>
         <img class="derecha" src='img/icatech-imagen.png'>
+    </footer> --}}
+    <footer>
+        <script type="text/php">
+            if (isset($pdf))
+            {
+                $x = 275;
+                $y = 705;
+                $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
+                $font = "Arial";
+                $size = 11;
+                $color = array(0,0,0);
+                $word_space = 0.0;  //  default
+                $char_space = 0.0;  //  default
+                $angle = 0.0;   //  default
+                $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+            }
+        </script>
+        <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
+        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
     </footer>
     {{-- SECCIÓN DE PIE DE PÁGINA FIN --}}
     {{-- SECCIÓN DE CONTENIDO --}}
     <div class="contenedor">
         <div align=right style="font-size:11px;"><b>DIRECCIÓN DE PLANEACIÓN. </b></div>
-        <div align=right style="font-size:11px;"><b>MEMORÁNDUM NO. {{ $num_memo_planeacion }}</b></div>                        
-        <div align=right style="font-size:11px;"><b>TUXTLA GUTIÉRREZ, CHIAPAS; {{ $fecha_ahora_espaniol }}</b></div>                        
+        <div align=right style="font-size:11px;"><b>MEMORÁNDUM NO. {{ $num_memo_planeacion }}</b></div>
+        <div align=right style="font-size:11px;"><b>TUXTLA GUTIÉRREZ, CHIAPAS; {{ $fecha_ahora_espaniol }}</b></div>
         <br><br>
         <div align=left style="font-size:12px;"><b>{{ $reg_unidad->dacademico }}.</b></div>
         <div align=left style="font-size:11px;"><b>{{ $reg_unidad->pdacademico }}.</b></div>
@@ -98,11 +157,11 @@
            </p>
         </div>
         <br>
-        
+
         <br>
         <div align="justify" style="font-size:16px;">Sin más por el momento y agradeciéndole su valioso apoyo, le envío un cordial saludo.</div>
         <br>
-        
+
         <br>
         <br>
         <div style="font-size:11px;"> <b>A T E N T A M E N T E</b> </div>
@@ -118,9 +177,9 @@
             <div style="font-size:9px;"> <b>ELABORÓ:  LIC. VIANEY SOLEDAD RÍOS CRUZ. - ANALISTA TÉCNICO ESPECIALIZADO.</b></div>
             <br><br>
         </div>
-        
-    </div> 
+
+    </div>
     {{-- SECCIÓN DE CONTENIDO FIN --}}
-    
+
 </body>
 </html>

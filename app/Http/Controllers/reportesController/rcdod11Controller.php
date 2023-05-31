@@ -4,7 +4,7 @@ namespace App\Http\Controllers\reportesController;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\faCADE as PDF;
+use Barryvdh\DomPDF\facade as PDF;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -107,8 +107,8 @@ class rcdod11Controller extends Controller
             ->where('tc.termino','<=',$ftermino)
             ->orderBy('tf.nombre')
             ->get();
-        
-        
+
+
 
         if(count($consulta)==0){return redirect()->route('carter')->with('success', 'No se ha encontrado registros');}
 

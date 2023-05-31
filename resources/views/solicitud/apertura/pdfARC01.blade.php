@@ -2,14 +2,14 @@
 @section('title', 'Solicitud ARC-01 | SIVyC Icatech')
 @section('css')
     <style> 
-         body { margin-top: 140px;  margin-bottom: 23px;} 
-        .tablas{border-collapse: collapse; width: 100%; }        
+         body { margin-top: 140px;  margin-bottom: 36px;} 
+        .tablas{border-collapse: collapse; width: 100%; margin-top:1px; }        
         .tablas tr th {padding:0px;margin:0px;}
-        .tablas th, .tablas td{font-size: 8px; border: gray 1px solid; text-align: center;font-weight:bold;}
+        .tablas th, .tablas td{font-size: 7px; border: gray 1px solid; text-align: center;font-weight:bold;}
         
         .tablaf { page-break-inside: avoid; border-collapse: collapse; width: 100%; white-space: nowrap; height: auto; margin-top:15px;}     
-        .tablaf tr td { font-size: 8px; text-align: center; padding: 0px 0px;}
-        .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px; border-collapse: collapse; }
+        .tablaf tr td { font-size: 12px; text-align: center; padding: 0px 0px;}
+        .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
         .tablad tr td{padding: 1px 10px 0 10px;}
         
         #titulo{position: fixed; top: 45px;}
@@ -66,7 +66,7 @@
                 <th rowspan="2">HORARIO</th>
                 <th rowspan="2">DIAS</th>
                 <th rowspan="2">C<br>U<br>P<br>O</th>
-                <th colspan="2">INSCRITOS</th>       
+                <th colspan="2">INSCRI TOS</th>       
                 <th rowspan="2">INSTRUCTOR</th>
                 <th rowspan="2" >CRITE<br>RIO<br>DE<br>PAGO</th>
                 <th rowspan="2">MUNICIPIO</th>
@@ -79,8 +79,8 @@
             <tr> 
                 <th >PRES<br>EN</th>                 
                 <th >DISTA<br>NCIA</th> 
-                <th >F<b>E<b>M</th>   
-                <th >MA<b>S<b></th> 
+                <th >FEM</th>   
+                <th >MAS</th> 
                 <th >ORD</th>
                 <th >EXO</th>  
                 <th >RED</th>

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\webController;
 
 use App\Http\Controllers\Controller;
-use App\Models\api\Especialidad;
+use App\Models\especialidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
