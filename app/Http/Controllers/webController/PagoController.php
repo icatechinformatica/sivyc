@@ -423,7 +423,7 @@ class PagoController extends Controller
         $title = "DOCUMENTOS RECEPCIONADOS";
         $name = $title."_".date('Ymd').".xlsx";
         $view = 'layouts.pages.reportes.excel_contratos_recepcionados';
-        if(count($data)>0)return Excel::download(new ExportExcel($data,$head, $title,$view), $name);
+        return Excel::download(new ExportExcel($data,$head, $title,$view), $name);
         // dd($data[1]->fecha_rechazo);
     }
 
