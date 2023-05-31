@@ -309,7 +309,7 @@ class CursoValidadoController extends Controller
     {
         $usuarioUnidad = Auth::user()->unidad;
         $unidadUsuario = DB::table('tbl_unidades')->WHERE('id', $usuarioUnidad)->FIRST();
-
+        $leyenda = DB::table('tbl_instituto')->pluck('distintivo')->first();
         $i = 0;
         set_time_limit(0);
         ini_set('memory_limit', '1024M');
@@ -373,7 +373,7 @@ class CursoValidadoController extends Controller
             $i++;
         }
         // dd($data);
-        $pdf = PDF::loadView('layouts.pdfpages.reportevincalum', compact('data','curp','sexo','realizo'));
+        $pdf = PDF::loadView('layouts.pdfpages.reportevincalum', compact('data','curp','sexo','realizo','leyenda'));
         $pdf->setPaper('legal', 'Landscape');
         return $pdf->Download('formato de control '. $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
 

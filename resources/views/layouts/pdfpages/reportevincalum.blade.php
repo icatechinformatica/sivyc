@@ -85,7 +85,7 @@
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
-            <br><h6>"2021, Año de la Independencia"</h6>
+            <br><h6>{{$leyenda}}</h6>
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
