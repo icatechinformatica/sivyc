@@ -200,19 +200,19 @@
                                 <td>
                                     @if($data->statusins == 'EN CAPTURA' || $data->statusins == 'RETORNO')
                                         @if($data->status == 'RETORNO')
-                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="EDITAR" href="{{route('instructor-crear-p2', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="EDITAR" href="{{route('instructor-crear-p2', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                         @else
                                             @if($data->numero_control == 'Pendiente')
-                                                <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                             @else
-                                                <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                             @endif
                                         @endif
                                     @else
                                         @if($data->numero_control == 'Pendiente')
-                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                         @else
-                                            <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                         @endif
                                     @endif
                                 </td>
@@ -237,19 +237,19 @@
                                 <td>
                                     @if($data->statusins == 'EN CAPTURA' || $data->statusins == 'RETORNO')
                                         @if($data->status == 'RETORNO')
-                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="EDITAR" href="{{route('instructor-crear-p2', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="EDITAR" href="{{route('instructor-crear-p2', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                         @else
                                             @if($data->numero_control == 'Pendiente')
-                                                <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                             @else
-                                                <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                                <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                             @endif
                                         @endif
                                     @else
                                         @if($data->numero_control == 'Pendiente')
-                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a target="_blank" class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                         @else
-                                            <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a target="_blank"class="btn mr-sm-4 mt-3 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $data->id])}}"><i class="fa fa-pencil-square-o" style="color: white;" aria-hidden="true"></i></a>
                                         @endif
                                     @endif
                                 </td>
