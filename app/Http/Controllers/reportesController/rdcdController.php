@@ -4,7 +4,7 @@ namespace App\Http\Controllers\reportesController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\faCADE as PDF;
+use Barryvdh\DomPDF\facade as PDF;
 use Illuminate\Support\Facades\Auth;
 
 class rdcdController extends Controller
@@ -14,7 +14,7 @@ class rdcdController extends Controller
         $id_unidad= Auth::user()->unidad;
         $unidad= $request->unidades;//dd($unidad);
         $modalidad=$request->modalidad;//dd($modalidad);
-        
+
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
         ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');//dd($rol);
@@ -56,7 +56,7 @@ class rdcdController extends Controller
             }
             if($unidad == "TODO"){$actas=$actas;}else{
                 if($request->unidad) $actas = $actas->where('unidad',$request->unidad);
-            }            
+            }
         }
         else{
             $actas=DB::table('tbl_banco_folios as tb')
@@ -65,10 +65,10 @@ class rdcdController extends Controller
 
             if($modalidad == "TODO"){$actas=$actas;}else{
                 if($request->modalidad) $actas = $actas->where('mod',$request->modalidad);
-            } 
+            }
             if($unidad == "TODO"){$actas=$actas;}else{
                 if($unidad) $actas = $actas->where('unidad',$unidad);
-            } 
+            }
         }
         $actas=$actas->orderby('id','DESC')->get();
         // dd($actas);
@@ -85,10 +85,10 @@ class rdcdController extends Controller
             // $cuerpo->push($acta->unidad);
             array_push($cuerpo2, $cuerpo);
         }
-        
+
         // dd($cuerpo2[0][0]->expedidos);
         return view('reportes.rdcd08.rdcdFormu', compact('unidades','tipo','actas', 'cuerpo2'));
-        
+
     }
      public function none($id){
          $consulta=DB::table('tbl_banco_folios as tb')->select('tb.finicial', 'tb.ffinal', 'tb.total', 'tb.facta','tb.unidad','tb.mod')
@@ -96,8 +96,8 @@ class rdcdController extends Controller
          ->get();
 
          $cuerpo=DB::table('tbl_folios as tf')
-         ->select(DB::raw('min(tf.folio) as mini'), 
-         DB::raw('max(tf.folio) as maxi'), 
+         ->select(DB::raw('min(tf.folio) as mini'),
+         DB::raw('max(tf.folio) as maxi'),
          'tf.fecha_expedicion',
          DB::raw("(sum(case when tf.movimiento in ('EXPEDIDO','REEXPEDIDO','DUPLICADO') then 1 else 0 end) )as expedidos"),
          DB::raw("(sum(case when tf.movimiento='CANCELADO' then 1 else 0 end) )as cancelados"))
@@ -106,7 +106,7 @@ class rdcdController extends Controller
          ->groupBy('tf.id_curso','tf.fecha_expedicion')
          ->orderBy('mini')
          ->get();
- 
+
          $fcancelados=DB::table('tbl_folios as tf')
          ->select('tf.folio as cance','tf.motivo')
          ->where('tf.unidad', '=', $consulta[0]->unidad)
