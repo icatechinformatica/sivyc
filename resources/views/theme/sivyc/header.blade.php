@@ -10,13 +10,13 @@
                     </span>
                 </button>
 
-                <a href="http://www.chiapas.gob.mx" class="navbar-brand g-text-underline--hover"><img src="{{asset("img/sivyc.png") }}" alt="escudo" height="50" width="150"></a>
+                <a href="https://www.chiapas.gob.mx" class="navbar-brand g-text-underline--hover"><img src="{{asset("img/sivyc.png") }}" alt="escudo" height="50" width="150"></a>
                 <div class="collapse navbar-collapse align-items-center flex-sm-row g-pt-10 g-pt-5--lg" id="navBar">
                     <ul class="navbar-nav ml-auto g-font-size-16 g-font-weight-100">
-                        <li class="nav-item g-mx-10--lg pl-3"><a href="http://www.chiapas.gob.mx/participa" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Participa</a></li>
-                        <li class="nav-item g-mx-10--lg pl-3"><a href="http://www.chiapas.gob.mx/tramites" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Trámites</a></li>
-                        <li class="nav-item g-mx-10--lg pl-3"><a href="http://www.chiapas.gob.mx/gobierno" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Gobierno</a></li>
-                        <li class="nav-item g-mx-10--lg pl-3"><a href="http://www.chiapas.gob.mx/transparencia" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Transparencia</a></li>
+                        <li class="nav-item g-mx-10--lg pl-3"><a href="https://www.chiapas.gob.mx/participa" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Participa</a></li>
+                        <li class="nav-item g-mx-10--lg pl-3"><a href="https://www.chiapas.gob.mx/tramites" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Trámites</a></li>
+                        <li class="nav-item g-mx-10--lg pl-3"><a href="https://www.chiapas.gob.mx/gobierno" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Gobierno</a></li>
+                        <li class="nav-item g-mx-10--lg pl-3"><a href="https://www.chiapas.gob.mx/transparencia" class="nav-link g-color-white-opacity-0_9 g-text-underline--hover ">Transparencia</a></li>
                     </ul>
                 </div>
             </div>
