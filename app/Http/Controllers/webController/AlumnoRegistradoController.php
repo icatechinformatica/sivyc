@@ -211,7 +211,8 @@ class AlumnoRegistradoController extends Controller
         // $pathimg = substr($alumnos[0]->fotografia,22);
 
         // Comentar este pathimg si se trabajara con el archivo de forma local
-        $pathimg = substr($alumnos->fotografia ,33);
+        // $pathimg = substr($alumnos->fotografia ,33);
+        $pathimg = $alumnos->fotografia;
 
         $pdf = PDF::loadView('layouts.pdfpages.registroalumno', compact('alumnos', 'edad','date','pathimg'));
         // (Optional) Setup the paper size and orientation

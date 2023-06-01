@@ -7,7 +7,7 @@
         header { position: fixed; left: 0px; top: -190px; right: 0px; height: 190px; text-align: center; }
         header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
         header #tipo{ margin-top: 10px; text-align: center; font-size: 10px;}
-        header #curso{ margin-top: 8px; font-size: 8px; border: 1px solid gray; padding: 8px; line-height: 18px;}
+        header #curso{ margin-top: 8px; font-size: 8px; border: 1px solid gray; padding: 8px; line-height: 18px; overflow: hidden;}
         footer { position: fixed; left: 0px; right: 0px; height: 600px; top: 0px;}
         footer .page:after { content: counter(page, sans-serif);}
 
@@ -15,7 +15,7 @@
         #curso {text-align: justify; }
         #curso b{margin-left: 10px; margin-right: 50px;}
         .tab{ margin-left: 10px; margin-right: 50px;}        
-        .block{ width:auto; white-space: nowrap; margin-right:18px;}
+        .block{ margin-right:18px;}
 
         .tabla { border-collapse: collapse; width: 100%;}
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}       
