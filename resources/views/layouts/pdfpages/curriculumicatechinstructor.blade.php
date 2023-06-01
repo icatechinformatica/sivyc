@@ -119,7 +119,7 @@
         </footer>
         <div class= "container">
             @if($data->archivo_fotografia != FALSE)
-                <img style="border: 2px solid black; margin-top: -5px;" class="pull-right"  src="{{ public_path($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+                <img style="border: 2px solid black; margin-top: -5px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
             @endif
             <br><br><br><br>
             <table class="tablaz" style="border-color: black">
