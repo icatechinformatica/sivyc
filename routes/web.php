@@ -848,9 +848,9 @@ Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoControl
  Route::get('/consulta/xls/cursos-validados','webController\CursoValidadoController@xls_cursosiniciados')->name('xls-cursosiniciados')->middleware('can:consultas.cursos.iniciados');
 
 //Consulta de Localidades en instructores
-Route::post('/instructores/busqueda/localidad', 'webController\Instructorcontroller@getlocalidades')->name('instructores.busqueda.localidades');
-Route::post('/instructores/busqueda/municipio', 'webController\Instructorcontroller@getmunicipios')->name('instructores.busqueda.municipios');
-Route::post('/instructores/detalles/getentrevista', 'webController\Instructorcontroller@getentrevista')->name('instructores.busqueda.entrevista');
+Route::post('/instructores/busqueda/localidad', 'webController\InstructorController@getlocalidades')->name('instructores.busqueda.localidades');
+Route::post('/instructores/busqueda/municipio', 'webController\InstructorController@getmunicipios')->name('instructores.busqueda.municipios');
+Route::post('/instructores/detalles/getentrevista', 'webController\InstructorController@getentrevista')->name('instructores.busqueda.entrevista');
 Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval');
 
 //  autocomplete localidad inscripcion alumnos
@@ -861,8 +861,8 @@ Route::get('/reportes/contentradoPago', 'webController\PagoController@concentrad
 Route::post('/reportes/contentradoPago/pdf', 'webController\PagoController@concentrado_ingresos_pdf')->name('reportes.concentradoingresospdf');
 
 //consulta de Cursos por especialidad en instructores
-Route::post('/instructores/busqueda/cursos', 'webController\Instructorcontroller@getcursos')->name('instructores.busqueda.cursos');
-Route::post('/instructores/busqueda/nomesp', 'webController\Instructorcontroller@nomesp')->name('instructores.busqueda.nomesp');
+Route::post('/instructores/busqueda/cursos', 'webController\InstructorController@getcursos')->name('instructores.busqueda.cursos');
+Route::post('/instructores/busqueda/nomesp', 'webController\InstructorController@nomesp')->name('instructores.busqueda.nomesp');
 
 //consulta de numero de revision en instructore
-Route::post('/instructores/busqueda/nrevision', 'webController\Instructorcontroller@getnrevision')->name('instructores.busqueda.nrevision');
+Route::post('/instructores/busqueda/nrevision', 'webController\InstructorController@getnrevision')->name('instructores.busqueda.nrevision');
