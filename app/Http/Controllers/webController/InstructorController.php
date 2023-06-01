@@ -3127,7 +3127,7 @@ class InstructorController extends Controller
         }
         $date = strtotime(carbon::now()->toDateString());
         // dd($data->archivo_fotografia);
-        $data->archivo_fotografia = substr($data->archivo_fotografia,33);
+        // $data->archivo_fotografia = substr($data->archivo_fotografia,33);
         // dd($data->archivo_fotografia);
         // dd($data->archivo_fotografia);
 
