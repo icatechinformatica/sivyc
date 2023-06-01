@@ -26,7 +26,7 @@
     <div class="encabezado">
         <img class="izquierda" src="{{ public_path('img/sep1.png') }}">
         @if ($alumnos->chk_fotografia == TRUE)
-           <img class="derecha img-thumbnail mb-3" src="{{ public_path($pathimg) }}">
+           <img class="derecha img-thumbnail mb-3" src="{{ asset($pathimg) }}">
         @else
            <img class="derecha img-thumbnail mb-3" src="{{ public_path('img/blade_icons/nophoto.png') }}">
         @endif
