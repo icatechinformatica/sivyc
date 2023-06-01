@@ -6,7 +6,7 @@
         @page { margin: 190px 25px 170px 25px; }
         header { position: fixed; left: 0px; top: -170px; right: 0px; text-align: center;}
         header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
-        header #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: left; height:53px;}
+        header #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: left; height:53px;  overflow: hidden;}
         main {padding: 0; margin: 0; margin-top: 0px; }
 
         .tabla{  border-collapse: collapse; width: 100%; }
