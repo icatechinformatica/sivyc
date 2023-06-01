@@ -9,7 +9,7 @@
         table #curso{ font-size: 8px; padding: 10px; line-height: 18px; text-align: justify; height:53px; }
         main {padding: 0; margin: 0; margin-top: 0px; }
 
-        .tabla{  border-collapse: collapse; width: 100%; }
+        .tabla{  border-collapse: collapse; width: 1450px; }
         .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         
         footer { position:fixed;   left:0px;   bottom:-170px;   height:150px;   width:100%;}
@@ -118,9 +118,7 @@
                         <td>&nbsp;</td>
                     </tr>
                     @endforeach
-                </tbody>
-                <tfoot>
-                </tfoot>
+                </tbody>                
             </table>
             @if($n<count($Ym)-1)<p style="page-break-before: always;"></p>@endif
         @endfor

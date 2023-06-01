@@ -9,7 +9,7 @@
         .tablaf { border-collapse: collapse; width: 100%;}     
         .tablaf td { font-size: 8px; text-align: center; padding: 0px;}
 
-        #titulo{position: fixed; top: 45px;}
+        #titulo{position: fixed; top: 45px; width:100%;}
         #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:bold;}
         #titulo table{position: fixed; top: 100px;}

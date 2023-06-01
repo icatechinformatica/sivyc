@@ -177,9 +177,7 @@
                     <td height="12"></td>
                 </tr>
                 @endforeach
-            </tbody>
-            <tfoot>
-            </tfoot>
+            </tbody>            
         </table>
 
      </div>

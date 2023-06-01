@@ -3,24 +3,20 @@
 <head>
      <style>
         body{font-family: sans-serif;}
-        @page { margin: 190px 25px 170px 25px; }
-        header { position: fixed; left: 0px; top: -170px; right: 0px; text-align: center;}
+        @page { margin: 190px 25px 170px 25px; }        
+        header { position: fixed; left: 0px; top: -170px; right: 0px; height: 450px; text-align: center; }
         header h6{ height:0; line-height: 14px; padding: 8px; margin: 0;}
-        header #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: left; height:53px;}
-        main {padding: 0; margin: 0; margin-top: 0px; }
-
-        .tabla{  border-collapse: collapse; width: 100%; }
-        .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
+        header #curso{ margin-top: 20px; font-size: 8px; border: 1px solid gray; padding: 12px; line-height: 18px; text-align: center; height:53px;}
         
 
+        main {padding: 0; margin: 0; margin-top: 0px; }
+        .tabla{  border-collapse: collapse; width: 100%; }
+        .tabla tr td, .tabla tr th{ font-size: 8px; border: gray 1px solid; text-align: center; padding: 3px;}
         footer { position:fixed;   left:0px;   bottom:-170px;   height:150px;   width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
-
         .tablaf { border-collapse: collapse; width: 100%;}
         .tablaf tr td { font-size: 9px; text-align: center; padding: 3px;}
-
         .block{ width:auto; white-space: nowrap; margin-right:18px;}
-
      </style>
 </head>
 <body>
@@ -30,13 +26,13 @@
             <h6>SUBSECRETAR&Iacute;A DE EDUCACI&Oacute;N E INVESTIGACI&Oacute;N TECNOL&Oacute;GICAS</h6>
             <h6>DIRECCI&Oacute;N GENERAL DE CENTROS DE FORMACI&Oacute;N PARA EL TRABAJO</h6>
             <h6>REGISTRO DE EVALUACI&Oacute;N POR SUBOBJETIVOS</h6>
-            <h6>(RESD-05)</h6>
+            <h6>(RESD-05)</h6>           
             <div id="curso">
                 <span class="block">UNIDAD DE CAPACITACI&Oacute;N: &nbsp;{{$curso->plantel}} {{ $curso->unidad }}</span>
                 <span class="block">CLAVE CCT: &nbsp;{{ $curso->cct }}</span>
                 <span class="block">AREA: &nbsp;{{ $curso->area }}</span>
                 <span class="block">ESPECIALIDAD: &nbsp;{{ $curso->espe }}</span>
-                <span class="block">CURSO: &nbsp;{{ $curso->curso }}</span>
+                <span class="block">CURSO: &nbsp;{{ $curso->curso }}</span><br />
                 <span class="block">CLAVE: &nbsp;{{ $curso->clave }}</span>
                 <span class="block">CICLO ESCOLAR: &nbsp;{{ $curso->ciclo }}</span>
                 <span class="block">FECHA INICIO: &nbsp;{{ $curso->fechaini }}</span>
@@ -113,9 +109,7 @@
                     <td>{{ $a->calificacion }}</td>
                 </tr>
                 @endforeach
-            </tbody>
-            <tfoot>
-            </tfoot>
+            </tbody>            
         </table>
     </main>
 </body>

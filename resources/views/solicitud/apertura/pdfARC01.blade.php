@@ -12,7 +12,7 @@
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
         .tablad tr td{padding: 1px 10px 0 10px;}
         
-        #titulo{position: fixed; top: 45px;}
+        #titulo{position: fixed; top: 45px; width:100%;}
         #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:bold;}
         #titulo table{position: fixed; top: 100px;}
