@@ -6,7 +6,7 @@
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <style>
+        <style> 
             body{
                 font-family: sans-serif;
                 /* border: 1px solid black; */
@@ -92,19 +92,22 @@
             .table1 td {
                 padding:5px;
             }
+
+            img.derechaf { float: right; width: 2.5cm; height: 3.0cm;}
+
             .tablas{border-collapse: collapse;width: 990px;}
         .tablas tr{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
         .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
         .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
         .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
-        .tablad { border-collapse: collapse;font-size: 12px; border-color: black; border: black 1px solid; border-bottom-color: black; border-top-color: black; text-align: center; padding:0.5px;}
-        .tablaz { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: center; padding:0.5px; margin-right: 0px; margin-left: auto;}
+        .tablad { border-collapse: collapse;font-size: 10px; border-color: black; border: black 1px solid; border-bottom-color: black; border-top-color: black; text-align: center; padding:0.5px;}
+        .tablaz { border-collapse: collapse;font-size: 10px;border: black 1px solid; text-align: center; padding:0.5px; margin-right: 0px; margin-left: auto;}
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
         </style>
     </head>
-    <body style="margin-top:90px; margin-bottom:70px;">
+    <body style="margin-top:90px; margin-bottom:70px; border: 1px">
         <header>
             <img class="izquierda" src="{{ public_path('img/instituto_oficial.png') }}">
             <img class="derecha" src="{{ public_path('img/chiapas.png') }}">
@@ -117,9 +120,10 @@
             <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
             <div class="page-break-non"></div>
         </footer>
-        <div class= "container">
+        <div>
             @if($data->archivo_fotografia != FALSE)
-                <img style="border: 2px solid black; margin-top: -5px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
+                {{-- <img class="derechaf img-thumbnail mb-3" src="{{ asset($data->archivo_fotografia) }}"> --}}
+                <img style="border: 2px solid black; margin-top: -5px; margin-right: -160px;" class="pull-right"  src="{{ asset($data->archivo_fotografia) }}" alt="foto" width="75" height="75">
             @endif
             <br><br><br><br>
             <table class="tablaz" style="border-color: black">
@@ -134,7 +138,7 @@
                     </tr>
                 </thead>
             </table>
-            <b>I. DATOS PERSONALES</b>
+            <b><small>I. DATOS PERSONALES</small></b>
             <br>
             <div class="table table-responsive">
                 <table class="tablad">
@@ -241,7 +245,7 @@
                     </tbody>
                 </table>
             </div>
-            <b>II. FORMACIÓN ACADÉMICA Y EN CURSO</b>
+            <b><small>II. FORMACIÓN ACADÉMICA Y EN CURSO</small></b>
             <br>
             <div class="table table-responsive">
                 <table class="tablad">
@@ -277,7 +281,7 @@
                     </tbody>
                 </table>
             </div>
-            <b>III. EXPERIENCIA DOCENTE (ANTERIOR Y ACTUAL)</b>
+            <b><small>III. EXPERIENCIA DOCENTE (ANTERIOR Y ACTUAL)</small></b>
             <br>
             <div class="table table-responsive">
                 <table class="tablad">
@@ -303,7 +307,7 @@
                     </tbody>
                 </table>
             </div>
-            <b>IV. EXPERIENCIA LABORAL (ANTERIOR Y ACTUAL)</b>
+            <b><small>IV. EXPERIENCIA LABORAL (ANTERIOR Y ACTUAL)</small></b>
             <br>
             <div class="table table-responsive">
                 <table class="tablad">
@@ -327,10 +331,10 @@
                     </tbody>
                 </table>
             </div>
-            <div align=center><b>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</b></div>
-            <br><br>
-            <div align=center><b>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b></div>
-            <div align=center><b><small><small>
+            <div align=center><b><small>DECLARO BAJO PROTESTA DE DECIR VERDAD QUE LOS DATOS AQUÍ ASENTADOS SON CIERTOS</small></b></div>
+            
+            <div align=center><b><small>{{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</small></b></div>
+            <div align=center style="border: 1px"><b><small><small>
                 Se informa que no se realizarán tranferencias de datos personales,
                  salvo aquéllas que sean necesarias para atender requerimientos de información de una autoridad
                  competente, que estén debidamente fundados y motivados. En ese caso se atenderá a lo dispuesto
