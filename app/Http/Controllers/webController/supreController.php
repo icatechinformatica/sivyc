@@ -262,7 +262,6 @@ class supreController extends Controller
             $getelabora = directorio::WHERE('id', '=', $directorio->supre_elabora)->FIRST();
         }
         $getfolios[0]->mov_bancario = json_decode($getfolios[0]->mov_bancario);
-        // dd($getfolios[0]->mov_bancario);
         return view('layouts.pages.modsupre',compact('getsupre','getfolios','getremitente','getvalida','getelabora','directorio', 'unidadsel','unidadlist'));
     }
 

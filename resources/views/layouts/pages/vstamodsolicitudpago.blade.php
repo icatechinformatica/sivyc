@@ -29,7 +29,7 @@
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputno_memo">Numero de Memorandum</label>
                     <input id="no_memo" name="no_memo" type="text" class="form-control" value="{{$datap->no_memo}}">
                 </div>
@@ -37,6 +37,10 @@
                     <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
                     <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control" value="{{$datap->solicitud_fecha}}">
                 </div>
+                {{-- <div class="form-group col-md-3">
+                    <label for="inputfecha_agenda">Fecha de Entrega Fisica</label>
+                    <input id="fecha_agenda" name="fecha_agenda" type="date" class="form-control" value="{{$datap->fecha_agenda}}">
+                </div> --}}
             </div>
             <div class="form-row">
                     <div class="form-group col-md-4">
@@ -86,6 +90,10 @@
                         <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
                     </div>
                     <div class="form-group col-md-3">
+                        <label for="inputarch_factura_xml" class="control-label">Factura de Instructor XML</label>
+                        <input type="file" accept="application/xml" class="form-control" id="arch_factura_xml" name="arch_factura_xml" placeholder="Archivo XML">
+                    </div>
+                    <div class="form-group col-md-3">
                         <label for="inputliquido" class="control-label">Importe Liquido en Factura</label>
                         <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
                     </div>
@@ -95,6 +103,8 @@
                         <input type="text" name="liquido" id="liquido" class="form-control" value="{{$datap->liquido}}">
                     </div>
                 @endif
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
                     <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">

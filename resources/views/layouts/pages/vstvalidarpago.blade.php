@@ -8,32 +8,6 @@
 
         <div class="text-center">
             <h1>Validar Pagos</h1>
-        </div>
-        <hr style="border-color:dimgray">
-        <h2>Vista de Documentos</h2>
-        <br>
-        <div class="form-row">
-            @if ($contratos->archivo_bancario!= NULL)
-                <a class="btn btn-info" href={{$contratos->archivo_bancario}} download>Archivo Bancario</a><br>
-            @else
-                <a class="btn btn-danger" disabled>Archivo Bancario</a><br>
-            @endif
-            @if ($contratos->arch_factura != NULL)
-                <a class="btn btn-info" href={{$contratos->arch_factura}} download>Factura</a><br>
-            @else
-                <a class="btn btn-danger" disabled>Factura</a><br>
-            @endif
-            @if ($datapago->arch_asistencia != NULL)
-                <a class="btn btn-info" href={{$datapago->arch_asistencia}} download>Lista de Asistencia</a><br>
-            @else
-                <a class="btn btn-danger" disabled>Lista de Asistencia</a><br>
-            @endif
-            @if ($datapago->arch_evidencia != NULL)
-                <a class="btn btn-info" href={{$datapago->arch_evidencia}} download>Evidencia Fotográfica</a><br>
-            @else
-                <a class="btn btn-danger" disabled>Evidencia Fotográfica</a><br>
-            @endif
-        </div>
         <hr style="border-color:dimgray">
         <div class="form-row">
             <div class="form-group col-md-4">
@@ -105,8 +79,8 @@
                             <form action="" id="validarForm" method="get">
                                 @csrf
                                 <input type="hidden" name="id">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                                <button type="submit" class="btn btn-success">Validar</button>
+                                <button type="button" class="btn btn-danger" style="margin-right: 5px;" data-dismiss="modal">Cerrar</button>
+                                <button type="submit" style="margin-left: 5px;" class="btn btn-success">Validar</button>
                             </form>
                         </div>
                     </div>
