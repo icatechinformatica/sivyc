@@ -151,7 +151,7 @@ class ContratoController extends Controller
                 $querySupre = $contratos::busquedaporcontrato($tipoContrato, $busqueda_contrato, $tipoStatus, $unidad, $mes)
                     ->WHERE('tbl_unidades.ubicacion', '=', $unidadUsuario->ubicacion)
                     ->WHERE('folios.status', '!=', 'En_Proceso')
-                    ->WHERE('folios.status', '!=', 'Finalizado')
+                    // ->WHERE('folios.status', '!=', 'Finalizado')
                     ->WHERE('folios.status', '!=', 'Rechazado')
                     ->WHERE('folios.status', '!=', 'Cancelado')
                     ->WHERE('tbl_cursos.inicio', '>=', $año_referencia)
