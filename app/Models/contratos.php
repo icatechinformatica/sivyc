@@ -12,8 +12,8 @@ class contratos extends Model
     protected $primaryKey = 'id_contrato';
 
     protected $fillable = ['id_contrato','numero_contrato','cantidad_letras1','fecha_firma','municipio',
-    'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero','arch_factura',
-    'fecha_status','chk_rechazado','fecha_rechazo','tipo_factura'
+    'id_folios','instructor_perfilid','unidad_capacitacion','docs','observacion','cantidad_numero','arch_factura','arch_factura_xml',
+    'fecha_status','chk_rechazado','fecha_rechazo','tipo_factura','arch_contrato'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -75,7 +75,8 @@ class contratos extends Model
                     return $query->whereDate('contratos.created_at', '>=', $dateini)->whereDate('contratos.created_at', '<=', $datefin);
                 }
             }
-            if (!empty(trim($buscar))) {
+            if (!empty(trim($buscar)))
+            {
                 # busqueda
                 switch ($tipo) {
                     case 'no_memorandum':
@@ -99,6 +100,10 @@ class contratos extends Model
                     case 'folio_validacion':
                         # busqueda por folio de validacion
                         return $query->WHERE('folios.folio_validacion', '=', $buscar);
+                        break;
+                    case 'agendar_fecha':
+                        return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
+                                    ->WHERE('pagos.recepcion',NULL);
                         break;
                 }
             }
@@ -171,6 +176,15 @@ class contratos extends Model
                         }
                         break;
                 }
+            }
+            if($tipo == 'agendar_fecha')
+            {
+                if(isset($unidad))
+                {
+                    $query->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad);
+                }
+                return $query->WHEREIN('folios.status',['Verificando_Pago','Pago_Verificado','Pago_Rechazado'])
+                                ->WHERE('pagos.recepcion',NULL);
             }
         }
         if (!empty($tipo_status)) {

@@ -69,11 +69,11 @@
                 <h1>Reporte de Trámites Recepcionados</h1>
             </div>
             <br>
-            <h2>Filtrar Trámites Recepcionados Por:</h2>
-            <br>
+            {{-- <h2>Filtrar Trámites Recepcionados Por:</h2>
+            <br> --}}
             {{-- <hr style="border-color:rgb(245, 245, 245)"> --}}
             <div class="form-row">
-                <div class="form-group col-md-2"></div>
+                <div class="form-group col-md-4"></div>
                 <div class="form-group col-md-3">
                     <label for="unidad"><h3>Unidad:</h3></label>
                     <select name="unidad" id="unidad" class="form-control">
@@ -83,7 +83,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-md-3">
+                {{-- <div class="form-group col-md-3">
                     <label for="tipo"><h3>Tipo de Curso:</h3></label>
                     <select name="tipo" id="tipo" class="form-control">
                         <option value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
@@ -98,7 +98,7 @@
                         <option value="PRESENCIAL">Presencial</option>
                         <option value="A DISTANCIA">A Distancia</option>
                     </select>
-                </div>
+                </div> --}}
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3"></div>

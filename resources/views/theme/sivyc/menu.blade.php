@@ -264,11 +264,11 @@
                         @can('reportes.rf001')
                             <a class="dropdown-item" href="{{route('reportes.concentradoingresos')}}">RF-001</a>
                         @endcan
-                        @can('financieros.reportevalrec')
+                        {{-- @can('financieros.reportevalrec') --}}
                         {{-- <a class="dropdown-item" data-toggle="modal" data-placement="top"
                                 data-target="#ModalFinanciero">TRAMITES VALIDADOS Y RECEPCIONADOS</a>--}}
                             <a class="dropdown-item" href="{{route('docummentospago.reporte')}}">TRAMITES RECEPCIONADOS</a>
-                        @endcan
+                        {{-- @endcan --}}
 
                         {{-- <a class="dropdown-item" href="{{route('vista_formatot')}}">Formato T</a> --}}
                     </div>

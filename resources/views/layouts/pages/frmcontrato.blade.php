@@ -101,22 +101,19 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-3">
-                    <label for="inputfactura" class="control-label">Factura de Instructor o Anexo</label>
+                    <label for="inputfactura" class="control-label">Factura de Instructor PDF</label>
                     <input type="file" accept="application/pdf" id="factura" name="factura" class="form-control" placeholder="Archivo PDF">
-                    @if ($term == TRUE)
-                        <footer style="color:red;" class="control-footer">La fecha de termino del curso ha sido alcanzada. Anexar documento de factura en caso de contar con ella</footer>
-                    @else
-                        <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
-                    @endif
                 </div>
-                {{-- <div class="form-group col-md-3">
-                    <label for="testigo_icatech" class="control-label">Tipo de Factura</label>
-                    <select name="tipo_factura" class="form-control mr-sm-2" id="tipo_factura">
-                        <option value="NORMAL">NORMAL</option>
-                        <option value="NUEVA">NUEVA</option>
-                    </select>
-                </div> --}}
+                <div class="form-group col-md-3">
+                    <label for="inputfactura_xml" class="control-label">Factura de Instructor XML</label>
+                    <input type="file" accept="application/xml" id="factura_xml" name="factura_xml" class="form-control" placeholder="Archivo XML">
+                </div>
             </div>
+            @if ($term == TRUE)
+            <footer style="color:red;" class="control-footer">La fecha de termino del curso ha sido alcanzada. Anexar documento de factura en caso de contar con ella</footer>
+            @else
+                <footer class="control-footer">Anexar documento de factura en caso de contar con ella</footer>
+            @endif
             <hr style="border-color:dimgray">
             <h2>Testigos</h2>
             <br>

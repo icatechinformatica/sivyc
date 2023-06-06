@@ -30,7 +30,7 @@
                 </div>
                 <div class="form-gorup col-md-4">
                     <label for="inputnombre_instructor">Nombre de Instructor</label>
-                    <input type="text" name="nombre_instructor" id="nombre_instructor" disabled class="form-control" aria-required="true" value="{{$nomins}}">
+                    <input type="text" name="nombre_instructor" id="nombre_instructor" disabled class="form-control" aria-required="true" value="{{$data->nombre}}">
                 </div>
             </div>
             <br>

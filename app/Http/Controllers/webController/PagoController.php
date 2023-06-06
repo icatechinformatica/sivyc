@@ -7,7 +7,9 @@ use App\Models\instructor;
 use App\Models\contratos;
 use App\Models\folio;
 use App\Models\directorio;
+use App\Models\especialidad_instructor;
 use App\Models\contrato_directorio;
+use App\Models\Calendario_Entrega;
 use Illuminate\Http\Request;
 use Redirect,Response;
 use App\Http\Controllers\Controller;
@@ -19,6 +21,9 @@ use Illuminate\Pagination\Paginator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportExcel;
+use ZipArchive;
 
 class PagoController extends Controller
 {
@@ -73,7 +78,7 @@ class PagoController extends Controller
             ->WHERE('role_user.user_id', '=', $userId)
             ->GET();
 
-        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->WHERE('cct','LIKE','07EI%')->GET();
 
         //dd($roles[0]->role_name);
 
@@ -87,12 +92,20 @@ class PagoController extends Controller
         ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
         ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
         ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
+        ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
         ->orderBy('pagos.created_at', 'desc')
-        ->PAGINATE(25, [
-            'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
-            'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','folios.permiso_editar',
-            'contratos.docs', 'contratos.observacion', 'folios.status', 'folios.id_folios',
-            'folios.id_supre','pagos.created_at','pagos.arch_pago'
+        ->PAGINATE(50, [
+            'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1', 'contratos.arch_contrato',
+            'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.fecha_status', 'contratos.docs',
+            'contratos.observacion', 'contratos.arch_factura', 'contratos.arch_factura_xml','folios.permiso_editar',
+            'folios.status','pagos.recepcion', 'folios.id_folios', 'folios.id_supre','pagos.status_recepcion','pagos.created_at','pagos.arch_solicitud_pago',
+            'pagos.arch_asistencia','pagos.arch_evidencia','pagos.fecha_agenda','pagos.arch_solicitud_pago','pagos.agendado_extemporaneo',
+            'pagos.observacion_rechazo_recepcion','pagos.arch_calificaciones','pagos.arch_evidencia','tbl_cursos.id_instructor',
+            'tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso', 'tbl_cursos.pdf_curso','tabla_supre.doc_validado',
+            'instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine', 'tbl_cursos.nombre',
+            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
+            DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
+            // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
         ]);
         switch ($roles[0]->role_name) {
             case 'unidad.ejecutiva':
@@ -139,23 +152,60 @@ class PagoController extends Controller
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
                 ->LEFTJOIN('tabla_supre', 'tabla_supre.id', '=', 'folios.id_supre')
                 ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
-                ->orderBy('contratos.fecha_firma', 'desc')
-                ->PAGINATE(25, [
-                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1',
-                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma',
-                    'folios.permiso_editar','contratos.docs',
-                    'contratos.observacion', 'folios.status', 'folios.id_folios','folios.id_supre','pagos.arch_pago'
+                ->JOIN('instructores','instructores.id', '=', 'tbl_cursos.id_instructor')
+                ->orderBy('pagos.created_at', 'desc')
+                // ->orderBy('contratos.fecha_firma', 'desc')
+                ->PAGINATE(50, [
+                    'contratos.id_contrato', 'contratos.numero_contrato', 'contratos.cantidad_letras1','contratos.fecha_status','contratos.arch_contrato',
+                    'contratos.unidad_capacitacion', 'contratos.municipio', 'contratos.fecha_firma','contratos.docs','contratos.observacion',
+                    'contratos.arch_factura', 'contratos.arch_factura_xml','folios.status','folios.id_folios','folios.id_supre','pagos.recepcion',
+                    'folios.permiso_editar','pagos.status_recepcion','pagos.arch_solicitud_pago','pagos.fecha_agenda','pagos.arch_asistencia','pagos.arch_evidencia',
+                    'pagos.arch_calificaciones','pagos.arch_evidencia','pagos.agendado_extemporaneo','pagos.observacion_rechazo_recepcion',
+                    'tbl_cursos.id_instructor','tbl_cursos.instructor_mespecialidad','tbl_cursos.tipo_curso','tbl_cursos.pdf_curso',
+                    'tabla_supre.doc_validado','instructores.archivo_alta','instructores.archivo_bancario','instructores.archivo_ine',
+                    'tbl_cursos.nombre',
+                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 7 as alerta'),
+                    DB::raw('(DATE_PART(\'day\', CURRENT_DATE - pagos.updated_at::timestamp)) >= 7 as alerta_financieros'),
+                    // DB::raw('(DATE_PART(\'day\', CURRENT_DATE - contratos.fecha_status::timestamp)) >= 30 as bloqueo')
                 ]);
                 break;
         }
 
-        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio'));
+        foreach($contratos_folios as $pointer => $ari)
+        {
+            $memoval = especialidad_instructor::WHERE('id_instructor',$ari->id_instructor) // obtiene la validacion del instructor
+            ->whereJsonContains('hvalidacion', [['memo_val' => $ari->instructor_mespecialidad]])->value('hvalidacion');
+            if(isset($memoval))
+            {
+                foreach($memoval as $me)
+                {
+                    if($me['memo_val'] == $ari->instructor_mespecialidad)
+                    {
+                        $contratos_folios[$pointer]->arch_mespecialidad = $me['arch_val'];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                $contratos_folios[$pointer]->arch_mespecialidad = $ari->archivo_alta;
+            }
+
+        }
+
+        $calendario_entrega = Calendario_Entrega::whereDate('fecha_entrega', '>=', Carbon::now()->toDateString())
+            ->whereJsonContains('tipo_entrega', 'DOCUMENTACION_PAGO')
+            ->orderBy('fecha_entrega', 'asc')
+            ->value('fecha_entrega');
+
+
+        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega'));
     }
 
     public function crear_pago($id)
     {
-        $data = contratos::SELECT('instructores.numero_control','instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
-                                  'tbl_cursos.curso','tbl_cursos.clave','contratos.unidad_capacitacion','folios.id_folios','folios.importe_total','folios.iva','pagos.id AS id_pago')
+        $data = contratos::SELECT('instructores.numero_control','tbl_cursos.nombre','tbl_cursos.curso','tbl_cursos.clave',
+                                    'contratos.unidad_capacitacion','folios.id_folios','folios.importe_total','folios.iva','pagos.id AS id_pago')
                                     ->WHERE('contratos.id_contrato', '=', $id)
                                     ->LEFTJOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
                                     ->LEFTJOIN('tbl_cursos', 'tbl_cursos.id', 'folios.id_cursos')
@@ -163,9 +213,8 @@ class PagoController extends Controller
                                     ->LEFTJOIN('pagos', 'pagos.id_contrato', '=', 'contratos.id_contrato')
                                     ->FIRST();
 
-        $nomins = $data->nombre . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
         $importe = round($data->importe_total-$data->iva, 2);
-        return view('layouts.pages.frmpago', compact('data', 'nomins','importe'));
+        return view('layouts.pages.frmpago', compact('data','importe'));
     }
 
     public function modificar_pago()
@@ -354,44 +403,28 @@ class PagoController extends Controller
     public function tramitesrecepcionados_pdf(Request $request)
     {
         // dd($request);
-        $data = contratos::SELECT('contratos.fecha_status', 'contratos.numero_contrato',
-            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'folios.recepcion', 'tbl_cursos.clave',
+        $data = contratos::SELECT('contratos.fecha_status', 'contratos.numero_contrato', 'contratos.fecha_firma',
+            'contratos.chk_rechazado', 'contratos.fecha_rechazo', 'pagos.recepcion', 'tbl_cursos.clave',
 		    'tbl_cursos.inicio', 'tbl_cursos.nombre','folios.status')
             ->JOIN('folios', 'folios.id_folios', '=', 'contratos.id_folios')
             ->JOIN('tbl_cursos', 'tbl_cursos.id', '=', 'folios.id_cursos')
             ->JOIN('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_cursos.unidad')
-            ->WHERE('contratos.id_contrato', '=', '4228')
-            // ->WHERE('tbl_unidades.ubicacion', '=', $request->unidad)
+            ->JOIN('pagos','pagos.id_contrato','=', 'contratos.id_contrato')
+            // ->WHERE('contratos.id_contrato', '=', '4228')
+            ->WHERE('contratos.unidad_capacitacion', '=', $request->unidad)
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
-            // ->WHEREBETWEEN('tbl_cursos.inicio', [$request->fecha1, $request->fecha2])
+            ->WHERE('pagos.recepcion', '!=', NULL)
+            ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
             // dd($data);
+        $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FFECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
+        $title = "DOCUMENTOS RECEPCIONADOS";
+        $name = $title."_".date('Ymd').".xlsx";
+        $view = 'layouts.pages.reportes.excel_contratos_recepcionados';
+        return Excel::download(new ExportExcel($data,$head, $title,$view), $name);
         // dd($data[1]->fecha_rechazo);
-        if ($request->tipo == 'CURSO')
-        {
-            $tipo = 'HONORARIOS';
-        }
-        else
-        {
-            $tipo = 'CERTIFICACIONES EXTRAORDINARIAS';
-        }
-
-        if ($request->modalidad == 'PRESENCIAL')
-        {
-            $modalidad = 'PRESENCIAL';
-        }
-        else
-        {
-            $modalidad = 'A DISTANCIA';
-        }
-        $unidad = $request->unidad;
-        $distintivo = DB::table('tbl_instituto')->pluck('distintivo')->first();
-
-        $pdf = PDF::loadView('layouts.pdfpages.reportetramitesrecepcionados', compact('data','tipo', 'modalidad','unidad','distintivo'));
-        $pdf->setPaper('legal', 'Landscape');
-        return $pdf->Stream('Tramites recepcionados de la unidad '. $request->unidad . $request->fecha1 . ' - '. $request->fecha2 .'.pdf');
     }
 
     public function  reporte_validados_recepcionados(Request $request)
@@ -493,6 +526,392 @@ class PagoController extends Controller
         return $pdf->download('medium.pdf');
     }
 
+    public function agendar_entrega_pago(Request $request)
+    {
+        // dd($request);
+        $variables = ['factura_pdf','factura_xml','contratof_pdf','solpa_pdf','asistencias_pdf','calificaciones_pdf',
+                      'evidencia_fotografica_pdf'];
+        if(isset($request->id_contrato_agendac))
+        {
+            for($i=0;$i<=6;$i++)
+            {
+                $variables[$i] = $variables[$i].'c';
+                $id_contrato = $request->id_contrato_agendac;
+            }
+        }
+        else
+        {
+            $id_contrato = $request->id_contrato_agenda;
+        }
+        $curso  = DB::TABLE('contratos')->SELECT('tbl_cursos.id_instructor','tbl_cursos.tipo_curso')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->WHERE('contratos.id_contrato', $id_contrato)
+            ->FIRST();
+
+        $doc_factura_pdf = $request->file($variables[0]); # obtenemos el archivo
+        $doc_factura_xml = $request->file($variables[1]); # obtenemos el archivo
+        $doc_contrato = $request->file($variables[2]); # obtenemos el archivo
+        $doc_solpa = $request->file($variables[3]); # obtenemos el archivo
+        $doc_asistencias = $request->file($variables[4]); # obtenemos el archivo
+        $doc_calificaciones = $request->file($variables[5]); # obtenemos el archivo
+        $doc_evidencia_fotografica = $request->file($variables[6]);
+
+        $contrato = contratos::find($id_contrato);
+        if(isset($doc_factura_pdf))
+        {
+            $factura_pdf = $this->pdf_upload($doc_factura_pdf, $id_contrato, $curso->id_instructor, 'factura_pdf'); # invocamos el método
+            $contrato->arch_factura = $factura_pdf;
+        }
+        if(isset($doc_factura_xml))
+        {
+            $factura_xml = $this->xml_upload($doc_factura_xml, $id_contrato, $curso->id_instructor, 'factura_xml'); # invocamos el métododd
+            $contrato->arch_factura_xml = $factura_xml;
+        }
+        if(isset($doc_contrato))
+        {
+            $contrato_pdf = $this->pdf_upload($doc_contrato, $id_contrato, $curso->id_instructor, 'contrato'); # invocamos el método
+            $contrato->arch_contrato = $contrato_pdf;
+        }
+        if(isset($doc_solpa))
+        {
+            $solpa_pdf = $this->pdf_upload($doc_solpa, $id_contrato, $curso->id_instructor, 'solicitud_pago'); # invocamos el método
+            $pago = pago::where('id_contrato', $id_contrato)
+            ->update(['arch_solicitud_pago' => $solpa_pdf]);
+        }
+        if(isset($doc_asistencias))
+        {
+            $asistencias_pdf = $this->pdf_upload($doc_asistencias, $id_contrato, $curso->id_instructor, 'lista_asistencia'); # invocamos el método
+            $pago = pago::where('id_contrato', $id_contrato)
+            ->update(['arch_asistencia' => $asistencias_pdf]);
+        }
+        if(isset($doc_calificaciones))
+        {
+            $calificaciones_pdf = $this->pdf_upload($doc_calificaciones, $id_contrato, $curso->id_instructor, 'lista_calificaciones'); # invocamos el método
+            $pago = pago::where('id_contrato', $id_contrato)
+            ->update(['arch_calificaciones' => $calificaciones_pdf]);
+        }
+        if(isset($doc_evidencia_fotografica))
+        {
+            $evidencia_fotografica_pdf = $this->pdf_upload($doc_evidencia_fotografica, $id_contrato, $curso->id_instructor, 'evidencia_fotografica'); # invocamos el método
+            $pago = pago::where('id_contrato', $id_contrato)
+            ->update(['arch_evidencia' => $evidencia_fotografica_pdf]);
+        }
+
+        if($request->tipo_envio == 'guardar_enviar')
+        {
+            pago::where('id_contrato', $id_contrato)
+            ->update(['status_recepcion' => 'En Espera']);
+        }
+
+        $contrato->save();
+
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Entrega de Documentos Agendada Correctamente');
+    }
+
+    public function confirmar_entrega_fisica(Request $request)
+    {
+        $fecha_actual = carbon::now();
+        $folio = folio::find($request->id_folio_entrega)->update(['recepcion' => $fecha_actual->toDateString()]);
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Entrega de Documentos Confirmada Correctamente');
+    }
+
+    public function validar_cita_fisica(Request $request)
+    {
+        // dd($request);
+        $updarray = $arrhistorial = array();
+        $update = pago::WHERE('id_contrato',$request->id_contrato_cita)->first();
+        $archivos = DB::TABLE('contratos')
+            ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
+            'instructor_mespecialidad','espe','archivo_alta')
+            ->WHERE('contratos.id_contrato', $request->id_contrato_cita)
+            ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+            ->SELECT('especialidad_instructores.id','especialidades.nombre')
+            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidades.nombre', '=', $archivos->espe)
+            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+            ->FIRST();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                {
+                    $archivos->instructor_mespecialidad = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+        }
+
+        $update->fecha_agenda = $request->fecha_confirmada;
+        $update->status_recepcion = 'Citado';
+        $updarray = ['status' => 'Citado',
+                     'fecha_agenda' => $request->fecha_confirmada,
+                     'fecha_validacion' => carbon::now()->format('d-m-Y'),
+                     'solicitud_pago' => $update->arch_solicitud_pago,
+                     'cuenta_bancaria' => $archivos->archivo_bancario,
+                     'validacion_instructor' => $archivos->instructor_mespecialidad,
+                     'arc' => $archivos->pdf_curso,
+                     'valsupre' => $archivos->doc_validado,
+                     'factura_pdf' => $archivos->arch_factura,
+                     'factura_xml' => $archivos->arch_factura_xml,
+                     'contrato' => $archivos->arch_contrato,
+                     'identificacion' => $archivos->archivo_ine,
+                     'asistencia' => $update->arch_asistencia,
+                     'calificacion' => $update->arch_calificaciones,
+                     'evidencia' => $update->arch_evidencia];
+
+
+        if(!isset($update->historial))
+        {
+            array_push($arrhistorial,$updarray);
+        }
+        else
+        {
+            $arrhistorial = $update->historial;
+            array_push($arrhistorial,$updarray);
+        }
+        $update->historial = $arrhistorial;
+        $update->save();
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Fecha de Cita Confirmada Correctamente');
+    }
+
+    public function rechazar_entrega_fisica(Request $request)
+    {
+        // dd($request);
+        $updarray = $arrhistorial = array();
+        $update = pago::WHERE('id_contrato',$request->id_contrato_entrega_rechazo)->first();
+        $archivos = DB::TABLE('contratos')
+            ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
+            'instructor_mespecialidad','espe','archivo_alta')
+            ->WHERE('contratos.id_contrato', $request->id_contrato_entrega_rechazo)
+            ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+            ->SELECT('especialidad_instructores.id','especialidades.nombre')
+            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidades.nombre', '=', $archivos->espe)
+            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+            ->FIRST();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                {
+                    $archivos->instructor_mespecialidad = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+        }
+
+        $update->observacion_rechazo_recepcion = $request->observacion_rechazo;
+        $update->status_recepcion = 'Rechazado';
+        $updarray = ['status' => 'Rechazado',
+                     'observacion' => $update->observacion_rechazo_recepcion,
+                     'fecha_rechazo' => carbon::now()->format('d-m-Y'),
+                     'solicitud_pago' => $update->arch_solicitud_pago,
+                     'cuenta_bancaria' => $archivos->archivo_bancario,
+                     'validacion_instructor' => $archivos->instructor_mespecialidad,
+                     'arc' => $archivos->pdf_curso,
+                     'valsupre' => $archivos->doc_validado,
+                     'factura_pdf' => $archivos->arch_factura,
+                     'factura_xml' => $archivos->arch_factura_xml,
+                     'contrato' => $archivos->arch_contrato,
+                     'identificacion' => $archivos->archivo_ine,
+                     'asistencia' => $update->arch_asistencia,
+                     'calificacion' => $update->arch_calificaciones,
+                     'evidencia' => $update->arch_evidencia];
+
+
+        if(!isset($update->historial))
+        {
+            array_push($arrhistorial,$updarray);
+        }
+        else
+        {
+            $arrhistorial = $update->historial;
+            array_push($arrhistorial,$updarray);
+        }
+        $update->historial = $arrhistorial;
+        $update->save();
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Rechazo de entrega de Documentos Correctamente');
+    }
+
+    public function recibido_entrega_fisica(Request $request)
+    {
+        // dd($request);
+        $updarray = $arrhistorial = array();
+        $update = pago::WHERE('id_contrato',$request->id_contrato_entrega)->first();
+        $archivos = DB::TABLE('contratos')
+            ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
+            'instructor_mespecialidad','espe','archivo_alta')
+            ->WHERE('contratos.id_contrato', $request->id_contrato_entrega)
+            ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+            ->SELECT('especialidad_instructores.id','especialidades.nombre')
+            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidades.nombre', '=', $archivos->espe)
+            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+            ->FIRST();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                {
+                    $archivos->instructor_mespecialidad = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+        }
+
+        $update->status_recepcion = 'Recibido';
+        $update->recepcion = carbon::now()->format('d-m-Y');
+        $updarray = ['status' => 'Recibido',
+                     'fecha_recibido' => carbon::now()->format('d-m-Y'),
+                     'solicitud_pago' => $update->arch_solicitud_pago,
+                     'cuenta_bancaria' => $archivos->archivo_bancario,
+                     'validacion_instructor' => $archivos->instructor_mespecialidad,
+                     'arc' => $archivos->pdf_curso,
+                     'valsupre' => $archivos->doc_validado,
+                     'factura_pdf' => $archivos->arch_factura,
+                     'factura_xml' => $archivos->arch_factura_xml,
+                     'contrato' => $archivos->arch_contrato,
+                     'identificacion' => $archivos->archivo_ine,
+                     'asistencia' => $update->arch_asistencia,
+                     'calificacion' => $update->arch_calificaciones,
+                     'evidencia' => $update->arch_evidencia];
+
+
+        if(!isset($update->historial))
+        {
+            array_push($arrhistorial,$updarray);
+        }
+        else
+        {
+            $arrhistorial = $update->historial;
+            array_push($arrhistorial,$updarray);
+        }
+        $update->historial = $arrhistorial;
+        $update->save();
+        return redirect()->route('pago-inicio')
+                ->with('success', 'Recepción de Documentos Guardado Correctamente');
+    }
+
+    public function norecibido_entrega_fisica(Request $request)
+    {
+        // dd($request);
+        $updarray = $arrhistorial = array();
+        $update = pago::WHERE('id_contrato',$request->id_contrato_noentrega)->first();
+        $archivos = DB::TABLE('contratos')
+            ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
+            'instructor_mespecialidad','espe','archivo_alta')
+            ->WHERE('contratos.id_contrato', $request->id_contrato_noentrega)
+            ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
+            ->JOIN('folios','folios.id_folios','contratos.id_folios')
+            ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+            ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+            ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+            ->SELECT('especialidad_instructores.id','especialidades.nombre')
+            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidades.nombre', '=', $archivos->espe)
+            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+            ->FIRST();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                {
+                    $archivos->instructor_mespecialidad = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+        }
+
+        $update->status_recepcion = 'No Recibido';
+        $updarray = ['status' => 'No Recibido',
+                     'fecha_no_recibido' => carbon::now()->format('d-m-Y'),
+                     'solicitud_pago' => $update->arch_solicitud_pago,
+                     'cuenta_bancaria' => $archivos->archivo_bancario,
+                     'validacion_instructor' => $archivos->instructor_mespecialidad,
+                     'arc' => $archivos->pdf_curso,
+                     'valsupre' => $archivos->doc_validado,
+                     'factura_pdf' => $archivos->arch_factura,
+                     'factura_xml' => $archivos->arch_factura_xml,
+                     'contrato' => $archivos->arch_contrato,
+                     'identificacion' => $archivos->archivo_ine,
+                     'asistencia' => $update->arch_asistencia,
+                     'calificacion' => $update->arch_calificaciones,
+                     'evidencia' => $update->arch_evidencia];
+
+
+        if(!isset($update->historial))
+        {
+            array_push($arrhistorial,$updarray);
+        }
+        else
+        {
+            $arrhistorial = $update->historial;
+            array_push($arrhistorial,$updarray);
+        }
+        $update->historial = $arrhistorial;
+        $update->save();
+        return redirect()->route('pago-inicio')
+                ->with('success', 'No Recepción de Documentos Guardado Correctamente');
+    }
+
+
     public function financieros_reporte()
     {
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
@@ -578,13 +997,108 @@ class PagoController extends Controller
         return $pdf->stream('RF-001.pdf');
     }
 
-    protected function pdf_upload($pdf, $id, $nom)
+    protected function pdf_upload($pdf, $id, $idins, $nom)
     {
         # nuevo nombre del archivo
         $pdfFile = trim($nom."_".date('YmdHis')."_".$id.".pdf");
-        $pdf->storeAs('/uploadFiles/supre/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
-        $pdfUrl = Storage::url('/uploadFiles/supre/'.$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        $pdf->storeAs('/uploadFiles/instructor/'.$idins.'/'.$id, $pdfFile); // guardamos el archivo en la carpeta storage
+        $pdfUrl = Storage::url('/uploadFiles/instructor/'.$idins."/".$id."/".$pdfFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
         return $pdfUrl;
+    }
+
+    protected function xml_upload($xml, $id, $idins, $nom)
+    {
+        # nuevo nombre del archivo
+        $xmlFile = trim($nom."_".date('YmdHis')."_".$id.".xml");
+        $xml->storeAs('/uploadFiles/instructor/'.$idins.'/'.$id, $xmlFile); // guardamos el archivo en la carpeta storage
+        $xmlUrl = Storage::url('/uploadFiles/instructor/'.$idins."/".$id."/".$xmlFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
+        return $xmlUrl;
+    }
+
+    public function downloadRar($id_contrato)
+    {
+        $archivos = DB::TABLE('pagos')->SELECT('pagos.arch_solicitud_pago','pagos.arch_asistencia','pagos.arch_evidencia','pagos.arch_calificaciones',
+        'instructores.archivo_bancario','tbl_cursos.instructor_mespecialidad','tbl_cursos.pdf_curso','tbl_cursos.espe','tabla_supre.doc_validado',
+        'contratos.arch_factura','contratos.arch_factura_xml','contratos.arch_contrato','contratos.numero_contrato','instructores.archivo_ine')
+        ->JOIN('contratos','contratos.id_contrato','pagos.id_contrato')
+        ->JOIN('folios','folios.id_folios','contratos.id_folios')
+        ->JOIN('tabla_supre','tabla_supre.id','folios.id_supre')
+        ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')
+        ->JOIN('instructores','instructores.id','tbl_cursos.id_instructor')
+        ->WHERE('pagos.id_contrato',$id_contrato)
+        ->FIRST();
+
+        $especialidad_seleccionada = DB::Table('especialidad_instructores')
+            ->SELECT('especialidad_instructores.id','especialidades.nombre')
+            ->WHERE('especialidad_instructores.memorandum_validacion',$archivos->instructor_mespecialidad)
+            ->WHERE('especialidades.nombre', '=', $archivos->espe)
+            ->LEFTJOIN('especialidades','especialidades.id','=','especialidad_instructores.especialidad_id')
+            ->FIRST();
+
+        $memoval = especialidad_instructor::WHERE('id',$especialidad_seleccionada->id)
+            ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+        if(isset($memoval))
+        {
+            foreach($memoval as $me)
+            {
+                if($me['memo_val'] == $archivos->instructor_mespecialidad)
+                {
+                    $archivos->instructor_mespecialidad = $me['arch_val'];
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $archivos->instructor_mespecialidad = $archivos->archivo_alta;
+        }
+
+    $zip = new ZipArchive;
+    $fileName = 'documentacion_'.$id_contrato.'.rar';
+    $filePath = public_path($fileName);
+
+    if ($zip->open($filePath, ZipArchive::CREATE) !== TRUE) {
+        // Handle error creating RAR archive
+        return response("Failed to create RAR archive", 500);
+    }
+
+        // Add files to the RAR archive
+        $zip->addFile($archivos->arch_solicitud_pago, 'solicitud_pago.pdf');
+        $zip->addFile($archivos->archivo_bancario, 'banco.pdf');
+        $zip->addFile($archivos->instructor_mespecialidad, 'validacion_instructor.pdf');
+        $zip->addFile($archivos->pdf_curso, 'ARC.pdf');
+        $zip->addFile($archivos->doc_validado, 'suficiencia_presupuestal.pdf');
+        $zip->addFile($archivos->arch_factura, 'factura.pdf');
+        $zip->addFile($archivos->arch_factura_xml, 'factura_xml.xml');
+        $zip->addFile($archivos->arch_contrato, 'contrato.pdf');
+        $zip->addFile($archivos->archivo_ine, 'identificacion pdf');
+        if(isset($archivos->arch_asistencia))
+        {
+            $zip->addFile($archivos->arch_asistencia, 'asistencias.pdf');
+        }
+        if(isset($archivos->arch_evidencia))
+        {
+            $zip->addFile($archivos->arch_evidencia, 'evidencia_fotografica.pdf');
+        }
+        if(isset($archivos->arch_calificaciones))
+        {
+            $zip->addFile($archivos->arch_calificaciones, 'calificaciones.pdf');
+        }
+
+        $zip->close();
+
+        if (!file_exists($filePath)) {
+            // Handle error: file not found
+            return response("File not found", 500);
+        }
+
+        $headers = [
+            'Content-Type' => 'application/rar',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        return response()->download($filePath, $fileName, $headers)->deleteFileAfterSend(true);
+
     }
 
 

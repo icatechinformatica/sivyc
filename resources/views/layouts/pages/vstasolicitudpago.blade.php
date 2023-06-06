@@ -45,7 +45,7 @@
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputno_memo">Numero de Memorandum</label>
                     <input id="no_memo" name="no_memo" type="text" class="form-control">
                 </div>
@@ -53,6 +53,10 @@
                     <label for="inputsolicitud_fecha">Fecha de Solicitud de Pago</label>
                     <input id="solicitud_fecha" name="solicitud_fecha" type="date" class="form-control">
                 </div>
+                {{-- <div class="form-group col-md-3">
+                    <label for="inputfecha_agenda">Fecha de Entrega Fisica</label>
+                    <input id="fecha_agenda" name="fecha_agenda" type="date" class="form-control">
+                </div> --}}
             </div>
             <div class="form-row">
                     <div class="form-group col-md-4">
@@ -94,12 +98,22 @@
                 @if($regimen->modinstructor == 'HONORARIOS')
                     @if($datac->arch_factura == NULL)
                         <div class="form-group col-md-3">
-                            <label for="inputarch_factura" class="control-label">Factura de Instructor</label>
+                            <label for="inputarch_factura" class="control-label">Factura de Instructor PDF</label>
                             <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
                         </div>
                     @else
                     <div class="form-group col-md-3">
-                        <label for="input arch_factura" class="control-label"><h4>La Factura de Instructor ya fue Cargada.</h4></label>
+                        <label for="input_arch_factura" class="control-label"><h4>La Factura PDF de Instructor ya fue Cargada.</h4></label>
+                    </div>
+                    @endif
+                    @if($datac->arch_factura_xml == NULL)
+                        <div class="form-group col-md-3">
+                            <label for="inputarch_factura_xml" class="control-label">Factura de Instructor XML</label>
+                            <input type="file" accept="application/xml" class="form-control" id="arch_factura_xml" name="arch_factura_xml" placeholder="Archivo XML">
+                        </div>
+                    @else
+                    <div class="form-group col-md-3">
+                        <label for="input_arch_factura_xml" class="control-label"><h4>La Factura XML de Instructor ya fue Cargada.</h4></label>
                     </div>
                     @endif
                     <div class="form-group col-md-3">
@@ -112,6 +126,8 @@
                         <input type="text" name="liquido" id="liquido" class="form-control" required>
                     </div>
                 @endif
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
                     <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">
