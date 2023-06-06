@@ -279,60 +279,58 @@
                             @endswitch
                         </td>
                         <td style="font-size: 13px">
-                            @can('bloqueo')
-                                @if(isset($itemData->recepcion))
-                                    Entregado: {{$itemData->recepcion}}
-                                @else
-                                    @switch($itemData->status_recepcion)
-                                        @case('En Espera')
-                                            En Espera de Revisión Digital
-                                            @can('contratos.create')
-                                                {{-- <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","EN ESPERA"]'>
-                                                    AGENDAR ENTREGA
-                                                </a> --}}
-                                            @endcan
-                                            @can('contrato.validate')
-                                                <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}"]'>
-                                                    Revisar Entrega Digital
-                                                </a>
-                                            @endcan
-                                        @break
-                                        @case('Rechazado')
-                                            @can('contratos.create')
-                                                <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
-                                                    AGENDAR ENTREGA
-                                                </a>
-                                            @endcan
-                                                <p style="color: red;">{{$itemData->observacion_rechazo_recepcion}}</p>
-                                        @break
-                                        @case('Citado')
-                                            Fecha de Cita: {{$itemData->fecha_agenda}}
-                                            @can('contrato.validate')
-                                                <a class="btn btn-info" id="recepcionar_fisico" name="recepcionar_fisico" data-toggle="modal" data-placement="top" data-target="#recepcionModal" data-id='{{$itemData->id_contrato}}'>
-                                                    Confirmar Recepción
-                                                </a>
-                                            @endcan
-                                        @break
-                                        @case('No Recibido')
-                                            No Recibido Fisicamente
-                                            @can('contratos.create')
-                                                <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
-                                                    AGENDAR ENTREGA
-                                                </a>
-                                            @endcan
-                                        @break
-                                        @case('recepcion tradicional')
-                                                RECEPCION TRADICIONAL
-                                        @default
-                                            @can('contratos.create')
-                                                <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
-                                                    AGENDAR ENTREGA
-                                                </a>
-                                            @endcan
-                                        @break
-                                    @endswitch
-                                @endif
-                            @endcan
+                            @if(isset($itemData->recepcion))
+                                Entregado: {{$itemData->recepcion}}
+                            @else
+                                @switch($itemData->status_recepcion)
+                                    @case('En Espera')
+                                        En Espera de Revisión Digital
+                                        @can('contratos.create')
+                                            {{-- <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","EN ESPERA"]'>
+                                                AGENDAR ENTREGA
+                                            </a> --}}
+                                        @endcan
+                                        @can('contrato.validate')
+                                            <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}"]'>
+                                                Revisar Entrega Digital
+                                            </a>
+                                        @endcan
+                                    @break
+                                    @case('Rechazado')
+                                        @can('contratos.create')
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                                AGENDAR ENTREGA
+                                            </a>
+                                        @endcan
+                                            <p style="color: red;">{{$itemData->observacion_rechazo_recepcion}}</p>
+                                    @break
+                                    @case('Citado')
+                                        Fecha de Cita: {{$itemData->fecha_agenda}}
+                                        @can('contrato.validate')
+                                            <a class="btn btn-info" id="recepcionar_fisico" name="recepcionar_fisico" data-toggle="modal" data-placement="top" data-target="#recepcionModal" data-id='{{$itemData->id_contrato}}'>
+                                                Confirmar Recepción
+                                            </a>
+                                        @endcan
+                                    @break
+                                    @case('No Recibido')
+                                        No Recibido Fisicamente
+                                        @can('contratos.create')
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                                AGENDAR ENTREGA
+                                            </a>
+                                        @endcan
+                                    @break
+                                    @case('recepcion tradicional')
+                                            LA ENTREGA SERA POR RECEPCION TRADICIONAL
+                                    @default
+                                        @can('contratos.create')
+                                            <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}"]'>
+                                                AGENDAR ENTREGA
+                                            </a>
+                                        @endcan
+                                    @break
+                                @endswitch
+                            @endif
                         </td>
                         @if (!is_null($itemData->status_recepcion))
                             <td style="font-size: 13px">
