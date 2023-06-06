@@ -621,22 +621,22 @@ class ContratoController extends Controller
         // $pago->liquido = $request->liquido;
         // $pago->solicitud_fecha = $request->solicitud_fecha;
 
-        $file = $request->file('arch_asistencia'); # obtenemos el archivo
-        $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_asistencia'); #invocamos el método
+        // $file = $request->file('arch_asistencia'); # obtenemos el archivo
+        // $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_asistencia'); #invocamos el método
         // // guardamos en la base de datos
         // $pago->arch_asistencia = trim($urldocs);
 
-        if ($request->arch_evidencia != NULL)
-        {
-            $file = $request->file('arch_evidencia'); # obtenemos el archivo
-            $urldocs2 = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_evidencia'); #invocamos el método
-            // guardamos en la base de datos
-            // $pago->arch_evidencia = trim($urldocs);
-        }
-        else
-        {
-            $urldocs2 = NULL;
-        }
+        // if ($request->arch_evidencia != NULL)
+        // {
+        //     $file = $request->file('arch_evidencia'); # obtenemos el archivo
+        //     $urldocs2 = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_evidencia'); #invocamos el método
+        //     // guardamos en la base de datos
+        //     // $pago->arch_evidencia = trim($urldocs);
+        // }
+        // else
+        // {
+        //     $urldocs2 = NULL;
+        // }
         // $pago->fecha_status = carbon::now();
         // $pago->save();
 
@@ -648,8 +648,8 @@ class ContratoController extends Controller
                 'liquido' => $request->liquido,
                 'solicitud_fecha' => $request->solicitud_fecha,
                 // 'fecha_agenda' => $request->fecha_agenda,
-                'arch_asistencia' => trim($urldocs),
-                'arch_evidencia' => trim($urldocs2),
+                // 'arch_asistencia' => trim($urldocs),
+                // 'arch_evidencia' => trim($urldocs2),
                 'fecha_status' => carbon::now(),
                 'created_at' => carbon::now(),
                 'updated_at' => carbon::now()
