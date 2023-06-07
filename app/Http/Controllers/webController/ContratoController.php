@@ -602,7 +602,17 @@ class ContratoController extends Controller
     public function save_doc(Request $request){
         // dd($request);
         $check_pago = pago::SELECT('no_memo')->WHERE('no_memo', '=', $request->no_memo)->FIRST();
-        $urldocs = null;
+        $urldocs = $urldocs2 = null;
+        $created = DB::TABLE('contratos')->WHERE('id_folios','=', $request->id_folio)->VALUE('created_at');
+
+        if($created <= '2023-06-05')
+        {
+            $status_recepcion = 'recepcion tradicional';
+        }
+        else
+        {
+            $status_recepcion = null;
+        }
 
         $id_instructor  = DB::TABLE('contratos')
             ->JOIN('folios','folios.id_folios','contratos.id_folios')
@@ -621,22 +631,25 @@ class ContratoController extends Controller
         // $pago->liquido = $request->liquido;
         // $pago->solicitud_fecha = $request->solicitud_fecha;
 
-        // $file = $request->file('arch_asistencia'); # obtenemos el archivo
-        // $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_asistencia'); #invocamos el método
-        // // guardamos en la base de datos
-        // $pago->arch_asistencia = trim($urldocs);
+        if ($request->arch_asistencia != NULL)
+        {
+            $file = $request->file('arch_asistencia'); # obtenemos el archivo
+            $urldocs = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_asistencia'); #invocamos el método
+            // guardamos en la base de datos
+            // $pago->arch_asistencia = trim($urldocs);
+        }
 
-        // if ($request->arch_evidencia != NULL)
-        // {
-        //     $file = $request->file('arch_evidencia'); # obtenemos el archivo
-        //     $urldocs2 = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_evidencia'); #invocamos el método
-        //     // guardamos en la base de datos
-        //     // $pago->arch_evidencia = trim($urldocs);
-        // }
-        // else
-        // {
-        //     $urldocs2 = NULL;
-        // }
+        if ($request->arch_evidencia != NULL)
+        {
+            $file = $request->file('arch_evidencia'); # obtenemos el archivo
+            $urldocs2 = $this->pdf_upload($file, $request->id_contrato, $id_instructor, 'lista_evidencia'); #invocamos el método
+            // guardamos en la base de datos
+            // $pago->arch_evidencia = trim($urldocs);
+        }
+        else
+        {
+            $urldocs2 = NULL;
+        }
         // $pago->fecha_status = carbon::now();
         // $pago->save();
 
@@ -648,11 +661,12 @@ class ContratoController extends Controller
                 'liquido' => $request->liquido,
                 'solicitud_fecha' => $request->solicitud_fecha,
                 // 'fecha_agenda' => $request->fecha_agenda,
-                // 'arch_asistencia' => trim($urldocs),
-                // 'arch_evidencia' => trim($urldocs2),
+                'arch_asistencia' => trim($urldocs),
+                'arch_evidencia' => trim($urldocs2),
                 'fecha_status' => carbon::now(),
                 'created_at' => carbon::now(),
-                'updated_at' => carbon::now()
+                'updated_at' => carbon::now(),
+                'status_recepcion' => $status_recepcion
             ]
         );
 
@@ -744,8 +758,8 @@ class ContratoController extends Controller
         return view('layouts.pages.vstamodsolicitudpago', compact('datac','dataf','datap','regimen','bancario','directorio','elaboro','para','ccp1','ccp2','ccp3','director'));
     }
 
-    public function save_mod_solpa(Request $request){
-
+    public function save_mod_solpa(Request $request)
+    {
         $id_instructor  = DB::TABLE('contratos')
         ->JOIN('folios','folios.id_folios','contratos.id_folios')
         ->JOIN('tbl_cursos','tbl_cursos.id','folios.id_cursos')

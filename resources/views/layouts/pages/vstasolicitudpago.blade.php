@@ -95,8 +95,8 @@
             <h2>Información de factura para Soporte de Pago</h2>
             <br>
             <div class="form-row">
-                @if($regimen->modinstructor == 'HONORARIOS')
-                    {{-- @if($datac->arch_factura == NULL)
+                @if($regimen->modinstructor == 'HONORARIOS' && $datac->created_at <= '2023-06-05')
+                    @if($datac->arch_factura == NULL)
                         <div class="form-group col-md-3">
                             <label for="inputarch_factura" class="control-label">Factura de Instructor PDF</label>
                             <input type="file" accept="application/pdf" class="form-control" id="arch_factura" name="arch_factura" placeholder="Archivo PDF">
@@ -105,7 +105,7 @@
                     <div class="form-group col-md-3">
                         <label for="input_arch_factura" class="control-label"><h4>La Factura PDF de Instructor ya fue Cargada.</h4></label>
                     </div>
-                    @endif --}}
+                    @endif
                     {{-- @if($datac->arch_factura_xml == NULL)
                         <div class="form-group col-md-3">
                             <label for="inputarch_factura_xml" class="control-label">Factura de Instructor XML</label>
@@ -127,16 +127,18 @@
                     </div>
                 @endif
             </div>
-            <div class="form-row">
-                {{-- <div class="form-group col-md-3">
-                    <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
-                    <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">
+            @if($datac->created_at <= '2023-06-05')
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_asistencia" class="control-label">Lista de asistencia</label>
+                        <input type="file" accept="application/pdf" name="arch_asistencia" id="arch_asistencia" class="form-control">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputarch_evidencia" class="control-label">Evidencia Fotográfica @if($regimen->tipo_curso == 'CERTIFICACION') (Opcional) @endif</label>
+                        <input type="file" accept="application/pdf" name="arch_evidencia" id="arch_evidencia" class="form-control" @if($regimen->tipo_curso == 'CURSO') required @endif>
+                    </div>
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="inputarch_evidencia" class="control-label">Evidencia Fotográfica @if($regimen->tipo_curso == 'CERTIFICACION') (Opcional) @endif</label>
-                    <input type="file" accept="application/pdf" name="arch_evidencia" id="arch_evidencia" class="form-control" @if($regimen->tipo_curso == 'CURSO') required @endif>
-                </div>
-            </div>
+            @endif
             <br>
             <div class="form-row">
                 <div class="form-group col-md-8">
@@ -144,7 +146,7 @@
                            <br>Se recomienda comprimir el pdf <a href='https://smallpdf.com/es/comprimir-pdf' target="blank">aqui</a>
                            <br>Peso maximo: 4 MB
                     </label></h6>
-                </div> --}}
+                </div>
             </div>
             <hr style="border-color:dimgray">
             <div class="form-row">
