@@ -97,7 +97,7 @@
         .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
         .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
         .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
-        .tablad { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: center; padding:0.5px;}
+        .tablad { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: left; padding:0.5px;}
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
