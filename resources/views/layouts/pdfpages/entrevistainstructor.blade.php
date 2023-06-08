@@ -7,6 +7,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style>
+            /* *.{border: 2px solid red;} */
             body{
                 font-family: sans-serif;
                 /* border: 1px solid black; */
@@ -17,13 +18,7 @@
                 margin: 20px 30px 20px;
 
             }
-            .ftr{
-                position: fixed;
-                top: 85%;
-                bottom: 0;
-                left: 0;
-                height: 60px;
-            }
+           
             header {
             position: fixed;
             left: 0px;
@@ -67,8 +62,9 @@
             }
 
             img.derecha {
-                float: right;
-                width: 200px;
+                /* float: right; */
+                margin-right: -150px;
+                width: 40%;
                 height: 60px;
             }
             div.content
@@ -97,7 +93,7 @@
         .tablas th{font-size: 7px; border: gray 1px solid; text-align: center; padding: 0px;}
         .tablaf { border-collapse: collapse; width: 100%;border: gray 1px solid; }
         .tablaf tr td { font-size: 7px; text-align: center; padding: 0px;}
-        .tablad { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: left; padding:0.5px;}
+        .tablad { border-collapse: collapse;font-size: 12px;border: black 1px solid; text-align: center; padding:0.5px;}
         .tablag { border-collapse: collapse; width: 100%; margin-top:10px;}
         .tablag tr td{ font-size: 8px; padding: 1px;}
         .variable{ border-bottom: gray 1px solid;border-left: gray 1px solid;border-right: gray 1px solid}
@@ -113,12 +109,12 @@
         </header>
         <footer>
             <img class="izquierdabot" src="{{ public_path('img/franja.png') }}">
-            <img class="derecha" src="{{ public_path('img/icatech-imagen.png') }}">
+            <img style="position: absolute; left: 400px; top: -30px;" src="{{ public_path('img/icatech-imagen.png') }}">
             <div class="page-break-non"></div>
         </footer>
-        <div class= "container">
-            <div align=center> <b>Formato de Entrevista para Candidatos a Instructores</b></div>
-            <div align=right> <b>{{$D}} de {{$M}} del {{$Y}}</b></div>
+        <div>
+            <div align=center><b>Formato de Entrevista para Candidatos a Instructores</b></div>
+            <p style="margin-right:-250px; text-align:right;"><b>{{$D}} de {{$M}} del {{$Y}}</b></p>
             <b>Nombre del entrevistado: {{$data->apellidoPaterno}} {{$data->apellidoMaterno}} {{$data->nombre}}</b>
             <br><b>Unidad de capacitación: {{$userunidad->ubicacion}}</b>
             <div class="table table-responsive">
