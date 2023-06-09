@@ -16,7 +16,7 @@ use App\Models\Alumno;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Storage;
 use PDF;
-use App\Agenda; 
+use App\Agenda;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
@@ -183,10 +183,10 @@ class grupoController extends Controller
         $curp = $request->busqueda;    //dd($request->all());
         $matricula = $message = NULL;
         $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
-        
-        //VALIDACIÓN DE INSTRUCTOR EN OBSERVACIÓN 
+
+        //VALIDACIÓN DE INSTRUCTOR EN OBSERVACIÓN
         //$instructor_valido = $this->valida_instructor($request->instructor);
-        //if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]); 
+        //if(!$instructor_valido['valido'])  return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
 
         if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
             if ($curp) {
@@ -210,7 +210,7 @@ class grupoController extends Controller
                                 if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();
                                 //EXTRAER MATRICULA Y GUARDAR
                                 $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado', false)->where('curp', $curp)->value('no_control');
-        
+
                                 if ($matricula_sice) {
                                     $matricula = $matricula_sice;
                                     DB::table('registro_alumnos_sice')->where('curp', $curp)->update(['eliminado' => true]);
@@ -301,7 +301,7 @@ class grupoController extends Controller
                                                         'folio_grupo' => $_SESSION['folio_grupo'], 'iduser_created' => $this->id_user, 'comprobante_pago' => $comprobante_pago,
                                                         'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs, 'mod' => $modalidad,
                                                         'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable,
-                                                        'folio_pago'=>$folio_pago, 'fecha_pago'=>$fecha_pago, 'nombre'=>$alumno->nombre, 'apellido_paterno'=>$alumno->apellido_paterno, 
+                                                        'folio_pago'=>$folio_pago, 'fecha_pago'=>$fecha_pago, 'nombre'=>$alumno->nombre, 'apellido_paterno'=>$alumno->apellido_paterno,
                                                         'apellido_materno'=>$alumno->apellido_materno,'curp'=>$curp,'escolaridad'=>$alumno->escolaridad,
                                                         'id_instructor'=>$instructor,'efisico'=>$efisico,'medio_virtual'=>$medio_virtual,'link_virtual'=>$link_virtual,'servicio'=>$servicio,'cespecifico'=>$cespecifico,
                                                         'fcespe'=>$fcespe, 'observaciones'=>$observaciones, 'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre
@@ -324,7 +324,7 @@ class grupoController extends Controller
                     } else {
                         $message = "Ingrese la escolaridad al Alumno " . $curp . ".";
                     }
-                    
+
                 } else {
                     $message = "Alumno no registrado " . $curp . ".";
                 }
@@ -508,7 +508,7 @@ class grupoController extends Controller
                                 }
                                 if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                                     $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(
-                                        ['observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante, 
+                                        ['observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante,
                                         'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,'mpreapertura'=>$mapertura,'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre,
                                         'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual]);
                                     if ($result) {
@@ -557,7 +557,7 @@ class grupoController extends Controller
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel
                                             ]
                                         );
-                                        if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR 
+                                        if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
                                             ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {
                                             DB::table('agenda')->where('id_curso', $folio)->delete();
                                             DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
@@ -648,18 +648,18 @@ class grupoController extends Controller
                             //         }
                             //     }
                             // }
-                            
+
                             $instructor_valido = $this->valida_instructor($alumnos[0]->id_instructor);
                             if($instructor_valido['valido']){
                                 $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
                                 if($result) DB::table('instructores')->where('id',$alumnos[0]->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
-                                else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']); 
+                                else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                             }else return redirect()->route('preinscripcion.grupo')->with(['message' => $instructor_valido['message']]);
                         } else {
                             $message = "Las horas agendadas no corresponden a la duración del curso..";
                             return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
                         }
-                        
+
                     }
                 } else {
                     $message = "Guarde los cambios ejecutados..";
@@ -682,8 +682,8 @@ class grupoController extends Controller
                     $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id', $id)->delete();
                 } else {
                     $result = false;
-                } 
-            } 
+                }
+            }
         } else $result = false;
         //echo $result; exit;
         return $result;
@@ -757,7 +757,7 @@ class grupoController extends Controller
                                     ->where('folio_grupo', $_SESSION['folio_grupo'])
                                     ->where('id', $id)
                                     ->update([
-                                        'id_pre' => $alumno->id_pre, 'no_control' => $alumno->matricula,                                         
+                                        'id_pre' => $alumno->id_pre, 'no_control' => $alumno->matricula,
                                         'nombre'=>$alumno->nombre, 'apellido_paterno'=>$alumno->apellido_paterno,
                                         'apellido_materno'=>$alumno->apellido_materno,'curp'=>$alumno->curp,
                                         'escolaridad'=>$alumno->escolaridad,
@@ -790,7 +790,7 @@ class grupoController extends Controller
 
     public function generar(){
         if ($_SESSION['folio_grupo']) {
-            $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first(); 
+            $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
             $alumnos = DB::table('alumnos_registro as ar')
                 ->select('ar.apellido_paterno','ar.apellido_materno','ar.nombre','ap.sexo', 'ap.correo',
                         DB::raw("CONCAT(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre) as alumno"),
@@ -804,8 +804,8 @@ class grupoController extends Controller
                 ->orderBy('alumno')
                 ->get();//dd($alumnos);
             if (count($alumnos)>0) {
-                $folio_grupo = $_SESSION['folio_grupo'];                
-                $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first(); 
+                $folio_grupo = $_SESSION['folio_grupo'];
+                $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first();
                 $direccion = $reg_unidad->direccion;
 
                 $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion'));
@@ -893,7 +893,7 @@ class grupoController extends Controller
                     $mes = $meses[date('m',strtotime($date))];
                     $date = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
                     $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first(); //dd($reg_unidad);
-                    $direccion = $reg_unidad->direccion; 
+                    $direccion = $reg_unidad->direccion;
                     $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
                     $pdf->setpaper('letter', 'landscape');
                     return $pdf->stream('SOLICITUD.pdf');
@@ -904,7 +904,7 @@ class grupoController extends Controller
             } else {
                 return "GUARDE EL NÚMERO DE MEMORÁNDUM..";
                 exit;
-            } 
+            }
         }else{
             return "ACCIÓN INVÁlIDA";exit;
         }
@@ -919,7 +919,7 @@ class grupoController extends Controller
             ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
             ->havingRaw('count(*) >= 2')
             ->groupby('i.id');
-            
+
             $id_especialidad = DB::table('cursos')->where('id',$request->id)->value('id_especialidad');
             $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
                 ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
@@ -928,12 +928,12 @@ class grupoController extends Controller
                 ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                 //->join('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-                ->WHERE('estado',true)          
+                ->WHERE('estado',true)
                 ->WHERE('instructores.tipo_honorario', 'like', '%HONORARIOS%')
                 ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
                 ->WHERE('especialidad_instructores.especialidad_id',$id_especialidad)
                 //->where('especialidad_instructor_curso.curso_id',$grupo->id_curso)
-                //->where('especialidad_instructor_curso.activo', true)            
+                //->where('especialidad_instructor_curso.activo', true)
                 ->WHERE('fecha_validacion','<',$request->inicio)
                 ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
                 ->whereNotIn('instructores.id', $internos)
@@ -989,7 +989,7 @@ class grupoController extends Controller
             return "Solicitud de Exoneración o Reducción de couta en Proceso..";
         }
         //VALIDACIÓN DEL HORARIO
-        if (($horaInicio < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaInicio > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin)))) OR 
+        if (($horaInicio < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaInicio > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin)))) OR
         ($horaTermino < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaTermino > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin))))) {
             return "El horario ingresado no corresponde al registro del curso.";
         }
@@ -1008,7 +1008,7 @@ class grupoController extends Controller
             ->whereRaw("((date(a.start) <= '$fechaInicio' and date(a.end) >= '$fechaInicio') OR (date(a.start) <= '$fechaTermino' and date(a.end) >= '$fechaTermino'))")
             ->whereRaw("((cast(a.start as time) <= '$horaInicio' and cast(a.end as time) > '$horaInicio') OR (cast(a.start as time) < '$horaTermino' and cast(a.end as time) >= '$horaTermino'))")
             ->whereIn('ar.id_pre', [DB::raw("select id_pre from alumnos_registro where folio_grupo = '$id_curso' and eliminado = false")])
-            ->get();    
+            ->get();
         if (count($alumnos_ocupados) > 0) {
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }
@@ -1184,8 +1184,8 @@ class grupoController extends Controller
                     return "El instructor no debe impartir más de 40hrs semanales.";
                 }
             }
-        }        
-        
+        }
+
         try {
             $titulo = $request->title;
             $agenda = new Agenda();
@@ -1296,41 +1296,50 @@ class grupoController extends Controller
     {
         //echo $id_instructor;
         $valido = false;
-        $message = null;
+        $message = null; //consultar instructores con id y que devuelva campo extra sea igual a true ya que lo devuelva un if si curso extra es igual a false entra a la validacion y si es true entonces cambie valido a true
 
-        ///VALIDACION DE INSTRUCTORES INTERNOS
-        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id') ->where('i.id',$id_instructor)
-            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
-            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
-            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
-            ->where(function($query){
-                $query->where('c.status_curso','<>','CANCELADO')->orWherenull('c.status_curso');
-            })
-            ->havingRaw('count(*) > 2')
-            ->groupby('i.id')->first();
-            //var_dump($internos);exit;
-        if($internos) $message = "El instructor interno ha excedido el número de cursos a impartir (máximo 2 cursos al mes). Favor de verificar.";
-        else $valido = true;
-        
-        ///VALIDACIÓN 5 meses de actividad y 30 días naturales de RECESO        
-        if($valido==true){                    
-            $receso =  DB::table('tbl_cursos as tc')->where('id_instructor',$id_instructor)
-            ->where(function($query){
-                $query->where('tc.status_curso','<>','CANCELADO')->orWherenull('tc.status_curso');
-            }) 
-            ->where('tc.inicio','>',DB::raw("
-            COALESCE(
-                (select max(inicio) from tbl_cursos as c where c.id_instructor = $id_instructor                    
-                    and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
-                    from tbl_cursos as tc where tc.id_instructor = $id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>30 )
-                    , (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = $id_instructor))
-            "))
-            ->value(DB::raw("DATE_PART('day', max(tc.termino)::timestamp - min(tc.inicio)::timestamp)+1"));
-            //dd($receso);
-            if($receso>150){
-                $valido = false;
-                $message = "El instructor supera el límite de 150 días de actividad, deberá tomar un receso mínimo 30 días naturales.";
+        $curso_extra = DB::TABLE('instructores')->WHERE('id',$id_instructor)->value('curso_extra');
+
+        if($curso_extra == false)
+        {
+            ///VALIDACION DE INSTRUCTORES INTERNOS
+            $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id') ->where('i.id',$id_instructor)
+                ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+                ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"),date('Y'))
+                ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"),date('m'))
+                ->where(function($query){
+                    $query->where('c.status_curso','<>','CANCELADO')->orWherenull('c.status_curso');
+                })
+                ->havingRaw('count(*) > 2')
+                ->groupby('i.id')->first();
+                //var_dump($internos);exit;
+            if($internos) $message = "El instructor interno ha excedido el número de cursos a impartir (máximo 2 cursos al mes). Favor de verificar.";
+            else $valido = true;
+
+            ///VALIDACIÓN 5 meses de actividad y 30 días naturales de RECESO
+            if($valido==true){
+                $receso =  DB::table('tbl_cursos as tc')->where('id_instructor',$id_instructor)
+                ->where(function($query){
+                    $query->where('tc.status_curso','<>','CANCELADO')->orWherenull('tc.status_curso');
+                })
+                ->where('tc.inicio','>',DB::raw("
+                COALESCE(
+                    (select max(inicio) from tbl_cursos as c where c.id_instructor = $id_instructor
+                        and COALESCE((select DATE_PART('day', tc.inicio::timestamp - c.termino::timestamp )
+                        from tbl_cursos as tc where tc.id_instructor = $id_instructor and tc.inicio>c.inicio order by tc.inicio ASC limit 1  )-1,0)>30 )
+                        , (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = $id_instructor))
+                "))
+                ->value(DB::raw("DATE_PART('day', max(tc.termino)::timestamp - min(tc.inicio)::timestamp)+1"));
+                //dd($receso);
+                if($receso>150){
+                    $valido = false;
+                    $message = "El instructor supera el límite de 150 días de actividad, deberá tomar un receso mínimo 30 días naturales.";
+                }
             }
+        }
+        else
+        {
+            $valido = true;
         }
         return ['valido' => $valido, 'message' => $message];
     }
