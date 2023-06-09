@@ -353,6 +353,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instructor/crear-institucional/{id}', 'webController\InstructorController@institucional')->name('instructor-institucional-crear');
     Route::post('/instructor/institucional/guardar', 'webController\InstructorController@institucional_save')->name('instructor-institucional-save');
     Route::post('/instructor/sendtodta', 'webController\InstructorController@send_to_dta')->name('ins-to-dta');
+    Route::post('/instructor/cursoExtra', 'webController\InstructorController@curso_extra_upd')->name('mod-curso-extra');
 
     // Solicitud de Suficiencia Presupuestal
     Route::get('/supre/solicitud/inicio', 'webController\supreController@solicitud_supre_inicio')
