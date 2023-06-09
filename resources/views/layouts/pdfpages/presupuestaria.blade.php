@@ -70,7 +70,7 @@ else{$tipo='CURSO';}
             {
                 text-align: left;
                 position: absolute;
-                bottom: 35px;
+                bottom: 0px;
                 left: 15px;
                 font-size: 8.5px;
                 color: rgb(255, 255, 255);
