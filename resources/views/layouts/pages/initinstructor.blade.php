@@ -132,6 +132,18 @@
 
                             @endif
                         </td>
+                        @can('only.admin')
+                            <td>
+                                <button type="button" class="btn mr-sm-4 mt-3"
+                                    id = 'curso_ext'
+                                    data-toggle="modal"
+                                    data-placement="top"
+                                    data-target="#cursoExtraModal"
+                                    data-id='["{{$itemData->curso_extra ? "true" : "false"}}","{{$itemData->id}}"]'><small>Curso Extra</small>
+                                </button>
+                            </td>
+                            {{-- @php dd($itemData->curso_extra); @endphp --}}
+                        @endcan
                     </tr>
                 @endforeach
             </tbody>
@@ -147,13 +159,52 @@
     </div>
     <br>
     <!-- Modal -->
+    <div class="modal fade" id="cursoExtraModal" role="dialog">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('mod-curso-extra') }}" id="mod_curso_extra">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">¿Esta seguro de ir al siguiente paso?<b></b></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="form-row">
+                    <div class="form-group col-md-3"></div>
+                        <div class="form-group col-md-6">
+                            <label for="unidad" class="control-label">Curso Extra Actualmente</label>
+                            <select class="form-control" name="extra" id="extra">
+                                <option value="false">Inactivo</option>
+                                <option value="true">Activo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2"></div>
+                        <div class="form-group col-md-4">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                        <input name="id_instructor_cursoext" id="id_instructor_cursoext" hidden>
+                        <div class="form-group col-md-4">
+                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                            {{-- <a id="valsupre_confirm" href="#"  >Confirmar</a> --}}
+                        </div>
+                        <div class="form-group col-md-1"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+<!-- END -->
+    <!-- Modal -->
         <div class="modal fade" id="confirmsaveins" role="dialog">
             <div class="modal-dialog">
                 <form method="POST" action="{{ route('folio-permiso-mod') }}" id="mod_folio">
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">¿Esta seguro de ir al siguiente paso?<b></b></h5>
+                            <h5 class="modal-title">CURSO EXTRA<b></b></h5>
                             <button type="button" class="close" data-dismiss="modal">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -204,6 +255,17 @@
                     $('#divcampo').prop("class", "form-row d-none d-print-none")
                 }
             }
+        });
+    </script>
+    <script>
+        $('#cursoExtraModal').on('show.bs.modal', function(event){
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            // console.log(id);
+            var selectElement = document.getElementById('extra');
+            selectElement.value = id['0'];
+            document.getElementById('id_instructor_cursoext').value = id['1'];
+            // document.getElementById('loc2del').value = id['1'];
         });
     </script>
 @endsection

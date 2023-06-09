@@ -58,14 +58,14 @@ class InstructorController extends Controller
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
             ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta','curso_extra']);
         }
         else
         {
             $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus)->WHERE('id', '!=', '0')
             ->WHEREIN('estado', [true,false])
             ->WHEREIN('status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA'])
-            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta']);
+            ->PAGINATE(25, ['nombre', 'curp', 'telefono', 'status', 'apellidoPaterno', 'apellidoMaterno', 'numero_control', 'id', 'archivo_alta','curso_extra']);
         }
         return view('layouts.pages.initinstructor', compact('data'));
     }
@@ -3917,6 +3917,13 @@ class InstructorController extends Controller
         {
             return FALSE;
         }
+    }
+
+    public function curso_extra_upd(Request $request)
+    {
+        // dd($request);
+        instructor::where('id', '=', $request->id_instructor_cursoext)->update(['curso_extra' => $request->extra]);
+        return redirect()->route('instructor-inicio');
     }
 
     protected function getlocalidades(Request $request)
