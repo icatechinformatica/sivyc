@@ -80,7 +80,7 @@
             }
         </script>
     </footer>
-    <div class="contenedor">
+    <div class="contenedor" style="margin-bottom: 100px;">
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}
         <div>
             <div align=right style="font-size:11px;"><b>UNIDAD DE CAPACITACION {{ $reg_unidad->unidad }}</b></div>
