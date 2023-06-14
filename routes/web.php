@@ -875,3 +875,6 @@ Route::post('/instructores/busqueda/nomesp', 'webController\InstructorController
 
 //consulta de numero de revision en instructore
 Route::post('/instructores/busqueda/nrevision', 'webController\InstructorController@getnrevision')->name('instructores.busqueda.nrevision');
+
+// Ranking de solicitudes de apoyo
+Route::post('/reportes/solicitudesApoyo', 'webController\SolApoyoController@index')->name('solapoyos.index');

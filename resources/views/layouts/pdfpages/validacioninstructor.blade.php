@@ -139,7 +139,7 @@
             <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
             <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
         </footer>
-        <div class= "container">
+        <div>
             @php $cont=0; foreach($especialidades AS $ari){if($ari->status != 'BAJA EN FIRMA'){$cont++;}} @endphp
                 <div align=right> <b>Dirección Técnica Académica</b></div>
                 <div align=right> <b>Memorandum No. @if($especialidades[0]->status != 'BAJA EN FIRMA') {{$especialidades[0]->memorandum_validacion}} @else {{$especialidades[0]->memorandum_baja}} @endif</b></div>
@@ -186,7 +186,7 @@
                 Es preciso señalar que, en su expediente consta que cumple con los requisitos y documentos que requiere el perfil de la especialidad solicitada.
                 <br>
                 Agradeciendo de antemano su atención, envío un cordial saludo.
-                <div class="row">
+                <div>
                     <div class="column">
                         <table class="tablad">
                             <thead>
@@ -256,10 +256,12 @@
                         </table>
                     </div>
                 </div>
-                “Este documento es de uso interno y no tiene validez jurídica ni contractual, se extiende únicamente con fines académicos. Estos datos y resultados son considerados confidenciales por lo que se prohíbe su reproducción parcial o total para fines distintos al uso interno de la Dirección Técnica Académica y las Unidades de Capacitación”.
-                <br><br>
-                <small><small>C.c.p. {{$unidad->jcyc}} .- {{$unidad->pjcyc}}. – Para su conocimiento - Edificio.</small></small>
-                <br><small><small>Archivo /Minutario.</small></small>
+                <div>
+                    “Este documento es de uso interno y no tiene validez jurídica ni contractual, se extiende únicamente con fines académicos. Estos datos y resultados son considerados confidenciales por lo que se prohíbe su reproducción parcial o total para fines distintos al uso interno de la Dirección Técnica Académica y las Unidades de Capacitación”.
+                    <br><br>
+                    <small><small>C.c.p. {{$unidad->jcyc}} .- {{$unidad->pjcyc}}. – Para su conocimiento - Edificio.</small></small>
+                    <br><small><small>Archivo /Minutario.</small></small>
+                </div>
         </div>
     </body>
 </html>
