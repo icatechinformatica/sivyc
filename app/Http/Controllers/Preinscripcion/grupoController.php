@@ -195,7 +195,9 @@ class grupoController extends Controller
                     ->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"),'ultimo_grado_estudios as escolaridad',
                     'nombre','apellido_paterno','apellido_materno')
                     ->where('curp', $curp)->where('activo', true)->first(); //dd($alumno);
-                if ($alumno) {
+                $valida_alumno = $this->valida_alumno($curp, $request);            
+                if ($valida_alumno['valido']) {//Validación del alummnos en multiples criterios.
+                //if ($alumno) {
                     if ($alumno->escolaridad AND ($alumno->escolaridad != ' ')) {
                         if ($alumno->edad >= 15) {
                             $cursos = DB::table(DB::raw("(select a.id_curso as curso from alumnos_registro as a
@@ -205,7 +207,7 @@ class grupoController extends Controller
                                                             and extract(year from a.inicio) = extract(year from current_date)) as t"))
                                 ->select(DB::raw("count(curso) as total"), DB::raw("count(case when curso = '$request->id_curso' then curso end) as igual"))
                                 ->first(); //dd($cursos);
-                            if ($cursos->igual < 2 && $cursos->total < 15) {
+                            if ($cursos->total < 16) {
                                 if($_SESSION['folio_grupo'] AND DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','<>','VINCULACION')->exists() == true) $_SESSION['folio_grupo'] = NULL;
                                 if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();
                                 //EXTRAER MATRICULA Y GUARDAR
@@ -326,7 +328,7 @@ class grupoController extends Controller
                     }
 
                 } else {
-                    $message = "Alumno no registrado " . $curp . ".";
+                    $message = $valida_alumno['message'];
                 }
             } else $message = "Ingrese la CURP";
         } else {
@@ -1341,6 +1343,26 @@ class grupoController extends Controller
         {
             $valido = true;
         }
+        return ['valido' => $valido, 'message' => $message];
+    }
+
+    private function valida_alumno($curp,$request)
+    {
+        $valido = false;
+        $message = null;  
+        if($curp){
+            //VALIDACION.- EL ALUMNO PODRÁ TOMAR EL MISMO CURSO DESPÚES DE 6 MESES DE CONCLUIRLO O POR DESERCIÓN LO PODRÁ TOMAR TANTAS VECES LO REQUIERA.
+            $seis_meses =  DB::table('alumnos_registro as ar')->where('ar.curp',$curp)->where('ar.id_curso','=',$request->id_curso)
+                ->where(DB::raw("COALESCE((select status_curso from tbl_cursos c where ar.folio_grupo = c.folio_grupo and ar.curp='$curp' ),'0')"),'!=','CANCELADO')
+                ->where(DB::raw("COALESCE((select calificacion from tbl_inscripcion i where ar.folio_grupo = i.folio_grupo and i.curp='$curp'),'0')"),'!=','NP')                
+                ->value(DB::raw("max(ar.termino)+'6 month'::interval"));
+               // dd($seis_meses);
+            if($seis_meses<$request->inicio) $valido = true;
+            else{
+                $message = "El alumno ya esta registrado en el curso o no ha cumplido 6 meses para volver a tomar el mismo curso.";
+            }
+        }else  $message = "Por favor, ingrese la curp.";
+        
         return ['valido' => $valido, 'message' => $message];
     }
 }
