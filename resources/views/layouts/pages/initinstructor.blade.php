@@ -66,6 +66,7 @@
                     @endcan
                     @can('academico.exportar.instructores')
                         <a class="btn mr-sm-4 mt-3 btn-info btn-lg" href="{{route('academico.exportar.instructores')}}">Exportar Instructores</a>
+                        <a class="btn mr-sm-4 mt-3 btn-info btn-lg" href="{{route('academico.exportar.instructores.activos')}}">Exportar Activos</a>
                     @endcan
                 </div>
             </div>

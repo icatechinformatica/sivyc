@@ -2977,7 +2977,17 @@ class InstructorController extends Controller
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
                 DB::raw("array(select observacion from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
-                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
+                where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"),
+                DB::raw("(CASE WHEN EXISTS (
+                    SELECT 1
+                    FROM especialidad_instructores
+                    LEFT JOIN instructor_perfil ON instructor_perfil.numero_control = instructores.id
+                    WHERE especialidad_instructores.perfilprof_id = instructor_perfil.id
+                    AND especialidad_instructores.fecha_validacion BETWEEN (CURRENT_DATE - INTERVAL '1 year') AND CURRENT_DATE
+                    )
+                    THEN 'activo'
+                    ELSE 'inactivo'
+                    END) AS activo"))
                 ->WHERE('instructores.estado', '=', TRUE)
                 ->whereRaw("array(select especialidades.nombre from especialidad_instructores
                 LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
@@ -2986,6 +2996,65 @@ class InstructorController extends Controller
                 ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
+
+        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
+                    'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
+                    'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','SEXO','ESTADO_CIVIL',
+                    'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION',
+                    'OBSERVACION','ACTIVO/INACTIVO'];
+
+        $nombreLayout = "Catalogo de instructores.xlsx";
+        $titulo = "Catalogo de instructores";
+        if(count($data)>0){
+            return Excel::download(new FormatoTReport($data,$cabecera, $titulo), $nombreLayout);
+        }
+    }
+
+    public function exportar_instructores_activos()
+    {
+        $data = instructor::SELECT('instructores.id', 'tbl_unidades.unidad', 'instructores.apellidoPaterno', 'instructores.apellidoMaterno', 'instructores.nombre', 'instructores.curp', 'instructores.rfc', 'instructores.numero_control',
+        DB::raw("array(select especialidades.nombre from especialidad_instructores
+        LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+        LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+        where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
+        DB::raw("array(select fecha_validacion from especialidad_instructores
+        LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+        where especialidad_instructores.perfilprof_id = instructor_perfil.id) as fechaval"),
+        DB::raw("array(select especialidades.clave from especialidad_instructores
+        LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
+        LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+        where especialidad_instructores.perfilprof_id = instructor_perfil.id) as clave"),
+        DB::raw("array(select criterio_pago_id from especialidad_instructores
+        LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+        where especialidad_instructores.perfilprof_id = instructor_perfil.id) as criteriopago"),
+        DB::raw("array(select grado_profesional from instructor_perfil
+        where instructores.id = instructor_perfil.numero_control) as grado"),
+        DB::raw("array(select estatus from instructor_perfil
+        where instructores.id = instructor_perfil.numero_control) as estatus"),
+        DB::raw("array(select area_carrera from instructor_perfil
+        where instructores.id = instructor_perfil.numero_control) as area"),
+        DB::raw("array(select nombre_institucion from instructor_perfil
+        where instructores.id = instructor_perfil.numero_control) as institucion"),
+        'instructores.sexo', 'instructores.estado_civil', 'instructores.asentamiento', 'instructores.domicilio', 'instructores.telefono', 'instructores.correo',
+        DB::raw("array(select memorandum_validacion from especialidad_instructores
+        LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+        where especialidad_instructores.perfilprof_id = instructor_perfil.id) as memo"),
+        DB::raw("array(select observacion from especialidad_instructores
+        LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+        where especialidad_instructores.perfilprof_id = instructor_perfil.id) as obs"))
+    ->WHERE('instructores.estado', '=', TRUE)
+    ->whereExists(function ($query) {
+        $query->select(DB::raw(1))
+            ->from('especialidad_instructores')
+            ->leftJoin('especialidades', 'especialidades.id', '=', 'especialidad_instructores.especialidad_id')
+            ->leftJoin('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+            ->whereRaw('especialidad_instructores.perfilprof_id = instructor_perfil.id')
+            ->whereRaw('especialidad_instructores.fecha_validacion BETWEEN (CURRENT_DATE - INTERVAL \'1 year\') AND CURRENT_DATE');
+    })
+    ->leftJoin('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+    ->orderBy('apellidoPaterno', 'ASC')
+    ->get();
+
 
         $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',

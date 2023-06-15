@@ -809,6 +809,7 @@ Route::get('planeacion/generar/reporte/xls/{filtrotipo}/{idcurso}/{unidad}/{idIn
 Route::get('academico/catalogo/exportar/cursos/{xls}', 'webController\CursosController@exportar_cursos')->name('academico.exportar.cursos');
 Route::get('academico/catalogo/exportar/cursosall', 'webController\CursosController@exportar_cursos_all')->name('academico.exportar.cursosall');
 Route::get('academico/catalogo/exportar/instructores', 'webController\InstructorController@exportar_instructores')->name('academico.exportar.instructores');
+Route::get('academico/catalogo/exportar/instructores/activos', 'webController\InstructorController@exportar_instructores_activos')->name('academico.exportar.instructores.activos');
 Route::get('academico/catalogo/exportar/instructores_especialidades', 'webController\InstructorController@exportar_instructoresByEspecialidad')->name('academico.exportar.instructoresByespecialidad');
 
 // grupos vulnerables
@@ -877,4 +878,4 @@ Route::post('/instructores/busqueda/nomesp', 'webController\InstructorController
 Route::post('/instructores/busqueda/nrevision', 'webController\InstructorController@getnrevision')->name('instructores.busqueda.nrevision');
 
 // Ranking de solicitudes de apoyo
-Route::post('/reportes/solicitudesApoyo', 'webController\SolApoyoController@index')->name('solapoyos.index');
+Route::get('/reportes/solicitudesApoyo', 'solicitudes\SolApoyoController@index')->name('solapoyos.index');

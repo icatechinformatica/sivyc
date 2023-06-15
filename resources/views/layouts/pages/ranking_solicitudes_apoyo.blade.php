@@ -8,9 +8,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <div class="card-header">
-    Prevalidacion de Instructor
+    Ranking de Solicitudes de Apoyo por Unidad
 </div>
-<div class="card card-body" style=" min-height:450px;">
+<div class="card card-body" style=" min-height:450px; max-width: 50%; border:1px solid red;">
+</div>
+<div class="card card-body" style=" min-height:450px; max-width: 50%; border:1px solid red;">
 </div>
 @endsection
 @section('script_content_js')
