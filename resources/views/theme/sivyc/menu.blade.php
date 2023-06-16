@@ -85,6 +85,9 @@
                             @can('prevalidar_index-instructor')
                                 <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Turnar Instructor</a>
                             @endcan
+                            @can('metasavances.index')
+                                <a class="dropdown-item" href="{{route('pat.metavance.mostrar')}}">Registro de Metas y Avances PAT</a>
+                            @endcan
                         </div>
                     </li>
                 {{--  <!--@endcan-->  --}}
@@ -182,6 +185,14 @@
                             @can('prevalidar_index-instructor')
                                 <a class="dropdown-item" href="{{route('prevalidar-ins')}}">Validación de Instructores</a>
                             @endcan
+                            @can('buzon.plane.pat')
+                                <a class="dropdown-item" href="{{route('pat.buzon.index')}}">Validación de Metas y Avances PAT</a>
+                            @endcan
+                            @can('fechaspat.index')
+                                <a class="dropdown-item" href="{{route('pat.fechaspat.mostrar')}}">Programación de Fechas de Entrega PAT</a>
+                            @endcan
+
+
                         </div>
                     </li>
                 @endcan
@@ -222,6 +233,12 @@
                         @endcan
                         @can('instituto.inicio')
                             <a class="dropdown-item" href="{{route('instituto.inicio')}}">Acerca del instituto</a>
+                        @endcan
+                        @can('funproc.pat.index')
+                        <a class="dropdown-item" href="{{route('pat.funciones.mostrar')}}">Funciones y Procedimientos</a>
+                        @endcan
+                        @can('unidades.medida.index')
+                        <a class="dropdown-item" href="{{route('pat.unidadesmedida.mostrar')}}">Unidades de Medida</a>
                         @endcan
 
 

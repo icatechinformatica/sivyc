@@ -284,7 +284,7 @@
                             @else
                                 @switch($itemData->status_recepcion)
                                     @case('En Espera')
-                                        En Espera de Revisión Digital
+                                        En Espera de Revisión Digital<br> enviada el: @if(isset($itemData->fecha_envio)){{$itemData->fecha_envio}} @else {{$itemData->updated_at}} @endif
                                         @can('contratos.create')
                                             {{-- <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","EN ESPERA"]'>
                                                 AGENDAR ENTREGA
