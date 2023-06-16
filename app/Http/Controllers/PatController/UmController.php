@@ -23,9 +23,13 @@ class UmController extends Controller
             //throw $th;
             return redirect('/login');
         }
+
+        //Obtener la fecha del servidor para realizar las consultas de dicho año date('Y')
+
         $texto = ucwords($request->get('busqueda_unidad'));
         $data = UnidadMedida::Busqueda($texto)
             ->select('unidades_medida.*')
+            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
             ->orderByDesc('unidades_medida.id')
             ->paginate(15, ['unidades_medida.*']);
 
@@ -54,6 +58,7 @@ class UmController extends Controller
         $unidadm['numero'] = trim($request->input('numero_unidad'));
         $unidadm['unidadm'] = trim($request->input('nombre_unidad'));
         $unidadm['tipo_unidadm'] = trim($request->input('tipo_unidad'));
+        $unidadm['clasific_unidadm'] = trim($request->input('sel_clasif')); //dato del select
         $unidadm['status'] = 'activo';
         $unidadm['iduser_created'] =  Auth::user()->id;
         $unidadm['created_at'] = date('Y-m-d');
@@ -102,13 +107,13 @@ class UmController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-
-        $unidadesm = UnidadMedida::find($id);
+        $unidadesm = UnidadMedida::find($request->input('id_user_edit'));
         $unidadesm->numero = $request->input('numero_unidad_edit');
         $unidadesm->unidadm = $request->input('nombre_unidad_edit');
-        $unidadesm->unidadm = $request->input('tipo_unidad_edit');
+        $unidadesm->tipo_unidadm = $request->input('tipo_unidad_edit');
+        $unidadesm->clasific_unidadm = $request->input('sel_clasif_upd'); //datos obtenidos del select
         $unidadesm->iduser_updated = Auth::user()->id;
         $unidadesm->updated_at = date('Y-m-d');
         $unidadesm->save();

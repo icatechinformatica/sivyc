@@ -22,31 +22,28 @@ class FuncionesController extends Controller
         //Obtenemos los id org, area del usuario quien ingresa
         try {
             $organismo = Auth::user()->id_organismo;
-            $area = Auth::user()->id_orgarea;
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
         }
 
-        //Obtenemos el organismo del usuario
-        $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
+        //Obtenemos el area del usuario
+        $area_org = DB::table('tbl_organismos as o')->select('o.id', 'nombre', 'id_parent')
         ->Join('users as u', 'u.id_organismo', 'o.id')
         ->where('u.id_organismo', $organismo)->first();
         //$orgj= json_decode( json_encode($org), true);
 
-
-        // Obtenermos el area del usuario
-        $area_org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
-        ->Join('users as u', 'u.id_orgarea', 'o.id')
-        ->where('u.id_orgarea', $area)->first();
-        //$areaj= json_decode( json_encode($area_org), true);
+        // Obtenermos el organismo del usuario
+        $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
+        ->where('o.id', $area_org->id_parent)->first();
+        //$areaj= json_decode( json_encode($area_org->id_parent), true);
 
 
         $data = Funciones::Busqueda($request->get('busqueda_funcion'))
             ->select('funciones_proced.*')
             ->where('id_parent', '=', 0)
             ->where('id_org', '=', $organismo)
-            ->where('id_area', '=', $area)
+            ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
             ->orderByDesc('funciones_proced.id')
             ->paginate(15, ['funciones_proced.*']);
 
@@ -74,7 +71,6 @@ class FuncionesController extends Controller
         //Obtener el id del user
         try {
             $id_organismo = Auth::user()->id_organismo;
-            $id_area = Auth::user()->id_orgarea;
             $id_user = Auth::user()->id;
         } catch (\Throwable $th) {
             //throw $th;
@@ -89,7 +85,6 @@ class FuncionesController extends Controller
         $funciones['created_at'] = date('Y-m-d');
         $funciones['iduser_created'] = $id_user;
         $funciones['iduser_updated'] = $id_user;
-        $funciones['id_area'] = $id_area;
         $funciones->save();
 
         return redirect()->route('pat.funciones.mostrar')->with('success', '¡Registro guardado exitosamente!');
@@ -106,30 +101,28 @@ class FuncionesController extends Controller
         //Obtenemos los id org, area del usuario quien ingresa
         try {
             $organismo = Auth::user()->id_organismo;
-            $area = Auth::user()->id_orgarea;
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
         }
 
-         //Obtenemos el organismo del usuario
-         $org = DB::table('tbl_organismos as o')->select('o.id' ,'nombre')
-         ->Join('users as u', 'u.id_organismo', 'o.id')
-         ->where('u.id_organismo', $organismo)->first();
-         //$orgj= json_decode( json_encode($org), true);
+          //Obtenemos el area del usuario
+        $area_org = DB::table('tbl_organismos as o')->select('o.id', 'nombre', 'id_parent')
+        ->Join('users as u', 'u.id_organismo', 'o.id')
+        ->where('u.id_organismo', $organismo)->first();
+        //$orgj= json_decode( json_encode($org), true);
 
+        // Obtenermos el organismo del usuario
+        $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
+        ->where('o.id', $area_org->id_parent)->first();
+        //$areaj= json_decode( json_encode($area_org->id_parent), true);
 
-         // Obtenermos el area del usuario
-         $area_org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
-         ->Join('users as u', 'u.id_orgarea', 'o.id')
-         ->where('u.id_orgarea', $area)->first();
-         //$areaj= json_decode( json_encode($area_org), true);
 
         $data = Funciones::Busqueda('')
         ->select('funciones_proced.*')
         ->where('id_parent', '=', 0)
         ->where('id_org', '=', $organismo)
-        ->where('id_area', '=', $area)
+        ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
         ->orderByDesc('funciones_proced.id')
         ->paginate(15, ['funciones_proced.*']);
 
@@ -176,6 +169,22 @@ class FuncionesController extends Controller
         return redirect()->route('pat.funciones.mostrar')->with('success', '¡Registro actualizado exitosamente!');
     }
 
+    public function status(Request $request)
+    {
+        $id = (int)$request->id;
+        $funciones = Funciones::find($id);
+        $funciones->activo = $request->status;
+        $funciones->iduser_updated = Auth::user()->id;
+        $funciones->updated_at = date('Y-m-d');
+        $funciones->save();
+        return response()->json([
+            'status' => 200,
+            'mensaje' => 'se realizo exitosamente',
+            'status' => $request->status,
+        ]);
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -185,16 +194,16 @@ class FuncionesController extends Controller
     public function destroy($id)
     {
         //Hacer como un ciclo para que vaya eliminando los procedimientos
-        $procedimientos = Procedimientos::select('id')
-        ->where('id_parent', '=', $id)->get();
+        // $procedimientos = Procedimientos::select('id')
+        // ->where('id_parent', '=', $id)->get();
 
         //Eliminamos los proced viculados
-        for ($i=0; $i < count($procedimientos); $i++) {
-            Procedimientos::destroy($procedimientos[$i]['id']);
-        }
+        // for ($i=0; $i < count($procedimientos); $i++) {
+        //     Procedimientos::destroy($procedimientos[$i]['id']);
+        // }
 
-        Funciones::destroy($id);
-        return redirect()->route('pat.funciones.mostrar')->with('success', '¡Registro eliminado exitosamente!');
+        // Funciones::destroy($id);
+        // return redirect()->route('pat.funciones.mostrar')->with('success', '¡Registro eliminado exitosamente!');
 
     }
 }
