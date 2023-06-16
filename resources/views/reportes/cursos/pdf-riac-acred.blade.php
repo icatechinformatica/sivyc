@@ -172,9 +172,7 @@
                     <td></td>
                 </tr>
                 @endforeach
-            </tbody>
-            <tfoot>
-            </tfoot>
+            </tbody>           
         </table>
 
      </div>

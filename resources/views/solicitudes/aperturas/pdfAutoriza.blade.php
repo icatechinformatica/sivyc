@@ -17,7 +17,7 @@
         .tablad tr td{padding: 1px 5px 0 5px; font-size: 7px;}
         
 
-        #titulo { position: fixed; top: 35px; }
+        #titulo { position: fixed; top: 35px; width:100%; }
         #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}  
     
     </style>    

@@ -254,7 +254,7 @@ class turnarAperturaController extends Controller
                 if ($request->hasFile('file_autorizacion')) {
                     $name_file = $this->id_unidad."_".str_replace('/','-',$request->memo)."_".date('ymdHis')."_".$this->id_user;                                
                     $file = $request->file('file_autorizacion');
-                    $file_result = $this->upload_rfile($file,$name_file);                
+                    $file_result = $this->upload_file($file,$name_file);                
                     $url_file = $file_result["url_file"];
                 }
                 $result = DB::table('tbl_cursos as tc')->where($memo,$request->memo)->update([$status=>'TURNADO',$url=>$url_file]);
@@ -378,30 +378,11 @@ class turnarAperturaController extends Controller
         if($ext == "pdf"){
             $name = trim($name.".pdf");
             $path = $this->path_pdf.$name;
-            $up = Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
-            //echo $url = Storage::disk('custom_folder_1')->url($path); exit;
+            $up = Storage::disk('custom_folder_1')->put($path, file_get_contents($file));            
             $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
         }else $msg= "Formato de Archivo no válido, sólo PDF.";
                 
         $data_file = ["message"=>$msg, 'url_file'=>$path, 'up'=>$up];
-       
-        return $data_file;
-    }
-
-    protected function upload_rfile($file,$name){       
-        $ext = $file->getClientOriginalExtension(); // extension de la imagen
-        $ext = strtolower($ext);
-        $url = $mgs= null;
-
-        if($ext == "pdf"){
-            $name = trim($name.".pdf");
-            $path = "/UNIDAD/revision_arc01/".$name;
-            Storage::disk('custom_folder_1')->put($path, file_get_contents($file));
-            //echo $url = Storage::disk('custom_folder_1')->url($path); exit;
-            $msg = "El archivo ha sido cargado o reemplazado correctamente.";            
-        }else $msg= "Formato de Archivo no válido, sólo PDF.";
-                
-        $data_file = ["message"=>$msg, 'url_file'=>$path];
        
         return $data_file;
     }

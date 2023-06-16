@@ -9,12 +9,12 @@
     <style>
         body{font-family: sans-serif}
         @page {margin: 20px 50px 120px 50px;size: letter;}
-        header { position: fixed; left: 0px; top: 30px; right: 0px;text-align: center;width:100%;line-height: 30px;}
+        header { position: fixed; left: 0px; top: 0px; right: 0px;text-align: center;width:100%;line-height: 30px;}
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
                 float: inline-end;
-                width: 100%;
-                height: 100%;
+                width: 712px;
+                height: 100px;
             }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 50%;height: 60px;}
@@ -26,7 +26,7 @@
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
         .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
-        footer { position:fixed;left:0px;bottom:-100px;height:0px;width:100%;}
+        footer {position:fixed;left:0px;bottom:0px;width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
         .contenedor {
         position:RELATIVE;
@@ -41,10 +41,10 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 60px;
-                left: 25px;
+                bottom: 812px;
+                left: 20px;
                 font-size: 8.5px;
-                color: rgb(255, 255, 255);
+                color: white;
                 line-height: 1;
             }
     </style>
@@ -57,21 +57,18 @@
     @endif
 </head>
 <body>
-
-
     <header>
             <img class="izquierda" src="{{ public_path('img/formatos/bannerhorizontal.jpeg') }}">
-            <br>
-            <h6><small><small>{{$leyenda}}</small></small></h6>
+            <h6><small><small>{{$leyenda}}</small></small></h6><p class='direccion'>
     </header>
     <footer>
         <img class="izquierdabot" src="{{ public_path('img/formatos/footer_horizontal.jpeg') }}">
-        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
+        <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}} @endforeach</b></p>
         <script type="text/php">
             if (isset($pdf))
             {
                 $x = 275;
-                $y = 700;
+                $y = 725;
                 $text = "Hoja {PAGE_NUM} de {PAGE_COUNT}";
                 $font = "Arial";
                 $size = 11;
@@ -83,7 +80,7 @@
             }
         </script>
     </footer>
-    <div class="contenedor">
+    <div class="contenedor" style="margin-bottom: 100px;">
         {{-- crear un div para encerrar todo lo que lleva al inicio --}}
         <div>
             <div align=right style="font-size:11px;"><b>UNIDAD DE CAPACITACION {{ $reg_unidad->unidad }}</b></div>
