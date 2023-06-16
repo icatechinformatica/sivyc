@@ -16,3 +16,4 @@ yarn-error.log
 /config/app.php
 /app/Providers/AppServiceProvider.php
 /app/RouteServiceProvider.php
+composer.lock
