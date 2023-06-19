@@ -12,18 +12,18 @@
         img.izquierda {float: left;width: 100%;height: 60px;}
         img.izquierdabot {
                 float: inline-end;
-                width: 100%;
-                height: 100%;
+                width: 712px;
+                height: 100px;
             }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
-        img.derecha {float: right;width: 200px;height: 60px;}
+        img.derecha {float: right;width: 50%;height: 60px;}
         .tablas{border-collapse: collapse;width: 100%;}
         .tablas tr,th{font-size: 8px; border: gray 1px solid; text-align: center; padding: 2px;}
         .tablad { border-collapse: collapse;position:fixed;margin-top:930px;margin-left:10px;}
         .tablad { font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px;}
         .tablag { border-collapse: collapse; width: 100%;table-layout: relative;}
         .tablag tr td { font-size: 8px; padding: 0px;}
-        footer { position:fixed;left:0px;bottom:-100px;height:0px;width:100%;}
+        footer {position:fixed;left:0px;bottom:0px;width:100%;}
         footer .page:after { content: counter(page, sans-serif);}
         .contenedor {
         position:RELATIVE;
@@ -38,12 +38,11 @@
             {
                 text-align: left;
                 position: absolute;
-                bottom: 60px;
-                left: 25px;
+                bottom: 830px;
+                left: 20px;
                 font-size: 8.5px;
-                color: rgb(255, 255, 255);
+                color: white;
                 line-height: 1;
-                padding-top: 15px;
             }
     </style>
 </head>
