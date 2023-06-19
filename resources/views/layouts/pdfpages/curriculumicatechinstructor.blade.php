@@ -7,6 +7,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <style> 
+        /* *{border: 1px solid red;} */
             body{
                 font-family: sans-serif;
                 /* border: 1px solid black; */
@@ -14,7 +15,7 @@
                 /* margin: 10px; */
             }
             @page {
-                margin: 20px 30px 40px;
+                margin: 20px 30px 80px;
 
             }
             .ftr{
@@ -324,7 +325,7 @@
                                 <tr>
                                     <td>{{$cadwell['puesto']}}</td>
                                     <td>{{$cadwell['periodo']}}</td>
-                                    <td>{{$cadwell['institucion']}}</td>
+                                    <td><p>{{$cadwell['institucion']}}</p></td>
                                 </tr>
                             @endforeach
                         @endif
