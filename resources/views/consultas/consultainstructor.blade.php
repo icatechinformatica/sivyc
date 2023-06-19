@@ -64,6 +64,7 @@
                         <td>HINI</td>
                         <td>HFIN</td>
                         <td>DIAS</td>
+                        <td>OCUPADOS</td>
                         <td>LUGAR O ESPACIO FISICO</td>
                         <td>OBSERVACIONES</td>
                     </tr>
@@ -86,8 +87,9 @@
                         <td>{{$item->hini}}</td>
                         <td>{{$item->hfin}}</td>
                         <td>{{$item->dia}}</td>
+                        <td>@if($item->tdias>0) {{ $item->tdias }} @else {{0}}@endif DIAS</td>
                         <td><div style="width: 250px;">{{$item->efisico }}</div></td>
-                        <td><div style="width: 350px;">{{$item->nota}}</div></td>
+                        <td><div style="width: 450px;">{{$item->nota}}</div></td>
                     </tr>
                     @endforeach
                     <tr>
