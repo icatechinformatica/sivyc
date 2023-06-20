@@ -167,6 +167,11 @@
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->arch_pago}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
+                                    @can('contratos.edit')
+                                        <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Solicitud de Pago" href="{{route('pago-mod', ['id' => $itemData->id_folios])}}" >
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>
+                                        </a>
+                                    @endcan
                                     @can('verificar_pago.create')
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Verificar Pago" href="{{route('pago.verificarpago', ['id' => $itemData->id_contrato])}}">
                                             <i class="fa fa-eye" aria-hidden="true"></i>
