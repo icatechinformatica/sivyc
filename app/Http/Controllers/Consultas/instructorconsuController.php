@@ -19,16 +19,18 @@ class instructorconsuController extends Controller
         if($unidad OR ($tipo AND $buscar) OR $fecha_inicio OR $fecha_termino){
             $consulta = DB::table('instructores')            
             ->select('tc.nombre', 'unidad','folio_grupo','clave','munidad','curso','espe','tipo_curso','dura','tcapacitacion','status_curso',
-            'inicio','termino','hini','hfin','dia','efisico','nota',           
-             DB::raw(" DATE_PART('day', tc.termino::timestamp -
-             (select  min(tcx.inicio) from tbl_cursos as tcx
-             where tcx.id_instructor= instructores.id and 
-                  tcx.inicio> COALESCE(
-                     (select max(inicio) from tbl_cursos as c where c.id_instructor = instructores.id  and c.inicio<=tc.inicio 
-                        and COALESCE((select DATE_PART('day', tc3.inicio::timestamp - c.termino::timestamp ) from tbl_cursos as tc3 where tc3.id_instructor = instructores.id  and tc3.inicio>c.inicio order by tc3.inicio ASC limit 1  )-1,0)>30 ),
-                     (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = instructores.id ))
-                 )::timestamp)+1
-              as tdias")
+            'inicio','termino','hini','hfin','dia','efisico','nota',  
+            DB::raw(" DATE_PART('day', tc.termino::timestamp -
+            (select  min(tcx.inicio) from tbl_cursos as tcx
+            where tcx.id_instructor= instructores.id and tcx.inicio<=tc.inicio  and 
+                 tcx.inicio> COALESCE(
+                    (select max(inicio) from tbl_cursos as c where c.id_instructor = instructores.id  and c.inicio<=tc.inicio 
+                       and COALESCE((select DATE_PART('day', tc3.inicio::timestamp - c.termino::timestamp ) from tbl_cursos as tc3 where tc3.id_instructor = instructores.id  and tc3.inicio>c.inicio order by tc3.inicio ASC limit 1  )-1,0)>30 ),
+                    (select min(inicio)::timestamp - interval '1 day' from tbl_cursos where id_instructor = instructores.id ))
+                )::timestamp)+1
+             as tdias"), DB::raw("COALESCE((select DATE_PART('day', tc.termino::timestamp-tc.inicio::timestamp ))+1,0) as dias")
+
+
             )
             ->join('tbl_cursos as tc','instructores.id','=','tc.id_instructor');
             if (!empty($tipo) AND !empty($buscar)) {
