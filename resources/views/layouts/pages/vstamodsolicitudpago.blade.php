@@ -173,36 +173,36 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp1">Nombre</label>
-                        <input id="ccp1" name="ccp1" type="text" class="form-control" value="{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}">
+                        <input id="ccp1" name="ccp1" type="text" class="form-control" @if(isset($ccp1->nombre))value="{{$ccp1->nombre}} {{$ccp1->apellidoPaterno}} {{$ccp1->apellidoMaterno}}"@endif>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" value="{{$ccp1->puesto}}">
-                        <input id="id_ccp1" name="id_ccp1" hidden value="{{$directorio->solpa_ccp1}}">
+                        <input id="ccpa1" readonly name="ccpa1" type="text" class="form-control" @if(isset($ccp1->nombre))value="{{$ccp1->puesto}}"@endif>
+                        <input id="id_ccp1" name="id_ccp1" hidden @if(isset($ccp1->nombre))value="{{$directorio->solpa_ccp1}}"@endif>
                     </div>
                 </div>
                 <h3>CCP 2</h3>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp2">Nombre</label>
-                        <input id="ccp2" name="ccp2" type="text" class="form-control" value="{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}">
+                        <input id="ccp2" name="ccp2" type="text" class="form-control" @if(isset($ccp2->nombre)) value="{{$ccp2->nombre}} {{$ccp2->apellidoPaterno}} {{$ccp2->apellidoMaterno}}" @endif>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control" value="{{$ccp2->puesto}}">
-                        <input id="id_ccp2" name="id_ccp2" hidden value="{{$directorio->solpa_ccp2}}">
+                        <input id="ccpa2" readonly name="ccpa2" type="text" class="form-control"  @if(isset($ccp2->nombre)) value="{{$ccp2->puesto}}" @endif>
+                        <input id="id_ccp2" name="id_ccp2" hidden  @if(isset($ccp2->nombre)) value="{{$directorio->solpa_ccp2}}" @endif>
                     </div>
                 </div>
                 <h3>CCP 3</h3>
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label for="inputnombre_ccp3">Nombre</label>
-                        <input id="ccp3" name="ccp3" type="text" class="form-control" value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}">
+                        <input id="ccp3" name="ccp3" type="text" class="form-control" @if(isset($ccp3->nombre)) value="{{$ccp3->nombre}} {{$ccp3->apellidoPaterno}} {{$ccp3->apellidoMaterno}}" @endif>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="inputpuesto_para">Puesto</label>
-                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" value="{{$ccp3->puesto}}">
-                        <input id="id_ccp3" name="id_ccp3" hidden value="{{$directorio->solpa_ccp3}}">
+                        <input id="ccpa3" readonly name="ccpa3" type="text" class="form-control" @if(isset($ccp3->nombre)) value="{{$ccp3->puesto}}"@endif>
+                        <input id="id_ccp3" name="id_ccp3" hidden @if(isset($ccp3->nombre)) value="{{$directorio->solpa_ccp3}}"@endif>
                     </div>
                 </div>
             <!-- END CC -->
