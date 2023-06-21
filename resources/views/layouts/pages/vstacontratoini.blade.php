@@ -89,6 +89,7 @@
                                 <option value="Verificando_Pago">VERIFICANDO PAGO</option>
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
                                 <option value="Pago_Rechazado">PAGO RECHAZADO</option>
+                                <option value="Finalizado">FINALIZADO</option>
                             </select>
                         </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
