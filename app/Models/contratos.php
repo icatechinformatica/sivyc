@@ -152,6 +152,10 @@ class contratos extends Model
                 # busqueda por unidad capacitacion...
                 if (!empty($tipo_status))
                 {
+                    if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+                    {
+                        return $query->whereDate('pagos.fecha_envio', '>=', $dateini)->whereDate('pagos.fecha_envio', '<=', $datefin)->WHERE('pagos.status_recepcion', '=', $tipo_status);
+                    }
                     return $query->whereDate('pagos.created_at', '>=', $dateini)->whereDate('pagos.created_at', '<=', $datefin)->WHERE('folios.status', '=', $tipo_status);
                 }
                 else
@@ -188,7 +192,21 @@ class contratos extends Model
             }
         }
         if (!empty($tipo_status)) {
-            return $query->WHERE('folios.status', '=', $tipo_status);
+            if($tipo_status == 'En Espera' || $tipo_status == 'Citado')
+            {
+                if($tipo_status == 'En Espera')
+                {
+                    return $query->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.fecha_envio','ASC');
+                }
+                else
+                {
+                    return $query->WHERE('pagos.status_recepcion', '=', $tipo_status)->ORDERBY('pagos.updated_at','ASC');
+                }
+            }
+            else
+            {
+                return $query->WHERE('folios.status', '=', $tipo_status);
+            }
         }
     }
 }

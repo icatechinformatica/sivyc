@@ -112,6 +112,8 @@
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
                                 <option value="Pago_Rechazado">PAGO RECHAZADO</option>
                                 <option value="Finalizado">FINALIZADO</option>
+                                <option value="En Espera">PARA VALIDAR DIGITAL</option>
+                                <option value="Citado">PARA RECEPCION</option>
                             </select>
                         </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
@@ -1186,9 +1188,12 @@
 
     $('#validarRecepcionModalOrdinaria').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var fecha = id[13];
-        var fechaTexto = fecha.toString();
+        var attrid = button.attr('data-id');
+        var id = JSON.parse(attrid)
+        if(typeof id[13] !== 'undefined'){
+            var fecha = id[13];
+            var fechaTexto = fecha.toString();
+        }
 
         $('#div_val_ordinario').removeClass('d-none d-print-none');
         $('#div_val_ordinario').addClass('form-group');
@@ -1197,16 +1202,20 @@
         setAnchorHrefs(id, true, true);
         $('#rechazar_recepcion').data('id', id[0]);
         $('#validar_cita').data('id', [id[0], fechaTexto]);
-        if(typeof id[13] !== 'undefined'){
+        if(typeof id[13] !== 'undefined'){console.log('a')
             $('#div_val_ordinario').removeClass('form-group');
             $('#div_val_ordinario').addClass('d-none d-print-none');
+        }
+        else{
+            console.log(id[1])
         }
 
     });
 
     $('#validarRecepcionModalCertificacion').on('show.bs.modal', function(event){
         var button = $(event.relatedTarget);
-        var id = button.data('id');
+        var attrid = button.attr('data-id');
+        var id = JSON.parse(attrid)
         var fecha = id[14];
 
         $('#div_val_certificacion').removeClass('d-none d-print-none');
@@ -1280,7 +1289,7 @@
         document.getElementById('id_contrato_noentrega').value = id;
     });
 
-    function setAnchorHrefs(id, ordinario, validacion) {
+    function setAnchorHrefs(idx, ordinario, validacion) {
         let anchors = null;
         let variables = null;
         let icons = null;
@@ -1337,28 +1346,28 @@
 
         if (ordinario) {
             anchors.splice(10, 1); // Remove #show_calificaciones from the anchors array
-            id.splice(11, 1); // Remove #show_calificaciones link from the id array
+            idx.splice(11, 1); // Remove #show_calificaciones link from the id array
             variables.splice(10, 1);
             icons.splice(10, 1);
         } else {
             anchors.splice(9, 1); // Remove #show_asistencias from the anchors array
-            id.splice(10, 1); // Remove #show_asistencias link from the id array
+            idx.splice(10, 1); // Remove #show_asistencias link from the id array
             variables.splice(9, 1);
             icons.splice(9, 1);
             anchors.splice(10, 1); // Remove #show_evidencia_fotografica from the anchors array
-            id.splice(11, 1); // Remove #show_evidencia_fotografica link from the aidarray
+            idx.splice(11, 1); // Remove #show_evidencia_fotografica link from the aidarray
             variables.splice(10, 1);
             icons.splice(10, 1);
         }
 
         for (let i = 0; i < anchors.length; i++) {
-            const href = id[i+1];
-            if (id[i+1] != "") {
+            const href = idx[i+1];
+            if (idx[i+1] != "") {
                     $(anchors[i]).attr('href', href);
                     $(anchors[i]).attr('hidden', false);
                     document.getElementById('td'+[i+1]+td).style.color = "black";
 
-                    if (id[id.length - 1] == "EN ESPERA"){
+                    if (idx[idx.length - 1] == "EN ESPERA"){
                         $(variables[i]).attr('hidden', true);
                         dnd = anchors[i].substring(1);
                         // $(anchors[i]).parent().parent().css("background-color", "lightgray");
