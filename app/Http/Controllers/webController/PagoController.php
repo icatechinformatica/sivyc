@@ -415,11 +415,12 @@ class PagoController extends Controller
             // ->WHERE('tbl_cursos.tipo_curso', '=', $request->tipo)
             // ->WHERE('tbl_cursos.tcapacitacion', '=', $request->modalidad)
             // ->WHERE('pagos.recepcion', '!=', NULL)
+            ->WHERE('folios.status', '!=', 'Contrato_Rechazado')
             ->WHEREBETWEEN('contratos.fecha_status', [$request->fecha1, $request->fecha2])
             ->ORDERBY('tbl_cursos.inicio', 'ASC')
             ->GET();
-            // dd($data);
-        $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FFECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
+            // dd($data[24]);
+        $head = ['FECHA','NUM.','CLAVE CURSO','ESTATUS'.'FECHA FIRMA DE CONTRATO','NOMBRE DEL INSTRUCTOR'];
         $title = "DOCUMENTOS RECEPCIONADOS";
         $name = $title."_".date('Ymd').".xlsx";
         $view = 'layouts.pages.reportes.excel_contratos_recepcionados';
