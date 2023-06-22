@@ -210,7 +210,12 @@ class exoneracionesController extends Controller
             }
             $direccion = $reg_unidad->direccion;
             setlocale(LC_TIME, "spanish");
-            $fecha = strftime("%d de %B del %Y");
+            $fecha =date("Y-m-d");
+            
+            $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+            $mes = $meses[date('m',strtotime($fecha))];
+            $fecha = date('d',strtotime($fecha)).' de '.$mes.' del '.date('Y',strtotime($fecha));
+
             $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha','reg_unidad','depen','marca','data','direccion'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('EXONERACION.pdf');
