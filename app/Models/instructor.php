@@ -52,7 +52,7 @@ class instructor extends Model
         return $this->attributes['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
      }
 
-    public function scopeSearchInstructor($query, $tipo, $buscar, $tipo_status)
+    public function scopeSearchInstructor($query, $tipo, $buscar, $tipo_status, $tipo_especialidad)
     {
         if (!empty($tipo))
         {
@@ -80,6 +80,10 @@ class instructor extends Model
             if(!empty($tipo_status))
             {
                 return $query->where( 'status', '=', $tipo_status);
+            }
+            if(!empty($tipo_especialidad))
+            {
+                return $query->where( 'especialidad_id', $tipo_especialidad)->JOIN('especialidad_instructores','especialidad_instructores.id_instructor','=','instructores.id');
             }
         }
     }
