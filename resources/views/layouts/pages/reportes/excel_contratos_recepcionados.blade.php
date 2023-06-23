@@ -80,6 +80,7 @@
                     case 'Contratado':
                         $status = 'Contrato Validado';
                         $status_estilo = $azestilo;
+                    break;
                 }
             @endphp
             <tr>

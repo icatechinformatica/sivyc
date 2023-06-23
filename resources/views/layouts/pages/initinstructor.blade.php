@@ -41,6 +41,7 @@
                             <option value="nombre_instructor">NOMBRE</option>
                             <option value="telefono_instructor">TELÉFONO</option>
                             <option value="estatus_instructor">ESTATUS</option>
+                            <option value="especialidad">ESPECIALIDAD VALIDADA</option>
                         </select>
                         <Div id="divcampo" name="divcampo">
                             {!! Form::text('busquedaPorInstructor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
@@ -53,6 +54,14 @@
                                 <option value="EN FIRMA">EN FIRMA</option>
                                 <option value="VALIDADO">VALIDADO</option>
                                 <option value="RETORNO">RETORNO</option>
+                            </select>
+                        </Div>
+                        <Div id="divespecialidad" name="divespecialidad" class="d-none d-print-none">
+                            <select name="tipo_especialidad" class="form-control mr-sm-2" id="tipo_especialidad">
+                                <option value="">BUSQUEDA POR ESPECIALIDAD</option>
+                                @foreach ($especialidades as $moist)
+                                    <option value="{{$moist->id}}">{{$moist->nombre}}</option>
+                                @endforeach
                             </select>
                         </Div>
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
@@ -245,15 +254,24 @@
             document.getElementById('tipo_busqueda_instructor').onchange = function() {
                 var index = this.selectedIndex;
                 var inputText = this.children[index].innerHTML.trim();
-                if(inputText != 'ESTATUS')
-                {
-                    $('#divstat').prop("class", "form-row d-none d-print-none")
-                    $('#divcampo').prop("class", "")
-                }
-                else
+                console.log(inputText);
+                if(inputText == 'ESTATUS')
                 {
                     $('#divstat').prop("class", "")
                     $('#divcampo').prop("class", "form-row d-none d-print-none")
+                    $('#divespecialidad').prop("class", "form-row d-none d-print-none")
+                }
+                else if(inputText == 'ESPECIALIDAD VALIDADA')
+                {
+                    $('#divespecialidad').prop("class", "")
+                    $('#divcampo').prop("class", "form-row d-none d-print-none")
+                    $('#divstat').prop("class", "form-row d-none d-print-none")
+                }
+                else
+                {
+                    $('#divstat').prop("class", "form-row d-none d-print-none")
+                    $('#divespecialidad').prop("class", "form-row d-none d-print-none")
+                    $('#divcampo').prop("class", "")
                 }
             }
         });
