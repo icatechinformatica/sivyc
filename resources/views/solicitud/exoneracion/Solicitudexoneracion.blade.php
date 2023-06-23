@@ -216,11 +216,7 @@
                     <tr>
                         <th>DIAS</th>
                         <th colspan="6">{{$item['dias']}}</th>
-                    </tr>
-                    <tr>
-                        <th>NOMBRE DEL INSTRUCTOR</th>
-                        <th colspan="6">{{$item['instructor']}}</th>
-                    </tr>
+                    </tr>                   
                     <tr>
                         <th colspan="7">LISTA DE ALUMNOS</th>
                     </tr>
