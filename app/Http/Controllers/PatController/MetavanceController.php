@@ -1127,7 +1127,7 @@ class MetavanceController extends Controller
 
     }
 
-    /**
+    /** Funcion para subir pdf al servidor
      * @param string $pdf, $id, $nom
      */
     protected function pdf_upload($pdf, $id, $nom)

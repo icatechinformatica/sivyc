@@ -45,6 +45,12 @@
             .color_fondo {
                 background-color:  #e7e7e7;
             }
+            /* Quitamos la parte de mayusculas de manera forzada */
+            input[type=text],
+            select,
+            textarea {
+                text-transform: none !important;
+            }
 
     </style>
 
@@ -66,26 +72,37 @@
 
             <div class="row">
                 <div class="col-lg-12 margin-tb">
-                    <div class="d-flex flex-column align-items-end">
-                        <div class="pull-right">
-                            <h4><strong>Dirección :</strong> {{$org->nombre}}</h4>
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex">
+                            <select name="sel_organismos_id" id="sel_organismos_id" class="form-control" onchange="cambiar_org()">
+                                {{-- <option value="">SELECCIONAR ORGANISMO</option> --}}
+                                @foreach ($list_org as $item)
+                                    <option {{$organismo == $item->id ? 'selected' : ''}} value="{{$item->id}}">{{$item->nombre}}</option>
+                                @endforeach
+
+                            </select>
                         </div>
-                        <div class="pull-right">
-                            <h4><strong>Area/Depto :</strong>  {{$area_org->nombre}}</h4>
+                        <div class="d-flex">
+                            <h4><strong>Dirección :</strong> {{$org->nombre}}</h4>
                         </div>
 
                     </div>
+                    <div class="d-flex align-items-end">
+                        <div class="ml-auto">
+                            <h4><strong>Area/Depto :</strong>  {{$area_org->nombre}}</h4>
+                        </div>
+                    </div>
                 </div>
-                 {{-- @can('convenios.create') --}}
-
-            {{-- @endcan --}}
             </div>
+
+
 
             <div class="form-row">
                 <div class="col-8">
                     {{-- Formulario para busqueda --}}
                     <form class="form-inline {{ isset($funcion_desc) ? 'd-none' : '' }}"  action="{{route('pat.funciones.mostrar')}}" method="get" id="formBusqueda">
                         <input type="text" class="form-control mr-sm-2" name="busqueda_funcion" id="busqueda_funcion" placeholder="BUSCAR FUNCION">
+                        <input type="hidden" name="id_orgbus" value="{{$organismo}}">
                         <button type="submit" name="botonBuscar" id="botonBuscar" class="btn">BUSCAR</button>
                     </form>
 
@@ -94,6 +111,7 @@
                         @csrf
                         {{-- <input type="text" class="form-control mr-sm-2" name="nom_funcion" id="nom_funcion" placeholder="ESCRIBE LA FUNCION"> --}}
                         <textarea name="nom_funcion_edit" class="form-control mr-sm-2" id="nom_funcion_edit" cols="35" rows="4">{{isset($funcion_desc) ? $funcion_desc->fun_proc : ''}}</textarea>
+                        <input type="hidden" name="idorgupd" value="{{$organismo}}">
                         <div class="d-flex flex-column">
                         <button type="button" name="btnCancelEdit" id="btnCancelEdit" class="btn btn-danger mb-1">CANCELAR</button>
                         <button type="button" name="btnEditFunc" id="btnEditFunc" class="btn mt-1">GUARDAR</button>
@@ -137,6 +155,8 @@
                                         <div class="col-10 d-flex flex-wrap justify-content-center align-content-center">
                                             <textarea name="nom_funcion" class="form-control" id="nom_funcion" cols="35" rows="1" placeholder="Ingresa la función"></textarea>
                                         </div>
+                                        {{-- valor de id --}}
+                                        <input type="hidden" name="id_org" value="{{$organismo}}">
                                         <div class="col-2 mx-0 px-0 d-flex flex-wrap justify-content-center align-content-center">
                                             <a class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
                                                 data-placement="top" title="GUARDAR REGISTRO" id="btnAddFunc">
@@ -177,7 +197,7 @@
                                     <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                         data-placement="top" title="AGREGAR"
                                         href="{{route('pat.proced.mostrar',
-                                        ['id' => $itemData->id])}}">
+                                        ['id' => $itemData->id, 'idorg' => $organismo])}}">
                                         <i class="fa fa-plus-square fa-2x mt-2" style="color: #00c851;" aria-hidden="true"></i>
                                     </a>
                                 </td>
@@ -186,7 +206,7 @@
                                     <td class="text-center">
                                         <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                             data-placement="top" title="EDITAR" id="btnMostrarFrmEdit"
-                                            href="{{ route('funciones.edit.show', ['id' => $itemData->id]) }}">
+                                            href="{{ route('funciones.edit.show', ['id' => $itemData->id, 'idorg' => $organismo]) }}">
                                             <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
                                         </a>
                                     </td>
@@ -262,6 +282,10 @@
         @section('script_content_js')
         <script language="javascript">
             $(document).ready(function(){
+
+                /*Deshabilitamos la prate de convertir a mayusculas*/
+                $("input[type=text], textarea, select").off("keyup");
+
                 $("#btnAddFunc" ).click(function(e){
                     if ($("#nom_funcion").val().trim() != '') {
                         $('#formAddFuncion').attr('action', "{{ route('funciones.guardar')}}");
@@ -366,8 +390,6 @@
                 $("#no_encontrado").addClass('d-none');
             });
 
-
-
            $("#btnCancelAdd").click(function (e) {
                $("#formAddFuncion").addClass('d-none');
                $("#formEditFuncion").addClass('d-none');
@@ -386,6 +408,14 @@
                 $("#formBusqueda").removeClass('d-none');
 
             });
+
+            function cambiar_org() {
+                let id_org = document.getElementById("sel_organismos_id").value;
+
+                let url = "{{ route('pat.funciones.mostrar', [':idorg']) }}";
+                url = url.replace(':idorg', id_org);
+                window.open(url, "_self");
+            }
         </script>
         @endsection
 @endsection

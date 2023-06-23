@@ -1,4 +1,4 @@
-<!--Creado por Jose Luis Moreno luisito08672@gmail.com-->
+<!--Creado por Jose Luis Moreno Arcos luisito08672@gmail.com-->
 @extends('theme.sivyc.layout')
 
 <!--llamar a la plantilla -->
@@ -41,6 +41,12 @@
             .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
 
             .form-control { height: 40px; }
+
+            input[type=text],
+            select,
+            textarea {
+                text-transform: none !important;
+            }
     </style>
 
     <div class="card-header py-2">
@@ -208,6 +214,10 @@
         @section('script_content_js')
         <script language="javascript">
             $(document).ready(function(){
+
+                /*Deshabilitamos la prate de convertir a mayusculas*/
+                $("input[type=text], textarea, select").off("keyup");
+
                 $("#botonGuardar" ).click(function(){
                     if ($("#numero_unidad").val().trim() != '' && $("#nombre_unidad").val().trim() != '' && $("#tipo_unidad").val().trim() != '' && $("#sel_clasif").val().trim() != '') {
                         $('#formNuevoReg').attr('action', "{{ route('unidadesm.guardar') }}");
