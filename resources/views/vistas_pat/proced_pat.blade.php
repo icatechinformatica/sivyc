@@ -11,7 +11,6 @@
             box-sizing: border-box;
         }
 
-
         .select {
             /* height: 50px; */
             width: 25%;
@@ -55,6 +54,11 @@
             .btn, .btn:focus{ color: white; background: #12322b; font-size: 14px; border-color: #12322b; margin: 0 5px 0 5px; padding: 10px 13px 10px 13px; }
             .btn:hover { color: white; background:#2a4c44; border-color: #12322b; }
 
+            input[type=text],
+            select,
+            textarea {
+                text-transform: none !important;
+            }
 
     </style>
 
@@ -106,6 +110,7 @@
                         <div class="d-flex flex-column">
                             <textarea name="nom_proced_edit" class="form-control" id="nom_proced_edit" cols="35" rows="2">{{isset($dataedit) ? $dataedit->fun_proc : ''}}</textarea>
                             <input type="text" class="form-control mt-1 text_buscar_unidadm" id="um_upd" name="um_upd" placeholder="UNIDAD DE MEDIDA" value="{{isset($dataedit) ? $dataedit->unidadm : ''}}">
+                            <input type="hidden" name="idorg" value="{{$organismo}}">
                             {{-- <input type="hidden" name="id_unidadm" value="{{isset($dataedit) ? $dataedit->id_unidadm : ''}}"> --}}
                         </div>
 
@@ -175,7 +180,7 @@
                                             <div class="col-4 pl-0 d-flex flex-wrap justify-content-center align-content-center">
                                                 <input type="text" id="text_buscar_unidadm" class="form-control select text_buscar_unidadm" name="text_buscar_unidadm" placeholder="Unidad de Medida">
                                             </div>
-
+                                            <input type="hidden" name="idorg" value="{{$organismo}}">
                                             <div class="col-2 mx-0 px-0 d-flex flex-wrap justify-content-center align-content-center">
                                                 <a class="btn btn-success btn-circle m-1 btn-circle-sm" data-toggle="tooltip"
                                                     data-placement="top" title="GUARDAR REGISTRO" id="btnAddProced">
@@ -218,7 +223,7 @@
                                         <td class="text-center">
                                             <a class="btn-circle btn-circle-sm" data-toggle="tooltip"
                                                 data-placement="top" title="EDITAR" id="btnMostrarFrmEdit"
-                                                href="{{ route('pat.proced.edit.show', ['idedi' => $itemData->id, 'id' => $id])}}">
+                                                href="{{ route('pat.proced.edit.show', ['idedi' => $itemData->id, 'id' => $id, 'idorg' => $organismo])}}">
                                                 <i class="fa fa-pencil-square-o fa-2x mt-2" style="color: #f1ad24;" aria-hidden="true"></i>
                                             </a>
                                         </td>
@@ -291,6 +296,9 @@
         <script language="javascript">
             $(document).ready(function(){
 
+                /*Deshabilitamos la prate de convertir a mayusculas*/
+                $("input[type=text], textarea, select").off("keyup");
+
                 $("#btnAddProced" ).click(function(){
                     if ($("#nuevoReg").val().trim() != '' && $("#text_buscar_unidadm").val().trim() != '') {
                         $('#formAddProced').attr('action', "{{ route('proced.guardar', ['id' => $id])}}");
@@ -313,7 +321,7 @@
 
                 //Regresar a otra pantalla
                 $('#btn_regresar').click(function(e){
-                    $('#btn_regresar').attr('href', "{{ route('pat.funciones.mostrar')}}");
+                    $('#btn_regresar').attr('href', "{{ route('pat.funciones.mostrar', ['idorg' => $organismo])}}");
                 });
 
            });

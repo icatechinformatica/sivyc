@@ -10,7 +10,7 @@
         .tablaf { border-collapse: collapse; width: 100%; font-size: 12px !important; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
         p {margin:5px; padding:0px;font-size: 10px;}
-        #titulo{position: fixed; top: 55px;}
+        #titulo{position: fixed; top: 55px; text-align: center}
         #titulo h2{padding:0px; margin:0px 0px 2px 0px; font-size: 13px; font-weight:normal;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:normal;}
         #titulo table{position: fixed; top: 93px;}
@@ -147,28 +147,28 @@
         <table class="tb" style="">
             <thead>
                 <tr style="background: #EAECEE;">
-                  <th rowspan="2" width="35px">No <br> FUN</th>
+                  <th rowspan="2" width="20px">No <br> FUN</th>
                   <th rowspan="2" width="190px">FUNCIONES</th>
                   <th rowspan="2" width="190px">ACTIVIDADES</th>
-                  <th rowspan="2" width="70px">UNIDAD <br> DE <br> MEDIDA</th>
-                  <th rowspan="2">TIPO <br> DE <br> U.M</th>
-                  <th rowspan="2">META <br> ANUAL</th>
-                  <th colspan="12">CALENDARIZACIÓN</th>
-                  <th rowspan="2">OBSERVACIÓN</th>
+                  <th rowspan="2" width="65px">UNIDAD <br> DE <br> MEDIDA</th>
+                  <th rowspan="2" width="40px">TIPO <br> DE <br> U.M</th>
+                  <th rowspan="2" width="40px">META <br> ANUAL</th>
+                  <th colspan="12" width="240px">CALENDARIZACIÓN</th>
+                  <th rowspan="2" width="70px">OBSERVACIÓN</th>
                 </tr>
                 <tr style="background: #EAECEE;">
-                  <th>I</th>
-                  <th>II</th>
-                  <th>III</th>
-                  <th>IV</th>
-                  <th>V</th>
-                  <th>VI</th>
-                  <th>VII</th>
-                  <th>VIII</th>
-                  <th>IX</th>
-                  <th>X</th>
-                  <th>XI</th>
-                  <th>XII</th>
+                  <th width="20px">I</th>
+                  <th width="20px">II</th>
+                  <th width="20px">III</th>
+                  <th width="20px">IV</th>
+                  <th width="20px">V</th>
+                  <th width="20px">VI</th>
+                  <th width="20px">VII</th>
+                  <th width="20px">VIII</th>
+                  <th width="20px">IX</th>
+                  <th width="20px">X</th>
+                  <th width="20px">XI</th>
+                  <th width="20px">XII</th>
                 </tr>
             </thead>
             <tbody>

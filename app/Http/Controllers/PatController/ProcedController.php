@@ -17,20 +17,26 @@ class ProcedController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $id)
+    public function index(Request $request, $id, $idorg)
     {
-        //Obtenemos el id en el parametro
         try {
-            $organismo = Auth::user()->id_organismo;
+            if ($idorg != null) {
+                // $organismo = $idorg;
+                $organismo = $idorg;
+            }
+            else{
+                // $organismo = Auth::user()->id_organismo;
+                $organismo = Auth::user()->id_organismo;
+            }
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
         }
 
+
          //Obtenemos el area del usuario
-         $area = DB::table('tbl_organismos as o')->select('o.id', 'nombre', 'id_parent')
-         ->Join('users as u', 'u.id_organismo', 'o.id')
-         ->where('u.id_organismo', $organismo)->first();
+         $area = DB::table('tbl_organismos')->select('id', 'nombre', 'id_parent')
+        ->where('id', $organismo)->first();
 
          // Obtenermos el organismo del usuario
          $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
@@ -49,7 +55,7 @@ class ProcedController extends Controller
 
 
         //Obtenemos los parametros
-        return view('vistas_pat.proced_pat', compact('data', 'data2' ,'area', 'org', 'id'));
+        return view('vistas_pat.proced_pat', compact('data', 'data2' ,'area', 'org', 'id', 'organismo'));
     }
 
     /**
@@ -73,13 +79,16 @@ class ProcedController extends Controller
     public function store(Request $request, $id)
     {
 
-        try {
-            $id_organismo = Auth::user()->id_organismo;
-            $id_user = Auth::user()->id;
-        } catch (\Throwable $th) {
-            //throw $th;
-            return redirect('/login');
-        }
+        // try {
+        //     $id_organismo = Auth::user()->id_organismo;
+
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     return redirect('/login');
+        // }
+        $organismo = $request->input('idorg');
+        $id_user = Auth::user()->id;
+
 
         $unidad_medida = $request->input('text_buscar_unidadm');
         //Buscamos el id de la unidad de medida para agregar en el campo de procedimientos
@@ -90,7 +99,7 @@ class ProcedController extends Controller
 
             $procedimientos = new Procedimientos;
             $procedimientos['id_parent'] = $id; //este id es de la funcion en el cual se relaciona
-            $procedimientos['id_org'] = $id_organismo;
+            $procedimientos['id_org'] = $organismo;
             $procedimientos['fun_proc'] =  trim($request->input('nuevoReg'));
             $procedimientos['activo'] = 'true';
             $procedimientos['id_unidadm'] = $id_unidadm->id; // id de unidad de medida
@@ -132,10 +141,10 @@ class ProcedController extends Controller
             // $metas_avances['iduser_updated'] = $id_user;
             $metas_avances->save();
 
-            return redirect()->route('pat.proced.mostrar', compact('id'))->with('success', '¡Registro guardado exitosamente!');
+            return redirect()->route('pat.proced.mostrar', ['id' => $id, 'idorg' => $organismo])->with('success', '¡Registro guardado exitosamente!');
         }
 
-        return redirect()->route('pat.proced.mostrar', compact('id'))->with('danger', '¡Error al registrar, verifique si existe la unidad de medida ingresada!');
+        return redirect()->route('pat.proced.mostrar', ['id' => $id, 'idorg' => $organismo])->with('danger', '¡Error al registrar, verifique si existe la unidad de medida ingresada!');
     }
 
 
@@ -145,20 +154,20 @@ class ProcedController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($idedi, $id)
+    public function show($idedi, $id, $idorg)
     {
         //Obtenemos el id en el parametro
-        try {
-            $organismo = Auth::user()->id_organismo;
-        } catch (\Throwable $th) {
-            //throw $th;
-            return redirect('/login');
-        }
+        // try {
+        //     $organismo = Auth::user()->id_organismo;
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     return redirect('/login');
+        // }
+        $organismo = $idorg;
 
         //Obtenemos el area del usuario
-        $area = DB::table('tbl_organismos as o')->select('o.id', 'nombre', 'id_parent')
-        ->Join('users as u', 'u.id_organismo', 'o.id')
-        ->where('u.id_organismo', $organismo)->first();
+         $area = DB::table('tbl_organismos')->select('id', 'nombre', 'id_parent')
+        ->where('id', $organismo)->first();
 
         // Obtenermos el organismo del usuario
         $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
@@ -181,7 +190,7 @@ class ProcedController extends Controller
         ->where('funciones_proced.id', '=', $idedi)->first();
 
 
-        return view('vistas_pat.proced_pat', compact('data', 'data2' ,'area', 'org', 'id', 'dataedit'));
+        return view('vistas_pat.proced_pat', compact('data', 'data2' ,'area', 'org', 'id', 'dataedit', 'organismo'));
     }
 
     /**
@@ -206,7 +215,7 @@ class ProcedController extends Controller
     {
         //Verificamos si la unidad esta en la bd para poder guardar
         $id_unidadm_bd = UnidadMedida::select('id')->where('unidadm', '=', $request->input('um_upd'))->first();
-
+        $organismo = $request->input('idorg');
         if($id_unidadm_bd != null){
             $proced = Procedimientos::find($idedi);
             $proced->fun_proc =  trim($request->input('nom_proced_edit'));
@@ -215,10 +224,10 @@ class ProcedController extends Controller
             $proced->iduser_updated = Auth::user()->id;
             $proced->save();
 
-            return redirect()->route('pat.proced.mostrar', compact('id'))->with('success', '¡Registro actualizado exitosamente!');
+            return redirect()->route('pat.proced.mostrar', ['id' => $id, 'idorg' => $organismo])->with('success', '¡Registro actualizado exitosamente!');
         }
 
-        return redirect()->route('pat.proced.mostrar', compact('id'))->with('danger', '¡Error al registrar, verifique si existe la unidad de medida ingresada!');
+        return redirect()->route('pat.proced.mostrar', ['id' => $id, 'idorg' => $organismo])->with('danger', '¡Error al registrar, verifique si existe la unidad de medida ingresada!');
     }
 
     public function status(Request $request)

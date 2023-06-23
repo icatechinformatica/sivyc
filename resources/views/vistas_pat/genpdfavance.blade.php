@@ -10,7 +10,7 @@
         .tablaf { border-collapse: collapse; width: 100%; font-size: 12px !important; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
         p {margin:5px; padding:0px;font-size: 10px;}
-        #titulo{position: fixed; top: 55px;}
+        #titulo{position: fixed; top: 55px; text-align: center}
         #titulo h2{padding:0px; margin:0px 0px 2px 0px; font-size: 13px; font-weight:normal;}
         #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:normal;}
         #titulo table{position: fixed; top: 93px;}
@@ -40,22 +40,22 @@
         <table class="tb" style="">
             <thead>
                 <tr style="background: #EAECEE;">
-                  <th rowspan="3" width="35px">No <br> FUN</th>
-                  <th rowspan="3" width="140px">FUNCIONES</th>
-                  <th rowspan="3" width="140px">ACTIVIDADES</th>
-                  <th rowspan="3" width="45px">UNIDAD <br> DE <br> MEDIDA</th>
-                  <th rowspan="3">TIPO <br> DE <br> U.M</th>
-                  <th rowspan="3">META <br> ANUAL</th>
+                  <th rowspan="3" width="20px">No <br> FUN</th>
+                  <th rowspan="3" width="150px">FUNCIONES</th>
+                  <th rowspan="3" width="150px">ACTIVIDADES</th>
+                  <th rowspan="3" width="35px">UNIDAD <br> DE <br> MEDIDA</th>
+                  <th rowspan="3" width="40px">TIPO <br> DE <br> U.M</th>
+                  <th rowspan="3" width="40px">META <br> ANUAL</th>
 
-                  <th colspan="4">MES QUE INFORMA   <strong style="background: #000; color:white; padding: 5px; margin-left: 10px;">{{strtoupper($mes_avance)}}</strong></th>
-                  <th colspan="4">ACUMULADO AL MES QUE INFORMA</th>
-                  <th rowspan="3">EXPLICACIÓN A LAS DESVIACIONES</th>
+                  <th colspan="4" width="180px">MES QUE INFORMA   <strong style="background: #000; color:white; padding: 5px; margin-left: 10px;">{{strtoupper($mes_avance)}}</strong></th>
+                  <th colspan="4" width="180px">ACUMULADO AL MES QUE INFORMA</th>
+                  <th rowspan="3" width="40px">EXPLICACIÓN A LAS DESVIACIONES</th>
                 </tr>
                 <tr style="background: #EAECEE;">
-                  <th colspan="2">METAS</th>
-                  <th colspan="2">DESVIACIÓN</th>
-                  <th colspan="2">METAS</th>
-                  <th colspan="2">DESVIACIÓN</th>
+                  <th colspan="2" width="5px">METAS</th>
+                  <th colspan="2" width="5px">DESVIACIÓN</th>
+                  <th colspan="2" width="5px">METAS</th>
+                  <th colspan="2" width="5px">DESVIACIÓN</th>
                 </tr>
                 <tr style="background: #EAECEE;">
                     <th>PROGR.</th>

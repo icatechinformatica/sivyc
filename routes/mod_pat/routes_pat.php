@@ -18,7 +18,7 @@ Route::post('/vista/pat/um/update/', 'PatController\UmController@update')->name(
 
 
 /**Funciones */
-Route::get('/vista/pat/funciones', 'PatController\FuncionesController@index')->name('pat.funciones.mostrar')->middleware('can:funproc.pat.index');
+Route::get('/vista/pat/funciones/{idorg?}', 'PatController\FuncionesController@index')->name('pat.funciones.mostrar')->middleware('can:funproc.pat.index');
 //Eliminar
 //Route::get('/vista/pat/funciones/{id}', 'PatController\FuncionesController@destroy')->name('funciones.destroy');
 //inactivar o desactivar con ajax
@@ -26,12 +26,12 @@ Route::post('/vista/pat/funciones/status/', 'PatController\FuncionesController@s
 //Agregar
 Route::post('/vista/pat/funciones/save', 'PatController\FuncionesController@store')->name('funciones.guardar');
 //Editar
-Route::get('/vista/pat/funciones/show/{id}', 'PatController\FuncionesController@show')->name('funciones.edit.show');
+Route::get('/vista/pat/funciones/show/{id}/{idorg}', 'PatController\FuncionesController@show')->name('funciones.edit.show');
 Route::post('/vista/pat/funciones/update/{id}', 'PatController\FuncionesController@update')->name('funciones.update');
 
 
 /**Procedimientos */
-Route::get('/vista/pat/procedimientos/{id}', 'PatController\ProcedController@index')->name('pat.proced.mostrar');
+Route::get('/vista/pat/procedimientos/{id}/{idorg}', 'PatController\ProcedController@index')->name('pat.proced.mostrar');
 //Eliminar
 //Route::get('/vista/pat/procedimientos/delete/{idd}/{id}', 'PatController\ProcedController@destroy')->name('proced.destroy');
 //inactivar o desactivar con ajax
@@ -39,7 +39,7 @@ Route::post('/vista/pat/procedimientos/status/', 'PatController\ProcedController
 //Agregar
 Route::post('/vista/pat/procedimientos/save/{id}', 'PatController\ProcedController@store')->name('proced.guardar');
 //Editar
-Route::get('/vista/pat/procedimientos/show/{idedi}/{id}', 'PatController\ProcedController@show')->name('pat.proced.edit.show');
+Route::get('/vista/pat/procedimientos/show/{idedi}/{id}/{idorg}', 'PatController\ProcedController@show')->name('pat.proced.edit.show');
 Route::post('/vista/pat/procedimientos/update/{idedi}/{id}', 'PatController\ProcedController@update')->name('proced.update');
 //post para el autocompletado
 Route::post('/vista/pat/procedimientos/auto', 'PatController\ProcedController@autocomplete')->name('pat.proced.autocomp');
