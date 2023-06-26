@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 <div class="card-header">
-    PREINSCRIPCIÓN
+    Preinscripción / Alumnos Matriculados
 </div>
 <div class="card card-body" style=" min-height:450px;">
         @if (Session::has('success'))
@@ -15,39 +15,24 @@
                 {{ Session::get('success') }}
             </div>
         @endif
-        <div class="row">
-            <div class="col-lg-12 margin-tb">
-                <div class="pull-left">
-                    <h2>ALUMNOS MATRICULADOS</h2>
-                </div>
-
-                <div class="pull-right">
-                    {!! Form::open(['route' => 'alumnos.inscritos', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                        <select name="tipo_busqueda" class="form-control mr-sm-2" id="tipo_busqueda">
-                            <option value="">BUSCAR POR TIPO</option>
-                            <option value="no_control">N° DE CONTROL</option>
-                            <option value="folio_grupo">N° DE GRUPO</option>
-                            <option value="curso">CURSO</option>
-                            <option value="nombres">NOMBRE</option>
-                            <option value="curp">CURP</option>
-                        </select>
-
-                        {!! Form::text('busquedapor', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR']) !!}
-                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
-                    {!! Form::close() !!}
-                </div>
+        {!! Form::open(['route' => 'alumnos.inscritos', 'method' => 'GET', 'class' => 'form-inline' ]) !!}  
+            @csrf
+            <div class="row form-inline">       
+                {{ Form::text('busquedapor', '', ['id'=>'busquedapor', 'class' => 'form-control mr-sm-2', 'placeholder' => 'CURP / NOMBRE / No.CONTROL/ CURSO / No.GRUPO', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 48]) }}
+                {{ Form::submit('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
             </div>
-        </div>
-        <hr style="border-color:dimgray">
-
+            {{csrf_field()}}
+        {!! Form::close() !!}
             <table class="table table-bordered">
                 <caption>Catalogo de Alumnos</caption>
                 <thead>
                     <tr>
-                        <th scope="col">N° CONTROL</th>
-                        <th scope="col">NOMBRE</th>
-                        <th width="85px">N° GRUPO</th>
-                        <th scope="col">CURSOS</th>
+                        <th scope="col">N°CONTROL</th>
+                        <th width="85px">FOLIO</th>
+                        <th scope="col">NOMBRE</th>                        
+                        <th width="85px">N°GRUPO</th>
+                        <th width="85px">CLAVE</th>
+                        <th scope="col">CURSO</th>
                         <th scope="col">FECHAS</th>
                         <th scope="col">HORARIO</th>
                         <th width="100px">ACCIONES</th>
@@ -61,8 +46,10 @@
                     @foreach ($alumnos as $itemData)
                         <tr>
                             <td>{{$itemData->no_control}}</td>
-                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
+                            <td>{{$itemData->folio}}</td>
+                            <td scope="row">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>                            
                             <td>{{$itemData->folio_grupo}}</td>
+                            <td scope="row">{{ $itemData->clave }}</td>
                             <td scope="row">{{ $itemData->nombre_curso }}</td>
                             <td scope="row">{{$itemData->inicio}} AL {{$itemData->termino}}</td>
                             <td scope="row">{{$itemData->horario}}</td>
