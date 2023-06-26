@@ -28,9 +28,7 @@ class AlumnoRegistradoController extends Controller
      */
     public function index(Request $request) {
         $buscar = $request->get('busquedapor');
-
         $tipo = $request->get('tipo_busqueda');
-
         $alumnos = Alumno::busqueda($buscar)
                 ->LEFTJOIN('especialidades', 'especialidades.id', '=', 'alumnos_registro.id_especialidad')
                 ->LEFTJOIN('cursos', 'cursos.id', '=', 'alumnos_registro.id_curso')                
