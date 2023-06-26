@@ -15,14 +15,15 @@
             /* overflow: auto;
             max-height: 100%; */
             }
-            table {
+            /* table {
             table-layout: fixed;
             width: 160%!important;
-            }
-            th, td {
-            width: 30%;
+            } */
+            /* th, td {
+            width: 60%;
             padding-left: 6px !important;
-            }
+            } */
+
             #loco{
                 width: 12%;
             }
@@ -108,6 +109,30 @@
             /* de la caja que muestra la fecha */
             .fondo_fecha{
                 background-color: #5f0f30;
+            }
+            /*Deshabilitamos la parte de forzar mayusculas*/
+            input[type=text],
+            select,
+            textarea {
+                text-transform: none !important;
+            }
+            /* Estilo de la tabla */
+            .table-container {
+                max-height: 500px;
+                overflow-y: scroll;
+            }
+
+            .table-container table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .table-container th {
+                position: sticky;
+                top: 0;
+                background-color: #a19f9f;
+                color: #1a1919;
+                font-weight: bold;
             }
 
     </style>
@@ -242,10 +267,11 @@
                 </div>
             </div> --}}
 
+
             {{-- TABLA DE METAS Y AVANCES --}}
-            <div style="overflow:auto;">
+            <div style="overflow:auto;" class="table-container">
             <table id="tabla" class="table table-bordered table-striped mt-5 table-wrapper">
-                <thead>
+                {{-- <thead>
                     <tr>
                         <th scope="col"  id="loco"></th>
                         <th scope="col" class="col-10 v-center"></th>
@@ -302,7 +328,59 @@
                         </th>
                         <th class="text-center">OBSERVACIONES PLANEACIÓN</th>
                     </tr>
+                </thead> --}}
+                {{-- nuevo encabezado para ver que tal como funciona --}}
+                <thead>
+                    <tr>
+                      <th rowspan="2" class="text-center">#</th>
+                      <th rowspan="2" class="text-center">FUNCIONES</th>
+                      <th rowspan="2" class="text-center">PROCEDIMIENTOS</th>
+                      <th rowspan="2" class="text-center">UNIDAD <br> DE <br> MEDIDA</th>
+                      <th rowspan="2" class="text-center">TIPO <br> DE <br> U.M</th>
+                      <th rowspan="2" class="text-center">META <br> ANUAL</th>
+                      <th colspan="2" class="text-center">Ene</th>
+                      <th colspan="2" class="text-center">Feb</th>
+                      <th colspan="2" class="text-center">Mar</th>
+                      <th colspan="2" class="text-center">Abril</th>
+                      <th colspan="2" class="text-center">May</th>
+                      <th colspan="2" class="text-center">Jun</th>
+                      <th colspan="2" class="text-center">Jul</th>
+                      <th colspan="2" class="text-center">Ago</th>
+                      <th colspan="2" class="text-center">Sep</th>
+                      <th colspan="2" class="text-center">Oct</th>
+                      <th colspan="2" class="text-center">Nov</th>
+                      <th colspan="2" class="text-center">Dic</th>
+                      <th rowspan="2" class="text-center">
+                        {{$datos_status_meta[0] == 'activo' ? 'OBSERVACIONES' : ''}}
+                        {{$datos_status_avance[0] == 'activo' ? 'EXPLICACIÓN A LAS DESVIACIONES': ''}}
+                      </th>
+                        <th rowspan="2" class="text-center">OBSERVACIONES PLANEACIÓN</th>
+                    </tr>
+                    <tr>
+                        @for ($i = 1; $i <= 12; $i++)
+                        <th scope="col" class="text-center">
+                            <div class="diagonal mt--2" style="font-weight:bold;">
+                                <span class="letter small" style="font-weight:bold;">M</span>
+                                <span class="letter small ml-1" style="font-weight:bold;">e</span>
+                                <span class="letter small" style="font-weight:bold;">t</span>
+                                <span class="letter small" style="font-weight:bold;">a</span>
+                            </div>
+                        </th>
+                        <th scope="col" class="text-center">
+                            <div class="diagonal">
+                                <span class="letter small" style="font-weight:bold;">A</span>
+                                <span class="letter small" style="font-weight:bold;">v</span>
+                                <span class="letter small" style="font-weight:bold;">a</span>
+                                <span class="letter small" style="font-weight:bold;">n</span>
+                                <span class="letter small" style="font-weight:bold;">c</span>
+                                <span class="letter small" style="font-weight:bold;">e</span>
+                            </div>
+                        </th>
+                    @endfor
+                    </tr>
+
                 </thead>
+                {{-- aqui termina el encabezado --}}
                 <tbody>
 
                         @php
@@ -455,6 +533,7 @@
                 </tbody>
             </table>
             </div>
+
 
             @if (isset($datos) && count($datos) != 0)
                 {{-- BOTONES USADOS TANTO PLANEACION COMO ORGANISMO --}}
@@ -740,7 +819,6 @@
               </div> --}}
               {{-- tabla --}}
 
-
         </div>
     </div>
 
@@ -755,6 +833,9 @@
                 // $(function(){
                 //     $('[data-toggle="popover"]').popover()
                 // });
+
+                /*Deshabilitamos la prate de convertir a mayusculas*/
+                $("input[type=text], textarea, select").off("keyup");
 
                 //Quitar espacion en blanco a los textareas
                 const textareas = document.getElementsByTagName("textarea");

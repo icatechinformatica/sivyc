@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PatController;
 
 use App\Http\Controllers\Controller;
 use App\Models\ModelPat\Funciones;
+use App\Models\ModelPat\Organismos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,31 +13,52 @@ use App\Models\ModelPat\Procedimientos;
 
 class FuncionesController extends Controller
 {
+
+    public $globalOrganismo;
+
+    public function __construct()
+    {
+        // Aquí puedes inicializar otras propiedades del controlador si es necesario
+    }
+
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $idorg = null)
     {
         //Obtenemos los id org, area del usuario quien ingresa
         try {
-            $organismo = Auth::user()->id_organismo;
+            if ($idorg != null) {
+                // $organismo = $idorg;
+                $organismo = $idorg;
+            }else if($request->get('id_orgbus') != ''){
+                $organismo = $request->get('id_orgbus');
+            }
+            else{
+                // $organismo = Auth::user()->id_organismo;
+                $organismo = Auth::user()->id_organismo;
+            }
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
         }
+        //Obtenermos la variable desde el contructor
+        // $organismo = $this->globalOrganismo;
+
+        $list_org = Organismos::select('id', 'nombre')
+        ->where('activo', '=', 'true')
+        ->orderBy('id', 'asc')->get();
 
         //Obtenemos el area del usuario
-        $area_org = DB::table('tbl_organismos as o')->select('o.id', 'nombre', 'id_parent')
-        ->Join('users as u', 'u.id_organismo', 'o.id')
-        ->where('u.id_organismo', $organismo)->first();
-        //$orgj= json_decode( json_encode($org), true);
+        $area_org = DB::table('tbl_organismos')->select('id', 'nombre', 'id_parent')
+        ->where('id', $organismo)->first();
 
         // Obtenermos el organismo del usuario
         $org = DB::table('tbl_organismos as o')->select('o.id', 'nombre')
         ->where('o.id', $area_org->id_parent)->first();
-        //$areaj= json_decode( json_encode($area_org->id_parent), true);
 
 
         $data = Funciones::Busqueda($request->get('busqueda_funcion'))
@@ -45,9 +67,9 @@ class FuncionesController extends Controller
             ->where('id_org', '=', $organismo)
             ->where(DB::raw("date_part('year' , created_at )"), '=', date('Y'))
             ->orderByDesc('funciones_proced.id')
-            ->paginate(15, ['funciones_proced.*']);
+            ->paginate(20, ['funciones_proced.*']);
 
-        return view('vistas_pat.funciones_pat', compact('data','area_org', 'org'));
+        return view('vistas_pat.funciones_pat', compact('data','area_org', 'org', 'list_org', 'organismo'));
     }
 
     /**
@@ -69,13 +91,15 @@ class FuncionesController extends Controller
     public function store(Request $request)
     {
         //Obtener el id del user
-        try {
-            $id_organismo = Auth::user()->id_organismo;
-            $id_user = Auth::user()->id;
-        } catch (\Throwable $th) {
-            //throw $th;
-            return redirect('/login');
-        }
+        // try {
+        //     $id_organismo = Auth::user()->id_organismo;
+        //     $id_user = Auth::user()->id;
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     return redirect('/login');
+        // }
+        $id_organismo = $request->input('id_org');
+        $id_user = Auth::user()->id;
 
         $funciones = new Funciones;
         $funciones['id_parent'] = 0;
@@ -96,20 +120,26 @@ class FuncionesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $idorg)
     {
         //Obtenemos los id org, area del usuario quien ingresa
-        try {
-            $organismo = Auth::user()->id_organismo;
-        } catch (\Throwable $th) {
-            //throw $th;
-            return redirect('/login');
-        }
+        // try {
+        //     $organismo = Auth::user()->id_organismo;
+        // } catch (\Throwable $th) {
+        //     //throw $th;
+        //     return redirect('/login');
+        // }
 
-          //Obtenemos el area del usuario
-        $area_org = DB::table('tbl_organismos as o')->select('o.id', 'nombre', 'id_parent')
-        ->Join('users as u', 'u.id_organismo', 'o.id')
-        ->where('u.id_organismo', $organismo)->first();
+        $organismo =  $idorg;
+
+        $list_org = Organismos::select('id', 'nombre')
+        ->where('activo', '=', 'true')
+        ->orderBy('id', 'asc')->get();
+
+
+        //Obtenemos el area del usuario
+        $area_org = DB::table('tbl_organismos')->select('id', 'nombre', 'id_parent')
+        ->where('id', $organismo)->first();
         //$orgj= json_decode( json_encode($org), true);
 
         // Obtenermos el organismo del usuario
@@ -128,7 +158,7 @@ class FuncionesController extends Controller
 
         $funcion_desc = Funciones::WHERE('id', '=', $id)->FIRST();
 
-        return view('vistas_pat.funciones_pat', compact('data','area_org', 'org', 'funcion_desc'));
+        return view('vistas_pat.funciones_pat', compact('data','area_org', 'org', 'funcion_desc', 'list_org', 'organismo'));
 
     }
 
@@ -154,11 +184,13 @@ class FuncionesController extends Controller
     {
         //Obtener el id del user
         try {
-            $id_user = Auth::user()->id;
         } catch (\Throwable $th) {
             //throw $th;
             return redirect('/login');
         }
+        $organismo = $request->input('idorgupd');
+        $id_user = Auth::user()->id;
+
 
         $funciones = Funciones::find($id);
         $funciones->fun_proc =  trim($request->input('nom_funcion_edit'));
@@ -166,7 +198,7 @@ class FuncionesController extends Controller
         $funciones->iduser_updated = $id_user;
         $funciones->save();
 
-        return redirect()->route('pat.funciones.mostrar')->with('success', '¡Registro actualizado exitosamente!');
+        return redirect()->route('pat.funciones.mostrar', ['idorg' => $organismo])->with('success', '¡Registro actualizado exitosamente!');
     }
 
     public function status(Request $request)
