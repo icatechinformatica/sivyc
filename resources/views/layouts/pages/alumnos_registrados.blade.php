@@ -5,7 +5,6 @@
 <!--seccion-->
 @section('content')
 <link rel="stylesheet" href="{{asset('css/global.css') }}" />
-<link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
 <div class="card-header">
     Preinscripción / Alumnos Matriculados
 </div>
