@@ -15,7 +15,7 @@
                 /* margin: 10px; */
             }
             @page {
-                margin: 20px 30px 80px;
+                margin: 20px 30px 20px;
 
             }
             .ftr{
@@ -48,7 +48,7 @@
             footer {
             position: fixed;
             /* left: 0px; */
-            bottom: 70px;
+            bottom: 100px;
             /* right: 0px; */
             /* height: 60px; */
             /* text-align: center; */
@@ -325,7 +325,7 @@
                                 <tr>
                                     <td>{{$cadwell['puesto']}}</td>
                                     <td>{{$cadwell['periodo']}}</td>
-                                    <td><p>{{$cadwell['institucion']}}</p></td>
+                                    <td>{{$cadwell['institucion']}}</td>
                                 </tr>
                             @endforeach
                         @endif
