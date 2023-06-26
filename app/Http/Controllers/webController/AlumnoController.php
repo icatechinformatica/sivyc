@@ -194,7 +194,7 @@ class AlumnoController extends Controller {
         }
         $estado = DB::table('estados')->where('id',$request->estado)->first();
         $municipio = DB::table('tbl_municipios')->where('id_estado',$estado->id)->where('clave',$request->municipio)->first();
-        $result = DB::table('alumnos_pre')->updateOrInsert(['curp'=>$curp],[
+        $result = DB::table('alumnos_pre')->updateOrInsert(['curp'=>strtoupper($curp)],[
             'nombre' => str_replace('ñ','Ñ',strtoupper($request->nombre)),
             'apellido_paterno' => str_replace('ñ','Ñ',strtoupper($request->apellido_paterno)),
             'apellido_materno' => str_replace('ñ','Ñ',strtoupper($request->apellido_materno)),
@@ -411,7 +411,7 @@ class AlumnoController extends Controller {
                 'id_unidad'=>Auth::user()->unidad,
                 'es_cereso'=>$chk_cerss,
                 'numero_expediente'=>$request->num_expediente_cerss_mod,
-                'curp'=>strtoupper($request->curp_mod),
+                //'curp'=>strtoupper($request->curp_mod),
                 'empleado'=>$empleado,
                 'nombre' => strtoupper(trim($request->nombre_mod)),
                 'apellido_paterno' => strtoupper(trim($request->apellidoPaterno_mod)),
@@ -742,7 +742,7 @@ class AlumnoController extends Controller {
                     'fecha_nacimiento' => $fecha_nacimiento,
                     'nacionalidad' => $request->input('nacionalidad_cerss'),
                     'sexo' => $request->input('genero_cerss'),
-                    'curp' => (is_null($request->input('curp_cerss')) ? '' : $request->input('curp_cerss')),
+                    'curp' => (is_null($request->input('curp_cerss')) ? '' : strtoupper($request->input('curp_cerss'))),
                     'rfc_cerss' => $request->input('rfc_cerss'),
                     'ultimo_grado_estudios' => $request->input('ultimo_grado_estudios_cerss'),
                     'tiene_documentacion' => false,
